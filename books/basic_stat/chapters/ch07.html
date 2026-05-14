@@ -10,14 +10,13 @@
 <link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
-<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/><link href="/css/tts.css" rel="stylesheet"/>
 </head>
 <body data-book="basic_stat" data-page="ch07">
 <header class="site-header">
+<a class="home-btn" href="/">Home</a>
 <a class="brand" href="/books/basic_stat/">Theoretical Statistics <small>a slow reading guide</small></a>
 <nav>
-<a href="/" class="all-books-link">All books</a>
-    <a href="/books/basic_stat/">Contents</a>
 <button aria-label="toggle theme" class="theme-toggle">Dark</button>
 </nav>
 </header>
@@ -45,26 +44,26 @@
 </section>
 <h2 data-cid="ch07-020" id="why">Why does anyone average the risk?</h2>
 <p data-cid="ch07-030">
-  Back in Chapter 3 we measured an estimator $\delta$ by its <strong>risk function</strong>
-  $R(\theta, \delta) = E_\theta L(\theta, \delta(X))$, a number for every possible $\theta$. Two estimators
-  are easy to compare when one curve sits below the other for all $\theta$. But the moment the graphs cross —
-  one estimator is better for small $\theta$, the other for large $\theta$ — there is nothing in the
+  Back in Chapter 3 we measured an estimator <span class="tts-math" data-tts="delta">$\delta$</span> by its <strong>risk function</strong>
+  <span class="tts-math" data-tts="R theta delta equals E_ theta L theta delta X">$R(\theta, \delta) = E_\theta L(\theta, \delta(X))$</span>, a number for every possible <span class="tts-math" data-tts="theta">$\theta$</span>. Two estimators
+  are easy to compare when one curve sits below the other for all <span class="tts-math" data-tts="theta">$\theta$</span>. But the moment the graphs cross —
+  one estimator is better for small <span class="tts-math" data-tts="theta">$\theta$</span>, the other for large <span class="tts-math" data-tts="theta">$\theta$</span> — there is nothing in the
   frequentist framework that breaks the tie.
 </p>
 <p data-cid="ch07-040">
   Bayesians break the tie by collapsing the whole risk function down to a single number:
 </p>
-$$\int R(\theta, \delta) \, d\Lambda(\theta), \tag{7.1}$$
+<span class="tts-math" data-tts="the integral of R theta delta d Lambda theta 7.1">$$\int R(\theta, \delta) \, d\Lambda(\theta), \tag{7.1}$$</span>
 <p data-cid="ch07-050">
-  where $\Lambda$ is a probability measure on the parameter space $\Omega$. Now every estimator gets one
+  where <span class="tts-math" data-tts="Lambda">$\Lambda$</span> is a probability measure on the parameter space <span class="tts-math" data-tts="Omega">$\Omega$</span>. Now every estimator gets one
   score, and "smaller is better" makes unambiguous sense. The estimator that minimises this average is
   called <strong>Bayes</strong>.
 </p>
 <div class="box intuition" data-cid="ch07-060">
 <span class="box-label">The shift in worldview</span>
 <p data-cid="ch07-070">
-  In the frequentist view, $\theta$ is a fixed unknown number and only the data $X$ is random. In the
-  Bayesian view, both $\theta$ and $X$ are random. The integrator (7.1) is just the expected loss in this
+  In the frequentist view, <span class="tts-math" data-tts="theta">$\theta$</span> is a fixed unknown number and only the data <span class="tts-math" data-tts="X">$X$</span> is random. In the
+  Bayesian view, both <span class="tts-math" data-tts="theta">$\theta$</span> and <span class="tts-math" data-tts="X">$X$</span> are random. The integrator (7.1) is just the expected loss in this
   enlarged probability model. Everything else — priors, posteriors, the famous Bayes-rule update — falls
   out of taking that one extra step seriously.
 </p>
@@ -73,24 +72,24 @@ $$\int R(\theta, \delta) \, d\Lambda(\theta), \tag{7.1}$$
 <h2 data-cid="ch07-080" id="s7-1">7.1 Bayesian models and the main result</h2>
 <h3 data-cid="ch07-090">Setting up the joint distribution</h3>
 <p data-cid="ch07-100">
-  We write the random parameter as a capital $\Theta$, with a lowercase $\theta$ for a value it might take.
+  We write the random parameter as a capital <span class="tts-math" data-tts="Theta">$\Theta$</span>, with a lowercase <span class="tts-math" data-tts="theta">$\theta$</span> for a value it might take.
   The Bayesian model consists of two pieces:
 </p>
 <ul data-cid="ch07-110">
-<li>A <strong>prior distribution</strong> $\Theta \sim \Lambda$. This says what we believe about $\Theta$
+<li>A <strong>prior distribution</strong> <span class="tts-math" data-tts="Theta distributed as Lambda">$\Theta \sim \Lambda$</span>. This says what we believe about <span class="tts-math" data-tts="Theta">$\Theta$</span>
   before seeing any data.</li>
-<li>A <strong>sampling model</strong> $X \mid \Theta = \theta \sim P_\theta$. This is the same family of
+<li>A <strong>sampling model</strong> <span class="tts-math" data-tts="X given Theta equals theta distributed as P_ theta">$X \mid \Theta = \theta \sim P_\theta$</span>. This is the same family of
   distributions we've used all along — only now it's a <em>conditional</em> distribution.</li>
 </ul>
 <p data-cid="ch07-120">
-  Together these specify the joint distribution of $(\Theta, X)$. By the smoothing identity (Chapter 1,
+  Together these specify the joint distribution of <span class="tts-math" data-tts="Theta X">$(\Theta, X)$</span>. By the smoothing identity (Chapter 1,
   Section 1.10),
 </p>
-$$E\!\big[L(\Theta, \delta(X)) \mid \Theta = \theta\big] = \int L(\theta, \delta(x)) \, dP_\theta(x) = R(\theta, \delta),$$
+<span class="tts-math" data-tts="E L Theta delta X given Theta equals theta equals the integral of L theta delta x dP_ theta x equals R theta delta">$$E\!\big[L(\Theta, \delta(X)) \mid \Theta = \theta\big] = \int L(\theta, \delta(x)) \, dP_\theta(x) = R(\theta, \delta),$$</span>
 <p data-cid="ch07-130">
-  and taking another expectation over $\Theta$,
+  and taking another expectation over <span class="tts-math" data-tts="Theta">$\Theta$</span>,
 </p>
-$$E\, L(\Theta, \delta) \;=\; E\,R(\Theta, \delta) \;=\; \int R(\theta, \delta) \, d\Lambda(\theta).$$
+<span class="tts-math" data-tts="E L Theta delta equals E R Theta delta equals the integral of R theta delta d Lambda theta .">$$E\, L(\Theta, \delta) \;=\; E\,R(\Theta, \delta) \;=\; \int R(\theta, \delta) \, d\Lambda(\theta).$$</span>
 <p data-cid="ch07-140">
   So expression (7.1) really is "expected loss" in the Bayesian probability model. It is not a different
   philosophy bolted onto an existing formula; it is the same expectation computed two ways.
@@ -98,153 +97,153 @@ $$E\, L(\Theta, \delta) \;=\; E\,R(\Theta, \delta) \;=\; \int R(\theta, \delta) 
 <div class="box intuition" data-cid="ch07-150">
 <span class="box-label">Two readings of the same integral</span>
 <p data-cid="ch07-160">
-  Read $\int R(\theta, \delta)\, d\Lambda(\theta)$ left-to-right and you see a frequentist averaging the
-  risk against a weighting. Read it right-to-left as $E\, L(\Theta, \delta(X))$ and you see a Bayesian
+  Read <span class="tts-math" data-tts="the integral of R theta delta d Lambda theta">$\int R(\theta, \delta)\, d\Lambda(\theta)$</span> left-to-right and you see a frequentist averaging the
+  risk against a weighting. Read it right-to-left as <span class="tts-math" data-tts="E L Theta delta X">$E\, L(\Theta, \delta(X))$</span> and you see a Bayesian
   computing one number — the expected loss — in the joint probability model. Same integral, two languages.
 </p>
 </div>
-<h3 data-cid="ch07-170">Where does $\Lambda$ come from?</h3>
+<h3 data-cid="ch07-170">Where does <span class="tts-math" data-tts="Lambda">$\Lambda$</span> come from?</h3>
 <p data-cid="ch07-180">
   Honest answer: it depends. Keener lists three flavours of justification, and a good statistician keeps
   all three in mind.
 </p>
 <ul data-cid="ch07-190">
-<li><strong>Empirical / frequentist.</strong> Sometimes $\Theta$ really is random in a frequentist sense.
-  Keener's vivid example is a postal scanner: $\Theta$ is the zip code on an envelope, $X$ is pixel data,
-  and $\Lambda$ is just the empirical distribution of zip codes seen in the mail stream. Here $\Lambda$
+<li><strong>Empirical / frequentist.</strong> Sometimes <span class="tts-math" data-tts="Theta">$\Theta$</span> really is random in a frequentist sense.
+  Keener's vivid example is a postal scanner: <span class="tts-math" data-tts="Theta">$\Theta$</span> is the zip code on an envelope, <span class="tts-math" data-tts="X">$X$</span> is pixel data,
+  and <span class="tts-math" data-tts="Lambda">$\Lambda$</span> is just the empirical distribution of zip codes seen in the mail stream. Here <span class="tts-math" data-tts="Lambda">$\Lambda$</span>
   is calibrated by data, not by belief.</li>
-<li><strong>Subjective.</strong> More often, $\Theta$ is a fixed quantity of nature (a population mean,
-  a survival probability) that has no frequentist distribution. Then $\Lambda$ expresses the researcher's
+<li><strong>Subjective.</strong> More often, <span class="tts-math" data-tts="Theta">$\Theta$</span> is a fixed quantity of nature (a population mean,
+  a survival probability) that has no frequentist distribution. Then <span class="tts-math" data-tts="Lambda">$\Lambda$</span> expresses the researcher's
   informed subjective opinion about plausible values.</li>
 <li><strong>Pragmatic.</strong> Both ideas are tempered by computation. A prior that admits a clean
   posterior is often chosen because the math is tractable, not because we believe it literally.</li>
 </ul>
 <h3 data-cid="ch07-200">The main theorem</h3>
 <p data-cid="ch07-210">
-  We now ask: given a Bayesian model, which $\delta$ actually minimises (7.1)? The answer is the cleanest
+  We now ask: given a Bayesian model, which <span class="tts-math" data-tts="delta">$\delta$</span> actually minimises (7.1)? The answer is the cleanest
   result in the chapter, and it is a direct application of conditioning.
 </p>
 <p data-cid="ch07-220">
-  If we had no data at all, the best constant guess $d$ would minimise $E\, L(\Theta, d)$ — a pure prior
-  optimisation. With data $X = x$ in hand, we should instead minimise the <em>conditional</em> expected
+  If we had no data at all, the best constant guess <span class="tts-math" data-tts="d">$d$</span> would minimise <span class="tts-math" data-tts="E L Theta d">$E\, L(\Theta, d)$</span> — a pure prior
+  optimisation. With data <span class="tts-math" data-tts="X equals x">$X = x$</span> in hand, we should instead minimise the <em>conditional</em> expected
   loss:
 </p>
-$$E\!\big[ L(\Theta, d) \mid X = x \big].$$
+<span class="tts-math" data-tts="E L Theta d given X equals x .">$$E\!\big[ L(\Theta, d) \mid X = x \big].$$</span>
 <p data-cid="ch07-230">
-  This is called the <strong>posterior risk</strong> at $d$. The conditional distribution of $\Theta$ given
-  $X = x$ is the <strong>posterior distribution</strong>, often written $\Lambda(\cdot \mid x)$ with density
-  $\lambda(\theta \mid x)$.
+  This is called the <strong>posterior risk</strong> at <span class="tts-math" data-tts="d">$d$</span>. The conditional distribution of <span class="tts-math" data-tts="Theta">$\Theta$</span> given
+  <span class="tts-math" data-tts="X equals x">$X = x$</span> is the <strong>posterior distribution</strong>, often written <span class="tts-math" data-tts="Lambda times given x">$\Lambda(\cdot \mid x)$</span> with density
+  <span class="tts-math" data-tts="lambda theta given x">$\lambda(\theta \mid x)$</span>.
 </p>
 <div class="box definition" data-cid="ch07-240">
 <span class="box-label">Theorem 7.1 — the Bayes estimator minimises posterior expected loss</span>
-<p data-cid="ch07-250">Suppose $\Theta \sim \Lambda$, $X \mid \Theta = \theta \sim P_\theta$, and $L(\theta, d) \geq 0$.
+<p data-cid="ch07-250">Suppose <span class="tts-math" data-tts="Theta distributed as Lambda">$\Theta \sim \Lambda$</span>, <span class="tts-math" data-tts="X given Theta equals theta distributed as P_ theta">$X \mid \Theta = \theta \sim P_\theta$</span>, and <span class="tts-math" data-tts="L theta d greater than or equal to 0">$L(\theta, d) \geq 0$</span>.
   Assume</p>
 <ol data-cid="ch07-260">
-<li>$E\, L(\Theta, \delta_0) &lt; \infty$ for some estimator $\delta_0$, and</li>
-<li>for almost every $x$ there is a value $\delta_\Lambda(x)$ that minimises $E[L(\Theta, d) \mid X = x]$
-  over $d$.</li>
+<li><span class="tts-math" data-tts="E L Theta delta sub 0 lt infinity">$E\, L(\Theta, \delta_0) &lt; \infty$</span> for some estimator <span class="tts-math" data-tts="delta sub 0">$\delta_0$</span>, and</li>
+<li>for almost every <span class="tts-math" data-tts="x">$x$</span> there is a value <span class="tts-math" data-tts="delta _ Lambda x">$\delta_\Lambda(x)$</span> that minimises <span class="tts-math" data-tts="E L Theta d given X equals x">$E[L(\Theta, d) \mid X = x]$</span>
+  over <span class="tts-math" data-tts="d">$d$</span>.</li>
 </ol>
-<p data-cid="ch07-270">Then $\delta_\Lambda$ is a Bayes estimator.</p>
+<p data-cid="ch07-270">Then <span class="tts-math" data-tts="delta _ Lambda">$\delta_\Lambda$</span> is a Bayes estimator.</p>
 </div>
 <h3 data-cid="ch07-280">Why the proof is just smoothing</h3>
 <p data-cid="ch07-290">
-  Let $\delta$ be any other estimator. By the definition of $\delta_\Lambda(x)$,
+  Let <span class="tts-math" data-tts="delta">$\delta$</span> be any other estimator. By the definition of <span class="tts-math" data-tts="delta _ Lambda x">$\delta_\Lambda(x)$</span>,
 </p>
-$$E\!\big[L(\Theta, \delta(X)) \mid X = x\big] \;\geq\; E\!\big[L(\Theta, \delta_\Lambda(X)) \mid X = x\big]$$
+<span class="tts-math" data-tts="E L Theta delta X given X equals x greater than or equal to E L Theta delta _ Lambda X given X equals x">$$E\!\big[L(\Theta, \delta(X)) \mid X = x\big] \;\geq\; E\!\big[L(\Theta, \delta_\Lambda(X)) \mid X = x\big]$$</span>
 <p data-cid="ch07-300">
-  for almost every $x$. Now take expectations on both sides (smoothing recovers the unconditional
+  for almost every <span class="tts-math" data-tts="x">$x$</span>. Now take expectations on both sides (smoothing recovers the unconditional
   expectation):
 </p>
-$$E\, L(\Theta, \delta(X)) \;\geq\; E\, L(\Theta, \delta_\Lambda(X)).$$
+<span class="tts-math" data-tts="E L Theta delta X greater than or equal to E L Theta delta _ Lambda X .">$$E\, L(\Theta, \delta(X)) \;\geq\; E\, L(\Theta, \delta_\Lambda(X)).$$</span>
 <p data-cid="ch07-310">
   That is the entire proof. The trick is to push the optimisation inside the conditional expectation,
-  where it becomes a pointwise problem in $d$.
+  where it becomes a pointwise problem in <span class="tts-math" data-tts="d">$d$</span>.
 </p>
 <div class="box intuition" data-cid="ch07-320">
 <span class="box-label">Restating the punch line</span>
 <p data-cid="ch07-330">
-  To find the Bayes estimator, do not minimise over functions $\delta$. For each observed $x$, just pick
-  the value $d$ that minimises a single number — the posterior expected loss. Stitch those pointwise
-  minimisers together and you have $\delta_\Lambda$. Optimisation over a function space has collapsed
-  into a pile of one-dimensional minimisations, one per value of $x$.
+  To find the Bayes estimator, do not minimise over functions <span class="tts-math" data-tts="delta">$\delta$</span>. For each observed <span class="tts-math" data-tts="x">$x$</span>, just pick
+  the value <span class="tts-math" data-tts="d">$d$</span> that minimises a single number — the posterior expected loss. Stitch those pointwise
+  minimisers together and you have <span class="tts-math" data-tts="delta _ Lambda">$\delta_\Lambda$</span>. Optimisation over a function space has collapsed
+  into a pile of one-dimensional minimisations, one per value of <span class="tts-math" data-tts="x">$x$</span>.
 </p>
 </div>
 <div class="box pause" data-cid="ch07-340">
 <span class="box-label">Pause — the posterior is the prior of the next experiment</span>
 <p data-cid="ch07-350">
-  Suppose you observe $X_1, X_2, \dots$ in sequence. After $X_1 = x_1$, the posterior $\Lambda(\cdot \mid x_1)$
-  encodes everything you now believe about $\Theta$. If a second measurement $X_2$ arrives, you can treat
-  $\Lambda(\cdot \mid x_1)$ as the new prior and Bayes-update again. The "posterior becomes the next
+  Suppose you observe <span class="tts-math" data-tts="X sub 1 X sub 2 and so on">$X_1, X_2, \dots$</span> in sequence. After <span class="tts-math" data-tts="X sub 1 equals x sub 1">$X_1 = x_1$</span>, the posterior <span class="tts-math" data-tts="Lambda times given x sub 1">$\Lambda(\cdot \mid x_1)$</span>
+  encodes everything you now believe about <span class="tts-math" data-tts="Theta">$\Theta$</span>. If a second measurement <span class="tts-math" data-tts="X sub 2">$X_2$</span> arrives, you can treat
+  <span class="tts-math" data-tts="Lambda times given x sub 1">$\Lambda(\cdot \mid x_1)$</span> as the new prior and Bayes-update again. The "posterior becomes the next
   prior" is not a slogan — it is a literal consequence of how conditioning composes. Information
   accumulates one observation at a time, with no special bookkeeping required.
 </p>
 </div>
 <h3 data-cid="ch07-360">Computing the posterior in the dominated case</h3>
 <p data-cid="ch07-370">
-  In nearly every concrete example, the family $\{P_\theta\}$ has densities $p_\theta(x)$ (against some
-  measure $\mu$ on $\mathcal{X}$) and the prior $\Lambda$ has a Lebesgue density $\lambda(\theta)$. Then
-  the joint density of $(\Theta, X)$ is
+  In nearly every concrete example, the family <span class="tts-math" data-tts="P_ theta">$\{P_\theta\}$</span> has densities <span class="tts-math" data-tts="p_ theta x">$p_\theta(x)$</span> (against some
+  measure <span class="tts-math" data-tts="mu">$\mu$</span> on <span class="tts-math" data-tts="script X">$\mathcal{X}$</span>) and the prior <span class="tts-math" data-tts="Lambda">$\Lambda$</span> has a Lebesgue density <span class="tts-math" data-tts="lambda theta">$\lambda(\theta)$</span>. Then
+  the joint density of <span class="tts-math" data-tts="Theta X">$(\Theta, X)$</span> is
 </p>
-$$p_\theta(x) \, \lambda(\theta).$$
-<p data-cid="ch07-380">The marginal density of $X$ is</p>
-$$q(x) = \int p_\theta(x) \, \lambda(\theta) \, d\theta,$$
-<p data-cid="ch07-390">and the posterior density of $\Theta$ given $X = x$ is</p>
-$$\lambda(\theta \mid x) = \frac{p_\theta(x) \, \lambda(\theta)}{q(x)}.$$
+<span class="tts-math" data-tts="p_ theta x lambda theta .">$$p_\theta(x) \, \lambda(\theta).$$</span>
+<p data-cid="ch07-380">The marginal density of <span class="tts-math" data-tts="X">$X$</span> is</p>
+<span class="tts-math" data-tts="q x equals the integral of p_ theta x lambda theta d theta">$$q(x) = \int p_\theta(x) \, \lambda(\theta) \, d\theta,$$</span>
+<p data-cid="ch07-390">and the posterior density of <span class="tts-math" data-tts="Theta">$\Theta$</span> given <span class="tts-math" data-tts="X equals x">$X = x$</span> is</p>
+<span class="tts-math" data-tts="lambda theta given x equals p_ theta x lambda theta over q x .">$$\lambda(\theta \mid x) = \frac{p_\theta(x) \, \lambda(\theta)}{q(x)}.$$</span>
 <p data-cid="ch07-400">
-  This is the famous Bayes-rule formula. Notice that $q(x)$ does not depend on $\theta$ — it is just a
+  This is the famous Bayes-rule formula. Notice that <span class="tts-math" data-tts="q x">$q(x)$</span> does not depend on <span class="tts-math" data-tts="theta">$\theta$</span> — it is just a
   normalising constant. In practice this lets us write
 </p>
-$$\lambda(\theta \mid x) \;\propto\; p_\theta(x) \, \lambda(\theta),$$
+<span class="tts-math" data-tts="lambda theta given x proportional to p_ theta x lambda theta">$$\lambda(\theta \mid x) \;\propto\; p_\theta(x) \, \lambda(\theta),$$</span>
 <p data-cid="ch07-410">
-  identify the right-hand side as a recognisable distribution in $\theta$, and read off the normalising
+  identify the right-hand side as a recognisable distribution in <span class="tts-math" data-tts="theta">$\theta$</span>, and read off the normalising
   constant for free.
 </p>
 <!-- ===================================================================== -->
 <h2 data-cid="ch07-420" id="s7-2">7.2 Examples</h2>
 <h3 data-cid="ch07-430">Squared-error loss: the posterior mean</h3>
 <p data-cid="ch07-440">
-  Consider weighted squared-error loss $L(\theta, d) = w(\theta)(d - g(\theta))^2$ for some weight
-  $w \geq 0$ and quantity of interest $g(\theta)$. The posterior expected loss, expanded as a quadratic in $d$, is
+  Consider weighted squared-error loss <span class="tts-math" data-tts="L theta d equals w theta d minus g theta to the 2">$L(\theta, d) = w(\theta)(d - g(\theta))^2$</span> for some weight
+  <span class="tts-math" data-tts="w greater than or equal to 0">$w \geq 0$</span> and quantity of interest <span class="tts-math" data-tts="g theta">$g(\theta)$</span>. The posterior expected loss, expanded as a quadratic in <span class="tts-math" data-tts="d">$d$</span>, is
 </p>
-$$d^2\, E[w(\Theta) \mid X = x] \;-\; 2d\, E[w(\Theta) g(\Theta) \mid X = x] \;+\; E[w(\Theta) g(\Theta)^2 \mid X = x].$$
+<span class="tts-math" data-tts="d to the 2 E w Theta given X equals x minus 2d E w Theta g Theta given X equals x plus E w Theta g Theta to the 2 given X equals x .">$$d^2\, E[w(\Theta) \mid X = x] \;-\; 2d\, E[w(\Theta) g(\Theta) \mid X = x] \;+\; E[w(\Theta) g(\Theta)^2 \mid X = x].$$</span>
 <p data-cid="ch07-450">
-  Differentiate in $d$, set to zero, and you get
+  Differentiate in <span class="tts-math" data-tts="d">$d$</span>, set to zero, and you get
 </p>
-$$\delta_\Lambda(x) \;=\; \frac{E[w(\Theta) g(\Theta) \mid X = x]}{E[w(\Theta) \mid X = x]}. \tag{7.2}$$
+<span class="tts-math" data-tts="delta _ Lambda x equals E w Theta g Theta given X equals x over E w Theta given X equals x . 7.2">$$\delta_\Lambda(x) \;=\; \frac{E[w(\Theta) g(\Theta) \mid X = x]}{E[w(\Theta) \mid X = x]}. \tag{7.2}$$</span>
 <p data-cid="ch07-460">
-  In the special case $w \equiv 1$ this collapses to
+  In the special case <span class="tts-math" data-tts="w equivalent to 1">$w \equiv 1$</span> this collapses to
 </p>
-$$\delta_\Lambda(X) = E[g(\Theta) \mid X],$$
+<span class="tts-math" data-tts="delta _ Lambda X equals E g Theta given X">$$\delta_\Lambda(X) = E[g(\Theta) \mid X],$$</span>
 <p data-cid="ch07-470">
-  the <strong>posterior mean of $g(\Theta)$</strong>. Memorise this: under squared-error loss, the Bayes
+  the <strong>posterior mean of <span class="tts-math" data-tts="g Theta">$g(\Theta)$</span></strong>. Memorise this: under squared-error loss, the Bayes
   estimator is the posterior mean. Most of the examples below just ask you to compute that one quantity.
 </p>
 <div class="box example" data-cid="ch07-480">
 <span class="box-label">Worked example 7.3 — Beta–Binomial</span>
 <p data-cid="ch07-490">
-  Let $X \mid \Theta = \theta \sim \text{Binomial}(n, \theta)$ and place a $\text{Beta}(\alpha, \beta)$
-  prior on $\Theta$:
+  Let <span class="tts-math" data-tts="X given Theta equals theta distributed as Binomial n theta">$X \mid \Theta = \theta \sim \text{Binomial}(n, \theta)$</span> and place a <span class="tts-math" data-tts="Beta alpha beta">$\text{Beta}(\alpha, \beta)$</span>
+  prior on <span class="tts-math" data-tts="Theta">$\Theta$</span>:
 </p>
-$$\lambda(\theta) = \frac{\Gamma(\alpha + \beta)}{\Gamma(\alpha)\Gamma(\beta)} \, \theta^{\alpha - 1}(1 - \theta)^{\beta - 1}, \qquad \theta \in (0,1).$$
+<span class="tts-math" data-tts="lambda theta equals Gamma alpha plus beta over Gamma alpha Gamma beta theta to the alpha minus 1 1 minus theta to the beta minus 1 theta in 0 1 .">$$\lambda(\theta) = \frac{\Gamma(\alpha + \beta)}{\Gamma(\alpha)\Gamma(\beta)} \, \theta^{\alpha - 1}(1 - \theta)^{\beta - 1}, \qquad \theta \in (0,1).$$</span>
 <p data-cid="ch07-500">
-  The joint density of $X$ and $\Theta$ is proportional to
-  $\theta^{x + \alpha - 1}(1 - \theta)^{n - x + \beta - 1}$, which is the kernel of a
-  $\text{Beta}(x + \alpha, n - x + \beta)$ density. Hence
+  The joint density of <span class="tts-math" data-tts="X">$X$</span> and <span class="tts-math" data-tts="Theta">$\Theta$</span> is proportional to
+  <span class="tts-math" data-tts="theta to the x plus alpha minus 1 1 minus theta to the n minus x plus beta minus 1">$\theta^{x + \alpha - 1}(1 - \theta)^{n - x + \beta - 1}$</span>, which is the kernel of a
+  <span class="tts-math" data-tts="Beta x plus alpha n minus x plus beta">$\text{Beta}(x + \alpha, n - x + \beta)$</span> density. Hence
 </p>
-$$\Theta \mid X = x \;\sim\; \text{Beta}(x + \alpha, \; n - x + \beta).$$
+<span class="tts-math" data-tts="Theta given X equals x distributed as Beta x plus alpha n minus x plus beta .">$$\Theta \mid X = x \;\sim\; \text{Beta}(x + \alpha, \; n - x + \beta).$$</span>
 <p data-cid="ch07-510">
-  The update rule is irresistibly clean: add the number of successes $x$ to $\alpha$, and add the number
-  of failures $n - x$ to $\beta$. Under squared-error loss,
+  The update rule is irresistibly clean: add the number of successes <span class="tts-math" data-tts="x">$x$</span> to <span class="tts-math" data-tts="alpha">$\alpha$</span>, and add the number
+  of failures <span class="tts-math" data-tts="n minus x">$n - x$</span> to <span class="tts-math" data-tts="beta">$\beta$</span>. Under squared-error loss,
 </p>
-$$\delta_\Lambda(X) = E[\Theta \mid X] = \frac{X + \alpha}{n + \alpha + \beta},$$
+<span class="tts-math" data-tts="delta _ Lambda X equals E Theta given X equals X plus alpha over n plus alpha plus beta">$$\delta_\Lambda(X) = E[\Theta \mid X] = \frac{X + \alpha}{n + \alpha + \beta},$$</span>
 <p data-cid="ch07-520">
-  which rearranges into a weighted average of the maximum-likelihood estimator $X/n$ and the prior mean
-  $\alpha/(\alpha + \beta)$:
+  which rearranges into a weighted average of the maximum-likelihood estimator <span class="tts-math" data-tts="X over n">$X/n$</span> and the prior mean
+  <span class="tts-math" data-tts="alpha over alpha plus beta">$\alpha/(\alpha + \beta)$</span>:
 </p>
-$$\delta_\Lambda(X) = \frac{n}{n + \alpha + \beta} \cdot \frac{X}{n} \;+\; \frac{\alpha + \beta}{n + \alpha + \beta} \cdot \frac{\alpha}{\alpha + \beta}.$$
+<span class="tts-math" data-tts="delta _ Lambda X equals n over n plus alpha plus beta times X over n plus alpha plus beta over n plus alpha plus beta times alpha over alpha plus beta .">$$\delta_\Lambda(X) = \frac{n}{n + \alpha + \beta} \cdot \frac{X}{n} \;+\; \frac{\alpha + \beta}{n + \alpha + \beta} \cdot \frac{\alpha}{\alpha + \beta}.$$</span>
 <p data-cid="ch07-530">
-  As $n \to \infty$ the data swamps the prior; as $n \to 0$ we fall back to prior beliefs. The prior
-  parameters $\alpha, \beta$ act like "pseudo-counts" of imagined prior successes and failures.
+  As <span class="tts-math" data-tts="n to infinity">$n \to \infty$</span> the data swamps the prior; as <span class="tts-math" data-tts="n to 0">$n \to 0$</span> we fall back to prior beliefs. The prior
+  parameters <span class="tts-math" data-tts="alpha beta">$\alpha, \beta$</span> act like "pseudo-counts" of imagined prior successes and failures.
 </p>
 </div>
 <div class="box intuition" data-cid="ch07-540">
@@ -253,50 +252,50 @@ $$\delta_\Lambda(X) = \frac{n}{n + \alpha + \beta} \cdot \frac{X}{n} \;+\; \frac
   We started with a Beta prior, multiplied by a Binomial likelihood, and recovered a Beta posterior.
   Whenever the prior and posterior live in the same parametric family, we call the prior
   <strong>conjugate</strong> for the sampling model. Conjugacy is a computational windfall: you never
-  have to evaluate the normalising integral $q(x)$ — you just read off the new parameters.
+  have to evaluate the normalising integral <span class="tts-math" data-tts="q x">$q(x)$</span> — you just read off the new parameters.
 </p>
 </div>
 <h3 data-cid="ch07-560">The normal–normal model with known variance</h3>
 <p data-cid="ch07-570">
-  This is the second canonical example. Suppose $X \mid \Theta = \theta \sim N(\theta, \sigma^2)$ with
-  $\sigma^2$ known, and place a $N(\mu_0, \tau^2)$ prior on $\Theta$. The joint density is proportional to
+  This is the second canonical example. Suppose <span class="tts-math" data-tts="X given Theta equals theta distributed as N theta sigma to the 2">$X \mid \Theta = \theta \sim N(\theta, \sigma^2)$</span> with
+  <span class="tts-math" data-tts="sigma to the 2">$\sigma^2$</span> known, and place a <span class="tts-math" data-tts="N mu sub 0 tau to the 2">$N(\mu_0, \tau^2)$</span> prior on <span class="tts-math" data-tts="Theta">$\Theta$</span>. The joint density is proportional to
 </p>
-$$\exp\!\left(-\frac{(x - \theta)^2}{2\sigma^2}\right) \exp\!\left(-\frac{(\theta - \mu_0)^2}{2\tau^2}\right).$$
+<span class="tts-math" data-tts="exp minus x minus theta to the 2 over 2 sigma to the 2 exp minus theta minus mu sub 0 to the 2 over 2 tau to the 2 .">$$\exp\!\left(-\frac{(x - \theta)^2}{2\sigma^2}\right) \exp\!\left(-\frac{(\theta - \mu_0)^2}{2\tau^2}\right).$$</span>
 <p data-cid="ch07-580">
-  Collecting terms in $\theta$ inside the exponent gives a quadratic in $\theta$, so the posterior is
+  Collecting terms in <span class="tts-math" data-tts="theta">$\theta$</span> inside the exponent gives a quadratic in <span class="tts-math" data-tts="theta">$\theta$</span>, so the posterior is
   again normal. Completing the square shows
 </p>
-$$\Theta \mid X = x \;\sim\; N\!\left( \frac{\tau^2 x + \sigma^2 \mu_0}{\sigma^2 + \tau^2}, \; \frac{\sigma^2 \tau^2}{\sigma^2 + \tau^2} \right).$$
+<span class="tts-math" data-tts="Theta given X equals x distributed as N tau to the 2 x plus sigma to the 2 mu sub 0 over sigma to the 2 plus tau to the 2 sigma to the 2 tau to the 2 over sigma to the 2 plus tau to the 2 .">$$\Theta \mid X = x \;\sim\; N\!\left( \frac{\tau^2 x + \sigma^2 \mu_0}{\sigma^2 + \tau^2}, \; \frac{\sigma^2 \tau^2}{\sigma^2 + \tau^2} \right).$$</span>
 <p data-cid="ch07-590">
   The posterior mean — and hence the Bayes estimator under squared-error loss — is a
   precision-weighted average of the data and the prior mean. The posterior <em>precision</em> (inverse
-  variance) is the sum of the data precision $1/\sigma^2$ and the prior precision $1/\tau^2$. Precisions
-  add: a beautifully clean rule that generalises to $n$ i.i.d. observations by replacing $\sigma^2$
-  with $\sigma^2/n$.
+  variance) is the sum of the data precision <span class="tts-math" data-tts="1 over sigma to the 2">$1/\sigma^2$</span> and the prior precision <span class="tts-math" data-tts="1 over tau to the 2">$1/\tau^2$</span>. Precisions
+  add: a beautifully clean rule that generalises to <span class="tts-math" data-tts="n">$n$</span> i.i.d. observations by replacing <span class="tts-math" data-tts="sigma to the 2">$\sigma^2$</span>
+  with <span class="tts-math" data-tts="sigma to the 2 over n">$\sigma^2/n$</span>.
 </p>
 <div class="box example" data-cid="ch07-600">
 <span class="box-label">Worked example 7.4 — Negative Binomial, and a warning</span>
 <p data-cid="ch07-610">
-  Now we run the machinery on a setup where it misbehaves. Let $X$ be the number of failures before the
-  second success in Bernoulli$(\theta)$ trials, so
+  Now we run the machinery on a setup where it misbehaves. Let <span class="tts-math" data-tts="X">$X$</span> be the number of failures before the
+  second success in Bernoulli<span class="tts-math" data-tts="theta">$(\theta)$</span> trials, so
 </p>
-$$p_\theta(x) = (x + 1)\, \theta^2 (1 - \theta)^x, \qquad x = 0, 1, 2, \dots.$$
+<span class="tts-math" data-tts="p_ theta x equals x plus 1 theta to the 2 1 minus theta to the x x equals 0 1 2 and so on .">$$p_\theta(x) = (x + 1)\, \theta^2 (1 - \theta)^x, \qquad x = 0, 1, 2, \dots.$$</span>
 <p data-cid="ch07-620">
-  Take $\Theta \sim \text{Uniform}(0,1)$, and try to estimate $g(\Theta) = 1/\Theta$ under squared-error
+  Take <span class="tts-math" data-tts="Theta distributed as Uniform 0 1">$\Theta \sim \text{Uniform}(0,1)$</span>, and try to estimate <span class="tts-math" data-tts="g Theta equals 1 over Theta">$g(\Theta) = 1/\Theta$</span> under squared-error
   loss. The posterior is
 </p>
-$$\Theta \mid X = x \;\sim\; \text{Beta}(3, x + 1).$$
+<span class="tts-math" data-tts="Theta given X equals x distributed as Beta 3 x plus 1 .">$$\Theta \mid X = x \;\sim\; \text{Beta}(3, x + 1).$$</span>
 <p data-cid="ch07-630">
-  The posterior mean of $1/\Theta$ works out to $\delta_0(x) = (x + 3)/2$. But the UMVU estimator from
-  Chapter 5 is $\delta_1(x) = (x + 2)/2$, which differs from $\delta_0$ by a constant. So they have the
-  <em>same variance</em>, but $\delta_0$ has constant bias $1/2$, hence
+  The posterior mean of <span class="tts-math" data-tts="1 over Theta">$1/\Theta$</span> works out to <span class="tts-math" data-tts="delta sub 0 x equals x plus 3 over 2">$\delta_0(x) = (x + 3)/2$</span>. But the UMVU estimator from
+  Chapter 5 is <span class="tts-math" data-tts="delta sub 1 x equals x plus 2 over 2">$\delta_1(x) = (x + 2)/2$</span>, which differs from <span class="tts-math" data-tts="delta sub 0">$\delta_0$</span> by a constant. So they have the
+  <em>same variance</em>, but <span class="tts-math" data-tts="delta sub 0">$\delta_0$</span> has constant bias <span class="tts-math" data-tts="1 over 2">$1/2$</span>, hence
 </p>
-$$R(\theta, \delta_0) = R(\theta, \delta_1) + 1/4.$$
+<span class="tts-math" data-tts="R theta delta sub 0 equals R theta delta sub 1 plus 1 over 4.">$$R(\theta, \delta_0) = R(\theta, \delta_1) + 1/4.$$</span>
 <p data-cid="ch07-640">
   The "Bayes" estimator is uniformly dominated by another estimator! What went wrong is that
-  condition (a) of Theorem 7.1 fails: $E\, L(\Theta, \delta) = \infty$ for every $\delta$, because
-  $1/\Theta$ has infinite prior expectation under Uniform$(0,1)$. When the Bayes risk is everywhere
-  infinite, every estimator achieves "the minimum" (which is $\infty$), and the formal Bayes calculation
+  condition (a) of Theorem 7.1 fails: <span class="tts-math" data-tts="E L Theta delta equals infinity">$E\, L(\Theta, \delta) = \infty$</span> for every <span class="tts-math" data-tts="delta">$\delta$</span>, because
+  <span class="tts-math" data-tts="1 over Theta">$1/\Theta$</span> has infinite prior expectation under Uniform<span class="tts-math" data-tts="0 1">$(0,1)$</span>. When the Bayes risk is everywhere
+  infinite, every estimator achieves "the minimum" (which is <span class="tts-math" data-tts="infinity">$\infty$</span>), and the formal Bayes calculation
   no longer picks out a good one.
 </p>
 </div>
@@ -304,20 +303,20 @@ $$R(\theta, \delta_0) = R(\theta, \delta_1) + 1/4.$$
 <span class="box-label">Common pitfall — improper or heavy-tailed priors</span>
 <p data-cid="ch07-660">
   An <strong>improper prior</strong> is one whose total mass is infinite (for instance, the "flat prior"
-  $\lambda(\theta) \equiv 1$ on $\mathbb{R}$). These are tempting because they look noncommittal, but
+  <span class="tts-math" data-tts="lambda theta equivalent to 1">$\lambda(\theta) \equiv 1$</span> on <span class="tts-math" data-tts="the real numbers">$\mathbb{R}$</span>). These are tempting because they look noncommittal, but
   they invalidate the hypotheses of Theorem 7.1. The posterior may still exist as a probability
   distribution — which lulls you into thinking everything is fine — but the resulting estimator can be
-  inadmissible (a different estimator beats it for every $\theta$). Always check that condition (a) of
+  inadmissible (a different estimator beats it for every <span class="tts-math" data-tts="theta">$\theta$</span>). Always check that condition (a) of
   Theorem 7.1 holds before declaring a "Bayes" estimator is good.
 </p>
 </div>
 <div class="box pause" data-cid="ch07-670">
 <span class="box-label">Pause — sequential updating in action</span>
 <p data-cid="ch07-680">
-  Take the Beta–Binomial. Start with $\text{Beta}(\alpha, \beta)$, observe $x_1$ successes in $n_1$
-  trials, update to $\text{Beta}(\alpha + x_1, \beta + n_1 - x_1)$. Now treat <em>that</em> as your new
-  prior and observe $x_2$ in $n_2$ more trials: you reach $\text{Beta}(\alpha + x_1 + x_2, \beta + n_1 + n_2 - x_1 - x_2)$.
-  Compare this with observing $x_1 + x_2$ successes in $n_1 + n_2$ trials in one shot: same answer.
+  Take the Beta–Binomial. Start with <span class="tts-math" data-tts="Beta alpha beta">$\text{Beta}(\alpha, \beta)$</span>, observe <span class="tts-math" data-tts="x sub 1">$x_1$</span> successes in <span class="tts-math" data-tts="n sub 1">$n_1$</span>
+  trials, update to <span class="tts-math" data-tts="Beta alpha plus x sub 1 beta plus n sub 1 minus x sub 1">$\text{Beta}(\alpha + x_1, \beta + n_1 - x_1)$</span>. Now treat <em>that</em> as your new
+  prior and observe <span class="tts-math" data-tts="x sub 2">$x_2$</span> in <span class="tts-math" data-tts="n sub 2">$n_2$</span> more trials: you reach <span class="tts-math" data-tts="Beta alpha plus x sub 1 plus x sub 2 beta plus n sub 1 plus n sub 2 minus x sub 1 minus x sub 2">$\text{Beta}(\alpha + x_1 + x_2, \beta + n_1 + n_2 - x_1 - x_2)$</span>.
+  Compare this with observing <span class="tts-math" data-tts="x sub 1 plus x sub 2">$x_1 + x_2$</span> successes in <span class="tts-math" data-tts="n sub 1 plus n sub 2">$n_1 + n_2$</span> trials in one shot: same answer.
   Bayesian updating is order-invariant and chunk-invariant. This is the formal content of "the posterior
   is the prior of the next experiment".
 </p>
@@ -327,25 +326,25 @@ $$R(\theta, \delta_0) = R(\theta, \delta_1) + 1/4.$$
   The Beta–Binomial and Normal–Normal patterns are not isolated. For a one-parameter canonical
   exponential family
 </p>
-$$p_\theta(x) = h(x) \, \exp\!\big(\theta T(x) - A(\theta)\big),$$
+<span class="tts-math" data-tts="p_ theta x equals h x exp theta T x minus A theta">$$p_\theta(x) = h(x) \, \exp\!\big(\theta T(x) - A(\theta)\big),$$</span>
 <p data-cid="ch07-710">
   the family of priors
 </p>
-$$\lambda_{\alpha, \beta}(\theta) \;\propto\; \exp\!\big(\alpha \theta - \beta A(\theta)\big), \qquad \theta \in \Omega,$$
+<span class="tts-math" data-tts="lambda sub alpha beta theta proportional to exp alpha theta minus beta A theta theta in Omega">$$\lambda_{\alpha, \beta}(\theta) \;\propto\; \exp\!\big(\alpha \theta - \beta A(\theta)\big), \qquad \theta \in \Omega,$$</span>
 <p data-cid="ch07-720">
-  is conjugate: the posterior after observing $X_1, \dots, X_n$ has parameters
-  $(\alpha + \sum T(X_i),\, \beta + n)$. Bayes estimation in any exponential family thus reduces to
-  bookkeeping on two parameters. Under squared-error loss the Bayes estimate of $A'(\Theta)$ — which by
-  Chapter 2 equals the mean of $T(X)$ under $P_\theta$ — works out to a weighted average of the prior
-  mean and the sample mean $\bar T = (T(X_1) + \cdots + T(X_n))/n$. The "weighted average of data and
+  is conjugate: the posterior after observing <span class="tts-math" data-tts="X sub 1 and so on X sub n">$X_1, \dots, X_n$</span> has parameters
+  <span class="tts-math" data-tts="alpha plus the sum of T X sub i beta plus n">$(\alpha + \sum T(X_i),\, \beta + n)$</span>. Bayes estimation in any exponential family thus reduces to
+  bookkeeping on two parameters. Under squared-error loss the Bayes estimate of <span class="tts-math" data-tts="A prime Theta">$A'(\Theta)$</span> — which by
+  Chapter 2 equals the mean of <span class="tts-math" data-tts="T X">$T(X)$</span> under <span class="tts-math" data-tts="P_ theta">$P_\theta$</span> — works out to a weighted average of the prior
+  mean and the sample mean <span class="tts-math" data-tts="T equals T X sub 1 plus times s plus T X sub n over n">$\bar T = (T(X_1) + \cdots + T(X_n))/n$</span>. The "weighted average of data and
   prior" pattern is universal.
 </p>
 <div class="box intuition" data-cid="ch07-730">
 <span class="box-label">Sensitivity, in one paragraph</span>
 <p data-cid="ch07-740">
   How much should you worry about prior choice? In conjugate models with enough data, the data
-  eventually dominates and reasonable priors converge to similar answers. But if $n$ is small, if the
-  prior is heavy-tailed, or if you care about tail-probability questions ("what's the chance $\Theta$
+  eventually dominates and reasonable priors converge to similar answers. But if <span class="tts-math" data-tts="n">$n$</span> is small, if the
+  prior is heavy-tailed, or if you care about tail-probability questions ("what's the chance <span class="tts-math" data-tts="Theta">$\Theta$</span>
   exceeds the regulatory threshold?"), the prior matters and you should do a
   <em>sensitivity analysis</em>: rerun the inference under several plausible priors and see whether the
   conclusions move. If they do, that's a finding, not a bug.
@@ -361,52 +360,52 @@ $$\lambda_{\alpha, \beta}(\theta) \;\propto\; \exp\!\big(\alpha \theta - \beta A
 </p>
 <h3 data-cid="ch07-770">Lotteries and preferences</h3>
 <p data-cid="ch07-780">
-  Let $\mathcal{R}$ be a set of possible rewards (money, fame, "no headache today" — anything you might
-  care about). A <strong>lottery</strong> is a probability distribution on $\mathcal{R}$: gamble $P$
-  pays out a random reward drawn from $P$.
+  Let <span class="tts-math" data-tts="script R">$\mathcal{R}$</span> be a set of possible rewards (money, fame, "no headache today" — anything you might
+  care about). A <strong>lottery</strong> is a probability distribution on <span class="tts-math" data-tts="script R">$\mathcal{R}$</span>: gamble <span class="tts-math" data-tts="P">$P$</span>
+  pays out a random reward drawn from <span class="tts-math" data-tts="P">$P$</span>.
 </p>
 <p data-cid="ch07-790">
-  We compare lotteries with a relation $\preceq$, where $P_1 \preceq P_2$ means "I weakly prefer $P_2$
-  to $P_1$". For this to be a coherent preference, $\preceq$ should at minimum be a
+  We compare lotteries with a relation <span class="tts-math" data-tts="math expression">$\preceq$</span>, where <span class="tts-math" data-tts="P sub 1 P sub 2">$P_1 \preceq P_2$</span> means "I weakly prefer <span class="tts-math" data-tts="P sub 2">$P_2$</span>
+  to <span class="tts-math" data-tts="P sub 1">$P_1$</span>". For this to be a coherent preference, <span class="tts-math" data-tts="math expression">$\preceq$</span> should at minimum be a
   <strong>complete ordering</strong>:
 </p>
 <ul data-cid="ch07-800">
 <li>Any two lotteries are comparable.</li>
-<li>If $P_1 \preceq P_2$ and $P_2 \preceq P_3$, then $P_1 \preceq P_3$.</li>
+<li>If <span class="tts-math" data-tts="P sub 1 P sub 2">$P_1 \preceq P_2$</span> and <span class="tts-math" data-tts="P sub 2 P sub 3">$P_2 \preceq P_3$</span>, then <span class="tts-math" data-tts="P sub 1 P sub 3">$P_1 \preceq P_3$</span>.</li>
 </ul>
 <div class="box definition" data-cid="ch07-810">
 <span class="box-label">Definition 7.5 — utility function</span>
 <p data-cid="ch07-820">
-  A measurable function $U : \mathcal{R} \to \mathbb{R}$ is a <strong>utility function</strong> for $\preceq$ if
+  A measurable function <span class="tts-math" data-tts="U script R to the real numbers">$U : \mathcal{R} \to \mathbb{R}$</span> is a <strong>utility function</strong> for <span class="tts-math" data-tts="math expression">$\preceq$</span> if
 </p>
-$$P_1 \preceq P_2 \quad \text{if and only if} \quad E_{P_1} U \leq E_{P_2} U,$$
+<span class="tts-math" data-tts="P sub 1 P sub 2 if and only if E sub P sub 1 U less than or equal to E sub P sub 2 U">$$P_1 \preceq P_2 \quad \text{if and only if} \quad E_{P_1} U \leq E_{P_2} U,$$</span>
 <p data-cid="ch07-830">
   whenever the expectations exist.
 </p>
 </div>
 <p data-cid="ch07-840">
-  In words: $U$ converts preferences into numbers in a way that makes expected utility the right summary.
-  Two natural questions follow. First, does such a $U$ always exist? Second, is it unique?
+  In words: <span class="tts-math" data-tts="U">$U$</span> converts preferences into numbers in a way that makes expected utility the right summary.
+  Two natural questions follow. First, does such a <span class="tts-math" data-tts="U">$U$</span> always exist? Second, is it unique?
 </p>
 <h3 data-cid="ch07-850">When utility functions don't exist</h3>
 <p data-cid="ch07-860">
-  Not every preference has a utility function. Keener's amusing example: suppose $\mathcal{R}$ contains
-  two rewards $a$ and $b$, and let $P_\theta$ be the lottery that pays $a$ with probability $\theta$
-  and $b$ otherwise. A gambler who loves suspense might rank $P_\theta$ by <em>how close $\theta$ is to
-  $1/2$</em>, preferring the maximally uncertain lottery. There is no utility function compatible with
-  this preference — expected utility is linear in $\theta$ and cannot peak in the middle.
+  Not every preference has a utility function. Keener's amusing example: suppose <span class="tts-math" data-tts="script R">$\mathcal{R}$</span> contains
+  two rewards <span class="tts-math" data-tts="a">$a$</span> and <span class="tts-math" data-tts="b">$b$</span>, and let <span class="tts-math" data-tts="P_ theta">$P_\theta$</span> be the lottery that pays <span class="tts-math" data-tts="a">$a$</span> with probability <span class="tts-math" data-tts="theta">$\theta$</span>
+  and <span class="tts-math" data-tts="b">$b$</span> otherwise. A gambler who loves suspense might rank <span class="tts-math" data-tts="P_ theta">$P_\theta$</span> by <em>how close <span class="tts-math" data-tts="theta">$\theta$</span> is to
+  <span class="tts-math" data-tts="1 over 2">$1/2$</span></em>, preferring the maximally uncertain lottery. There is no utility function compatible with
+  this preference — expected utility is linear in <span class="tts-math" data-tts="theta">$\theta$</span> and cannot peak in the middle.
 </p>
 <h3 data-cid="ch07-870">The axioms that force expected utility</h3>
 <p data-cid="ch07-880">
   Roughly speaking, Keener's axioms A1–A4 say:
 </p>
 <ul data-cid="ch07-890">
-<li><strong>A1 (substitution).</strong> Mixing $P_1$ and $P_2$ with a common third lottery $P$ preserves
-  strict preferences. If you preferred $P_2$ to $P_1$, you still prefer the mixture
-  $\alpha P_2 + (1-\alpha) P$ to $\alpha P_1 + (1-\alpha) P$.</li>
-<li><strong>A2 (continuity).</strong> If $P_1 \prec P \prec P_2$, you can squeeze $P$ between
-  $\alpha P_2 + (1-\alpha) P_1$ for some $\alpha \in (0,1)$, and similarly from above.</li>
-<li><strong>A3 (measurability).</strong> A technical condition ensuring the constructed $U$ is
+<li><strong>A1 (substitution).</strong> Mixing <span class="tts-math" data-tts="P sub 1">$P_1$</span> and <span class="tts-math" data-tts="P sub 2">$P_2$</span> with a common third lottery <span class="tts-math" data-tts="P">$P$</span> preserves
+  strict preferences. If you preferred <span class="tts-math" data-tts="P sub 2">$P_2$</span> to <span class="tts-math" data-tts="P sub 1">$P_1$</span>, you still prefer the mixture
+  <span class="tts-math" data-tts="alpha P sub 2 plus 1 minus alpha P">$\alpha P_2 + (1-\alpha) P$</span> to <span class="tts-math" data-tts="alpha P sub 1 plus 1 minus alpha P">$\alpha P_1 + (1-\alpha) P$</span>.</li>
+<li><strong>A2 (continuity).</strong> If <span class="tts-math" data-tts="P sub 1 P P sub 2">$P_1 \prec P \prec P_2$</span>, you can squeeze <span class="tts-math" data-tts="P">$P$</span> between
+  <span class="tts-math" data-tts="alpha P sub 2 plus 1 minus alpha P sub 1">$\alpha P_2 + (1-\alpha) P_1$</span> for some <span class="tts-math" data-tts="alpha in 0 1">$\alpha \in (0,1)$</span>, and similarly from above.</li>
+<li><strong>A3 (measurability).</strong> A technical condition ensuring the constructed <span class="tts-math" data-tts="U">$U$</span> is
   measurable.</li>
 <li><strong>A4 (reduction of compound lotteries).</strong> A two-stage lottery is equivalent to its
   collapsed one-stage version. There is no intrinsic preference for or against "extra randomisation
@@ -415,29 +414,29 @@ $$P_1 \preceq P_2 \quad \text{if and only if} \quad E_{P_1} U \leq E_{P_2} U,$$
 <div class="box definition" data-cid="ch07-900">
 <span class="box-label">Theorem 7.8 — existence of utility</span>
 <p data-cid="ch07-910">
-  Under axioms A1–A4, there exists a utility function $U$ such that for all bounded lotteries
-  $P_1, P_2$,
+  Under axioms A1–A4, there exists a utility function <span class="tts-math" data-tts="U">$U$</span> such that for all bounded lotteries
+  <span class="tts-math" data-tts="P sub 1 P sub 2">$P_1, P_2$</span>,
 </p>
-$$P_1 \preceq P_2 \quad \text{if and only if} \quad E_{P_1} U \leq E_{P_2} U.$$
-<p data-cid="ch07-920">$U$ is unique up to positive affine transformations $U \mapsto a + bU$ with $b &gt; 0$.</p>
+<span class="tts-math" data-tts="P sub 1 P sub 2 if and only if E sub P sub 1 U less than or equal to E sub P sub 2 U.">$$P_1 \preceq P_2 \quad \text{if and only if} \quad E_{P_1} U \leq E_{P_2} U.$$</span>
+<p data-cid="ch07-920"><span class="tts-math" data-tts="U">$U$</span> is unique up to positive affine transformations <span class="tts-math" data-tts="U a plus bU">$U \mapsto a + bU$</span> with <span class="tts-math" data-tts="b gt 0">$b &gt; 0$</span>.</p>
 </div>
 <div class="box intuition" data-cid="ch07-930">
 <span class="box-label">The construction in one sentence</span>
 <p data-cid="ch07-940">
-  Fix two reference rewards $s_0 \prec s_1$, set $U(s_0) = 0$ and $U(s_1) = 1$. For any other reward $r$,
-  find the unique $\nu \in [0,1]$ for which the gamble $\nu s_1 + (1-\nu) s_0$ is equivalent to receiving
-  $r$ for sure; define $U(r) = \nu$. Axiom A2 says this $\nu$ exists, A4 says the construction extends
-  consistently to lotteries, and the rest is checking that $\preceq$ now equals expected-utility
+  Fix two reference rewards <span class="tts-math" data-tts="s sub 0 s sub 1">$s_0 \prec s_1$</span>, set <span class="tts-math" data-tts="U s sub 0 equals 0">$U(s_0) = 0$</span> and <span class="tts-math" data-tts="U s sub 1 equals 1">$U(s_1) = 1$</span>. For any other reward <span class="tts-math" data-tts="r">$r$</span>,
+  find the unique <span class="tts-math" data-tts="nu in 0 1">$\nu \in [0,1]$</span> for which the gamble <span class="tts-math" data-tts="nu s sub 1 plus 1 minus nu s sub 0">$\nu s_1 + (1-\nu) s_0$</span> is equivalent to receiving
+  <span class="tts-math" data-tts="r">$r$</span> for sure; define <span class="tts-math" data-tts="U r equals nu">$U(r) = \nu$</span>. Axiom A2 says this <span class="tts-math" data-tts="nu">$\nu$</span> exists, A4 says the construction extends
+  consistently to lotteries, and the rest is checking that <span class="tts-math" data-tts="math expression">$\preceq$</span> now equals expected-utility
   ordering.
 </p>
 </div>
 <h3 data-cid="ch07-950">Why we use loss instead of utility</h3>
 <p data-cid="ch07-960">
-  Loss functions $L(\theta, d)$ are just negative utilities — minimising expected loss is maximising
-  expected utility. The utility-theoretic justification means our reliance on $E\, L(\Theta, \delta)$
+  Loss functions <span class="tts-math" data-tts="L theta d">$L(\theta, d)$</span> are just negative utilities — minimising expected loss is maximising
+  expected utility. The utility-theoretic justification means our reliance on <span class="tts-math" data-tts="E L Theta delta">$E\, L(\Theta, \delta)$</span>
   in (7.1) is not an arbitrary convention. Anyone whose preferences satisfy A1–A4 has no choice but to
-  rank estimators by expected loss for <em>some</em> loss function $L$. The Bayesian framework is then a
-  way of solving for the loss-minimising decision rule once $L$ is named.
+  rank estimators by expected loss for <em>some</em> loss function <span class="tts-math" data-tts="L">$L$</span>. The Bayesian framework is then a
+  way of solving for the loss-minimising decision rule once <span class="tts-math" data-tts="L">$L$</span> is named.
 </p>
 <div class="box warn" data-cid="ch07-970">
 <span class="box-label">Common pitfall — different priors, different answers</span>
@@ -452,15 +451,15 @@ $$P_1 \preceq P_2 \quad \text{if and only if} \quad E_{P_1} U \leq E_{P_2} U.$$
 <h2 data-cid="ch07-990" id="summary">Summary — what you learned in Chapter 7</h2>
 <p data-cid="ch07-1000">The whole chapter, in seven bullets:</p>
 <ol data-cid="ch07-1010">
-<li>A <strong>Bayesian model</strong> couples a prior $\Theta \sim \Lambda$ with a sampling model
-  $X \mid \Theta \sim P_\theta$. The joint and marginal distributions are determined by these two pieces.</li>
-<li>The <strong>posterior distribution</strong> $\Lambda(\cdot \mid x)$ is the conditional distribution
-  of $\Theta$ given $X = x$. In the dominated case it has density
-  $\lambda(\theta \mid x) \propto p_\theta(x) \lambda(\theta)$.</li>
-<li><strong>Theorem 7.1 (the main result).</strong> The Bayes estimator $\delta_\Lambda(x)$ is whatever
-  value of $d$ minimises the <strong>posterior expected loss</strong> $E[L(\Theta, d) \mid X = x]$.</li>
+<li>A <strong>Bayesian model</strong> couples a prior <span class="tts-math" data-tts="Theta distributed as Lambda">$\Theta \sim \Lambda$</span> with a sampling model
+  <span class="tts-math" data-tts="X given Theta distributed as P_ theta">$X \mid \Theta \sim P_\theta$</span>. The joint and marginal distributions are determined by these two pieces.</li>
+<li>The <strong>posterior distribution</strong> <span class="tts-math" data-tts="Lambda times given x">$\Lambda(\cdot \mid x)$</span> is the conditional distribution
+  of <span class="tts-math" data-tts="Theta">$\Theta$</span> given <span class="tts-math" data-tts="X equals x">$X = x$</span>. In the dominated case it has density
+  <span class="tts-math" data-tts="lambda theta given x proportional to p_ theta x lambda theta">$\lambda(\theta \mid x) \propto p_\theta(x) \lambda(\theta)$</span>.</li>
+<li><strong>Theorem 7.1 (the main result).</strong> The Bayes estimator <span class="tts-math" data-tts="delta _ Lambda x">$\delta_\Lambda(x)$</span> is whatever
+  value of <span class="tts-math" data-tts="d">$d$</span> minimises the <strong>posterior expected loss</strong> <span class="tts-math" data-tts="E L Theta d given X equals x">$E[L(\Theta, d) \mid X = x]$</span>.</li>
 <li>Under <strong>squared-error loss</strong>, the Bayes estimator is the <strong>posterior mean</strong>
-  of $g(\Theta)$.</li>
+  of <span class="tts-math" data-tts="g Theta">$g(\Theta)$</span>.</li>
 <li><strong>Conjugate priors</strong> keep the posterior in the same family as the prior. Beta is
   conjugate for Binomial; Normal is conjugate for Normal with known variance; every exponential family
   has a conjugate two-parameter prior family.</li>
@@ -487,6 +486,6 @@ $$P_1 \preceq P_2 \quad \text{if and only if} \quad E_{P_1} U \leq E_{P_2} U.$$
 </nav>
 </article>
 </main>
-<script src="/js/main.js"></script><script src="/js/comments.js"></script>
+<script src="/js/main.js"></script><script src="/js/comments.js"></script><script src="/js/tts.js"></script>
 </body>
 </html>

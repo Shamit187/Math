@@ -10,14 +10,13 @@
 <link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
-<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/><link href="/css/tts.css" rel="stylesheet"/>
 </head>
 <body data-book="basic_stat" data-page="ch10">
 <header class="site-header">
+<a class="home-btn" href="/">Home</a>
 <a class="brand" href="/books/basic_stat/">Theoretical Statistics <small>a slow reading guide</small></a>
 <nav>
-<a href="/" class="all-books-link">All books</a>
-    <a href="/books/basic_stat/">Contents</a>
 <button aria-label="toggle theme" class="theme-toggle">Dark</button>
 </nav>
 </header>
@@ -47,11 +46,11 @@
   Chapter 4 told a story about <em>unbiased</em> estimators: if you restrict attention to estimators that get the right answer on average, sometimes a best choice emerges (UMVU). Chapter 10 tells the same kind of story with a different restriction. Instead of "unbiased", we ask for an estimator that <strong>respects the symmetry of the problem</strong>.
 </p>
 <p data-cid="ch10-040">
-  The symmetry, in this chapter, is a translation. If you measured everyone's height in centimetres, you got an estimate $\hat\theta$. If you re-measure with the floor a metre lower — adding $100$ to every datum — what should the estimate become? Obviously $\hat\theta + 100$. An estimator that always does this is called <strong>equivariant</strong>. We will see that demanding equivariance is enough, in clean cases, to single out a single optimal estimator, the <em>Pitman estimator</em>.
+  The symmetry, in this chapter, is a translation. If you measured everyone's height in centimetres, you got an estimate <span class="tts-math" data-tts="theta">$\hat\theta$</span>. If you re-measure with the floor a metre lower — adding <span class="tts-math" data-tts="100">$100$</span> to every datum — what should the estimate become? Obviously <span class="tts-math" data-tts="theta plus 100">$\hat\theta + 100$</span>. An estimator that always does this is called <strong>equivariant</strong>. We will see that demanding equivariance is enough, in clean cases, to single out a single optimal estimator, the <em>Pitman estimator</em>.
 </p>
 <div class="box intuition" data-cid="ch10-050">
 <span class="box-label">The one-sentence summary</span>
-<p data-cid="ch10-060">If the underlying problem doesn't change when you shift the data, the optimal estimator's risk shouldn't either — and that forces the risk to be constant in $\theta$, which lets us compare equivariant estimators just by a single number.</p>
+<p data-cid="ch10-060">If the underlying problem doesn't change when you shift the data, the optimal estimator's risk shouldn't either — and that forces the risk to be constant in <span class="tts-math" data-tts="theta">$\theta$</span>, which lets us compare equivariant estimators just by a single number.</p>
 </div>
 <p data-cid="ch10-070">
   At a deeper level, the chapter introduces the language of <strong>group actions</strong>. The group of allowed shifts acts on the data space, on the parameter space, and on the set of estimators all at once, and equivariance is the condition that these three actions are compatible. This is the first time the book uses group theory in a serious way; we will go slowly with the abstraction so that the location example doesn't feel like an isolated trick.
@@ -65,47 +64,47 @@
 <div class="box definition" data-cid="ch10-110">
 <span class="box-label">The setup</span>
 <p data-cid="ch10-120">
-  Let $G = \mathbb{R}$ with group operation $g_1 \ast g_2 = g_1 + g_2$. We let $G$ act on two spaces:
+  Let <span class="tts-math" data-tts="G equals the real numbers">$G = \mathbb{R}$</span> with group operation <span class="tts-math" data-tts="g sub 1 g sub 2 equals g sub 1 plus g sub 2">$g_1 \ast g_2 = g_1 + g_2$</span>. We let <span class="tts-math" data-tts="G">$G$</span> act on two spaces:
 </p>
 <ul data-cid="ch10-130">
-<li>On the <strong>parameter space</strong> $\mathbb{R}$: $\quad g \star \theta = g + \theta$.</li>
-<li>On the <strong>data space</strong> $\mathbb{R}^n$: $\quad g \star x = x + g\mathbf{1} = (x_1+g, \dots, x_n+g)'$, where $\mathbf{1}$ is the column of ones.</li>
+<li>On the <strong>parameter space</strong> <span class="tts-math" data-tts="the real numbers">$\mathbb{R}$</span>: <span class="tts-math" data-tts="g theta equals g plus theta">$\quad g \star \theta = g + \theta$</span>.</li>
+<li>On the <strong>data space</strong> <span class="tts-math" data-tts="the real numbers to the n">$\mathbb{R}^n$</span>: <span class="tts-math" data-tts="g x equals x plus g1 equals x sub 1 plus g and so on x sub n plus g prime">$\quad g \star x = x + g\mathbf{1} = (x_1+g, \dots, x_n+g)'$</span>, where <span class="tts-math" data-tts="1">$\mathbf{1}$</span> is the column of ones.</li>
 </ul>
 </div>
 <p data-cid="ch10-140">
-  Two different actions, one group: shifting the parameter by $g$, or shifting <em>every</em> coordinate of the data by the same $g$. The notation $\star$ (instead of $+$) is a reminder that the group is acting <em>on something</em>, not just combining with itself.
+  Two different actions, one group: shifting the parameter by <span class="tts-math" data-tts="g">$g$</span>, or shifting <em>every</em> coordinate of the data by the same <span class="tts-math" data-tts="g">$g$</span>. The notation <span class="tts-math" data-tts="math expression">$\star$</span> (instead of <span class="tts-math" data-tts="plus">$+$</span>) is a reminder that the group is acting <em>on something</em>, not just combining with itself.
 </p>
 <h3 data-cid="ch10-150">The model: a location family</h3>
 <p data-cid="ch10-160">
   Location models are the natural home for this kind of symmetry. We imagine each observation as
-  $$X_i = \theta + \epsilon_i, \qquad i = 1, \dots, n,$$
-  where $\epsilon = (\epsilon_1, \dots, \epsilon_n)'$ has a <em>fixed</em> distribution $P_0$ (the noise law) and $\theta$ is the unknown thing we want. In vector form,
-  $$X = \theta \mathbf{1} + \epsilon \sim P_\theta.$$
-  The family $\mathcal{P} = \{P_\theta : \theta \in \mathbb{R}\}$ is called a <strong>location family</strong>; $\theta$ is the <strong>location parameter</strong>.
+  <span class="tts-math" data-tts="X sub i equals theta plus epsilon sub i i equals 1 and so on n">$$X_i = \theta + \epsilon_i, \qquad i = 1, \dots, n,$$</span>
+  where <span class="tts-math" data-tts="epsilon equals epsilon sub 1 and so on epsilon sub n prime">$\epsilon = (\epsilon_1, \dots, \epsilon_n)'$</span> has a <em>fixed</em> distribution <span class="tts-math" data-tts="P sub 0">$P_0$</span> (the noise law) and <span class="tts-math" data-tts="theta">$\theta$</span> is the unknown thing we want. In vector form,
+  <span class="tts-math" data-tts="X equals theta 1 plus epsilon distributed as P_ theta .">$$X = \theta \mathbf{1} + \epsilon \sim P_\theta.$$</span>
+  The family <span class="tts-math" data-tts="script P equals P_ theta theta in the real numbers">$\mathcal{P} = \{P_\theta : \theta \in \mathbb{R}\}$</span> is called a <strong>location family</strong>; <span class="tts-math" data-tts="theta">$\theta$</span> is the <strong>location parameter</strong>.
 </p>
 <div class="box intuition" data-cid="ch10-170">
 <span class="box-label">Why the noise distribution is "fixed"</span>
 <p data-cid="ch10-180">
-  Saying $P_0$ doesn't depend on $\theta$ is the formal version of "the only thing changing as $\theta$ varies is the centre of the cloud, not its shape". The errors $\epsilon_i$ are not assumed independent — they only need a common joint law $P_0$. Independence is a convenience, not a requirement of the equivariance machinery.
+  Saying <span class="tts-math" data-tts="P sub 0">$P_0$</span> doesn't depend on <span class="tts-math" data-tts="theta">$\theta$</span> is the formal version of "the only thing changing as <span class="tts-math" data-tts="theta">$\theta$</span> varies is the centre of the cloud, not its shape". The errors <span class="tts-math" data-tts="epsilon sub i">$\epsilon_i$</span> are not assumed independent — they only need a common joint law <span class="tts-math" data-tts="P sub 0">$P_0$</span>. Independence is a convenience, not a requirement of the equivariance machinery.
 </p>
 </div>
 <p data-cid="ch10-190">
-  A very direct consequence of the construction: $P_\theta$ is obtained from $P_0$ by shifting. If $\epsilon \sim P_0$ and we apply $g\star$ to the data, the resulting random vector is distributed as $P_{g\star\theta}$:
-  $$P_{g\star\theta}(X \in B) = P\bigl(\theta\mathbf{1} + g\mathbf{1} + \epsilon \in B\bigr) = P_\theta(g\star X \in B).$$
+  A very direct consequence of the construction: <span class="tts-math" data-tts="P_ theta">$P_\theta$</span> is obtained from <span class="tts-math" data-tts="P sub 0">$P_0$</span> by shifting. If <span class="tts-math" data-tts="epsilon distributed as P sub 0">$\epsilon \sim P_0$</span> and we apply <span class="tts-math" data-tts="g">$g\star$</span> to the data, the resulting random vector is distributed as <span class="tts-math" data-tts="P sub g theta">$P_{g\star\theta}$</span>:
+  <span class="tts-math" data-tts="P sub g theta X in B equals P theta 1 plus g1 plus epsilon in B equals P_ theta g X in B .">$$P_{g\star\theta}(X \in B) = P\bigl(\theta\mathbf{1} + g\mathbf{1} + \epsilon \in B\bigr) = P_\theta(g\star X \in B).$$</span>
   This little identity is the technical bridge between the group action on data and the group action on parameters. Hold on to it; it is used several times below.
 </p>
 <h3 data-cid="ch10-200">Equivariant estimators</h3>
 <div class="box definition" data-cid="ch10-210">
 <span class="box-label">Definition 10.1 — equivariance</span>
 <p data-cid="ch10-220">
-  An estimator $\delta : \mathbb{R}^n \to \mathbb{R}$ of the location parameter is <strong>equivariant</strong> if
-  $$\delta(x_1 + g, \dots, x_n + g) = \delta(x_1, \dots, x_n) + g,$$
-  for every $g \in \mathbb{R}$ and every $x \in \mathbb{R}^n$. Equivalently,
-  $$\delta(g \star x) = g \star \delta(x).$$
+  An estimator <span class="tts-math" data-tts="delta the real numbers to the n to the real numbers">$\delta : \mathbb{R}^n \to \mathbb{R}$</span> of the location parameter is <strong>equivariant</strong> if
+  <span class="tts-math" data-tts="delta x sub 1 plus g and so on x sub n plus g equals delta x sub 1 and so on x sub n plus g">$$\delta(x_1 + g, \dots, x_n + g) = \delta(x_1, \dots, x_n) + g,$$</span>
+  for every <span class="tts-math" data-tts="g in the real numbers">$g \in \mathbb{R}$</span> and every <span class="tts-math" data-tts="x in the real numbers to the n">$x \in \mathbb{R}^n$</span>. Equivalently,
+  <span class="tts-math" data-tts="delta g x equals g delta x .">$$\delta(g \star x) = g \star \delta(x).$$</span>
 </p>
 </div>
 <p data-cid="ch10-230">
-  Read this last line carefully. The same group element $g$ acts on the left-hand side on the data space, and on the right-hand side on the parameter (= estimator-output) space. Equivariance says these two actions are compatible: the estimator <em>commutes</em> with the group action.
+  Read this last line carefully. The same group element <span class="tts-math" data-tts="g">$g$</span> acts on the left-hand side on the data space, and on the right-hand side on the parameter (= estimator-output) space. Equivariance says these two actions are compatible: the estimator <em>commutes</em> with the group action.
 </p>
 <div class="box example" data-cid="ch10-240">
 <span class="box-label">Examples of equivariant estimators</span>
@@ -113,12 +112,12 @@
   All of these are equivariant:
 </p>
 <ul data-cid="ch10-260">
-<li>The sample mean $\bar X = (X_1 + \dots + X_n)/n$. Add $g$ to every $X_i$ and the mean increases by exactly $g$.</li>
-<li>The sample median $\operatorname{med}(X_1, \dots, X_n)$. Shifting all data by $g$ shifts the median by $g$.</li>
-<li>$X_n$ — the last observation — is equivariant too. Crude, but valid.</li>
+<li>The sample mean <span class="tts-math" data-tts="X equals X sub 1 plus and so on plus X sub n over n">$\bar X = (X_1 + \dots + X_n)/n$</span>. Add <span class="tts-math" data-tts="g">$g$</span> to every <span class="tts-math" data-tts="X sub i">$X_i$</span> and the mean increases by exactly <span class="tts-math" data-tts="g">$g$</span>.</li>
+<li>The sample median <span class="tts-math" data-tts="med X sub 1 and so on X sub n">$\operatorname{med}(X_1, \dots, X_n)$</span>. Shifting all data by <span class="tts-math" data-tts="g">$g$</span> shifts the median by <span class="tts-math" data-tts="g">$g$</span>.</li>
+<li><span class="tts-math" data-tts="X sub n">$X_n$</span> — the last observation — is equivariant too. Crude, but valid.</li>
 </ul>
 <p data-cid="ch10-270">
-  A counterexample: $\delta(X) = \bar X^2$ is <em>not</em> equivariant. Squaring destroys the shift relationship.
+  A counterexample: <span class="tts-math" data-tts="delta X equals X to the 2">$\delta(X) = \bar X^2$</span> is <em>not</em> equivariant. Squaring destroys the shift relationship.
 </p>
 </div>
 <h3 data-cid="ch10-280">Invariant loss</h3>
@@ -128,37 +127,37 @@
 <div class="box definition" data-cid="ch10-300">
 <span class="box-label">Definition 10.2 — invariant loss</span>
 <p data-cid="ch10-310">
-  A loss function $L(\theta, d)$ is <strong>invariant</strong> if
-  $$L(g \star \theta, g \star d) = L(\theta, d)$$
-  for all $g, \theta, d$. Setting $\rho(x) = L(0, x)$ and choosing $g = -\theta$, the condition collapses to
-  $$L(\theta, d) = \rho(d - \theta).$$
+  A loss function <span class="tts-math" data-tts="L theta d">$L(\theta, d)$</span> is <strong>invariant</strong> if
+  <span class="tts-math" data-tts="L g theta g d equals L theta d">$$L(g \star \theta, g \star d) = L(\theta, d)$$</span>
+  for all <span class="tts-math" data-tts="g theta d">$g, \theta, d$</span>. Setting <span class="tts-math" data-tts="rho x equals L 0 x">$\rho(x) = L(0, x)$</span> and choosing <span class="tts-math" data-tts="g equals minus theta">$g = -\theta$</span>, the condition collapses to
+  <span class="tts-math" data-tts="L theta d equals rho d minus theta .">$$L(\theta, d) = \rho(d - \theta).$$</span>
 </p>
 </div>
 <p data-cid="ch10-320">
-  So an invariant loss depends only on the <em>error</em> $d - \theta$, not on $\theta$ and $d$ separately. Squared error $(d-\theta)^2$, absolute error $|d-\theta|$, and Huber loss are all invariant; weighted squared error $\theta^2 (d-\theta)^2$ is not.
+  So an invariant loss depends only on the <em>error</em> <span class="tts-math" data-tts="d minus theta">$d - \theta$</span>, not on <span class="tts-math" data-tts="theta">$\theta$</span> and <span class="tts-math" data-tts="d">$d$</span> separately. Squared error <span class="tts-math" data-tts="d minus theta to the 2">$(d-\theta)^2$</span>, absolute error <span class="tts-math" data-tts="d minus theta">$|d-\theta|$</span>, and Huber loss are all invariant; weighted squared error <span class="tts-math" data-tts="theta to the 2 d minus theta to the 2">$\theta^2 (d-\theta)^2$</span> is not.
 </p>
 <div class="box intuition" data-cid="ch10-330">
 <span class="box-label">Why invariance of the loss is needed</span>
 <p data-cid="ch10-340">
-  We want "how good is the estimate" to mean the same thing in every translated copy of the problem. If the cost of being off by one unit depended on where you stood, the symmetry would not be a real symmetry — the world would prefer some values of $\theta$ to others.
+  We want "how good is the estimate" to mean the same thing in every translated copy of the problem. If the cost of being off by one unit depended on where you stood, the symmetry would not be a real symmetry — the world would prefer some values of <span class="tts-math" data-tts="theta">$\theta$</span> to others.
 </p>
 </div>
 <h3 data-cid="ch10-350">The payoff: constant risk</h3>
 <p data-cid="ch10-360">
-  Here is the first concrete reward of all this setup. If $\delta$ is equivariant and $L$ is invariant, the risk function of $\delta$ is constant in $\theta$:
-  $$R(\theta, \delta) = E_\theta\,\rho\bigl(\delta(X) - \theta\bigr) = E\,\rho\bigl(\delta(\theta\mathbf{1} + \epsilon) - \theta\bigr) = E\,\rho\bigl(\delta(\epsilon)\bigr).$$
-  The last expression doesn't mention $\theta$ at all.
+  Here is the first concrete reward of all this setup. If <span class="tts-math" data-tts="delta">$\delta$</span> is equivariant and <span class="tts-math" data-tts="L">$L$</span> is invariant, the risk function of <span class="tts-math" data-tts="delta">$\delta$</span> is constant in <span class="tts-math" data-tts="theta">$\theta$</span>:
+  <span class="tts-math" data-tts="R theta delta equals E_ theta rho delta X minus theta equals E rho delta theta 1 plus epsilon minus theta equals E rho delta epsilon .">$$R(\theta, \delta) = E_\theta\,\rho\bigl(\delta(X) - \theta\bigr) = E\,\rho\bigl(\delta(\theta\mathbf{1} + \epsilon) - \theta\bigr) = E\,\rho\bigl(\delta(\epsilon)\bigr).$$</span>
+  The last expression doesn't mention <span class="tts-math" data-tts="theta">$\theta$</span> at all.
 </p>
 <div class="box intuition" data-cid="ch10-370">
 <span class="box-label">What just happened</span>
 <p data-cid="ch10-380">
-  Step by step: equivariance gave $\delta(\theta\mathbf{1} + \epsilon) = \delta(\epsilon) + \theta$. So $\delta(X) - \theta = \delta(\epsilon)$. Plug into $\rho$ and take expectations — the dependence on $\theta$ is gone.
+  Step by step: equivariance gave <span class="tts-math" data-tts="delta theta 1 plus epsilon equals delta epsilon plus theta">$\delta(\theta\mathbf{1} + \epsilon) = \delta(\epsilon) + \theta$</span>. So <span class="tts-math" data-tts="delta X minus theta equals delta epsilon">$\delta(X) - \theta = \delta(\epsilon)$</span>. Plug into <span class="tts-math" data-tts="rho">$\rho$</span> and take expectations — the dependence on <span class="tts-math" data-tts="theta">$\theta$</span> is gone.
 </p>
 </div>
 <div class="box pause" data-cid="ch10-390">
 <span class="box-label">Pause — why constant risk matters</span>
 <p data-cid="ch10-400">
-  In general, comparing two estimators is hard because the comparison can depend on the unknown $\theta$: estimator $A$ might be better near $\theta = 0$, estimator $B$ near $\theta = 100$. Inside the equivariant class, that problem disappears. Each equivariant estimator carries a single number for its risk. We can sort them on a line, and (when the infimum is achieved) there is a clear winner — the <strong>minimum risk equivariant</strong> (MRE) estimator $\delta^*$.
+  In general, comparing two estimators is hard because the comparison can depend on the unknown <span class="tts-math" data-tts="theta">$\theta$</span>: estimator <span class="tts-math" data-tts="A">$A$</span> might be better near <span class="tts-math" data-tts="theta equals 0">$\theta = 0$</span>, estimator <span class="tts-math" data-tts="B">$B$</span> near <span class="tts-math" data-tts="theta equals 100">$\theta = 100$</span>. Inside the equivariant class, that problem disappears. Each equivariant estimator carries a single number for its risk. We can sort them on a line, and (when the infimum is achieved) there is a clear winner — the <strong>minimum risk equivariant</strong> (MRE) estimator <span class="tts-math" data-tts="delta to the times">$\delta^*$</span>.
 </p>
 </div>
 <h3 data-cid="ch10-410">The maximal invariant</h3>
@@ -166,151 +165,151 @@
   Constant-risk-on-the-class is morally satisfying, but we still need to find the MRE. The trick is to write every equivariant estimator in terms of one fixed equivariant estimator plus an <strong>invariant</strong> correction.
 </p>
 <p data-cid="ch10-430">
-  Call a function $h : \mathbb{R}^n \to \mathbb{R}^k$ <strong>invariant</strong> if $h(g \star x) = h(x)$ for every $g$ and $x$. (Note the contrast: <em>equivariant</em> functions shift along with the data; <em>invariant</em> functions ignore the shift entirely.)
+  Call a function <span class="tts-math" data-tts="h the real numbers to the n to the real numbers to the k">$h : \mathbb{R}^n \to \mathbb{R}^k$</span> <strong>invariant</strong> if <span class="tts-math" data-tts="h g x equals h x">$h(g \star x) = h(x)$</span> for every <span class="tts-math" data-tts="g">$g$</span> and <span class="tts-math" data-tts="x">$x$</span>. (Note the contrast: <em>equivariant</em> functions shift along with the data; <em>invariant</em> functions ignore the shift entirely.)
 </p>
 <p data-cid="ch10-440">
   Define
-  $$Y = Y(X) = (X_1 - X_n,\ X_2 - X_n,\ \dots,\ X_{n-1} - X_n)'.$$
-  The vector $Y$ is invariant: adding $g$ to every coordinate of $X$ doesn't change any of the differences. It is also a "<strong>maximal</strong>" invariant, in the following sense:
+  <span class="tts-math" data-tts="Y equals Y X equals X sub 1 minus X sub n X sub 2 minus X sub n and so on X sub n minus 1 minus X sub n prime.">$$Y = Y(X) = (X_1 - X_n,\ X_2 - X_n,\ \dots,\ X_{n-1} - X_n)'.$$</span>
+  The vector <span class="tts-math" data-tts="Y">$Y$</span> is invariant: adding <span class="tts-math" data-tts="g">$g$</span> to every coordinate of <span class="tts-math" data-tts="X">$X$</span> doesn't change any of the differences. It is also a "<strong>maximal</strong>" invariant, in the following sense:
 </p>
 <div class="box definition" data-cid="ch10-450">
 <span class="box-label">Maximal invariant</span>
 <p data-cid="ch10-460">
-  If $h : \mathbb{R}^n \to \mathbb{R}$ is any invariant function, then $h$ depends on $X$ only through $Y$. Concretely: $h(X) = h(Y_1, \dots, Y_{n-1}, 0)$, which is a function of $Y$.
+  If <span class="tts-math" data-tts="h the real numbers to the n to the real numbers">$h : \mathbb{R}^n \to \mathbb{R}$</span> is any invariant function, then <span class="tts-math" data-tts="h">$h$</span> depends on <span class="tts-math" data-tts="X">$X$</span> only through <span class="tts-math" data-tts="Y">$Y$</span>. Concretely: <span class="tts-math" data-tts="h X equals h Y sub 1 and so on Y sub n minus 1 0">$h(X) = h(Y_1, \dots, Y_{n-1}, 0)$</span>, which is a function of <span class="tts-math" data-tts="Y">$Y$</span>.
 </p>
 </div>
 <p data-cid="ch10-470">
-  The proof is one line — take $g = -X_n$:
-  $$h(X) = h(X - X_n \mathbf{1}) = h(X_1 - X_n, \dots, X_{n-1} - X_n, 0).$$
-  Every invariant function factors through $Y$. We call $Y$ the <strong>maximal invariant</strong> because it captures every drop of information that is invariant under the group.
+  The proof is one line — take <span class="tts-math" data-tts="g equals minus X sub n">$g = -X_n$</span>:
+  <span class="tts-math" data-tts="h X equals h X minus X sub n 1 equals h X sub 1 minus X sub n and so on X sub n minus 1 minus X sub n 0 .">$$h(X) = h(X - X_n \mathbf{1}) = h(X_1 - X_n, \dots, X_{n-1} - X_n, 0).$$</span>
+  Every invariant function factors through <span class="tts-math" data-tts="Y">$Y$</span>. We call <span class="tts-math" data-tts="Y">$Y$</span> the <strong>maximal invariant</strong> because it captures every drop of information that is invariant under the group.
 </p>
 <div class="box pause" data-cid="ch10-480">
 <span class="box-label">Pause — why "orbit structure" matters</span>
 <p data-cid="ch10-490">
-  Think of the action of $G$ on $\mathbb{R}^n$ as partitioning the data space into <strong>orbits</strong>: two points $x, x'$ are in the same orbit if some shift carries one to the other. For the location group, the orbit of $x$ is the line $\{x + g\mathbf{1} : g \in \mathbb{R}\}$. The maximal invariant $Y$ is a coordinate <em>for the orbits</em> — two points have the same $Y$ exactly when they live on the same orbit. So invariant functions are functions on the orbit space, and the position <em>along</em> the orbit is precisely the thing the group can change. The MRE will reduce to: "decide the right position along the orbit, conditional on which orbit we are on."
+  Think of the action of <span class="tts-math" data-tts="G">$G$</span> on <span class="tts-math" data-tts="the real numbers to the n">$\mathbb{R}^n$</span> as partitioning the data space into <strong>orbits</strong>: two points <span class="tts-math" data-tts="x x prime">$x, x'$</span> are in the same orbit if some shift carries one to the other. For the location group, the orbit of <span class="tts-math" data-tts="x">$x$</span> is the line <span class="tts-math" data-tts="x plus g1 g in the real numbers">$\{x + g\mathbf{1} : g \in \mathbb{R}\}$</span>. The maximal invariant <span class="tts-math" data-tts="Y">$Y$</span> is a coordinate <em>for the orbits</em> — two points have the same <span class="tts-math" data-tts="Y">$Y$</span> exactly when they live on the same orbit. So invariant functions are functions on the orbit space, and the position <em>along</em> the orbit is precisely the thing the group can change. The MRE will reduce to: "decide the right position along the orbit, conditional on which orbit we are on."
 </p>
 </div>
 <h3 data-cid="ch10-500">Parametrising the equivariant class</h3>
 <p data-cid="ch10-510">
-  Suppose $\delta_0$ and $\delta$ are both equivariant. Look at their difference:
-  $$\delta_0(g \star x) - \delta(g \star x) = [\delta_0(x) + g] - [\delta(x) + g] = \delta_0(x) - \delta(x).$$
-  So $\delta_0 - \delta$ is invariant, hence a function of $Y$:
-  $$\delta_0(X) - \delta(X) = v(Y) \quad \text{for some } v.$$
+  Suppose <span class="tts-math" data-tts="delta sub 0">$\delta_0$</span> and <span class="tts-math" data-tts="delta">$\delta$</span> are both equivariant. Look at their difference:
+  <span class="tts-math" data-tts="delta sub 0 g x minus delta g x equals delta sub 0 x plus g minus delta x plus g equals delta sub 0 x minus delta x .">$$\delta_0(g \star x) - \delta(g \star x) = [\delta_0(x) + g] - [\delta(x) + g] = \delta_0(x) - \delta(x).$$</span>
+  So <span class="tts-math" data-tts="delta sub 0 minus delta">$\delta_0 - \delta$</span> is invariant, hence a function of <span class="tts-math" data-tts="Y">$Y$</span>:
+  <span class="tts-math" data-tts="delta sub 0 X minus delta X equals v Y for some v.">$$\delta_0(X) - \delta(X) = v(Y) \quad \text{for some } v.$$</span>
   Rearranged: every equivariant estimator has the form
-  $$\delta(X) = \delta_0(X) - v(Y)$$
-  for some function $v$. Conversely, any such $\delta$ is equivariant — adding $g$ to $X$ leaves $Y$ unchanged but shifts $\delta_0(X)$ by $g$.
+  <span class="tts-math" data-tts="delta X equals delta sub 0 X minus v Y">$$\delta(X) = \delta_0(X) - v(Y)$$</span>
+  for some function <span class="tts-math" data-tts="v">$v$</span>. Conversely, any such <span class="tts-math" data-tts="delta">$\delta$</span> is equivariant — adding <span class="tts-math" data-tts="g">$g$</span> to <span class="tts-math" data-tts="X">$X$</span> leaves <span class="tts-math" data-tts="Y">$Y$</span> unchanged but shifts <span class="tts-math" data-tts="delta sub 0 X">$\delta_0(X)$</span> by <span class="tts-math" data-tts="g">$g$</span>.
 </p>
 <div class="box intuition" data-cid="ch10-520">
 <span class="box-label">What this representation buys us</span>
 <p data-cid="ch10-530">
-  Optimising over equivariant estimators is the same as optimising over functions $v(\cdot)$ of the maximal invariant. The hard, infinite-dimensional class of equivariant rules has collapsed to "pick a function on the orbit space". And because the risk is constant in $\theta$, we can do the optimisation at $\theta = 0$.
+  Optimising over equivariant estimators is the same as optimising over functions <span class="tts-math" data-tts="v times">$v(\cdot)$</span> of the maximal invariant. The hard, infinite-dimensional class of equivariant rules has collapsed to "pick a function on the orbit space". And because the risk is constant in <span class="tts-math" data-tts="theta">$\theta$</span>, we can do the optimisation at <span class="tts-math" data-tts="theta equals 0">$\theta = 0$</span>.
 </p>
 </div>
 <h3 data-cid="ch10-540">Density of the location family</h3>
 <p data-cid="ch10-550">
-  One last piece of bookkeeping before the optimisation. If $P_0$ has density $f$ with respect to Lebesgue measure on $\mathbb{R}^n$, then $P_\theta$ has density
-  $$f_\theta(x) = f(x_1 - \theta, \dots, x_n - \theta) = f(x - \theta\mathbf{1}).$$
-  This is the change-of-variables version of "$X = \theta\mathbf{1} + \epsilon$". Conversely, any family whose densities have this form is a location family.
+  One last piece of bookkeeping before the optimisation. If <span class="tts-math" data-tts="P sub 0">$P_0$</span> has density <span class="tts-math" data-tts="f">$f$</span> with respect to Lebesgue measure on <span class="tts-math" data-tts="the real numbers to the n">$\mathbb{R}^n$</span>, then <span class="tts-math" data-tts="P_ theta">$P_\theta$</span> has density
+  <span class="tts-math" data-tts="f_ theta x equals f x sub 1 minus theta and so on x sub n minus theta equals f x minus theta 1 .">$$f_\theta(x) = f(x_1 - \theta, \dots, x_n - \theta) = f(x - \theta\mathbf{1}).$$</span>
+  This is the change-of-variables version of "<span class="tts-math" data-tts="X equals theta 1 plus epsilon">$X = \theta\mathbf{1} + \epsilon$</span>". Conversely, any family whose densities have this form is a location family.
 </p>
 <!-- ===================================================================== -->
 <h2 data-cid="ch10-560" id="s10-2">10.2 Estimation</h2>
 <h3 data-cid="ch10-570">The main theorem</h3>
 <p data-cid="ch10-580">
-  We now have everything we need. Take a fixed equivariant estimator $\delta_0$ with finite risk and write every equivariant $\delta$ as $\delta_0(X) - v(Y)$. The risk is constant in $\theta$, so we evaluate at $\theta = 0$, where $X = \epsilon \sim P_0$:
-  $$R(\theta, \delta) = E_0\,\rho\bigl(\delta_0(X) - v(Y)\bigr).$$
+  We now have everything we need. Take a fixed equivariant estimator <span class="tts-math" data-tts="delta sub 0">$\delta_0$</span> with finite risk and write every equivariant <span class="tts-math" data-tts="delta">$\delta$</span> as <span class="tts-math" data-tts="delta sub 0 X minus v Y">$\delta_0(X) - v(Y)$</span>. The risk is constant in <span class="tts-math" data-tts="theta">$\theta$</span>, so we evaluate at <span class="tts-math" data-tts="theta equals 0">$\theta = 0$</span>, where <span class="tts-math" data-tts="X equals epsilon distributed as P sub 0">$X = \epsilon \sim P_0$</span>:
+  <span class="tts-math" data-tts="R theta delta equals E sub 0 rho delta sub 0 X minus v Y .">$$R(\theta, \delta) = E_0\,\rho\bigl(\delta_0(X) - v(Y)\bigr).$$</span>
   By the tower property,
-  $$R(\theta, \delta) = E_0\Bigl[\,E_0\bigl[\rho(\delta_0(X) - v(Y)) \mid Y\bigr]\,\Bigr].$$
-  The inner expectation sees $Y = y$ as a constant, so for each $y$ we are free to pick the value $v = v(y)$ that minimises
-  $$E_0\bigl[\rho(\delta_0(X) - v) \mid Y = y\bigr].$$
-  Doing this for each $y$ independently — that is, choosing $v^*(y)$ as the conditional minimiser — gives the smallest possible risk inside the equivariant class.
+  <span class="tts-math" data-tts="R theta delta equals E sub 0 E sub 0 rho delta sub 0 X minus v Y given Y .">$$R(\theta, \delta) = E_0\Bigl[\,E_0\bigl[\rho(\delta_0(X) - v(Y)) \mid Y\bigr]\,\Bigr].$$</span>
+  The inner expectation sees <span class="tts-math" data-tts="Y equals y">$Y = y$</span> as a constant, so for each <span class="tts-math" data-tts="y">$y$</span> we are free to pick the value <span class="tts-math" data-tts="v equals v y">$v = v(y)$</span> that minimises
+  <span class="tts-math" data-tts="E sub 0 rho delta sub 0 X minus v given Y equals y .">$$E_0\bigl[\rho(\delta_0(X) - v) \mid Y = y\bigr].$$</span>
+  Doing this for each <span class="tts-math" data-tts="y">$y$</span> independently — that is, choosing <span class="tts-math" data-tts="v to the times y">$v^*(y)$</span> as the conditional minimiser — gives the smallest possible risk inside the equivariant class.
 </p>
 <div class="box definition" data-cid="ch10-590">
 <span class="box-label">Theorem 10.4 — the MRE estimator</span>
 <p data-cid="ch10-600">
-  Suppose there is an equivariant estimator $\delta_0$ with finite risk, and that for almost every $y \in \mathbb{R}^{n-1}$ the function $v \mapsto E_0[\rho(\delta_0(X) - v) \mid Y = y]$ has a minimiser $v^*(y)$. Then
-  $$\delta^*(X) = \delta_0(X) - v^*(Y)$$
+  Suppose there is an equivariant estimator <span class="tts-math" data-tts="delta sub 0">$\delta_0$</span> with finite risk, and that for almost every <span class="tts-math" data-tts="y in the real numbers to the n minus 1">$y \in \mathbb{R}^{n-1}$</span> the function <span class="tts-math" data-tts="v E sub 0 rho delta sub 0 X minus v given Y equals y">$v \mapsto E_0[\rho(\delta_0(X) - v) \mid Y = y]$</span> has a minimiser <span class="tts-math" data-tts="v to the times y">$v^*(y)$</span>. Then
+  <span class="tts-math" data-tts="delta to the times X equals delta sub 0 X minus v to the times Y">$$\delta^*(X) = \delta_0(X) - v^*(Y)$$</span>
   is the <strong>minimum risk equivariant</strong> estimator.
 </p>
 </div>
 <div class="box intuition" data-cid="ch10-610">
 <span class="box-label">In plain English</span>
 <p data-cid="ch10-620">
-  Pick any equivariant starting point $\delta_0$ — say, $X_n$ or $\bar X$. Then for each value of the maximal invariant $Y$ (each "orbit"), compute the conditional distribution of $\delta_0(X)$ given that orbit, and shift $\delta_0$ by the value that minimises the expected loss. The result does not depend on which $\delta_0$ you started with: any two starting estimators differ by an invariant function of $Y$, so the optimal correction absorbs that difference.
+  Pick any equivariant starting point <span class="tts-math" data-tts="delta sub 0">$\delta_0$</span> — say, <span class="tts-math" data-tts="X sub n">$X_n$</span> or <span class="tts-math" data-tts="X">$\bar X$</span>. Then for each value of the maximal invariant <span class="tts-math" data-tts="Y">$Y$</span> (each "orbit"), compute the conditional distribution of <span class="tts-math" data-tts="delta sub 0 X">$\delta_0(X)$</span> given that orbit, and shift <span class="tts-math" data-tts="delta sub 0">$\delta_0$</span> by the value that minimises the expected loss. The result does not depend on which <span class="tts-math" data-tts="delta sub 0">$\delta_0$</span> you started with: any two starting estimators differ by an invariant function of <span class="tts-math" data-tts="Y">$Y$</span>, so the optimal correction absorbs that difference.
 </p>
 </div>
 <h3 data-cid="ch10-630">Computing the conditional distribution</h3>
 <p data-cid="ch10-640">
-  Pick the simplest possible starting estimator: $\delta_0(X) = X_n$. To minimise the conditional expectation we need the conditional density of $X_n$ given $Y$. A change of variables $y_i = x_i - x_n$ in the joint density of $X$ produces the joint density of $(Y, X_n)$ under $P_0$:
-  $$f_{Y, X_n}(y, t) = f(y_1 + t,\ \dots,\ y_{n-1} + t,\ t).$$
-  Integrating out $t$ gives the marginal density of $Y$,
-  $$f_Y(y) = \int f(y_1 + t,\ \dots,\ y_{n-1} + t,\ t) \, dt,$$
-  and the conditional density of $X_n$ given $Y = y$ is the ratio:
-  $$f_{X_n \mid Y}(t \mid y) = \frac{f(y_1 + t,\ \dots,\ y_{n-1} + t,\ t)}{f_Y(y)}.$$
+  Pick the simplest possible starting estimator: <span class="tts-math" data-tts="delta sub 0 X equals X sub n">$\delta_0(X) = X_n$</span>. To minimise the conditional expectation we need the conditional density of <span class="tts-math" data-tts="X sub n">$X_n$</span> given <span class="tts-math" data-tts="Y">$Y$</span>. A change of variables <span class="tts-math" data-tts="y sub i equals x sub i minus x sub n">$y_i = x_i - x_n$</span> in the joint density of <span class="tts-math" data-tts="X">$X$</span> produces the joint density of <span class="tts-math" data-tts="Y X sub n">$(Y, X_n)$</span> under <span class="tts-math" data-tts="P sub 0">$P_0$</span>:
+  <span class="tts-math" data-tts="f sub Y X sub n y t equals f y sub 1 plus t and so on y sub n minus 1 plus t t .">$$f_{Y, X_n}(y, t) = f(y_1 + t,\ \dots,\ y_{n-1} + t,\ t).$$</span>
+  Integrating out <span class="tts-math" data-tts="t">$t$</span> gives the marginal density of <span class="tts-math" data-tts="Y">$Y$</span>,
+  <span class="tts-math" data-tts="f sub Y y equals the integral of f y sub 1 plus t and so on y sub n minus 1 plus t t dt">$$f_Y(y) = \int f(y_1 + t,\ \dots,\ y_{n-1} + t,\ t) \, dt,$$</span>
+  and the conditional density of <span class="tts-math" data-tts="X sub n">$X_n$</span> given <span class="tts-math" data-tts="Y equals y">$Y = y$</span> is the ratio:
+  <span class="tts-math" data-tts="f sub X sub n given Y t given y equals f y sub 1 plus t and so on y sub n minus 1 plus t t f sub Y y .">$$f_{X_n \mid Y}(t \mid y) = \frac{f(y_1 + t,\ \dots,\ y_{n-1} + t,\ t)}{f_Y(y)}.$$</span>
 </p>
 <p data-cid="ch10-650">
-  So $v^*(y)$ is the value minimising
-  $$\frac{\int \rho(t - v) f(y_1 + t,\ \dots,\ y_{n-1} + t,\ t)\,dt}{\int f(y_1 + t,\ \dots,\ y_{n-1} + t,\ t)\,dt}.$$
-  A second change of variables, $t = x_n - u$, with $x_i$ defined so that $x_i - x_n = y_i$ (so $y_i + t = x_i - u$), rewrites this as a function of the original data:
-  $$\delta^*(x) = x_n - v^*(y) = \arg\min_d\ \frac{\int \rho(d - u)\,f(x_1 - u,\ \dots,\ x_n - u)\,du}{\int f(x_1 - u,\ \dots,\ x_n - u)\,du}. \tag{10.1}$$
+  So <span class="tts-math" data-tts="v to the times y">$v^*(y)$</span> is the value minimising
+  <span class="tts-math" data-tts="the integral of rho t minus v f y sub 1 plus t and so on y sub n minus 1 plus t t dt the integral of f y sub 1 plus t and so on y sub n minus 1 plus t t dt .">$$\frac{\int \rho(t - v) f(y_1 + t,\ \dots,\ y_{n-1} + t,\ t)\,dt}{\int f(y_1 + t,\ \dots,\ y_{n-1} + t,\ t)\,dt}.$$</span>
+  A second change of variables, <span class="tts-math" data-tts="t equals x sub n minus u">$t = x_n - u$</span>, with <span class="tts-math" data-tts="x sub i">$x_i$</span> defined so that <span class="tts-math" data-tts="x sub i minus x sub n equals y sub i">$x_i - x_n = y_i$</span> (so <span class="tts-math" data-tts="y sub i plus t equals x sub i minus u">$y_i + t = x_i - u$</span>), rewrites this as a function of the original data:
+  <span class="tts-math" data-tts="delta to the times x equals x sub n minus v to the times y equals sub d the integral of rho d minus u f x sub 1 minus u and so on x sub n minus u du over the integral of f x sub 1 minus u and so on x sub n minus u du . 10.1">$$\delta^*(x) = x_n - v^*(y) = \arg\min_d\ \frac{\int \rho(d - u)\,f(x_1 - u,\ \dots,\ x_n - u)\,du}{\int f(x_1 - u,\ \dots,\ x_n - u)\,du}. \tag{10.1}$$</span>
 </p>
 <h3 data-cid="ch10-660">The Bayesian re-reading</h3>
 <div class="box intuition" data-cid="ch10-670">
 <span class="box-label">A striking formal coincidence</span>
 <p data-cid="ch10-680">
-  Look at (10.1). The integrand $f(x_1 - u, \dots, x_n - u)$ is exactly the likelihood at $\theta = u$. The ratio inside the $\arg\min$ is the posterior expectation of $\rho(d - \theta)$, <em>if</em> the prior on $\theta$ were Lebesgue measure ($d\theta$). The MRE estimator is, formally, the Bayes rule against the improper "flat" prior.
+  Look at (10.1). The integrand <span class="tts-math" data-tts="f x sub 1 minus u and so on x sub n minus u">$f(x_1 - u, \dots, x_n - u)$</span> is exactly the likelihood at <span class="tts-math" data-tts="theta equals u">$\theta = u$</span>. The ratio inside the <span class="tts-math" data-tts="min">$\arg\min$</span> is the posterior expectation of <span class="tts-math" data-tts="rho d minus theta">$\rho(d - \theta)$</span>, <em>if</em> the prior on <span class="tts-math" data-tts="theta">$\theta$</span> were Lebesgue measure (<span class="tts-math" data-tts="d theta">$d\theta$</span>). The MRE estimator is, formally, the Bayes rule against the improper "flat" prior.
 </p>
 </div>
 <p data-cid="ch10-690">
-  This is not a coincidence. Lebesgue measure $\lambda$ is the unique (up to scaling) measure invariant under the action of the group: $\lambda(g \star B) = \lambda(B)$. In general, a measure invariant under a group action is called a <strong>Haar measure</strong>. The deep principle, which carries beyond location families, is:
+  This is not a coincidence. Lebesgue measure <span class="tts-math" data-tts="lambda">$\lambda$</span> is the unique (up to scaling) measure invariant under the action of the group: <span class="tts-math" data-tts="lambda g B equals lambda B">$\lambda(g \star B) = \lambda(B)$</span>. In general, a measure invariant under a group action is called a <strong>Haar measure</strong>. The deep principle, which carries beyond location families, is:
 </p>
 <div class="box definition" data-cid="ch10-700">
 <span class="box-label">Equivariant = formal Bayes against Haar</span>
 <p data-cid="ch10-710">
-  With suitable structure, the best equivariant estimator is the Bayes rule against the Haar measure on the parameter space, treated as a (typically improper) prior. For location problems on $\mathbb{R}$, the Haar measure is Lebesgue measure.
+  With suitable structure, the best equivariant estimator is the Bayes rule against the Haar measure on the parameter space, treated as a (typically improper) prior. For location problems on <span class="tts-math" data-tts="the real numbers">$\mathbb{R}$</span>, the Haar measure is Lebesgue measure.
 </p>
 </div>
 <div class="box warn" data-cid="ch10-720">
 <span class="box-label">Common pitfall</span>
 <p data-cid="ch10-730">
-  Lebesgue measure on $\mathbb{R}$ has $\lambda(\mathbb{R}) = \infty$, so it is not a probability measure. As a prior in a Bayesian model it is <em>improper</em> — strictly speaking, illegal. The "Bayes posterior" you get from it is still a perfectly good probability measure, so the formal calculation goes through, but you should never describe the MRE as <em>actually</em> Bayes against a uniform prior. It is Bayes <em>formally</em>, and that is a precise statement: the computation is identical, but the prior is not a probability.
+  Lebesgue measure on <span class="tts-math" data-tts="the real numbers">$\mathbb{R}$</span> has <span class="tts-math" data-tts="lambda the real numbers equals infinity">$\lambda(\mathbb{R}) = \infty$</span>, so it is not a probability measure. As a prior in a Bayesian model it is <em>improper</em> — strictly speaking, illegal. The "Bayes posterior" you get from it is still a perfectly good probability measure, so the formal calculation goes through, but you should never describe the MRE as <em>actually</em> Bayes against a uniform prior. It is Bayes <em>formally</em>, and that is a precise statement: the computation is identical, but the prior is not a probability.
 </p>
 </div>
 <h3 data-cid="ch10-740">The Pitman estimator</h3>
 <p data-cid="ch10-750">
-  Specialise to squared-error loss $\rho(t) = t^2$. For any random variable $W$ with density $h$, the value of $d$ minimising $E(W - d)^2$ is $E W = \int u h(u)\,du$. Applying this to (10.1) with $h(u) \propto f(x_1 - u, \dots, x_n - u)$ gives the closed-form
-  $$\delta^*(X) = \frac{\int u\, f(X_1 - u,\ \dots,\ X_n - u)\, du}{\int f(X_1 - u,\ \dots,\ X_n - u)\, du}. \tag{10.2}$$
-  This $\delta^*$ is called the <strong>Pitman estimator</strong>. It is the MRE under squared-error loss for a location family with error density $f$.
+  Specialise to squared-error loss <span class="tts-math" data-tts="rho t equals t to the 2">$\rho(t) = t^2$</span>. For any random variable <span class="tts-math" data-tts="W">$W$</span> with density <span class="tts-math" data-tts="h">$h$</span>, the value of <span class="tts-math" data-tts="d">$d$</span> minimising <span class="tts-math" data-tts="E W minus d to the 2">$E(W - d)^2$</span> is <span class="tts-math" data-tts="E W equals the integral of u h u du">$E W = \int u h(u)\,du$</span>. Applying this to (10.1) with <span class="tts-math" data-tts="h u proportional to f x sub 1 minus u and so on x sub n minus u">$h(u) \propto f(x_1 - u, \dots, x_n - u)$</span> gives the closed-form
+  <span class="tts-math" data-tts="delta to the times X equals the integral of u f X sub 1 minus u and so on X sub n minus u du over the integral of f X sub 1 minus u and so on X sub n minus u du . 10.2">$$\delta^*(X) = \frac{\int u\, f(X_1 - u,\ \dots,\ X_n - u)\, du}{\int f(X_1 - u,\ \dots,\ X_n - u)\, du}. \tag{10.2}$$</span>
+  This <span class="tts-math" data-tts="delta to the times">$\delta^*$</span> is called the <strong>Pitman estimator</strong>. It is the MRE under squared-error loss for a location family with error density <span class="tts-math" data-tts="f">$f$</span>.
 </p>
 <div class="box pause" data-cid="ch10-760">
 <span class="box-label">Re-read this formula slowly</span>
 <p data-cid="ch10-770">
-  The numerator and denominator both integrate the likelihood $\theta \mapsto f(X - \theta\mathbf{1})$, treated as a function of $\theta$. The denominator turns it into a probability density (the "formal posterior"); the numerator computes its mean. The Pitman estimator is the centre of mass of the likelihood viewed as a function of the unknown shift.
+  The numerator and denominator both integrate the likelihood <span class="tts-math" data-tts="theta f X minus theta 1">$\theta \mapsto f(X - \theta\mathbf{1})$</span>, treated as a function of <span class="tts-math" data-tts="theta">$\theta$</span>. The denominator turns it into a probability density (the "formal posterior"); the numerator computes its mean. The Pitman estimator is the centre of mass of the likelihood viewed as a function of the unknown shift.
 </p>
 </div>
 <h3 data-cid="ch10-780">Worked example: standard exponential noise</h3>
 <div class="box example" data-cid="ch10-790">
 <span class="box-label">Example 10.5 — Pitman under exponential errors</span>
 <p data-cid="ch10-800">
-  Let $\epsilon_1, \dots, \epsilon_n$ be i.i.d. standard exponential, so the joint density is
-  $$f(e) = \begin{cases} e^{-(e_1 + \dots + e_n)}, &amp; \min_i e_i &gt; 0 \\ 0, &amp; \text{otherwise}. \end{cases}$$
-  Let $M = \min\{X_1, \dots, X_n\}$. The condition $\min_i (X_i - u) &gt; 0$ is the same as $u &lt; M$. So
-  $$f(X_1 - u, \dots, X_n - u) = \begin{cases} e^{nu - (X_1 + \dots + X_n)}, &amp; u &lt; M \\ 0, &amp; \text{otherwise}. \end{cases}$$
+  Let <span class="tts-math" data-tts="epsilon sub 1 and so on epsilon sub n">$\epsilon_1, \dots, \epsilon_n$</span> be i.i.d. standard exponential, so the joint density is
+  <span class="tts-math" data-tts="f e equals e to the e sub 1 plus and so on plus e sub n amp sub i e sub i gt 0 0 amp otherwise.">$$f(e) = \begin{cases} e^{-(e_1 + \dots + e_n)}, &amp; \min_i e_i &gt; 0 \\ 0, &amp; \text{otherwise}. \end{cases}$$</span>
+  Let <span class="tts-math" data-tts="M equals min X sub 1 and so on X sub n">$M = \min\{X_1, \dots, X_n\}$</span>. The condition <span class="tts-math" data-tts="sub i X sub i minus u gt 0">$\min_i (X_i - u) &gt; 0$</span> is the same as <span class="tts-math" data-tts="u lt M">$u &lt; M$</span>. So
+  <span class="tts-math" data-tts="f X sub 1 minus u and so on X sub n minus u equals e to the nu minus X sub 1 plus and so on plus X sub n amp u lt M 0 amp otherwise.">$$f(X_1 - u, \dots, X_n - u) = \begin{cases} e^{nu - (X_1 + \dots + X_n)}, &amp; u &lt; M \\ 0, &amp; \text{otherwise}. \end{cases}$$</span>
   Plug into (10.2):
-  $$\delta^* = \frac{\int_{-\infty}^M u\, e^{nu - (X_1 + \dots + X_n)}\,du}{\int_{-\infty}^M e^{nu - (X_1 + \dots + X_n)}\,du}.$$
-  The constant $e^{-(X_1 + \dots + X_n)}$ cancels. Substitute $t = n(u - M)/n = u - M$ (so $u = t + M$, $du = dt$, limits become $t \in (-\infty, 0)$):
-  $$\delta^* = \frac{\int_{-\infty}^0 (t + M)\, e^{nt}\,dt}{\int_{-\infty}^0 e^{nt}\,dt} = M - \frac{1}{n}.$$
-  So the MRE of $\theta$ for exponential noise under squared error is $M - 1/n$ — the minimum, shifted left by $1/n$.
+  <span class="tts-math" data-tts="delta to the times equals the integral over infinity of to the M u e to the nu minus X sub 1 plus and so on plus X sub n du the integral over infinity of to the M e to the nu minus X sub 1 plus and so on plus X sub n du .">$$\delta^* = \frac{\int_{-\infty}^M u\, e^{nu - (X_1 + \dots + X_n)}\,du}{\int_{-\infty}^M e^{nu - (X_1 + \dots + X_n)}\,du}.$$</span>
+  The constant <span class="tts-math" data-tts="e to the X sub 1 plus and so on plus X sub n">$e^{-(X_1 + \dots + X_n)}$</span> cancels. Substitute <span class="tts-math" data-tts="t equals n u minus M over n equals u minus M">$t = n(u - M)/n = u - M$</span> (so <span class="tts-math" data-tts="u equals t plus M">$u = t + M$</span>, <span class="tts-math" data-tts="du equals dt">$du = dt$</span>, limits become <span class="tts-math" data-tts="t in minus infinity 0">$t \in (-\infty, 0)$</span>):
+  <span class="tts-math" data-tts="delta to the times equals the integral over infinity of to the 0 t plus M e to the nt dt the integral over infinity of to the 0 e to the nt dt equals M minus 1 over n .">$$\delta^* = \frac{\int_{-\infty}^0 (t + M)\, e^{nt}\,dt}{\int_{-\infty}^0 e^{nt}\,dt} = M - \frac{1}{n}.$$</span>
+  So the MRE of <span class="tts-math" data-tts="theta">$\theta$</span> for exponential noise under squared error is <span class="tts-math" data-tts="M minus 1 over n">$M - 1/n$</span> — the minimum, shifted left by <span class="tts-math" data-tts="1 over n">$1/n$</span>.
 </p>
 </div>
 <div class="box intuition" data-cid="ch10-810">
-<span class="box-label">Why $M - 1/n$ is reasonable</span>
+<span class="box-label">Why <span class="tts-math" data-tts="M minus 1 over n">$M - 1/n$</span> is reasonable</span>
 <p data-cid="ch10-820">
-  Each $X_i = \theta + \epsilon_i$ with $\epsilon_i &gt; 0$, so $M \geq \theta$ always — the minimum overshoots $\theta$. The expected amount of overshoot is $1/n$ (the mean of the minimum of $n$ i.i.d. standard exponentials). Subtracting $1/n$ corrects for that bias. The same answer drops out of the abstract machinery, with no separate "unbiasedness" argument required.
+  Each <span class="tts-math" data-tts="X sub i equals theta plus epsilon sub i">$X_i = \theta + \epsilon_i$</span> with <span class="tts-math" data-tts="epsilon sub i gt 0">$\epsilon_i &gt; 0$</span>, so <span class="tts-math" data-tts="M greater than or equal to theta">$M \geq \theta$</span> always — the minimum overshoots <span class="tts-math" data-tts="theta">$\theta$</span>. The expected amount of overshoot is <span class="tts-math" data-tts="1 over n">$1/n$</span> (the mean of the minimum of <span class="tts-math" data-tts="n">$n$</span> i.i.d. standard exponentials). Subtracting <span class="tts-math" data-tts="1 over n">$1/n$</span> corrects for that bias. The same answer drops out of the abstract machinery, with no separate "unbiasedness" argument required.
 </p>
 </div>
 <h3 data-cid="ch10-830">Where the location story generalises</h3>
 <p data-cid="ch10-840">
-  Problem 8 of the chapter extends the same construction to a <strong>scale family</strong>: take $G = (0, \infty)$ under multiplication, acting on the parameter by $g \star \sigma = g\sigma$ and on positive data by $g \star x = gx$. An estimator is equivariant if $\delta(gx) = g\,\delta(x)$, an invariant loss has the form $L(\sigma, d) = \rho(d/\sigma)$, and the maximal invariant becomes the vector of ratios $(x_1/x_n, \dots, x_{n-1}/x_n)$. The Haar measure of the multiplicative group is $d\sigma/\sigma$, and the MRE is formally Bayes against this improper prior. Nothing about the proofs changes — only the symbols.
+  Problem 8 of the chapter extends the same construction to a <strong>scale family</strong>: take <span class="tts-math" data-tts="G equals 0 infinity">$G = (0, \infty)$</span> under multiplication, acting on the parameter by <span class="tts-math" data-tts="g sigma equals g sigma">$g \star \sigma = g\sigma$</span> and on positive data by <span class="tts-math" data-tts="g x equals gx">$g \star x = gx$</span>. An estimator is equivariant if <span class="tts-math" data-tts="delta gx equals g delta x">$\delta(gx) = g\,\delta(x)$</span>, an invariant loss has the form <span class="tts-math" data-tts="L sigma d equals rho d over sigma">$L(\sigma, d) = \rho(d/\sigma)$</span>, and the maximal invariant becomes the vector of ratios <span class="tts-math" data-tts="x sub 1 over x sub n and so on x sub n minus 1 over x sub n">$(x_1/x_n, \dots, x_{n-1}/x_n)$</span>. The Haar measure of the multiplicative group is <span class="tts-math" data-tts="d sigma over sigma">$d\sigma/\sigma$</span>, and the MRE is formally Bayes against this improper prior. Nothing about the proofs changes — only the symbols.
 </p>
 <div class="box pause" data-cid="ch10-850">
 <span class="box-label">Pause — the moral</span>
@@ -322,11 +321,11 @@
 <h2 data-cid="ch10-870" id="summary">Summary — what you learned in Chapter 10</h2>
 <p data-cid="ch10-880">The whole chapter, in six bullets:</p>
 <ol data-cid="ch10-890">
-<li>A <strong>group</strong> $G$ acts on data and parameter spaces simultaneously. For location problems on $\mathbb{R}$, $G = (\mathbb{R}, +)$, and the action is "shift everything by $g$".</li>
-<li>An estimator is <strong>equivariant</strong> if shifting the data shifts the estimate by the same amount: $\delta(g \star x) = g \star \delta(x)$.</li>
-<li>A loss is <strong>invariant</strong> if it depends only on the error $d - \theta$. Under equivariance + invariant loss, the <strong>risk is constant in $\theta$</strong>, so we can rank equivariant estimators by a single number.</li>
-<li>The <strong>maximal invariant</strong> $Y = (X_1 - X_n, \dots, X_{n-1} - X_n)$ indexes the orbits of the group action. Every equivariant estimator has the form $\delta_0(X) - v(Y)$ for some $v$.</li>
-<li>The <strong>MRE</strong> estimator is obtained by choosing $v(y)$ to minimise the conditional expected loss given $Y = y$. With squared-error loss this yields the explicit <strong>Pitman estimator</strong> (10.2): the centre of mass of the likelihood, treated as a density in $\theta$.</li>
+<li>A <strong>group</strong> <span class="tts-math" data-tts="G">$G$</span> acts on data and parameter spaces simultaneously. For location problems on <span class="tts-math" data-tts="the real numbers">$\mathbb{R}$</span>, <span class="tts-math" data-tts="G equals the real numbers plus">$G = (\mathbb{R}, +)$</span>, and the action is "shift everything by <span class="tts-math" data-tts="g">$g$</span>".</li>
+<li>An estimator is <strong>equivariant</strong> if shifting the data shifts the estimate by the same amount: <span class="tts-math" data-tts="delta g x equals g delta x">$\delta(g \star x) = g \star \delta(x)$</span>.</li>
+<li>A loss is <strong>invariant</strong> if it depends only on the error <span class="tts-math" data-tts="d minus theta">$d - \theta$</span>. Under equivariance + invariant loss, the <strong>risk is constant in <span class="tts-math" data-tts="theta">$\theta$</span></strong>, so we can rank equivariant estimators by a single number.</li>
+<li>The <strong>maximal invariant</strong> <span class="tts-math" data-tts="Y equals X sub 1 minus X sub n and so on X sub n minus 1 minus X sub n">$Y = (X_1 - X_n, \dots, X_{n-1} - X_n)$</span> indexes the orbits of the group action. Every equivariant estimator has the form <span class="tts-math" data-tts="delta sub 0 X minus v Y">$\delta_0(X) - v(Y)$</span> for some <span class="tts-math" data-tts="v">$v$</span>.</li>
+<li>The <strong>MRE</strong> estimator is obtained by choosing <span class="tts-math" data-tts="v y">$v(y)$</span> to minimise the conditional expected loss given <span class="tts-math" data-tts="Y equals y">$Y = y$</span>. With squared-error loss this yields the explicit <strong>Pitman estimator</strong> (10.2): the centre of mass of the likelihood, treated as a density in <span class="tts-math" data-tts="theta">$\theta$</span>.</li>
 <li>Formally, the MRE is <strong>Bayes against the Haar measure</strong>. For the location group the Haar measure is Lebesgue measure — an improper but workable "flat" prior.</li>
 </ol>
 <div class="box pause" data-cid="ch10-900">
@@ -335,8 +334,8 @@
   Before moving to Chapter 11, you should be able to answer (without looking back):
 </p>
 <ul data-cid="ch10-920">
-<li>Why is the risk of an equivariant estimator constant in $\theta$?</li>
-<li>What does it mean for $Y$ to be a "maximal" invariant, and why does that make every equivariant estimator a function of $\delta_0$ and $Y$?</li>
+<li>Why is the risk of an equivariant estimator constant in <span class="tts-math" data-tts="theta">$\theta$</span>?</li>
+<li>What does it mean for <span class="tts-math" data-tts="Y">$Y$</span> to be a "maximal" invariant, and why does that make every equivariant estimator a function of <span class="tts-math" data-tts="delta sub 0">$\delta_0$</span> and <span class="tts-math" data-tts="Y">$Y$</span>?</li>
 <li>State the Pitman estimator and re-derive it for exponential errors.</li>
 <li>In what sense is the MRE "Bayes with a flat prior"? Why is the word <em>formally</em> important?</li>
 </ul>
@@ -348,6 +347,6 @@
 </nav>
 </article>
 </main>
-<script src="/js/main.js"></script><script src="/js/comments.js"></script>
+<script src="/js/main.js"></script><script src="/js/comments.js"></script><script src="/js/tts.js"></script>
 </body>
 </html>

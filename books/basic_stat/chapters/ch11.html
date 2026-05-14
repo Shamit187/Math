@@ -10,14 +10,13 @@
 <link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
-<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/><link href="/css/tts.css" rel="stylesheet"/>
 </head>
 <body data-book="basic_stat" data-page="ch11">
 <header class="site-header">
+<a class="home-btn" href="/">Home</a>
 <a class="brand" href="/books/basic_stat/">Theoretical Statistics <small>a slow reading guide</small></a>
 <nav>
-<a href="/" class="all-books-link">All books</a>
-    <a href="/books/basic_stat/">Contents</a>
 <button aria-label="toggle theme" class="theme-toggle">Dark</button>
 </nav>
 </header>
@@ -45,15 +44,15 @@
 </section>
 <h2 data-cid="ch11-020" id="prelude">A startling claim</h2>
 <p data-cid="ch11-030">
-      You measure $p$ independent things. The $i$-th measurement comes back as $X_i \sim N(\theta_i, 1)$, and you want
-      to estimate each $\theta_i$. The natural answer is $\hat\theta_i = X_i$: it's unbiased, it's the MLE, it's what
+      You measure <span class="tts-math" data-tts="p">$p$</span> independent things. The <span class="tts-math" data-tts="i">$i$</span>-th measurement comes back as <span class="tts-math" data-tts="X sub i distributed as N theta sub i 1">$X_i \sim N(\theta_i, 1)$</span>, and you want
+      to estimate each <span class="tts-math" data-tts="theta sub i">$\theta_i$</span>. The natural answer is <span class="tts-math" data-tts="theta sub i equals X sub i">$\hat\theta_i = X_i$</span>: it's unbiased, it's the MLE, it's what
       everyone does.
     </p>
 <p data-cid="ch11-040">
-      In 1961, James and Stein proved that when $p \geq 3$, this estimator is <em>provably worse</em> — under squared
-      error loss summed across all coordinates — than an estimator that shrinks every $X_i$ toward zero by a
-      data-dependent amount. Worse for <strong>every</strong> $\theta \in \mathbb{R}^p$, not just on average. The
-      improvement isn't tiny either; near the origin it cuts the risk by a factor of roughly $p/2$.
+      In 1961, James and Stein proved that when <span class="tts-math" data-tts="p greater than or equal to 3">$p \geq 3$</span>, this estimator is <em>provably worse</em> — under squared
+      error loss summed across all coordinates — than an estimator that shrinks every <span class="tts-math" data-tts="X sub i">$X_i$</span> toward zero by a
+      data-dependent amount. Worse for <strong>every</strong> <span class="tts-math" data-tts="theta in the real numbers to the p">$\theta \in \mathbb{R}^p$</span>, not just on average. The
+      improvement isn't tiny either; near the origin it cuts the risk by a factor of roughly <span class="tts-math" data-tts="p over 2">$p/2$</span>.
     </p>
 <p data-cid="ch11-050">
       This is Stein's paradox, and it's the central event of the chapter. We will set it up via empirical Bayes
@@ -64,9 +63,9 @@
 <div class="box intuition" data-cid="ch11-060">
 <span class="box-label">Intuition — borrowing strength</span>
 <p data-cid="ch11-070">
-        Each $X_i$ tells you about $\theta_i$. But under the squared-error loss <em>summed across all coordinates</em>,
-        the other $X_j$'s also tell you something — namely, how big $\theta$'s tend to be overall. The James–Stein
-        estimator does the unintuitive thing of using $X_j$'s far from $X_i$ to improve the estimate of $\theta_i$.
+        Each <span class="tts-math" data-tts="X sub i">$X_i$</span> tells you about <span class="tts-math" data-tts="theta sub i">$\theta_i$</span>. But under the squared-error loss <em>summed across all coordinates</em>,
+        the other <span class="tts-math" data-tts="X sub j">$X_j$</span>'s also tell you something — namely, how big <span class="tts-math" data-tts="theta">$\theta$</span>'s tend to be overall. The James–Stein
+        estimator does the unintuitive thing of using <span class="tts-math" data-tts="X sub j">$X_j$</span>'s far from <span class="tts-math" data-tts="X sub i">$X_i$</span> to improve the estimate of <span class="tts-math" data-tts="theta sub i">$\theta_i$</span>.
         Statisticians call this <strong>borrowing strength</strong>. It feels wrong. It is correct.
       </p>
 </div>
@@ -74,99 +73,99 @@
 <h2 data-cid="ch11-080" id="s11-1">11.1 Empirical Bayes Estimation</h2>
 <h3 data-cid="ch11-090">The setup</h3>
 <p data-cid="ch11-100">
-      Suppose we measure $p$ objects with i.i.d. $N(0, 1)$ errors. Our data are $X_1, \dots, X_p$, independent, with
-      $$X_i \sim N(\theta_i, 1), \qquad i = 1, \dots, p.$$
-      Write $X = (X_1, \dots, X_p)'$ and $\theta = (\theta_1, \dots, \theta_p)'$. We estimate $\theta_i$ by $\delta_i(X)$
+      Suppose we measure <span class="tts-math" data-tts="p">$p$</span> objects with i.i.d. <span class="tts-math" data-tts="N 0 1">$N(0, 1)$</span> errors. Our data are <span class="tts-math" data-tts="X sub 1 and so on X sub p">$X_1, \dots, X_p$</span>, independent, with
+      <span class="tts-math" data-tts="X sub i distributed as N theta sub i 1 i equals 1 and so on p.">$$X_i \sim N(\theta_i, 1), \qquad i = 1, \dots, p.$$</span>
+      Write <span class="tts-math" data-tts="X equals X sub 1 and so on X sub p prime">$X = (X_1, \dots, X_p)'$</span> and <span class="tts-math" data-tts="theta equals theta sub 1 and so on theta sub p prime">$\theta = (\theta_1, \dots, \theta_p)'$</span>. We estimate <span class="tts-math" data-tts="theta sub i">$\theta_i$</span> by <span class="tts-math" data-tts="delta sub i X">$\delta_i(X)$</span>
       and use <strong>compound squared error loss</strong>:
-      $$L(\theta, \delta) = \sum_{i=1}^p \bigl( \theta_i - \delta_i(X) \bigr)^2 = \| \delta(X) - \theta \|^2.$$
-      The risk function is $R(\theta, \delta) = E_\theta \| \delta(X) - \theta \|^2$.
+      <span class="tts-math" data-tts="L theta delta equals the sum over i equals 1 of to the p theta sub i minus delta sub i X to the 2 equals norm of delta X minus theta norm of to the 2.">$$L(\theta, \delta) = \sum_{i=1}^p \bigl( \theta_i - \delta_i(X) \bigr)^2 = \| \delta(X) - \theta \|^2.$$</span>
+      The risk function is <span class="tts-math" data-tts="R theta delta equals E_ theta norm of delta X minus theta norm of to the 2">$R(\theta, \delta) = E_\theta \| \delta(X) - \theta \|^2$</span>.
     </p>
 <div class="box pause" data-cid="ch11-110">
 <span class="box-label">Pause — read this twice</span>
 <p data-cid="ch11-120">
-        Notice carefully: $\delta_i(X)$ is allowed to depend on all the $X_j$'s, not just $X_i$. That sounds strange —
-        why should $X_2$ tell us anything about $\theta_1$? They're independent! Hold that question. The chapter will
+        Notice carefully: <span class="tts-math" data-tts="delta sub i X">$\delta_i(X)$</span> is allowed to depend on all the <span class="tts-math" data-tts="X sub j">$X_j$</span>'s, not just <span class="tts-math" data-tts="X sub i">$X_i$</span>. That sounds strange —
+        why should <span class="tts-math" data-tts="X sub 2">$X_2$</span> tell us anything about <span class="tts-math" data-tts="theta sub 1">$\theta_1$</span>? They're independent! Hold that question. The chapter will
         not just permit cross-dependence, it will <em>require</em> it for the magic to work.
       </p>
 </div>
 <h3 data-cid="ch11-130">The Bayesian formulation</h3>
 <p data-cid="ch11-140">
-      Pretend, for a moment, that $\theta$ is itself random. Let $\Theta_1, \dots, \Theta_p$ be i.i.d. $N(0, \tau^2)$
-      a priori, and given $\Theta = \theta$, let $X_1, \dots, X_p$ be independent with $X_i \sim N(\theta_i, 1)$.
-      Then the joint density of $(X, \Theta)$ is
-      $$\frac{1}{(2\pi\tau)^p} \exp\!\left[ -\tfrac{1}{2} \sum_{i=1}^p (x_i - \theta_i)^2 - \frac{1}{2\tau^2} \sum_{i=1}^p \theta_i^2 \right].$$
+      Pretend, for a moment, that <span class="tts-math" data-tts="theta">$\theta$</span> is itself random. Let <span class="tts-math" data-tts="Theta sub 1 and so on Theta sub p">$\Theta_1, \dots, \Theta_p$</span> be i.i.d. <span class="tts-math" data-tts="N 0 tau to the 2">$N(0, \tau^2)$</span>
+      a priori, and given <span class="tts-math" data-tts="Theta equals theta">$\Theta = \theta$</span>, let <span class="tts-math" data-tts="X sub 1 and so on X sub p">$X_1, \dots, X_p$</span> be independent with <span class="tts-math" data-tts="X sub i distributed as N theta sub i 1">$X_i \sim N(\theta_i, 1)$</span>.
+      Then the joint density of <span class="tts-math" data-tts="X Theta">$(X, \Theta)$</span> is
+      <span class="tts-math" data-tts="1 over 2 pi tau to the p exp minus 1 over 2 the sum over i equals 1 of to the p x sub i minus theta sub i to the 2 minus 1 over 2 tau to the 2 the sum over i equals 1 of to the p theta sub i to the 2 .">$$\frac{1}{(2\pi\tau)^p} \exp\!\left[ -\tfrac{1}{2} \sum_{i=1}^p (x_i - \theta_i)^2 - \frac{1}{2\tau^2} \sum_{i=1}^p \theta_i^2 \right].$$</span>
     </p>
 <p data-cid="ch11-150">
-      The trick now is the same one you've seen a dozen times in Bayesian calculations: complete the square in $\theta_i$.
+      The trick now is the same one you've seen a dozen times in Bayesian calculations: complete the square in <span class="tts-math" data-tts="theta sub i">$\theta_i$</span>.
       A direct computation gives
-      $$(x_i - \theta_i)^2 + \frac{\theta_i^2}{\tau^2} = \left( 1 + \frac{1}{\tau^2} \right) \left( \theta_i - \frac{x_i}{1 + 1/\tau^2} \right)^2 + \frac{x_i^2}{1 + \tau^2}.$$
+      <span class="tts-math" data-tts="x sub i minus theta sub i to the 2 plus theta sub i to the 2 over tau to the 2 equals 1 plus 1 over tau to the 2 theta sub i minus x sub i over 1 plus 1 over tau to the 2 to the 2 plus x sub i to the 2 over 1 plus tau to the 2 .">$$(x_i - \theta_i)^2 + \frac{\theta_i^2}{\tau^2} = \left( 1 + \frac{1}{\tau^2} \right) \left( \theta_i - \frac{x_i}{1 + 1/\tau^2} \right)^2 + \frac{x_i^2}{1 + \tau^2}.$$</span>
     </p>
 <p data-cid="ch11-160">
-      Integrating out $\theta$ leaves the <strong>marginal density of $X$</strong>: a product of $N(0, 1 + \tau^2)$
-      densities. So in the Bayesian model, marginally, $X_1, \dots, X_p$ are i.i.d.\ $N(0, 1 + \tau^2)$.
+      Integrating out <span class="tts-math" data-tts="theta">$\theta$</span> leaves the <strong>marginal density of <span class="tts-math" data-tts="X">$X$</span></strong>: a product of <span class="tts-math" data-tts="N 0 1 plus tau to the 2">$N(0, 1 + \tau^2)$</span>
+      densities. So in the Bayesian model, marginally, <span class="tts-math" data-tts="X sub 1 and so on X sub p">$X_1, \dots, X_p$</span> are i.i.d.\ <span class="tts-math" data-tts="N 0 1 plus tau to the 2">$N(0, 1 + \tau^2)$</span>.
     </p>
 <p data-cid="ch11-170">
-      Dividing the joint by the marginal gives the <strong>posterior</strong>: the $\Theta_i$ are conditionally
-      independent given $X$, with
-      $$\Theta_i \,\big|\, X = x \;\sim\; N\!\left( \frac{x_i}{1 + 1/\tau^2}, \; \frac{\tau^2}{1 + \tau^2} \right).$$
+      Dividing the joint by the marginal gives the <strong>posterior</strong>: the <span class="tts-math" data-tts="Theta sub i">$\Theta_i$</span> are conditionally
+      independent given <span class="tts-math" data-tts="X">$X$</span>, with
+      <span class="tts-math" data-tts="Theta sub i X equals x distributed as N x sub i over 1 plus 1 over tau to the 2 tau to the 2 over 1 plus tau to the 2 .">$$\Theta_i \,\big|\, X = x \;\sim\; N\!\left( \frac{x_i}{1 + 1/\tau^2}, \; \frac{\tau^2}{1 + \tau^2} \right).$$</span>
     </p>
 <p data-cid="ch11-180">
-      So $E[\Theta_i \mid X] = X_i / (1 + 1/\tau^2)$ and $\operatorname{Var}(\Theta_i \mid X) = \tau^2 / (1 + \tau^2)$.
+      So <span class="tts-math" data-tts="E Theta sub i given X equals X sub i over 1 plus 1 over tau to the 2">$E[\Theta_i \mid X] = X_i / (1 + 1/\tau^2)$</span> and <span class="tts-math" data-tts="Var Theta sub i given X equals tau to the 2 over 1 plus tau to the 2">$\operatorname{Var}(\Theta_i \mid X) = \tau^2 / (1 + \tau^2)$</span>.
       The Bayes estimator under squared error loss is the posterior mean, which we now slow down to inspect.
     </p>
 <div class="box definition" data-cid="ch11-190">
 <span class="box-label">The Bayes shrinkage formula</span>
 <p data-cid="ch11-200">
-        Under the $N(0, \tau^2)$ prior, the Bayes estimator of $\theta_i$ under squared error loss is
-        $$\delta_i(X) = \frac{X_i}{1 + 1/\tau^2} = \left( 1 - \frac{1}{1 + \tau^2} \right) X_i. \tag{11.1}$$
+        Under the <span class="tts-math" data-tts="N 0 tau to the 2">$N(0, \tau^2)$</span> prior, the Bayes estimator of <span class="tts-math" data-tts="theta sub i">$\theta_i$</span> under squared error loss is
+        <span class="tts-math" data-tts="delta sub i X equals X sub i over 1 plus 1 over tau to the 2 equals 1 minus 1 over 1 plus tau to the 2 X sub i. 11.1">$$\delta_i(X) = \frac{X_i}{1 + 1/\tau^2} = \left( 1 - \frac{1}{1 + \tau^2} \right) X_i. \tag{11.1}$$</span>
       </p>
 </div>
 <div class="box intuition" data-cid="ch11-210">
 <span class="box-label">Reading the formula</span>
 <p data-cid="ch11-220">
-        The Bayes estimator is $X_i$ scaled by a factor strictly between $0$ and $1$ — it shrinks $X_i$ toward zero,
+        The Bayes estimator is <span class="tts-math" data-tts="X sub i">$X_i$</span> scaled by a factor strictly between <span class="tts-math" data-tts="0">$0$</span> and <span class="tts-math" data-tts="1">$1$</span> — it shrinks <span class="tts-math" data-tts="X sub i">$X_i$</span> toward zero,
         which is the prior mean. How aggressively?
       </p>
 <ul data-cid="ch11-230">
-<li>If $\tau^2$ is large (prior is vague, $\theta$'s could be anywhere), the factor $1 - 1/(1+\tau^2) \approx 1$:
+<li>If <span class="tts-math" data-tts="tau to the 2">$\tau^2$</span> is large (prior is vague, <span class="tts-math" data-tts="theta">$\theta$</span>'s could be anywhere), the factor <span class="tts-math" data-tts="1 minus 1 over 1 plus tau to the 2 approximately 1">$1 - 1/(1+\tau^2) \approx 1$</span>:
             barely any shrinkage. Trust the data.</li>
-<li>If $\tau^2$ is small (prior tightly concentrated at $0$, $\theta$'s are believed small), the factor is
-            close to $0$: shrink hard. Trust the prior.</li>
+<li>If <span class="tts-math" data-tts="tau to the 2">$\tau^2$</span> is small (prior tightly concentrated at <span class="tts-math" data-tts="0">$0$</span>, <span class="tts-math" data-tts="theta">$\theta$</span>'s are believed small), the factor is
+            close to <span class="tts-math" data-tts="0">$0$</span>: shrink hard. Trust the prior.</li>
 </ul>
 <p data-cid="ch11-240">
         The shrinkage factor is the answer to the question "how much should I trust this datum?". It compares the
-        data's noise variance (here, $1$) to the prior variance ($\tau^2$). When noise dominates prior, shrink. When
+        data's noise variance (here, <span class="tts-math" data-tts="1">$1$</span>) to the prior variance (<span class="tts-math" data-tts="tau to the 2">$\tau^2$</span>). When noise dominates prior, shrink. When
         prior is vague, don't.
       </p>
 </div>
 <h3 data-cid="ch11-250">The empirical step</h3>
 <p data-cid="ch11-260">
-      The Bayes estimator (11.1) requires knowing $\tau$. In real life, you don't. The <strong>empirical Bayes</strong>
-      trick is: estimate $\tau$ from the data and plug it in.
+      The Bayes estimator (11.1) requires knowing <span class="tts-math" data-tts="tau">$\tau$</span>. In real life, you don't. The <strong>empirical Bayes</strong>
+      trick is: estimate <span class="tts-math" data-tts="tau">$\tau$</span> from the data and plug it in.
     </p>
 <p data-cid="ch11-270">
-      Under the Bayesian model we just derived, $X_1, \dots, X_p$ are marginally i.i.d.\ $N(0, 1 + \tau^2)$. So
-      $\sum_i X_i^2 = \|X\|^2$ has expectation $p(1 + \tau^2)$, and $\|X\|^2 / p$ is an unbiased estimator of $1 + \tau^2$.
+      Under the Bayesian model we just derived, <span class="tts-math" data-tts="X sub 1 and so on X sub p">$X_1, \dots, X_p$</span> are marginally i.i.d.\ <span class="tts-math" data-tts="N 0 1 plus tau to the 2">$N(0, 1 + \tau^2)$</span>. So
+      <span class="tts-math" data-tts="sub i X sub i to the 2 equals norm of X norm of to the 2">$\sum_i X_i^2 = \|X\|^2$</span> has expectation <span class="tts-math" data-tts="p 1 plus tau to the 2">$p(1 + \tau^2)$</span>, and <span class="tts-math" data-tts="norm of X norm of to the 2 over p">$\|X\|^2 / p$</span> is an unbiased estimator of <span class="tts-math" data-tts="1 plus tau to the 2">$1 + \tau^2$</span>.
     </p>
 <p data-cid="ch11-280">
-      What we actually need in (11.1) is the shrinkage factor $1/(1 + \tau^2)$. We could plug in $p / \|X\|^2$, but
+      What we actually need in (11.1) is the shrinkage factor <span class="tts-math" data-tts="1 over 1 plus tau to the 2">$1/(1 + \tau^2)$</span>. We could plug in <span class="tts-math" data-tts="p over norm of X norm of to the 2">$p / \|X\|^2$</span>, but
       a slightly different multiple turns out to behave much better. James and Stein use
-      $$\widehat{\frac{1}{1 + \tau^2}} = \frac{p - 2}{\|X\|^2}.$$
-      The reason for $p - 2$ rather than $p$ will become apparent in the next section, where it makes a key identity
+      <span class="tts-math" data-tts="1 hat 1 plus tau to the 2 equals p minus 2 over norm of X norm of to the 2 .">$$\widehat{\frac{1}{1 + \tau^2}} = \frac{p - 2}{\|X\|^2}.$$</span>
+      The reason for <span class="tts-math" data-tts="p minus 2">$p - 2$</span> rather than <span class="tts-math" data-tts="p">$p$</span> will become apparent in the next section, where it makes a key identity
       vanish exactly. For now, take it on faith.
     </p>
 <div class="box definition" data-cid="ch11-290">
 <span class="box-label">The James–Stein estimator</span>
 <p data-cid="ch11-300">
-        Plugging the empirical estimate of $1/(1 + \tau^2)$ into the Bayes formula (11.1):
-        $$\delta^{\text{JS}}(X) = \left( 1 - \frac{p - 2}{\|X\|^2} \right) X. \tag{11.2}$$
-        Each coordinate $X_i$ is shrunk toward zero by the same factor $1 - (p-2)/\|X\|^2$.
+        Plugging the empirical estimate of <span class="tts-math" data-tts="1 over 1 plus tau to the 2">$1/(1 + \tau^2)$</span> into the Bayes formula (11.1):
+        <span class="tts-math" data-tts="delta to the JS X equals 1 minus p minus 2 over norm of X norm of to the 2 X. 11.2">$$\delta^{\text{JS}}(X) = \left( 1 - \frac{p - 2}{\|X\|^2} \right) X. \tag{11.2}$$</span>
+        Each coordinate <span class="tts-math" data-tts="X sub i">$X_i$</span> is shrunk toward zero by the same factor <span class="tts-math" data-tts="1 minus p minus 2 over norm of X norm of to the 2">$1 - (p-2)/\|X\|^2$</span>.
       </p>
 </div>
 <div class="box pause" data-cid="ch11-310">
 <span class="box-label">Pause — see what just happened</span>
 <p data-cid="ch11-320">
-        The estimator $\delta^{\text{JS}}_i(X)$ depends on every $X_j$, because $\|X\|^2 = X_1^2 + \cdots + X_p^2$.
+        The estimator <span class="tts-math" data-tts="delta to the JS sub i X">$\delta^{\text{JS}}_i(X)$</span> depends on every <span class="tts-math" data-tts="X sub j">$X_j$</span>, because <span class="tts-math" data-tts="norm of X norm of to the 2 equals X sub 1 to the 2 plus times s plus X sub p to the 2">$\|X\|^2 = X_1^2 + \cdots + X_p^2$</span>.
         Each component pulls all the others' shrinkage levels toward itself. This is the cross-dependence we promised.
         The "borrowing of strength" happens through the shared shrinkage factor.
       </p>
@@ -175,16 +174,16 @@
 <span class="box-label">Worked example — baseball batting averages</span>
 <p data-cid="ch11-340">
         The most famous real-world demonstration is Efron and Morris's 1975 analysis of major-league batting averages.
-        Eighteen players had their first 45 at-bats from the 1970 season recorded; their batting averages $X_i$ are
-        approximately normal estimates of each player's true long-run average $\theta_i$. The MLE is "use $X_i$": just
+        Eighteen players had their first 45 at-bats from the 1970 season recorded; their batting averages <span class="tts-math" data-tts="X sub i">$X_i$</span> are
+        approximately normal estimates of each player's true long-run average <span class="tts-math" data-tts="theta sub i">$\theta_i$</span>. The MLE is "use <span class="tts-math" data-tts="X sub i">$X_i$</span>": just
         believe each player's small sample.
       </p>
 <p data-cid="ch11-350">
-        After standardizing (variance-stabilizing transform), one gets exactly the $N(\theta_i, 1)$ setup. Compute
-        $\|X\|^2$ across all 18 players, shrink each $X_i$ toward the grand mean by the factor
-        $1 - (p - 3)/\|X - \bar X\|^2$ (the version that shrinks to the sample mean rather than zero), and predict
+        After standardizing (variance-stabilizing transform), one gets exactly the <span class="tts-math" data-tts="N theta sub i 1">$N(\theta_i, 1)$</span> setup. Compute
+        <span class="tts-math" data-tts="norm of X norm of to the 2">$\|X\|^2$</span> across all 18 players, shrink each <span class="tts-math" data-tts="X sub i">$X_i$</span> toward the grand mean by the factor
+        <span class="tts-math" data-tts="1 minus p minus 3 over norm of X minus X norm of to the 2">$1 - (p - 3)/\|X - \bar X\|^2$</span> (the version that shrinks to the sample mean rather than zero), and predict
         each player's batting average for the rest of the season. The James–Stein predictions had total squared error
-        roughly $3.5$ times smaller than the MLE predictions. The shrunken estimate for the best hitter (Clemente)
+        roughly <span class="tts-math" data-tts="3.5">$3.5$</span> times smaller than the MLE predictions. The shrunken estimate for the best hitter (Clemente)
         was substantially worse than the MLE for him alone — but the gains on the mediocre hitters more than paid
         for it across the pool.
       </p>
@@ -192,146 +191,146 @@
 <div class="box warn" data-cid="ch11-360">
 <span class="box-label">Common pitfall — shrinking the wrong direction</span>
 <p data-cid="ch11-370">
-        The formula $(1 - (p-2)/\|X\|^2) X$ shrinks toward zero. That works because we set up the prior with mean
-        zero. If your $\theta_i$'s are believed to cluster around some other value (say a grand mean $\nu$), the
-        correct estimator subtracts $\nu$, shrinks, and adds back: $\delta^{\text{JS}}_i = \nu + (1 - (p-3)/\|X-\nu\|^2)(X_i - \nu)$.
+        The formula <span class="tts-math" data-tts="1 minus p minus 2 over norm of X norm of to the 2 X">$(1 - (p-2)/\|X\|^2) X$</span> shrinks toward zero. That works because we set up the prior with mean
+        zero. If your <span class="tts-math" data-tts="theta sub i">$\theta_i$</span>'s are believed to cluster around some other value (say a grand mean <span class="tts-math" data-tts="nu">$\nu$</span>), the
+        correct estimator subtracts <span class="tts-math" data-tts="nu">$\nu$</span>, shrinks, and adds back: <span class="tts-math" data-tts="delta to the JS sub i equals nu plus 1 minus p minus 3 over norm of X minus nu norm of to the 2 X sub i minus nu">$\delta^{\text{JS}}_i = \nu + (1 - (p-3)/\|X-\nu\|^2)(X_i - \nu)$</span>.
       </p>
 <p data-cid="ch11-380">
-        If you shrink toward the wrong target — say, toward zero when the truth is centered at $100$ — you can do
+        If you shrink toward the wrong target — say, toward zero when the truth is centered at <span class="tts-math" data-tts="100">$100$</span> — you can do
         catastrophically worse than the MLE. The shrinkage is only safe relative to a sensible center.
       </p>
 </div>
 <h3 data-cid="ch11-390">Why the word "empirical"</h3>
 <p data-cid="ch11-400">
-      The derivation has a Bayesian flavour, but $\tau$ is not modelled as a random variable; we just estimate it
-      from data. Statisticians call $\tau$ a <strong>hyperparameter</strong>. A fully Bayesian treatment would put a
-      prior on $\tau$ as well — leading to a <strong>hierarchical Bayes</strong> model. Empirical Bayes is the
+      The derivation has a Bayesian flavour, but <span class="tts-math" data-tts="tau">$\tau$</span> is not modelled as a random variable; we just estimate it
+      from data. Statisticians call <span class="tts-math" data-tts="tau">$\tau$</span> a <strong>hyperparameter</strong>. A fully Bayesian treatment would put a
+      prior on <span class="tts-math" data-tts="tau">$\tau$</span> as well — leading to a <strong>hierarchical Bayes</strong> model. Empirical Bayes is the
       pragmatic shortcut: estimate the hyperparameter from data and pretend you knew it. Keener returns to
       hierarchical models in Section 15.1.
     </p>
 <!-- ===================================================================== -->
 <h2 data-cid="ch11-410" id="s11-2">11.2 Risk of the James–Stein Estimator</h2>
 <p data-cid="ch11-420">
-      We claimed $\delta^{\text{JS}}$ dominates $X$ in compound risk when $p \geq 3$. Now we prove it. The proof has
+      We claimed <span class="tts-math" data-tts="delta to the JS">$\delta^{\text{JS}}$</span> dominates <span class="tts-math" data-tts="X">$X$</span> in compound risk when <span class="tts-math" data-tts="p greater than or equal to 3">$p \geq 3$</span>. Now we prove it. The proof has
       a beautiful structure: Stein's identity gives us an <em>unbiased estimator of the risk</em>, and for
-      $\delta^{\text{JS}}$ that estimator is manifestly less than $p$.
+      <span class="tts-math" data-tts="delta to the JS">$\delta^{\text{JS}}$</span> that estimator is manifestly less than <span class="tts-math" data-tts="p">$p$</span>.
     </p>
 <h3 data-cid="ch11-430">Stein's identity in one dimension</h3>
 <div class="box definition" data-cid="ch11-440">
 <span class="box-label">Lemma 11.1 — Stein's identity</span>
 <p data-cid="ch11-450">
-        Let $X \sim N(\mu, \sigma^2)$, let $h : \mathbb{R} \to \mathbb{R}$ be differentiable (absolutely continuous
-        is enough), and suppose $E|h'(X)| &lt; \infty$. Then
-        $$E[(X - \mu) h(X)] = \sigma^2 \, E[h'(X)].$$
+        Let <span class="tts-math" data-tts="X distributed as N mu sigma to the 2">$X \sim N(\mu, \sigma^2)$</span>, let <span class="tts-math" data-tts="h the real numbers to the real numbers">$h : \mathbb{R} \to \mathbb{R}$</span> be differentiable (absolutely continuous
+        is enough), and suppose <span class="tts-math" data-tts="E h prime X lt infinity">$E|h'(X)| &lt; \infty$</span>. Then
+        <span class="tts-math" data-tts="E X minus mu h X equals sigma to the 2 E h prime X .">$$E[(X - \mu) h(X)] = \sigma^2 \, E[h'(X)].$$</span>
       </p>
 </div>
 <div class="box intuition" data-cid="ch11-460">
 <span class="box-label">Reading the lemma</span>
 <p data-cid="ch11-470">
-        Multiplying by $(X - \mu)$ inside an expectation is the same as differentiating $h$ and multiplying by
-        $\sigma^2$. It's an "integration by parts" for the normal distribution, and it converts cross-terms
-        involving $(X - \mu)$ — which we usually have to expand and grind through — into derivatives, which we
+        Multiplying by <span class="tts-math" data-tts="X minus mu">$(X - \mu)$</span> inside an expectation is the same as differentiating <span class="tts-math" data-tts="h">$h$</span> and multiplying by
+        <span class="tts-math" data-tts="sigma to the 2">$\sigma^2$</span>. It's an "integration by parts" for the normal distribution, and it converts cross-terms
+        involving <span class="tts-math" data-tts="X minus mu">$(X - \mu)$</span> — which we usually have to expand and grind through — into derivatives, which we
         can often compute symbolically.
       </p>
 <p data-cid="ch11-480">
-        The proof works for $N(0,1)$ first via Fubini: write $h(x) = \int_0^x h'(y)\,dy$, swap the order of integration
-        in $\int x h(x) e^{-x^2/2} dx$, and use $\int_y^\infty x e^{-x^2/2} dx = e^{-y^2/2}$. The general $(\mu, \sigma^2)$
-        case follows by standardizing $Z = (X - \mu)/\sigma$.
+        The proof works for <span class="tts-math" data-tts="N 0 1">$N(0,1)$</span> first via Fubini: write <span class="tts-math" data-tts="h x equals sub 0 to the x h prime y dy">$h(x) = \int_0^x h'(y)\,dy$</span>, swap the order of integration
+        in <span class="tts-math" data-tts="the integral of x h x e to the x to the 2 over 2 dx">$\int x h(x) e^{-x^2/2} dx$</span>, and use <span class="tts-math" data-tts="sub y^ infinity x e to the x to the 2 over 2 dx equals e to the y to the 2 over 2">$\int_y^\infty x e^{-x^2/2} dx = e^{-y^2/2}$</span>. The general <span class="tts-math" data-tts="mu sigma to the 2">$(\mu, \sigma^2)$</span>
+        case follows by standardizing <span class="tts-math" data-tts="Z equals X minus mu over sigma">$Z = (X - \mu)/\sigma$</span>.
       </p>
 </div>
 <h3 data-cid="ch11-490">The multivariate version</h3>
 <p data-cid="ch11-500">
-      Now let $X_1, \dots, X_p$ be independent with $X_i \sim N(\theta_i, 1)$, and let $h : \mathbb{R}^p \to \mathbb{R}^p$.
-      Write $Dh(x)$ for the $p \times p$ matrix of partial derivatives, $[Dh(x)]_{ij} = \partial h_i(x)/\partial x_j$,
-      and $\operatorname{tr}\{Dh(x)\} = \sum_i \partial h_i / \partial x_i$ for its trace.
+      Now let <span class="tts-math" data-tts="X sub 1 and so on X sub p">$X_1, \dots, X_p$</span> be independent with <span class="tts-math" data-tts="X sub i distributed as N theta sub i 1">$X_i \sim N(\theta_i, 1)$</span>, and let <span class="tts-math" data-tts="h the real numbers to the p to the real numbers to the p">$h : \mathbb{R}^p \to \mathbb{R}^p$</span>.
+      Write <span class="tts-math" data-tts="Dh x">$Dh(x)$</span> for the <span class="tts-math" data-tts="p times p">$p \times p$</span> matrix of partial derivatives, <span class="tts-math" data-tts="Dh x sub ij equals partial h sub i x over partial x sub j">$[Dh(x)]_{ij} = \partial h_i(x)/\partial x_j$</span>,
+      and <span class="tts-math" data-tts="tr Dh x equals sub i partial h sub i over partial x sub i">$\operatorname{tr}\{Dh(x)\} = \sum_i \partial h_i / \partial x_i$</span> for its trace.
     </p>
 <div class="box definition" data-cid="ch11-510">
 <span class="box-label">Lemma 11.2 — multivariate Stein</span>
 <p data-cid="ch11-520">
-        Under integrability, $E \, \|Dh(X)\| &lt; \infty$,
-        $$E\bigl[ (X - \theta)' h(X) \bigr] = E \operatorname{tr}\{Dh(X)\}.$$
+        Under integrability, <span class="tts-math" data-tts="E norm of Dh X norm of lt infinity">$E \, \|Dh(X)\| &lt; \infty$</span>,
+        <span class="tts-math" data-tts="E X minus theta prime h X equals E tr Dh X .">$$E\bigl[ (X - \theta)' h(X) \bigr] = E \operatorname{tr}\{Dh(X)\}.$$</span>
       </p>
 </div>
 <p data-cid="ch11-530">
       The proof is one application of the scalar Stein identity per coordinate, then summing. The key insight is
-      that conditioning on all coordinates except $X_i$ reduces the $i$-th term to a one-dimensional problem in $X_i$,
+      that conditioning on all coordinates except <span class="tts-math" data-tts="X sub i">$X_i$</span> reduces the <span class="tts-math" data-tts="i">$i$</span>-th term to a one-dimensional problem in <span class="tts-math" data-tts="X sub i">$X_i$</span>,
       which is exactly what Lemma 11.1 handles.
     </p>
 <h3 data-cid="ch11-540">An unbiased estimator of the risk</h3>
 <p data-cid="ch11-550">
-      Now the punchline. Given an estimator $\delta(X)$ of $\theta$, write $\delta(X) = X - h(X)$ — so $h(X)$ is the
-      "shrinkage" that $\delta$ applies. Then
-      $$\| \delta(X) - \theta \|^2 = \| X - \theta - h(X) \|^2 = \|X - \theta\|^2 + \|h(X)\|^2 - 2 (X - \theta)' h(X).$$
-      Take expectations. The first term is $p$ (sum of $p$ unit variances). The third term is, by Lemma 11.2,
-      $2 E \operatorname{tr}\{Dh(X)\}$. So:
+      Now the punchline. Given an estimator <span class="tts-math" data-tts="delta X">$\delta(X)$</span> of <span class="tts-math" data-tts="theta">$\theta$</span>, write <span class="tts-math" data-tts="delta X equals X minus h X">$\delta(X) = X - h(X)$</span> — so <span class="tts-math" data-tts="h X">$h(X)$</span> is the
+      "shrinkage" that <span class="tts-math" data-tts="delta">$\delta$</span> applies. Then
+      <span class="tts-math" data-tts="norm of delta X minus theta norm of to the 2 equals norm of X minus theta minus h X norm of to the 2 equals norm of X minus theta norm of to the 2 plus norm of h X norm of to the 2 minus 2 X minus theta prime h X .">$$\| \delta(X) - \theta \|^2 = \| X - \theta - h(X) \|^2 = \|X - \theta\|^2 + \|h(X)\|^2 - 2 (X - \theta)' h(X).$$</span>
+      Take expectations. The first term is <span class="tts-math" data-tts="p">$p$</span> (sum of <span class="tts-math" data-tts="p">$p$</span> unit variances). The third term is, by Lemma 11.2,
+      <span class="tts-math" data-tts="2 E tr Dh X">$2 E \operatorname{tr}\{Dh(X)\}$</span>. So:
     </p>
 <div class="box definition" data-cid="ch11-560">
 <span class="box-label">Theorem 11.3 — unbiased risk estimator</span>
 <p data-cid="ch11-570">
-        Suppose $X_i \sim N(\theta_i, 1)$ independently and $\delta(X) = X - h(X)$ with $h$ differentiable. Define
-        $$\hat R = p + \|h(X)\|^2 - 2 \operatorname{tr}\{Dh(X)\}.$$
-        Then $R(\theta, \delta) = E_\theta \, \hat R$, provided $E_\theta \, \|Dh(X)\| &lt; \infty$.
+        Suppose <span class="tts-math" data-tts="X sub i distributed as N theta sub i 1">$X_i \sim N(\theta_i, 1)$</span> independently and <span class="tts-math" data-tts="delta X equals X minus h X">$\delta(X) = X - h(X)$</span> with <span class="tts-math" data-tts="h">$h$</span> differentiable. Define
+        <span class="tts-math" data-tts="R equals p plus norm of h X norm of to the 2 minus 2 tr Dh X .">$$\hat R = p + \|h(X)\|^2 - 2 \operatorname{tr}\{Dh(X)\}.$$</span>
+        Then <span class="tts-math" data-tts="R theta delta equals E_ theta R">$R(\theta, \delta) = E_\theta \, \hat R$</span>, provided <span class="tts-math" data-tts="E_ theta norm of Dh X norm of lt infinity">$E_\theta \, \|Dh(X)\| &lt; \infty$</span>.
       </p>
 </div>
 <div class="box pause" data-cid="ch11-580">
 <span class="box-label">Pause — what makes this remarkable</span>
 <p data-cid="ch11-590">
-        $\hat R$ depends only on $X$, not on $\theta$. Given any candidate estimator, we can compute (in principle)
+        <span class="tts-math" data-tts="R">$\hat R$</span> depends only on <span class="tts-math" data-tts="X">$X$</span>, not on <span class="tts-math" data-tts="theta">$\theta$</span>. Given any candidate estimator, we can compute (in principle)
         a function of the data whose expectation equals the risk — without knowing the truth. That's already a
-        useful tool: we can compare two estimators by comparing the realized values of their $\hat R$'s, on any data set.
+        useful tool: we can compare two estimators by comparing the realized values of their <span class="tts-math" data-tts="R">$\hat R$</span>'s, on any data set.
       </p>
 </div>
 <h3 data-cid="ch11-600">Applying it to James–Stein</h3>
 <p data-cid="ch11-610">
-      For the James–Stein estimator (11.2), $h(X) = \dfrac{p-2}{\|X\|^2} X$. Componentwise,
-      $h_i(x) = (p-2) x_i / \|x\|^2$.
+      For the James–Stein estimator (11.2), <span class="tts-math" data-tts="h X equals p minus 2 over norm of X norm of to the 2 X">$h(X) = \dfrac{p-2}{\|X\|^2} X$</span>. Componentwise,
+      <span class="tts-math" data-tts="h sub i x equals p minus 2 x sub i over norm of x norm of to the 2">$h_i(x) = (p-2) x_i / \|x\|^2$</span>.
     </p>
 <p data-cid="ch11-620">
-      We need $\operatorname{tr}\{Dh(x)\}$. By the quotient rule,
-      $$\frac{\partial h_i(x)}{\partial x_i} = \frac{p-2}{\|x\|^2} - \frac{2(p-2) x_i^2}{\|x\|^4}.$$
-      Summing over $i$:
-      $$\operatorname{tr}\{Dh(x)\} = \frac{p(p-2)}{\|x\|^2} - \frac{2(p-2) \sum_i x_i^2}{\|x\|^4} = \frac{p(p-2) - 2(p-2)}{\|x\|^2} = \frac{(p-2)^2}{\|x\|^2}.$$
+      We need <span class="tts-math" data-tts="tr Dh x">$\operatorname{tr}\{Dh(x)\}$</span>. By the quotient rule,
+      <span class="tts-math" data-tts="partial h sub i x over partial x sub i equals p minus 2 over norm of x norm of to the 2 minus 2 p minus 2 x sub i to the 2 over norm of x norm of to the 4 .">$$\frac{\partial h_i(x)}{\partial x_i} = \frac{p-2}{\|x\|^2} - \frac{2(p-2) x_i^2}{\|x\|^4}.$$</span>
+      Summing over <span class="tts-math" data-tts="i">$i$</span>:
+      <span class="tts-math" data-tts="tr Dh x equals p p minus 2 over norm of x norm of to the 2 minus 2 p minus 2 sub i x sub i to the 2 over norm of x norm of to the 4 equals p p minus 2 minus 2 p minus 2 over norm of x norm of to the 2 equals p minus 2 to the 2 over norm of x norm of to the 2 .">$$\operatorname{tr}\{Dh(x)\} = \frac{p(p-2)}{\|x\|^2} - \frac{2(p-2) \sum_i x_i^2}{\|x\|^4} = \frac{p(p-2) - 2(p-2)}{\|x\|^2} = \frac{(p-2)^2}{\|x\|^2}.$$</span>
     </p>
-<p data-cid="ch11-630">And $\|h(x)\|^2 = \sum_i (p-2)^2 x_i^2 / \|x\|^4 = (p-2)^2 / \|x\|^2$.</p>
+<p data-cid="ch11-630">And <span class="tts-math" data-tts="norm of h x norm of to the 2 equals sub i p minus 2 to the 2 x sub i to the 2 over norm of x norm of to the 4 equals p minus 2 to the 2 over norm of x norm of to the 2">$\|h(x)\|^2 = \sum_i (p-2)^2 x_i^2 / \|x\|^4 = (p-2)^2 / \|x\|^2$</span>.</p>
 <p data-cid="ch11-640">Plug into Theorem 11.3:</p>
-    $$\hat R = p + \frac{(p-2)^2}{\|X\|^2} - 2 \cdot \frac{(p-2)^2}{\|X\|^2} = p - \frac{(p-2)^2}{\|X\|^2}. \tag{11.5}$$
+    <span class="tts-math" data-tts="R equals p plus p minus 2 to the 2 over norm of X norm of to the 2 minus 2 times p minus 2 to the 2 over norm of X norm of to the 2 equals p minus p minus 2 to the 2 over norm of X norm of to the 2 . 11.5">$$\hat R = p + \frac{(p-2)^2}{\|X\|^2} - 2 \cdot \frac{(p-2)^2}{\|X\|^2} = p - \frac{(p-2)^2}{\|X\|^2}. \tag{11.5}$$</span>
     <div class="box intuition" data-cid="ch11-650">
-<span class="box-label">Why $p - 2$ was the magic constant</span>
+<span class="box-label">Why <span class="tts-math" data-tts="p minus 2">$p - 2$</span> was the magic constant</span>
 <p data-cid="ch11-660">
-        The choice $c = p - 2$ in the shrinkage factor $c / \|X\|^2$ is the one that lets $\|h\|^2$ and
-        $2 \operatorname{tr}\{Dh\}$ combine into a single negative term. Any other constant $c$ gives
-        $\hat R = p + c^2/\|X\|^2 - 2c(p-2)/\|X\|^2$, whose minimum over $c$ is at $c = p - 2$. James and Stein
+        The choice <span class="tts-math" data-tts="c equals p minus 2">$c = p - 2$</span> in the shrinkage factor <span class="tts-math" data-tts="c over norm of X norm of to the 2">$c / \|X\|^2$</span> is the one that lets <span class="tts-math" data-tts="norm of h norm of to the 2">$\|h\|^2$</span> and
+        <span class="tts-math" data-tts="2 tr Dh">$2 \operatorname{tr}\{Dh\}$</span> combine into a single negative term. Any other constant <span class="tts-math" data-tts="c">$c$</span> gives
+        <span class="tts-math" data-tts="R equals p plus c to the 2 over norm of X norm of to the 2 minus 2c p minus 2 over norm of X norm of to the 2">$\hat R = p + c^2/\|X\|^2 - 2c(p-2)/\|X\|^2$</span>, whose minimum over <span class="tts-math" data-tts="c">$c$</span> is at <span class="tts-math" data-tts="c equals p minus 2">$c = p - 2$</span>. James and Stein
         chose the optimum.
       </p>
 </div>
 <h3 data-cid="ch11-670">The domination theorem</h3>
 <p data-cid="ch11-680">
-      Since $(p-2)^2/\|X\|^2 \geq 0$ for $p \geq 2$, equation (11.5) gives
-      $$R(\theta, \delta^{\text{JS}}) = E_\theta \hat R = E_\theta\!\left[ p - \frac{(p-2)^2}{\|X\|^2} \right] &lt; p = R(\theta, X)$$
-      whenever $p \geq 3$ (so that the subtracted term has strictly positive expectation — note $1/\|X\|^2$ has
-      infinite expectation at $\theta = 0$ when $p \leq 2$, which is part of why the result fails there).
+      Since <span class="tts-math" data-tts="p minus 2 to the 2 over norm of X norm of to the 2 greater than or equal to 0">$(p-2)^2/\|X\|^2 \geq 0$</span> for <span class="tts-math" data-tts="p greater than or equal to 2">$p \geq 2$</span>, equation (11.5) gives
+      <span class="tts-math" data-tts="R theta delta to the JS equals E_ theta R equals E_ theta p minus p minus 2 to the 2 over norm of X norm of to the 2 lt p equals R theta X">$$R(\theta, \delta^{\text{JS}}) = E_\theta \hat R = E_\theta\!\left[ p - \frac{(p-2)^2}{\|X\|^2} \right] &lt; p = R(\theta, X)$$</span>
+      whenever <span class="tts-math" data-tts="p greater than or equal to 3">$p \geq 3$</span> (so that the subtracted term has strictly positive expectation — note <span class="tts-math" data-tts="1 over norm of X norm of to the 2">$1/\|X\|^2$</span> has
+      infinite expectation at <span class="tts-math" data-tts="theta equals 0">$\theta = 0$</span> when <span class="tts-math" data-tts="p less than or equal to 2">$p \leq 2$</span>, which is part of why the result fails there).
     </p>
 <div class="box pause" data-cid="ch11-690">
 <span class="box-label">The headline</span>
 <p data-cid="ch11-700">
-        When $p \geq 3$, the James–Stein estimator has strictly smaller compound risk than $X$ <em>for every value of $\theta$</em>.
-        Not on average over some prior; not in some asymptotic limit; <strong>every $\theta$</strong>. In the language
-        of decision theory (next section), $X$ is <strong>inadmissible</strong>: it is dominated.
+        When <span class="tts-math" data-tts="p greater than or equal to 3">$p \geq 3$</span>, the James–Stein estimator has strictly smaller compound risk than <span class="tts-math" data-tts="X">$X$</span> <em>for every value of <span class="tts-math" data-tts="theta">$\theta$</span></em>.
+        Not on average over some prior; not in some asymptotic limit; <strong>every <span class="tts-math" data-tts="theta">$\theta$</span></strong>. In the language
+        of decision theory (next section), <span class="tts-math" data-tts="X">$X$</span> is <strong>inadmissible</strong>: it is dominated.
       </p>
 </div>
 <h3 data-cid="ch11-710">How much improvement, and where?</h3>
 <p data-cid="ch11-720">
-      When $\|\theta\|$ is large, $\|X\|$ is large with high probability, the shrinkage factor is near $1$, and
-      $\delta^{\text{JS}} \approx X$ with similar risk. The gain is concentrated near the origin. At $\theta = 0$,
-      $\|X\|^2 \sim \chi^2_p$, and from $E_0[1/\|X\|^2] = 1/(p-2)$ (a chi-square computation, as in (4.10)),
-      $$R(0, \delta^{\text{JS}}) = p - \frac{(p-2)^2}{p-2} = p - (p-2) = 2.$$
+      When <span class="tts-math" data-tts="norm of theta norm">$\|\theta\|$</span> is large, <span class="tts-math" data-tts="norm of X norm">$\|X\|$</span> is large with high probability, the shrinkage factor is near <span class="tts-math" data-tts="1">$1$</span>, and
+      <span class="tts-math" data-tts="delta to the JS approximately X">$\delta^{\text{JS}} \approx X$</span> with similar risk. The gain is concentrated near the origin. At <span class="tts-math" data-tts="theta equals 0">$\theta = 0$</span>,
+      <span class="tts-math" data-tts="norm of X norm of to the 2 distributed as chi to the 2 sub p">$\|X\|^2 \sim \chi^2_p$</span>, and from <span class="tts-math" data-tts="E sub 0 1 over norm of X norm of to the 2 equals 1 over p minus 2">$E_0[1/\|X\|^2] = 1/(p-2)$</span> (a chi-square computation, as in (4.10)),
+      <span class="tts-math" data-tts="R 0 delta to the JS equals p minus p minus 2 to the 2 over p minus 2 equals p minus p minus 2 equals 2.">$$R(0, \delta^{\text{JS}}) = p - \frac{(p-2)^2}{p-2} = p - (p-2) = 2.$$</span>
     </p>
 <div class="box intuition" data-cid="ch11-730">
-<span class="box-label">The two — independent of $p$</span>
+<span class="box-label">The two — independent of <span class="tts-math" data-tts="p">$p$</span></span>
 <p data-cid="ch11-740">
-        At the origin, no matter how many dimensions you have, the James–Stein estimator has risk exactly $2$.
-        The MLE has risk $p$ there. So for $p = 100$, the improvement is a factor of $50$. The James–Stein
-        estimator essentially says "estimate the $\theta$'s by their average — wait, they're all zero — so estimate
+        At the origin, no matter how many dimensions you have, the James–Stein estimator has risk exactly <span class="tts-math" data-tts="2">$2$</span>.
+        The MLE has risk <span class="tts-math" data-tts="p">$p$</span> there. So for <span class="tts-math" data-tts="p equals 100">$p = 100$</span>, the improvement is a factor of <span class="tts-math" data-tts="50">$50$</span>. The James–Stein
+        estimator essentially says "estimate the <span class="tts-math" data-tts="theta">$\theta$</span>'s by their average — wait, they're all zero — so estimate
         them all by zero". When that's roughly right, it's vastly better than the MLE; when it's wrong, the
         guarantee says you're still no worse.
       </p>
@@ -351,56 +350,56 @@
 <path d="M 40 155 Q 120 155 200 100 T 370 55" fill="none" stroke="#6ea866" stroke-width="2"></path>
 <text fill="#6ea866" font-family="sans-serif" font-size="11" x="240" y="125">R(θ, δᴶˢ)</text>
 </svg>
-<figcaption>The James–Stein risk lies strictly below $p$ for all $\theta$, with the gap maximal at the origin and shrinking to zero as $\|\theta\| \to \infty$.</figcaption>
+<figcaption>The James–Stein risk lies strictly below <span class="tts-math" data-tts="p">$p$</span> for all <span class="tts-math" data-tts="theta">$\theta$</span>, with the gap maximal at the origin and shrinking to zero as <span class="tts-math" data-tts="norm of theta norm of to infinity">$\|\theta\| \to \infty$</span>.</figcaption>
 </figure>
 <div class="box warn" data-cid="ch11-760">
 <span class="box-label">Common pitfall — admissibility doesn't mean "best"</span>
 <p data-cid="ch11-770">
-        $\delta^{\text{JS}}$ dominates $X$, but $\delta^{\text{JS}}$ is itself dominated! The "positive part" version,
-        $\delta^{\text{JS+}} = \max(0, 1 - (p-2)/\|X\|^2) X$, has uniformly smaller risk than $\delta^{\text{JS}}$
-        (it forbids the shrinkage factor from going negative, which can happen when $\|X\|^2 &lt; p - 2$). So
-        $\delta^{\text{JS}}$ is also inadmissible. Even $\delta^{\text{JS+}}$ is inadmissible. Finding admissible
+        <span class="tts-math" data-tts="delta to the JS">$\delta^{\text{JS}}$</span> dominates <span class="tts-math" data-tts="X">$X$</span>, but <span class="tts-math" data-tts="delta to the JS">$\delta^{\text{JS}}$</span> is itself dominated! The "positive part" version,
+        <span class="tts-math" data-tts="delta to the JS plus equals max 0 1 minus p minus 2 over norm of X norm of to the 2 X">$\delta^{\text{JS+}} = \max(0, 1 - (p-2)/\|X\|^2) X$</span>, has uniformly smaller risk than <span class="tts-math" data-tts="delta to the JS">$\delta^{\text{JS}}$</span>
+        (it forbids the shrinkage factor from going negative, which can happen when <span class="tts-math" data-tts="norm of X norm of to the 2 lt p minus 2">$\|X\|^2 &lt; p - 2$</span>). So
+        <span class="tts-math" data-tts="delta to the JS">$\delta^{\text{JS}}$</span> is also inadmissible. Even <span class="tts-math" data-tts="delta to the JS plus">$\delta^{\text{JS+}}$</span> is inadmissible. Finding admissible
         estimators in high dimensions is genuinely hard.
       </p>
 </div>
 <!-- ===================================================================== -->
 <h2 data-cid="ch11-780" id="s11-3">11.3 Decision Theory</h2>
 <p data-cid="ch11-790">
-      The James–Stein result raised the natural question: is $X$ also inadmissible in $p = 1$ or $p = 2$? The answer
-      turns out to be no — $X$ is admissible in those dimensions. To make sense of these claims we need a small dose
+      The James–Stein result raised the natural question: is <span class="tts-math" data-tts="X">$X$</span> also inadmissible in <span class="tts-math" data-tts="p equals 1">$p = 1$</span> or <span class="tts-math" data-tts="p equals 2">$p = 2$</span>? The answer
+      turns out to be no — <span class="tts-math" data-tts="X">$X$</span> is admissible in those dimensions. To make sense of these claims we need a small dose
       of decision theory.
     </p>
 <h3 data-cid="ch11-800">The vocabulary</h3>
 <p data-cid="ch11-810">Formal decision theory has five ingredients:</p>
 <ul data-cid="ch11-820">
-<li>A <strong>parameter space</strong> $\Omega$ (the unknown $\theta$ lives here).</li>
-<li>An <strong>action space</strong> $A$ (the things you can decide to do).</li>
-<li>A <strong>data space</strong> $\mathcal{X}$ (here, $\mathbb{R}^n$).</li>
-<li>A <strong>model</strong> $\mathcal{P} = \{P_\theta : \theta \in \Omega\}$.</li>
-<li>A <strong>loss function</strong> $L : \Omega \times A \to [-\infty, \infty]$, taken non-negative and measurable.</li>
+<li>A <strong>parameter space</strong> <span class="tts-math" data-tts="Omega">$\Omega$</span> (the unknown <span class="tts-math" data-tts="theta">$\theta$</span> lives here).</li>
+<li>An <strong>action space</strong> <span class="tts-math" data-tts="A">$A$</span> (the things you can decide to do).</li>
+<li>A <strong>data space</strong> <span class="tts-math" data-tts="script X">$\mathcal{X}$</span> (here, <span class="tts-math" data-tts="the real numbers to the n">$\mathbb{R}^n$</span>).</li>
+<li>A <strong>model</strong> <span class="tts-math" data-tts="script P equals P_ theta theta in Omega">$\mathcal{P} = \{P_\theta : \theta \in \Omega\}$</span>.</li>
+<li>A <strong>loss function</strong> <span class="tts-math" data-tts="L Omega times A to minus infinity infinity">$L : \Omega \times A \to [-\infty, \infty]$</span>, taken non-negative and measurable.</li>
 </ul>
 <p data-cid="ch11-830">
-      A <strong>nonrandomized decision rule</strong> is a measurable function $\delta : \mathcal{X} \to A$. A
-      <strong>randomized</strong> rule is a stochastic kernel $\delta_x$: observing $X = x$, draw an action from the
-      probability distribution $\delta_x$. The set of all rules is $\mathcal{D}$.
+      A <strong>nonrandomized decision rule</strong> is a measurable function <span class="tts-math" data-tts="delta script X to A">$\delta : \mathcal{X} \to A$</span>. A
+      <strong>randomized</strong> rule is a stochastic kernel <span class="tts-math" data-tts="delta sub x">$\delta_x$</span>: observing <span class="tts-math" data-tts="X equals x">$X = x$</span>, draw an action from the
+      probability distribution <span class="tts-math" data-tts="delta sub x">$\delta_x$</span>. The set of all rules is <span class="tts-math" data-tts="script D">$\mathcal{D}$</span>.
     </p>
 <p data-cid="ch11-840">
-      The <strong>risk function</strong> of $\delta$ is
-      $$R(\theta, \delta) = E_\theta L(\theta, \delta(X)) = \int L(\theta, \delta(x)) \, dP_\theta(x).$$
+      The <strong>risk function</strong> of <span class="tts-math" data-tts="delta">$\delta$</span> is
+      <span class="tts-math" data-tts="R theta delta equals E_ theta L theta delta X equals the integral of L theta delta x dP_ theta x .">$$R(\theta, \delta) = E_\theta L(\theta, \delta(X)) = \int L(\theta, \delta(x)) \, dP_\theta(x).$$</span>
     </p>
 <div class="box example" data-cid="ch11-850">
 <span class="box-label">Example 11.4 — estimation</span>
 <p data-cid="ch11-860">
-        To estimate $g(\theta)$, take $A = \mathbb{R}$ and call $\delta$ an estimator. Standard losses are squared
-        error $L(\theta, a) = (a - g(\theta))^2$ and weighted squared error $L(\theta, a) = w(\theta)(a - g(\theta))^2$.
+        To estimate <span class="tts-math" data-tts="g theta">$g(\theta)$</span>, take <span class="tts-math" data-tts="A equals the real numbers">$A = \mathbb{R}$</span> and call <span class="tts-math" data-tts="delta">$\delta$</span> an estimator. Standard losses are squared
+        error <span class="tts-math" data-tts="L theta a equals a minus g theta to the 2">$L(\theta, a) = (a - g(\theta))^2$</span> and weighted squared error <span class="tts-math" data-tts="L theta a equals w theta a minus g theta to the 2">$L(\theta, a) = w(\theta)(a - g(\theta))^2$</span>.
       </p>
 </div>
 <div class="box example" data-cid="ch11-870">
 <span class="box-label">Example 11.5 — testing</span>
 <p data-cid="ch11-880">
-        For testing $H_0: \theta \in \Omega_0$ vs.\ $H_1: \theta \in \Omega_1$, take $A = \{0, 1\}$. A randomized rule
-        is determined by the success probability $\phi(x) = \delta_x(\{1\})$ — the <strong>test function</strong>.
-        Under zero-one loss, the risk is the power function on $\Omega_1$ and one minus the power on $\Omega_0$
+        For testing <span class="tts-math" data-tts="H sub 0 theta in Omega sub 0">$H_0: \theta \in \Omega_0$</span> vs.\ <span class="tts-math" data-tts="H sub 1 theta in Omega sub 1">$H_1: \theta \in \Omega_1$</span>, take <span class="tts-math" data-tts="A equals 0 1">$A = \{0, 1\}$</span>. A randomized rule
+        is determined by the success probability <span class="tts-math" data-tts="phi x equals delta sub x 1">$\phi(x) = \delta_x(\{1\})$</span> — the <strong>test function</strong>.
+        Under zero-one loss, the risk is the power function on <span class="tts-math" data-tts="Omega sub 1">$\Omega_1$</span> and one minus the power on <span class="tts-math" data-tts="Omega sub 0">$\Omega_0$</span>
         (i.e., the type-I error rate on the null).
       </p>
 </div>
@@ -408,9 +407,9 @@
 <div class="box definition" data-cid="ch11-900">
 <span class="box-label">Definition — admissibility</span>
 <p data-cid="ch11-910">
-        A rule $\delta^*$ <strong>dominates</strong> $\delta$ if $R(\theta, \delta^*) \leq R(\theta, \delta)$ for all
-        $\theta \in \Omega$ with strict inequality for some $\theta$. $\delta$ is <strong>inadmissible</strong> if
-        some $\delta^*$ dominates it; otherwise $\delta$ is <strong>admissible</strong>.
+        A rule <span class="tts-math" data-tts="delta to the times">$\delta^*$</span> <strong>dominates</strong> <span class="tts-math" data-tts="delta">$\delta$</span> if <span class="tts-math" data-tts="R theta delta to the times less than or equal to R theta delta">$R(\theta, \delta^*) \leq R(\theta, \delta)$</span> for all
+        <span class="tts-math" data-tts="theta in Omega">$\theta \in \Omega$</span> with strict inequality for some <span class="tts-math" data-tts="theta">$\theta$</span>. <span class="tts-math" data-tts="delta">$\delta$</span> is <strong>inadmissible</strong> if
+        some <span class="tts-math" data-tts="delta to the times">$\delta^*$</span> dominates it; otherwise <span class="tts-math" data-tts="delta">$\delta$</span> is <strong>admissible</strong>.
       </p>
 </div>
 <div class="box intuition" data-cid="ch11-920">
@@ -418,51 +417,51 @@
 <p data-cid="ch11-930">
         Admissibility is a minimal sanity check, not a recommendation. An admissible rule simply has the property
         that no competitor is uniformly at least as good and somewhere strictly better. That leaves a lot of room.
-        For instance, "always estimate $\theta = 17$" is admissible — no other rule beats it at $\theta = 17$. Bad,
+        For instance, "always estimate <span class="tts-math" data-tts="theta equals 17">$\theta = 17$</span>" is admissible — no other rule beats it at <span class="tts-math" data-tts="theta equals 17">$\theta = 17$</span>. Bad,
         but admissible. Conversely, inadmissibility is damning: someone offered you a strictly better procedure for
         free.
       </p>
 </div>
 <h3 data-cid="ch11-940">Bayes rules and integrated risk</h3>
 <p data-cid="ch11-950">
-      Given a prior $\Lambda$ on $\Omega$, the <strong>integrated risk</strong> is
-      $$R(\Lambda, \delta) = \int R(\theta, \delta) \, d\Lambda(\theta), \tag{11.6}$$
-      and the <strong>Bayes risk</strong> is the infimum, $R(\Lambda) = \inf_{\delta \in \mathcal{D}} R(\Lambda, \delta)$.
-      $\delta$ is <strong>Bayes for $\Lambda$</strong> if it achieves this infimum: $R(\Lambda, \delta) = R(\Lambda)$.
+      Given a prior <span class="tts-math" data-tts="Lambda">$\Lambda$</span> on <span class="tts-math" data-tts="Omega">$\Omega$</span>, the <strong>integrated risk</strong> is
+      <span class="tts-math" data-tts="R Lambda delta equals the integral of R theta delta d Lambda theta 11.6">$$R(\Lambda, \delta) = \int R(\theta, \delta) \, d\Lambda(\theta), \tag{11.6}$$</span>
+      and the <strong>Bayes risk</strong> is the infimum, <span class="tts-math" data-tts="R Lambda equals sub delta in script D R Lambda delta">$R(\Lambda) = \inf_{\delta \in \mathcal{D}} R(\Lambda, \delta)$</span>.
+      <span class="tts-math" data-tts="delta">$\delta$</span> is <strong>Bayes for <span class="tts-math" data-tts="Lambda">$\Lambda$</span></strong> if it achieves this infimum: <span class="tts-math" data-tts="R Lambda delta equals R Lambda">$R(\Lambda, \delta) = R(\Lambda)$</span>.
     </p>
 <p data-cid="ch11-960">
-      An important technical note: in (11.6) and the Bayes risk, $\Lambda$ doesn't actually need to be a probability
-      measure — finiteness or even just $\sigma$-finiteness is enough. We call $\delta$ <strong>proper Bayes</strong>
+      An important technical note: in (11.6) and the Bayes risk, <span class="tts-math" data-tts="Lambda">$\Lambda$</span> doesn't actually need to be a probability
+      measure — finiteness or even just <span class="tts-math" data-tts="sigma">$\sigma$</span>-finiteness is enough. We call <span class="tts-math" data-tts="delta">$\delta$</span> <strong>proper Bayes</strong>
       if it is Bayes for some probability prior; rules that are Bayes only for "improper" priors (with
-      $\Lambda(\Omega) = \infty$) are excluded from this designation.
+      <span class="tts-math" data-tts="Lambda Omega equals infinity">$\Lambda(\Omega) = \infty$</span>) are excluded from this designation.
     </p>
 <h3 data-cid="ch11-970">Why Bayes rules tend to be admissible</h3>
 <div class="box definition" data-cid="ch11-980">
 <span class="box-label">Theorem 11.6</span>
-<p data-cid="ch11-990">If $\delta$ is the essentially unique Bayes rule for $\Lambda$, then $\delta$ is admissible.</p>
+<p data-cid="ch11-990">If <span class="tts-math" data-tts="delta">$\delta$</span> is the essentially unique Bayes rule for <span class="tts-math" data-tts="Lambda">$\Lambda$</span>, then <span class="tts-math" data-tts="delta">$\delta$</span> is admissible.</p>
 </div>
 <p data-cid="ch11-1000">
-      The proof is one line: if $\delta^*$ dominated $\delta$, then $\delta^*$ would also be Bayes (because it
-      integrates to at most the same value), and by uniqueness $\delta = \delta^*$ a.e., so their risks would coincide.
+      The proof is one line: if <span class="tts-math" data-tts="delta to the times">$\delta^*$</span> dominated <span class="tts-math" data-tts="delta">$\delta$</span>, then <span class="tts-math" data-tts="delta to the times">$\delta^*$</span> would also be Bayes (because it
+      integrates to at most the same value), and by uniqueness <span class="tts-math" data-tts="delta equals delta to the times">$\delta = \delta^*$</span> a.e., so their risks would coincide.
       Contradiction.
     </p>
 <div class="box definition" data-cid="ch11-1010">
 <span class="box-label">Theorem 11.7</span>
 <p data-cid="ch11-1020">
-        If risk functions are continuous in $\theta$, $\delta$ is Bayes for $\Lambda$ with finite integrated risk,
-        and $\Lambda$ has support equal to all of $\Omega$, then $\delta$ is admissible.
+        If risk functions are continuous in <span class="tts-math" data-tts="theta">$\theta$</span>, <span class="tts-math" data-tts="delta">$\delta$</span> is Bayes for <span class="tts-math" data-tts="Lambda">$\Lambda$</span> with finite integrated risk,
+        and <span class="tts-math" data-tts="Lambda">$\Lambda$</span> has support equal to all of <span class="tts-math" data-tts="Omega">$\Omega$</span>, then <span class="tts-math" data-tts="delta">$\delta$</span> is admissible.
       </p>
 </div>
 <p data-cid="ch11-1030">
-      The support condition is doing real work: it says the prior $\Lambda$ doesn't ignore any open subset of
-      $\Omega$. Combined with continuity of risk functions, this forces any dominating $\delta^*$ to agree with
-      $\delta$ everywhere.
+      The support condition is doing real work: it says the prior <span class="tts-math" data-tts="Lambda">$\Lambda$</span> doesn't ignore any open subset of
+      <span class="tts-math" data-tts="Omega">$\Omega$</span>. Combined with continuity of risk functions, this forces any dominating <span class="tts-math" data-tts="delta to the times">$\delta^*$</span> to agree with
+      <span class="tts-math" data-tts="delta">$\delta$</span> everywhere.
     </p>
 <h3 data-cid="ch11-1040">Complete classes</h3>
 <p data-cid="ch11-1050">
       A collection of decision rules is a <strong>complete class</strong> if every rule outside the class is
       inadmissible. So a complete class contains all admissible rules. A general theorem (Theorem 11.8, due to
-      Brown) says that under regularity (dominated family, strictly convex loss, loss diverging to $\infty$), the
+      Brown) says that under regularity (dominated family, strictly convex loss, loss diverging to <span class="tts-math" data-tts="infinity">$\infty$</span>), the
       pointwise limits of Bayes rules with finitely supported priors form a complete class. Translation: in regular
       problems, every admissible rule is a limit of Bayes rules.
     </p>
@@ -479,37 +478,37 @@
 <div class="box definition" data-cid="ch11-1090">
 <span class="box-label">Theorem 11.9 (sketch)</span>
 <p data-cid="ch11-1100">
-        Assume risk functions are continuous in $\theta$. If for every closed ball $\overline{B_r(x)}$ there exist
-        finite measures $\Lambda_m$ with $R(\Lambda_m, \delta) &lt; \infty$,
-        $\liminf \Lambda_m\bigl(\overline{B_r(x)}\bigr) &gt; 0$, and $R(\delta, \Lambda_m) - R(\Lambda_m) \to 0$,
-        then $\delta$ is admissible.
+        Assume risk functions are continuous in <span class="tts-math" data-tts="theta">$\theta$</span>. If for every closed ball <span class="tts-math" data-tts="B sub r x bar">$\overline{B_r(x)}$</span> there exist
+        finite measures <span class="tts-math" data-tts="Lambda sub m">$\Lambda_m$</span> with <span class="tts-math" data-tts="R Lambda sub m delta lt infinity">$R(\Lambda_m, \delta) &lt; \infty$</span>,
+        <span class="tts-math" data-tts="limit inferior of Lambda sub m B sub r x bar gt 0">$\liminf \Lambda_m\bigl(\overline{B_r(x)}\bigr) &gt; 0$</span>, and <span class="tts-math" data-tts="R delta Lambda sub m minus R Lambda sub m to 0">$R(\delta, \Lambda_m) - R(\Lambda_m) \to 0$</span>,
+        then <span class="tts-math" data-tts="delta">$\delta$</span> is admissible.
       </p>
 </div>
 <p data-cid="ch11-1110">
-      The idea: $\delta$ is "almost Bayes" for a sequence of priors that don't degenerate locally. If a competing
-      $\delta^*$ dominated $\delta$, the gap would integrate against $\Lambda_m$ to a positive lower bound (using
-      the local non-degeneracy), contradicting the assumption that $\delta$ achieves the Bayes risk asymptotically.
+      The idea: <span class="tts-math" data-tts="delta">$\delta$</span> is "almost Bayes" for a sequence of priors that don't degenerate locally. If a competing
+      <span class="tts-math" data-tts="delta to the times">$\delta^*$</span> dominated <span class="tts-math" data-tts="delta">$\delta$</span>, the gap would integrate against <span class="tts-math" data-tts="Lambda sub m">$\Lambda_m$</span> to a positive lower bound (using
+      the local non-degeneracy), contradicting the assumption that <span class="tts-math" data-tts="delta">$\delta$</span> achieves the Bayes risk asymptotically.
     </p>
 <div class="box example" data-cid="ch11-1120">
-<span class="box-label">Example 11.10 — $\bar X$ is admissible in $p = 1$</span>
+<span class="box-label">Example 11.10 — <span class="tts-math" data-tts="X">$\bar X$</span> is admissible in <span class="tts-math" data-tts="p equals 1">$p = 1$</span></span>
 <p data-cid="ch11-1130">
-        Consider $X_1, \dots, X_n$ i.i.d.\ $N(\theta, \sigma^2)$ with $\sigma^2$ known, and the prior
-        $\Theta \sim N(0, \tau^2)$. The Bayes estimator is the shrunken mean
-        $\bar X / (1 + \sigma^2 / (n \tau^2))$ with integrated risk $\sigma^2 \tau^2 / (\sigma^2 + n \tau^2)$.
-        As $\tau \to \infty$, this Bayes rule converges to $\bar X$.
+        Consider <span class="tts-math" data-tts="X sub 1 and so on X sub n">$X_1, \dots, X_n$</span> i.i.d.\ <span class="tts-math" data-tts="N theta sigma to the 2">$N(\theta, \sigma^2)$</span> with <span class="tts-math" data-tts="sigma to the 2">$\sigma^2$</span> known, and the prior
+        <span class="tts-math" data-tts="Theta distributed as N 0 tau to the 2">$\Theta \sim N(0, \tau^2)$</span>. The Bayes estimator is the shrunken mean
+        <span class="tts-math" data-tts="X over 1 plus sigma to the 2 over n tau to the 2">$\bar X / (1 + \sigma^2 / (n \tau^2))$</span> with integrated risk <span class="tts-math" data-tts="sigma to the 2 tau to the 2 over sigma to the 2 plus n tau to the 2">$\sigma^2 \tau^2 / (\sigma^2 + n \tau^2)$</span>.
+        As <span class="tts-math" data-tts="tau to infinity">$\tau \to \infty$</span>, this Bayes rule converges to <span class="tts-math" data-tts="X">$\bar X$</span>.
       </p>
 <p data-cid="ch11-1140">
-        Naive choice: $\Lambda_m = N(0, m)$. But this has densities tending to zero, so $\Lambda_m(\overline{B_r(x)}) \to 0$.
-        Fix: rescale, $\Lambda_m = \sqrt{m} \cdot N(0, m)$. Its density is $\varphi(\theta/\sqrt{m})$, which tends
-        to $1/\sqrt{2\pi}$, and by dominated convergence $\Lambda_m(\overline{B_r(x)}) \to 2r/\sqrt{2\pi}$.
+        Naive choice: <span class="tts-math" data-tts="Lambda sub m equals N 0 m">$\Lambda_m = N(0, m)$</span>. But this has densities tending to zero, so <span class="tts-math" data-tts="Lambda sub m B sub r x bar to 0">$\Lambda_m(\overline{B_r(x)}) \to 0$</span>.
+        Fix: rescale, <span class="tts-math" data-tts="Lambda sub m equals root m times N 0 m">$\Lambda_m = \sqrt{m} \cdot N(0, m)$</span>. Its density is <span class="tts-math" data-tts="phi theta over root m">$\varphi(\theta/\sqrt{m})$</span>, which tends
+        to <span class="tts-math" data-tts="1 over root 2 pi">$1/\sqrt{2\pi}$</span>, and by dominated convergence <span class="tts-math" data-tts="Lambda sub m B sub r x bar to 2r over root 2 pi">$\Lambda_m(\overline{B_r(x)}) \to 2r/\sqrt{2\pi}$</span>.
       </p>
 <p data-cid="ch11-1150">
-        Scaling the prior by $\sqrt{m}$ scales everything by $\sqrt{m}$, so
-        $R(\bar X, \Lambda_m) = \sqrt{m} \sigma^2 / n$ and $R(\Lambda_m) = \sqrt{m} \sigma^2 m / (\sigma^2 + nm)$, and
-        $$R(\bar X, \Lambda_m) - R(\Lambda_m) = \frac{\sqrt{m} \sigma^4}{n(\sigma^2 + nm)} \to 0.$$
-        Theorem 11.9 fires: $\bar X$ is admissible. A delicate version of this argument works in $p = 2$ as well —
-        but conjugate normals will not work, and the priors must be chosen with great care. Past $p = 2$, no rescue
-        is possible: this is exactly what Stein's $p \geq 3$ paradox is telling us.
+        Scaling the prior by <span class="tts-math" data-tts="root m">$\sqrt{m}$</span> scales everything by <span class="tts-math" data-tts="root m">$\sqrt{m}$</span>, so
+        <span class="tts-math" data-tts="R X Lambda sub m equals root m sigma to the 2 over n">$R(\bar X, \Lambda_m) = \sqrt{m} \sigma^2 / n$</span> and <span class="tts-math" data-tts="R Lambda sub m equals root m sigma to the 2 m over sigma to the 2 plus nm">$R(\Lambda_m) = \sqrt{m} \sigma^2 m / (\sigma^2 + nm)$</span>, and
+        <span class="tts-math" data-tts="R X Lambda sub m minus R Lambda sub m equals root m sigma to the 4 n sigma to the 2 plus nm to 0.">$$R(\bar X, \Lambda_m) - R(\Lambda_m) = \frac{\sqrt{m} \sigma^4}{n(\sigma^2 + nm)} \to 0.$$</span>
+        Theorem 11.9 fires: <span class="tts-math" data-tts="X">$\bar X$</span> is admissible. A delicate version of this argument works in <span class="tts-math" data-tts="p equals 2">$p = 2$</span> as well —
+        but conjugate normals will not work, and the priors must be chosen with great care. Past <span class="tts-math" data-tts="p equals 2">$p = 2$</span>, no rescue
+        is possible: this is exactly what Stein's <span class="tts-math" data-tts="p greater than or equal to 3">$p \geq 3$</span> paradox is telling us.
       </p>
 </div>
 <div class="box pause" data-cid="ch11-1160">
@@ -517,8 +516,8 @@
 <p data-cid="ch11-1170">
         Putting the chapter together: empirical Bayes provides a recipe (shrink toward the prior mean by an amount
         estimated from the data). For normal means, the recipe yields the James–Stein estimator. Stein's identity
-        provides an unbiased risk estimator. The risk estimator shows James–Stein beats the MLE for $p \geq 3$.
-        Decision theory tells us $\bar X$ is admissible for $p \leq 2$, so this $p \geq 3$ vs.\ $p \leq 2$ split is
+        provides an unbiased risk estimator. The risk estimator shows James–Stein beats the MLE for <span class="tts-math" data-tts="p greater than or equal to 3">$p \geq 3$</span>.
+        Decision theory tells us <span class="tts-math" data-tts="X">$\bar X$</span> is admissible for <span class="tts-math" data-tts="p less than or equal to 2">$p \leq 2$</span>, so this <span class="tts-math" data-tts="p greater than or equal to 3">$p \geq 3$</span> vs.\ <span class="tts-math" data-tts="p less than or equal to 2">$p \leq 2$</span> split is
         a genuine dimensional phenomenon, not a quirk of the prior.
       </p>
 </div>
@@ -531,22 +530,22 @@
         than about one parameter at a time) is what unlocks shrinkage.
       </li>
 <li>
-        Under a $N(0, \tau^2)$ prior on each $\theta_i$, the Bayes estimator is
-        $\delta_i(X) = X_i / (1 + 1/\tau^2)$ — shrink toward the prior mean, with strength controlled by $\tau$.
+        Under a <span class="tts-math" data-tts="N 0 tau to the 2">$N(0, \tau^2)$</span> prior on each <span class="tts-math" data-tts="theta sub i">$\theta_i$</span>, the Bayes estimator is
+        <span class="tts-math" data-tts="delta sub i X equals X sub i over 1 plus 1 over tau to the 2">$\delta_i(X) = X_i / (1 + 1/\tau^2)$</span> — shrink toward the prior mean, with strength controlled by <span class="tts-math" data-tts="tau">$\tau$</span>.
       </li>
 <li>
-<strong>Empirical Bayes</strong>: estimate the hyperparameter $\tau$ from the data and plug in. For normal
+<strong>Empirical Bayes</strong>: estimate the hyperparameter <span class="tts-math" data-tts="tau">$\tau$</span> from the data and plug in. For normal
         means, this yields the <strong>James–Stein estimator</strong>
-        $\delta^{\text{JS}} = (1 - (p-2)/\|X\|^2) X$.
+        <span class="tts-math" data-tts="delta to the JS equals 1 minus p minus 2 over norm of X norm of to the 2 X">$\delta^{\text{JS}} = (1 - (p-2)/\|X\|^2) X$</span>.
       </li>
 <li>
-<strong>Stein's identity</strong>: $E[(X - \mu) h(X)] = \sigma^2 E[h'(X)]$. The multivariate version
+<strong>Stein's identity</strong>: <span class="tts-math" data-tts="E X minus mu h X equals sigma to the 2 E h prime X">$E[(X - \mu) h(X)] = \sigma^2 E[h'(X)]$</span>. The multivariate version
         converts cross-terms in risk computations into traces of Jacobians.
       </li>
 <li>
         Using Stein's identity, the <strong>unbiased risk estimator</strong>
-        $\hat R = p + \|h\|^2 - 2 \operatorname{tr}\{Dh\}$ proves $R(\theta, \delta^{\text{JS}}) &lt; p$ for all
-        $\theta$ when $p \geq 3$. The MLE $X$ is <strong>inadmissible</strong>.
+        <span class="tts-math" data-tts="R equals p plus norm of h norm of to the 2 minus 2 tr Dh">$\hat R = p + \|h\|^2 - 2 \operatorname{tr}\{Dh\}$</span> proves <span class="tts-math" data-tts="R theta delta to the JS lt p">$R(\theta, \delta^{\text{JS}}) &lt; p$</span> for all
+        <span class="tts-math" data-tts="theta">$\theta$</span> when <span class="tts-math" data-tts="p greater than or equal to 3">$p \geq 3$</span>. The MLE <span class="tts-math" data-tts="X">$X$</span> is <strong>inadmissible</strong>.
       </li>
 <li>
 <strong>Decision theory</strong> formalizes the comparison via parameter / action / data spaces, loss, risk.
@@ -554,8 +553,8 @@
         admissible rule is essentially a limit of Bayes rules.
       </li>
 <li>
-        $\bar X$ is admissible in $p = 1, 2$ (use Theorem 11.9 with rescaled normal priors) but inadmissible in
-        $p \geq 3$. The transition is sharp and the cause is genuinely the geometry of high-dimensional space.
+        <span class="tts-math" data-tts="X">$\bar X$</span> is admissible in <span class="tts-math" data-tts="p equals 1 2">$p = 1, 2$</span> (use Theorem 11.9 with rescaled normal priors) but inadmissible in
+        <span class="tts-math" data-tts="p greater than or equal to 3">$p \geq 3$</span>. The transition is sharp and the cause is genuinely the geometry of high-dimensional space.
       </li>
 </ol>
 <div class="box pause" data-cid="ch11-1210">
@@ -564,10 +563,10 @@
         Before moving to Chapter 12, you should be able to answer (without looking back):
       </p>
 <ul data-cid="ch11-1230">
-<li>Why does shrinkage help even when the $X_i$'s are independent?</li>
-<li>What's the trick that lets us prove $E_\theta \hat R = R(\theta, \delta)$ without knowing $\theta$?</li>
+<li>Why does shrinkage help even when the <span class="tts-math" data-tts="X sub i">$X_i$</span>'s are independent?</li>
+<li>What's the trick that lets us prove <span class="tts-math" data-tts="E_ theta R equals R theta delta">$E_\theta \hat R = R(\theta, \delta)$</span> without knowing <span class="tts-math" data-tts="theta">$\theta$</span>?</li>
 <li>What goes wrong with James–Stein when you shrink toward the wrong center?</li>
-<li>State the definition of admissibility, and explain why "always say $17$" is admissible.</li>
+<li>State the definition of admissibility, and explain why "always say <span class="tts-math" data-tts="17">$17$</span>" is admissible.</li>
 <li>Why does the proof of Theorem 11.9 require <em>rescaled</em> normal priors rather than ordinary ones?</li>
 </ul>
 <p data-cid="ch11-1240">If any of these feel shaky, re-read the matching section. There's no hurry.</p>
@@ -578,6 +577,6 @@
 </nav>
 </article>
 </main>
-<script src="/js/main.js"></script><script src="/js/comments.js"></script>
+<script src="/js/main.js"></script><script src="/js/comments.js"></script><script src="/js/tts.js"></script>
 </body>
 </html>

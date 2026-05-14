@@ -10,14 +10,13 @@
 <link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
-<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/><link href="/css/tts.css" rel="stylesheet"/>
 </head>
 <body data-book="basic_stat" data-page="ch06">
 <header class="site-header">
+<a class="home-btn" href="/">Home</a>
 <a class="brand" href="/books/basic_stat/">Theoretical Statistics <small>a slow reading guide</small></a>
 <nav>
-<a href="/" class="all-books-link">All books</a>
-    <a href="/books/basic_stat/">Contents</a>
 <button aria-label="toggle theme" class="theme-toggle">Dark</button>
 </nav>
 </header>
@@ -48,20 +47,20 @@
 <p data-cid="ch06-030">
       Back in Section 1.10, Keener gave you a definition of conditional probability that you had already met as an
       undergraduate:
-      $$P(Y \in B \mid X = x) = \frac{P(Y \in B,\, X = x)}{P(X = x)}.$$
-      Useful, familiar, but the chapter ended with an honest warning: this formula <em>breaks</em> the moment $X$ is
-      continuous, because then $P(X = x) = 0$ for every individual $x$ and the right-hand side is $0/0$.
+      <span class="tts-math" data-tts="P Y in B given X equals x equals P Y in B X equals x over P X equals x .">$$P(Y \in B \mid X = x) = \frac{P(Y \in B,\, X = x)}{P(X = x)}.$$</span>
+      Useful, familiar, but the chapter ended with an honest warning: this formula <em>breaks</em> the moment <span class="tts-math" data-tts="X">$X$</span> is
+      continuous, because then <span class="tts-math" data-tts="P X equals x equals 0">$P(X = x) = 0$</span> for every individual <span class="tts-math" data-tts="x">$x$</span> and the right-hand side is <span class="tts-math" data-tts="0 over 0">$0/0$</span>.
     </p>
 <p data-cid="ch06-040">
       We pushed past that crisis by using identities — the tower property in particular — that held regardless of
-      whether $X$ was discrete or continuous. But the underlying object, "the conditional distribution of $Y$ given
-      $X = x$", was never properly constructed. This chapter pays that debt.
+      whether <span class="tts-math" data-tts="X">$X$</span> was discrete or continuous. But the underlying object, "the conditional distribution of <span class="tts-math" data-tts="Y">$Y$</span> given
+      <span class="tts-math" data-tts="X equals x">$X = x$</span>", was never properly constructed. This chapter pays that debt.
     </p>
 <div class="box intuition" data-cid="ch06-050">
 <span class="box-label">The whole chapter in one sentence</span>
 <p data-cid="ch06-060">
-        We replace the ratio formula $P(B \mid A) = P(A \cap B)/P(A)$ with a definition based on what the conditional
-        distribution should <em>do</em> inside an integral. That definition works whether or not $P(A) = 0$, and it
+        We replace the ratio formula <span class="tts-math" data-tts="P B given A equals P A intersect B over P A">$P(B \mid A) = P(A \cap B)/P(A)$</span> with a definition based on what the conditional
+        distribution should <em>do</em> inside an integral. That definition works whether or not <span class="tts-math" data-tts="P A equals 0">$P(A) = 0$</span>, and it
         agrees with the ratio formula whenever the ratio makes sense.
       </p>
 </div>
@@ -75,74 +74,74 @@
 <h2 data-cid="ch06-080" id="s6-1">6.1 Joint and marginal densities</h2>
 <h3 data-cid="ch06-090">Setup</h3>
 <p data-cid="ch06-100">
-      Let $X$ be a random vector in $\mathbb{R}^m$ and $Y$ a random vector in $\mathbb{R}^n$. Stack them into the
-      combined vector $Z = (X, Y)$ in $\mathbb{R}^{m+n}$. Suppose the distribution $P_Z$ has a density $p_Z$ with
-      respect to the product measure $\mu \times \nu$, where $\mu$ lives on $\mathbb{R}^m$ and $\nu$ on $\mathbb{R}^n$.
+      Let <span class="tts-math" data-tts="X">$X$</span> be a random vector in <span class="tts-math" data-tts="the real numbers to the m">$\mathbb{R}^m$</span> and <span class="tts-math" data-tts="Y">$Y$</span> a random vector in <span class="tts-math" data-tts="the real numbers to the n">$\mathbb{R}^n$</span>. Stack them into the
+      combined vector <span class="tts-math" data-tts="Z equals X Y">$Z = (X, Y)$</span> in <span class="tts-math" data-tts="the real numbers to the m plus n">$\mathbb{R}^{m+n}$</span>. Suppose the distribution <span class="tts-math" data-tts="P sub Z">$P_Z$</span> has a density <span class="tts-math" data-tts="p sub Z">$p_Z$</span> with
+      respect to the product measure <span class="tts-math" data-tts="mu times nu">$\mu \times \nu$</span>, where <span class="tts-math" data-tts="mu">$\mu$</span> lives on <span class="tts-math" data-tts="the real numbers to the m">$\mathbb{R}^m$</span> and <span class="tts-math" data-tts="nu">$\nu$</span> on <span class="tts-math" data-tts="the real numbers to the n">$\mathbb{R}^n$</span>.
     </p>
 <p data-cid="ch06-110">
-      The density $p_Z$ is called the <strong>joint density</strong> of $X$ and $Y$. By the Radon-Nikodym definition,
-      $$P(Z \in B) = \int\!\!\int 1_B(x, y) \, p_Z(x, y) \, d\mu(x)\, d\nu(y).$$
+      The density <span class="tts-math" data-tts="p sub Z">$p_Z$</span> is called the <strong>joint density</strong> of <span class="tts-math" data-tts="X">$X$</span> and <span class="tts-math" data-tts="Y">$Y$</span>. By the Radon-Nikodym definition,
+      <span class="tts-math" data-tts="P Z in B equals the integral of the integral of 1 sub B x y p sub Z x y d mu x d nu y .">$$P(Z \in B) = \int\!\!\int 1_B(x, y) \, p_Z(x, y) \, d\mu(x)\, d\nu(y).$$</span>
       Fubini's theorem (from Section 1.9) tells us the order of integration can be swapped freely.
     </p>
 <div class="box intuition" data-cid="ch06-120">
-<span class="box-label">Why keep $\mu$ and $\nu$ abstract?</span>
+<span class="box-label">Why keep <span class="tts-math" data-tts="mu">$\mu$</span> and <span class="tts-math" data-tts="nu">$\nu$</span> abstract?</span>
 <p data-cid="ch06-130">
-        In your undergrad class, $\mu$ and $\nu$ were always Lebesgue measure on $\mathbb{R}$, and you wrote
-        $\int\!\int p_Z(x, y) \, dx \, dy$. Keener keeps them abstract because the framework also covers (a) discrete
-        $X$ and discrete $Y$, where $\mu$ and $\nu$ are counting measures and the integral is a double sum; (b)
-        mixed cases, like $X$ discrete and $Y$ continuous, where $\mu$ is counting and $\nu$ is Lebesgue. One symbol
+        In your undergrad class, <span class="tts-math" data-tts="mu">$\mu$</span> and <span class="tts-math" data-tts="nu">$\nu$</span> were always Lebesgue measure on <span class="tts-math" data-tts="the real numbers">$\mathbb{R}$</span>, and you wrote
+        <span class="tts-math" data-tts="the integral of the integral of p sub Z x y dx dy">$\int\!\int p_Z(x, y) \, dx \, dy$</span>. Keener keeps them abstract because the framework also covers (a) discrete
+        <span class="tts-math" data-tts="X">$X$</span> and discrete <span class="tts-math" data-tts="Y">$Y$</span>, where <span class="tts-math" data-tts="mu">$\mu$</span> and <span class="tts-math" data-tts="nu">$\nu$</span> are counting measures and the integral is a double sum; (b)
+        mixed cases, like <span class="tts-math" data-tts="X">$X$</span> discrete and <span class="tts-math" data-tts="Y">$Y$</span> continuous, where <span class="tts-math" data-tts="mu">$\mu$</span> is counting and <span class="tts-math" data-tts="nu">$\nu$</span> is Lebesgue. One symbol
         for all three cases — exactly the unification Chapter 1 promised.
       </p>
 </div>
 <h3 data-cid="ch06-140">Marginalizing: removing a variable</h3>
 <p data-cid="ch06-150">
-      We want the distribution of $X$ alone. The trick: $X \in A$ if and only if $Z \in A \times \mathbb{R}^n$,
+      We want the distribution of <span class="tts-math" data-tts="X">$X$</span> alone. The trick: <span class="tts-math" data-tts="X in A">$X \in A$</span> if and only if <span class="tts-math" data-tts="Z in A times the real numbers to the n">$Z \in A \times \mathbb{R}^n$</span>,
       since the second coordinate is unrestricted. So
-      $$P(X \in A) = P(Z \in A \times \mathbb{R}^n) = \int\!\!\int 1_A(x) \, p_Z(x, y) \, d\nu(y) \, d\mu(x).$$
-      The indicator $1_{A \times \mathbb{R}^n}(x, y) = 1_A(x)$ — it only constrains the first coordinate. Pulling
-      $1_A(x)$ out of the inner integral,
-      $$P(X \in A) = \int_A \left\{ \int p_Z(x, y) \, d\nu(y) \right\} d\mu(x).$$
+      <span class="tts-math" data-tts="P X in A equals P Z in A times the real numbers to the n equals the integral of the integral of 1 sub A x p sub Z x y d nu y d mu x .">$$P(X \in A) = P(Z \in A \times \mathbb{R}^n) = \int\!\!\int 1_A(x) \, p_Z(x, y) \, d\nu(y) \, d\mu(x).$$</span>
+      The indicator <span class="tts-math" data-tts="1 sub A times the real numbers to the n x y equals 1 sub A x">$1_{A \times \mathbb{R}^n}(x, y) = 1_A(x)$</span> — it only constrains the first coordinate. Pulling
+      <span class="tts-math" data-tts="1 sub A x">$1_A(x)$</span> out of the inner integral,
+      <span class="tts-math" data-tts="P X in A equals sub A the integral of p sub Z x y d nu y d mu x .">$$P(X \in A) = \int_A \left\{ \int p_Z(x, y) \, d\nu(y) \right\} d\mu(x).$$</span>
     </p>
 <p data-cid="ch06-160">
-      Reading this expression: the thing in braces is a function of $x$, and we're integrating it against $\mu$ over
-      $A$. Comparing with the definition of density, we have just discovered that $X$ has the density
-      $$p_X(x) = \int p_Z(x, y) \, d\nu(y) \tag{6.1}$$
-      with respect to $\mu$. We call $p_X$ the <strong>marginal density</strong> of $X$. By a symmetric argument,
-      $Y$ has marginal density
-      $$p_Y(y) = \int p_Z(x, y) \, d\mu(x).$$
+      Reading this expression: the thing in braces is a function of <span class="tts-math" data-tts="x">$x$</span>, and we're integrating it against <span class="tts-math" data-tts="mu">$\mu$</span> over
+      <span class="tts-math" data-tts="A">$A$</span>. Comparing with the definition of density, we have just discovered that <span class="tts-math" data-tts="X">$X$</span> has the density
+      <span class="tts-math" data-tts="p sub X x equals the integral of p sub Z x y d nu y 6.1">$$p_X(x) = \int p_Z(x, y) \, d\nu(y) \tag{6.1}$$</span>
+      with respect to <span class="tts-math" data-tts="mu">$\mu$</span>. We call <span class="tts-math" data-tts="p sub X">$p_X$</span> the <strong>marginal density</strong> of <span class="tts-math" data-tts="X">$X$</span>. By a symmetric argument,
+      <span class="tts-math" data-tts="Y">$Y$</span> has marginal density
+      <span class="tts-math" data-tts="p sub Y y equals the integral of p sub Z x y d mu x .">$$p_Y(y) = \int p_Z(x, y) \, d\mu(x).$$</span>
     </p>
 <div class="box intuition" data-cid="ch06-170">
 <span class="box-label">In one phrase</span>
 <p data-cid="ch06-180">
         To marginalize out a variable, integrate the joint density against the dominating measure for that variable.
-        In the all-continuous case, that's "integrate out $y$". In the all-discrete case, it's "sum over $y$". Same
+        In the all-continuous case, that's "integrate out <span class="tts-math" data-tts="y">$y$</span>". In the all-discrete case, it's "sum over <span class="tts-math" data-tts="y">$y$</span>". Same
         formula either way.
       </p>
 </div>
 <div class="box example" data-cid="ch06-190">
 <span class="box-label">Example 6.1 — a mixed joint density</span>
 <p data-cid="ch06-200">
-        Let $\mu$ be counting measure on $\{0, 1, \dots, k\}$ and $\nu$ Lebesgue measure on $\mathbb{R}$. Define
-        $$p_Z(x, y) = \binom{k}{x} y^x (1 - y)^{k - x}, \qquad x \in \{0, 1, \dots, k\},\ y \in (0, 1),$$
-        and $p_Z = 0$ otherwise.
+        Let <span class="tts-math" data-tts="mu">$\mu$</span> be counting measure on <span class="tts-math" data-tts="0 1 and so on k">$\{0, 1, \dots, k\}$</span> and <span class="tts-math" data-tts="nu">$\nu$</span> Lebesgue measure on <span class="tts-math" data-tts="the real numbers">$\mathbb{R}$</span>. Define
+        <span class="tts-math" data-tts="p sub Z x y equals k x y to the x 1 minus y to the k minus x x in 0 1 and so on k y in 0 1">$$p_Z(x, y) = \binom{k}{x} y^x (1 - y)^{k - x}, \qquad x \in \{0, 1, \dots, k\},\ y \in (0, 1),$$</span>
+        and <span class="tts-math" data-tts="p sub Z equals 0">$p_Z = 0$</span> otherwise.
       </p>
 <p data-cid="ch06-210">
-        To get the marginal of $X$, use (6.1) and integrate $y$ out against Lebesgue measure on $(0, 1)$:
-        $$p_X(x) = \int_0^1 \binom{k}{x} y^x (1 - y)^{k - x} \, dy = \binom{k}{x} \cdot \frac{\Gamma(x+1)\Gamma(k-x+1)}{\Gamma(k+2)} = \frac{1}{k+1}.$$
-        We used the beta integral $\int_0^1 u^{\alpha - 1}(1-u)^{\beta-1} du = \Gamma(\alpha)\Gamma(\beta)/\Gamma(\alpha+\beta)$
-        with $\alpha = x+1$ and $\beta = k - x + 1$. So $X$ is uniformly distributed on $\{0, 1, \dots, k\}$.
+        To get the marginal of <span class="tts-math" data-tts="X">$X$</span>, use (6.1) and integrate <span class="tts-math" data-tts="y">$y$</span> out against Lebesgue measure on <span class="tts-math" data-tts="0 1">$(0, 1)$</span>:
+        <span class="tts-math" data-tts="p sub X x equals sub 0 to the 1 k x y to the x 1 minus y to the k minus x dy equals k x times Gamma x plus 1 Gamma k minus x plus 1 over Gamma k plus 2 equals 1 over k plus 1 .">$$p_X(x) = \int_0^1 \binom{k}{x} y^x (1 - y)^{k - x} \, dy = \binom{k}{x} \cdot \frac{\Gamma(x+1)\Gamma(k-x+1)}{\Gamma(k+2)} = \frac{1}{k+1}.$$</span>
+        We used the beta integral <span class="tts-math" data-tts="sub 0 to the 1 u to the alpha minus 1 1 minus u to the beta minus 1 du equals Gamma alpha Gamma beta over Gamma alpha plus beta">$\int_0^1 u^{\alpha - 1}(1-u)^{\beta-1} du = \Gamma(\alpha)\Gamma(\beta)/\Gamma(\alpha+\beta)$</span>
+        with <span class="tts-math" data-tts="alpha equals x plus 1">$\alpha = x+1$</span> and <span class="tts-math" data-tts="beta equals k minus x plus 1">$\beta = k - x + 1$</span>. So <span class="tts-math" data-tts="X">$X$</span> is uniformly distributed on <span class="tts-math" data-tts="0 1 and so on k">$\{0, 1, \dots, k\}$</span>.
       </p>
 <p data-cid="ch06-220">
-        For $Y$, sum out $x$ against counting measure:
-        $$p_Y(y) = \sum_{x = 0}^{k} \binom{k}{x} y^x (1 - y)^{k - x} = (y + (1 - y))^k = 1, \qquad y \in (0, 1).$$
-        That's the binomial theorem. So $Y \sim \text{Uniform}(0, 1)$.
+        For <span class="tts-math" data-tts="Y">$Y$</span>, sum out <span class="tts-math" data-tts="x">$x$</span> against counting measure:
+        <span class="tts-math" data-tts="p sub Y y equals the sum from x equals 0 to k of k x y to the x 1 minus y to the k minus x equals y plus 1 minus y to the k equals 1 y in 0 1 .">$$p_Y(y) = \sum_{x = 0}^{k} \binom{k}{x} y^x (1 - y)^{k - x} = (y + (1 - y))^k = 1, \qquad y \in (0, 1).$$</span>
+        That's the binomial theorem. So <span class="tts-math" data-tts="Y distributed as Uniform 0 1">$Y \sim \text{Uniform}(0, 1)$</span>.
       </p>
 </div>
 <div class="box pause" data-cid="ch06-230">
 <span class="box-label">Pause and look</span>
 <p data-cid="ch06-240">
         We just marginalized a single joint density two different ways — once by integrating, once by summing —
-        and the formula $(6.1)$ handled both without modification. The dominating measure tells you which operation
+        and the formula <span class="tts-math" data-tts="6.1">$(6.1)$</span> handled both without modification. The dominating measure tells you which operation
         to perform; the algebra does not change.
       </p>
 </div>
@@ -150,22 +149,22 @@
 <h2 data-cid="ch06-250" id="s6-2">6.2 Conditional distributions</h2>
 <h3 data-cid="ch06-260">The problem with the elementary formula</h3>
 <p data-cid="ch06-270">
-      Suppose we observe $X = x$ and ask: what is the distribution of $Y$ now? When $X$ is discrete and $p_X(x) &gt; 0$,
+      Suppose we observe <span class="tts-math" data-tts="X equals x">$X = x$</span> and ask: what is the distribution of <span class="tts-math" data-tts="Y">$Y$</span> now? When <span class="tts-math" data-tts="X">$X$</span> is discrete and <span class="tts-math" data-tts="p sub X x gt 0">$p_X(x) &gt; 0$</span>,
       the elementary formula
-      $$P(Y \in B \mid X = x) = \frac{P(X = x,\, Y \in B)}{P(X = x)}$$
+      <span class="tts-math" data-tts="P Y in B given X equals x equals P X equals x Y in B over P X equals x">$$P(Y \in B \mid X = x) = \frac{P(X = x,\, Y \in B)}{P(X = x)}$$</span>
       is honest arithmetic. We compute a numerator, a denominator, take the ratio.
     </p>
 <p data-cid="ch06-280">
-      But when $X$ is continuous, the event $\{X = x\}$ has probability zero, and so does the joint event. The
-      ratio is $0/0$ for every $x$. So we cannot define the conditional distribution by this formula; we have to
+      But when <span class="tts-math" data-tts="X">$X$</span> is continuous, the event <span class="tts-math" data-tts="X equals x">$\{X = x\}$</span> has probability zero, and so does the joint event. The
+      ratio is <span class="tts-math" data-tts="0 over 0">$0/0$</span> for every <span class="tts-math" data-tts="x">$x$</span>. So we cannot define the conditional distribution by this formula; we have to
       change the definition.
     </p>
 <div class="box warn" data-cid="ch06-290">
 <span class="box-label">Common pitfall</span>
 <p data-cid="ch06-300">
-        Students sometimes try to rescue the elementary formula by writing $P(X \in [x, x + dx])$ in the denominator
-        and taking $dx \to 0$. This works as informal motivation, but it is <em>not</em> a definition — it relies on
-        you picking the right "shrinking event" $\{X \in [x, x+dx]\}$, and different choices can give different
+        Students sometimes try to rescue the elementary formula by writing <span class="tts-math" data-tts="P X in x x plus dx">$P(X \in [x, x + dx])$</span> in the denominator
+        and taking <span class="tts-math" data-tts="dx to 0">$dx \to 0$</span>. This works as informal motivation, but it is <em>not</em> a definition — it relies on
+        you picking the right "shrinking event" <span class="tts-math" data-tts="X in x x plus dx">$\{X \in [x, x+dx]\}$</span>, and different choices can give different
         limits. (For a famous illustration, search "Borel-Kolmogorov paradox".) The clean way out is to <em>change
         what we ask the conditional distribution to do</em>, not to take limits of ratios.
       </p>
@@ -174,63 +173,63 @@
 <p data-cid="ch06-320">
       Step back from formulas and ask: what is conditioning <em>for</em>? In Chapter 1 we used it for one thing —
       the smoothing identity
-      $$E\, f(X, Y) = E\, E[f(X, Y) \mid X]. \tag{6.2}$$
-      Writing $E[f(X, Y) \mid X] = H(X)$ where $H(x) = \int f(x, y) \, dQ_x(y)$, equation (6.2) expands to
-      $$E\, f(X, Y) = \int H(x) \, dP_X(x) = \int\!\!\int f(x, y) \, dQ_x(y) \, dP_X(x). \tag{6.3}$$
+      <span class="tts-math" data-tts="E f X Y equals E E f X Y given X . 6.2">$$E\, f(X, Y) = E\, E[f(X, Y) \mid X]. \tag{6.2}$$</span>
+      Writing <span class="tts-math" data-tts="E f X Y given X equals H X">$E[f(X, Y) \mid X] = H(X)$</span> where <span class="tts-math" data-tts="H x equals the integral of f x y dQ sub x y">$H(x) = \int f(x, y) \, dQ_x(y)$</span>, equation (6.2) expands to
+      <span class="tts-math" data-tts="E f X Y equals the integral of H x dP sub X x equals the integral of the integral of f x y dQ sub x y dP sub X x . 6.3">$$E\, f(X, Y) = \int H(x) \, dP_X(x) = \int\!\!\int f(x, y) \, dQ_x(y) \, dP_X(x). \tag{6.3}$$</span>
     </p>
 <p data-cid="ch06-330">
-      Here $Q_x$ stands for "the conditional distribution of $Y$ given $X = x$", whatever that means. The point is
+      Here <span class="tts-math" data-tts="Q sub x">$Q_x$</span> stands for "the conditional distribution of <span class="tts-math" data-tts="Y">$Y$</span> given <span class="tts-math" data-tts="X equals x">$X = x$</span>", whatever that means. The point is
       this: identity (6.3) is what we want the conditional distribution to <em>achieve</em>. So we will turn it
       around and use it as the <em>definition</em>.
     </p>
 <div class="box intuition" data-cid="ch06-340">
 <span class="box-label">The switch in perspective</span>
 <p data-cid="ch06-350">
-        Elementary conditioning: "$Q_x$ is a thing, defined by a ratio". Measure-theoretic conditioning: "$Q_x$ is
+        Elementary conditioning: "<span class="tts-math" data-tts="Q sub x">$Q_x$</span> is a thing, defined by a ratio". Measure-theoretic conditioning: "<span class="tts-math" data-tts="Q sub x">$Q_x$</span> is
         whatever family of probability measures makes the smoothing identity (6.3) true". The ratio formula is one
-        way to <em>produce</em> a $Q_x$ when $P(X = x) &gt; 0$. The new definition admits other ways when it isn't.
+        way to <em>produce</em> a <span class="tts-math" data-tts="Q sub x">$Q_x$</span> when <span class="tts-math" data-tts="P X equals x gt 0">$P(X = x) &gt; 0$</span>. The new definition admits other ways when it isn't.
       </p>
 </div>
 <h3 data-cid="ch06-360">The formal definition</h3>
 <div class="box definition" data-cid="ch06-370">
 <span class="box-label">Definition 6.2 — conditional distribution</span>
 <p data-cid="ch06-380">
-        A function $Q$ assigning a probability measure $Q_x$ on $\mathbb{R}^n$ to each $x \in \mathbb{R}^m$ is a
-        <strong>conditional distribution for $Y$ given $X$</strong>, written $Y \mid X = x \sim Q_x$, if:
+        A function <span class="tts-math" data-tts="Q">$Q$</span> assigning a probability measure <span class="tts-math" data-tts="Q sub x">$Q_x$</span> on <span class="tts-math" data-tts="the real numbers to the n">$\mathbb{R}^n$</span> to each <span class="tts-math" data-tts="x in the real numbers to the m">$x \in \mathbb{R}^m$</span> is a
+        <strong>conditional distribution for <span class="tts-math" data-tts="Y">$Y$</span> given <span class="tts-math" data-tts="X">$X$</span></strong>, written <span class="tts-math" data-tts="Y given X equals x distributed as Q sub x">$Y \mid X = x \sim Q_x$</span>, if:
       </p>
 <ol data-cid="ch06-390">
-<li>$Q_x(\cdot)$ is a probability measure on the Borel sets of $\mathbb{R}^n$ for every $x$.</li>
-<li>For every Borel set $B \subseteq \mathbb{R}^n$, the function $x \mapsto Q_x(B)$ is measurable.</li>
-<li>For all Borel sets $A \subseteq \mathbb{R}^m$ and $B \subseteq \mathbb{R}^n$,
-        $$P(X \in A,\, Y \in B) = \int_A Q_x(B) \, dP_X(x).$$</li>
+<li><span class="tts-math" data-tts="Q sub x times">$Q_x(\cdot)$</span> is a probability measure on the Borel sets of <span class="tts-math" data-tts="the real numbers to the n">$\mathbb{R}^n$</span> for every <span class="tts-math" data-tts="x">$x$</span>.</li>
+<li>For every Borel set <span class="tts-math" data-tts="B subset of or equal to the real numbers to the n">$B \subseteq \mathbb{R}^n$</span>, the function <span class="tts-math" data-tts="x Q sub x B">$x \mapsto Q_x(B)$</span> is measurable.</li>
+<li>For all Borel sets <span class="tts-math" data-tts="A subset of or equal to the real numbers to the m">$A \subseteq \mathbb{R}^m$</span> and <span class="tts-math" data-tts="B subset of or equal to the real numbers to the n">$B \subseteq \mathbb{R}^n$</span>,
+        <span class="tts-math" data-tts="P X in A Y in B equals sub A Q sub x B dP sub X x .">$$P(X \in A,\, Y \in B) = \int_A Q_x(B) \, dP_X(x).$$</span></li>
 </ol>
 </div>
 <div class="box intuition" data-cid="ch06-400">
 <span class="box-label">Reading the three clauses</span>
 <p data-cid="ch06-410">
-        Clause 1: for each fixed $x$, $Q_x$ is an honest probability distribution — it assigns probabilities to
+        Clause 1: for each fixed <span class="tts-math" data-tts="x">$x$</span>, <span class="tts-math" data-tts="Q sub x">$Q_x$</span> is an honest probability distribution — it assigns probabilities to
         Borel sets, and the total is one.
       </p>
 <p data-cid="ch06-420">
-        Clause 2: as $x$ varies, $Q_x(B)$ must vary measurably. Otherwise we couldn't integrate it against
-        $P_X$ in clause 3. This is the technical condition that distinguishes "conditional distribution" from
+        Clause 2: as <span class="tts-math" data-tts="x">$x$</span> varies, <span class="tts-math" data-tts="Q sub x B">$Q_x(B)$</span> must vary measurably. Otherwise we couldn't integrate it against
+        <span class="tts-math" data-tts="P sub X">$P_X$</span> in clause 3. This is the technical condition that distinguishes "conditional distribution" from
         "an arbitrary family of probability measures".
       </p>
 <p data-cid="ch06-430">
-        Clause 3: this is (6.3) specialized to $f = 1_{A \times B}$. It says the joint probability of
-        $\{X \in A,\, Y \in B\}$ can be recovered by averaging the conditional probability $Q_x(B)$ over the
-        marginal distribution of $X$. Plain English: the law of total probability becomes the <em>definition</em>.
+        Clause 3: this is (6.3) specialized to <span class="tts-math" data-tts="f equals 1 sub A times B">$f = 1_{A \times B}$</span>. It says the joint probability of
+        <span class="tts-math" data-tts="X in A Y in B">$\{X \in A,\, Y \in B\}$</span> can be recovered by averaging the conditional probability <span class="tts-math" data-tts="Q sub x B">$Q_x(B)$</span> over the
+        marginal distribution of <span class="tts-math" data-tts="X">$X$</span>. Plain English: the law of total probability becomes the <em>definition</em>.
       </p>
 </div>
 <p data-cid="ch06-440">
       A theorem (cited by Keener — Billingsley 33.3 for the scalar case, Rao 2005 Chapter 5 in general) guarantees
-      that when $X$ and $Y$ are random vectors, a conditional distribution always exists. Outside the random-vector
+      that when <span class="tts-math" data-tts="X">$X$</span> and <span class="tts-math" data-tts="Y">$Y$</span> are random vectors, a conditional distribution always exists. Outside the random-vector
       setting, existence can fail: clause 1 can fail to be satisfiable. But for everything in this book, we are safe.
     </p>
 <div class="box pause" data-cid="ch06-450">
 <span class="box-label">Why this is the right definition</span>
 <p data-cid="ch06-460">
-        The definition does not divide by anything. It nowhere uses $P(X = x)$ on its own. It uses only
+        The definition does not divide by anything. It nowhere uses <span class="tts-math" data-tts="P X equals x">$P(X = x)$</span> on its own. It uses only
         integrals — and integrals are happy to integrate against measures whose mass is spread out continuously.
         That is the entire reason this definition survives the continuous case.
       </p>
@@ -240,17 +239,17 @@
       Definition 6.2 may feel pulled from a hat. Here is the deeper reason it is correct.
     </p>
 <p data-cid="ch06-490">
-      Fix a Borel set $B$ and define a set function on $\mathbb{R}^m$ by
-      $$\eta_B(A) = P(X \in A,\, Y \in B).$$
-      Easy to check: $\eta_B$ is a finite measure, and $\eta_B(A) \leq P(X \in A) = P_X(A)$. So $\eta_B$ is dominated
-      by $P_X$, meaning $P_X(A) = 0 \Rightarrow \eta_B(A) = 0$. By Theorem 1.10 (Radon-Nikodym), $\eta_B$ has a
-      density with respect to $P_X$: there exists a measurable function $\phi_B(x)$ such that
-      $$P(X \in A,\, Y \in B) = \int_A \phi_B(x) \, dP_X(x).$$
+      Fix a Borel set <span class="tts-math" data-tts="B">$B$</span> and define a set function on <span class="tts-math" data-tts="the real numbers to the m">$\mathbb{R}^m$</span> by
+      <span class="tts-math" data-tts="eta sub B A equals P X in A Y in B .">$$\eta_B(A) = P(X \in A,\, Y \in B).$$</span>
+      Easy to check: <span class="tts-math" data-tts="eta sub B">$\eta_B$</span> is a finite measure, and <span class="tts-math" data-tts="eta sub B A less than or equal to P X in A equals P sub X A">$\eta_B(A) \leq P(X \in A) = P_X(A)$</span>. So <span class="tts-math" data-tts="eta sub B">$\eta_B$</span> is dominated
+      by <span class="tts-math" data-tts="P sub X">$P_X$</span>, meaning <span class="tts-math" data-tts="P sub X A equals 0 implies eta sub B A equals 0">$P_X(A) = 0 \Rightarrow \eta_B(A) = 0$</span>. By Theorem 1.10 (Radon-Nikodym), <span class="tts-math" data-tts="eta sub B">$\eta_B$</span> has a
+      density with respect to <span class="tts-math" data-tts="P sub X">$P_X$</span>: there exists a measurable function <span class="tts-math" data-tts="phi sub B x">$\phi_B(x)$</span> such that
+      <span class="tts-math" data-tts="P X in A Y in B equals sub A phi sub B x dP sub X x .">$$P(X \in A,\, Y \in B) = \int_A \phi_B(x) \, dP_X(x).$$</span>
     </p>
 <p data-cid="ch06-500">
-      Compare with clause 3 of Definition 6.2: $\phi_B(x) = Q_x(B)$. The conditional probability $Q_x(B)$ is a
-      <strong>Radon-Nikodym derivative</strong> — the density of "joint probability that $X$ is in a region and
-      $Y$ is in $B$" with respect to "marginal probability that $X$ is in the region".
+      Compare with clause 3 of Definition 6.2: <span class="tts-math" data-tts="phi sub B x equals Q sub x B">$\phi_B(x) = Q_x(B)$</span>. The conditional probability <span class="tts-math" data-tts="Q sub x B">$Q_x(B)$</span> is a
+      <strong>Radon-Nikodym derivative</strong> — the density of "joint probability that <span class="tts-math" data-tts="X">$X$</span> is in a region and
+      <span class="tts-math" data-tts="Y">$Y$</span> is in <span class="tts-math" data-tts="B">$B$</span>" with respect to "marginal probability that <span class="tts-math" data-tts="X">$X$</span> is in the region".
     </p>
 <div class="box intuition" data-cid="ch06-510">
 <span class="box-label">The big picture</span>
@@ -261,28 +260,28 @@
       </p>
 </div>
 <p data-cid="ch06-530">
-      Two subtleties hide inside this construction. First, the Radon-Nikodym theorem gives $\phi_B$ uniquely
-      <em>up to a $P_X$-null set</em>. So $Q_x(B)$ is defined for $P_X$-almost every $x$, not literally every $x$.
-      When $X$ is continuous, this means $Q_x$ is undetermined on a Lebesgue-null set of $x$'s, and we are free to
-      define it arbitrarily there. Second, $\phi_B$ is built separately for each $B$. Bundling these into a
-      <em>single</em> family of probability measures $Q_x$ — one $Q_x$ that works for all $B$ simultaneously — is
+      Two subtleties hide inside this construction. First, the Radon-Nikodym theorem gives <span class="tts-math" data-tts="phi sub B">$\phi_B$</span> uniquely
+      <em>up to a <span class="tts-math" data-tts="P sub X">$P_X$</span>-null set</em>. So <span class="tts-math" data-tts="Q sub x B">$Q_x(B)$</span> is defined for <span class="tts-math" data-tts="P sub X">$P_X$</span>-almost every <span class="tts-math" data-tts="x">$x$</span>, not literally every <span class="tts-math" data-tts="x">$x$</span>.
+      When <span class="tts-math" data-tts="X">$X$</span> is continuous, this means <span class="tts-math" data-tts="Q sub x">$Q_x$</span> is undetermined on a Lebesgue-null set of <span class="tts-math" data-tts="x">$x$</span>'s, and we are free to
+      define it arbitrarily there. Second, <span class="tts-math" data-tts="phi sub B">$\phi_B$</span> is built separately for each <span class="tts-math" data-tts="B">$B$</span>. Bundling these into a
+      <em>single</em> family of probability measures <span class="tts-math" data-tts="Q sub x">$Q_x$</span> — one <span class="tts-math" data-tts="Q sub x">$Q_x$</span> that works for all <span class="tts-math" data-tts="B">$B$</span> simultaneously — is
       precisely what clause 1 of the definition asks for, and it is the non-trivial part of the existence theorem.
     </p>
-<h3 data-cid="ch06-540">Computing $Q_x$ when a joint density exists</h3>
+<h3 data-cid="ch06-540">Computing <span class="tts-math" data-tts="Q sub x">$Q_x$</span> when a joint density exists</h3>
 <p data-cid="ch06-550">
-      The definition is abstract. Now we recover something computable: when $Z = (X, Y)$ has a joint density, the
+      The definition is abstract. Now we recover something computable: when <span class="tts-math" data-tts="Z equals X Y">$Z = (X, Y)$</span> has a joint density, the
       conditional distribution is given by the formula your undergraduate textbook taught you — and now we have
       earned it.
     </p>
 <div class="box definition" data-cid="ch06-560">
 <span class="box-label">Theorem 6.3 — conditional density</span>
 <p data-cid="ch06-570">
-        Suppose $X$ and $Y$ have joint density $p_Z$ with respect to $\mu \times \nu$, with marginal density $p_X$
-        for $X$ defined by (6.1). Let $E = \{x : p_X(x) &gt; 0\}$. For $x \in E$, define
-        $$p_{Y \mid X}(y \mid x) = \frac{p_Z(x, y)}{p_X(x)}, \tag{6.4}$$
-        and let $Q_x$ be the probability measure with density $p_{Y \mid X}(\cdot \mid x)$ with respect to $\nu$.
-        For $x \notin E$, let $Q_x$ be any fixed probability distribution $P_0$. Then $Q$ is a conditional
-        distribution for $Y$ given $X$.
+        Suppose <span class="tts-math" data-tts="X">$X$</span> and <span class="tts-math" data-tts="Y">$Y$</span> have joint density <span class="tts-math" data-tts="p sub Z">$p_Z$</span> with respect to <span class="tts-math" data-tts="mu times nu">$\mu \times \nu$</span>, with marginal density <span class="tts-math" data-tts="p sub X">$p_X$</span>
+        for <span class="tts-math" data-tts="X">$X$</span> defined by (6.1). Let <span class="tts-math" data-tts="E equals x p sub X x gt 0">$E = \{x : p_X(x) &gt; 0\}$</span>. For <span class="tts-math" data-tts="x in E">$x \in E$</span>, define
+        <span class="tts-math" data-tts="p sub Y given X y given x equals p sub Z x y over p sub X x 6.4">$$p_{Y \mid X}(y \mid x) = \frac{p_Z(x, y)}{p_X(x)}, \tag{6.4}$$</span>
+        and let <span class="tts-math" data-tts="Q sub x">$Q_x$</span> be the probability measure with density <span class="tts-math" data-tts="p sub Y given X times given x">$p_{Y \mid X}(\cdot \mid x)$</span> with respect to <span class="tts-math" data-tts="nu">$\nu$</span>.
+        For <span class="tts-math" data-tts="x not in E">$x \notin E$</span>, let <span class="tts-math" data-tts="Q sub x">$Q_x$</span> be any fixed probability distribution <span class="tts-math" data-tts="P sub 0">$P_0$</span>. Then <span class="tts-math" data-tts="Q">$Q$</span> is a conditional
+        distribution for <span class="tts-math" data-tts="Y">$Y$</span> given <span class="tts-math" data-tts="X">$X$</span>.
       </p>
 </div>
 <h3 data-cid="ch06-580">Proof — going slow</h3>
@@ -290,32 +289,32 @@
       Three things to check: clauses 1, 2, 3 of Definition 6.2.
     </p>
 <p data-cid="ch06-600">
-<strong>Clause 1.</strong> For $x \in E$, $p_{Y \mid X}(\cdot \mid x)$ is non-negative (ratio of non-negatives)
-      and integrates to one against $\nu$:
-      $$\int p_{Y \mid X}(y \mid x) \, d\nu(y) = \frac{1}{p_X(x)} \int p_Z(x, y) \, d\nu(y) = \frac{p_X(x)}{p_X(x)} = 1.$$
-      So $Q_x$ is a probability measure. For $x \notin E$, $Q_x = P_0$ is a probability measure by choice.
+<strong>Clause 1.</strong> For <span class="tts-math" data-tts="x in E">$x \in E$</span>, <span class="tts-math" data-tts="p sub Y given X times given x">$p_{Y \mid X}(\cdot \mid x)$</span> is non-negative (ratio of non-negatives)
+      and integrates to one against <span class="tts-math" data-tts="nu">$\nu$</span>:
+      <span class="tts-math" data-tts="the integral of p sub Y given X y given x d nu y equals 1 over p sub X x the integral of p sub Z x y d nu y equals p sub X x over p sub X x equals 1.">$$\int p_{Y \mid X}(y \mid x) \, d\nu(y) = \frac{1}{p_X(x)} \int p_Z(x, y) \, d\nu(y) = \frac{p_X(x)}{p_X(x)} = 1.$$</span>
+      So <span class="tts-math" data-tts="Q sub x">$Q_x$</span> is a probability measure. For <span class="tts-math" data-tts="x not in E">$x \notin E$</span>, <span class="tts-math" data-tts="Q sub x equals P sub 0">$Q_x = P_0$</span> is a probability measure by choice.
     </p>
 <p data-cid="ch06-610">
-<strong>Clause 2.</strong> Measurability of $Q_x(B)$ in $x$ follows from measurability of $p_Z$ and standard
+<strong>Clause 2.</strong> Measurability of <span class="tts-math" data-tts="Q sub x B">$Q_x(B)$</span> in <span class="tts-math" data-tts="x">$x$</span> follows from measurability of <span class="tts-math" data-tts="p sub Z">$p_Z$</span> and standard
       Fubini-type results.
     </p>
 <p data-cid="ch06-620">
 <strong>Clause 3.</strong> This is where the work happens. We will show the stronger statement (6.3) for any
-      integrable $f$, from which clause 3 follows by taking $f = 1_{A \times B}$.
+      integrable <span class="tts-math" data-tts="f">$f$</span>, from which clause 3 follows by taking <span class="tts-math" data-tts="f equals 1 sub A times B">$f = 1_{A \times B}$</span>.
     </p>
 <p data-cid="ch06-630">
-      Note first that $P(X \in E) = 1$: the set where $p_X = 0$ has zero $P_X$-mass by construction. So we lose
-      nothing if we replace $p_Z(x, y)$ by $p_Z(x, y) \cdot 1_E(x)$ — the two functions agree $(\mu \times \nu)$-a.e.
-      Both are valid joint densities. With this replacement, $p_Z(x, y) = 0$ whenever $x \notin E$, and the
-      factorization $p_Z(x, y) = p_X(x) p_{Y \mid X}(y \mid x)$ holds for <em>all</em> $(x, y)$ (with the convention
-      $0 = 0 \cdot \text{anything}$ off $E$).
+      Note first that <span class="tts-math" data-tts="P X in E equals 1">$P(X \in E) = 1$</span>: the set where <span class="tts-math" data-tts="p sub X equals 0">$p_X = 0$</span> has zero <span class="tts-math" data-tts="P sub X">$P_X$</span>-mass by construction. So we lose
+      nothing if we replace <span class="tts-math" data-tts="p sub Z x y">$p_Z(x, y)$</span> by <span class="tts-math" data-tts="p sub Z x y times 1 sub E x">$p_Z(x, y) \cdot 1_E(x)$</span> — the two functions agree <span class="tts-math" data-tts="mu times nu">$(\mu \times \nu)$</span>-a.e.
+      Both are valid joint densities. With this replacement, <span class="tts-math" data-tts="p sub Z x y equals 0">$p_Z(x, y) = 0$</span> whenever <span class="tts-math" data-tts="x not in E">$x \notin E$</span>, and the
+      factorization <span class="tts-math" data-tts="p sub Z x y equals p sub X x p sub Y given X y given x">$p_Z(x, y) = p_X(x) p_{Y \mid X}(y \mid x)$</span> holds for <em>all</em> <span class="tts-math" data-tts="x y">$(x, y)$</span> (with the convention
+      <span class="tts-math" data-tts="0 equals 0 times anything">$0 = 0 \cdot \text{anything}$</span> off <span class="tts-math" data-tts="E">$E$</span>).
     </p>
 <p data-cid="ch06-640">
       Now compute the right-hand side of (6.3):
-      $$\int\!\!\int f(x, y) \, dQ_x(y) \, dP_X(x) = \int\!\!\int f(x, y) \, p_{Y \mid X}(y \mid x) \, d\nu(y) \, p_X(x) \, d\mu(x).$$
+      <span class="tts-math" data-tts="the integral of the integral of f x y dQ sub x y dP sub X x equals the integral of the integral of f x y p sub Y given X y given x d nu y p sub X x d mu x .">$$\int\!\!\int f(x, y) \, dQ_x(y) \, dP_X(x) = \int\!\!\int f(x, y) \, p_{Y \mid X}(y \mid x) \, d\nu(y) \, p_X(x) \, d\mu(x).$$</span>
       Combining the densities and applying Fubini,
-      $$= \int\!\!\int f(x, y) \, p_Z(x, y) \, d\nu(y) \, d\mu(x) = E\, f(X, Y).$$
-      That is exactly (6.3). Specializing to $f = 1_{A \times B}$ gives clause 3.
+      <span class="tts-math" data-tts="the integral of the integral of f x y p sub Z x y d nu y d mu x equals E f X Y .">$$= \int\!\!\int f(x, y) \, p_Z(x, y) \, d\nu(y) \, d\mu(x) = E\, f(X, Y).$$</span>
+      That is exactly (6.3). Specializing to <span class="tts-math" data-tts="f equals 1 sub A times B">$f = 1_{A \times B}$</span> gives clause 3.
     </p>
 <div class="box intuition" data-cid="ch06-650">
 <span class="box-label">The bottom line</span>
@@ -328,32 +327,32 @@
 </div>
 <h3 data-cid="ch06-670">Independence as a consequence</h3>
 <p data-cid="ch06-680">
-      Two variables are independent iff their joint density factors: $p_Z(x, y) = p_X(x) p_Y(y)$. Plugging into
+      Two variables are independent iff their joint density factors: <span class="tts-math" data-tts="p sub Z x y equals p sub X x p sub Y y">$p_Z(x, y) = p_X(x) p_Y(y)$</span>. Plugging into
       (6.4):
-      $$p_{Y \mid X}(y \mid x) = \frac{p_X(x) p_Y(y)}{p_X(x)} = p_Y(y).$$
-      The conditional density doesn't depend on $x$. Independence means "knowing $X$ tells you nothing about $Y$",
+      <span class="tts-math" data-tts="p sub Y given X y given x equals p sub X x p sub Y y over p sub X x equals p sub Y y .">$$p_{Y \mid X}(y \mid x) = \frac{p_X(x) p_Y(y)}{p_X(x)} = p_Y(y).$$</span>
+      The conditional density doesn't depend on <span class="tts-math" data-tts="x">$x$</span>. Independence means "knowing <span class="tts-math" data-tts="X">$X$</span> tells you nothing about <span class="tts-math" data-tts="Y">$Y$</span>",
       and now we see that translated into a formula.
     </p>
 <div class="box example" data-cid="ch06-690">
 <span class="box-label">Example 6.1 (continued) — a beta-binomial hierarchy</span>
 <p data-cid="ch06-700">
         Recall the joint density from earlier:
-        $$p_Z(x, y) = \binom{k}{x} y^x (1 - y)^{k - x}, \qquad x \in \{0, \dots, k\},\ y \in (0, 1).$$
-        We found $p_X(x) = 1/(k+1)$ and $p_Y(y) = 1$ on $(0, 1)$. Now we read off two conditional densities.
+        <span class="tts-math" data-tts="p sub Z x y equals k x y to the x 1 minus y to the k minus x x in 0 and so on k y in 0 1 .">$$p_Z(x, y) = \binom{k}{x} y^x (1 - y)^{k - x}, \qquad x \in \{0, \dots, k\},\ y \in (0, 1).$$</span>
+        We found <span class="tts-math" data-tts="p sub X x equals 1 over k plus 1">$p_X(x) = 1/(k+1)$</span> and <span class="tts-math" data-tts="p sub Y y equals 1">$p_Y(y) = 1$</span> on <span class="tts-math" data-tts="0 1">$(0, 1)$</span>. Now we read off two conditional densities.
       </p>
 <p data-cid="ch06-710">
-<strong>$X$ given $Y$.</strong> Since $p_Y(y) = 1$, equation (6.4) gives
-        $$p_{X \mid Y}(x \mid y) = \frac{p_Z(x, y)}{p_Y(y)} = \binom{k}{x} y^x (1 - y)^{k - x}.$$
-        For fixed $y$, this is the binomial mass function with $k$ trials and success probability $y$. So
-        $$X \mid Y = y \ \sim \ \text{Binomial}(k, y). \tag{6.5}$$
+<strong><span class="tts-math" data-tts="X">$X$</span> given <span class="tts-math" data-tts="Y">$Y$</span>.</strong> Since <span class="tts-math" data-tts="p sub Y y equals 1">$p_Y(y) = 1$</span>, equation (6.4) gives
+        <span class="tts-math" data-tts="p sub X given Y x given y equals p sub Z x y over p sub Y y equals k x y to the x 1 minus y to the k minus x.">$$p_{X \mid Y}(x \mid y) = \frac{p_Z(x, y)}{p_Y(y)} = \binom{k}{x} y^x (1 - y)^{k - x}.$$</span>
+        For fixed <span class="tts-math" data-tts="y">$y$</span>, this is the binomial mass function with <span class="tts-math" data-tts="k">$k$</span> trials and success probability <span class="tts-math" data-tts="y">$y$</span>. So
+        <span class="tts-math" data-tts="X given Y equals y distributed as Binomial k y . 6.5">$$X \mid Y = y \ \sim \ \text{Binomial}(k, y). \tag{6.5}$$</span>
       </p>
 <p data-cid="ch06-720">
-<strong>$Y$ given $X$.</strong> Since $p_X(x) = 1/(k+1)$,
-        $$p_{Y \mid X}(y \mid x) = \frac{p_Z(x, y)}{1/(k+1)} = (k+1)\binom{k}{x} y^x (1-y)^{k-x}.$$
-        Tidying the constants using $(k+1)\binom{k}{x} = \frac{\Gamma(k+2)}{\Gamma(x+1)\Gamma(k-x+1)}$,
-        $$p_{Y \mid X}(y \mid x) = \frac{\Gamma(k+2)}{\Gamma(x+1)\Gamma(k-x+1)} y^{(x+1) - 1}(1 - y)^{(k - x + 1) - 1}.$$
+<strong><span class="tts-math" data-tts="Y">$Y$</span> given <span class="tts-math" data-tts="X">$X$</span>.</strong> Since <span class="tts-math" data-tts="p sub X x equals 1 over k plus 1">$p_X(x) = 1/(k+1)$</span>,
+        <span class="tts-math" data-tts="p sub Y given X y given x equals p sub Z x y over 1 over k plus 1 equals k plus 1 k x y to the x 1 minus y to the k minus x.">$$p_{Y \mid X}(y \mid x) = \frac{p_Z(x, y)}{1/(k+1)} = (k+1)\binom{k}{x} y^x (1-y)^{k-x}.$$</span>
+        Tidying the constants using <span class="tts-math" data-tts="k plus 1 k x equals Gamma k plus 2 over Gamma x plus 1 Gamma k minus x plus 1">$(k+1)\binom{k}{x} = \frac{\Gamma(k+2)}{\Gamma(x+1)\Gamma(k-x+1)}$</span>,
+        <span class="tts-math" data-tts="p sub Y given X y given x equals Gamma k plus 2 over Gamma x plus 1 Gamma k minus x plus 1 y to the x plus 1 minus 1 1 minus y to the k minus x plus 1 minus 1.">$$p_{Y \mid X}(y \mid x) = \frac{\Gamma(k+2)}{\Gamma(x+1)\Gamma(k-x+1)} y^{(x+1) - 1}(1 - y)^{(k - x + 1) - 1}.$$</span>
         That is a beta density. So
-        $$Y \mid X = x \ \sim \ \text{Beta}(x + 1,\, k - x + 1).$$
+        <span class="tts-math" data-tts="Y given X equals x distributed as Beta x plus 1 k minus x plus 1 .">$$Y \mid X = x \ \sim \ \text{Beta}(x + 1,\, k - x + 1).$$</span>
       </p>
 <p data-cid="ch06-730">
         Notice the picture: we started with one joint density on a mixed product measure and discovered that it
@@ -363,20 +362,20 @@
       </p>
 </div>
 <div class="box example" data-cid="ch06-740">
-<span class="box-label">Smoothing in action — recovering $E\, X$ and $E\, X^2$</span>
+<span class="box-label">Smoothing in action — recovering <span class="tts-math" data-tts="E X">$E\, X$</span> and <span class="tts-math" data-tts="E X to the 2">$E\, X^2$</span></span>
 <p data-cid="ch06-750">
-        From (6.5), $E[X \mid Y] = kY$ since the binomial mean is $k \cdot y$ when the success probability is $y$.
+        From (6.5), <span class="tts-math" data-tts="E X given Y equals kY">$E[X \mid Y] = kY$</span> since the binomial mean is <span class="tts-math" data-tts="k times y">$k \cdot y$</span> when the success probability is <span class="tts-math" data-tts="y">$y$</span>.
         Smoothing gives
-        $$E\, X = E\, E[X \mid Y] = k\, E\, Y = k \int_0^1 y \, dy = \frac{k}{2}.$$
-        We can check directly using the marginal $p_X(x) = 1/(k+1)$:
-        $$E\, X = \sum_{x=0}^{k} \frac{x}{k+1} = \frac{1}{k+1} \cdot \frac{k(k+1)}{2} = \frac{k}{2}. \ \checkmark$$
+        <span class="tts-math" data-tts="E X equals E E X given Y equals k E Y equals k sub 0 to the 1 y dy equals k over 2 .">$$E\, X = E\, E[X \mid Y] = k\, E\, Y = k \int_0^1 y \, dy = \frac{k}{2}.$$</span>
+        We can check directly using the marginal <span class="tts-math" data-tts="p sub X x equals 1 over k plus 1">$p_X(x) = 1/(k+1)$</span>:
+        <span class="tts-math" data-tts="E X equals the sum from x equals 0 to k of x over k plus 1 equals 1 over k plus 1 times k k plus 1 over 2 equals k over 2 .">$$E\, X = \sum_{x=0}^{k} \frac{x}{k+1} = \frac{1}{k+1} \cdot \frac{k(k+1)}{2} = \frac{k}{2}. \ \checkmark$$</span>
       </p>
 <p data-cid="ch06-760">
-        For the second moment, the binomial second moment is $ky(1-y) + k^2 y^2$, so
-        $$E\, X^2 = E\, E[X^2 \mid Y] = E[kY(1-Y) + k^2 Y^2] = \int_0^1 \big(ky(1-y) + k^2 y^2\big) dy = \frac{k(1 + 2k)}{6}.$$
-        Comparing with the direct calculation $E\, X^2 = \sum_{x=0}^{k} x^2/(k+1)$, smoothing has given us, almost
+        For the second moment, the binomial second moment is <span class="tts-math" data-tts="ky 1 minus y plus k to the 2 y to the 2">$ky(1-y) + k^2 y^2$</span>, so
+        <span class="tts-math" data-tts="E X to the 2 equals E E X to the 2 given Y equals E kY 1 minus Y plus k to the 2 Y to the 2 equals sub 0 to the 1 ky 1 minus y plus k to the 2 y to the 2 dy equals k 1 plus 2k over 6 .">$$E\, X^2 = E\, E[X^2 \mid Y] = E[kY(1-Y) + k^2 Y^2] = \int_0^1 \big(ky(1-y) + k^2 y^2\big) dy = \frac{k(1 + 2k)}{6}.$$</span>
+        Comparing with the direct calculation <span class="tts-math" data-tts="E X to the 2 equals the sum from x equals 0 to k of x to the 2 over k plus 1">$E\, X^2 = \sum_{x=0}^{k} x^2/(k+1)$</span>, smoothing has given us, almost
         as a side-effect, the identity
-        $$\sum_{x=0}^k x^2 = \frac{k(k+1)(2k+1)}{6}.$$
+        <span class="tts-math" data-tts="the sum over x equals 0 of to the k x to the 2 equals k k plus 1 2k plus 1 over 6 .">$$\sum_{x=0}^k x^2 = \frac{k(k+1)(2k+1)}{6}.$$</span>
         Inductionists call this an exercise. Statisticians call it a lemma you get for free.
       </p>
 </div>
@@ -385,9 +384,9 @@
 <h3 data-cid="ch06-780">Specifying joint distributions one piece at a time</h3>
 <p data-cid="ch06-790">
       Up to now we have started with a joint density and pulled out conditionals. The reverse direction is what we
-      do when <em>modelling</em>: we specify a marginal for $X$, then specify how $Y$ behaves given $X$, and let
+      do when <em>modelling</em>: we specify a marginal for <span class="tts-math" data-tts="X">$X$</span>, then specify how <span class="tts-math" data-tts="Y">$Y$</span> behaves given <span class="tts-math" data-tts="X">$X$</span>, and let
       (6.4) generate the joint:
-      $$p_Z(x, y) = p_X(x) \, p_{Y \mid X}(y \mid x).$$
+      <span class="tts-math" data-tts="p sub Z x y equals p sub X x p sub Y given X y given x .">$$p_Z(x, y) = p_X(x) \, p_{Y \mid X}(y \mid x).$$</span>
     </p>
 <p data-cid="ch06-800">
       Why is this useful? Because real-world stories rarely come out as a single joint density. They come out as
@@ -396,9 +395,9 @@
       reproduces the joint.
     </p>
 <p data-cid="ch06-810">
-      The pattern extends to any number of variables. Writing $p(x_k \mid x_1, \dots, x_{k-1})$ for the conditional
-      density of $X_k$ given $X_1 = x_1, \dots, X_{k-1} = x_{k-1}$,
-      $$p_{X_1, \dots, X_n}(x_1, \dots, x_n) = p_{X_1}(x_1)\, p(x_2 \mid x_1)\, p(x_3 \mid x_1, x_2) \cdots p(x_n \mid x_1, \dots, x_{n-1}). \tag{6.6}$$
+      The pattern extends to any number of variables. Writing <span class="tts-math" data-tts="p x sub k given x sub 1 and so on x sub k minus 1">$p(x_k \mid x_1, \dots, x_{k-1})$</span> for the conditional
+      density of <span class="tts-math" data-tts="X sub k">$X_k$</span> given <span class="tts-math" data-tts="X sub 1 equals x sub 1 and so on X sub k minus 1 equals x sub k minus 1">$X_1 = x_1, \dots, X_{k-1} = x_{k-1}$</span>,
+      <span class="tts-math" data-tts="p sub X sub 1 and so on X sub n x sub 1 and so on x sub n equals p sub X sub 1 x sub 1 p x sub 2 given x sub 1 p x sub 3 given x sub 1 x sub 2 times s p x sub n given x sub 1 and so on x sub n minus 1 . 6.6">$$p_{X_1, \dots, X_n}(x_1, \dots, x_n) = p_{X_1}(x_1)\, p(x_2 \mid x_1)\, p(x_3 \mid x_1, x_2) \cdots p(x_n \mid x_1, \dots, x_{n-1}). \tag{6.6}$$</span>
     </p>
 <div class="box intuition" data-cid="ch06-820">
 <span class="box-label">The chain rule for densities</span>
@@ -411,32 +410,32 @@
 <div class="box example" data-cid="ch06-840">
 <span class="box-label">Example 6.4 — random walks and autoregression</span>
 <p data-cid="ch06-850">
-        Suppose $X_k$ is the log price of a stock at time $k$. A natural conditional specification is
-        $$X_k \mid X_1 = x_1, \dots, X_{k-1} = x_{k-1} \ \sim \ N(x_{k-1} + \mu, \sigma^2).$$
-        That is: tomorrow's log price is centered on today's, plus a drift $\mu$, with noise $\sigma^2$. If
-        $X_1 \sim N(x_0 + \mu, \sigma^2)$, then (6.6) yields the joint density
-        $$\prod_{k=1}^{n} \frac{1}{\sqrt{2\pi\sigma^2}} \exp\!\left[ -\frac{(x_k - x_{k-1} - \mu)^2}{2\sigma^2} \right].$$
-        The differences $X_k - X_{k-1}$ are i.i.d. $N(\mu, \sigma^2)$ — this is the classical <strong>random walk</strong>.
+        Suppose <span class="tts-math" data-tts="X sub k">$X_k$</span> is the log price of a stock at time <span class="tts-math" data-tts="k">$k$</span>. A natural conditional specification is
+        <span class="tts-math" data-tts="X sub k given X sub 1 equals x sub 1 and so on X sub k minus 1 equals x sub k minus 1 distributed as N x sub k minus 1 plus mu sigma to the 2 .">$$X_k \mid X_1 = x_1, \dots, X_{k-1} = x_{k-1} \ \sim \ N(x_{k-1} + \mu, \sigma^2).$$</span>
+        That is: tomorrow's log price is centered on today's, plus a drift <span class="tts-math" data-tts="mu">$\mu$</span>, with noise <span class="tts-math" data-tts="sigma to the 2">$\sigma^2$</span>. If
+        <span class="tts-math" data-tts="X sub 1 distributed as N x sub 0 plus mu sigma to the 2">$X_1 \sim N(x_0 + \mu, \sigma^2)$</span>, then (6.6) yields the joint density
+        <span class="tts-math" data-tts="the product from k equals 1 to n of 1 over root 2 pi sigma to the 2 exp minus x sub k minus x sub k minus 1 minus mu to the 2 2 sigma to the 2 .">$$\prod_{k=1}^{n} \frac{1}{\sqrt{2\pi\sigma^2}} \exp\!\left[ -\frac{(x_k - x_{k-1} - \mu)^2}{2\sigma^2} \right].$$</span>
+        The differences <span class="tts-math" data-tts="X sub k minus X sub k minus 1">$X_k - X_{k-1}$</span> are i.i.d. <span class="tts-math" data-tts="N mu sigma to the 2">$N(\mu, \sigma^2)$</span> — this is the classical <strong>random walk</strong>.
       </p>
 <p data-cid="ch06-860">
-        Alternatively, with $|\rho| &lt; 1$, the specification
-        $$X_k \mid X_1 = x_1, \dots, X_{k-1} = x_{k-1} \ \sim \ N(\rho x_{k-1}, \sigma^2)$$
+        Alternatively, with <span class="tts-math" data-tts="rho lt 1">$|\rho| &lt; 1$</span>, the specification
+        <span class="tts-math" data-tts="X sub k given X sub 1 equals x sub 1 and so on X sub k minus 1 equals x sub k minus 1 distributed as N rho x sub k minus 1 sigma to the 2">$$X_k \mid X_1 = x_1, \dots, X_{k-1} = x_{k-1} \ \sim \ N(\rho x_{k-1}, \sigma^2)$$</span>
         gives the joint density
-        $$\prod_{k=1}^{n} \frac{1}{\sqrt{2\pi\sigma^2}} \exp\!\left[ -\frac{(x_k - \rho x_{k-1})^2}{2\sigma^2} \right],$$
-        the <strong>autoregressive (AR-1)</strong> model. The parameter $\rho$ controls memory: $\rho = 0$ gives
-        independence, $\rho \to 1$ approaches the random walk.
+        <span class="tts-math" data-tts="the product from k equals 1 to n of 1 over root 2 pi sigma to the 2 exp minus x sub k minus rho x sub k minus 1 to the 2 2 sigma to the 2">$$\prod_{k=1}^{n} \frac{1}{\sqrt{2\pi\sigma^2}} \exp\!\left[ -\frac{(x_k - \rho x_{k-1})^2}{2\sigma^2} \right],$$</span>
+        the <strong>autoregressive (AR-1)</strong> model. The parameter <span class="tts-math" data-tts="rho">$\rho$</span> controls memory: <span class="tts-math" data-tts="rho equals 0">$\rho = 0$</span> gives
+        independence, <span class="tts-math" data-tts="rho to 1">$\rho \to 1$</span> approaches the random walk.
       </p>
 </div>
 <div class="box example" data-cid="ch06-870">
 <span class="box-label">Example 6.5 — a simple epidemic model</span>
 <p data-cid="ch06-880">
-        Take a population of size $N$. Let $X_i$ be the number infected at stage $i$, with infections permanent.
-        Suppose the chance one infected person infects one specific uninfected person between stages is $p = 1 - q$,
+        Take a population of size <span class="tts-math" data-tts="N">$N$</span>. Let <span class="tts-math" data-tts="X sub i">$X_i$</span> be the number infected at stage <span class="tts-math" data-tts="i">$i$</span>, with infections permanent.
+        Suppose the chance one infected person infects one specific uninfected person between stages is <span class="tts-math" data-tts="p equals 1 minus q">$p = 1 - q$</span>,
         and infections are independent. Then the probability that one specific uninfected person stays uninfected
-        when there are $x_k$ currently infected is $q^{x_k}$ — and the number of newly infected people in the
+        when there are <span class="tts-math" data-tts="x sub k">$x_k$</span> currently infected is <span class="tts-math" data-tts="q to the x sub k">$q^{x_k}$</span> — and the number of newly infected people in the
         next step is binomial:
-        $$X_{k+1} - X_k \mid X_1 = x_1, \dots, X_k = x_k \ \sim \ \text{Binomial}(N - x_k,\, 1 - q^{x_k}).$$
-        Equivalently, $p(x_{k+1} \mid x_1, \dots, x_k) = \binom{N - x_k}{x_{k+1} - x_k}(1 - q^{x_k})^{x_{k+1} - x_k}(q^{x_k})^{N - x_{k+1}}.$
+        <span class="tts-math" data-tts="X sub k plus 1 minus X sub k given X sub 1 equals x sub 1 and so on X sub k equals x sub k distributed as Binomial N minus x sub k 1 minus q to the x sub k .">$$X_{k+1} - X_k \mid X_1 = x_1, \dots, X_k = x_k \ \sim \ \text{Binomial}(N - x_k,\, 1 - q^{x_k}).$$</span>
+        Equivalently, <span class="tts-math" data-tts="p x sub k plus 1 given x sub 1 and so on x sub k equals N minus x sub k x sub k plus 1 minus x sub k 1 minus q to the x sub k to the x_ k plus 1 minus x sub k q to the x sub k to the N minus x_ k plus 1 .">$p(x_{k+1} \mid x_1, \dots, x_k) = \binom{N - x_k}{x_{k+1} - x_k}(1 - q^{x_k})^{x_{k+1} - x_k}(q^{x_k})^{N - x_{k+1}}.$</span>
         Multiplying these conditionals by (6.6) gives the joint mass function for the whole trajectory.
       </p>
 </div>
@@ -444,40 +443,40 @@
 <div class="box example" data-cid="ch06-900">
 <span class="box-label">Worked example — the bivariate normal conditional</span>
 <p data-cid="ch06-910">
-        Suppose $(X, Y)$ has joint density
-        $$p(x, y) = \frac{1}{2\pi\sqrt{1 - \rho^2}} \exp\!\left[ -\frac{x^2 - 2\rho xy + y^2}{2(1 - \rho^2)} \right],$$
-        with $E\, X = E\, Y = 0$, $\operatorname{Var}(X) = \operatorname{Var}(Y) = 1$, $\operatorname{Cor}(X, Y) = \rho$.
-        What is the conditional distribution of $Y$ given $X = x$?
+        Suppose <span class="tts-math" data-tts="X Y">$(X, Y)$</span> has joint density
+        <span class="tts-math" data-tts="p x y equals 1 over 2 pi root 1 minus rho to the 2 exp minus x to the 2 minus 2 rho xy plus y to the 2 over 2 1 minus rho to the 2">$$p(x, y) = \frac{1}{2\pi\sqrt{1 - \rho^2}} \exp\!\left[ -\frac{x^2 - 2\rho xy + y^2}{2(1 - \rho^2)} \right],$$</span>
+        with <span class="tts-math" data-tts="E X equals E Y equals 0">$E\, X = E\, Y = 0$</span>, <span class="tts-math" data-tts="Var X equals Var Y equals 1">$\operatorname{Var}(X) = \operatorname{Var}(Y) = 1$</span>, <span class="tts-math" data-tts="Cor X Y equals rho">$\operatorname{Cor}(X, Y) = \rho$</span>.
+        What is the conditional distribution of <span class="tts-math" data-tts="Y">$Y$</span> given <span class="tts-math" data-tts="X equals x">$X = x$</span>?
       </p>
 <p data-cid="ch06-920">
-        The marginal of $X$ is $N(0, 1)$, so $p_X(x) = (2\pi)^{-1/2} e^{-x^2/2}$. Apply (6.4):
-        $$p_{Y \mid X}(y \mid x) = \frac{p(x, y)}{p_X(x)} = \frac{1}{\sqrt{2\pi(1 - \rho^2)}} \exp\!\left[ -\frac{x^2 - 2\rho xy + y^2}{2(1 - \rho^2)} + \frac{x^2}{2} \right].$$
-        Combine the exponents over the common denominator $2(1 - \rho^2)$ and expand the second term as
-        $x^2(1 - \rho^2)/(2(1 - \rho^2)) = (x^2 - \rho^2 x^2)/(2(1 - \rho^2))$. The numerator becomes
-        $$-(x^2 - 2\rho xy + y^2) + x^2 - \rho^2 x^2 = -(y^2 - 2\rho xy + \rho^2 x^2) = -(y - \rho x)^2.$$
+        The marginal of <span class="tts-math" data-tts="X">$X$</span> is <span class="tts-math" data-tts="N 0 1">$N(0, 1)$</span>, so <span class="tts-math" data-tts="p sub X x equals 2 pi to the 1 over 2 e to the x to the 2 over 2">$p_X(x) = (2\pi)^{-1/2} e^{-x^2/2}$</span>. Apply (6.4):
+        <span class="tts-math" data-tts="p sub Y given X y given x equals p x y over p sub X x equals 1 over root 2 pi 1 minus rho to the 2 exp minus x to the 2 minus 2 rho xy plus y to the 2 over 2 1 minus rho to the 2 plus x to the 2 over 2 .">$$p_{Y \mid X}(y \mid x) = \frac{p(x, y)}{p_X(x)} = \frac{1}{\sqrt{2\pi(1 - \rho^2)}} \exp\!\left[ -\frac{x^2 - 2\rho xy + y^2}{2(1 - \rho^2)} + \frac{x^2}{2} \right].$$</span>
+        Combine the exponents over the common denominator <span class="tts-math" data-tts="2 1 minus rho to the 2">$2(1 - \rho^2)$</span> and expand the second term as
+        <span class="tts-math" data-tts="x to the 2 1 minus rho to the 2 over 2 1 minus rho to the 2 equals x to the 2 minus rho to the 2 x to the 2 over 2 1 minus rho to the 2">$x^2(1 - \rho^2)/(2(1 - \rho^2)) = (x^2 - \rho^2 x^2)/(2(1 - \rho^2))$</span>. The numerator becomes
+        <span class="tts-math" data-tts="x to the 2 minus 2 rho xy plus y to the 2 plus x to the 2 minus rho to the 2 x to the 2 equals minus y to the 2 minus 2 rho xy plus rho to the 2 x to the 2 equals minus y minus rho x to the 2.">$$-(x^2 - 2\rho xy + y^2) + x^2 - \rho^2 x^2 = -(y^2 - 2\rho xy + \rho^2 x^2) = -(y - \rho x)^2.$$</span>
         Therefore
-        $$p_{Y \mid X}(y \mid x) = \frac{1}{\sqrt{2\pi(1 - \rho^2)}} \exp\!\left[ -\frac{(y - \rho x)^2}{2(1 - \rho^2)} \right],$$
-        which is the density of $N(\rho x, 1 - \rho^2)$. So
-        $$Y \mid X = x \ \sim \ N(\rho x,\, 1 - \rho^2).$$
+        <span class="tts-math" data-tts="p sub Y given X y given x equals 1 over root 2 pi 1 minus rho to the 2 exp minus y minus rho x to the 2 over 2 1 minus rho to the 2">$$p_{Y \mid X}(y \mid x) = \frac{1}{\sqrt{2\pi(1 - \rho^2)}} \exp\!\left[ -\frac{(y - \rho x)^2}{2(1 - \rho^2)} \right],$$</span>
+        which is the density of <span class="tts-math" data-tts="N rho x 1 minus rho to the 2">$N(\rho x, 1 - \rho^2)$</span>. So
+        <span class="tts-math" data-tts="Y given X equals x distributed as N rho x 1 minus rho to the 2 .">$$Y \mid X = x \ \sim \ N(\rho x,\, 1 - \rho^2).$$</span>
       </p>
 <p data-cid="ch06-930">
-        Two features deserve a moment of reflection. First, the conditional mean $\rho x$ is a <em>linear</em>
-        function of $x$ — this is the famous "regression line" of the bivariate normal. Second, the conditional
-        variance $1 - \rho^2$ does <em>not</em> depend on $x$. Knowing $X$ shrinks the variance of $Y$ by a factor
-        $1 - \rho^2$, uniformly in $x$. As $\rho \to \pm 1$, the conditional variance collapses to zero — $Y$
-        becomes a deterministic function of $X$.
+        Two features deserve a moment of reflection. First, the conditional mean <span class="tts-math" data-tts="rho x">$\rho x$</span> is a <em>linear</em>
+        function of <span class="tts-math" data-tts="x">$x$</span> — this is the famous "regression line" of the bivariate normal. Second, the conditional
+        variance <span class="tts-math" data-tts="1 minus rho to the 2">$1 - \rho^2$</span> does <em>not</em> depend on <span class="tts-math" data-tts="x">$x$</span>. Knowing <span class="tts-math" data-tts="X">$X$</span> shrinks the variance of <span class="tts-math" data-tts="Y">$Y$</span> by a factor
+        <span class="tts-math" data-tts="1 minus rho to the 2">$1 - \rho^2$</span>, uniformly in <span class="tts-math" data-tts="x">$x$</span>. As <span class="tts-math" data-tts="rho to plus or minus 1">$\rho \to \pm 1$</span>, the conditional variance collapses to zero — <span class="tts-math" data-tts="Y">$Y$</span>
+        becomes a deterministic function of <span class="tts-math" data-tts="X">$X$</span>.
       </p>
 <p data-cid="ch06-940">
-        Using smoothing, we can compute $\operatorname{Cov}(X^2, Y^2)$ without integrating the joint density
-        twice. Since $Y \mid X \sim N(\rho X, 1 - \rho^2)$, $E[Y^2 \mid X] = (\rho X)^2 + (1 - \rho^2) = \rho^2 X^2 + (1 - \rho^2)$.
-        Then $E[X^2 Y^2] = E[X^2 \, E[Y^2 \mid X]] = \rho^2 E[X^4] + (1 - \rho^2) E[X^2] = 3\rho^2 + (1 - \rho^2) = 1 + 2\rho^2$.
-        Since $E[X^2] = E[Y^2] = 1$, $\operatorname{Cov}(X^2, Y^2) = 1 + 2\rho^2 - 1 = 2\rho^2$.
+        Using smoothing, we can compute <span class="tts-math" data-tts="Cov X to the 2 Y to the 2">$\operatorname{Cov}(X^2, Y^2)$</span> without integrating the joint density
+        twice. Since <span class="tts-math" data-tts="Y given X distributed as N rho X 1 minus rho to the 2">$Y \mid X \sim N(\rho X, 1 - \rho^2)$</span>, <span class="tts-math" data-tts="E Y to the 2 given X equals rho X to the 2 plus 1 minus rho to the 2 equals rho to the 2 X to the 2 plus 1 minus rho to the 2">$E[Y^2 \mid X] = (\rho X)^2 + (1 - \rho^2) = \rho^2 X^2 + (1 - \rho^2)$</span>.
+        Then <span class="tts-math" data-tts="E X to the 2 Y to the 2 equals E X to the 2 E Y to the 2 given X equals rho to the 2 E X to the 4 plus 1 minus rho to the 2 E X to the 2 equals 3 rho to the 2 plus 1 minus rho to the 2 equals 1 plus 2 rho to the 2">$E[X^2 Y^2] = E[X^2 \, E[Y^2 \mid X]] = \rho^2 E[X^4] + (1 - \rho^2) E[X^2] = 3\rho^2 + (1 - \rho^2) = 1 + 2\rho^2$</span>.
+        Since <span class="tts-math" data-tts="E X to the 2 equals E Y to the 2 equals 1">$E[X^2] = E[Y^2] = 1$</span>, <span class="tts-math" data-tts="Cov X to the 2 Y to the 2 equals 1 plus 2 rho to the 2 minus 1 equals 2 rho to the 2">$\operatorname{Cov}(X^2, Y^2) = 1 + 2\rho^2 - 1 = 2\rho^2$</span>.
       </p>
 </div>
 <div class="box pause" data-cid="ch06-950">
 <span class="box-label">Stop and check</span>
 <p data-cid="ch06-960">
-        Before reading on: can you reconstruct the path "joint density $\to$ marginal $\to$ conditional" without
+        Before reading on: can you reconstruct the path "joint density <span class="tts-math" data-tts="to">$\to$</span> marginal <span class="tts-math" data-tts="to">$\to$</span> conditional" without
         looking? Try it for the bivariate normal in your head, then for the beta-binomial pair. The mechanics are
         identical even when one variable is continuous and the other is discrete.
       </p>
@@ -485,89 +484,89 @@
 <!-- ===================================================================== -->
 <h2 data-cid="ch06-970" id="s6-4">6.4 Proof of the factorization theorem</h2>
 <p data-cid="ch06-980">
-      Back in Chapter 3 we stated the <strong>factorization theorem</strong>: $T$ is sufficient for $\theta$ iff
-      the density factors as $p_\theta(x) = g_\theta(T(x))\, h(x)$. We could prove this in the dominated discrete
+      Back in Chapter 3 we stated the <strong>factorization theorem</strong>: <span class="tts-math" data-tts="T">$T$</span> is sufficient for <span class="tts-math" data-tts="theta">$\theta$</span> iff
+      the density factors as <span class="tts-math" data-tts="p_ theta x equals g_ theta T x h x">$p_\theta(x) = g_\theta(T(x))\, h(x)$</span>. We could prove this in the dominated discrete
       case by elementary arguments. The general case requires conditional distributions, because in general
-      $T$ and $X$ do not have a joint density with respect to any product measure. This section closes that gap.
+      <span class="tts-math" data-tts="T">$T$</span> and <span class="tts-math" data-tts="X">$X$</span> do not have a joint density with respect to any product measure. This section closes that gap.
       It is technical; you can skim it on first reading and come back later.
     </p>
 <h3 data-cid="ch06-990">Setup</h3>
 <p data-cid="ch06-1000">
-      Suppose $P_\theta$ for $\theta \in \Omega$ has density
-      $$p_\theta(x) = g_\theta(T(x)) \, h(x) \tag{6.7}$$
-      with respect to $\mu$. By absorbing factors into $h$, we may assume $\mu$ is a probability measure equivalent
-      to the family $\mathcal{P} = \{P_\theta : \theta \in \Omega\}$ — meaning $\mu$ and the $P_\theta$ have the
+      Suppose <span class="tts-math" data-tts="P_ theta">$P_\theta$</span> for <span class="tts-math" data-tts="theta in Omega">$\theta \in \Omega$</span> has density
+      <span class="tts-math" data-tts="p_ theta x equals g_ theta T x h x 6.7">$$p_\theta(x) = g_\theta(T(x)) \, h(x) \tag{6.7}$$</span>
+      with respect to <span class="tts-math" data-tts="mu">$\mu$</span>. By absorbing factors into <span class="tts-math" data-tts="h">$h$</span>, we may assume <span class="tts-math" data-tts="mu">$\mu$</span> is a probability measure equivalent
+      to the family <span class="tts-math" data-tts="script P equals P_ theta theta in Omega">$\mathcal{P} = \{P_\theta : \theta \in \Omega\}$</span> — meaning <span class="tts-math" data-tts="mu">$\mu$</span> and the <span class="tts-math" data-tts="P_ theta">$P_\theta$</span> have the
       same null sets. (Keener notes this uses a standard fact about dominated families.) Let:
     </p>
 <ul data-cid="ch06-1010">
-<li>$E^*$ and $P^*$ denote expectation and probability when $X \sim \mu$.</li>
-<li>$G^*$ and $G_\theta$ denote the marginal distributions of $T(X)$ when $X \sim \mu$ and $X \sim P_\theta$.</li>
-<li>$Q$ denote the conditional distribution of $X$ given $T$ when $X \sim \mu$.</li>
+<li><span class="tts-math" data-tts="E to the times">$E^*$</span> and <span class="tts-math" data-tts="P to the times">$P^*$</span> denote expectation and probability when <span class="tts-math" data-tts="X distributed as mu">$X \sim \mu$</span>.</li>
+<li><span class="tts-math" data-tts="G to the times">$G^*$</span> and <span class="tts-math" data-tts="G_ theta">$G_\theta$</span> denote the marginal distributions of <span class="tts-math" data-tts="T X">$T(X)$</span> when <span class="tts-math" data-tts="X distributed as mu">$X \sim \mu$</span> and <span class="tts-math" data-tts="X distributed as P_ theta">$X \sim P_\theta$</span>.</li>
+<li><span class="tts-math" data-tts="Q">$Q$</span> denote the conditional distribution of <span class="tts-math" data-tts="X">$X$</span> given <span class="tts-math" data-tts="T">$T$</span> when <span class="tts-math" data-tts="X distributed as mu">$X \sim \mu$</span>.</li>
 </ul>
 <h3 data-cid="ch06-1020">Forward direction — factorization implies sufficiency</h3>
 <p data-cid="ch06-1030">
-      We want to show $T$ is sufficient, i.e. that the conditional distribution of $X$ given $T$ does not depend
-      on $\theta$. The trick is to construct that conditional distribution explicitly using the factorization.
+      We want to show <span class="tts-math" data-tts="T">$T$</span> is sufficient, i.e. that the conditional distribution of <span class="tts-math" data-tts="X">$X$</span> given <span class="tts-math" data-tts="T">$T$</span> does not depend
+      on <span class="tts-math" data-tts="theta">$\theta$</span>. The trick is to construct that conditional distribution explicitly using the factorization.
     </p>
 <p data-cid="ch06-1040">
-      First, find the $G^*$-density of $T$ under $P_\theta$. For any $f$,
-      $$E_\theta f(T) = \int f(T(x)) g_\theta(T(x)) h(x) \, d\mu(x) = E^* f(T) g_\theta(T) h(X).$$
-      Conditioning on $T$ under $\mu$,
-      $$E^* f(T) g_\theta(T) h(X) = \int\!\!\int f(t) g_\theta(t) h(x) \, dQ_t(x) \, dG^*(t) = \int f(t) g_\theta(t) w(t) \, dG^*(t),$$
-      where $w(t) = \int h(x) \, dQ_t(x)$. Taking $f$ an indicator, this shows $G_\theta$ has density
-      $g_\theta(t) w(t)$ with respect to $G^*$.
+      First, find the <span class="tts-math" data-tts="G to the times">$G^*$</span>-density of <span class="tts-math" data-tts="T">$T$</span> under <span class="tts-math" data-tts="P_ theta">$P_\theta$</span>. For any <span class="tts-math" data-tts="f">$f$</span>,
+      <span class="tts-math" data-tts="E_ theta f T equals the integral of f T x g_ theta T x h x d mu x equals E to the times f T g_ theta T h X .">$$E_\theta f(T) = \int f(T(x)) g_\theta(T(x)) h(x) \, d\mu(x) = E^* f(T) g_\theta(T) h(X).$$</span>
+      Conditioning on <span class="tts-math" data-tts="T">$T$</span> under <span class="tts-math" data-tts="mu">$\mu$</span>,
+      <span class="tts-math" data-tts="E to the times f T g_ theta T h X equals the integral of the integral of f t g_ theta t h x dQ sub t x dG to the times t equals the integral of f t g_ theta t w t dG to the times t">$$E^* f(T) g_\theta(T) h(X) = \int\!\!\int f(t) g_\theta(t) h(x) \, dQ_t(x) \, dG^*(t) = \int f(t) g_\theta(t) w(t) \, dG^*(t),$$</span>
+      where <span class="tts-math" data-tts="w t equals the integral of h x dQ sub t x">$w(t) = \int h(x) \, dQ_t(x)$</span>. Taking <span class="tts-math" data-tts="f">$f$</span> an indicator, this shows <span class="tts-math" data-tts="G_ theta">$G_\theta$</span> has density
+      <span class="tts-math" data-tts="g_ theta t w t">$g_\theta(t) w(t)$</span> with respect to <span class="tts-math" data-tts="G to the times">$G^*$</span>.
     </p>
 <p data-cid="ch06-1050">
-      Now define a candidate for the conditional distribution of $X$ given $T$ under $P_\theta$: let $\tilde Q_t$
-      have density $h(x)/w(t)$ with respect to $Q_t$. (On the null set $w(t) = 0$, define $\tilde Q_t$ arbitrarily.)
-      For any $f$,
-      $$E_\theta f(X, T) = E^* f(X, T) g_\theta(T) h(X) = \int\!\!\int f(x, t) g_\theta(t) h(x) \, dQ_t(x) \, dG^*(t)$$
-      $$= \int\!\!\int f(x, t) \, \frac{h(x)}{w(t)} \, dQ_t(x) \, g_\theta(t) w(t) \, dG^*(t) = \int\!\!\int f(x, t) \, d\tilde Q_t(x) \, dG_\theta(t).$$
-      By (6.3), $\tilde Q$ is the conditional distribution of $X$ given $T$ under $P_\theta$ — and the formula
-      $\tilde Q_t = (h / w(t)) \cdot Q_t$ does not depend on $\theta$. Hence $T$ is sufficient.
+      Now define a candidate for the conditional distribution of <span class="tts-math" data-tts="X">$X$</span> given <span class="tts-math" data-tts="T">$T$</span> under <span class="tts-math" data-tts="P_ theta">$P_\theta$</span>: let <span class="tts-math" data-tts="Q sub t">$\tilde Q_t$</span>
+      have density <span class="tts-math" data-tts="h x over w t">$h(x)/w(t)$</span> with respect to <span class="tts-math" data-tts="Q sub t">$Q_t$</span>. (On the null set <span class="tts-math" data-tts="w t equals 0">$w(t) = 0$</span>, define <span class="tts-math" data-tts="Q sub t">$\tilde Q_t$</span> arbitrarily.)
+      For any <span class="tts-math" data-tts="f">$f$</span>,
+      <span class="tts-math" data-tts="E_ theta f X T equals E to the times f X T g_ theta T h X equals the integral of the integral of f x t g_ theta t h x dQ sub t x dG to the times t">$$E_\theta f(X, T) = E^* f(X, T) g_\theta(T) h(X) = \int\!\!\int f(x, t) g_\theta(t) h(x) \, dQ_t(x) \, dG^*(t)$$</span>
+      <span class="tts-math" data-tts="the integral of the integral of f x t h x over w t dQ sub t x g_ theta t w t dG to the times t equals the integral of the integral of f x t d Q sub t x dG_ theta t .">$$= \int\!\!\int f(x, t) \, \frac{h(x)}{w(t)} \, dQ_t(x) \, g_\theta(t) w(t) \, dG^*(t) = \int\!\!\int f(x, t) \, d\tilde Q_t(x) \, dG_\theta(t).$$</span>
+      By (6.3), <span class="tts-math" data-tts="Q">$\tilde Q$</span> is the conditional distribution of <span class="tts-math" data-tts="X">$X$</span> given <span class="tts-math" data-tts="T">$T$</span> under <span class="tts-math" data-tts="P_ theta">$P_\theta$</span> — and the formula
+      <span class="tts-math" data-tts="Q sub t equals h over w t times Q sub t">$\tilde Q_t = (h / w(t)) \cdot Q_t$</span> does not depend on <span class="tts-math" data-tts="theta">$\theta$</span>. Hence <span class="tts-math" data-tts="T">$T$</span> is sufficient.
     </p>
 <h3 data-cid="ch06-1060">Mixture distributions — a brief detour</h3>
 <p data-cid="ch06-1070">
-      Before the converse, we need one tool. Given a marginal $G^*$ and a conditional $Q$, the
-      <strong>mixture distribution</strong> $\hat P$ is defined by
-      $$\hat P(B) = \int Q_t(B) \, dG^*(t) = \int\!\!\int 1_B(x) \, dQ_t(x) \, dG^*(t).$$
-      Linearity then extends to integrable $f$:
-      $$\int f \, d\hat P = \int\!\!\int f(x) \, dQ_t(x) \, dG^*(t).$$
-      Think of $\hat P$ as "draw $T$ from $G^*$, then draw $X$ from $Q_T$". This is exactly how a hierarchical
+      Before the converse, we need one tool. Given a marginal <span class="tts-math" data-tts="G to the times">$G^*$</span> and a conditional <span class="tts-math" data-tts="Q">$Q$</span>, the
+      <strong>mixture distribution</strong> <span class="tts-math" data-tts="P">$\hat P$</span> is defined by
+      <span class="tts-math" data-tts="P B equals the integral of Q sub t B dG to the times t equals the integral of the integral of 1 sub B x dQ sub t x dG to the times t .">$$\hat P(B) = \int Q_t(B) \, dG^*(t) = \int\!\!\int 1_B(x) \, dQ_t(x) \, dG^*(t).$$</span>
+      Linearity then extends to integrable <span class="tts-math" data-tts="f">$f$</span>:
+      <span class="tts-math" data-tts="the integral of f d P equals the integral of the integral of f x dQ sub t x dG to the times t .">$$\int f \, d\hat P = \int\!\!\int f(x) \, dQ_t(x) \, dG^*(t).$$</span>
+      Think of <span class="tts-math" data-tts="P">$\hat P$</span> as "draw <span class="tts-math" data-tts="T">$T$</span> from <span class="tts-math" data-tts="G to the times">$G^*$</span>, then draw <span class="tts-math" data-tts="X">$X$</span> from <span class="tts-math" data-tts="Q sub T">$Q_T$</span>". This is exactly how a hierarchical
       sample looks.
     </p>
 <h3 data-cid="ch06-1080">Reverse direction — sufficiency implies factorization</h3>
 <p data-cid="ch06-1090">
-      Now suppose $T$ is sufficient, with $Q$ the conditional distribution of $X$ given $T$ under any (equivalently,
-      every) $P_\theta$. Let $g_\theta$ be the $G^*$-density of $T$ under $P_\theta$ — this density exists because
-      $G^*(N) = 0$ implies $\mu(T^{-1}(N)) = 0$, hence $G_\theta(N) = 0$, by the equivalence of $\mu$ with the
+      Now suppose <span class="tts-math" data-tts="T">$T$</span> is sufficient, with <span class="tts-math" data-tts="Q">$Q$</span> the conditional distribution of <span class="tts-math" data-tts="X">$X$</span> given <span class="tts-math" data-tts="T">$T$</span> under any (equivalently,
+      every) <span class="tts-math" data-tts="P_ theta">$P_\theta$</span>. Let <span class="tts-math" data-tts="g_ theta">$g_\theta$</span> be the <span class="tts-math" data-tts="G to the times">$G^*$</span>-density of <span class="tts-math" data-tts="T">$T$</span> under <span class="tts-math" data-tts="P_ theta">$P_\theta$</span> — this density exists because
+      <span class="tts-math" data-tts="G to the times N equals 0">$G^*(N) = 0$</span> implies <span class="tts-math" data-tts="mu T inverse N equals 0">$\mu(T^{-1}(N)) = 0$</span>, hence <span class="tts-math" data-tts="G_ theta N equals 0">$G_\theta(N) = 0$</span>, by the equivalence of <span class="tts-math" data-tts="mu">$\mu$</span> with the
       family.
     </p>
 <p data-cid="ch06-1100">
       Then
-      $$P_\theta(X \in B) = E_\theta P_\theta(X \in B \mid T) = E_\theta Q_T(B) = \int Q_t(B) g_\theta(t) \, dG^*(t).$$
-      Unrolling $Q_t(B) = \int 1_B(x) \, dQ_t(x)$,
-      $$P_\theta(X \in B) = \int\!\!\int 1_B(x) g_\theta(t) \, dQ_t(x) \, dG^*(t) = \int\!\!\int 1_B(x) g_\theta(T(x)) \, dQ_t(x) \, dG^*(t)$$
-      (since $T(x) = t$ inside the inner integral against $Q_t$, by the definition of conditional distribution)
-      $$= \int_B g_\theta(T(x)) \, d\hat P(x).$$
-      So $P_\theta$ has density $g_\theta(T(\cdot))$ with respect to $\hat P$.
+      <span class="tts-math" data-tts="P_ theta X in B equals E_ theta P_ theta X in B given T equals E_ theta Q sub T B equals the integral of Q sub t B g_ theta t dG to the times t .">$$P_\theta(X \in B) = E_\theta P_\theta(X \in B \mid T) = E_\theta Q_T(B) = \int Q_t(B) g_\theta(t) \, dG^*(t).$$</span>
+      Unrolling <span class="tts-math" data-tts="Q sub t B equals the integral of 1 sub B x dQ sub t x">$Q_t(B) = \int 1_B(x) \, dQ_t(x)$</span>,
+      <span class="tts-math" data-tts="P_ theta X in B equals the integral of the integral of 1 sub B x g_ theta t dQ sub t x dG to the times t equals the integral of the integral of 1 sub B x g_ theta T x dQ sub t x dG to the times t">$$P_\theta(X \in B) = \int\!\!\int 1_B(x) g_\theta(t) \, dQ_t(x) \, dG^*(t) = \int\!\!\int 1_B(x) g_\theta(T(x)) \, dQ_t(x) \, dG^*(t)$$</span>
+      (since <span class="tts-math" data-tts="T x equals t">$T(x) = t$</span> inside the inner integral against <span class="tts-math" data-tts="Q sub t">$Q_t$</span>, by the definition of conditional distribution)
+      <span class="tts-math" data-tts="sub B g_ theta T x d P x .">$$= \int_B g_\theta(T(x)) \, d\hat P(x).$$</span>
+      So <span class="tts-math" data-tts="P_ theta">$P_\theta$</span> has density <span class="tts-math" data-tts="g_ theta T times">$g_\theta(T(\cdot))$</span> with respect to <span class="tts-math" data-tts="P">$\hat P$</span>.
     </p>
 <p data-cid="ch06-1110">
-      One last step: convert "density with respect to $\hat P$" into "density with respect to $\mu$" by checking
-      $\hat P \ll \mu$. If $\mu(N) = 0$, then $P_\theta(N) = 0$ (by equivalence), and unrolling
-      $P_\theta(N) = \int Q_t(N) \, dG_\theta(t) = 0$ forces $Q_t(N) = 0$ for $G_\theta$-a.e. $t$, hence for
-      $G^*$-a.e. $t$ (again by equivalence), hence $\hat P(N) = \int Q_t(N) \, dG^*(t) = 0$. So
-      $h(x) = d\hat P / d\mu$ exists, and finally
-      $$p_\theta(x) = g_\theta(T(x)) \, h(x).$$
+      One last step: convert "density with respect to <span class="tts-math" data-tts="P">$\hat P$</span>" into "density with respect to <span class="tts-math" data-tts="mu">$\mu$</span>" by checking
+      <span class="tts-math" data-tts="P mu">$\hat P \ll \mu$</span>. If <span class="tts-math" data-tts="mu N equals 0">$\mu(N) = 0$</span>, then <span class="tts-math" data-tts="P_ theta N equals 0">$P_\theta(N) = 0$</span> (by equivalence), and unrolling
+      <span class="tts-math" data-tts="P_ theta N equals the integral of Q sub t N dG_ theta t equals 0">$P_\theta(N) = \int Q_t(N) \, dG_\theta(t) = 0$</span> forces <span class="tts-math" data-tts="Q sub t N equals 0">$Q_t(N) = 0$</span> for <span class="tts-math" data-tts="G_ theta">$G_\theta$</span>-a.e. <span class="tts-math" data-tts="t">$t$</span>, hence for
+      <span class="tts-math" data-tts="G to the times">$G^*$</span>-a.e. <span class="tts-math" data-tts="t">$t$</span> (again by equivalence), hence <span class="tts-math" data-tts="P N equals the integral of Q sub t N dG to the times t equals 0">$\hat P(N) = \int Q_t(N) \, dG^*(t) = 0$</span>. So
+      <span class="tts-math" data-tts="h x equals d P over d mu">$h(x) = d\hat P / d\mu$</span> exists, and finally
+      <span class="tts-math" data-tts="p_ theta x equals g_ theta T x h x .">$$p_\theta(x) = g_\theta(T(x)) \, h(x).$$</span>
       That is (6.7). The proof is complete.
     </p>
 <div class="box intuition" data-cid="ch06-1120">
 <span class="box-label">What the proof actually shows</span>
 <p data-cid="ch06-1130">
-        The factorization theorem says "the data factor cleanly through the statistic $T$". The conditional
-        distribution machinery makes this rigorous in a setting where $T$ and $X$ may not have a joint density.
-        The crucial move was using a single reference measure $\mu$ equivalent to the whole family, plus the
-        Radon-Nikodym derivative $h = d\hat P / d\mu$ to absorb the "$x$-only" part of the density. Nothing
+        The factorization theorem says "the data factor cleanly through the statistic <span class="tts-math" data-tts="T">$T$</span>". The conditional
+        distribution machinery makes this rigorous in a setting where <span class="tts-math" data-tts="T">$T$</span> and <span class="tts-math" data-tts="X">$X$</span> may not have a joint density.
+        The crucial move was using a single reference measure <span class="tts-math" data-tts="mu">$\mu$</span> equivalent to the whole family, plus the
+        Radon-Nikodym derivative <span class="tts-math" data-tts="h equals d P over d mu">$h = d\hat P / d\mu$</span> to absorb the "<span class="tts-math" data-tts="x">$x$</span>-only" part of the density. Nothing
         magical — just careful bookkeeping with the tools we now have.
       </p>
 </div>
@@ -577,22 +576,22 @@
       The chapter, in seven bullets:
     </p>
 <ol data-cid="ch06-1160">
-<li>The <strong>joint density</strong> of $(X, Y)$ with respect to $\mu \times \nu$ unifies all-discrete,
+<li>The <strong>joint density</strong> of <span class="tts-math" data-tts="X Y">$(X, Y)$</span> with respect to <span class="tts-math" data-tts="mu times nu">$\mu \times \nu$</span> unifies all-discrete,
         all-continuous, and mixed cases. <strong>Marginals</strong> are obtained by integrating out the unwanted
         variable against its dominating measure (sum or integral, depending on the case).</li>
-<li>The elementary ratio $P(B \mid A) = P(A \cap B)/P(A)$ <strong>fails</strong> when $P(A) = 0$ — so it
+<li>The elementary ratio <span class="tts-math" data-tts="P B given A equals P A intersect B over P A">$P(B \mid A) = P(A \cap B)/P(A)$</span> <strong>fails</strong> when <span class="tts-math" data-tts="P A equals 0">$P(A) = 0$</span> — so it
         cannot define conditioning on a continuous random variable.</li>
 <li>The measure-theoretic definition (Definition 6.2) replaces the ratio with a family of probability
-        measures $Q_x$ satisfying $P(X \in A, Y \in B) = \int_A Q_x(B) \, dP_X(x)$. Existence holds whenever
-        $X, Y$ are random vectors.</li>
-<li>The conditional probability $Q_x(B)$ is a <strong>Radon-Nikodym derivative</strong> — the density of
-        "joint mass" with respect to "$X$-marginal mass". Two consequences: $Q_x$ is only defined up to a
-        $P_X$-null set, and conditional probabilities are not literally division.</li>
-<li>When a joint density $p_Z$ exists, Theorem 6.3 hands back the familiar formula
-        $p_{Y \mid X}(y \mid x) = p_Z(x, y)/p_X(x)$. The general definition specializes to elementary practice
+        measures <span class="tts-math" data-tts="Q sub x">$Q_x$</span> satisfying <span class="tts-math" data-tts="P X in A Y in B equals sub A Q sub x B dP sub X x">$P(X \in A, Y \in B) = \int_A Q_x(B) \, dP_X(x)$</span>. Existence holds whenever
+        <span class="tts-math" data-tts="X Y">$X, Y$</span> are random vectors.</li>
+<li>The conditional probability <span class="tts-math" data-tts="Q sub x B">$Q_x(B)$</span> is a <strong>Radon-Nikodym derivative</strong> — the density of
+        "joint mass" with respect to "<span class="tts-math" data-tts="X">$X$</span>-marginal mass". Two consequences: <span class="tts-math" data-tts="Q sub x">$Q_x$</span> is only defined up to a
+        <span class="tts-math" data-tts="P sub X">$P_X$</span>-null set, and conditional probabilities are not literally division.</li>
+<li>When a joint density <span class="tts-math" data-tts="p sub Z">$p_Z$</span> exists, Theorem 6.3 hands back the familiar formula
+        <span class="tts-math" data-tts="p sub Y given X y given x equals p sub Z x y over p sub X x">$p_{Y \mid X}(y \mid x) = p_Z(x, y)/p_X(x)$</span>. The general definition specializes to elementary practice
         whenever elementary practice was already valid.</li>
-<li>Joint distributions can be <strong>built</strong> one conditional at a time: $p_Z = p_X \cdot p_{Y \mid X}$,
-        chained out to $n$ variables by (6.6). This is the engine of time-series, epidemic, and hierarchical models.</li>
+<li>Joint distributions can be <strong>built</strong> one conditional at a time: <span class="tts-math" data-tts="p sub Z equals p sub X times p sub Y given X">$p_Z = p_X \cdot p_{Y \mid X}$</span>,
+        chained out to <span class="tts-math" data-tts="n">$n$</span> variables by (6.6). This is the engine of time-series, epidemic, and hierarchical models.</li>
 <li>The <strong>factorization theorem</strong> for sufficient statistics, deferred from Chapter 3, follows
         cleanly from Definition 6.2 plus a reference measure equivalent to the dominated family.</li>
 </ol>
@@ -605,10 +604,10 @@
 <li>Why does conditioning on a continuous random variable break the elementary ratio formula, and what does
           Definition 6.2 do differently?</li>
 <li>State the three clauses of Definition 6.2 and explain the role of each.</li>
-<li>How does Theorem 6.3 recover the formula $p_{Y \mid X}(y \mid x) = p_Z(x, y)/p_X(x)$ from the abstract
+<li>How does Theorem 6.3 recover the formula <span class="tts-math" data-tts="p sub Y given X y given x equals p sub Z x y over p sub X x">$p_{Y \mid X}(y \mid x) = p_Z(x, y)/p_X(x)$</span> from the abstract
           definition?</li>
-<li>For the bivariate normal $(X, Y)$ with correlation $\rho$, what is the conditional distribution of $Y$
-          given $X = x$? Why is the conditional variance independent of $x$?</li>
+<li>For the bivariate normal <span class="tts-math" data-tts="X Y">$(X, Y)$</span> with correlation <span class="tts-math" data-tts="rho">$\rho$</span>, what is the conditional distribution of <span class="tts-math" data-tts="Y">$Y$</span>
+          given <span class="tts-math" data-tts="X equals x">$X = x$</span>? Why is the conditional variance independent of <span class="tts-math" data-tts="x">$x$</span>?</li>
 <li>In the beta-binomial pair of Example 6.1, what marginal and what conditional did you start with, and
           which one ended up beta vs binomial?</li>
 <li>In one sentence, why does the factorization theorem need conditional distributions in its proof?</li>
@@ -624,6 +623,6 @@
 </nav>
 </article>
 </main>
-<script src="/js/main.js"></script><script src="/js/comments.js"></script>
+<script src="/js/main.js"></script><script src="/js/comments.js"></script><script src="/js/tts.js"></script>
 </body>
 </html>

@@ -10,14 +10,13 @@
 <link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
-<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/><link href="/css/tts.css" rel="stylesheet"/>
 </head>
 <body data-book="basic_stat" data-page="ch17">
 <header class="site-header">
+<a class="home-btn" href="/">Home</a>
 <a class="brand" href="/books/basic_stat/">Theoretical Statistics <small>a slow reading guide</small></a>
 <nav>
-<a href="/" class="all-books-link">All books</a>
-    <a href="/books/basic_stat/">Contents</a>
 <button aria-label="toggle theme" class="theme-toggle">Dark</button>
 </nav>
 </header>
@@ -27,7 +26,7 @@
 <ol>
 <li><a href="#orient">Why this chapter exists</a></li>
 <li><a href="#s17-1">17.1 Generalized likelihood ratio tests</a></li>
-<li><a href="#s17-2">17.2 Asymptotic distribution of $2\log\lambda$</a></li>
+<li><a href="#s17-2">17.2 Asymptotic distribution of <span class="tts-math" data-tts="2 log lambda">$2\log\lambda$</span></a></li>
 <li><a href="#s17-3">17.3 Examples</a></li>
 <li><a href="#s17-4">17.4 Wald and score tests</a></li>
 <li><a href="#summary">Summary</a></li>
@@ -54,11 +53,11 @@ Real applied problems rarely satisfy all those requirements. A working statistic
 <div class="box intuition" data-cid="ch17-050">
 <span class="box-label">The big idea in one sentence</span>
 <p data-cid="ch17-060">
-Form the ratio "best likelihood I can achieve under the full model" over "best likelihood I can achieve under the null". If the null is true, that ratio shouldn't be much bigger than one; if the null is false, the ratio should grow. The chapter's central theorem says: take twice its logarithm, and under the null this statistic is approximately $\chi^2$ with degrees of freedom equal to <em>how many dimensions the null forbids</em>.
+Form the ratio "best likelihood I can achieve under the full model" over "best likelihood I can achieve under the null". If the null is true, that ratio shouldn't be much bigger than one; if the null is false, the ratio should grow. The chapter's central theorem says: take twice its logarithm, and under the null this statistic is approximately <span class="tts-math" data-tts="chi to the 2">$\chi^2$</span> with degrees of freedom equal to <em>how many dimensions the null forbids</em>.
 </p>
 </div>
 <p data-cid="ch17-070">
-The cost of this universality is that everything we do is <em>asymptotic</em>. Sizes are only approximately $\alpha$, powers are only approximately computed, and the approximations rely on regularity conditions (smooth densities, interior parameter values, invertible Fisher information). When those conditions fail, the chi-square approximation can be badly wrong. We'll return to those traps at the end.
+The cost of this universality is that everything we do is <em>asymptotic</em>. Sizes are only approximately <span class="tts-math" data-tts="alpha">$\alpha$</span>, powers are only approximately computed, and the approximations rely on regularity conditions (smooth densities, interior parameter values, invertible Fisher information). When those conditions fail, the chi-square approximation can be badly wrong. We'll return to those traps at the end.
 </p>
 <p data-cid="ch17-080">
 The chapter also introduces two siblings of the LRT — the <strong>Wald test</strong> and the <strong>score test</strong>. Asymptotically they are equivalent to the LRT, but each one has its own computational personality.
@@ -66,52 +65,52 @@ The chapter also introduces two siblings of the LRT — the <strong>Wald test</s
 <h2 data-cid="ch17-090" id="s17-1">17.1 Generalized likelihood ratio tests</h2>
 <h3 data-cid="ch17-100">Setup and definition</h3>
 <p data-cid="ch17-110">
-We observe data $X_1, \dots, X_n$ i.i.d. with common density $f_\theta$, where $\theta$ lives in some parameter space $\Omega$. We want to test
-$$H_0 : \theta \in \Omega_0 \quad \text{versus} \quad H_1 : \theta \in \Omega_1,$$
-where $\Omega_0 \cup \Omega_1 = \Omega$ and the two pieces are disjoint. The likelihood is
-$$L(\theta) = L(\theta \mid X_1, \dots, X_n) = \prod_{i=1}^n f_\theta(X_i).$$
+We observe data <span class="tts-math" data-tts="X sub 1 and so on X sub n">$X_1, \dots, X_n$</span> i.i.d. with common density <span class="tts-math" data-tts="f_ theta">$f_\theta$</span>, where <span class="tts-math" data-tts="theta">$\theta$</span> lives in some parameter space <span class="tts-math" data-tts="Omega">$\Omega$</span>. We want to test
+<span class="tts-math" data-tts="H sub 0 theta in Omega sub 0 versus H sub 1 theta in Omega sub 1">$$H_0 : \theta \in \Omega_0 \quad \text{versus} \quad H_1 : \theta \in \Omega_1,$$</span>
+where <span class="tts-math" data-tts="Omega sub 0 union Omega sub 1 equals Omega">$\Omega_0 \cup \Omega_1 = \Omega$</span> and the two pieces are disjoint. The likelihood is
+<span class="tts-math" data-tts="L theta equals L theta given X sub 1 and so on X sub n equals sub i equals 1 to the n f_ theta X sub i .">$$L(\theta) = L(\theta \mid X_1, \dots, X_n) = \prod_{i=1}^n f_\theta(X_i).$$</span>
 </p>
 <div class="box definition" data-cid="ch17-120">
 <span class="box-label">Definition — generalized likelihood ratio statistic</span>
 <p data-cid="ch17-130">
 The <strong>generalized likelihood ratio statistic</strong> is
-$$\lambda = \lambda(X_1, \dots, X_n) = \frac{\sup_{\theta \in \Omega_1} L(\theta)}{\sup_{\theta \in \Omega_0} L(\theta)}.$$
-The likelihood ratio test rejects $H_0$ when $\lambda &gt; k$ for some threshold $k$.
+<span class="tts-math" data-tts="lambda equals lambda X sub 1 and so on X sub n equals sub theta in Omega sub 1 L theta sub theta in Omega sub 0 L theta .">$$\lambda = \lambda(X_1, \dots, X_n) = \frac{\sup_{\theta \in \Omega_1} L(\theta)}{\sup_{\theta \in \Omega_0} L(\theta)}.$$</span>
+The likelihood ratio test rejects <span class="tts-math" data-tts="H sub 0">$H_0$</span> when <span class="tts-math" data-tts="lambda gt k">$\lambda &gt; k$</span> for some threshold <span class="tts-math" data-tts="k">$k$</span>.
 </p>
 </div>
 <p data-cid="ch17-140">
-When $H_0$ and $H_1$ are both single points, this is exactly the Neyman–Pearson ratio and the resulting test is most powerful. For composite hypotheses, $\lambda$ is no longer guaranteed to be optimal, but it remains a sensible measure of how much better the data fit the alternative than the null.
+When <span class="tts-math" data-tts="H sub 0">$H_0$</span> and <span class="tts-math" data-tts="H sub 1">$H_1$</span> are both single points, this is exactly the Neyman–Pearson ratio and the resulting test is most powerful. For composite hypotheses, <span class="tts-math" data-tts="lambda">$\lambda$</span> is no longer guaranteed to be optimal, but it remains a sensible measure of how much better the data fit the alternative than the null.
 </p>
 <h3 data-cid="ch17-150">A cosmetic but important change</h3>
 <p data-cid="ch17-160">
-The supremum over $\Omega_1$ in the numerator is awkward because $\Omega_1$ is usually an open set with no nice maximizer. In the situations we care about — where $\Omega_0$ is a smooth lower-dimensional surface inside $\Omega$ — the supremum over the full space $\Omega = \Omega_0 \cup \Omega_1$ equals the supremum over $\Omega_1$ almost always. So Keener replaces the definition with the equivalent
-$$\lambda = \frac{\sup_{\theta \in \Omega} L(\theta)}{\sup_{\theta \in \Omega_0} L(\theta)} = \frac{L(\hat\theta)}{L(\tilde\theta)} \tag{17.1}$$
-where $\hat\theta$ is the unrestricted MLE and $\tilde\theta$ is the MLE constrained to $\Omega_0$. This is the formula we'll use from now on. Note $\lambda \geq 1$ always: the unrestricted maximum can only beat the restricted one.
+The supremum over <span class="tts-math" data-tts="Omega sub 1">$\Omega_1$</span> in the numerator is awkward because <span class="tts-math" data-tts="Omega sub 1">$\Omega_1$</span> is usually an open set with no nice maximizer. In the situations we care about — where <span class="tts-math" data-tts="Omega sub 0">$\Omega_0$</span> is a smooth lower-dimensional surface inside <span class="tts-math" data-tts="Omega">$\Omega$</span> — the supremum over the full space <span class="tts-math" data-tts="Omega equals Omega sub 0 union Omega sub 1">$\Omega = \Omega_0 \cup \Omega_1$</span> equals the supremum over <span class="tts-math" data-tts="Omega sub 1">$\Omega_1$</span> almost always. So Keener replaces the definition with the equivalent
+<span class="tts-math" data-tts="lambda equals sub theta in Omega L theta sub theta in Omega sub 0 L theta equals L theta over L theta 17.1">$$\lambda = \frac{\sup_{\theta \in \Omega} L(\theta)}{\sup_{\theta \in \Omega_0} L(\theta)} = \frac{L(\hat\theta)}{L(\tilde\theta)} \tag{17.1}$$</span>
+where <span class="tts-math" data-tts="theta">$\hat\theta$</span> is the unrestricted MLE and <span class="tts-math" data-tts="theta">$\tilde\theta$</span> is the MLE constrained to <span class="tts-math" data-tts="Omega sub 0">$\Omega_0$</span>. This is the formula we'll use from now on. Note <span class="tts-math" data-tts="lambda greater than or equal to 1">$\lambda \geq 1$</span> always: the unrestricted maximum can only beat the restricted one.
 </p>
 <div class="box intuition" data-cid="ch17-170">
-<span class="box-label">What $\lambda$ is really measuring</span>
+<span class="box-label">What <span class="tts-math" data-tts="lambda">$\lambda$</span> is really measuring</span>
 <p data-cid="ch17-180">
-$L(\hat\theta)$ is the highest the likelihood can get if we let $\theta$ be anything. $L(\tilde\theta)$ is the highest it can get if we force $\theta$ to obey $H_0$. The ratio asks: <em>how much likelihood did the null hypothesis cost me?</em> If the null is true, almost nothing; the two maxima will be close. If the null is false, the constraint hurts a lot and the ratio blows up.
+<span class="tts-math" data-tts="L theta">$L(\hat\theta)$</span> is the highest the likelihood can get if we let <span class="tts-math" data-tts="theta">$\theta$</span> be anything. <span class="tts-math" data-tts="L theta">$L(\tilde\theta)$</span> is the highest it can get if we force <span class="tts-math" data-tts="theta">$\theta$</span> to obey <span class="tts-math" data-tts="H sub 0">$H_0$</span>. The ratio asks: <em>how much likelihood did the null hypothesis cost me?</em> If the null is true, almost nothing; the two maxima will be close. If the null is false, the constraint hurts a lot and the ratio blows up.
 </p>
 </div>
 <h3 data-cid="ch17-190">Worked example: testing a normal mean</h3>
 <div class="box example" data-cid="ch17-200">
-<span class="box-label">Example 17.1 — the LRT for $\mu = 0$ is the $t$-test</span>
+<span class="box-label">Example 17.1 — the LRT for <span class="tts-math" data-tts="mu equals 0">$\mu = 0$</span> is the <span class="tts-math" data-tts="t">$t$</span>-test</span>
 <p data-cid="ch17-210">
-Let $X_1, \dots, X_n$ be a sample from $N(\mu, \sigma^2)$ with $\theta = (\mu, \sigma)$. The log-likelihood is
-$$\ell(\theta) = -\frac{n}{2}\log(2\pi\sigma^2) - \sum_{i=1}^n \frac{(X_i - \mu)^2}{2\sigma^2}.$$
+Let <span class="tts-math" data-tts="X sub 1 and so on X sub n">$X_1, \dots, X_n$</span> be a sample from <span class="tts-math" data-tts="N mu sigma to the 2">$N(\mu, \sigma^2)$</span> with <span class="tts-math" data-tts="theta equals mu sigma">$\theta = (\mu, \sigma)$</span>. The log-likelihood is
+<span class="tts-math" data-tts="ell theta equals minus n over 2 log 2 pi sigma to the 2 minus the sum over i equals 1 of to the n X sub i minus mu to the 2 over 2 sigma to the 2 .">$$\ell(\theta) = -\frac{n}{2}\log(2\pi\sigma^2) - \sum_{i=1}^n \frac{(X_i - \mu)^2}{2\sigma^2}.$$</span>
 </p>
 <p data-cid="ch17-220">
 Maximizing without constraint gives the familiar MLEs
-$$\hat\mu = \bar X, \qquad \hat\sigma^2 = \frac{1}{n}\sum_{i=1}^n (X_i - \bar X)^2,$$
-and substitution yields $L(\hat\mu, \hat\sigma) = e^{-n/2} / (2\pi\hat\sigma^2)^{n/2}$.
+<span class="tts-math" data-tts="mu equals X sigma to the 2 equals 1 over n the sum over i equals 1 of to the n X sub i minus X to the 2">$$\hat\mu = \bar X, \qquad \hat\sigma^2 = \frac{1}{n}\sum_{i=1}^n (X_i - \bar X)^2,$$</span>
+and substitution yields <span class="tts-math" data-tts="L mu sigma equals e to the n over 2 over 2 pi sigma to the 2 to the n over 2">$L(\hat\mu, \hat\sigma) = e^{-n/2} / (2\pi\hat\sigma^2)^{n/2}$</span>.
 </p>
 <p data-cid="ch17-230">
-Under $H_0 : \mu = 0$, the MLE of $\mu$ is $\tilde\mu = 0$ (no choice) and maximizing over $\sigma$ gives $\tilde\sigma^2 = \frac{1}{n}\sum X_i^2$. Then
-$$\lambda = \frac{L(\hat\theta)}{L(\tilde\theta)} = \frac{\tilde\sigma^n}{\hat\sigma^n} = \left[\frac{\sum X_i^2}{\sum (X_i - \bar X)^2}\right]^{n/2}.$$
-Using the identity $\sum X_i^2 = \sum(X_i - \bar X)^2 + n\bar X^2$,
-$$\lambda = \left[1 + \frac{T^2}{n-1}\right]^{n/2}, \quad T = \frac{\sqrt n\, \bar X}{S}.$$
-So $\lambda$ is a strictly increasing function of $|T|$, where $T$ is the usual $t$-statistic. <strong>The LRT is exactly the two-sided $t$-test.</strong>
+Under <span class="tts-math" data-tts="H sub 0 mu equals 0">$H_0 : \mu = 0$</span>, the MLE of <span class="tts-math" data-tts="mu">$\mu$</span> is <span class="tts-math" data-tts="mu equals 0">$\tilde\mu = 0$</span> (no choice) and maximizing over <span class="tts-math" data-tts="sigma">$\sigma$</span> gives <span class="tts-math" data-tts="sigma to the 2 equals 1 over n the sum of X sub i to the 2">$\tilde\sigma^2 = \frac{1}{n}\sum X_i^2$</span>. Then
+<span class="tts-math" data-tts="lambda equals L theta over L theta equals sigma to the n over sigma to the n equals the sum of X sub i to the 2 over the sum of X sub i minus X to the 2 to the n over 2.">$$\lambda = \frac{L(\hat\theta)}{L(\tilde\theta)} = \frac{\tilde\sigma^n}{\hat\sigma^n} = \left[\frac{\sum X_i^2}{\sum (X_i - \bar X)^2}\right]^{n/2}.$$</span>
+Using the identity <span class="tts-math" data-tts="the sum of X sub i to the 2 equals the sum of X sub i minus X to the 2 plus n X to the 2">$\sum X_i^2 = \sum(X_i - \bar X)^2 + n\bar X^2$</span>,
+<span class="tts-math" data-tts="lambda equals 1 plus T to the 2 over n minus 1 to the n over 2 T equals root n X over S .">$$\lambda = \left[1 + \frac{T^2}{n-1}\right]^{n/2}, \quad T = \frac{\sqrt n\, \bar X}{S}.$$</span>
+So <span class="tts-math" data-tts="lambda">$\lambda$</span> is a strictly increasing function of <span class="tts-math" data-tts="T">$|T|$</span>, where <span class="tts-math" data-tts="T">$T$</span> is the usual <span class="tts-math" data-tts="t">$t$</span>-statistic. <strong>The LRT is exactly the two-sided <span class="tts-math" data-tts="t">$t$</span>-test.</strong>
 </p>
 </div>
 <p data-cid="ch17-240">
@@ -119,47 +118,47 @@ This example is the prototype: a familiar test, rediscovered as a likelihood rat
 </p>
 <h3 data-cid="ch17-250">A second example: correlation</h3>
 <p data-cid="ch17-260">
-For a sample $(X_i, Y_i)$ from a bivariate normal, the LRT for $H_0: \rho = 0$ versus $H_1: \rho \neq 0$ works out to
-$$\log \lambda = -\frac{n}{2}\log(1 - \hat\rho^2),$$
-where $\hat\rho$ is the sample correlation. Equivalently, the test rejects when $|\hat\rho|$ or the associated $t$-statistic $T = \hat\rho \sqrt{n-2}/\sqrt{1 - \hat\rho^2}$ exceeds a constant. Under $H_0$, $T$ has a $t$-distribution on $n - 2$ degrees of freedom — exactly the classical test, again recovered as an LRT.
+For a sample <span class="tts-math" data-tts="X sub i Y sub i">$(X_i, Y_i)$</span> from a bivariate normal, the LRT for <span class="tts-math" data-tts="H sub 0 rho equals 0">$H_0: \rho = 0$</span> versus <span class="tts-math" data-tts="H sub 1 rho not equal to 0">$H_1: \rho \neq 0$</span> works out to
+<span class="tts-math" data-tts="log lambda equals minus n over 2 log 1 minus rho to the 2">$$\log \lambda = -\frac{n}{2}\log(1 - \hat\rho^2),$$</span>
+where <span class="tts-math" data-tts="rho">$\hat\rho$</span> is the sample correlation. Equivalently, the test rejects when <span class="tts-math" data-tts="rho">$|\hat\rho|$</span> or the associated <span class="tts-math" data-tts="t">$t$</span>-statistic <span class="tts-math" data-tts="T equals rho root n minus 2 over root 1 minus rho to the 2">$T = \hat\rho \sqrt{n-2}/\sqrt{1 - \hat\rho^2}$</span> exceeds a constant. Under <span class="tts-math" data-tts="H sub 0">$H_0$</span>, <span class="tts-math" data-tts="T">$T$</span> has a <span class="tts-math" data-tts="t">$t$</span>-distribution on <span class="tts-math" data-tts="n minus 2">$n - 2$</span> degrees of freedom — exactly the classical test, again recovered as an LRT.
 </p>
 <div class="box pause" data-cid="ch17-270">
 <span class="box-label">A pattern is emerging</span>
 <p data-cid="ch17-280">
-In both examples, the LRT collapses to a test we already knew, with an <em>exact</em> distribution we could write down. That's a coincidence of the normal model. For most other models we won't be so lucky — the distribution of $\lambda$ under $H_0$ won't have a clean closed form. What rescues us is Wilks' theorem: a single approximation that works asymptotically across every regular model.
+In both examples, the LRT collapses to a test we already knew, with an <em>exact</em> distribution we could write down. That's a coincidence of the normal model. For most other models we won't be so lucky — the distribution of <span class="tts-math" data-tts="lambda">$\lambda$</span> under <span class="tts-math" data-tts="H sub 0">$H_0$</span> won't have a clean closed form. What rescues us is Wilks' theorem: a single approximation that works asymptotically across every regular model.
 </p>
 </div>
-<h2 data-cid="ch17-290" id="s17-2">17.2 Asymptotic distribution of $2\log\lambda$</h2>
+<h2 data-cid="ch17-290" id="s17-2">17.2 Asymptotic distribution of <span class="tts-math" data-tts="2 log lambda">$2\log\lambda$</span></h2>
 <h3 data-cid="ch17-300">The result we're aiming at</h3>
 <p data-cid="ch17-310">
-Let $\Omega \subseteq \mathbb{R}^r$ be open, and let $\Omega_0$ be a smooth $q$-dimensional submanifold of $\Omega$, with $q &lt; r$. So the null hypothesis imposes $r - q$ constraints on $\theta$.
+Let <span class="tts-math" data-tts="Omega subset of or equal to the real numbers to the r">$\Omega \subseteq \mathbb{R}^r$</span> be open, and let <span class="tts-math" data-tts="Omega sub 0">$\Omega_0$</span> be a smooth <span class="tts-math" data-tts="q">$q$</span>-dimensional submanifold of <span class="tts-math" data-tts="Omega">$\Omega$</span>, with <span class="tts-math" data-tts="q lt r">$q &lt; r$</span>. So the null hypothesis imposes <span class="tts-math" data-tts="r minus q">$r - q$</span> constraints on <span class="tts-math" data-tts="theta">$\theta$</span>.
 </p>
 <div class="box definition" data-cid="ch17-320">
 <span class="box-label">Wilks' theorem (informal statement)</span>
 <p data-cid="ch17-330">
-Under regularity conditions on $f_\theta$ and consistency of both MLEs, if $\theta_0 \in \Omega_0$ then under $P_{\theta_0}$
-$$2 \log \lambda_n \;\Rightarrow\; \chi^2_{r - q}.$$
-More generally, along contiguous alternatives $\theta_n = \theta_0 + \Delta / \sqrt n$,
-$$2 \log \lambda_n \;\Rightarrow\; \chi^2_{r - q}(\delta^2),$$
+Under regularity conditions on <span class="tts-math" data-tts="f_ theta">$f_\theta$</span> and consistency of both MLEs, if <span class="tts-math" data-tts="theta sub 0 in Omega sub 0">$\theta_0 \in \Omega_0$</span> then under <span class="tts-math" data-tts="P sub theta sub 0">$P_{\theta_0}$</span>
+<span class="tts-math" data-tts="2 log lambda sub n implies chi to the 2 sub r minus q.">$$2 \log \lambda_n \;\Rightarrow\; \chi^2_{r - q}.$$</span>
+More generally, along contiguous alternatives <span class="tts-math" data-tts="theta sub n equals theta sub 0 plus Delta over root n">$\theta_n = \theta_0 + \Delta / \sqrt n$</span>,
+<span class="tts-math" data-tts="2 log lambda sub n implies chi to the 2 sub r minus q delta to the 2">$$2 \log \lambda_n \;\Rightarrow\; \chi^2_{r - q}(\delta^2),$$</span>
 a <strong>noncentral</strong> chi-square with the same degrees of freedom and noncentrality parameter
-$$\delta^2 = \Delta' Q_0 \big(P_0 + Q_0 I(\theta_0)^{-1} Q_0\big)^{-1} Q_0 \Delta,$$
-where $P_0$ and $Q_0 = I - P_0$ project onto the tangent space of $\Omega_0$ at $\theta_0$ and its orthogonal complement.
+<span class="tts-math" data-tts="delta to the 2 equals Delta prime Q sub 0 P sub 0 plus Q sub 0 I theta sub 0 inverse Q sub 0 inverse Q sub 0 Delta">$$\delta^2 = \Delta' Q_0 \big(P_0 + Q_0 I(\theta_0)^{-1} Q_0\big)^{-1} Q_0 \Delta,$$</span>
+where <span class="tts-math" data-tts="P sub 0">$P_0$</span> and <span class="tts-math" data-tts="Q sub 0 equals I minus P sub 0">$Q_0 = I - P_0$</span> project onto the tangent space of <span class="tts-math" data-tts="Omega sub 0">$\Omega_0$</span> at <span class="tts-math" data-tts="theta sub 0">$\theta_0$</span> and its orthogonal complement.
 </p>
 </div>
 <div class="box intuition" data-cid="ch17-340">
 <span class="box-label">Reading the formula in plain English</span>
 <p data-cid="ch17-350">
-The degrees of freedom equal the number of restrictions $H_0$ imposes — formally, $r - q$, the codimension of $\Omega_0$ inside $\Omega$. Forget $r$ and $q$ for a moment: it's "the dimension you lose by believing $H_0$". One scalar constraint? One degree of freedom. Two free parameters set to zero? Two degrees of freedom. That's the rule to remember.
+The degrees of freedom equal the number of restrictions <span class="tts-math" data-tts="H sub 0">$H_0$</span> imposes — formally, <span class="tts-math" data-tts="r minus q">$r - q$</span>, the codimension of <span class="tts-math" data-tts="Omega sub 0">$\Omega_0$</span> inside <span class="tts-math" data-tts="Omega">$\Omega$</span>. Forget <span class="tts-math" data-tts="r">$r$</span> and <span class="tts-math" data-tts="q">$q$</span> for a moment: it's "the dimension you lose by believing <span class="tts-math" data-tts="H sub 0">$H_0$</span>". One scalar constraint? One degree of freedom. Two free parameters set to zero? Two degrees of freedom. That's the rule to remember.
 </p>
 <p data-cid="ch17-360">
-The noncentrality parameter $\delta^2$ measures how far the true parameter sits from $\Omega_0$, projected through the Fisher information geometry. If $\Delta$ is along the tangent of $\Omega_0$, then $Q_0 \Delta = 0$ and $\delta^2 = 0$; the local direction doesn't take us out of the null space. Only the <em>orthogonal</em> component of $\Delta$ — the part that genuinely leaves $\Omega_0$ — generates power.
+The noncentrality parameter <span class="tts-math" data-tts="delta to the 2">$\delta^2$</span> measures how far the true parameter sits from <span class="tts-math" data-tts="Omega sub 0">$\Omega_0$</span>, projected through the Fisher information geometry. If <span class="tts-math" data-tts="Delta">$\Delta$</span> is along the tangent of <span class="tts-math" data-tts="Omega sub 0">$\Omega_0$</span>, then <span class="tts-math" data-tts="Q sub 0 Delta equals 0">$Q_0 \Delta = 0$</span> and <span class="tts-math" data-tts="delta to the 2 equals 0">$\delta^2 = 0$</span>; the local direction doesn't take us out of the null space. Only the <em>orthogonal</em> component of <span class="tts-math" data-tts="Delta">$\Delta$</span> — the part that genuinely leaves <span class="tts-math" data-tts="Omega sub 0">$\Omega_0$</span> — generates power.
 </p>
 </div>
 <h3 data-cid="ch17-370">The sketch of why this is true</h3>
 <p data-cid="ch17-380">
 The full derivation is long, but the architecture is worth understanding. Let
-$$Z_n = \sqrt n (\hat\theta_n - \theta_0), \qquad Y_n = \sqrt n (\tilde\theta_n - \theta_0).$$
-Both are $\sqrt n$-scaled deviations of an MLE from the true parameter $\theta_0 \in \Omega_0$. The unrestricted MLE $\hat\theta_n$ can wander anywhere in $\Omega$, so $Z_n$ asymptotically lives in all of $\mathbb{R}^r$. The restricted MLE $\tilde\theta_n$ is forced to stay on $\Omega_0$, so $Y_n$ asymptotically lives in the tangent space $V_{\theta_0}$.
+<span class="tts-math" data-tts="Z sub n equals root n theta sub n minus theta sub 0 Y sub n equals root n theta sub n minus theta sub 0 .">$$Z_n = \sqrt n (\hat\theta_n - \theta_0), \qquad Y_n = \sqrt n (\tilde\theta_n - \theta_0).$$</span>
+Both are <span class="tts-math" data-tts="root n">$\sqrt n$</span>-scaled deviations of an MLE from the true parameter <span class="tts-math" data-tts="theta sub 0 in Omega sub 0">$\theta_0 \in \Omega_0$</span>. The unrestricted MLE <span class="tts-math" data-tts="theta sub n">$\hat\theta_n$</span> can wander anywhere in <span class="tts-math" data-tts="Omega">$\Omega$</span>, so <span class="tts-math" data-tts="Z sub n">$Z_n$</span> asymptotically lives in all of <span class="tts-math" data-tts="the real numbers to the r">$\mathbb{R}^r$</span>. The restricted MLE <span class="tts-math" data-tts="theta sub n">$\tilde\theta_n$</span> is forced to stay on <span class="tts-math" data-tts="Omega sub 0">$\Omega_0$</span>, so <span class="tts-math" data-tts="Y sub n">$Y_n$</span> asymptotically lives in the tangent space <span class="tts-math" data-tts="V sub theta sub 0">$V_{\theta_0}$</span>.
 </p>
 <p data-cid="ch17-390">
 Three approximations carry the proof:
@@ -167,23 +166,23 @@ Three approximations carry the proof:
 <ol data-cid="ch17-400">
 <li>
 A Taylor expansion of the score function gives
-$$\frac{1}{\sqrt n} \nabla \ell_n(\theta_0) = I(\theta_0) Z_n + o_p(1). \tag{17.13}$$
+<span class="tts-math" data-tts="1 over root n gradient ell sub n theta sub 0 equals I theta sub 0 Z sub n plus o sub p 1 . 17.13">$$\frac{1}{\sqrt n} \nabla \ell_n(\theta_0) = I(\theta_0) Z_n + o_p(1). \tag{17.13}$$</span>
 </li>
 <li>
-A two-term Taylor expansion of the log-likelihood around $\theta_0$ produces
-$$2 \log \lambda_n = (Z_n - Y_n)' I(\theta_0) (Z_n - Y_n) + o_p(\|Y_n\|^2) + o_p(1). \tag{17.15}$$
+A two-term Taylor expansion of the log-likelihood around <span class="tts-math" data-tts="theta sub 0">$\theta_0$</span> produces
+<span class="tts-math" data-tts="2 log lambda sub n equals Z sub n minus Y sub n prime I theta sub 0 Z sub n minus Y sub n plus o sub p norm of Y sub n norm of to the 2 plus o sub p 1 . 17.15">$$2 \log \lambda_n = (Z_n - Y_n)' I(\theta_0) (Z_n - Y_n) + o_p(\|Y_n\|^2) + o_p(1). \tag{17.15}$$</span>
 </li>
 <li>
-The geometry of $\Omega_0$ at $\theta_0$ (encoded in the projection $P_0$) ties $Y_n$ to $Z_n$ in a specific way: $Y_n$ is essentially the projection of $Z_n$ onto the tangent space, in the Fisher-information inner product.
+The geometry of <span class="tts-math" data-tts="Omega sub 0">$\Omega_0$</span> at <span class="tts-math" data-tts="theta sub 0">$\theta_0$</span> (encoded in the projection <span class="tts-math" data-tts="P sub 0">$P_0$</span>) ties <span class="tts-math" data-tts="Y sub n">$Y_n$</span> to <span class="tts-math" data-tts="Z sub n">$Z_n$</span> in a specific way: <span class="tts-math" data-tts="Y sub n">$Y_n$</span> is essentially the projection of <span class="tts-math" data-tts="Z sub n">$Z_n$</span> onto the tangent space, in the Fisher-information inner product.
 </li>
 </ol>
 <p data-cid="ch17-410">
-Combining these, $Z_n - Y_n$ ends up being a vector in the orthogonal complement of the tangent space, of dimension $r - q$, with covariance such that the quadratic form $(Z_n - Y_n)' I(\theta_0) (Z_n - Y_n)$ is asymptotically the squared length of a standard $(r-q)$-dimensional Gaussian. That's a chi-square on $r - q$ degrees of freedom.
+Combining these, <span class="tts-math" data-tts="Z sub n minus Y sub n">$Z_n - Y_n$</span> ends up being a vector in the orthogonal complement of the tangent space, of dimension <span class="tts-math" data-tts="r minus q">$r - q$</span>, with covariance such that the quadratic form <span class="tts-math" data-tts="Z sub n minus Y sub n prime I theta sub 0 Z sub n minus Y sub n">$(Z_n - Y_n)' I(\theta_0) (Z_n - Y_n)$</span> is asymptotically the squared length of a standard <span class="tts-math" data-tts="r minus q">$(r-q)$</span>-dimensional Gaussian. That's a chi-square on <span class="tts-math" data-tts="r minus q">$r - q$</span> degrees of freedom.
 </p>
 <div class="box intuition" data-cid="ch17-420">
 <span class="box-label">Geometric picture</span>
 <p data-cid="ch17-430">
-Think of $\Omega$ as a flat sheet and $\Omega_0$ as a curve drawn on it. The unrestricted MLE $\hat\theta_n$ lands somewhere on the sheet near $\theta_0$. The restricted MLE $\tilde\theta_n$ is the closest point on the curve to that landing site, measured in the Fisher-information metric. The vector $\hat\theta_n - \tilde\theta_n$ is therefore (asymptotically) orthogonal to the curve. Its squared length, weighted by the Fisher information, is $2 \log \lambda_n$. And the squared length of a Gaussian vector of dimension $r - q$ is a chi-square on $r - q$ degrees of freedom. That is Wilks' theorem in one mental picture.
+Think of <span class="tts-math" data-tts="Omega">$\Omega$</span> as a flat sheet and <span class="tts-math" data-tts="Omega sub 0">$\Omega_0$</span> as a curve drawn on it. The unrestricted MLE <span class="tts-math" data-tts="theta sub n">$\hat\theta_n$</span> lands somewhere on the sheet near <span class="tts-math" data-tts="theta sub 0">$\theta_0$</span>. The restricted MLE <span class="tts-math" data-tts="theta sub n">$\tilde\theta_n$</span> is the closest point on the curve to that landing site, measured in the Fisher-information metric. The vector <span class="tts-math" data-tts="theta sub n minus theta sub n">$\hat\theta_n - \tilde\theta_n$</span> is therefore (asymptotically) orthogonal to the curve. Its squared length, weighted by the Fisher information, is <span class="tts-math" data-tts="2 log lambda sub n">$2 \log \lambda_n$</span>. And the squared length of a Gaussian vector of dimension <span class="tts-math" data-tts="r minus q">$r - q$</span> is a chi-square on <span class="tts-math" data-tts="r minus q">$r - q$</span> degrees of freedom. That is Wilks' theorem in one mental picture.
 </p>
 </div>
 <h3 data-cid="ch17-440">What the proof actually requires</h3>
@@ -191,17 +190,17 @@ Think of $\Omega$ as a flat sheet and $\Omega_0$ as a curve drawn on it. The unr
 Read this list once and don't worry about memorizing it — we'll just need to know what can go wrong:
 </p>
 <ul data-cid="ch17-460">
-<li>$\Omega$ is open in $\mathbb{R}^r$.</li>
-<li>$\Omega_0$ is a smooth submanifold of dimension $q &lt; r$.</li>
-<li>The densities $f_\theta$ are smooth enough for two Taylor expansions of the log-likelihood.</li>
-<li>The Fisher information $I(\theta)$ is positive definite and continuous in $\theta$.</li>
-<li>The MLEs $\hat\theta_n$ and $\tilde\theta_n$ are consistent.</li>
-<li>$\theta_0 \in \Omega_0$ lies in the <em>interior</em> of $\Omega$.</li>
+<li><span class="tts-math" data-tts="Omega">$\Omega$</span> is open in <span class="tts-math" data-tts="the real numbers to the r">$\mathbb{R}^r$</span>.</li>
+<li><span class="tts-math" data-tts="Omega sub 0">$\Omega_0$</span> is a smooth submanifold of dimension <span class="tts-math" data-tts="q lt r">$q &lt; r$</span>.</li>
+<li>The densities <span class="tts-math" data-tts="f_ theta">$f_\theta$</span> are smooth enough for two Taylor expansions of the log-likelihood.</li>
+<li>The Fisher information <span class="tts-math" data-tts="I theta">$I(\theta)$</span> is positive definite and continuous in <span class="tts-math" data-tts="theta">$\theta$</span>.</li>
+<li>The MLEs <span class="tts-math" data-tts="theta sub n">$\hat\theta_n$</span> and <span class="tts-math" data-tts="theta sub n">$\tilde\theta_n$</span> are consistent.</li>
+<li><span class="tts-math" data-tts="theta sub 0 in Omega sub 0">$\theta_0 \in \Omega_0$</span> lies in the <em>interior</em> of <span class="tts-math" data-tts="Omega">$\Omega$</span>.</li>
 </ul>
 <div class="box warn" data-cid="ch17-470">
 <span class="box-label">Common pitfall — boundary parameters</span>
 <p data-cid="ch17-480">
-The last condition is the one that breaks most often in practice. If $H_0$ forces a parameter onto the <em>boundary</em> of $\Omega$ — for example $H_0 : \sigma^2 = 0$ in a random-effects model, or $H_0 : p = 0$ for a binomial probability — then the MLE under $H_0$ can't wander in all directions, and Wilks' theorem fails. The asymptotic distribution of $2\log\lambda$ becomes a mixture of chi-squares (a "chi-bar-squared"). This is exactly what happens in problem 3 of the chapter (testing $\tau^2 = 0$ in a random-effects model).
+The last condition is the one that breaks most often in practice. If <span class="tts-math" data-tts="H sub 0">$H_0$</span> forces a parameter onto the <em>boundary</em> of <span class="tts-math" data-tts="Omega">$\Omega$</span> — for example <span class="tts-math" data-tts="H sub 0 sigma to the 2 equals 0">$H_0 : \sigma^2 = 0$</span> in a random-effects model, or <span class="tts-math" data-tts="H sub 0 p equals 0">$H_0 : p = 0$</span> for a binomial probability — then the MLE under <span class="tts-math" data-tts="H sub 0">$H_0$</span> can't wander in all directions, and Wilks' theorem fails. The asymptotic distribution of <span class="tts-math" data-tts="2 log lambda">$2\log\lambda$</span> becomes a mixture of chi-squares (a "chi-bar-squared"). This is exactly what happens in problem 3 of the chapter (testing <span class="tts-math" data-tts="tau to the 2 equals 0">$\tau^2 = 0$</span> in a random-effects model).
 </p>
 <p data-cid="ch17-490">
 The safe diagnostic: if the null forces a parameter to sit at the edge of where it's allowed, the chi-square approximation needs adjustment.
@@ -210,127 +209,127 @@ The safe diagnostic: if the null forces a parameter to sit at the edge of where 
 <h2 data-cid="ch17-500" id="s17-3">17.3 Examples</h2>
 <h3 data-cid="ch17-510">Three Poisson means</h3>
 <p data-cid="ch17-520">
-Let $X_i, Y_i, Z_i$ be independent Poisson observations with rates $\theta_1, \theta_2, \theta_3$, and test
-$$H_0 : \theta_1 + \theta_2 = \theta_3 \quad \text{versus} \quad H_1 : \theta_1 + \theta_2 \neq \theta_3.$$
-Here $r = 3$ and $\Omega_0$ is the plane defined by one linear constraint, so $q = 2$. Wilks' theorem predicts $2\log\lambda \approx \chi^2_1$ under $H_0$.
+Let <span class="tts-math" data-tts="X sub i Y sub i Z sub i">$X_i, Y_i, Z_i$</span> be independent Poisson observations with rates <span class="tts-math" data-tts="theta sub 1 theta sub 2 theta sub 3">$\theta_1, \theta_2, \theta_3$</span>, and test
+<span class="tts-math" data-tts="H sub 0 theta sub 1 plus theta sub 2 equals theta sub 3 versus H sub 1 theta sub 1 plus theta sub 2 not equal to theta sub 3.">$$H_0 : \theta_1 + \theta_2 = \theta_3 \quad \text{versus} \quad H_1 : \theta_1 + \theta_2 \neq \theta_3.$$</span>
+Here <span class="tts-math" data-tts="r equals 3">$r = 3$</span> and <span class="tts-math" data-tts="Omega sub 0">$\Omega_0$</span> is the plane defined by one linear constraint, so <span class="tts-math" data-tts="q equals 2">$q = 2$</span>. Wilks' theorem predicts <span class="tts-math" data-tts="2 log lambda approximately chi to the 2 sub 1">$2\log\lambda \approx \chi^2_1$</span> under <span class="tts-math" data-tts="H sub 0">$H_0$</span>.
 </p>
 <div class="box example" data-cid="ch17-530">
 <span class="box-label">Example 17.3 — the calculation</span>
 <p data-cid="ch17-540">
-Maximizing without constraint gives the obvious MLEs $\hat\theta_1 = \bar X$, $\hat\theta_2 = \bar Y$, $\hat\theta_3 = \bar Z$. Under $H_0$ we substitute $\theta_3 = \theta_1 + \theta_2$ into the log-likelihood and solve the resulting two normal equations. The solution is
-$$\tilde\theta_1 = \frac{\bar X}{2}\!\left(\frac{\bar Z + \bar X + \bar Y}{\bar X + \bar Y}\right), \quad \tilde\theta_2 = \frac{\bar Y}{2}\!\left(\frac{\bar Z + \bar X + \bar Y}{\bar X + \bar Y}\right), \quad \tilde\theta_3 = \frac{\bar Z + \bar X + \bar Y}{2}.$$
-After simplification (and using $\tilde\theta_1 + \tilde\theta_2 + \tilde\theta_3 = \hat\theta_1 + \hat\theta_2 + \hat\theta_3$),
-$$2\log\lambda = -2n\left[(\bar X + \bar Y) \log\!\left(\frac{\bar Z + \bar X + \bar Y}{2\bar X + 2\bar Y}\right) + \bar Z \log\!\left(\frac{\bar Z + \bar X + \bar Y}{2\bar Z}\right)\right].$$
+Maximizing without constraint gives the obvious MLEs <span class="tts-math" data-tts="theta sub 1 equals X">$\hat\theta_1 = \bar X$</span>, <span class="tts-math" data-tts="theta sub 2 equals Y">$\hat\theta_2 = \bar Y$</span>, <span class="tts-math" data-tts="theta sub 3 equals Z">$\hat\theta_3 = \bar Z$</span>. Under <span class="tts-math" data-tts="H sub 0">$H_0$</span> we substitute <span class="tts-math" data-tts="theta sub 3 equals theta sub 1 plus theta sub 2">$\theta_3 = \theta_1 + \theta_2$</span> into the log-likelihood and solve the resulting two normal equations. The solution is
+<span class="tts-math" data-tts="theta sub 1 equals X over 2 Z plus X plus Y over X plus Y theta sub 2 equals Y over 2 Z plus X plus Y over X plus Y theta sub 3 equals Z plus X plus Y over 2 .">$$\tilde\theta_1 = \frac{\bar X}{2}\!\left(\frac{\bar Z + \bar X + \bar Y}{\bar X + \bar Y}\right), \quad \tilde\theta_2 = \frac{\bar Y}{2}\!\left(\frac{\bar Z + \bar X + \bar Y}{\bar X + \bar Y}\right), \quad \tilde\theta_3 = \frac{\bar Z + \bar X + \bar Y}{2}.$$</span>
+After simplification (and using <span class="tts-math" data-tts="theta sub 1 plus theta sub 2 plus theta sub 3 equals theta sub 1 plus theta sub 2 plus theta sub 3">$\tilde\theta_1 + \tilde\theta_2 + \tilde\theta_3 = \hat\theta_1 + \hat\theta_2 + \hat\theta_3$</span>),
+<span class="tts-math" data-tts="2 log lambda equals minus 2n X plus Y log Z plus X plus Y over 2 X plus 2 Y plus Z log Z plus X plus Y over 2 Z .">$$2\log\lambda = -2n\left[(\bar X + \bar Y) \log\!\left(\frac{\bar Z + \bar X + \bar Y}{2\bar X + 2\bar Y}\right) + \bar Z \log\!\left(\frac{\bar Z + \bar X + \bar Y}{2\bar Z}\right)\right].$$</span>
 </p>
 <p data-cid="ch17-550">
-Under $H_0$ this is approximately $\chi^2_1$. The book also computes the noncentrality parameter for power calculations: when $\theta_1 = \theta_2 = 1$, $\theta_3 = 2.3$, and $n = 100$, one finds $\delta^2 = 2.09$ and the power against this alternative is about $0.31$ at level $5\%$.
+Under <span class="tts-math" data-tts="H sub 0">$H_0$</span> this is approximately <span class="tts-math" data-tts="chi to the 2 sub 1">$\chi^2_1$</span>. The book also computes the noncentrality parameter for power calculations: when <span class="tts-math" data-tts="theta sub 1 equals theta sub 2 equals 1">$\theta_1 = \theta_2 = 1$</span>, <span class="tts-math" data-tts="theta sub 3 equals 2.3">$\theta_3 = 2.3$</span>, and <span class="tts-math" data-tts="n equals 100">$n = 100$</span>, one finds <span class="tts-math" data-tts="delta to the 2 equals 2.09">$\delta^2 = 2.09$</span> and the power against this alternative is about <span class="tts-math" data-tts="0.31">$0.31$</span> at level <span class="tts-math" data-tts="5 %">$5\%$</span>.
 </p>
 </div>
-<h3 data-cid="ch17-560">Independence in a $2 \times 2$ table</h3>
+<h3 data-cid="ch17-560">Independence in a <span class="tts-math" data-tts="2 times 2">$2 \times 2$</span> table</h3>
 <p data-cid="ch17-570">
-Suppose $(N_{11}, N_{12}, N_{21}, N_{22}) \sim \text{Multinomial}(n; p_{11}, p_{12}, p_{21}, p_{22})$ with the probabilities summing to one. We test
-$$H_0 : p_{ij} = p_{i+} p_{+j} \quad \text{(rows and columns independent)}.$$
-Because the four probabilities sum to one, the full parameter space has dimension $r = 3$. The null hypothesis imposes one nontrivial constraint (e.g. $p_{11} = p_{1+} p_{+1}$), so $q = 2$ and Wilks predicts $\chi^2_1$.
+Suppose <span class="tts-math" data-tts="N sub 11 N sub 12 N sub 21 N sub 22 distributed as Multinomial n p sub 11 p sub 12 p sub 21 p sub 22">$(N_{11}, N_{12}, N_{21}, N_{22}) \sim \text{Multinomial}(n; p_{11}, p_{12}, p_{21}, p_{22})$</span> with the probabilities summing to one. We test
+<span class="tts-math" data-tts="H sub 0 p sub ij equals p sub i plus p sub j rows and columns independent .">$$H_0 : p_{ij} = p_{i+} p_{+j} \quad \text{(rows and columns independent)}.$$</span>
+Because the four probabilities sum to one, the full parameter space has dimension <span class="tts-math" data-tts="r equals 3">$r = 3$</span>. The null hypothesis imposes one nontrivial constraint (e.g. <span class="tts-math" data-tts="p sub 11 equals p sub 1 plus p sub 1">$p_{11} = p_{1+} p_{+1}$</span>), so <span class="tts-math" data-tts="q equals 2">$q = 2$</span> and Wilks predicts <span class="tts-math" data-tts="chi to the 2 sub 1">$\chi^2_1$</span>.
 </p>
 <div class="box example" data-cid="ch17-580">
 <span class="box-label">Example 17.4 — the LRT</span>
 <p data-cid="ch17-590">
-The unrestricted MLEs are $\hat p_{ij} = N_{ij}/n$. Under independence, the constrained MLEs factorize as $\tilde p_{ij} = \hat p_{i+} \hat p_{+j}$ where the marginals match the observed marginals. Therefore
-$$2\log\lambda = 2 \sum_{i,j} N_{ij} \log\!\left(\frac{\hat p_{ij}}{\hat p_{i+} \hat p_{+j}}\right).$$
-This is the well-known <strong>$G^2$ statistic</strong> for contingency tables. Under $H_0$ it has approximately a $\chi^2_1$ distribution.
+The unrestricted MLEs are <span class="tts-math" data-tts="p sub ij equals N sub ij over n">$\hat p_{ij} = N_{ij}/n$</span>. Under independence, the constrained MLEs factorize as <span class="tts-math" data-tts="p sub ij equals p sub i plus p sub j">$\tilde p_{ij} = \hat p_{i+} \hat p_{+j}$</span> where the marginals match the observed marginals. Therefore
+<span class="tts-math" data-tts="2 log lambda equals 2 the sum over i j of N sub ij log p sub ij p sub i plus p sub j .">$$2\log\lambda = 2 \sum_{i,j} N_{ij} \log\!\left(\frac{\hat p_{ij}}{\hat p_{i+} \hat p_{+j}}\right).$$</span>
+This is the well-known <strong><span class="tts-math" data-tts="G to the 2">$G^2$</span> statistic</strong> for contingency tables. Under <span class="tts-math" data-tts="H sub 0">$H_0$</span> it has approximately a <span class="tts-math" data-tts="chi to the 2 sub 1">$\chi^2_1$</span> distribution.
 </p>
 <p data-cid="ch17-600">
-The book uses the result to compute a sample size: to achieve $5\%$ level and $90\%$ power when $p_{11} = p_{22} = 0.3$ and $p_{12} = p_{21} = 0.2$, we need $n \approx 263$.
+The book uses the result to compute a sample size: to achieve <span class="tts-math" data-tts="5 %">$5\%$</span> level and <span class="tts-math" data-tts="90 %">$90\%$</span> power when <span class="tts-math" data-tts="p sub 11 equals p sub 22 equals 0.3">$p_{11} = p_{22} = 0.3$</span> and <span class="tts-math" data-tts="p sub 12 equals p sub 21 equals 0.2">$p_{12} = p_{21} = 0.2$</span>, we need <span class="tts-math" data-tts="n approximately 263">$n \approx 263$</span>.
 </p>
 </div>
-<h3 data-cid="ch17-610">Pearson's $\chi^2$ falls out as a special case</h3>
+<h3 data-cid="ch17-610">Pearson's <span class="tts-math" data-tts="chi to the 2">$\chi^2$</span> falls out as a special case</h3>
 <p data-cid="ch17-620">
 The classical Pearson statistic is
-$$T = \sum_{i,j} \frac{(N_{ij} - n\hat p_{i+}\hat p_{+j})^2}{n \hat p_{i+} \hat p_{+j}}.$$
-A two-term Taylor expansion of $2 \log \lambda$ around the point where $\hat p_{ij} = \hat p_{i+}\hat p_{+j}$ (which is "approximately true" under $H_0$) gives
-$$2 \log \lambda \approx T.$$
-The first-order term vanishes; the second-order term reproduces Pearson's statistic exactly. So <strong>Pearson's $\chi^2$ and the likelihood ratio $\chi^2$ are the same statistic up to higher-order corrections</strong>, and they share the same asymptotic distribution.
+<span class="tts-math" data-tts="T equals the sum over i j of N sub ij minus n p sub i plus p sub j to the 2 n p sub i plus p sub j .">$$T = \sum_{i,j} \frac{(N_{ij} - n\hat p_{i+}\hat p_{+j})^2}{n \hat p_{i+} \hat p_{+j}}.$$</span>
+A two-term Taylor expansion of <span class="tts-math" data-tts="2 log lambda">$2 \log \lambda$</span> around the point where <span class="tts-math" data-tts="p sub ij equals p sub i plus p sub j">$\hat p_{ij} = \hat p_{i+}\hat p_{+j}$</span> (which is "approximately true" under <span class="tts-math" data-tts="H sub 0">$H_0$</span>) gives
+<span class="tts-math" data-tts="2 log lambda approximately T.">$$2 \log \lambda \approx T.$$</span>
+The first-order term vanishes; the second-order term reproduces Pearson's statistic exactly. So <strong>Pearson's <span class="tts-math" data-tts="chi to the 2">$\chi^2$</span> and the likelihood ratio <span class="tts-math" data-tts="chi to the 2">$\chi^2$</span> are the same statistic up to higher-order corrections</strong>, and they share the same asymptotic distribution.
 </p>
 <div class="box intuition" data-cid="ch17-630">
 <span class="box-label">Why two famous chi-square tests are really one</span>
 <p data-cid="ch17-640">
-You learned Pearson's $\chi^2$ as "observed minus expected, squared, over expected". You learned the LRT as "twice the log of the likelihood ratio". These look unrelated. But Taylor-expand one around the null, and you get the other. The two statistics differ by $O_p(1/\sqrt n)$, which vanishes asymptotically. In a $2 \times 2$ table with $n = 263$, the two numbers will agree to roughly two significant figures.
+You learned Pearson's <span class="tts-math" data-tts="chi to the 2">$\chi^2$</span> as "observed minus expected, squared, over expected". You learned the LRT as "twice the log of the likelihood ratio". These look unrelated. But Taylor-expand one around the null, and you get the other. The two statistics differ by <span class="tts-math" data-tts="O sub p 1 over root n">$O_p(1/\sqrt n)$</span>, which vanishes asymptotically. In a <span class="tts-math" data-tts="2 times 2">$2 \times 2$</span> table with <span class="tts-math" data-tts="n equals 263">$n = 263$</span>, the two numbers will agree to roughly two significant figures.
 </p>
 </div>
 <h3 data-cid="ch17-650">A worked binomial-style test</h3>
 <div class="box example" data-cid="ch17-660">
-<span class="box-label">Mini-example — binomial proportion $p = p_0$</span>
+<span class="box-label">Mini-example — binomial proportion <span class="tts-math" data-tts="p equals p sub 0">$p = p_0$</span></span>
 <p data-cid="ch17-670">
-Let $X \sim \text{Binomial}(n, p)$. Test $H_0 : p = p_0$ vs $H_1 : p \neq p_0$. Here $r = 1$ and $q = 0$, so the null pins $p$ to a single point and Wilks predicts $\chi^2_1$.
+Let <span class="tts-math" data-tts="X distributed as Binomial n p">$X \sim \text{Binomial}(n, p)$</span>. Test <span class="tts-math" data-tts="H sub 0 p equals p sub 0">$H_0 : p = p_0$</span> vs <span class="tts-math" data-tts="H sub 1 p not equal to p sub 0">$H_1 : p \neq p_0$</span>. Here <span class="tts-math" data-tts="r equals 1">$r = 1$</span> and <span class="tts-math" data-tts="q equals 0">$q = 0$</span>, so the null pins <span class="tts-math" data-tts="p">$p$</span> to a single point and Wilks predicts <span class="tts-math" data-tts="chi to the 2 sub 1">$\chi^2_1$</span>.
 </p>
 <p data-cid="ch17-680">
-The unrestricted MLE is $\hat p = X/n$. The constrained "MLE" is $\tilde p = p_0$. The log-likelihood ratio is
-$$\log \lambda = X \log\!\left(\frac{\hat p}{p_0}\right) + (n - X) \log\!\left(\frac{1 - \hat p}{1 - p_0}\right),$$
+The unrestricted MLE is <span class="tts-math" data-tts="p equals X over n">$\hat p = X/n$</span>. The constrained "MLE" is <span class="tts-math" data-tts="p equals p sub 0">$\tilde p = p_0$</span>. The log-likelihood ratio is
+<span class="tts-math" data-tts="log lambda equals X log p over p sub 0 plus n minus X log 1 minus p over 1 minus p sub 0">$$\log \lambda = X \log\!\left(\frac{\hat p}{p_0}\right) + (n - X) \log\!\left(\frac{1 - \hat p}{1 - p_0}\right),$$</span>
 so
-$$2 \log \lambda = 2n\left[\hat p \log\!\left(\frac{\hat p}{p_0}\right) + (1 - \hat p) \log\!\left(\frac{1 - \hat p}{1 - p_0}\right)\right].$$
-Under $H_0$, $2\log\lambda \;\Rightarrow\; \chi^2_1$, and a Taylor expansion around $\hat p = p_0$ recovers the Pearson statistic
-$$T = \frac{(X - np_0)^2}{np_0(1 - p_0)} = \frac{n(\hat p - p_0)^2}{p_0(1 - p_0)},$$
-which equals the square of the usual $z$-statistic. All three viewpoints converge.
+<span class="tts-math" data-tts="2 log lambda equals 2n p log p over p sub 0 plus 1 minus p log 1 minus p over 1 minus p sub 0 .">$$2 \log \lambda = 2n\left[\hat p \log\!\left(\frac{\hat p}{p_0}\right) + (1 - \hat p) \log\!\left(\frac{1 - \hat p}{1 - p_0}\right)\right].$$</span>
+Under <span class="tts-math" data-tts="H sub 0">$H_0$</span>, <span class="tts-math" data-tts="2 log lambda implies chi to the 2 sub 1">$2\log\lambda \;\Rightarrow\; \chi^2_1$</span>, and a Taylor expansion around <span class="tts-math" data-tts="p equals p sub 0">$\hat p = p_0$</span> recovers the Pearson statistic
+<span class="tts-math" data-tts="T equals X minus np sub 0 to the 2 over np sub 0 1 minus p sub 0 equals n p minus p sub 0 to the 2 over p sub 0 1 minus p sub 0">$$T = \frac{(X - np_0)^2}{np_0(1 - p_0)} = \frac{n(\hat p - p_0)^2}{p_0(1 - p_0)},$$</span>
+which equals the square of the usual <span class="tts-math" data-tts="z">$z$</span>-statistic. All three viewpoints converge.
 </p>
 </div>
 <h2 data-cid="ch17-690" id="s17-4">17.4 Wald and score tests</h2>
 <p data-cid="ch17-700">
-Imagine writing $H_0$ as
-$$H_0 : g(\theta) = 0$$
-for some smooth constraint function $g : \Omega \to \mathbb{R}^{r-q}$ with $Dg(\theta)$ of full rank on $\Omega_0$. (For instance, "independence in a $2\times 2$ table" is the single constraint $g(\theta) = \theta_1 - (\theta_1 + \theta_2)(\theta_1 + \theta_3) = 0$.)
+Imagine writing <span class="tts-math" data-tts="H sub 0">$H_0$</span> as
+<span class="tts-math" data-tts="H sub 0 g theta equals 0">$$H_0 : g(\theta) = 0$$</span>
+for some smooth constraint function <span class="tts-math" data-tts="g Omega to the real numbers to the r minus q">$g : \Omega \to \mathbb{R}^{r-q}$</span> with <span class="tts-math" data-tts="Dg theta">$Dg(\theta)$</span> of full rank on <span class="tts-math" data-tts="Omega sub 0">$\Omega_0$</span>. (For instance, "independence in a <span class="tts-math" data-tts="2 times 2">$2\times 2$</span> table" is the single constraint <span class="tts-math" data-tts="g theta equals theta sub 1 minus theta sub 1 plus theta sub 2 theta sub 1 plus theta sub 3 equals 0">$g(\theta) = \theta_1 - (\theta_1 + \theta_2)(\theta_1 + \theta_3) = 0$</span>.)
 </p>
 <p data-cid="ch17-710">
 Three different "ways the null could fail" suggest three different test statistics.
 </p>
-<h3 data-cid="ch17-720">The Wald test — "$g(\hat\theta_n)$ should be near zero"</h3>
+<h3 data-cid="ch17-720">The Wald test — "<span class="tts-math" data-tts="g theta sub n">$g(\hat\theta_n)$</span> should be near zero"</h3>
 <p data-cid="ch17-730">
-If $H_0$ is true, then evaluating the constraint at the unrestricted MLE should give something near zero. By the delta method,
-$$\sqrt n\, g(\hat\theta_n) \;\Rightarrow\; N\!\left(0,\; Dg(\theta)\, I(\theta)^{-1}\, Dg(\theta)'\right),$$
+If <span class="tts-math" data-tts="H sub 0">$H_0$</span> is true, then evaluating the constraint at the unrestricted MLE should give something near zero. By the delta method,
+<span class="tts-math" data-tts="root n g theta sub n implies N 0 Dg theta I theta inverse Dg theta prime">$$\sqrt n\, g(\hat\theta_n) \;\Rightarrow\; N\!\left(0,\; Dg(\theta)\, I(\theta)^{-1}\, Dg(\theta)'\right),$$</span>
 so the natural quadratic form
-$$T_W = n \, g(\hat\theta_n)' \big[ Dg(\hat\theta_n)\, I(\hat\theta_n)^{-1}\, Dg(\hat\theta_n)' \big]^{-1} g(\hat\theta_n)$$
-converges to $\chi^2_{r - q}$ under $H_0$.
+<span class="tts-math" data-tts="T sub W equals n g theta sub n prime Dg theta sub n I theta sub n inverse Dg theta sub n prime inverse g theta sub n">$$T_W = n \, g(\hat\theta_n)' \big[ Dg(\hat\theta_n)\, I(\hat\theta_n)^{-1}\, Dg(\hat\theta_n)' \big]^{-1} g(\hat\theta_n)$$</span>
+converges to <span class="tts-math" data-tts="chi to the 2 sub r minus q">$\chi^2_{r - q}$</span> under <span class="tts-math" data-tts="H sub 0">$H_0$</span>.
 </p>
-<h3 data-cid="ch17-740">The score test — "$\nabla \ell_n(\tilde\theta_n)$ should be near zero"</h3>
+<h3 data-cid="ch17-740">The score test — "<span class="tts-math" data-tts="gradient ell sub n theta sub n">$\nabla \ell_n(\tilde\theta_n)$</span> should be near zero"</h3>
 <p data-cid="ch17-750">
-Alternative viewpoint: if $H_0$ is true, then $\tilde\theta_n$ already estimates $\theta$ well, and the gradient of the log-likelihood at $\tilde\theta_n$ should be small. Define
-$$T_S = \frac{1}{n} \nabla \ell_n(\tilde\theta_n)'\, I(\tilde\theta_n)^{-1}\, \nabla \ell_n(\tilde\theta_n).$$
+Alternative viewpoint: if <span class="tts-math" data-tts="H sub 0">$H_0$</span> is true, then <span class="tts-math" data-tts="theta sub n">$\tilde\theta_n$</span> already estimates <span class="tts-math" data-tts="theta">$\theta$</span> well, and the gradient of the log-likelihood at <span class="tts-math" data-tts="theta sub n">$\tilde\theta_n$</span> should be small. Define
+<span class="tts-math" data-tts="T sub S equals 1 over n gradient ell sub n theta sub n prime I theta sub n inverse gradient ell sub n theta sub n .">$$T_S = \frac{1}{n} \nabla \ell_n(\tilde\theta_n)'\, I(\tilde\theta_n)^{-1}\, \nabla \ell_n(\tilde\theta_n).$$</span>
 A short Taylor argument shows
-$$T_S = 2 \log \lambda_n + o_p(1),$$
-so under $H_0$ also $T_S \Rightarrow \chi^2_{r - q}$.
+<span class="tts-math" data-tts="T sub S equals 2 log lambda sub n plus o sub p 1">$$T_S = 2 \log \lambda_n + o_p(1),$$</span>
+so under <span class="tts-math" data-tts="H sub 0">$H_0$</span> also <span class="tts-math" data-tts="T sub S implies chi to the 2 sub r minus q">$T_S \Rightarrow \chi^2_{r - q}$</span>.
 </p>
 <h3 data-cid="ch17-760">Putting them side by side</h3>
 <div class="box definition" data-cid="ch17-770">
 <span class="box-label">The trinity</span>
 <p data-cid="ch17-780">
-Three statistics for the same null hypothesis, all converging to $\chi^2_{r-q}$:
+Three statistics for the same null hypothesis, all converging to <span class="tts-math" data-tts="chi to the 2 sub r minus q">$\chi^2_{r-q}$</span>:
 </p>
 <ul data-cid="ch17-790">
-<li><strong>LRT</strong>: $2\log\lambda_n = 2[\ell_n(\hat\theta_n) - \ell_n(\tilde\theta_n)]$. Needs <em>both</em> MLEs.</li>
-<li><strong>Wald</strong>: $T_W$ uses only $\hat\theta_n$, the unrestricted MLE.</li>
-<li><strong>Score</strong>: $T_S$ uses only $\tilde\theta_n$, the restricted MLE.</li>
+<li><strong>LRT</strong>: <span class="tts-math" data-tts="2 log lambda sub n equals 2 ell sub n theta sub n minus ell sub n theta sub n">$2\log\lambda_n = 2[\ell_n(\hat\theta_n) - \ell_n(\tilde\theta_n)]$</span>. Needs <em>both</em> MLEs.</li>
+<li><strong>Wald</strong>: <span class="tts-math" data-tts="T sub W">$T_W$</span> uses only <span class="tts-math" data-tts="theta sub n">$\hat\theta_n$</span>, the unrestricted MLE.</li>
+<li><strong>Score</strong>: <span class="tts-math" data-tts="T sub S">$T_S$</span> uses only <span class="tts-math" data-tts="theta sub n">$\tilde\theta_n$</span>, the restricted MLE.</li>
 </ul>
 <p data-cid="ch17-800">
-All three are asymptotically equivalent under $H_0$ and under contiguous alternatives; the pairwise differences are $o_p(1)$.
+All three are asymptotically equivalent under <span class="tts-math" data-tts="H sub 0">$H_0$</span> and under contiguous alternatives; the pairwise differences are <span class="tts-math" data-tts="o sub p 1">$o_p(1)$</span>.
 </p>
 </div>
 <div class="box intuition" data-cid="ch17-810">
 <span class="box-label">A picture that ties them together</span>
 <p data-cid="ch17-820">
-Plot the log-likelihood $\ell(\theta)$ against $\theta$. The graph is a hill, and consider testing $H_0 : \theta = 0$ (just one scalar to fix intuition).
+Plot the log-likelihood <span class="tts-math" data-tts="ell theta">$\ell(\theta)$</span> against <span class="tts-math" data-tts="theta">$\theta$</span>. The graph is a hill, and consider testing <span class="tts-math" data-tts="H sub 0 theta equals 0">$H_0 : \theta = 0$</span> (just one scalar to fix intuition).
 </p>
 <ul data-cid="ch17-830">
-<li>The <strong>LRT</strong> measures the <em>vertical drop</em> in $\ell$ from the peak to the height at $\theta = 0$.</li>
-<li>The <strong>Wald</strong> test measures the <em>horizontal distance</em> from $\hat\theta_n$ to $0$ (scaled by Fisher information).</li>
-<li>The <strong>score</strong> test measures the <em>slope</em> of $\ell$ at $\theta = 0$ (scaled by Fisher information).</li>
+<li>The <strong>LRT</strong> measures the <em>vertical drop</em> in <span class="tts-math" data-tts="ell">$\ell$</span> from the peak to the height at <span class="tts-math" data-tts="theta equals 0">$\theta = 0$</span>.</li>
+<li>The <strong>Wald</strong> test measures the <em>horizontal distance</em> from <span class="tts-math" data-tts="theta sub n">$\hat\theta_n$</span> to <span class="tts-math" data-tts="0">$0$</span> (scaled by Fisher information).</li>
+<li>The <strong>score</strong> test measures the <em>slope</em> of <span class="tts-math" data-tts="ell">$\ell$</span> at <span class="tts-math" data-tts="theta equals 0">$\theta = 0$</span> (scaled by Fisher information).</li>
 </ul>
 <p data-cid="ch17-840">
-For a perfectly quadratic log-likelihood (the asymptotic limit, by Taylor expansion), drop $=$ distance squared $=$ slope squared, all in appropriate units. Hence the trinity.
+For a perfectly quadratic log-likelihood (the asymptotic limit, by Taylor expansion), drop <span class="tts-math" data-tts="equals">$=$</span> distance squared <span class="tts-math" data-tts="equals">$=$</span> slope squared, all in appropriate units. Hence the trinity.
 </p>
 </div>
 <div class="box pause" data-cid="ch17-850">
 <span class="box-label">They agree asymptotically — but not in finite samples</span>
 <p data-cid="ch17-860">
-This is the single most important practical point. In any specific dataset, the three statistics will give three different numbers. Sometimes the LRT rejects when the Wald test does not, or vice versa. The differences vanish as $n \to \infty$, but in real applied work with $n = 30$ or $n = 100$, they can disagree.
+This is the single most important practical point. In any specific dataset, the three statistics will give three different numbers. Sometimes the LRT rejects when the Wald test does not, or vice versa. The differences vanish as <span class="tts-math" data-tts="n to infinity">$n \to \infty$</span>, but in real applied work with <span class="tts-math" data-tts="n equals 30">$n = 30$</span> or <span class="tts-math" data-tts="n equals 100">$n = 100$</span>, they can disagree.
 </p>
 <p data-cid="ch17-870">
 When this happens, the LRT is typically the most reliable (its sampling distribution is closer to chi-square in moderate samples), and the Wald test can be especially unstable when the parameter is near the boundary or the Fisher information is poorly estimated. Many statisticians default to the LRT for that reason.
@@ -339,34 +338,34 @@ When this happens, the LRT is typically the most reliable (its sampling distribu
 <h3 data-cid="ch17-880">When to reach for which</h3>
 <ul data-cid="ch17-890">
 <li><strong>LRT</strong>: most reliable in moderate samples. Use when you can compute both MLEs comfortably.</li>
-<li><strong>Wald</strong>: handy when the constrained MLE $\tilde\theta_n$ is hard to compute but the unrestricted fit is easy. Most common in regression output (every reported $z$-statistic in a generalized linear model is a Wald statistic).</li>
+<li><strong>Wald</strong>: handy when the constrained MLE <span class="tts-math" data-tts="theta sub n">$\tilde\theta_n$</span> is hard to compute but the unrestricted fit is easy. Most common in regression output (every reported <span class="tts-math" data-tts="z">$z$</span>-statistic in a generalized linear model is a Wald statistic).</li>
 <li><strong>Score</strong>: handy when the unrestricted fit is expensive but the restricted fit is cheap — for instance when testing whether a complicated model improves on a simple one. But the score test's power can be poor at distant alternatives.</li>
 </ul>
 <div class="box warn" data-cid="ch17-900">
 <span class="box-label">Pitfalls of the Wald test</span>
 <p data-cid="ch17-910">
-The Wald test is not invariant under reparameterization. Testing $H_0 : \theta = 1$ in a Bernoulli model on the logit scale versus on the probability scale gives <em>different</em> Wald statistics. The LRT is invariant. This is one reason the Wald test sometimes misbehaves on weird parameterizations of the same null.
+The Wald test is not invariant under reparameterization. Testing <span class="tts-math" data-tts="H sub 0 theta equals 1">$H_0 : \theta = 1$</span> in a Bernoulli model on the logit scale versus on the probability scale gives <em>different</em> Wald statistics. The LRT is invariant. This is one reason the Wald test sometimes misbehaves on weird parameterizations of the same null.
 </p>
 <p data-cid="ch17-920">
-Also, when $H_0$ pushes a parameter to the boundary, the Wald statistic can be exactly zero by construction (because $g(\hat\theta_n)$ is forced to one side), and the test loses all power. Use the LRT instead, with the corrected boundary distribution.
+Also, when <span class="tts-math" data-tts="H sub 0">$H_0$</span> pushes a parameter to the boundary, the Wald statistic can be exactly zero by construction (because <span class="tts-math" data-tts="g theta sub n">$g(\hat\theta_n)$</span> is forced to one side), and the test loses all power. Use the LRT instead, with the corrected boundary distribution.
 </p>
 </div>
 <h3 data-cid="ch17-930">Bahadur efficiency — a footnote</h3>
 <p data-cid="ch17-940">
-For a <em>fixed</em> alternative $\theta \in \Omega_1$, all three tests have power tending to one. The rate of convergence is exponential, and a deep result (Bahadur) says the LRT achieves the optimal rate among all reasonable tests in this regime. So the LRT is "Bahadur efficient". In practice, this matters less than the moderate-sample behavior — which is what makes the difference in real applications.
+For a <em>fixed</em> alternative <span class="tts-math" data-tts="theta in Omega sub 1">$\theta \in \Omega_1$</span>, all three tests have power tending to one. The rate of convergence is exponential, and a deep result (Bahadur) says the LRT achieves the optimal rate among all reasonable tests in this regime. So the LRT is "Bahadur efficient". In practice, this matters less than the moderate-sample behavior — which is what makes the difference in real applications.
 </p>
 <h2 data-cid="ch17-950" id="summary">Summary</h2>
 <p data-cid="ch17-960">
 The chapter, distilled into eight bullets:
 </p>
 <ol data-cid="ch17-970">
-<li>The <strong>generalized likelihood ratio</strong> is $\lambda = L(\hat\theta) / L(\tilde\theta)$ — best unrestricted fit over best fit under $H_0$. Always $\geq 1$.</li>
-<li><strong>Wilks' theorem</strong>: under regularity, $2 \log \lambda_n \Rightarrow \chi^2_{r-q}$ under $H_0$, where $r - q$ is the number of constraints $H_0$ imposes (the codimension of $\Omega_0$ in $\Omega$).</li>
-<li>Under <em>contiguous</em> alternatives $\theta_n = \theta_0 + \Delta/\sqrt n$, the limit becomes the <strong>noncentral</strong> chi-square $\chi^2_{r-q}(\delta^2)$, with $\delta^2$ a quadratic form in $\Delta$ involving the Fisher information.</li>
-<li>The <strong>Wald test</strong> uses only $\hat\theta_n$; the <strong>score test</strong> uses only $\tilde\theta_n$. Both also converge to $\chi^2_{r-q}$ under $H_0$.</li>
-<li>All three statistics are <strong>asymptotically equivalent</strong>: pairwise differences are $o_p(1)$. In finite samples they disagree, and the LRT is usually the most reliable.</li>
-<li>Pearson's chi-square statistic is a Taylor approximation to $2 \log \lambda$ — same asymptotic distribution.</li>
-<li>The classical $t$-test, $z$-test for a proportion, and $G^2$ for contingency tables are all special cases of the LRT.</li>
+<li>The <strong>generalized likelihood ratio</strong> is <span class="tts-math" data-tts="lambda equals L theta over L theta">$\lambda = L(\hat\theta) / L(\tilde\theta)$</span> — best unrestricted fit over best fit under <span class="tts-math" data-tts="H sub 0">$H_0$</span>. Always <span class="tts-math" data-tts="greater than or equal to 1">$\geq 1$</span>.</li>
+<li><strong>Wilks' theorem</strong>: under regularity, <span class="tts-math" data-tts="2 log lambda sub n implies chi to the 2 sub r minus q">$2 \log \lambda_n \Rightarrow \chi^2_{r-q}$</span> under <span class="tts-math" data-tts="H sub 0">$H_0$</span>, where <span class="tts-math" data-tts="r minus q">$r - q$</span> is the number of constraints <span class="tts-math" data-tts="H sub 0">$H_0$</span> imposes (the codimension of <span class="tts-math" data-tts="Omega sub 0">$\Omega_0$</span> in <span class="tts-math" data-tts="Omega">$\Omega$</span>).</li>
+<li>Under <em>contiguous</em> alternatives <span class="tts-math" data-tts="theta sub n equals theta sub 0 plus Delta over root n">$\theta_n = \theta_0 + \Delta/\sqrt n$</span>, the limit becomes the <strong>noncentral</strong> chi-square <span class="tts-math" data-tts="chi to the 2 sub r minus q delta to the 2">$\chi^2_{r-q}(\delta^2)$</span>, with <span class="tts-math" data-tts="delta to the 2">$\delta^2$</span> a quadratic form in <span class="tts-math" data-tts="Delta">$\Delta$</span> involving the Fisher information.</li>
+<li>The <strong>Wald test</strong> uses only <span class="tts-math" data-tts="theta sub n">$\hat\theta_n$</span>; the <strong>score test</strong> uses only <span class="tts-math" data-tts="theta sub n">$\tilde\theta_n$</span>. Both also converge to <span class="tts-math" data-tts="chi to the 2 sub r minus q">$\chi^2_{r-q}$</span> under <span class="tts-math" data-tts="H sub 0">$H_0$</span>.</li>
+<li>All three statistics are <strong>asymptotically equivalent</strong>: pairwise differences are <span class="tts-math" data-tts="o sub p 1">$o_p(1)$</span>. In finite samples they disagree, and the LRT is usually the most reliable.</li>
+<li>Pearson's chi-square statistic is a Taylor approximation to <span class="tts-math" data-tts="2 log lambda">$2 \log \lambda$</span> — same asymptotic distribution.</li>
+<li>The classical <span class="tts-math" data-tts="t">$t$</span>-test, <span class="tts-math" data-tts="z">$z$</span>-test for a proportion, and <span class="tts-math" data-tts="G to the 2">$G^2$</span> for contingency tables are all special cases of the LRT.</li>
 <li><strong>Pitfalls</strong>: the chi-square approximation requires interior parameter values, smooth densities, and positive-definite Fisher information. Boundary nulls (variance components, mixture weights) need a corrected distribution. Wald tests are not reparameterization-invariant.</li>
 </ol>
 <div class="box pause" data-cid="ch17-980">
@@ -375,14 +374,14 @@ The chapter, distilled into eight bullets:
 You should be able to answer, without looking back:
 </p>
 <ul data-cid="ch17-1000">
-<li>Why does the degrees-of-freedom equal $r - q$ rather than $r$ or $q$ alone? What does "the dimension you lose" mean?</li>
+<li>Why does the degrees-of-freedom equal <span class="tts-math" data-tts="r minus q">$r - q$</span> rather than <span class="tts-math" data-tts="r">$r$</span> or <span class="tts-math" data-tts="q">$q$</span> alone? What does "the dimension you lose" mean?</li>
 <li>Sketch the log-likelihood as a hill. Mark on it the three quantities measured by the LRT, the Wald test, and the score test.</li>
 <li>Why are the three tests asymptotically equivalent? In what sense can they disagree in finite samples?</li>
 <li>State one situation in which Wilks' theorem fails, and explain why.</li>
-<li>How does the noncentrality parameter $\delta^2$ depend on the direction of $\Delta$ relative to the tangent space of $\Omega_0$? What does that direction-dependence mean for the power of the test?</li>
+<li>How does the noncentrality parameter <span class="tts-math" data-tts="delta to the 2">$\delta^2$</span> depend on the direction of <span class="tts-math" data-tts="Delta">$\Delta$</span> relative to the tangent space of <span class="tts-math" data-tts="Omega sub 0">$\Omega_0$</span>? What does that direction-dependence mean for the power of the test?</li>
 </ul>
 <p data-cid="ch17-1010">
-If any of these feel shaky, return to Section 17.2 and re-trace the geometric picture: $\hat\theta_n - \tilde\theta_n$ is asymptotically a Gaussian vector orthogonal to $\Omega_0$, and Wilks' theorem is the statement that its squared length, in the Fisher-information metric, is a chi-square.
+If any of these feel shaky, return to Section 17.2 and re-trace the geometric picture: <span class="tts-math" data-tts="theta sub n minus theta sub n">$\hat\theta_n - \tilde\theta_n$</span> is asymptotically a Gaussian vector orthogonal to <span class="tts-math" data-tts="Omega sub 0">$\Omega_0$</span>, and Wilks' theorem is the statement that its squared length, in the Fisher-information metric, is a chi-square.
 </p>
 </div>
 <nav class="chapter-nav">
@@ -391,6 +390,6 @@ If any of these feel shaky, return to Section 17.2 and re-trace the geometric pi
 </nav>
 </article>
 </main>
-<script src="/js/main.js"></script><script src="/js/comments.js"></script>
+<script src="/js/main.js"></script><script src="/js/comments.js"></script><script src="/js/tts.js"></script>
 </body>
 </html>

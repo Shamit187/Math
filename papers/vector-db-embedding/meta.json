@@ -1,0 +1,6 @@
+{
+  "title": "Integrating Vector Databases across Embedding Models",
+  "authors": "Beining Yang, Yang Cao, Yang Ren",
+  "venue": "ACM 3769803",
+  "description": "A framework for querying across multiple vector databases produced by different embedding models."
+}

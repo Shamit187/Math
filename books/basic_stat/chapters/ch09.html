@@ -10,14 +10,13 @@
 <link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
-<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/><link href="/css/tts.css" rel="stylesheet"/>
 </head>
 <body data-book="basic_stat" data-page="ch09">
 <header class="site-header">
+<a class="home-btn" href="/">Home</a>
 <a class="brand" href="/books/basic_stat/">Theoretical Statistics <small>a slow reading guide</small></a>
 <nav>
-<a href="/" class="all-books-link">All books</a>
-    <a href="/books/basic_stat/">Contents</a>
 <button aria-label="toggle theme" class="theme-toggle">Dark</button>
 </nav>
 </header>
@@ -55,26 +54,26 @@
   least squares, the method of moments. Each came with its own little asymptotic argument. Chapter 9 reveals
   that nearly all of them are instances of a single template:
 </p>
-$$\text{the estimator } \hat\theta_n \text{ solves } \sum_{i=1}^{n} \psi(X_i; \hat\theta_n) = 0.$$
+<span class="tts-math" data-tts="the estimator theta sub n solves the sum from i equals 1 to n of psi X sub i theta sub n equals 0.">$$\text{the estimator } \hat\theta_n \text{ solves } \sum_{i=1}^{n} \psi(X_i; \hat\theta_n) = 0.$$</span>
 <p data-cid="ch09-040">
-  Different choices of $\psi$ give different estimators. When $\psi = \nabla_\theta \log f_\theta$, the
-  solution is the MLE. When $\psi(x, t) = x - t$, the solution is the sample mean. When
-  $\psi(x, t) = \mathrm{sign}(x - t)$, the solution is the sample median. The method of moments,
+  Different choices of <span class="tts-math" data-tts="psi">$\psi$</span> give different estimators. When <span class="tts-math" data-tts="psi equals gradient _ theta log f_ theta">$\psi = \nabla_\theta \log f_\theta$</span>, the
+  solution is the MLE. When <span class="tts-math" data-tts="psi x t equals x minus t">$\psi(x, t) = x - t$</span>, the solution is the sample mean. When
+  <span class="tts-math" data-tts="psi x t equals sign x minus t">$\psi(x, t) = \mathrm{sign}(x - t)$</span>, the solution is the sample median. The method of moments,
   Huber's robust estimator, the Bayes estimator under regularity — all sit inside this frame.
 </p>
 <div class="box intuition" data-cid="ch09-050">
 <span class="box-label">The big idea in one sentence</span>
 <p data-cid="ch09-060">
-  If $\hat\theta_n$ solves $\sum \psi(X_i; \hat\theta_n) = 0$ and the average $\bar\psi_n(t)$ converges
-  <em>uniformly</em> to its expectation $\lambda(t) = E\psi(X; t)$, then $\hat\theta_n$ is consistent
-  for the root $c$ of $\lambda$, and a single Taylor expansion gives its asymptotic normal distribution.
+  If <span class="tts-math" data-tts="theta sub n">$\hat\theta_n$</span> solves <span class="tts-math" data-tts="the sum of psi X sub i theta sub n equals 0">$\sum \psi(X_i; \hat\theta_n) = 0$</span> and the average <span class="tts-math" data-tts="psi sub n t">$\bar\psi_n(t)$</span> converges
+  <em>uniformly</em> to its expectation <span class="tts-math" data-tts="lambda t equals E psi X t">$\lambda(t) = E\psi(X; t)$</span>, then <span class="tts-math" data-tts="theta sub n">$\hat\theta_n$</span> is consistent
+  for the root <span class="tts-math" data-tts="c">$c$</span> of <span class="tts-math" data-tts="lambda">$\lambda$</span>, and a single Taylor expansion gives its asymptotic normal distribution.
 </p>
 </div>
 <p data-cid="ch09-070">
   The chapter follows that idea in nine sections. Section 9.1 builds the technical engine — a law of large
-  numbers that holds <em>uniformly</em> in $t$. Sections 9.2–9.3 apply it to maximum likelihood. Sections
+  numbers that holds <em>uniformly</em> in <span class="tts-math" data-tts="t">$t$</span>. Sections 9.2–9.3 apply it to maximum likelihood. Sections
   9.4–9.5 turn limiting distributions into usable confidence intervals. Section 9.6 introduces the EM
-  algorithm for cases where the MLE has no closed form. Section 9.7 lifts everything into $\mathbb{R}^p$.
+  algorithm for cases where the MLE has no closed form. Section 9.7 lifts everything into <span class="tts-math" data-tts="the real numbers to the p">$\mathbb{R}^p$</span>.
   Section 9.8 generalises beyond the likelihood (Huber's M-estimators). Section 9.9 sketches how the same
   template survives when the data are no longer i.i.d.
 </p>
@@ -82,27 +81,27 @@ $$\text{the estimator } \hat\theta_n \text{ solves } \sum_{i=1}^{n} \psi(X_i; \h
 <h2 data-cid="ch09-080" id="s9-1">9.1 Weak law for random functions</h2>
 <h3 data-cid="ch09-090">What is wrong with pointwise convergence?</h3>
 <p data-cid="ch09-100">
-  The ordinary weak law says: for each fixed $t$, the average $\bar W_n(t) = n^{-1}\sum W_i(t)$ converges
-  in probability to $E W(t)$. That looks like enough — but it is not. When we plug a <em>random</em>
-  argument $\hat\theta_n$ into $\bar W_n$, pointwise convergence is too weak to conclude
-  $\bar W_n(\hat\theta_n) \to E W(\hat\theta_n)$. We need convergence that is uniform over $t$.
+  The ordinary weak law says: for each fixed <span class="tts-math" data-tts="t">$t$</span>, the average <span class="tts-math" data-tts="W sub n t equals n inverse the sum of W sub i t">$\bar W_n(t) = n^{-1}\sum W_i(t)$</span> converges
+  in probability to <span class="tts-math" data-tts="E W t">$E W(t)$</span>. That looks like enough — but it is not. When we plug a <em>random</em>
+  argument <span class="tts-math" data-tts="theta sub n">$\hat\theta_n$</span> into <span class="tts-math" data-tts="W sub n">$\bar W_n$</span>, pointwise convergence is too weak to conclude
+  <span class="tts-math" data-tts="W sub n theta sub n to E W theta sub n">$\bar W_n(\hat\theta_n) \to E W(\hat\theta_n)$</span>. We need convergence that is uniform over <span class="tts-math" data-tts="t">$t$</span>.
 </p>
 <div class="box definition" data-cid="ch09-110">
 <span class="box-label">Set-up</span>
 <p data-cid="ch09-120">
-  Let $X_1, X_2, \dots$ be i.i.d., let $K \subset \mathbb{R}^p$ be compact, and let $h(t, x)$ be continuous
-  in $t$ for every $x$. Define the random functions
-  $$W_i(t) = h(t, X_i), \qquad t \in K.$$
-  Each $W_i$ lives in $C(K)$, the space of continuous functions on $K$, equipped with the supremum norm
-  $$\|w\|_\infty = \sup_{t \in K} |w(t)|.$$
+  Let <span class="tts-math" data-tts="X sub 1 X sub 2 and so on">$X_1, X_2, \dots$</span> be i.i.d., let <span class="tts-math" data-tts="K subset of the real numbers to the p">$K \subset \mathbb{R}^p$</span> be compact, and let <span class="tts-math" data-tts="h t x">$h(t, x)$</span> be continuous
+  in <span class="tts-math" data-tts="t">$t$</span> for every <span class="tts-math" data-tts="x">$x$</span>. Define the random functions
+  <span class="tts-math" data-tts="W sub i t equals h t X sub i t in K.">$$W_i(t) = h(t, X_i), \qquad t \in K.$$</span>
+  Each <span class="tts-math" data-tts="W sub i">$W_i$</span> lives in <span class="tts-math" data-tts="C K">$C(K)$</span>, the space of continuous functions on <span class="tts-math" data-tts="K">$K$</span>, equipped with the supremum norm
+  <span class="tts-math" data-tts="norm of w norm of _ infinity equals sub t in K w t .">$$\|w\|_\infty = \sup_{t \in K} |w(t)|.$$</span>
 </p>
 </div>
 <div class="box intuition" data-cid="ch09-130">
-<span class="box-label">Why $C(K)$?</span>
+<span class="box-label">Why <span class="tts-math" data-tts="C K">$C(K)$</span>?</span>
 <p data-cid="ch09-140">
-  $C(K)$ is a complete normed linear space — a Banach space. Distances are measured by the worst-case gap
-  between two functions. "Uniformly close" means small in $\|\cdot\|_\infty$. The whole point of working
-  in $C(K)$ is that this norm gives us a single number measuring closeness over the entire compact set $K$
+  <span class="tts-math" data-tts="C K">$C(K)$</span> is a complete normed linear space — a Banach space. Distances are measured by the worst-case gap
+  between two functions. "Uniformly close" means small in <span class="tts-math" data-tts="norm of times norm of _ infinity">$\|\cdot\|_\infty$</span>. The whole point of working
+  in <span class="tts-math" data-tts="C K">$C(K)$</span> is that this norm gives us a single number measuring closeness over the entire compact set <span class="tts-math" data-tts="K">$K$</span>
   at once.
 </p>
 </div>
@@ -110,27 +109,27 @@ $$\text{the estimator } \hat\theta_n \text{ solves } \sum_{i=1}^{n} \psi(X_i; \h
 <div class="box definition" data-cid="ch09-160">
 <span class="box-label">Theorem 9.2</span>
 <p data-cid="ch09-170">
-  If $W, W_1, W_2, \dots$ are i.i.d. random functions in $C(K)$ with mean $\mu(t) = E W(t)$ and
-  $E\|W\|_\infty &lt; \infty$, then
-  $$\|\bar W_n - \mu\|_\infty \xrightarrow{p} 0.$$
+  If <span class="tts-math" data-tts="W W sub 1 W sub 2 and so on">$W, W_1, W_2, \dots$</span> are i.i.d. random functions in <span class="tts-math" data-tts="C K">$C(K)$</span> with mean <span class="tts-math" data-tts="mu t equals E W t">$\mu(t) = E W(t)$</span> and
+  <span class="tts-math" data-tts="E norm of W norm of _ infinity lt infinity">$E\|W\|_\infty &lt; \infty$</span>, then
+  <span class="tts-math" data-tts="norm of W sub n minus mu norm of _ infinity converges in probability to 0.">$$\|\bar W_n - \mu\|_\infty \xrightarrow{p} 0.$$</span>
 </p>
 </div>
 <p data-cid="ch09-180">
   The strategy of the proof is worth absorbing because the same logic recurs everywhere in Chapter 9.
-  Compactness of $K$ lets us cover it by finitely many small balls. Continuity of each $W_i$ lets us
-  bound the variation of $W_i$ inside each ball. The ordinary weak law handles the finitely many
+  Compactness of <span class="tts-math" data-tts="K">$K$</span> lets us cover it by finitely many small balls. Continuity of each <span class="tts-math" data-tts="W sub i">$W_i$</span> lets us
+  bound the variation of <span class="tts-math" data-tts="W sub i">$W_i$</span> inside each ball. The ordinary weak law handles the finitely many
   ball-centres. Glue the pieces together and uniform convergence falls out.
 </p>
 <h3 data-cid="ch09-190">Why uniform convergence is the gold standard</h3>
 <div class="box definition" data-cid="ch09-200">
 <span class="box-label">Theorem 9.4 — three consequences</span>
-<p data-cid="ch09-210">Suppose $G_n \in C(K)$, $K$ compact, and $\|G_n - g\|_\infty \xrightarrow{p} 0$ with $g$ deterministic.</p>
+<p data-cid="ch09-210">Suppose <span class="tts-math" data-tts="G sub n in C K">$G_n \in C(K)$</span>, <span class="tts-math" data-tts="K">$K$</span> compact, and <span class="tts-math" data-tts="norm of G sub n minus g norm of _ infinity converges in probability to 0">$\|G_n - g\|_\infty \xrightarrow{p} 0$</span> with <span class="tts-math" data-tts="g">$g$</span> deterministic.</p>
 <ol data-cid="ch09-220">
-<li><strong>Plug-in:</strong> if $t_n \xrightarrow{p} t^*$, then $G_n(t_n) \xrightarrow{p} g(t^*)$.</li>
-<li><strong>Argmax:</strong> if $g$ has a <em>unique</em> maximiser $t^*$ and $t_n$ maximises $G_n$, then
-  $t_n \xrightarrow{p} t^*$.</li>
-<li><strong>Root:</strong> if $K \subset \mathbb{R}$ and $g(t) = 0$ has a <em>unique</em> root $t^*$,
-  and $t_n$ solves $G_n(t_n) = 0$, then $t_n \xrightarrow{p} t^*$.</li>
+<li><strong>Plug-in:</strong> if <span class="tts-math" data-tts="t sub n converges in probability to t to the times">$t_n \xrightarrow{p} t^*$</span>, then <span class="tts-math" data-tts="G sub n t sub n converges in probability to g t to the times">$G_n(t_n) \xrightarrow{p} g(t^*)$</span>.</li>
+<li><strong>Argmax:</strong> if <span class="tts-math" data-tts="g">$g$</span> has a <em>unique</em> maximiser <span class="tts-math" data-tts="t to the times">$t^*$</span> and <span class="tts-math" data-tts="t sub n">$t_n$</span> maximises <span class="tts-math" data-tts="G sub n">$G_n$</span>, then
+  <span class="tts-math" data-tts="t sub n converges in probability to t to the times">$t_n \xrightarrow{p} t^*$</span>.</li>
+<li><strong>Root:</strong> if <span class="tts-math" data-tts="K subset of the real numbers">$K \subset \mathbb{R}$</span> and <span class="tts-math" data-tts="g t equals 0">$g(t) = 0$</span> has a <em>unique</em> root <span class="tts-math" data-tts="t to the times">$t^*$</span>,
+  and <span class="tts-math" data-tts="t sub n">$t_n$</span> solves <span class="tts-math" data-tts="G sub n t sub n equals 0">$G_n(t_n) = 0$</span>, then <span class="tts-math" data-tts="t sub n converges in probability to t to the times">$t_n \xrightarrow{p} t^*$</span>.</li>
 </ol>
 </div>
 <div class="box intuition" data-cid="ch09-230">
@@ -144,153 +143,153 @@ $$\text{the estimator } \hat\theta_n \text{ solves } \sum_{i=1}^{n} \psi(X_i; \h
 <div class="box warn" data-cid="ch09-250">
 <span class="box-label">Common pitfall</span>
 <p data-cid="ch09-260">
-  Pointwise convergence is not enough. Problem 9.1 in the book constructs $G_n(t) = nZ_n(1-t)t^n - t$
-  where $G_n(t) \xrightarrow{p} -t$ for every fixed $t$, yet the maximiser of $G_n$ does not converge to
-  the maximiser of the limit. The lesson: when you let $t$ depend on $n$, only uniform convergence
+  Pointwise convergence is not enough. Problem 9.1 in the book constructs <span class="tts-math" data-tts="G sub n t equals nZ sub n 1 minus t t to the n minus t">$G_n(t) = nZ_n(1-t)t^n - t$</span>
+  where <span class="tts-math" data-tts="G sub n t converges in probability to minus t">$G_n(t) \xrightarrow{p} -t$</span> for every fixed <span class="tts-math" data-tts="t">$t$</span>, yet the maximiser of <span class="tts-math" data-tts="G sub n">$G_n$</span> does not converge to
+  the maximiser of the limit. The lesson: when you let <span class="tts-math" data-tts="t">$t$</span> depend on <span class="tts-math" data-tts="n">$n$</span>, only uniform convergence
   saves you.
 </p>
 </div>
 <!-- ===================================================================== -->
 <h2 data-cid="ch09-270" id="s9-2">9.2 Consistency of the maximum likelihood estimator</h2>
 <p data-cid="ch09-280">
-  Let $X_1, X_2, \dots$ be i.i.d. with density $f_\theta$, $\theta \in \Omega$. The log-likelihood from
-  the first $n$ observations is
-  $$\ell_n(\omega) = \sum_{i=1}^{n} \log f_\omega(X_i).$$
-  We write $\omega$ for the dummy argument and reserve $\theta$ for the true value. The MLE $\hat\theta_n$
-  maximises $\ell_n$.
+  Let <span class="tts-math" data-tts="X sub 1 X sub 2 and so on">$X_1, X_2, \dots$</span> be i.i.d. with density <span class="tts-math" data-tts="f_ theta">$f_\theta$</span>, <span class="tts-math" data-tts="theta in Omega">$\theta \in \Omega$</span>. The log-likelihood from
+  the first <span class="tts-math" data-tts="n">$n$</span> observations is
+  <span class="tts-math" data-tts="ell sub n omega equals the sum from i equals 1 to n of log f_ omega X sub i .">$$\ell_n(\omega) = \sum_{i=1}^{n} \log f_\omega(X_i).$$</span>
+  We write <span class="tts-math" data-tts="omega">$\omega$</span> for the dummy argument and reserve <span class="tts-math" data-tts="theta">$\theta$</span> for the true value. The MLE <span class="tts-math" data-tts="theta sub n">$\hat\theta_n$</span>
+  maximises <span class="tts-math" data-tts="ell sub n">$\ell_n$</span>.
 </p>
 <div class="box definition" data-cid="ch09-290">
 <span class="box-label">Definition 9.7 — Kullback–Leibler information</span>
 <p data-cid="ch09-300">
-  $$I(\theta, \omega) = E_\theta \log \!\left[ \frac{f_\theta(X)}{f_\omega(X)} \right].$$
-  It is the expected log-likelihood-ratio between the true model and a candidate $\omega$.
+  <span class="tts-math" data-tts="I theta omega equals E_ theta log f_ theta X over f_ omega X .">$$I(\theta, \omega) = E_\theta \log \!\left[ \frac{f_\theta(X)}{f_\omega(X)} \right].$$</span>
+  It is the expected log-likelihood-ratio between the true model and a candidate <span class="tts-math" data-tts="omega">$\omega$</span>.
 </p>
 </div>
 <div class="box intuition" data-cid="ch09-310">
 <span class="box-label">Why this quantity matters</span>
 <p data-cid="ch09-320">
-  Jensen's inequality gives $I(\theta, \omega) \geq 0$ with equality iff $P_\theta = P_\omega$. So as a
-  function of $\omega$, $-I(\theta, \omega)$ has a strict maximum at $\omega = \theta$. If we can show
-  the random function $\bar W_n(\omega) = n^{-1}\ell_n(\omega) - n^{-1}\ell_n(\theta)$ converges uniformly
-  to $-I(\theta, \omega)$, then by Theorem 9.4(2) the maximiser of $\bar W_n$ — which is the MLE — must
-  converge to $\theta$.
+  Jensen's inequality gives <span class="tts-math" data-tts="I theta omega greater than or equal to 0">$I(\theta, \omega) \geq 0$</span> with equality iff <span class="tts-math" data-tts="P_ theta equals P_ omega">$P_\theta = P_\omega$</span>. So as a
+  function of <span class="tts-math" data-tts="omega">$\omega$</span>, <span class="tts-math" data-tts="I theta omega">$-I(\theta, \omega)$</span> has a strict maximum at <span class="tts-math" data-tts="omega equals theta">$\omega = \theta$</span>. If we can show
+  the random function <span class="tts-math" data-tts="W sub n omega equals n inverse ell sub n omega minus n inverse ell sub n theta">$\bar W_n(\omega) = n^{-1}\ell_n(\omega) - n^{-1}\ell_n(\theta)$</span> converges uniformly
+  to <span class="tts-math" data-tts="I theta omega">$-I(\theta, \omega)$</span>, then by Theorem 9.4(2) the maximiser of <span class="tts-math" data-tts="W sub n">$\bar W_n$</span> — which is the MLE — must
+  converge to <span class="tts-math" data-tts="theta">$\theta$</span>.
 </p>
 </div>
 <div class="box definition" data-cid="ch09-330">
 <span class="box-label">Theorem 9.9 — Wald consistency</span>
 <p data-cid="ch09-340">
-  If $\Omega$ is compact, $f_\omega(x)$ is continuous in $\omega$ for a.e. $x$, $P_\omega \neq P_\theta$
-  for $\omega \neq \theta$, and $E_\theta \|W\|_\infty &lt; \infty$ where
-  $W(\omega) = \log[f_\omega(X)/f_\theta(X)]$, then under $P_\theta$, $\hat\theta_n \xrightarrow{p} \theta$.
+  If <span class="tts-math" data-tts="Omega">$\Omega$</span> is compact, <span class="tts-math" data-tts="f_ omega x">$f_\omega(x)$</span> is continuous in <span class="tts-math" data-tts="omega">$\omega$</span> for a.e. <span class="tts-math" data-tts="x">$x$</span>, <span class="tts-math" data-tts="P_ omega not equal to P_ theta">$P_\omega \neq P_\theta$</span>
+  for <span class="tts-math" data-tts="omega not equal to theta">$\omega \neq \theta$</span>, and <span class="tts-math" data-tts="E_ theta norm of W norm of _ infinity lt infinity">$E_\theta \|W\|_\infty &lt; \infty$</span> where
+  <span class="tts-math" data-tts="W omega equals log f_ omega X over f_ theta X">$W(\omega) = \log[f_\omega(X)/f_\theta(X)]$</span>, then under <span class="tts-math" data-tts="P_ theta">$P_\theta$</span>, <span class="tts-math" data-tts="theta sub n converges in probability to theta">$\hat\theta_n \xrightarrow{p} \theta$</span>.
 </p>
 </div>
 <p data-cid="ch09-350">
-  Theorem 9.11 extends this to $\Omega = \mathbb{R}^p$ provided the density tails off at infinity in a
+  Theorem 9.11 extends this to <span class="tts-math" data-tts="Omega equals the real numbers to the p">$\Omega = \mathbb{R}^p$</span> provided the density tails off at infinity in a
   controlled way. The fundamental engine — uniform LLN plus uniqueness of the maximum — is unchanged.
 </p>
 <div class="box warn" data-cid="ch09-360">
 <span class="box-label">Common pitfall — MLE can fail to exist</span>
 <p data-cid="ch09-370">
   Compactness and continuity hide real-world traps. For the three-parameter lognormal
-  $X = \gamma + e^Z$ with $Z \sim N(\mu, \sigma^2)$, the profile log-likelihood diverges to $+\infty$
-  as $\gamma \uparrow X_{(1)}$ — so the MLE of $\gamma$ does not exist (Problem 9.5). For uniform
-  $(0, \theta)$, the MLE is $X_{(n)}$ and the regularity assumption "support independent of $\theta$"
+  <span class="tts-math" data-tts="X equals gamma plus e to the Z">$X = \gamma + e^Z$</span> with <span class="tts-math" data-tts="Z distributed as N mu sigma to the 2">$Z \sim N(\mu, \sigma^2)$</span>, the profile log-likelihood diverges to <span class="tts-math" data-tts="infinity">$+\infty$</span>
+  as <span class="tts-math" data-tts="gamma X sub 1">$\gamma \uparrow X_{(1)}$</span> — so the MLE of <span class="tts-math" data-tts="gamma">$\gamma$</span> does not exist (Problem 9.5). For uniform
+  <span class="tts-math" data-tts="0 theta">$(0, \theta)$</span>, the MLE is <span class="tts-math" data-tts="X sub n">$X_{(n)}$</span> and the regularity assumption "support independent of <span class="tts-math" data-tts="theta">$\theta$</span>"
   fails. In such non-regular cases the theory of Sections 9.2–9.3 simply does not apply.
 </p>
 </div>
 <!-- ===================================================================== -->
 <h2 data-cid="ch09-380" id="s9-3">9.3 Limiting distribution for the MLE</h2>
 <p data-cid="ch09-390">
-  We now ask the second question: how fast does $\hat\theta_n$ converge, and to what limit law? The
+  We now ask the second question: how fast does <span class="tts-math" data-tts="theta sub n">$\hat\theta_n$</span> converge, and to what limit law? The
   answer is the celebrated asymptotic normality theorem.
 </p>
 <div class="box definition" data-cid="ch09-400">
 <span class="box-label">Theorem 9.14 — asymptotic normality of the MLE</span>
-<p data-cid="ch09-410">Under regularity (continuous second derivative of $\log f_\theta$, Fisher information finite and
-  reachable through either $E[(W')^2]$ or $-E[W'']$, integrable local Hessian, and consistency), for any
-  $\theta$ in the interior of $\Omega$,</p>
-$$\sqrt{n}\, (\hat\theta_n - \theta) \;\Rightarrow\; N\!\left(0, \tfrac{1}{I(\theta)}\right).$$
+<p data-cid="ch09-410">Under regularity (continuous second derivative of <span class="tts-math" data-tts="log f_ theta">$\log f_\theta$</span>, Fisher information finite and
+  reachable through either <span class="tts-math" data-tts="E W prime to the 2">$E[(W')^2]$</span> or <span class="tts-math" data-tts="E W prime prime">$-E[W'']$</span>, integrable local Hessian, and consistency), for any
+  <span class="tts-math" data-tts="theta">$\theta$</span> in the interior of <span class="tts-math" data-tts="Omega">$\Omega$</span>,</p>
+<span class="tts-math" data-tts="root n theta sub n minus theta implies N 0 1 over I theta .">$$\sqrt{n}\, (\hat\theta_n - \theta) \;\Rightarrow\; N\!\left(0, \tfrac{1}{I(\theta)}\right).$$</span>
 </div>
 <h3 data-cid="ch09-420">The proof, slowly</h3>
 <p data-cid="ch09-430">
-  Because $\hat\theta_n$ is consistent and interior, with probability tending to one it solves the score
-  equation $\ell_n'(\hat\theta_n) = 0$. Equivalently $\bar W_n'(\hat\theta_n) = 0$, where
-  $\bar W_n = n^{-1}\ell_n$. Taylor-expand $\bar W_n'$ around $\theta$:
+  Because <span class="tts-math" data-tts="theta sub n">$\hat\theta_n$</span> is consistent and interior, with probability tending to one it solves the score
+  equation <span class="tts-math" data-tts="ell sub n prime theta sub n equals 0">$\ell_n'(\hat\theta_n) = 0$</span>. Equivalently <span class="tts-math" data-tts="W sub n prime theta sub n equals 0">$\bar W_n'(\hat\theta_n) = 0$</span>, where
+  <span class="tts-math" data-tts="W sub n equals n inverse ell sub n">$\bar W_n = n^{-1}\ell_n$</span>. Taylor-expand <span class="tts-math" data-tts="W sub n prime">$\bar W_n'$</span> around <span class="tts-math" data-tts="theta">$\theta$</span>:
 </p>
-$$0 = \bar W_n'(\hat\theta_n) = \bar W_n'(\theta) + \bar W_n''(\tilde\theta_n)(\hat\theta_n - \theta),$$
-<p data-cid="ch09-440">where $\tilde\theta_n$ is between $\theta$ and $\hat\theta_n$. Solving and multiplying by $\sqrt n$,</p>
-$$\sqrt n (\hat\theta_n - \theta) = \frac{\sqrt n\, \bar W_n'(\theta)}{-\bar W_n''(\tilde\theta_n)}. \tag{9.1}$$
+<span class="tts-math" data-tts="0 equals W sub n prime theta sub n equals W sub n prime theta plus W sub n prime prime theta sub n theta sub n minus theta">$$0 = \bar W_n'(\hat\theta_n) = \bar W_n'(\theta) + \bar W_n''(\tilde\theta_n)(\hat\theta_n - \theta),$$</span>
+<p data-cid="ch09-440">where <span class="tts-math" data-tts="theta sub n">$\tilde\theta_n$</span> is between <span class="tts-math" data-tts="theta">$\theta$</span> and <span class="tts-math" data-tts="theta sub n">$\hat\theta_n$</span>. Solving and multiplying by <span class="tts-math" data-tts="root n">$\sqrt n$</span>,</p>
+<span class="tts-math" data-tts="root n theta sub n minus theta equals root n W sub n prime theta over W sub n prime prime theta sub n . 9.1">$$\sqrt n (\hat\theta_n - \theta) = \frac{\sqrt n\, \bar W_n'(\theta)}{-\bar W_n''(\tilde\theta_n)}. \tag{9.1}$$</span>
 
 <p data-cid="ch09-450">
   The numerator and denominator have separate fates.
 </p>
 <ul data-cid="ch09-460">
-<li><strong>Numerator.</strong> $\sqrt n \bar W_n'(\theta) = n^{-1/2} \sum_i \partial_\theta \log f_\theta(X_i)$.
+<li><strong>Numerator.</strong> <span class="tts-math" data-tts="root n W sub n prime theta equals n to the 1 over 2 sub i partial _ theta log f_ theta X sub i">$\sqrt n \bar W_n'(\theta) = n^{-1/2} \sum_i \partial_\theta \log f_\theta(X_i)$</span>.
   The summands are i.i.d., mean zero (a consequence of differentiating under the integral), and have
-  variance $I(\theta)$. The CLT gives $\sqrt n \bar W_n'(\theta) \Rightarrow N(0, I(\theta))$.</li>
-<li><strong>Denominator.</strong> $\bar W_n''(\tilde\theta_n)$. The uniform LLN of Section 9.1 gives
-  $\bar W_n'' \to E W''$ uniformly on a neighbourhood of $\theta$. Combine with $\tilde\theta_n \to \theta$
-  via Theorem 9.4(1): $\bar W_n''(\tilde\theta_n) \xrightarrow{p} E W''(\theta) = -I(\theta)$.</li>
+  variance <span class="tts-math" data-tts="I theta">$I(\theta)$</span>. The CLT gives <span class="tts-math" data-tts="root n W sub n prime theta implies N 0 I theta">$\sqrt n \bar W_n'(\theta) \Rightarrow N(0, I(\theta))$</span>.</li>
+<li><strong>Denominator.</strong> <span class="tts-math" data-tts="W sub n prime prime theta sub n">$\bar W_n''(\tilde\theta_n)$</span>. The uniform LLN of Section 9.1 gives
+  <span class="tts-math" data-tts="W sub n prime prime to E W prime prime">$\bar W_n'' \to E W''$</span> uniformly on a neighbourhood of <span class="tts-math" data-tts="theta">$\theta$</span>. Combine with <span class="tts-math" data-tts="theta sub n to theta">$\tilde\theta_n \to \theta$</span>
+  via Theorem 9.4(1): <span class="tts-math" data-tts="W sub n prime prime theta sub n converges in probability to E W prime prime theta equals minus I theta">$\bar W_n''(\tilde\theta_n) \xrightarrow{p} E W''(\theta) = -I(\theta)$</span>.</li>
 </ul>
 <p data-cid="ch09-470">
-  Slutsky's theorem (Theorem 8.13) then gives the ratio $\Rightarrow N(0, I(\theta))/I(\theta) =
-  N(0, 1/I(\theta))$.
+  Slutsky's theorem (Theorem 8.13) then gives the ratio <span class="tts-math" data-tts="implies N 0 I theta over I theta equals N 0 1 over I theta">$\Rightarrow N(0, I(\theta))/I(\theta) =
+  N(0, 1/I(\theta))$</span>.
 </p>
 <div class="box pause" data-cid="ch09-480">
 <span class="box-label">Pause — why is the MLE asymptotically efficient?</span>
 <p data-cid="ch09-490">
-  Recall the Cramér–Rao bound from Chapter 4: any unbiased estimator of $\theta$ has variance at least
-  $1/(n I(\theta))$. Theorem 9.14 says the MLE attains exactly that variance asymptotically. That is
+  Recall the Cramér–Rao bound from Chapter 4: any unbiased estimator of <span class="tts-math" data-tts="theta">$\theta$</span> has variance at least
+  <span class="tts-math" data-tts="1 over n I theta">$1/(n I(\theta))$</span>. Theorem 9.14 says the MLE attains exactly that variance asymptotically. That is
   what "asymptotic efficiency" means: in the limit, the MLE saturates the information bound. No regular
   estimator can do strictly better.
 </p>
 <p data-cid="ch09-500">
-  The deeper reason: the score function $\ell_n'(\theta)$ has variance $n I(\theta)$ (Fisher's identity),
+  The deeper reason: the score function <span class="tts-math" data-tts="ell sub n prime theta">$\ell_n'(\theta)$</span> has variance <span class="tts-math" data-tts="n I theta">$n I(\theta)$</span> (Fisher's identity),
   and the MLE is, to first order, the linearisation of the inverse of this score. The Newton step from
-  $\theta$ to $\hat\theta_n$ has length $\propto \ell_n'(\theta)/I(\theta)$, scaling its variance down
-  to $1/(n I(\theta))$.
+  <span class="tts-math" data-tts="theta">$\theta$</span> to <span class="tts-math" data-tts="theta sub n">$\hat\theta_n$</span> has length <span class="tts-math" data-tts="proportional to ell sub n prime theta over I theta">$\propto \ell_n'(\theta)/I(\theta)$</span>, scaling its variance down
+  to <span class="tts-math" data-tts="1 over n I theta">$1/(n I(\theta))$</span>.
 </p>
 </div>
 <h3 data-cid="ch09-510">Worked example — Bernoulli</h3>
 <div class="box example" data-cid="ch09-520">
 <span class="box-label">Worked example — MLE for Bernoulli</span>
 <p data-cid="ch09-530">
-  Let $X_1, \dots, X_n \stackrel{\text{iid}}{\sim} \mathrm{Bernoulli}(p)$, $p \in (0,1)$. The log-likelihood
-  is $\ell_n(p) = (\sum X_i)\log p + (n - \sum X_i)\log(1-p)$. Differentiating and setting equal to zero
-  gives $\hat p_n = \bar X_n$. The Fisher information is
-  $$I(p) = \frac{1}{p(1-p)},$$
-  obtained either by $-E[\partial_p^2 \log f_p(X)]$ or directly from $\mathrm{Var}(X)$. Theorem 9.14 then
+  Let <span class="tts-math" data-tts="X sub 1 and so on X sub n iid distributed as Bernoulli p">$X_1, \dots, X_n \stackrel{\text{iid}}{\sim} \mathrm{Bernoulli}(p)$</span>, <span class="tts-math" data-tts="p in 0 1">$p \in (0,1)$</span>. The log-likelihood
+  is <span class="tts-math" data-tts="ell sub n p equals the sum of X sub i log p plus n minus the sum of X sub i log 1 minus p">$\ell_n(p) = (\sum X_i)\log p + (n - \sum X_i)\log(1-p)$</span>. Differentiating and setting equal to zero
+  gives <span class="tts-math" data-tts="p sub n equals X sub n">$\hat p_n = \bar X_n$</span>. The Fisher information is
+  <span class="tts-math" data-tts="I p equals 1 over p 1 minus p">$$I(p) = \frac{1}{p(1-p)},$$</span>
+  obtained either by <span class="tts-math" data-tts="E partial sub p to the 2 log f sub p X">$-E[\partial_p^2 \log f_p(X)]$</span> or directly from <span class="tts-math" data-tts="Var X">$\mathrm{Var}(X)$</span>. Theorem 9.14 then
   delivers
-  $$\sqrt n (\hat p_n - p) \;\Rightarrow\; N\!\big(0, p(1-p)\big),$$
-  which is also exactly the CLT applied to $\bar X_n$ — a healthy consistency check.
+  <span class="tts-math" data-tts="root n p sub n minus p implies N 0 p 1 minus p">$$\sqrt n (\hat p_n - p) \;\Rightarrow\; N\!\big(0, p(1-p)\big),$$</span>
+  which is also exactly the CLT applied to <span class="tts-math" data-tts="X sub n">$\bar X_n$</span> — a healthy consistency check.
 </p>
 </div>
 <h3 data-cid="ch09-540">Worked example — Normal mean</h3>
 <div class="box example" data-cid="ch09-550">
-<span class="box-label">Worked example — MLE for $N(\mu, \sigma_0^2)$ with known variance</span>
+<span class="box-label">Worked example — MLE for <span class="tts-math" data-tts="N mu sigma sub 0 to the 2">$N(\mu, \sigma_0^2)$</span> with known variance</span>
 <p data-cid="ch09-560">
-  $\log f_\mu(x) = -\frac{(x-\mu)^2}{2\sigma_0^2} + \text{const}$. The MLE is $\hat\mu_n = \bar X_n$.
-  The Fisher information is $I(\mu) = 1/\sigma_0^2$, so
-  $\sqrt n(\hat\mu_n - \mu) \Rightarrow N(0, \sigma_0^2)$. Again, the CLT delivers this directly — but the
+  <span class="tts-math" data-tts="log f_ mu x equals minus x minus mu to the 2 over 2 sigma sub 0 to the 2 plus const">$\log f_\mu(x) = -\frac{(x-\mu)^2}{2\sigma_0^2} + \text{const}$</span>. The MLE is <span class="tts-math" data-tts="mu sub n equals X sub n">$\hat\mu_n = \bar X_n$</span>.
+  The Fisher information is <span class="tts-math" data-tts="I mu equals 1 over sigma sub 0 to the 2">$I(\mu) = 1/\sigma_0^2$</span>, so
+  <span class="tts-math" data-tts="root n mu sub n minus mu implies N 0 sigma sub 0 to the 2">$\sqrt n(\hat\mu_n - \mu) \Rightarrow N(0, \sigma_0^2)$</span>. Again, the CLT delivers this directly — but the
   point of Theorem 9.14 is that we did not need to be clever; we just turned the crank.
 </p>
 </div>
 <h3 data-cid="ch09-570">Worked example — Poisson</h3>
 <div class="box example" data-cid="ch09-580">
-<span class="box-label">Worked example — MLE for Poisson$(\theta)$</span>
+<span class="box-label">Worked example — MLE for Poisson<span class="tts-math" data-tts="theta">$(\theta)$</span></span>
 <p data-cid="ch09-590">
-  $\ell_n(\theta) = (\sum X_i)\log\theta - n\theta + \text{const}$. The score is
-  $\ell_n'(\theta) = n\bar X_n/\theta - n$, so $\hat\theta_n = \bar X_n$. The Fisher information is
-  $I(\theta) = 1/\theta$ (compute $-E[-X/\theta^2] = 1/\theta$). Therefore
-  $\sqrt n(\bar X_n - \theta) \Rightarrow N(0, \theta)$.
+  <span class="tts-math" data-tts="ell sub n theta equals the sum of X sub i log theta minus n theta plus const">$\ell_n(\theta) = (\sum X_i)\log\theta - n\theta + \text{const}$</span>. The score is
+  <span class="tts-math" data-tts="ell sub n prime theta equals n X sub n over theta minus n">$\ell_n'(\theta) = n\bar X_n/\theta - n$</span>, so <span class="tts-math" data-tts="theta sub n equals X sub n">$\hat\theta_n = \bar X_n$</span>. The Fisher information is
+  <span class="tts-math" data-tts="I theta equals 1 over theta">$I(\theta) = 1/\theta$</span> (compute <span class="tts-math" data-tts="E minus X over theta to the 2 equals 1 over theta">$-E[-X/\theta^2] = 1/\theta$</span>). Therefore
+  <span class="tts-math" data-tts="root n X sub n minus theta implies N 0 theta">$\sqrt n(\bar X_n - \theta) \Rightarrow N(0, \theta)$</span>.
 </p>
 </div>
 <div class="box warn" data-cid="ch09-600">
 <span class="box-label">Common pitfall — uniqueness of the root</span>
 <p data-cid="ch09-610">
-  The score equation $\ell_n'(\theta) = 0$ may have multiple solutions. Theorem 9.4(3) requires a
-  <em>unique</em> root of the limiting function — but for finite $n$ there can be several roots, and the
-  global maximum of $\ell_n$ may not be the one nearest to $\theta$. In practice one solves the score
+  The score equation <span class="tts-math" data-tts="ell sub n prime theta equals 0">$\ell_n'(\theta) = 0$</span> may have multiple solutions. Theorem 9.4(3) requires a
+  <em>unique</em> root of the limiting function — but for finite <span class="tts-math" data-tts="n">$n$</span> there can be several roots, and the
+  global maximum of <span class="tts-math" data-tts="ell sub n">$\ell_n$</span> may not be the one nearest to <span class="tts-math" data-tts="theta">$\theta$</span>. In practice one solves the score
   equation numerically and verifies it is the global maximum, not merely a critical point.
 </p>
 </div>
@@ -302,19 +301,19 @@ $$\sqrt n (\hat\theta_n - \theta) = \frac{\sqrt n\, \bar W_n'(\theta)}{-\bar W_n
 <div class="box definition" data-cid="ch09-640">
 <span class="box-label">Definition 9.17 — confidence interval</span>
 <p data-cid="ch09-650">
-  Statistics $\delta_0, \delta_1$ give a <strong>$1-\alpha$ confidence interval</strong> for $g(\theta)$ if
-  $$P_\theta\big(g(\theta) \in (\delta_0, \delta_1)\big) \geq 1 - \alpha \quad \text{for all } \theta \in \Omega.$$
-  More generally a random set $S(X)$ is a <strong>$1-\alpha$ confidence region</strong> if
-  $P_\theta(g(\theta) \in S) \geq 1 - \alpha$ for all $\theta$.
+  Statistics <span class="tts-math" data-tts="delta sub 0 delta sub 1">$\delta_0, \delta_1$</span> give a <strong><span class="tts-math" data-tts="1 minus alpha">$1-\alpha$</span> confidence interval</strong> for <span class="tts-math" data-tts="g theta">$g(\theta)$</span> if
+  <span class="tts-math" data-tts="P_ theta g theta in delta sub 0 delta sub 1 greater than or equal to 1 minus alpha for all theta in Omega .">$$P_\theta\big(g(\theta) \in (\delta_0, \delta_1)\big) \geq 1 - \alpha \quad \text{for all } \theta \in \Omega.$$</span>
+  More generally a random set <span class="tts-math" data-tts="S X">$S(X)$</span> is a <strong><span class="tts-math" data-tts="1 minus alpha">$1-\alpha$</span> confidence region</strong> if
+  <span class="tts-math" data-tts="P_ theta g theta in S greater than or equal to 1 minus alpha">$P_\theta(g(\theta) \in S) \geq 1 - \alpha$</span> for all <span class="tts-math" data-tts="theta">$\theta$</span>.
 </p>
 </div>
 <div class="box intuition" data-cid="ch09-660">
 <span class="box-label">Reading the statement carefully</span>
 <p data-cid="ch09-670">
-  The probability is taken over the data $X$, not over $\theta$. Once you observe $X = x$, the interval
-  $(\delta_0(x), \delta_1(x))$ is a fixed set of real numbers; the parameter $\theta$ is fixed too,
-  though unknown. The "$1 - \alpha$" is a long-run frequency property of the procedure, not a posterior
-  probability for $\theta$.
+  The probability is taken over the data <span class="tts-math" data-tts="X">$X$</span>, not over <span class="tts-math" data-tts="theta">$\theta$</span>. Once you observe <span class="tts-math" data-tts="X equals x">$X = x$</span>, the interval
+  <span class="tts-math" data-tts="delta sub 0 x delta sub 1 x">$(\delta_0(x), \delta_1(x))$</span> is a fixed set of real numbers; the parameter <span class="tts-math" data-tts="theta">$\theta$</span> is fixed too,
+  though unknown. The "<span class="tts-math" data-tts="1 minus alpha">$1 - \alpha$</span>" is a long-run frequency property of the procedure, not a posterior
+  probability for <span class="tts-math" data-tts="theta">$\theta$</span>.
 </p>
 </div>
 <h3 data-cid="ch09-680">Pivots</h3>
@@ -324,19 +323,19 @@ $$\sqrt n (\hat\theta_n - \theta) = \frac{\sqrt n\, \bar W_n'(\theta)}{-\bar W_n
   confidence statements about parameters.
 </p>
 <div class="box example" data-cid="ch09-700">
-<span class="box-label">Example 9.19 — $t$-interval for the normal mean</span>
+<span class="box-label">Example 9.19 — <span class="tts-math" data-tts="t">$t$</span>-interval for the normal mean</span>
 <p data-cid="ch09-710">
-  Let $X_1, \dots, X_n \stackrel{\text{iid}}{\sim} N(\mu, \sigma^2)$. From Section 4.3,
-  $\bar X \sim N(\mu, \sigma^2/n)$ and $(n-1)S^2/\sigma^2 \sim \chi^2_{n-1}$ are independent. The ratio
-  $$T = \frac{\bar X - \mu}{S/\sqrt n} \sim t_{n-1}$$
-  is a pivot. Inverting $-t_{\alpha/2, n-1} &lt; T &lt; t_{\alpha/2, n-1}$ gives the classical $t$-interval
-  $$\left(\bar X - t_{\alpha/2, n-1}\, \frac{S}{\sqrt n}, \; \bar X + t_{\alpha/2, n-1}\, \frac{S}{\sqrt n}\right),$$
-  which has exact coverage $1 - \alpha$.
+  Let <span class="tts-math" data-tts="X sub 1 and so on X sub n iid distributed as N mu sigma to the 2">$X_1, \dots, X_n \stackrel{\text{iid}}{\sim} N(\mu, \sigma^2)$</span>. From Section 4.3,
+  <span class="tts-math" data-tts="X distributed as N mu sigma to the 2 over n">$\bar X \sim N(\mu, \sigma^2/n)$</span> and <span class="tts-math" data-tts="n minus 1 S to the 2 over sigma to the 2 distributed as chi to the 2 sub n minus 1">$(n-1)S^2/\sigma^2 \sim \chi^2_{n-1}$</span> are independent. The ratio
+  <span class="tts-math" data-tts="T equals X minus mu over S over root n distributed as t sub n minus 1">$$T = \frac{\bar X - \mu}{S/\sqrt n} \sim t_{n-1}$$</span>
+  is a pivot. Inverting <span class="tts-math" data-tts="t sub alpha over 2 n minus 1 lt T lt t sub alpha over 2 n minus 1">$-t_{\alpha/2, n-1} &lt; T &lt; t_{\alpha/2, n-1}$</span> gives the classical <span class="tts-math" data-tts="t">$t$</span>-interval
+  <span class="tts-math" data-tts="X minus t sub alpha over 2 n minus 1 S over root n X plus t sub alpha over 2 n minus 1 S over root n">$$\left(\bar X - t_{\alpha/2, n-1}\, \frac{S}{\sqrt n}, \; \bar X + t_{\alpha/2, n-1}\, \frac{S}{\sqrt n}\right),$$</span>
+  which has exact coverage <span class="tts-math" data-tts="1 minus alpha">$1 - \alpha$</span>.
 </p>
 </div>
 <p data-cid="ch09-720">
-  Pivots also exist for $\sigma^2$ (using $V = (n-1)S^2/\sigma^2 \sim \chi^2_{n-1}$), for variance ratios
-  $\sigma_x/\sigma_y$ in two-sample problems (using $F$ distributions, Problem 9.8), and for any
+  Pivots also exist for <span class="tts-math" data-tts="sigma to the 2">$\sigma^2$</span> (using <span class="tts-math" data-tts="V equals n minus 1 S to the 2 over sigma to the 2 distributed as chi to the 2 sub n minus 1">$V = (n-1)S^2/\sigma^2 \sim \chi^2_{n-1}$</span>), for variance ratios
+  <span class="tts-math" data-tts="sigma sub x over sigma sub y">$\sigma_x/\sigma_y$</span> in two-sample problems (using <span class="tts-math" data-tts="F">$F$</span> distributions, Problem 9.8), and for any
   location/scale family (Problem 9.11). Where exact pivots exist, asymptotics is not needed.
 </p>
 <!-- ===================================================================== -->
@@ -345,47 +344,47 @@ $$\sqrt n (\hat\theta_n - \theta) = \frac{\sqrt n\, \bar W_n'(\theta)}{-\bar W_n
   Most parametric problems do not admit an exact pivot. The MLE asymptotic normality of Theorem 9.14
   gives an <em>approximate</em> pivot
 </p>
-$$\sqrt{n I(\theta)}\,(\hat\theta_n - \theta) \;\Rightarrow\; N(0, 1), \tag{9.3}$$
+<span class="tts-math" data-tts="root n I theta theta sub n minus theta implies N 0 1 9.3">$$\sqrt{n I(\theta)}\,(\hat\theta_n - \theta) \;\Rightarrow\; N(0, 1), \tag{9.3}$$</span>
 <p data-cid="ch09-750">whose limiting distribution is parameter-free. This single fact spawns three different intervals.</p>
-<h3 data-cid="ch09-760">Form 1 — implicit region using $I(\theta)$</h3>
-$$S = \left\{ \theta : \sqrt{n I(\theta)}\, |\hat\theta_n - \theta| &lt; z_{\alpha/2} \right\}. \tag{9.4}$$
+<h3 data-cid="ch09-760">Form 1 — implicit region using <span class="tts-math" data-tts="I theta">$I(\theta)$</span></h3>
+<span class="tts-math" data-tts="S equals theta root n I theta theta sub n minus theta lt z sub alpha over 2 . 9.4">$$S = \left\{ \theta : \sqrt{n I(\theta)}\, |\hat\theta_n - \theta| &lt; z_{\alpha/2} \right\}. \tag{9.4}$$</span>
 <p data-cid="ch09-770">
   This set may not even be an interval, and inverting the inequality may be algebraically painful.
 </p>
-<h3 data-cid="ch09-780">Form 2 — plug-in using $I(\hat\theta_n)$</h3>
+<h3 data-cid="ch09-780">Form 2 — plug-in using <span class="tts-math" data-tts="I theta sub n">$I(\hat\theta_n)$</span></h3>
 <p data-cid="ch09-790">
-  By continuity, $I(\hat\theta_n)/I(\theta) \xrightarrow{p} 1$, so we can substitute the estimate:
+  By continuity, <span class="tts-math" data-tts="I theta sub n over I theta converges in probability to 1">$I(\hat\theta_n)/I(\theta) \xrightarrow{p} 1$</span>, so we can substitute the estimate:
 </p>
-$$\left(\hat\theta_n - \frac{z_{\alpha/2}}{\sqrt{n I(\hat\theta_n)}}, \; \hat\theta_n + \frac{z_{\alpha/2}}{\sqrt{n I(\hat\theta_n)}}\right). \tag{9.5}$$
+<span class="tts-math" data-tts="theta sub n minus z sub alpha over 2 root n I theta sub n theta sub n plus z sub alpha over 2 root n I theta sub n . 9.5">$$\left(\hat\theta_n - \frac{z_{\alpha/2}}{\sqrt{n I(\hat\theta_n)}}, \; \hat\theta_n + \frac{z_{\alpha/2}}{\sqrt{n I(\hat\theta_n)}}\right). \tag{9.5}$$</span>
 <p data-cid="ch09-800">This is the textbook "Wald interval". It always is an interval; closed form; easy.</p>
 <h3 data-cid="ch09-810">Form 3 — observed information</h3>
 <p data-cid="ch09-820">
   Argue that confidence intervals should depend only on the actual shape of the likelihood, not on
-  population averages. Replacing the expected information $I(\hat\theta_n)$ by the curvature at the MLE,
-  $-\ell_n''(\hat\theta_n)$,
+  population averages. Replacing the expected information <span class="tts-math" data-tts="I theta sub n">$I(\hat\theta_n)$</span> by the curvature at the MLE,
+  <span class="tts-math" data-tts="ell sub n prime prime theta sub n">$-\ell_n''(\hat\theta_n)$</span>,
 </p>
-$$\left(\hat\theta_n - \frac{z_{\alpha/2}}{\sqrt{-\ell_n''(\hat\theta_n)}}, \; \hat\theta_n + \frac{z_{\alpha/2}}{\sqrt{-\ell_n''(\hat\theta_n)}}\right). \tag{9.7}$$
-<p data-cid="ch09-830">The denominator $-\ell_n''(\hat\theta_n)$ is the <strong>observed Fisher information</strong>.</p>
+<span class="tts-math" data-tts="theta sub n minus z sub alpha over 2 root ell sub n prime prime theta sub n theta sub n plus z sub alpha over 2 root ell sub n prime prime theta sub n . 9.7">$$\left(\hat\theta_n - \frac{z_{\alpha/2}}{\sqrt{-\ell_n''(\hat\theta_n)}}, \; \hat\theta_n + \frac{z_{\alpha/2}}{\sqrt{-\ell_n''(\hat\theta_n)}}\right). \tag{9.7}$$</span>
+<p data-cid="ch09-830">The denominator <span class="tts-math" data-tts="ell sub n prime prime theta sub n">$-\ell_n''(\hat\theta_n)$</span> is the <strong>observed Fisher information</strong>.</p>
 <h3 data-cid="ch09-840">Form 4 — profile / likelihood-ratio</h3>
 <p data-cid="ch09-850">
   By a second Taylor expansion,
-  $2\ell_n(\hat\theta_n) - 2\ell_n(\theta) \approx \big[\sqrt{-\ell_n''(\theta^*_n)}(\theta - \hat\theta_n)\big]^2
-  \Rightarrow \chi^2_1$. Inverting,
+  <span class="tts-math" data-tts="2 ell sub n theta sub n minus 2 ell sub n theta approximately root ell sub n prime prime theta to the times sub n theta minus theta sub n to the 2 implies chi to the 2 sub 1">$2\ell_n(\hat\theta_n) - 2\ell_n(\theta) \approx \big[\sqrt{-\ell_n''(\theta^*_n)}(\theta - \hat\theta_n)\big]^2
+  \Rightarrow \chi^2_1$</span>. Inverting,
 </p>
-$$S = \left\{ \theta : 2\ell_n(\hat\theta_n) - 2\ell_n(\theta) &lt; z_{\alpha/2}^2 \right\}. \tag{9.8}$$
+<span class="tts-math" data-tts="S equals theta 2 ell sub n theta sub n minus 2 ell sub n theta lt z sub alpha over 2 to the 2 . 9.8">$$S = \left\{ \theta : 2\ell_n(\hat\theta_n) - 2\ell_n(\theta) &lt; z_{\alpha/2}^2 \right\}. \tag{9.8}$$</span>
 <p data-cid="ch09-860">
-  This is the <strong>profile likelihood</strong> region. It uses the full curve of $\ell_n$ — not just
+  This is the <strong>profile likelihood</strong> region. It uses the full curve of <span class="tts-math" data-tts="ell sub n">$\ell_n$</span> — not just
   its peak and second derivative — and tends to give better small-sample coverage in non-quadratic models.
 </p>
 <div class="box example" data-cid="ch09-870">
 <span class="box-label">Worked example 9.20 — Poisson revisited</span>
 <p data-cid="ch09-880">
-  With $X_1, \dots, X_n \stackrel{\text{iid}}{\sim} \mathrm{Poisson}(\theta)$, $\hat\theta = \bar X$,
-  $I(\theta) = 1/\theta$, and $-\ell_n''(\hat\theta) = n\bar X/\hat\theta^2 = n/\bar X = nI(\hat\theta)$.
+  With <span class="tts-math" data-tts="X sub 1 and so on X sub n iid distributed as Poisson theta">$X_1, \dots, X_n \stackrel{\text{iid}}{\sim} \mathrm{Poisson}(\theta)$</span>, <span class="tts-math" data-tts="theta equals X">$\hat\theta = \bar X$</span>,
+  <span class="tts-math" data-tts="I theta equals 1 over theta">$I(\theta) = 1/\theta$</span>, and <span class="tts-math" data-tts="ell sub n prime prime theta equals n X over theta to the 2 equals n over X equals nI theta">$-\ell_n''(\hat\theta) = n\bar X/\hat\theta^2 = n/\bar X = nI(\hat\theta)$</span>.
   So forms 2 and 3 coincide:
-  $$(\bar X - z_{\alpha/2}\sqrt{\bar X/n}, \; \bar X + z_{\alpha/2}\sqrt{\bar X/n}).$$
-  Note this can go negative when $\bar X$ is small — a famous defect of the Wald interval. The profile
-  form (9.8) stays inside $(0, \infty)$ but its endpoints must be found numerically.
+  <span class="tts-math" data-tts="X minus z sub alpha over 2 root X over n X plus z sub alpha over 2 root X over n .">$$(\bar X - z_{\alpha/2}\sqrt{\bar X/n}, \; \bar X + z_{\alpha/2}\sqrt{\bar X/n}).$$</span>
+  Note this can go negative when <span class="tts-math" data-tts="X">$\bar X$</span> is small — a famous defect of the Wald interval. The profile
+  form (9.8) stays inside <span class="tts-math" data-tts="0 infinity">$(0, \infty)$</span> but its endpoints must be found numerically.
 </p>
 </div>
 <div class="box pause" data-cid="ch09-890">
@@ -393,174 +392,174 @@ $$S = \left\{ \theta : 2\ell_n(\hat\theta_n) - 2\ell_n(\theta) &lt; z_{\alpha/2}
 <p data-cid="ch09-900">
   For an exponential family in canonical form, the log-likelihood is exactly quadratic in the canonical
   parameter, so all four intervals coincide. In non-exponential families they diverge, and the profile
-  interval is usually the most accurate at moderate $n$.
+  interval is usually the most accurate at moderate <span class="tts-math" data-tts="n">$n$</span>.
 </p>
 </div>
 <!-- ===================================================================== -->
 <h2 data-cid="ch09-910" id="s9-6">9.6 EM algorithm — estimation from incomplete data</h2>
 <p data-cid="ch09-920">
   The EM algorithm (Dempster, Laird and Rubin, 1977) computes MLEs when the data are incomplete in some
-  way — censored, rounded, missing-at-random, or augmented latent variables. The "full data" $X$ has
-  density $h(x) e^{\eta T(x) - A(\eta)}$ from an exponential family; the observed data are
-  $Y = g(X)$ where $g$ is many-to-one, so $X$ cannot be recovered from $Y$.
+  way — censored, rounded, missing-at-random, or augmented latent variables. The "full data" <span class="tts-math" data-tts="X">$X$</span> has
+  density <span class="tts-math" data-tts="h x e to the eta T x minus A eta">$h(x) e^{\eta T(x) - A(\eta)}$</span> from an exponential family; the observed data are
+  <span class="tts-math" data-tts="Y equals g X">$Y = g(X)$</span> where <span class="tts-math" data-tts="g">$g$</span> is many-to-one, so <span class="tts-math" data-tts="X">$X$</span> cannot be recovered from <span class="tts-math" data-tts="Y">$Y$</span>.
 </p>
 <h3 data-cid="ch09-930">The algorithm</h3>
 <p data-cid="ch09-940">
-  Start from a guess $\hat\eta_0$. Iterate two steps until convergence:
+  Start from a guess <span class="tts-math" data-tts="eta sub 0">$\hat\eta_0$</span>. Iterate two steps until convergence:
 </p>
 <ul data-cid="ch09-950">
 <li><strong>E-step.</strong> Impute the sufficient statistic:
-  $$T_{k+1} = E_{\hat\eta_k}[T(X) \mid Y].$$</li>
-<li><strong>M-step.</strong> Maximise as if $T_{k+1}$ were observed:
-  $$\hat\eta_{k+1} = \psi(T_{k+1}),$$
-  where $\psi$ is the inverse of $A'$.</li>
+  <span class="tts-math" data-tts="T sub k plus 1 equals E sub eta sub k T X given Y .">$$T_{k+1} = E_{\hat\eta_k}[T(X) \mid Y].$$</span></li>
+<li><strong>M-step.</strong> Maximise as if <span class="tts-math" data-tts="T sub k plus 1">$T_{k+1}$</span> were observed:
+  <span class="tts-math" data-tts="eta sub k plus 1 equals psi T sub k plus 1">$$\hat\eta_{k+1} = \psi(T_{k+1}),$$</span>
+  where <span class="tts-math" data-tts="psi">$\psi$</span> is the inverse of <span class="tts-math" data-tts="A prime">$A'$</span>.</li>
 </ul>
 <div class="box intuition" data-cid="ch09-960">
 <span class="box-label">Why this works</span>
 <p data-cid="ch09-970">
-  At any fixed point $\tilde\eta = \psi(e(Y, \tilde\eta))$, the derivative of the observed-data log-likelihood
-  $\log f_\eta(Y)$ vanishes: differentiating $f_\eta(Y) = \int_{\mathcal{X}(Y)} h e^{\eta T - A}\, d\mu$ gives
-  $\partial_\eta \log f_\eta(Y) = e(Y, \eta) - A'(\eta)$, which is zero at $\tilde\eta$. So EM fixed points are
+  At any fixed point <span class="tts-math" data-tts="eta equals psi e Y eta">$\tilde\eta = \psi(e(Y, \tilde\eta))$</span>, the derivative of the observed-data log-likelihood
+  <span class="tts-math" data-tts="log f_ eta Y">$\log f_\eta(Y)$</span> vanishes: differentiating <span class="tts-math" data-tts="f_ eta Y equals the integral over script X Y of h e to the eta T minus A d mu">$f_\eta(Y) = \int_{\mathcal{X}(Y)} h e^{\eta T - A}\, d\mu$</span> gives
+  <span class="tts-math" data-tts="partial _ eta log f_ eta Y equals e Y eta minus A prime eta">$\partial_\eta \log f_\eta(Y) = e(Y, \eta) - A'(\eta)$</span>, which is zero at <span class="tts-math" data-tts="eta">$\tilde\eta$</span>. So EM fixed points are
   critical points of the observed log-likelihood. A theorem of Dempster–Laird–Rubin (extended by Wu, 1983)
-  shows each iteration cannot decrease $\log f_\eta(Y)$.
+  shows each iteration cannot decrease <span class="tts-math" data-tts="log f_ eta Y">$\log f_\eta(Y)$</span>.
 </p>
 </div>
 <div class="box example" data-cid="ch09-980">
 <span class="box-label">Example 9.23 — rounding</span>
 <p data-cid="ch09-990">
-  $X_1, \dots, X_n \stackrel{\text{iid}}{\sim} \mathrm{Exp}(\eta)$, but we only observe
-  $Y_i = \lfloor X_i \rfloor$. The full-data sufficient statistic is $T = -\sum X_i$, and the conditional
+  <span class="tts-math" data-tts="X sub 1 and so on X sub n iid distributed as Exp eta">$X_1, \dots, X_n \stackrel{\text{iid}}{\sim} \mathrm{Exp}(\eta)$</span>, but we only observe
+  <span class="tts-math" data-tts="Y sub i equals X sub i">$Y_i = \lfloor X_i \rfloor$</span>. The full-data sufficient statistic is <span class="tts-math" data-tts="T equals minus the sum of X sub i">$T = -\sum X_i$</span>, and the conditional
   expectation works out to
-  $$E_\eta[X_i \mid Y_i = y] = y + \frac{e^\eta - 1 - \eta}{\eta(e^\eta - 1)}.$$
+  <span class="tts-math" data-tts="E_ eta X sub i given Y sub i equals y equals y plus e^ eta minus 1 minus eta over eta e^ eta minus 1 .">$$E_\eta[X_i \mid Y_i = y] = y + \frac{e^\eta - 1 - \eta}{\eta(e^\eta - 1)}.$$</span>
   The EM recursion becomes
-  $$\hat\eta_{j+1} = -\frac{n}{T_{j+1}}, \qquad T_{j+1} = -n\!\left[\bar Y + \frac{e^{\hat\eta_j} - 1 - \hat\eta_j}{\hat\eta_j (e^{\hat\eta_j} - 1)}\right].$$
-  Here the marginal $Y_i$ is geometric with $p = 1 - e^{-\eta}$, so we can verify the answer in closed form:
-  $\hat\eta = \log(1 + 1/\bar Y)$.
+  <span class="tts-math" data-tts="eta sub j plus 1 equals minus n over T_ j plus 1 T sub j plus 1 equals minus n Y plus e to the eta sub j minus 1 minus eta sub j eta sub j e to the eta sub j minus 1 .">$$\hat\eta_{j+1} = -\frac{n}{T_{j+1}}, \qquad T_{j+1} = -n\!\left[\bar Y + \frac{e^{\hat\eta_j} - 1 - \hat\eta_j}{\hat\eta_j (e^{\hat\eta_j} - 1)}\right].$$</span>
+  Here the marginal <span class="tts-math" data-tts="Y sub i">$Y_i$</span> is geometric with <span class="tts-math" data-tts="p equals 1 minus e to the eta">$p = 1 - e^{-\eta}$</span>, so we can verify the answer in closed form:
+  <span class="tts-math" data-tts="eta equals log 1 plus 1 over Y">$\hat\eta = \log(1 + 1/\bar Y)$</span>.
 </p>
 </div>
 <div class="box warn" data-cid="ch09-1000">
 <span class="box-label">Common pitfall — local maxima and slow convergence</span>
 <p data-cid="ch09-1010">
-  EM is monotone in $\log f_\eta(Y)$ but is not guaranteed to find the global maximum. If the likelihood
+  EM is monotone in <span class="tts-math" data-tts="log f_ eta Y">$\log f_\eta(Y)$</span> but is not guaranteed to find the global maximum. If the likelihood
   has multiple modes, EM may converge to a local maximum; the standard remedy is to restart from several
   initial values. Convergence is also typically only linear — the error shrinks by a constant factor each
-  iteration. Newton–Raphson on $\log f_\eta(Y)$ would converge quadratically, but is less stable and
+  iteration. Newton–Raphson on <span class="tts-math" data-tts="log f_ eta Y">$\log f_\eta(Y)$</span> would converge quadratically, but is less stable and
   needs second derivatives of the observed-data likelihood.
 </p>
 </div>
 <!-- ===================================================================== -->
 <h2 data-cid="ch09-1020" id="s9-7">9.7 Limiting distributions in higher dimensions</h2>
 <p data-cid="ch09-1030">
-  In multivariate problems $\theta \in \mathbb{R}^p$, the Fisher information is a $p \times p$ matrix
+  In multivariate problems <span class="tts-math" data-tts="theta in the real numbers to the p">$\theta \in \mathbb{R}^p$</span>, the Fisher information is a <span class="tts-math" data-tts="p times p">$p \times p$</span> matrix
 </p>
-$$I(\theta) = \mathrm{Cov}_\theta\!\big(\nabla_\theta \log f_\theta(X)\big) = -E_\theta\, \nabla^2_\theta \log f_\theta(X).$$
+<span class="tts-math" data-tts="I theta equals Cov_ theta gradient _ theta log f_ theta X equals minus E_ theta gradient to the 2_ theta log f_ theta X .">$$I(\theta) = \mathrm{Cov}_\theta\!\big(\nabla_\theta \log f_\theta(X)\big) = -E_\theta\, \nabla^2_\theta \log f_\theta(X).$$</span>
 
 <h3 data-cid="ch09-1040">Multivariate normal — the limit distribution</h3>
 <p data-cid="ch09-1050">
-  The multivariate normal $N(\mu, \Sigma)$ has moment generating function
-  $M_X(t) = \exp(t'\mu + t'\Sigma t/2)$. Built as $X = \mu + AZ$ for $Z$ a vector of i.i.d. standard
-  normals and $AA' = \Sigma$, it inherits these properties:
+  The multivariate normal <span class="tts-math" data-tts="N mu Sigma">$N(\mu, \Sigma)$</span> has moment generating function
+  <span class="tts-math" data-tts="M sub X t equals exp t prime mu plus t prime Sigma t over 2">$M_X(t) = \exp(t'\mu + t'\Sigma t/2)$</span>. Built as <span class="tts-math" data-tts="X equals mu plus AZ">$X = \mu + AZ$</span> for <span class="tts-math" data-tts="Z">$Z$</span> a vector of i.i.d. standard
+  normals and <span class="tts-math" data-tts="AA prime equals Sigma">$AA' = \Sigma$</span>, it inherits these properties:
 </p>
 <ul data-cid="ch09-1060">
-<li>$EX = \mu$, $\mathrm{Cov}(X) = \Sigma$.</li>
-<li>Linear images stay normal: $b + AX \sim N(b + A\mu, A\Sigma A')$.</li>
-<li>When $\Sigma$ is positive definite, $X$ has Lebesgue density
-  $(2\pi)^{-p/2}(\det\Sigma)^{-1/2}\exp\!\big(-\tfrac12(x-\mu)'\Sigma^{-1}(x-\mu)\big)$.</li>
+<li><span class="tts-math" data-tts="EX equals mu">$EX = \mu$</span>, <span class="tts-math" data-tts="Cov X equals Sigma">$\mathrm{Cov}(X) = \Sigma$</span>.</li>
+<li>Linear images stay normal: <span class="tts-math" data-tts="b plus AX distributed as N b plus A mu A Sigma A prime">$b + AX \sim N(b + A\mu, A\Sigma A')$</span>.</li>
+<li>When <span class="tts-math" data-tts="Sigma">$\Sigma$</span> is positive definite, <span class="tts-math" data-tts="X">$X$</span> has Lebesgue density
+  <span class="tts-math" data-tts="2 pi to the p over 2 det Sigma to the 1 over 2 exp minus tfrac12 x minus mu prime Sigma inverse x minus mu">$(2\pi)^{-p/2}(\det\Sigma)^{-1/2}\exp\!\big(-\tfrac12(x-\mu)'\Sigma^{-1}(x-\mu)\big)$</span>.</li>
 </ul>
 <div class="box definition" data-cid="ch09-1070">
 <span class="box-label">Multivariate CLT (Theorem 9.27)</span>
 <p data-cid="ch09-1080">
-  If $X_1, X_2, \dots$ are i.i.d. random vectors with mean $\mu$ and covariance $\Sigma$, then
-  $\sqrt n(\bar X - \mu) \Rightarrow N(0, \Sigma)$.
+  If <span class="tts-math" data-tts="X sub 1 X sub 2 and so on">$X_1, X_2, \dots$</span> are i.i.d. random vectors with mean <span class="tts-math" data-tts="mu">$\mu$</span> and covariance <span class="tts-math" data-tts="Sigma">$\Sigma$</span>, then
+  <span class="tts-math" data-tts="root n X minus mu implies N 0 Sigma">$\sqrt n(\bar X - \mu) \Rightarrow N(0, \Sigma)$</span>.
 </p>
 </div>
-<h3 data-cid="ch09-1090">Asymptotic normality of the MLE in $\mathbb{R}^p$</h3>
+<h3 data-cid="ch09-1090">Asymptotic normality of the MLE in <span class="tts-math" data-tts="the real numbers to the p">$\mathbb{R}^p$</span></h3>
 <p data-cid="ch09-1100">
-  The univariate proof transcribes almost verbatim with vectors and matrices. With $\hat\theta_n$
+  The univariate proof transcribes almost verbatim with vectors and matrices. With <span class="tts-math" data-tts="theta sub n">$\hat\theta_n$</span>
   consistent and interior, Taylor expansion of the score gives
 </p>
-$$\sqrt n(\hat\theta_n - \theta) \approx \left[-\tfrac{1}{n}\nabla^2 \ell_n(\theta)\right]^{-1} \tfrac{1}{\sqrt n}\nabla \ell_n(\theta). \tag{9.12}$$
+<span class="tts-math" data-tts="root n theta sub n minus theta approximately minus 1 over n gradient to the 2 ell sub n theta inverse 1 over root n gradient ell sub n theta . 9.12">$$\sqrt n(\hat\theta_n - \theta) \approx \left[-\tfrac{1}{n}\nabla^2 \ell_n(\theta)\right]^{-1} \tfrac{1}{\sqrt n}\nabla \ell_n(\theta). \tag{9.12}$$</span>
 <p data-cid="ch09-1110">
-  The CLT handles the score $\frac{1}{\sqrt n}\nabla \ell_n(\theta) \Rightarrow N(0, I(\theta))$. The
-  uniform LLN handles the Hessian $-\frac{1}{n}\nabla^2 \ell_n(\theta) \xrightarrow{p} I(\theta)$.
-  Continuity of $A \mapsto A^{-1}$ (for nonsingular matrices) plus Theorem 9.30 give
+  The CLT handles the score <span class="tts-math" data-tts="1 over root n gradient ell sub n theta implies N 0 I theta">$\frac{1}{\sqrt n}\nabla \ell_n(\theta) \Rightarrow N(0, I(\theta))$</span>. The
+  uniform LLN handles the Hessian <span class="tts-math" data-tts="1 over n gradient to the 2 ell sub n theta converges in probability to I theta">$-\frac{1}{n}\nabla^2 \ell_n(\theta) \xrightarrow{p} I(\theta)$</span>.
+  Continuity of <span class="tts-math" data-tts="A A inverse">$A \mapsto A^{-1}$</span> (for nonsingular matrices) plus Theorem 9.30 give
 </p>
-$$\sqrt n(\hat\theta_n - \theta) \;\Rightarrow\; N\!\big(0, I(\theta)^{-1}\big).$$
+<span class="tts-math" data-tts="root n theta sub n minus theta implies N 0 I theta inverse .">$$\sqrt n(\hat\theta_n - \theta) \;\Rightarrow\; N\!\big(0, I(\theta)^{-1}\big).$$</span>
 
 <h3 data-cid="ch09-1120">The multivariate delta method</h3>
 <div class="box definition" data-cid="ch09-1130">
 <span class="box-label">Proposition 9.31</span>
 <p data-cid="ch09-1140">
-  If $g: \Omega \to \mathbb{R}$ is differentiable and $\sqrt n(\hat\theta_n - \theta) \Rightarrow
-  N(0, I(\theta)^{-1})$, then
-  $$\sqrt n\big(g(\hat\theta_n) - g(\theta)\big) \;\Rightarrow\; N\!\big(0, \nabla g(\theta)' I(\theta)^{-1} \nabla g(\theta)\big).$$
-  Vector-valued $g$ gives covariance $D g(\theta)\, I(\theta)^{-1}\, Dg(\theta)'$.
+  If <span class="tts-math" data-tts="g Omega to the real numbers">$g: \Omega \to \mathbb{R}$</span> is differentiable and <span class="tts-math" data-tts="root n theta sub n minus theta implies N 0 I theta inverse">$\sqrt n(\hat\theta_n - \theta) \Rightarrow
+  N(0, I(\theta)^{-1})$</span>, then
+  <span class="tts-math" data-tts="root n g theta sub n minus g theta implies N 0 gradient g theta prime I theta inverse gradient g theta .">$$\sqrt n\big(g(\hat\theta_n) - g(\theta)\big) \;\Rightarrow\; N\!\big(0, \nabla g(\theta)' I(\theta)^{-1} \nabla g(\theta)\big).$$</span>
+  Vector-valued <span class="tts-math" data-tts="g">$g$</span> gives covariance <span class="tts-math" data-tts="D g theta I theta inverse Dg theta prime">$D g(\theta)\, I(\theta)^{-1}\, Dg(\theta)'$</span>.
 </p>
 </div>
 <p data-cid="ch09-1150">
-  This is how confidence intervals for derived parameters such as $\sigma = \sqrt{\sigma^2}$,
-  $\log(\theta)$, or odds ratios get their asymptotic variances.
+  This is how confidence intervals for derived parameters such as <span class="tts-math" data-tts="sigma equals root sigma to the 2">$\sigma = \sqrt{\sigma^2}$</span>,
+  <span class="tts-math" data-tts="log theta">$\log(\theta)$</span>, or odds ratios get their asymptotic variances.
 </p>
 <!-- ===================================================================== -->
 <h2 data-cid="ch09-1160" id="s9-8">9.8 M-estimators for a location parameter</h2>
 <p data-cid="ch09-1170">
-  Let $X_1, X_2, \dots$ be i.i.d. from some distribution $Q$, and let $\rho$ be convex with
-  $\rho(x) \to \infty$ as $|x| \to \infty$. The <strong>M-estimator</strong> $T_n$ minimises
-  $$H(t) = \sum_{i=1}^{n} \rho(X_i - t).$$
-  Equivalently, with $\psi = \rho'$, $T_n$ solves the estimating equation
-  $$\bar W_n(t) = \frac{1}{n}\sum_{i=1}^{n} \psi(X_i - t) = 0.$$
+  Let <span class="tts-math" data-tts="X sub 1 X sub 2 and so on">$X_1, X_2, \dots$</span> be i.i.d. from some distribution <span class="tts-math" data-tts="Q">$Q$</span>, and let <span class="tts-math" data-tts="rho">$\rho$</span> be convex with
+  <span class="tts-math" data-tts="rho x to infinity">$\rho(x) \to \infty$</span> as <span class="tts-math" data-tts="x to infinity">$|x| \to \infty$</span>. The <strong>M-estimator</strong> <span class="tts-math" data-tts="T sub n">$T_n$</span> minimises
+  <span class="tts-math" data-tts="H t equals the sum from i equals 1 to n of rho X sub i minus t .">$$H(t) = \sum_{i=1}^{n} \rho(X_i - t).$$</span>
+  Equivalently, with <span class="tts-math" data-tts="psi equals rho prime">$\psi = \rho'$</span>, <span class="tts-math" data-tts="T sub n">$T_n$</span> solves the estimating equation
+  <span class="tts-math" data-tts="W sub n t equals 1 over n the sum from i equals 1 to n of psi X sub i minus t equals 0.">$$\bar W_n(t) = \frac{1}{n}\sum_{i=1}^{n} \psi(X_i - t) = 0.$$</span>
 </p>
 <div class="box intuition" data-cid="ch09-1180">
 <span class="box-label">Three familiar estimators are M-estimators</span>
 <ul data-cid="ch09-1190">
-<li>$\rho(x) = x^2$, $\psi(x) = 2x$ gives $T_n = \bar X_n$, the sample mean.</li>
-<li>$\rho(x) = |x|$, $\psi(x) = \mathrm{sign}(x)$ gives $T_n = \mathrm{median}(X_1, \dots, X_n)$.</li>
-<li>If $Q$ has log-concave density $f(x - \theta)$ and $\rho = -\log f$, $T_n$ is the MLE for $\theta$.</li>
+<li><span class="tts-math" data-tts="rho x equals x to the 2">$\rho(x) = x^2$</span>, <span class="tts-math" data-tts="psi x equals 2x">$\psi(x) = 2x$</span> gives <span class="tts-math" data-tts="T sub n equals X sub n">$T_n = \bar X_n$</span>, the sample mean.</li>
+<li><span class="tts-math" data-tts="rho x equals x">$\rho(x) = |x|$</span>, <span class="tts-math" data-tts="psi x equals sign x">$\psi(x) = \mathrm{sign}(x)$</span> gives <span class="tts-math" data-tts="T sub n equals median X sub 1 and so on X sub n">$T_n = \mathrm{median}(X_1, \dots, X_n)$</span>.</li>
+<li>If <span class="tts-math" data-tts="Q">$Q$</span> has log-concave density <span class="tts-math" data-tts="f x minus theta">$f(x - \theta)$</span> and <span class="tts-math" data-tts="rho equals minus log f">$\rho = -\log f$</span>, <span class="tts-math" data-tts="T sub n">$T_n$</span> is the MLE for <span class="tts-math" data-tts="theta">$\theta$</span>.</li>
 </ul>
 </div>
 <h3 data-cid="ch09-1200">Consistency and asymptotic normality</h3>
 <p data-cid="ch09-1210">
-  Define $\lambda(t) = E\psi(X - t)$. Convexity of $\rho$ makes $\psi$ nondecreasing, so $\lambda$ is
-  nonincreasing; under mild integrability $\lambda$ has a unique root $c$. Theorem 9.4(3) applied to the
-  uniformly convergent average $\bar W_n$ gives $T_n \xrightarrow{p} c$.
+  Define <span class="tts-math" data-tts="lambda t equals E psi X minus t">$\lambda(t) = E\psi(X - t)$</span>. Convexity of <span class="tts-math" data-tts="rho">$\rho$</span> makes <span class="tts-math" data-tts="psi">$\psi$</span> nondecreasing, so <span class="tts-math" data-tts="lambda">$\lambda$</span> is
+  nonincreasing; under mild integrability <span class="tts-math" data-tts="lambda">$\lambda$</span> has a unique root <span class="tts-math" data-tts="c">$c$</span>. Theorem 9.4(3) applied to the
+  uniformly convergent average <span class="tts-math" data-tts="W sub n">$\bar W_n$</span> gives <span class="tts-math" data-tts="T sub n converges in probability to c">$T_n \xrightarrow{p} c$</span>.
 </p>
 <p data-cid="ch09-1220">
-  For asymptotic normality, Taylor-expand $\bar W_n$ around $c$:
-  $0 = \bar W_n(T_n) = \bar W_n(c) + (T_n - c)\bar W_n'(t_n^*)$, so
+  For asymptotic normality, Taylor-expand <span class="tts-math" data-tts="W sub n">$\bar W_n$</span> around <span class="tts-math" data-tts="c">$c$</span>:
+  <span class="tts-math" data-tts="0 equals W sub n T sub n equals W sub n c plus T sub n minus c W sub n prime t sub n to the times">$0 = \bar W_n(T_n) = \bar W_n(c) + (T_n - c)\bar W_n'(t_n^*)$</span>, so
 </p>
-$$\sqrt n(T_n - c) = -\frac{\sqrt n \bar W_n(c)}{\bar W_n'(t_n^*)}.$$
+<span class="tts-math" data-tts="root n T sub n minus c equals minus root n W sub n c over W sub n prime t sub n to the times .">$$\sqrt n(T_n - c) = -\frac{\sqrt n \bar W_n(c)}{\bar W_n'(t_n^*)}.$$</span>
 <p data-cid="ch09-1230">
-  The numerator is asymptotically $N(0, E\psi(X-c)^2)$ by the CLT; the denominator converges in
-  probability to $E\psi'(X - c) = \lambda'(c)$. Therefore
+  The numerator is asymptotically <span class="tts-math" data-tts="N 0 E psi X minus c to the 2">$N(0, E\psi(X-c)^2)$</span> by the CLT; the denominator converges in
+  probability to <span class="tts-math" data-tts="E psi prime X minus c equals lambda prime c">$E\psi'(X - c) = \lambda'(c)$</span>. Therefore
 </p>
-$$\sqrt n(T_n - c) \;\Rightarrow\; N\!\left(0, \; \frac{E\psi(X - c)^2}{\lambda'(c)^2}\right).$$
+<span class="tts-math" data-tts="root n T sub n minus c implies N 0 E psi X minus c to the 2 over lambda prime c to the 2 .">$$\sqrt n(T_n - c) \;\Rightarrow\; N\!\left(0, \; \frac{E\psi(X - c)^2}{\lambda'(c)^2}\right).$$</span>
 
 <div class="box pause" data-cid="ch09-1240">
-<span class="box-label">Pause — same template, different $\psi$</span>
+<span class="box-label">Pause — same template, different <span class="tts-math" data-tts="psi">$\psi$</span></span>
 <p data-cid="ch09-1250">
   Notice how the proof is structurally identical to the MLE proof in Section 9.3. Both estimators solve
-  $\bar W_n = 0$ (M-estimators by definition, MLEs because they sit at the peak). Both inherit
+  <span class="tts-math" data-tts="W sub n equals 0">$\bar W_n = 0$</span> (M-estimators by definition, MLEs because they sit at the peak). Both inherit
   asymptotic normality from a Taylor expansion plus the uniform LLN. The asymptotic variance is always
-  $E\psi^2 / (\lambda')^2$. The MLE just happens to have $E\psi^2 = \lambda' = I(\theta)$, making both
-  factors equal and producing the efficient variance $1/I(\theta)$.
+  <span class="tts-math" data-tts="E psi to the 2 over lambda prime to the 2">$E\psi^2 / (\lambda')^2$</span>. The MLE just happens to have <span class="tts-math" data-tts="E psi to the 2 equals lambda prime equals I theta">$E\psi^2 = \lambda' = I(\theta)$</span>, making both
+  factors equal and producing the efficient variance <span class="tts-math" data-tts="1 over I theta">$1/I(\theta)$</span>.
 </p>
 </div>
 <h3 data-cid="ch09-1260">Huber's M-estimator</h3>
 <p data-cid="ch09-1270">
-  When the model is $N(\theta, 1)$, the sample mean is fully efficient and the median is wasteful. But
-  if the model is contaminated, $X \sim (1 - \epsilon) N(\theta, 1) + \epsilon Q^*$ with $Q^*$ symmetric
-  about $\theta$, then $\mathrm{Var}(X)$ can be enormous and $\bar X_n$ becomes terrible. The sample
+  When the model is <span class="tts-math" data-tts="N theta 1">$N(\theta, 1)$</span>, the sample mean is fully efficient and the median is wasteful. But
+  if the model is contaminated, <span class="tts-math" data-tts="X distributed as 1 minus epsilon N theta 1 plus epsilon Q to the times">$X \sim (1 - \epsilon) N(\theta, 1) + \epsilon Q^*$</span> with <span class="tts-math" data-tts="Q to the times">$Q^*$</span> symmetric
+  about <span class="tts-math" data-tts="theta">$\theta$</span>, then <span class="tts-math" data-tts="Var X">$\mathrm{Var}(X)$</span> can be enormous and <span class="tts-math" data-tts="X sub n">$\bar X_n$</span> becomes terrible. The sample
   median is unaffected but throws away information when the contamination is small.
 </p>
 <div class="box example" data-cid="ch09-1280">
 <span class="box-label">Worked example — Huber's saddle-point estimator</span>
 <p data-cid="ch09-1290">
-  Huber (1964) asked: what $\psi$ minimises the <em>worst-case</em> asymptotic variance over the class
-  $\mathcal{C}_\epsilon$ of contaminated distributions? The answer (Theorem 9.34) is the function
-  $$\psi_0(t) = \begin{cases} t, &amp; |t| \leq k, \\ k\, \mathrm{sign}(t), &amp; |t| &gt; k, \end{cases}$$
-  with corresponding convex loss $\rho_0(t) = \tfrac12 t^2$ for $|t|\leq k$ and
-  $\rho_0(t) = k|t| - \tfrac12 k^2$ for $|t| &gt; k$. The constant $k$ solves
-  $$\frac{1}{1 - \epsilon} = P(|Z| &lt; k) + \frac{2\phi(k)}{k}, \qquad Z \sim N(0,1).$$
+  Huber (1964) asked: what <span class="tts-math" data-tts="psi">$\psi$</span> minimises the <em>worst-case</em> asymptotic variance over the class
+  <span class="tts-math" data-tts="script C_ epsilon">$\mathcal{C}_\epsilon$</span> of contaminated distributions? The answer (Theorem 9.34) is the function
+  <span class="tts-math" data-tts="psi sub 0 t equals t amp t less than or equal to k k sign t amp t gt k">$$\psi_0(t) = \begin{cases} t, &amp; |t| \leq k, \\ k\, \mathrm{sign}(t), &amp; |t| &gt; k, \end{cases}$$</span>
+  with corresponding convex loss <span class="tts-math" data-tts="rho sub 0 t equals tfrac12 t to the 2">$\rho_0(t) = \tfrac12 t^2$</span> for <span class="tts-math" data-tts="t less than or equal to k">$|t|\leq k$</span> and
+  <span class="tts-math" data-tts="rho sub 0 t equals k t minus tfrac12 k to the 2">$\rho_0(t) = k|t| - \tfrac12 k^2$</span> for <span class="tts-math" data-tts="t gt k">$|t| &gt; k$</span>. The constant <span class="tts-math" data-tts="k">$k$</span> solves
+  <span class="tts-math" data-tts="1 over 1 minus epsilon equals P Z lt k plus 2 phi k over k Z distributed as N 0 1 .">$$\frac{1}{1 - \epsilon} = P(|Z| &lt; k) + \frac{2\phi(k)}{k}, \qquad Z \sim N(0,1).$$</span>
   The estimator behaves like the mean for "good" observations and like the median for outliers — the
   best of both worlds. It is the canonical example of a <strong>robust</strong> estimator.
 </p>
@@ -576,49 +575,49 @@ $$\sqrt n(T_n - c) \;\Rightarrow\; N\!\left(0, \; \frac{E\psi(X - c)^2}{\lambda'
 <div class="box definition" data-cid="ch09-1330">
 <span class="box-label">Definition — strictly stationary process</span>
 <p data-cid="ch09-1340">
-  A process $\{X_n : n \in \mathbb{Z}\}$ is <strong>strictly stationary</strong> if for every $k \geq 1$
-  and every $n$, $(X_1, \dots, X_k) \sim (X_{n+1}, \dots, X_{n+k})$. It is <strong>ergodic</strong> if
+  A process <span class="tts-math" data-tts="X sub n n in the integers">$\{X_n : n \in \mathbb{Z}\}$</span> is <strong>strictly stationary</strong> if for every <span class="tts-math" data-tts="k greater than or equal to 1">$k \geq 1$</span>
+  and every <span class="tts-math" data-tts="n">$n$</span>, <span class="tts-math" data-tts="X sub 1 and so on X sub k distributed as X sub n plus 1 and so on X sub n plus k">$(X_1, \dots, X_k) \sim (X_{n+1}, \dots, X_{n+k})$</span>. It is <strong>ergodic</strong> if
   every shift-invariant event has probability 0 or 1.
 </p>
 </div>
 <div class="box definition" data-cid="ch09-1350">
 <span class="box-label">Theorem 9.38 — ergodic theorem</span>
 <p data-cid="ch09-1360">
-  If $X$ is stationary ergodic and $E|g(X)| &lt; \infty$, then
-  $$\frac{1}{n}\sum_{j=1}^{n} g(T^j X) \xrightarrow{\text{a.s.}} E g(X).$$
+  If <span class="tts-math" data-tts="X">$X$</span> is stationary ergodic and <span class="tts-math" data-tts="E g X lt infinity">$E|g(X)| &lt; \infty$</span>, then
+  <span class="tts-math" data-tts="1 over n the sum from j equals 1 to n of g T to the j X converges to E g X .">$$\frac{1}{n}\sum_{j=1}^{n} g(T^j X) \xrightarrow{\text{a.s.}} E g(X).$$</span>
 </p>
 </div>
 <p data-cid="ch09-1370">
   The ergodic theorem replaces the strong law: it is exactly as strong, but covers dependent data.
   Consistency of the MLE for time-series models follows from arguments structurally identical to those
-  in Section 9.2, with $\ell_n(\theta)/n \to E\big[\log f_\theta(X_0 \mid X_{-1}, X_{-2}, \dots)\big]$ via
-  the ergodic theorem, and this expectation maximised uniquely at the true $\theta$ by the same
+  in Section 9.2, with <span class="tts-math" data-tts="ell sub n theta over n to E log f_ theta X sub 0 given X sub 1 X sub 2 and so on">$\ell_n(\theta)/n \to E\big[\log f_\theta(X_0 \mid X_{-1}, X_{-2}, \dots)\big]$</span> via
+  the ergodic theorem, and this expectation maximised uniquely at the true <span class="tts-math" data-tts="theta">$\theta$</span> by the same
   Kullback–Leibler argument.
 </p>
 <h3 data-cid="ch09-1380">The martingale CLT</h3>
 <p data-cid="ch09-1390">
   For asymptotic normality we need a CLT for dependent summands. The crucial structural observation: the
   score function for a sequentially factored likelihood is a martingale. Let
-  $Y_j = \partial_\theta \log f_\theta(X_j \mid X_1, \dots, X_{j-1})$. Then
-  $E_\theta[Y_j \mid X_1, \dots, X_{j-1}] = 0$, so $\ell_n'(\theta) = \sum_{j=1}^n Y_j$ is a mean-zero
+  <span class="tts-math" data-tts="Y sub j equals partial _ theta log f_ theta X sub j given X sub 1 and so on X sub j minus 1">$Y_j = \partial_\theta \log f_\theta(X_j \mid X_1, \dots, X_{j-1})$</span>. Then
+  <span class="tts-math" data-tts="E_ theta Y sub j given X sub 1 and so on X sub j minus 1 equals 0">$E_\theta[Y_j \mid X_1, \dots, X_{j-1}] = 0$</span>, so <span class="tts-math" data-tts="ell sub n prime theta equals the sum over j equals 1 of to the n Y sub j">$\ell_n'(\theta) = \sum_{j=1}^n Y_j$</span> is a mean-zero
   martingale.
 </p>
 <div class="box definition" data-cid="ch09-1400">
 <span class="box-label">Theorem 9.40 — martingale CLT</span>
 <p data-cid="ch09-1410">
-  If $M_n$ is a mean-zero martingale with conditional variances $s_j^2$ satisfying
-  $\frac{1}{n}\sum_{j=1}^n s_j^2 \xrightarrow{p} \sigma^2$ and a Lindeberg condition, then
-  $M_n/\sqrt n \Rightarrow N(0, \sigma^2)$.
+  If <span class="tts-math" data-tts="M sub n">$M_n$</span> is a mean-zero martingale with conditional variances <span class="tts-math" data-tts="s sub j to the 2">$s_j^2$</span> satisfying
+  <span class="tts-math" data-tts="1 over n the sum over j equals 1 of to the n s sub j to the 2 converges in probability to sigma to the 2">$\frac{1}{n}\sum_{j=1}^n s_j^2 \xrightarrow{p} \sigma^2$</span> and a Lindeberg condition, then
+  <span class="tts-math" data-tts="M sub n over root n implies N 0 sigma to the 2">$M_n/\sqrt n \Rightarrow N(0, \sigma^2)$</span>.
 </p>
 </div>
 <p data-cid="ch09-1420">
   With this tool, the Section 9.3 proof transcribes to dependent data:
-  $\frac{1}{\sqrt n}\ell_n'(\theta) \Rightarrow N(0, I(\theta))$ by the martingale CLT (where now
-  $I(\theta) = E_\theta[-\partial_\theta^2 \log f_\theta(X_0 \mid X_{-1}, \dots)]$ is the
-  per-observation Fisher information), and $-\frac{1}{n}\ell_n''(\theta) \xrightarrow{p} I(\theta)$ by
+  <span class="tts-math" data-tts="1 over root n ell sub n prime theta implies N 0 I theta">$\frac{1}{\sqrt n}\ell_n'(\theta) \Rightarrow N(0, I(\theta))$</span> by the martingale CLT (where now
+  <span class="tts-math" data-tts="I theta equals E_ theta minus partial _ theta to the 2 log f_ theta X sub 0 given X sub 1 and so on">$I(\theta) = E_\theta[-\partial_\theta^2 \log f_\theta(X_0 \mid X_{-1}, \dots)]$</span> is the
+  per-observation Fisher information), and <span class="tts-math" data-tts="1 over n ell sub n prime prime theta converges in probability to I theta">$-\frac{1}{n}\ell_n''(\theta) \xrightarrow{p} I(\theta)$</span> by
   the ergodic theorem. The final conclusion is unchanged:
 </p>
-$$\sqrt n(\hat\theta_n - \theta) \;\Rightarrow\; N\!\left(0, \tfrac{1}{I(\theta)}\right).$$
+<span class="tts-math" data-tts="root n theta sub n minus theta implies N 0 1 over I theta .">$$\sqrt n(\hat\theta_n - \theta) \;\Rightarrow\; N\!\left(0, \tfrac{1}{I(\theta)}\right).$$</span>
 
 <div class="box intuition" data-cid="ch09-1430">
 <span class="box-label">The lesson of Section 9.9</span>
@@ -634,29 +633,29 @@ $$\sqrt n(\hat\theta_n - \theta) \;\Rightarrow\; N\!\left(0, \tfrac{1}{I(\theta)
 <p data-cid="ch09-1460">The longest chapter, in ten bullets:</p>
 <ol data-cid="ch09-1470">
 <li>Many estimators (MLE, method of moments, M-estimators, Huber, Bayes posterior modes) are roots of
-  $\sum \psi(X_i; \hat\theta) = 0$.</li>
+  <span class="tts-math" data-tts="the sum of psi X sub i theta equals 0">$\sum \psi(X_i; \hat\theta) = 0$</span>.</li>
 <li>A <strong>uniform weak law of large numbers</strong> (Theorem 9.2) is the technical tool that lets
   us substitute random arguments into averages — pointwise convergence is not enough.</li>
-<li>The MLE is <strong>consistent</strong> because $-I(\theta, \omega)$, the negative
-  Kullback–Leibler information, has a unique maximum at the true $\theta$ (Wald 1949; Theorems 9.9, 9.11).</li>
-<li>The MLE is <strong>asymptotically normal</strong> with variance $1/I(\theta)$ (Theorem 9.14).
-  The proof is a Taylor expansion of the score around $\theta$, plus the CLT for the numerator and the
+<li>The MLE is <strong>consistent</strong> because <span class="tts-math" data-tts="I theta omega">$-I(\theta, \omega)$</span>, the negative
+  Kullback–Leibler information, has a unique maximum at the true <span class="tts-math" data-tts="theta">$\theta$</span> (Wald 1949; Theorems 9.9, 9.11).</li>
+<li>The MLE is <strong>asymptotically normal</strong> with variance <span class="tts-math" data-tts="1 over I theta">$1/I(\theta)$</span> (Theorem 9.14).
+  The proof is a Taylor expansion of the score around <span class="tts-math" data-tts="theta">$\theta$</span>, plus the CLT for the numerator and the
   uniform LLN for the denominator.</li>
 <li>The MLE is therefore <strong>asymptotically efficient</strong> — it saturates the Cramér–Rao bound
   in the limit.</li>
-<li>Four flavours of confidence interval result: implicit using $I(\theta)$ (9.4), plug-in
-  $I(\hat\theta_n)$ (9.5), observed information $-\ell_n''(\hat\theta_n)$ (9.7), and the
+<li>Four flavours of confidence interval result: implicit using <span class="tts-math" data-tts="I theta">$I(\theta)$</span> (9.4), plug-in
+  <span class="tts-math" data-tts="I theta sub n">$I(\hat\theta_n)$</span> (9.5), observed information <span class="tts-math" data-tts="ell sub n prime prime theta sub n">$-\ell_n''(\hat\theta_n)$</span> (9.7), and the
   likelihood-ratio profile region (9.8).</li>
 <li>When the MLE has no closed form, the <strong>EM algorithm</strong> alternates an E-step (impute
   sufficient statistics) and an M-step (maximise as if data were complete). Each iteration cannot
   decrease the observed likelihood, but convergence is only linear and only to a local maximum.</li>
-<li>In <strong>$p$ dimensions</strong>, every result above lifts verbatim with vectors and matrices.
-  The asymptotic variance becomes $I(\theta)^{-1}$, and the multivariate <strong>delta method</strong>
-  propagates it to functions $g(\hat\theta_n)$.</li>
-<li><strong>M-estimators</strong> (Huber 1964) use $\psi$ functions other than the score to trade some
+<li>In <strong><span class="tts-math" data-tts="p">$p$</span> dimensions</strong>, every result above lifts verbatim with vectors and matrices.
+  The asymptotic variance becomes <span class="tts-math" data-tts="I theta inverse">$I(\theta)^{-1}$</span>, and the multivariate <strong>delta method</strong>
+  propagates it to functions <span class="tts-math" data-tts="g theta sub n">$g(\hat\theta_n)$</span>.</li>
+<li><strong>M-estimators</strong> (Huber 1964) use <span class="tts-math" data-tts="psi">$\psi$</span> functions other than the score to trade some
   efficiency for robustness against contamination.</li>
 <li>For <strong>dependent data</strong>, swap the LLN for the ergodic theorem and the CLT for the
-  martingale CLT. The asymptotic distribution of the MLE is unchanged: $N(0, 1/I(\theta))$.</li>
+  martingale CLT. The asymptotic distribution of the MLE is unchanged: <span class="tts-math" data-tts="N 0 1 over I theta">$N(0, 1/I(\theta))$</span>.</li>
 </ol>
 <div class="box pause" data-cid="ch09-1480">
 <span class="box-label">Did this land?</span>
@@ -667,7 +666,7 @@ $$\sqrt n(\hat\theta_n - \theta) \;\Rightarrow\; N\!\left(0, \tfrac{1}{I(\theta)
   needs the uniform LLN?</li>
 <li>Why is the MLE asymptotically efficient? What does the Cramér–Rao bound have to do with it?</li>
 <li>Name a situation where the MLE fails to exist, and one where the score equation has multiple roots.</li>
-<li>What is the structural feature of Huber's $\psi$ that gives it robustness?</li>
+<li>What is the structural feature of Huber's <span class="tts-math" data-tts="psi">$\psi$</span> that gives it robustness?</li>
 <li>What does the score function become for time-series data, and which theorem replaces the ordinary
   CLT?</li>
 </ul>
@@ -679,6 +678,6 @@ $$\sqrt n(\hat\theta_n - \theta) \;\Rightarrow\; N\!\left(0, \tfrac{1}{I(\theta)
 </nav>
 </article>
 </main>
-<script src="/js/main.js"></script><script src="/js/comments.js"></script>
+<script src="/js/main.js"></script><script src="/js/comments.js"></script><script src="/js/tts.js"></script>
 </body>
 </html>

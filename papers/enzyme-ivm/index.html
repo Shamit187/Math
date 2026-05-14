@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Enzyme: Incremental View Maintenance · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/>
+</head>
+<body data-book="enzyme-ivm" data-page="main">
+
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/enzyme-ivm/">Enzyme</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. Introduction</a></li>
+    <li><a href="#s2">2. Background</a></li>
+    <li><a href="#s3">3. The IVM Problem</a></li>
+    <li><a href="#s3b">3a. Delta Plan Construction</a></li>
+    <li><a href="#s3c">3b. Applying Changes</a></li>
+    <li><a href="#s3d">3c. Non-Determinism</a></li>
+    <li><a href="#s3e">3d. Optimizations</a></li>
+    <li><a href="#s4">4. System Architecture</a></li>
+    <li><a href="#s4b">4a. Normalization</a></li>
+    <li><a href="#s4c">4b. Fingerprinting</a></li>
+    <li><a href="#s4d">4c. Decomposition</a></li>
+    <li><a href="#s4e">4d. Plan Generator</a></li>
+    <li><a href="#s4f">4e. Cost Model</a></li>
+    <li><a href="#s4g">4f. Refresh Execution</a></li>
+    <li><a href="#s5">5. Lessons Learned</a></li>
+    <li><a href="#s6">6. Experiments</a></li>
+    <li><a href="#s7">7. Related Work</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="kicker">Systems Paper · SIGMOD 2026</div>
+    <h1>Enzyme: Incremental View Maintenance for Data Engineering</h1>
+    <div class="paper-meta">
+      <span class="authors">Ritwik Yadav, Supun Abeysinghe, Min Yang, Jeffrey Helt, Manuel Ung, Yuhong Chen, Melody Hu, William Wei, Yiming Yang, Tom van Bussel, Sourav Chatterji, Indrajit Roy, Paul Lappas, Yannis Papakonstantinou, Tahir Fayyaz, Bilal Aslam, Ross Bunker, Michael Armbrust, Shrikanth Shankar</span>
+      <span class="venue">Databricks, Inc. &amp; Google, Inc. — SIGMOD Companion 2026, Bengaluru, India</span>
+    </div>
+  </section>
+
+  <!-- ===== ABSTRACT ===== -->
+  <div class="paper-abstract" data-cid="main-0010" id="abstract">
+    <strong>Abstract.</strong>
+    Materialized views (MVs) are physically stored query results used to accelerate analytical
+    queries and power ETL pipelines. Keeping a materialized view consistent as its source
+    tables change is the <em>incremental view maintenance</em> (IVM) problem — studied for
+    decades but rarely solved end-to-end in industrial systems. This paper describes
+    <strong>Enzyme</strong>, Databricks's production IVM engine. Enzyme automatically selects
+    between incremental refresh and full recomputation for each view in a pipeline, using a
+    cost model grounded in historical execution data. Deployed across thousands of production
+    pipelines, it has cut daily CPU consumption by billions of seconds. Built on Apache Spark
+    primitives (Delta Lake, Catalyst), Enzyme handles arbitrary compositions of SQL operators —
+    including joins, aggregations, and window functions — without requiring any manual tuning
+    from users.
+  </div>
+
+  <!-- ===== SECTION 1: INTRODUCTION ===== -->
+  <h2 data-cid="main-0020" id="s1">1. Introduction</h2>
+
+  <p data-cid="main-0030">
+    A <em>materialized view</em> is a database object that caches the result of a query in
+    physical storage. Unlike a standard (virtual) view — which re-runs its defining query on
+    every access — a materialized view is computed once and stored. Subsequent queries read
+    the stored result, making them dramatically faster. The trade-off is staleness: the stored
+    result must be refreshed as the underlying source data changes.
+  </p>
+
+  <div class="box definition" data-cid="main-0040">
+    <span class="box-label">Definition: Materialized View</span>
+    <p data-cid="main-0050">
+      A <strong>materialized view (MV)</strong> is a named, persistently stored query result.
+      It is defined by a query <span class="tts-math" data-tts="Q of T 1 through T n">$Q(T_1, \ldots, T_n)$</span>
+      over base tables <span class="tts-math" data-tts="T 1 through T n">$T_1, \ldots, T_n$</span>.
+      The MV must be periodically or continuously <em>refreshed</em> to reflect changes
+      to those base tables. A full refresh re-executes <span class="tts-math" data-tts="Q">$Q$</span>
+      from scratch; an <em>incremental</em> refresh computes only the delta.
+    </p>
+  </div>
+
+  <p data-cid="main-0060">
+    Modern data architectures make MVs indispensable. The <strong>medallion architecture</strong>
+    — used widely in data lakehouses like Databricks — organizes data into three layers:
+  </p>
+
+  <ul data-cid="main-0070">
+    <li><strong>Bronze</strong> — raw, as-landed data with metadata.</li>
+    <li><strong>Silver</strong> — cleaned, merged, and conformed records ready for analytics.</li>
+    <li><strong>Gold</strong> — denormalized, read-optimized aggregates for reporting and ML.</li>
+  </ul>
+
+  <p data-cid="main-0080">
+    MVs appear primarily in the Silver and Gold layers, transforming data as it flows
+    downstream. As the AI era has driven exponential data growth, the cost of full
+    recomputation on every pipeline run has become prohibitive. Incremental refresh —
+    processing only what changed — is now a necessity, not a nice-to-have.
+  </p>
+
+  <div class="box intuition" data-cid="main-0090">
+    <span class="box-label">Intuition: Why IVM Is Hard</span>
+    <p data-cid="main-0100">
+      For a simple filter or projection, IVM is trivial: just apply the same filter to the
+      incoming changes. But once you introduce <strong>joins</strong>, <strong>aggregations</strong>,
+      or <strong>window functions</strong>, correctness becomes subtle. A single new row in
+      an Orders table can change aggregate values for hundreds of customer groups; a deletion
+      can turn an outer-join row from matching to null-padded. Non-deterministic functions like
+      <code>rand()</code> or <code>current_timestamp()</code> break the assumption that you can
+      re-evaluate an expression on old data and get the same answer. These challenges
+      compound when views depend on other views in a pipeline DAG.
+    </p>
+  </div>
+
+  <p data-cid="main-0110">
+    Most existing IVM systems fall short in at least one of four ways: (1) limited SQL
+    operator coverage (no window functions, no outer joins); (2) reliance on secondary
+    indexes that lakehouses do not provide; (3) no automated cost-based strategy selection;
+    or (4) per-view tuning that burdens engineers. Enzyme addresses all four.
+  </p>
+
+  <!-- ===== SECTION 2: BACKGROUND ===== -->
+  <h2 data-cid="main-0120" id="s2">2. Background: Materialized Views at Databricks</h2>
+
+  <p data-cid="main-0130">
+    On Databricks, MVs are backed by <strong>Unity Catalog</strong>-managed Delta tables.
+    Users define MVs either inside a <em>Spark Declarative Pipeline</em> (refreshed when the
+    pipeline runs) or as standalone DBSQL objects (refreshed on a schedule or when source
+    tables change). Delta Lake's ACID transactions guarantee readers always see a consistent,
+    fully committed MV state — partial refreshes are never visible.
+  </p>
+
+  <p data-cid="main-0140">
+    Internally each MV has two parts: a <strong>backing table</strong> (which stores user data
+    plus Enzyme's internal metadata columns) and a <strong>top-level view</strong> (which hides
+    the metadata and exposes only user-facing columns). This split is critical: it lets Enzyme
+    add auxiliary columns — for example, storing both <code>SUM(x)</code> and <code>COUNT(*)</code>
+    when the user requested only <code>AVG(x)</code> — without changing the schema the user sees.
+  </p>
+
+  <h3 data-cid="main-0150">2.1 Running Example</h3>
+
+  <p data-cid="main-0160">
+    The paper uses the following MV as a running example throughout. It computes the
+    average order amount per region, filtered to three regions, refreshing every hour:
+  </p>
+
+  <pre data-cid="main-0170"><code>CREATE MATERIALIZED VIEW region_avg_sales
+SCHEDULE EVERY 1 HOUR
+AS
+SELECT
+  c.region,
+  AVG(o.amount) AS avg_order_amount
+FROM
+  Customers c
+  JOIN Orders o ON c.customer_id = o.customer_id
+GROUP BY c.region
+HAVING c.region IN ('us-east', 'us-west', 'asia');</code></pre>
+
+  <div class="box example" data-cid="main-0180">
+    <span class="box-label">Example: Reading This Query</span>
+    <p data-cid="main-0190">
+      This query joins <code>Customers</code> and <code>Orders</code> on
+      <code>customer_id</code>, groups by <code>region</code>, computes the average
+      <code>amount</code> per group, and keeps only the three named regions. The result
+      is one row per region with the average order size. Every hour, Enzyme must update
+      this result in response to new orders, modified customer records, or both.
+    </p>
+  </div>
+
+  <h3 data-cid="main-0200">2.2 Spark Primitives Enzyme Uses</h3>
+
+  <p data-cid="main-0210">
+    Enzyme applies computed changes to an MV's backing table using two Spark/Delta Lake
+    operations:
+  </p>
+
+  <ul data-cid="main-0220">
+    <li>
+      <strong>MERGE INTO</strong> — a conditional upsert. Given a source table of changes,
+      it matches source rows to target rows on a key and applies insert, update, or delete
+      actions. Enzyme uses this to update aggregate rows in place (e.g., bumping a running
+      sum without rewriting unaffected groups).
+    </li>
+    <li>
+      <strong>REPLACE WHERE</strong> — atomically deletes all rows matching a predicate and
+      inserts a new set of rows. Simpler than MERGE INTO, it works well for partition-level
+      overwrites.
+    </li>
+  </ul>
+
+  <h3 data-cid="main-0230">2.3 Delta Lake Features Enzyme Relies On</h3>
+
+  <p data-cid="main-0240">
+    Four Delta Lake capabilities are central to Enzyme's design:
+  </p>
+
+  <div class="box definition" data-cid="main-0250">
+    <span class="box-label">Row Tracking</span>
+    <p data-cid="main-0260">
+      Each row in a Delta table receives a stable, unique identifier at insertion time,
+      preserved across updates. Enzyme uses these IDs as fine-grained row-level lineage
+      handles: it can pinpoint exactly which output rows must be deleted or updated when
+      a specific input row changes, without scanning unrelated data.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-0270">
+    <span class="box-label">Change Data Feed (CDF)</span>
+    <p data-cid="main-0280">
+      Delta's CDF tracks row-level changes between two table versions. It returns one row
+      per insertion or deletion, augmented with a <code>_change_type</code> metadata column
+      encoded as <span class="tts-math" data-tts="plus 1 for inserts, minus 1 for deletes">$+1$</span>
+      (insert) or <span class="tts-math" data-tts="minus 1">$-1$</span> (delete).
+      An <em>effectivized changeset</em> is the most compact form: redundant insert-then-delete
+      pairs for the same row cancel out, leaving only the net change.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-0290">
+    <span class="box-label">Deletion Vectors</span>
+    <p data-cid="main-0300">
+      Instead of rewriting entire Parquet files on every delete or update
+      (copy-on-write), deletion vectors mark rows as logically removed without rewriting.
+      This reduces <em>write amplification</em> — the extra I/O caused by rewriting large
+      files to change a few rows — at the cost of slightly more work during reads (a merge
+      step filters out deleted rows).
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-0310">
+    <span class="box-label">Time Travel</span>
+    <p data-cid="main-0320">
+      Every DML operation on a Delta table creates a new <em>version</em>. Time travel
+      lets Enzyme read the table as it existed at any past version number or timestamp.
+      This is essential for IVM: Enzyme needs the <em>before</em> state of a table to
+      compute what changed.
+    </p>
+  </div>
+
+  <!-- ===== SECTION 3: IVM PROBLEM ===== -->
+  <h2 data-cid="main-0330" id="s3">3. Formalizing Incremental View Maintenance</h2>
+
+  <p data-cid="main-0340">
+    This section unpacks the math that underlies Enzyme's approach. The core idea is
+    elegant: instead of re-running the whole query, derive a <em>delta query</em>
+    <span class="tts-math" data-tts="delta Q">$\Delta Q$</span> that computes only what changed.
+  </p>
+
+  <h3 data-cid="main-0350">3.1 The Basic Problem Statement</h3>
+
+  <p data-cid="main-0360">
+    Suppose an MV stores the result of a query
+    <span class="tts-math" data-tts="Q of T 1 through T n">$Q(T_1, \ldots, T_n)$</span>
+    over base tables
+    <span class="tts-math" data-tts="T 1 through T n">$T_1, \ldots, T_n$</span>.
+    After changes arrive, the updated tables become
+    <span class="tts-math" data-tts="T 1 prime through T n prime">$T_1', \ldots, T_n'$</span>.
+    We want the refreshed MV to equal
+    <span class="tts-math" data-tts="Q of T 1 prime through T n prime">$Q(T_1', \ldots, T_n')$</span>.
+  </p>
+
+  <p data-cid="main-0370">
+    The incremental approach says: compute a change
+    <span class="tts-math" data-tts="delta Q">$\Delta Q$</span> and apply it to the existing MV:
+  </p>
+
+  <p data-cid="main-0380">
+    <span class="tts-math" data-tts="Q of T 1 prime through T n prime equals Q of T 1 through T n, direct-sum delta Q">
+    $$Q(T_1', \ldots, T_n') \;=\; Q(T_1, \ldots, T_n) \;\oplus\; \Delta Q$$
+    </span>
+  </p>
+
+  <p data-cid="main-0390">
+    Here <span class="tts-math" data-tts="direct-sum">$\oplus$</span> means "apply the
+    incremental update" — a combination of row insertions and deletions. The per-table
+    change is
+    <span class="tts-math" data-tts="delta T i equals T i prime minus T i">$\Delta T_i = T_i' - T_i$</span>,
+    where the subtraction is <em>bag (multiset) difference</em>. Each row in
+    <span class="tts-math" data-tts="delta T i">$\Delta T_i$</span> carries a
+    <span class="tts-math" data-tts="plus 1 or minus 1">$+1$</span> or
+    <span class="tts-math" data-tts="minus 1">$-1$</span> tag indicating whether it was
+    inserted or deleted.
+  </p>
+
+  <div class="box intuition" data-cid="main-0400">
+    <span class="box-label">Intuition: Why Not Just Diff the Outputs?</span>
+    <p data-cid="main-0410">
+      A naive approach: run <span class="tts-math" data-tts="Q">$Q$</span> on both old and new
+      inputs, then diff the outputs to get
+      <span class="tts-math" data-tts="delta Q equals Q of T prime minus Q of T">$\Delta Q = Q(T') - Q(T)$</span>.
+      This is always <em>correct</em> for deterministic queries, but it evaluates
+      <span class="tts-math" data-tts="Q">$Q$</span> <em>twice</em>, which is at least as
+      expensive as a full recompute and often worse (you need both the old and new states of
+      the data simultaneously). Enzyme's key insight is to push the delta <em>inside</em>
+      the query plan, operator by operator, so that most of the work touches only the changed
+      rows rather than the full tables.
+    </p>
+  </div>
+
+  <!-- ===== SECTION 3b: DELTA PLAN CONSTRUCTION ===== -->
+  <h2 data-cid="main-0420" id="s3b">3a. Operator-Level Delta Plan Construction</h2>
+
+  <p data-cid="main-0430">
+    Enzyme works by traversing the <em>logical query plan</em> — a tree of relational
+    operators — from the leaves (base tables) upward. At each operator node, it applies a
+    specific <em>delta rule</em> that expresses how the change to that operator's output
+    relates to changes in its inputs. The delta fragments compose bottom-up into a complete
+    incremental plan for the whole query.
+  </p>
+
+  <p data-cid="main-0440">
+    Formally, for any operator node
+    <span class="tts-math" data-tts="phi">$\phi$</span> with child
+    <span class="tts-math" data-tts="psi">$\psi$</span>, we want
+    <span class="tts-math" data-tts="delta phi">$\Delta\phi$</span> such that:
+  </p>
+
+  <p data-cid="main-0450">
+    <span class="tts-math" data-tts="phi of psi prime equals phi of psi direct-sum delta phi">
+    $$\phi(\psi') \;=\; \phi(\psi \oplus \Delta\psi) \;=\; \phi(\psi) \oplus \Delta\phi$$
+    </span>
+  </p>
+
+  <p data-cid="main-0460">
+    Computing <span class="tts-math" data-tts="delta phi">$\Delta\phi$</span> may require
+    access to the old state <span class="tts-math" data-tts="psi">$\psi$</span>, the new
+    state <span class="tts-math" data-tts="psi prime">$\psi'$</span>, and the change
+    <span class="tts-math" data-tts="delta psi">$\Delta\psi$</span>. Enzyme propagates all
+    three explicitly for efficiency. Let's go through each operator type.
+  </p>
+
+  <h3 data-cid="main-0470">Filter and Projection — the easy ones</h3>
+
+  <p data-cid="main-0480">
+    For a filter <span class="tts-math" data-tts="sigma sub theta">$\sigma_\theta$</span>
+    (which keeps rows satisfying predicate <span class="tts-math" data-tts="theta">$\theta$</span>)
+    and a projection <span class="tts-math" data-tts="pi sub a 1 through a k">$\pi_{a_1,\ldots,a_k}$</span>
+    (which selects columns), the delta passes straight through:
+  </p>
+
+  <p data-cid="main-0490">
+    <span class="tts-math" data-tts="delta of sigma theta of T equals sigma theta of delta T">
+    $$\Delta(\sigma_\theta(T)) \;=\; \sigma_\theta(\Delta T)$$
+    </span>
+  </p>
+
+  <p data-cid="main-0500">
+    <span class="tts-math" data-tts="delta of pi of T equals pi of delta T">
+    $$\Delta(\pi_{a_1,\ldots,a_k}(T)) \;=\; \pi_{a_1,\ldots,a_k}(\Delta T)$$
+    </span>
+  </p>
+
+  <p data-cid="main-0510">
+    Intuitively: since filter and projection operate on each row independently and have no
+    memory of other rows, you just apply the same operation to the incoming changes. A new
+    row that satisfies the filter contributes a new output row; a deleted row that satisfied
+    it removes an output row.
+  </p>
+
+  <h3 data-cid="main-0520">Aggregation — the group-by update</h3>
+
+  <p data-cid="main-0530">
+    Aggregation is harder because each output row summarizes an entire <em>group</em> of input
+    rows. Let <span class="tts-math" data-tts="G sub k comma agg">$G_{k, agg}$</span> denote
+    a group-by on key <span class="tts-math" data-tts="k">$k$</span> with aggregate function
+    <span class="tts-math" data-tts="agg">$agg$</span>. Enzyme's delta rule is:
+  </p>
+
+  <p data-cid="main-0540">
+    <span class="tts-math" data-tts="delta of G sub k comma agg of T, equals pi minus of G sub k comma agg of T left-semijoin-k delta T, plus pi plus of G sub k comma agg of T prime left-semijoin-k delta T">
+    $$\Delta\!\left(G_{k,\,agg}(T)\right) \;=\;
+    \pi^{-}\!\left(G_{k,\,agg}(T \ltimes_k \Delta T)\right)
+    \;+\;
+    \pi^{+}\!\left(G_{k,\,agg}(T' \ltimes_k \Delta T)\right)$$
+    </span>
+  </p>
+
+  <div class="box intuition" data-cid="main-0550">
+    <span class="box-label">Intuition: Reading the Aggregation Delta</span>
+    <p data-cid="main-0560">
+      The <span class="tts-math" data-tts="left-semijoin sub k">$\ltimes_k$</span> is a
+      <em>semijoin</em>: it keeps only those groups (distinct values of
+      <span class="tts-math" data-tts="k">$k$</span>) that appear in the changeset
+      <span class="tts-math" data-tts="delta T">$\Delta T$</span>. This is the key
+      efficiency win — instead of re-aggregating every group, we touch only the groups
+      actually affected by the change.
+      <ul>
+        <li>
+          <span class="tts-math" data-tts="pi minus">$\pi^-$</span> extracts the <em>old</em>
+          aggregate values for those groups (from <span class="tts-math" data-tts="T">$T$</span>),
+          marking them as deletions.
+        </li>
+        <li>
+          <span class="tts-math" data-tts="pi plus">$\pi^+$</span> extracts the <em>new</em>
+          aggregate values for those groups (from <span class="tts-math" data-tts="T prime">$T'$</span>),
+          marking them as insertions.
+        </li>
+      </ul>
+      The net effect: old aggregate rows are removed, new ones inserted, for only the affected
+      groups. Unaffected groups are untouched.
+    </p>
+  </div>
+
+  <h3 data-cid="main-0570">Joins — the most complex case</h3>
+
+  <p data-cid="main-0580">
+    For an inner join
+    <span class="tts-math" data-tts="L join R">$L \bowtie R$</span>, the delta rule is:
+  </p>
+
+  <p data-cid="main-0590">
+    <span class="tts-math" data-tts="delta of L join R equals delta L join R, plus L prime join delta R">
+    $$\Delta(L \bowtie R) \;=\; (\Delta L \bowtie R) \;+\; (L' \bowtie \Delta R)$$
+    </span>
+  </p>
+
+  <div class="box intuition" data-cid="main-0600">
+    <span class="box-label">Intuition: Why Two Terms in the Join Delta?</span>
+    <p data-cid="main-0610">
+      Think about it concretely. If new orders arrive (<span class="tts-math" data-tts="delta R">$\Delta R$</span>),
+      each new order must be joined against all current customers
+      (<span class="tts-math" data-tts="L prime">$L'$</span>, i.e., customers after their
+      own changes). That gives the second term. Conversely, if customers change
+      (<span class="tts-math" data-tts="delta L">$\Delta L$</span>), each changed customer
+      must be joined against all original orders
+      (<span class="tts-math" data-tts="R">$R$</span>). That's the first term. The join delta
+      is the union of both effects. This "double scan" is unavoidable for joins and is why
+      joins are the costliest operator to maintain incrementally.
+    </p>
+  </div>
+
+  <p data-cid="main-0620">
+    <strong>Outer joins</strong> are harder still. They can be decomposed into an inner join
+    plus anti-joins (to handle the null-padded rows that appear when one side has no match).
+    This is theoretically clean but can degrade badly when many outer joins are composed.
+    Enzyme uses specialized rules for the most common patterns (equi-joins, primary-foreign
+    key joins) to avoid this performance cliff.
+  </p>
+
+  <h3 data-cid="main-0630">Window Functions</h3>
+
+  <p data-cid="main-0640">
+    Window functions with a <code>PARTITION BY</code> clause behave like aggregations: only
+    the partitions touched by <span class="tts-math" data-tts="delta T">$\Delta T$</span>
+    need recomputation. Window functions with an <code>ORDER BY</code> and no
+    <code>PARTITION BY</code> are more expensive — a single change can shift the rank of many
+    rows — and Enzyme falls back to partition overwrite or full recompute in those cases.
+  </p>
+
+  <h3 data-cid="main-0650">The Running Example: Delta Plan Expansion</h3>
+
+  <p data-cid="main-0660">
+    For the <code>region_avg_sales</code> MV, the query is
+    <span class="tts-math" data-tts="sigma of G sub region comma AVG of amount of C join O, where C is Customers and O is Orders">
+    $\sigma\!\left(G_{\text{region},\,\text{AVG}(\text{amount})}(C \bowtie O)\right)$</span>.
+    Applying the delta rules bottom-up, writing <span class="tts-math" data-tts="C">$C$</span>
+    for Customers and <span class="tts-math" data-tts="O">$O$</span> for Orders:
+  </p>
+
+  <p data-cid="main-0670">
+    <span class="tts-math" data-tts="delta Q equals sigma of pi minus of G of C join O, left-semijoin delta of C join O, plus pi plus of G of C prime join O prime, left-semijoin delta of C join O, where delta of C join O equals C join delta O plus delta C join O">
+    $$\Delta Q \;=\; \sigma\!\left(\pi^-\!\left(G(C \bowtie O) \ltimes \Delta(C \bowtie O)\right)
+    \;+\; \pi^+\!\left(G(C' \bowtie O') \ltimes \Delta(C \bowtie O)\right)\right)$$
+    </span>
+  </p>
+
+  <p data-cid="main-0680">
+    where <span class="tts-math" data-tts="delta of C join O equals C join delta O plus delta C join O">
+    $\Delta(C \bowtie O) = (C \bowtie \Delta O) + (\Delta C \bowtie O)$</span>.
+    In plain English: find the regions affected by any order or customer change; delete the
+    old average for those regions; compute and insert the new average. All other regions are
+    untouched.
+  </p>
+
+  <!-- ===== SECTION 3c: APPLYING CHANGES ===== -->
+  <h2 data-cid="main-0690" id="s3c">3b. Applying Computed Changes Back to the MV</h2>
+
+  <p data-cid="main-0700">
+    Once <span class="tts-math" data-tts="delta Q">$\Delta Q$</span> is computed, Enzyme
+    must apply the resulting insertions and deletions to the MV's backing table. To do this
+    efficiently it needs to know <em>which specific rows</em> in the MV correspond to which
+    output tuples.
+  </p>
+
+  <p data-cid="main-0710">
+    Enzyme solves this by threading a unique <code>row_id</code> through every stage of the
+    query plan:
+  </p>
+
+  <ul data-cid="main-0720">
+    <li>At the base table level, Delta Lake's Row Tracking provides stable row IDs.</li>
+    <li>At a <strong>join</strong>, the output row ID is derived by combining the IDs of the
+        left and right input rows (e.g., a hash-combine).</li>
+    <li>At an <strong>aggregation</strong>, the output row ID is the grouping key (since there
+        is exactly one output row per distinct key value).</li>
+  </ul>
+
+  <p data-cid="main-0730">
+    With these IDs, applying <span class="tts-math" data-tts="delta Q">$\Delta Q$</span>
+    reduces to: identify row IDs marked for deletion and remove them; then insert the new rows
+    marked as additions. Delta Lake's ACID semantics ensure this happens atomically.
+  </p>
+
+  <!-- ===== SECTION 3d: NON-DETERMINISM ===== -->
+  <h2 data-cid="main-0740" id="s3d">3c. Handling Non-Determinism</h2>
+
+  <p data-cid="main-0750">
+    The delta rules above assume that re-evaluating an expression on old inputs gives the same
+    result it gave when those rows were originally inserted. Most SQL expressions satisfy this
+    — but not all.
+  </p>
+
+  <div class="box warn" data-cid="main-0760">
+    <span class="box-label">The Non-Determinism Problem</span>
+    <p data-cid="main-0770">
+      Consider a query with <code>rand()</code>:
+    </p>
+    <pre data-cid="main-0780"><code>SELECT a, rand() AS r FROM T WHERE r > 0.5</code></pre>
+    <p data-cid="main-0790">
+      When a row is deleted from <code>T</code>, the naive delta rule would re-evaluate
+      <code>rand()</code> for that row. But <code>rand()</code> is non-deterministic — it
+      returns a different value each call. The newly computed random value might not satisfy
+      <code>r > 0.5</code>, so the deletion would be skipped, leaving a stale row in the MV.
+      Correctness breaks silently.
+    </p>
+  </div>
+
+  <p data-cid="main-0800">
+    Non-determinism appears in many forms beyond explicit randomness:
+  </p>
+
+  <ul data-cid="main-0810">
+    <li><code>collect_set</code> / <code>collect_list</code> — output order not guaranteed.</li>
+    <li>Floating-point <code>SUM</code> / <code>AVG</code> — rounding differences between
+        evaluation orders produce different results.</li>
+    <li>Window functions with ties in their <code>ORDER BY</code> — tie-breaking is
+        arbitrary.</li>
+    <li><code>current_timestamp()</code> — depends on wall-clock time.</li>
+  </ul>
+
+  <p data-cid="main-0820">
+    Enzyme's strategy is layered: first try a <strong>semantic-preserving rewrite</strong> to
+    eliminate the non-determinism (e.g., inject a deterministic <code>local sort</code> before
+    <code>collect_set</code>); if that is not possible, apply a <strong>specialized
+    incrementalization technique</strong> tailored to the pattern; as a last resort,
+    <strong>fall back to full recomputation</strong> for that view.
+  </p>
+
+  <!-- ===== SECTION 3e: OPTIMIZATIONS ===== -->
+  <h2 data-cid="main-0830" id="s3e">3d. Optimizations and Special Cases</h2>
+
+  <h3 data-cid="main-0840">Temporal Filters</h3>
+
+  <p data-cid="main-0850">
+    A very common pattern in production ETL is a rolling-window filter:
+    <code>WHERE date >= current_date() - INTERVAL 30 DAYS</code>. This is
+    non-deterministic because <code>current_date()</code> changes on every refresh. Enzyme
+    handles it by capturing the <em>previous</em> and <em>current</em> refresh timestamps
+    and computing three components of the delta:
+  </p>
+
+  <p data-cid="main-0860">
+    <span class="tts-math" data-tts="delta of sigma sub f of t of T, equals pi minus of sigma of not f at current time and f at previous time of T, plus pi plus of sigma of not f at previous time and f at current time of T, plus sigma sub f at current time of delta T">
+    $$\Delta(\sigma_{f(t)}(T)) \;=\;
+    \pi^-\!\sigma_{\lnot f(\text{curr}) \land f(\text{prev})}(T)
+    \;+\;
+    \pi^+\!\sigma_{\lnot f(\text{prev}) \land f(\text{curr})}(T)
+    \;+\;
+    \sigma_{f(\text{curr})}(\Delta T)$$
+    </span>
+  </p>
+
+  <div class="box intuition" data-cid="main-0870">
+    <span class="box-label">Intuition: The Three Parts of the Temporal Delta</span>
+    <p data-cid="main-0880">
+      Think of a 30-day window sliding forward each hour. Three things happen:
+      <ol>
+        <li><strong>Rows exiting the window</strong> — they satisfied the filter last time
+            (<span class="tts-math" data-tts="f at previous time">$f(\text{prev})$</span>)
+            but no longer do
+            (<span class="tts-math" data-tts="not f at current time">$\lnot f(\text{curr})$</span>).
+            They must be deleted.</li>
+        <li><strong>Rows entering the window</strong> — they didn't satisfy the filter last
+            time but now do. They must be inserted.</li>
+        <li><strong>New rows within the window</strong> — rows from
+            <span class="tts-math" data-tts="delta T">$\Delta T$</span> that fall within the
+            current window. They must be inserted too.</li>
+      </ol>
+    </p>
+  </div>
+
+  <h3 data-cid="main-0890">Leveraging Materialized Data</h3>
+
+  <p data-cid="main-0900">
+    For MVs whose top-level operator is an aggregation or window function, the previous
+    aggregate result is <em>already stored</em> in the MV. Enzyme exploits this to skip
+    recomputing the "before" aggregate from scratch. Instead, it:
+  </p>
+
+  <ol data-cid="main-0910">
+    <li>Computes the join changeset to find which grouping keys are affected.</li>
+    <li>Deletes all MV rows whose grouping key appears in the changeset (using the stored
+        row to get the old value).</li>
+    <li>Recomputes and inserts the new aggregate for only those keys.</li>
+  </ol>
+
+  <p data-cid="main-0920">
+    For <code>SUM</code> and <code>COUNT</code>, Enzyme can go further: rather than
+    delete-and-reinsert, it maintains <em>incremental adjustments</em> (a running sum of deltas)
+    and uses <code>MERGE INTO</code> to update the aggregate row in place. Enzyme stores
+    <code>SUM(x)</code> and <code>COUNT(*)</code> in the backing table to support
+    <code>AVG(x)</code> incrementally.
+  </p>
+
+  <h3 data-cid="main-0930">Partition Overwrite</h3>
+
+  <p data-cid="main-0940">
+    When both source tables and the MV are partitioned on the same columns (commonly a
+    <code>date</code> column), and the query does not aggregate across partition boundaries,
+    Enzyme can refresh at the <em>partition level</em> rather than the row level. This is
+    simpler and often faster: instead of computing fine-grained row deltas, it just
+    overwrites the affected partitions entirely. The cost model decides which granularity
+    to use.
+  </p>
+
+  <!-- ===== SECTION 4: ARCHITECTURE ===== -->
+  <h2 data-cid="main-0950" id="s4">4. System Architecture</h2>
+
+  <p data-cid="main-0960">
+    Enzyme's architecture processes each MV refresh through six sequential stages:
+    <strong>Normalization → Fingerprinting → Decomposition → Incremental Plan Generation →
+    Costing → Execution</strong>. Each stage is a separate, composable component that can
+    be reasoned about independently.
+  </p>
+
+  <!-- ===== SECTION 4b: NORMALIZATION ===== -->
+  <h2 data-cid="main-0970" id="s4b">4a. Normalization</h2>
+
+  <p data-cid="main-0980">
+    Enzyme's entry point is a Spark <strong>Catalyst logical plan</strong> — a tree
+    representation of the query. Catalyst is the query optimizer used by Spark SQL and
+    DataFrame API. Because Enzyme intercepts at the logical plan level, it works with SQL
+    queries, Python DataFrames, and PySpark programs equally.
+  </p>
+
+  <p data-cid="main-0990">
+    The normalizer simplifies the logical plan before Enzyme's delta rules are applied.
+    Key transformations include:
+  </p>
+
+  <ul data-cid="main-1000">
+    <li>Inlining common table expressions (CTEs) so the plan is a tree rather than a DAG.</li>
+    <li>Merging and simplifying filter predicates.</li>
+    <li>Collapsing unnecessary projections.</li>
+    <li>Eliminating redundant operations.</li>
+  </ul>
+
+  <p data-cid="main-1010">
+    Crucially, Enzyme normalizes <em>before</em> full Catalyst optimization. Some Catalyst
+    optimizations — like timestamp substitution and empty-relation propagation — would destroy
+    information Enzyme needs for correct incrementalization. The normalized plan is a
+    "sweet spot" between raw and fully optimized.
+  </p>
+
+  <!-- ===== SECTION 4c: FINGERPRINTING ===== -->
+  <h2 data-cid="main-1020" id="s4c">4b. Query Fingerprinting</h2>
+
+  <p data-cid="main-1030">
+    If the definition of an MV changes, Enzyme must discard the existing stored results and
+    perform a full recomputation. A <strong>fingerprint</strong> is a stable hash of the
+    normalized plan that identifies the MV's semantic content. When the fingerprint changes,
+    Enzyme knows a full refresh is needed.
+  </p>
+
+  <div class="box intuition" data-cid="main-1040">
+    <span class="box-label">Why Not Just Compare Source Code?</span>
+    <p data-cid="main-1050">
+      Source code comparison fails in both directions. A Python refactor can change source
+      without changing semantics — Enzyme should not trigger a full recompute. Conversely,
+      a change to an external parameter or a referenced view can change semantics without
+      touching source code. Operating on the <em>normalized plan</em> captures the true
+      semantic content: semantics-preserving changes leave the plan identical; semantic
+      changes alter it.
+    </p>
+  </div>
+
+  <p data-cid="main-1060">
+    The fingerprinter applies additional canonicalization on top of normalization:
+    standardizing the order of commutative operators (joins, unions) and the order of
+    operands in commutative expressions. For Python UDFs, Enzyme fingerprints the
+    <em>Python bytecode</em> of the function <em>and</em> its transitive dependencies
+    (imported libraries, nested calls), ensuring that a library upgrade triggers recomputation.
+  </p>
+
+  <p data-cid="main-1070">
+    <strong>Fingerprint stability</strong> is a practical challenge: when Enzyme itself is
+    upgraded and its normalizer changes, fingerprints might change even though user queries
+    did not. This would spuriously trigger full recomputes for every MV during a system
+    upgrade. Enzyme solves this with <em>multi-versioned fingerprints</em>: before deploying
+    normalizer changes, a new fingerprint version is registered that maps the new plan
+    representation back to the existing stored fingerprint.
+  </p>
+
+  <!-- ===== SECTION 4d: DECOMPOSITION ===== -->
+  <h2 data-cid="main-1080" id="s4d">4c. Decomposition and Technique Enablers</h2>
+
+  <p data-cid="main-1090">
+    Before the incremental plan generator runs, the <strong>decomposer</strong> transforms
+    the normalized plan to make incremental computation possible or more efficient. These
+    transformations, called <em>technique enablers</em>, exploit the backing-table / top-level
+    view split of Databricks MVs.
+  </p>
+
+  <p data-cid="main-1100">
+    The most important enabler is <strong>aggregate decomposition</strong>: an MV containing
+    <span class="tts-math" data-tts="AVG of x">$\text{AVG}(x)$</span> is internally
+    augmented with columns for
+    <span class="tts-math" data-tts="SUM of x">$\text{SUM}(x)$</span> and
+    <span class="tts-math" data-tts="COUNT of star">$\text{COUNT}(*)$</span>. These are
+    incrementally computable; the top-level view then exposes only the derived
+    <span class="tts-math" data-tts="AVG">$\text{AVG}$</span> to users.
+  </p>
+
+  <p data-cid="main-1110">
+    Similarly, the decomposer rewrites <code>FIRST(x)</code> to <code>MIN(x)</code> when an
+    ordering guarantee makes them equivalent, and it propagates grouping/partition keys
+    explicitly to the top of the plan so the plan generator can identify them without
+    pattern-matching deeper in the tree.
+  </p>
+
+  <!-- ===== SECTION 4e: PLAN GENERATOR ===== -->
+  <h2 data-cid="main-1120" id="s4e">4d. Incremental Plan Generator</h2>
+
+  <p data-cid="main-1130">
+    The plan generator implements the delta rules from Section 3 as a recursive
+    <em>visitor</em> over the query plan tree. Traversing bottom-up, at each node it produces
+    a <strong>delta plan</strong>: a triple of (pre-state, post-state, delta). These triples
+    compose at each parent node according to the operator-specific delta rule until the root
+    of the tree yields <span class="tts-math" data-tts="delta Q">$\Delta Q$</span>.
+  </p>
+
+  <p data-cid="main-1140">
+    <strong>Effectivization</strong> — collapsing redundant insert/delete pairs for the same
+    row — is applied selectively at intermediate nodes. It is optional but reduces
+    downstream computation when change volume is large and contains many cancellations.
+  </p>
+
+  <p data-cid="main-1150">
+    For MVs with top-level aggregations, the generator applies an extra optimization: it only
+    needs the grouping keys (not full row images) to identify which aggregate rows to delete,
+    and it only needs the after-image for insertions. This avoids materializing the entire
+    pre-state of affected groups, which can be very expensive for complex aggregations.
+  </p>
+
+  <!-- ===== SECTION 4f: COST MODEL ===== -->
+  <h2 data-cid="main-1160" id="s4f">4e. Cost Model</h2>
+
+  <p data-cid="main-1170">
+    For every MV refresh, Enzyme generates multiple candidate plans (several incremental
+    strategies plus a full-recompute baseline) and selects the cheapest one. This requires
+    a cost model that accurately predicts execution time.
+  </p>
+
+  <p data-cid="main-1180">
+    Standard database cost models often work poorly for this problem — they are tuned for
+    query planning under stable statistics, not for estimating the cost of incremental plans
+    with highly variable changeset sizes. Enzyme's cost model uses an empirical approach:
+  </p>
+
+  <ul data-cid="main-1190">
+    <li>Model total refresh cost as the sum of CPU times across key physical operators
+        (joins, aggregates, window functions, shuffles, file scans, file writes).</li>
+    <li>For each operator in a candidate plan, find <em>structurally similar</em> past
+        executions via normalized physical plan matching.</li>
+    <li>Derive expected CPU time from observed metrics of those past executions, implicitly
+        capturing data skew, spilling, and dynamic pruning.</li>
+    <li>When no historical data is available, fall back to default parameters from large-scale
+        query logs.</li>
+  </ul>
+
+  <div class="box intuition" data-cid="main-1200">
+    <span class="box-label">Pipeline-Aware Cost Modeling</span>
+    <p data-cid="main-1210">
+      A crucial insight from production deployment: you cannot optimize each MV in isolation.
+      Even if a single MV would be cheaper to fully recompute, performing an incremental
+      refresh produces a <em>smaller changeset</em> that propagates downstream — making all
+      dependent MVs cheaper too. Enzyme's cost model accounts for this by summing costs
+      across the entire pipeline DAG, not just the current view. A locally suboptimal choice
+      can be globally optimal.
+    </p>
+  </div>
+
+  <!-- ===== SECTION 4g: EXECUTION ===== -->
+  <h2 data-cid="main-1220" id="s4g">4f. Refresh Execution</h2>
+
+  <p data-cid="main-1230">
+    Enzyme submits incremental plans to Apache Spark for execution. It operates entirely on
+    Spark logical plans, leaving physical planning and execution to Spark's own optimizer
+    (Catalyst) and execution engine (Photon/Tungsten). This means Enzyme automatically
+    benefits from all ongoing Spark performance improvements.
+  </p>
+
+  <p data-cid="main-1240">
+    Before execution, Enzyme tunes Spark configuration parameters based on expected workload
+    characteristics:
+  </p>
+
+  <ul data-cid="main-1250">
+    <li>Hints the optimizer toward broadcast vs. shuffle joins based on historical changeset
+        sizes.</li>
+    <li>Adjusts broadcast thresholds dynamically.</li>
+    <li>Caches intermediate results that are used multiple times within a single refresh
+        (e.g., the input changeset consumed by both the delete and insert phases of an
+        aggregation update).</li>
+  </ul>
+
+  <p data-cid="main-1260">
+    <strong>Choosing the update mechanism</strong>: Enzyme picks between REPLACE WHERE and
+    MERGE INTO based on plan structure. For aggregate MVs with in-place update support, MERGE
+    INTO is used to update running totals without deleting and re-inserting rows. For other
+    cases, REPLACE WHERE handles an atomic delete-then-insert (requiring effectivization
+    first so a row does not appear in both sets).
+  </p>
+
+  <p data-cid="main-1270">
+    <strong>Transactional provenance</strong>: Enzyme stores metadata about each refresh —
+    query fingerprint, source table versions, timestamps — as part of the MV's Delta
+    transaction. Because Delta's ACID semantics guarantee atomicity, the provenance and the
+    data are always consistent: either both update or neither does.
+  </p>
+
+  <!-- ===== SECTION 5: LESSONS LEARNED ===== -->
+  <h2 data-cid="main-1280" id="s5">5. Operational Experience &amp; Lessons Learned</h2>
+
+  <h3 data-cid="main-1290">Ensuring Correctness at Scale</h3>
+
+  <p data-cid="main-1300">
+    Enzyme uses two complementary correctness frameworks. A <strong>Random Query Generator
+    (RQG)</strong> produces random schemas, synthetic data, and SQL queries covering complex
+    operator combinations. For each generated query, Enzyme creates an MV, applies random
+    changes, and verifies that the incremental result matches a full recomputation.
+  </p>
+
+  <p data-cid="main-1310">
+    In production, an <strong>A/B correctness testing system</strong> continuously compares
+    MV contents against their defining queries on live data. This dual approach catches
+    bugs that only manifest under specific data distributions or timing conditions that
+    synthetic tests cannot anticipate.
+  </p>
+
+  <h3 data-cid="main-1320">Reliability Through Fallback</h3>
+
+  <p data-cid="main-1330">
+    Enzyme automatically falls back to full recomputation whenever the incremental planner
+    raises an exception or produces a plan that fails a validation check. The system
+    monitors these fallbacks as signals for underlying bugs. Integration with Databricks's
+    <em>Health Mediated Release</em> framework enables automatic rollback to the previous
+    Enzyme version when a refresh fails after an upgrade.
+  </p>
+
+  <div class="box intuition" data-cid="main-1340">
+    <span class="box-label">Enzyme as a Spark Stress Test</span>
+    <p data-cid="main-1350">
+      Incremental plans exercise execution paths that ordinary user queries never touch.
+      As a result, Enzyme has become an effective stress test for uncovering optimizer
+      and execution bugs in Spark itself — bugs that production user queries would not
+      have revealed.
+    </p>
+  </div>
+
+  <h3 data-cid="main-1360">Performance Challenges in Practice</h3>
+
+  <p data-cid="main-1370">
+    Several real-world issues arose that the theory did not anticipate:
+  </p>
+
+  <ul data-cid="main-1380">
+    <li>
+      <strong>Dynamic file pruning failures</strong>: Spark's dynamic file pruning
+      optimization sometimes did not activate for incremental plans, causing full table
+      scans instead of targeted reads. Enzyme worked around this by reformulating affected
+      plans to use explicit semijoins, giving Spark more pruning hints.
+    </li>
+    <li>
+      <strong>Driver out-of-memory during optimization</strong>: Highly complex incremental
+      plans caused Spark's driver to run out of memory while building its optimization
+      search space. Enzyme addressed this by adding rules to the normalizer that simplify
+      plan structure, and by reformulating certain delta formulas to reduce plan complexity.
+    </li>
+    <li>
+      <strong>Fingerprint stability</strong>: Upgrading Scala from version 2.12 to 2.13
+      changed how objects were hashed, potentially altering fingerprints for many MVs.
+      The multi-versioned fingerprint system absorbed this without triggering unnecessary
+      recomputes.
+    </li>
+  </ul>
+
+  <!-- ===== SECTION 6: EXPERIMENTS ===== -->
+  <h2 data-cid="main-1390" id="s6">6. Experimental Evaluation</h2>
+
+  <h3 data-cid="main-1400">6.1 Benchmark and Setup</h3>
+
+  <p data-cid="main-1410">
+    Enzyme is evaluated on the <strong>TPC-DI benchmark</strong> (Transaction Processing
+    Council Data Integration), specifically designed for ETL and incremental processing
+    systems. TPC-DI includes built-in incremental update batches, covers realistic
+    operational domains (Customer, Account, Trade, Company, Security, Financial, Market),
+    and mixes append-only and CDC-style changes.
+  </p>
+
+  <p data-cid="main-1420">
+    The experimental pipeline mirrors a real medallion architecture:
+  </p>
+
+  <ul data-cid="main-1430">
+    <li>
+      <strong>Append-only streaming tables</strong> for event streams: TradeHistory,
+      DailyMarket, Financial.
+    </li>
+    <li>
+      <strong>CDC streaming tables</strong> for entity records that mutate over time:
+      Customer, Account, Company, Security.
+    </li>
+    <li>
+      <strong>Materialized views</strong> in the Silver/Gold layers performing multi-table
+      joins, aggregations, and enrichment: DimCustomer, DimAccount, DimSecurity,
+      FactHoldings, FactMarketHistory.
+    </li>
+  </ul>
+
+  <p data-cid="main-1440">
+    Tests were run at scale factors 1,000, 2,000, 5,000, and 10,000 using Databricks
+    Serverless (AWS c7g.2xlarge instances, 8 CPU cores, 16 GiB RAM each, capped at 64
+    executors). The comparison system (referred to as CV-IVM, a leading cloud vendor's IVM
+    offering) was also run at the 10,000 scale factor.
+  </p>
+
+  <h3 data-cid="main-1450">6.2 Key Results</h3>
+
+  <div class="box example" data-cid="main-1460">
+    <span class="box-label">Headline Numbers</span>
+    <ul data-cid="main-1470">
+      <li>Enzyme successfully incrementalizes <strong>100%</strong> of TPC-DI workloads
+          (full operator coverage).</li>
+      <li>6 out of 8 datasets see substantial speedup over full recomputation when
+          incremental refresh is applied.</li>
+      <li>The cost model makes the <strong>optimal decision in 7 of 8 cases</strong>
+          (87.5% accuracy).</li>
+      <li>Speedups are consistent across scale factors — efficiency scales with data
+          volume.</li>
+      <li>Against CV-IVM at scale factor 10,000: Enzyme incrementalizes more datasets
+          (CV-IVM could not handle DimAccount and FactMarketHistory due to unsupported
+          operators) and achieves better performance on datasets both support.</li>
+    </ul>
+  </div>
+
+  <h3 data-cid="main-1480">6.3 Notable Cases</h3>
+
+  <p data-cid="main-1490">
+    <strong>FactMarketHistory</strong> computes 52-week highs and lows per stock symbol over
+    roughly two years of historical data. Each refresh requires scanning a full year of
+    records per symbol, causing high memory pressure. This is a hard case for IVM, and
+    speedups dip at larger scale factors due to disk spilling.
+  </p>
+
+  <p data-cid="main-1500">
+    <strong>Prospect</strong> is a case where incremental refresh loses: more than 95% of
+    prospect rows are rewritten in each batch (the column <code>SK_RecordDateID</code> updates
+    for every persisting record). When nearly all rows change, the overhead of computing and
+    applying fine-grained row-level deltas exceeds the cost of a simple full rewrite.
+    Enzyme's cost model correctly chooses full recompute for Prospect.
+  </p>
+
+  <p data-cid="main-1510">
+    <strong>DimAccount</strong> is a small, fast workload. Its incremental refresh shows
+    limited speedup on its own, but Enzyme still incrementalizes it because doing so produces
+    a small downstream changeset, dramatically reducing costs for dependent downstream MVs.
+    This demonstrates the importance of pipeline-aware cost modeling.
+  </p>
+
+  <h3 data-cid="main-1520">6.4 Autoscaling Benefits</h3>
+
+  <p data-cid="main-1530">
+    Incremental runs exhibit smoother, lower Spark task curves — fewer tasks with smaller
+    spikes compared to full recomputes. Because the cluster's autoscaler tracks task load,
+    incremental pipelines require fewer executors on average, reducing compute cost beyond
+    just the CPU-time savings. The autoscaler can scale down during the smoother incremental
+    workload and scale up only when the periodic full-recompute peaks occur.
+  </p>
+
+  <!-- ===== SECTION 7: RELATED WORK ===== -->
+  <h2 data-cid="main-1540" id="s7">7. Related Work</h2>
+
+  <p data-cid="main-1550">
+    IVM has a rich research history spanning four decades. Early work (Blakeley, Larson, and
+    Tompa, 1986; Gupta, Mumick, and Subrahmanian, 1993; Griffin and Libkin, 1995) established
+    the first-order delta rules for relational algebra that Enzyme builds on. These covered set
+    and bag semantics but left nested and correlated subqueries only partially addressed.
+  </p>
+
+  <p data-cid="main-1560">
+    <strong>DBToaster</strong> (Koch et al., 2014) pushed to higher-order deltas: it
+    materializes not only the view but also deltas of deltas, reducing update costs for
+    join-heavy queries at the cost of more state. <strong>Differential Dataflow</strong>
+    (McSherry et al., 2013) generalizes incremental computation using partially ordered
+    timestamps. <strong>DBSP</strong> (Budiu et al., 2023) recasts databases as streams
+    over commutative groups with integration and differentiation operators — a powerful
+    unifying formalism.
+  </p>
+
+  <p data-cid="main-1570">
+    In production systems: Redshift, BigQuery, and PostgreSQL offer periodic-refresh MVs
+    for query acceleration. <strong>Materialize</strong> and <strong>RisingWave</strong>
+    are streaming MV systems that maintain views as long-running dataflows with row-level
+    updates on every change. <strong>Snowflake Dynamic Tables</strong> pair CDC with
+    scheduled or freshness-target-based maintenance. Databricks itself offers both
+    streaming tables (continuously updated, append-oriented) and MVs (batch-refreshed
+    with optional incrementalization via Enzyme).
+  </p>
+
+  <p data-cid="main-1580">
+    Enzyme's position is unique: it is a fully automated, cost-aware, pipeline-level IVM
+    engine that handles arbitrary SQL compositions in a lakehouse setting (no secondary
+    indexes, ACID transactions via Delta Lake). Its cost model's empirical, history-driven
+    approach contrasts with static cost models in most commercial systems.
+  </p>
+
+  <!-- ===== CONCLUSION ===== -->
+  <h2 data-cid="main-1590" id="s8">8. Conclusion</h2>
+
+  <p data-cid="main-1600">
+    Enzyme demonstrates that a production-grade IVM system can be built on top of an
+    open lakehouse stack — Apache Spark plus Delta Lake — without sacrificing correctness,
+    operator coverage, or automation. Its six-stage architecture cleanly separates concerns:
+    normalization and fingerprinting handle query identity; decomposition sets up the
+    backing store; the plan generator applies compositional delta rules; the cost model
+    selects strategies; execution integrates tightly with Spark.
+  </p>
+
+  <p data-cid="main-1610">
+    The key lessons are: (1) an adaptive, history-driven cost model beats static heuristics
+    in a production setting; (2) pipeline-level optimization is essential — local decisions
+    affect global cost; (3) fingerprint stability requires explicit versioning as a system
+    evolves; (4) non-determinism and temporal functions are not edge cases — they are common
+    in real ETL workloads; and (5) comprehensive, randomized correctness testing is
+    indispensable because IVM bugs are subtle and data-distribution-dependent.
+  </p>
+
+  <div class="box pause" data-cid="main-1620">
+    <span class="box-label">The Big Picture</span>
+    <p data-cid="main-1630">
+      Incremental view maintenance is fundamentally a question of <em>reusing work</em>.
+      Full recomputation is always safe and always correct, but throws away everything the
+      system already knows. IVM is the disciplined application of the chain rule of
+      computation: if the inputs changed by a small amount, the output should change by
+      a correspondingly small amount — and a smart system should be able to compute only
+      that small change. Enzyme shows that this ideal can be realized end-to-end at
+      production scale, across complex SQL, with no manual tuning required.
+    </p>
+  </div>
+
+  <!-- ===== REFERENCES ===== -->
+  <h2 data-cid="main-1640" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-1650">
+      Abeysinghe, S., He, Q., and Rompf, T. (2022). Efficient Incrementalization of Correlated Nested Aggregate Queries using Relative Partial Aggregate Indexes (RPAI). <em>SIGMOD '22</em>, 136–149.
+    </li>
+    <li data-cid="main-1660">
+      Agrawal, S., Chaudhuri, S., and Narasayya, V. R. (2000). Automated Selection of Materialized Views and Indexes in SQL Databases. <em>VLDB '00</em>, 496–505.
+    </li>
+    <li data-cid="main-1670">
+      Akidau, T., et al. (2023). What's the Difference? Incremental Processing with Change Queries in Snowflake. <em>Proc. ACM Manag. Data</em> 1(2), 1–27.
+    </li>
+    <li data-cid="main-1680">
+      Amazon Web Services. (2024). Materialized Views in Amazon Redshift.
+    </li>
+    <li data-cid="main-1690">
+      Armbrust, M., et al. (2020). Delta Lake: High-Performance ACID Table Storage over Cloud Object Stores. <em>VLDB Endow.</em> 13(12), 3411–3424.
+    </li>
+    <li data-cid="main-1700">
+      Armbrust, M., et al. (2015). Spark SQL: Relational Data Processing in Spark. <em>SIGMOD '15</em>, 1383–1394.
+    </li>
+    <li data-cid="main-1710">
+      Behm, A., et al. (2022). Photon: A Fast Query Engine for Lakehouse Systems. <em>SIGMOD '22</em>, 2326–2339.
+    </li>
+    <li data-cid="main-1720">
+      Blakeley, J. A., Larson, P.-Å., and Tompa, F. W. (1986). Efficiently Updating Materialized Views. <em>SIGMOD '86</em>, 61–71.
+    </li>
+    <li data-cid="main-1730">
+      Budiu, M., Chajed, T., McSherry, F., Ryzhyk, L., and Tannen, V. (2023). DBSP: Automatic Incremental View Maintenance for Rich Query Languages. <em>VLDB Endow.</em> 16(7), 1601–1614.
+    </li>
+    <li data-cid="main-1740">
+      Chandra, R., et al. (2025). Unity Catalog: Open and Universal Governance for the Lakehouse and Beyond. <em>SIGMOD '25</em>, 310–322.
+    </li>
+    <li data-cid="main-1750">
+      Griffin, T. and Kumar, B. (1998). Algebraic Change Propagation for Semijoin and Outerjoin Queries. <em>ACM SIGMOD Record</em> 27(3), 22–27.
+    </li>
+    <li data-cid="main-1760">
+      Griffin, T. and Libkin, L. (1995). Incremental Maintenance of Views with Duplicates. <em>SIGMOD '95</em>, 328–339.
+    </li>
+    <li data-cid="main-1770">
+      Gupta, A., Mumick, I. S., and Subrahmanian, V. S. (1993). Maintaining Views Incrementally. <em>SIGMOD '93</em>, 157–166.
+    </li>
+    <li data-cid="main-1780">
+      Idris, M., Ugarte, M., and Vansummeren, S. (2017). The Dynamic Yannakakis Algorithm. <em>SIGMOD '17</em>, 1259–1274.
+    </li>
+    <li data-cid="main-1790">
+      Katsis, Y., et al. (2015). Utilizing IDs to Accelerate Incremental View Maintenance. <em>SIGMOD '15</em>, 1985–2000.
+    </li>
+    <li data-cid="main-1800">
+      Kennedy, O., Ahmad, Y., and Koch, C. (2011). DBToaster: Agile Views for a Dynamic Data Management System. <em>CIDR '11</em>, 284–295.
+    </li>
+    <li data-cid="main-1810">
+      Koch, C. (2010). Incremental Query Evaluation in a Ring of Databases. <em>PODS '10</em>, 87–98.
+    </li>
+    <li data-cid="main-1820">
+      Koch, C., et al. (2014). DBToaster: Higher-Order Delta Processing for Dynamic, Frequently Fresh Views. <em>VLDB Journal</em> 23(2), 253–278.
+    </li>
+    <li data-cid="main-1830">
+      Leis, V., et al. (2015). How Good Are Query Optimizers, Really? <em>VLDB Endow.</em> 9(3), 204–215.
+    </li>
+    <li data-cid="main-1840">
+      McSherry, F. (2022). Materialize: A Platform for Building Scalable Event Based Systems. <em>DEBS '22</em>.
+    </li>
+    <li data-cid="main-1850">
+      McSherry, F., Murray, D. G., Isaacs, R., and Isard, M. (2013). Differential Dataflow. <em>CIDR '13</em>.
+    </li>
+    <li data-cid="main-1860">
+      Poess, M., Rabl, T., Jacobsen, H.-A., and Caufield, B. (2014). TPC-DI: The First Industry Benchmark for Data Integration. <em>VLDB Endow.</em> 7(13), 1367–1378.
+    </li>
+    <li data-cid="main-1870">
+      Quass, D. (1996). Maintenance Expressions for Views with Aggregation. <em>VIEWS '96</em>, 110–118.
+    </li>
+    <li data-cid="main-1880">
+      Wang, Q. and Yi, K. (2020). Maintaining Acyclic Foreign-Key Joins under Updates. <em>SIGMOD '20</em>, 1225–1239.
+    </li>
+    <li data-cid="main-1890">
+      Wang, Y. and Liu, Z. (2022). A Sneak Peek at RisingWave: A Cloud-Native Streaming Database. <em>DEBS '22</em>, 190–193.
+    </li>
+    <li data-cid="main-1900">
+      Xue, M., et al. (2024). Adaptive and Robust Query Execution for Lakehouses at Scale. <em>VLDB Endow.</em> 17(12), 3947–3959.
+    </li>
+  </ol>
+
+</article>
+</main>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    renderMathInElement(document.body, {
+      delimiters: [
+        {left: "$$", right: "$$", display: true},
+        {left: "$", right: "$", display: false}
+      ]
+    });
+  });
+</script>
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script>
+</body>
+</html>

@@ -10,14 +10,13 @@
 <link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
-<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/><link href="/css/tts.css" rel="stylesheet"/>
 </head>
 <body data-book="basic_stat" data-page="ch15">
 <header class="site-header">
+<a class="home-btn" href="/">Home</a>
 <a class="brand" href="/books/basic_stat/">Theoretical Statistics <small>a slow reading guide</small></a>
 <nav>
-<a href="/" class="all-books-link">All books</a>
-    <a href="/books/basic_stat/">Contents</a>
 <button aria-label="toggle theme" class="theme-toggle">Dark</button>
 </nav>
 </header>
@@ -48,8 +47,8 @@
 </section>
 <h2 data-cid="ch15-020" id="why">Why a second Bayesian chapter?</h2>
 <p data-cid="ch15-030">
-      Chapter 7 introduced the Bayesian setup: a prior $\lambda(\theta)$, a model $p_\theta(x)$, and a posterior
-      $\lambda(\theta \mid x) \propto \lambda(\theta) p_\theta(x)$. In that chapter we always managed to evaluate
+      Chapter 7 introduced the Bayesian setup: a prior <span class="tts-math" data-tts="lambda theta">$\lambda(\theta)$</span>, a model <span class="tts-math" data-tts="p_ theta x">$p_\theta(x)$</span>, and a posterior
+      <span class="tts-math" data-tts="lambda theta given x proportional to lambda theta p_ theta x">$\lambda(\theta \mid x) \propto \lambda(\theta) p_\theta(x)$</span>. In that chapter we always managed to evaluate
       the posterior in closed form — by choosing conjugate priors that made the algebra clean.
     </p>
 <p data-cid="ch15-040">
@@ -57,11 +56,11 @@
       textbook examples:
     </p>
 <ul data-cid="ch15-050">
-<li><strong>The prior is hard to pin down.</strong> A single $\lambda$ rarely captures everything we know.
-      Often it is more honest to say "the prior depends on a tuning parameter $\tau$, and $\tau$ itself is uncertain."
+<li><strong>The prior is hard to pin down.</strong> A single <span class="tts-math" data-tts="lambda">$\lambda$</span> rarely captures everything we know.
+      Often it is more honest to say "the prior depends on a tuning parameter <span class="tts-math" data-tts="tau">$\tau$</span>, and <span class="tts-math" data-tts="tau">$\tau$</span> itself is uncertain."
       That leads us to <em>hierarchical models</em>.</li>
 <li><strong>The posterior is hard to evaluate.</strong> Once the prior gets richer or the parameter space gets
-      bigger, the normalizing integral $\int \lambda(\theta) p_\theta(x)\, d\theta$ is generally
+      bigger, the normalizing integral <span class="tts-math" data-tts="the integral of lambda theta p_ theta x d theta">$\int \lambda(\theta) p_\theta(x)\, d\theta$</span> is generally
       analytically intractable and numerically expensive. That forces us to <em>simulate</em> the posterior
       using Markov chains.</li>
 </ul>
@@ -82,46 +81,46 @@
 <h2 data-cid="ch15-090" id="s15-1">15.1 Hierarchical models</h2>
 <h3 data-cid="ch15-100">The one-line idea</h3>
 <p data-cid="ch15-110">
-      A <strong>hierarchical model</strong> writes the prior in stages: instead of one prior $\lambda$, we use a
-      <em>family</em> $\{\Lambda_\tau : \tau \in \mathcal{T}\}$ indexed by a parameter $\tau$, and put a prior on
-      $\tau$ itself.
+      A <strong>hierarchical model</strong> writes the prior in stages: instead of one prior <span class="tts-math" data-tts="lambda">$\lambda$</span>, we use a
+      <em>family</em> <span class="tts-math" data-tts="Lambda _ tau tau in script T">$\{\Lambda_\tau : \tau \in \mathcal{T}\}$</span> indexed by a parameter <span class="tts-math" data-tts="tau">$\tau$</span>, and put a prior on
+      <span class="tts-math" data-tts="tau">$\tau$</span> itself.
     </p>
 <div class="box definition" data-cid="ch15-120">
 <span class="box-label">Definition — hierarchical Bayesian model</span>
 <p data-cid="ch15-130">
-        Let $\{\Lambda_\tau : \tau \in \mathcal{T}\}$ be a family of prior distributions for an unknown parameter
-        $\Theta$. Treat the index $\tau$ as a realization of a random variable $T$ with its own distribution $G$.
+        Let <span class="tts-math" data-tts="Lambda _ tau tau in script T">$\{\Lambda_\tau : \tau \in \mathcal{T}\}$</span> be a family of prior distributions for an unknown parameter
+        <span class="tts-math" data-tts="Theta">$\Theta$</span>. Treat the index <span class="tts-math" data-tts="tau">$\tau$</span> as a realization of a random variable <span class="tts-math" data-tts="T">$T$</span> with its own distribution <span class="tts-math" data-tts="G">$G$</span>.
         The model is then
-        $$T \sim G, \qquad \Theta \mid T = \tau \sim \Lambda_\tau, \qquad X \mid T = \tau, \Theta = \theta \sim P_\theta.$$
-        $T$ is called a <strong>hyperparameter</strong>, and $G$ is the <strong>hyperprior</strong>.
+        <span class="tts-math" data-tts="T distributed as G Theta given T equals tau distributed as Lambda _ tau X given T equals tau Theta equals theta distributed as P_ theta .">$$T \sim G, \qquad \Theta \mid T = \tau \sim \Lambda_\tau, \qquad X \mid T = \tau, \Theta = \theta \sim P_\theta.$$</span>
+        <span class="tts-math" data-tts="T">$T$</span> is called a <strong>hyperparameter</strong>, and <span class="tts-math" data-tts="G">$G$</span> is the <strong>hyperprior</strong>.
       </p>
 </div>
 <p data-cid="ch15-140">
-      Why bother with two layers? Because the marginal prior for $\Theta$ — found by integrating $T$ out —
-      $$P(\Theta \in B) = \int \Lambda_\tau(B) \, dG(\tau)$$
-      is a <em>mixture</em> of the $\Lambda_\tau$. Mixtures are far more flexible than any single family, and they
+      Why bother with two layers? Because the marginal prior for <span class="tts-math" data-tts="Theta">$\Theta$</span> — found by integrating <span class="tts-math" data-tts="T">$T$</span> out —
+      <span class="tts-math" data-tts="P Theta in B equals the integral of Lambda _ tau B dG tau">$$P(\Theta \in B) = \int \Lambda_\tau(B) \, dG(\tau)$$</span>
+      is a <em>mixture</em> of the <span class="tts-math" data-tts="Lambda _ tau">$\Lambda_\tau$</span>. Mixtures are far more flexible than any single family, and they
       let us express uncertainty about the prior itself.
     </p>
 <h3 data-cid="ch15-150">Prior elicitation: three flavors</h3>
 <p data-cid="ch15-160">Before we go further, a vocabulary check. Priors come in three rough flavors:</p>
 <ul data-cid="ch15-170">
 <li><strong>Informative priors</strong> encode substantive knowledge — e.g., "we know from previous experiments
-        that the rate $\theta$ is around $0.3$." Hierarchical priors are usually informative-but-cautious: the
-        hyperprior on $\tau$ admits we don't know <em>exactly</em> how informative to be.</li>
-<li><strong>Non-informative priors</strong> try to express ignorance. The flat prior $\lambda(\theta) \propto 1$
+        that the rate <span class="tts-math" data-tts="theta">$\theta$</span> is around <span class="tts-math" data-tts="0.3">$0.3$</span>." Hierarchical priors are usually informative-but-cautious: the
+        hyperprior on <span class="tts-math" data-tts="tau">$\tau$</span> admits we don't know <em>exactly</em> how informative to be.</li>
+<li><strong>Non-informative priors</strong> try to express ignorance. The flat prior <span class="tts-math" data-tts="lambda theta proportional to 1">$\lambda(\theta) \propto 1$</span>
         is the naive choice, but flat priors are not invariant under reparameterization, which is awkward.</li>
 <li><strong>Jeffreys priors</strong> fix the invariance problem. Jeffreys's rule is
-        $\lambda(\theta) \propto \sqrt{\det I(\theta)}$, where $I$ is the Fisher information. By construction
+        <span class="tts-math" data-tts="lambda theta proportional to root det I theta">$\lambda(\theta) \propto \sqrt{\det I(\theta)}$</span>, where <span class="tts-math" data-tts="I">$I$</span> is the Fisher information. By construction
         this is invariant under smooth reparameterizations, so it is the same prior whether you parameterize a
-        binomial by $p$ or by $\log[p/(1-p)]$.</li>
+        binomial by <span class="tts-math" data-tts="p">$p$</span> or by <span class="tts-math" data-tts="log p over 1 minus p">$\log[p/(1-p)]$</span>.</li>
 </ul>
 <div class="box intuition" data-cid="ch15-180">
 <span class="box-label">Why Jeffreys's rule is "non-informative"</span>
 <p data-cid="ch15-190">
-        Fisher information measures how sharply the likelihood discriminates between nearby values of $\theta$.
-        Jeffreys's prior weights $\theta$-values <em>in proportion to how distinguishable they are</em> — which is
-        the closest thing we have to "uniform on the natural geometry of the model." For $N(\theta, 1)$ it gives a
-        flat prior on $\theta$. For $\mathrm{Binomial}(n, p)$ it gives the $\mathrm{Beta}(1/2, 1/2)$ prior on $p$,
+        Fisher information measures how sharply the likelihood discriminates between nearby values of <span class="tts-math" data-tts="theta">$\theta$</span>.
+        Jeffreys's prior weights <span class="tts-math" data-tts="theta">$\theta$</span>-values <em>in proportion to how distinguishable they are</em> — which is
+        the closest thing we have to "uniform on the natural geometry of the model." For <span class="tts-math" data-tts="N theta 1">$N(\theta, 1)$</span> it gives a
+        flat prior on <span class="tts-math" data-tts="theta">$\theta$</span>. For <span class="tts-math" data-tts="Binomial n p">$\mathrm{Binomial}(n, p)$</span> it gives the <span class="tts-math" data-tts="Beta 1 over 2 1 over 2">$\mathrm{Beta}(1/2, 1/2)$</span> prior on <span class="tts-math" data-tts="p">$p$</span>,
         not flat.
       </p>
 </div>
@@ -129,8 +128,8 @@
 <span class="box-label">Common pitfall — improper priors</span>
 <p data-cid="ch15-210">
         Many non-informative priors (including most Jeffreys priors on unbounded parameters) are <em>improper</em>:
-        $\int \lambda(\theta) \, d\theta = \infty$. That is fine <em>if</em> the posterior is still proper —
-        $\int \lambda(\theta) p_\theta(x)\, d\theta &lt; \infty$. But it is easy to construct hierarchical models
+        <span class="tts-math" data-tts="the integral of lambda theta d theta equals infinity">$\int \lambda(\theta) \, d\theta = \infty$</span>. That is fine <em>if</em> the posterior is still proper —
+        <span class="tts-math" data-tts="the integral of lambda theta p_ theta x d theta lt infinity">$\int \lambda(\theta) p_\theta(x)\, d\theta &lt; \infty$</span>. But it is easy to construct hierarchical models
         where the prior is improper <em>and</em> the posterior is also improper, and MCMC will happily sample from
         the nonsense and look perfectly well-behaved. Always check that the posterior integrates.
       </p>
@@ -139,54 +138,54 @@
 <div class="box example" data-cid="ch15-230">
 <span class="box-label">Worked example — Normal means with unknown shrinkage</span>
 <p data-cid="ch15-240">
-        Recall the compound-estimation problem from Chapter 11: we have $n$ parameters $\Theta_1, \dots, \Theta_n$
-        and observe $X_i = \Theta_i + \varepsilon_i$ with $\varepsilon_i \sim N(0, 1)$ independent. The empirical
-        Bayes story put $\Theta_i \stackrel{iid}{\sim} N(0, \tau^2)$ and estimated $\tau$ from the data.
+        Recall the compound-estimation problem from Chapter 11: we have <span class="tts-math" data-tts="n">$n$</span> parameters <span class="tts-math" data-tts="Theta sub 1 and so on Theta sub n">$\Theta_1, \dots, \Theta_n$</span>
+        and observe <span class="tts-math" data-tts="X sub i equals Theta sub i plus epsilon sub i">$X_i = \Theta_i + \varepsilon_i$</span> with <span class="tts-math" data-tts="epsilon sub i distributed as N 0 1">$\varepsilon_i \sim N(0, 1)$</span> independent. The empirical
+        Bayes story put <span class="tts-math" data-tts="Theta sub i distributed as N 0 tau to the 2">$\Theta_i \stackrel{iid}{\sim} N(0, \tau^2)$</span> and estimated <span class="tts-math" data-tts="tau">$\tau$</span> from the data.
       </p>
 <p data-cid="ch15-250">
-        The hierarchical Bayesian version is honest about $\tau$ being unknown. We write
-        $$T \sim G, \qquad \Theta \mid T = \tau \sim N(0, \tau^2 I_n), \qquad X \mid \Theta = \theta \sim N(\theta, I_n).$$
-        Conditional on $T = \tau$, the $X_i$ are i.i.d. $N(0, 1 + \tau^2)$. So the marginal likelihood for $\tau$
-        is one-dimensional and easy. The Bayes estimator for $\Theta$ collapses, via the tower property, to
-        $$\delta(X) = E[\Theta \mid X] = X \cdot E\!\left[\frac{T^2}{1+T^2} \,\Big|\, X\right].$$
-        The shrinkage factor $T^2/(1+T^2)$ is itself averaged over the posterior of $T$ — automatically accounting
+        The hierarchical Bayesian version is honest about <span class="tts-math" data-tts="tau">$\tau$</span> being unknown. We write
+        <span class="tts-math" data-tts="T distributed as G Theta given T equals tau distributed as N 0 tau to the 2 I sub n X given Theta equals theta distributed as N theta I sub n .">$$T \sim G, \qquad \Theta \mid T = \tau \sim N(0, \tau^2 I_n), \qquad X \mid \Theta = \theta \sim N(\theta, I_n).$$</span>
+        Conditional on <span class="tts-math" data-tts="T equals tau">$T = \tau$</span>, the <span class="tts-math" data-tts="X sub i">$X_i$</span> are i.i.d. <span class="tts-math" data-tts="N 0 1 plus tau to the 2">$N(0, 1 + \tau^2)$</span>. So the marginal likelihood for <span class="tts-math" data-tts="tau">$\tau$</span>
+        is one-dimensional and easy. The Bayes estimator for <span class="tts-math" data-tts="Theta">$\Theta$</span> collapses, via the tower property, to
+        <span class="tts-math" data-tts="delta X equals E Theta given X equals X times E T to the 2 over 1 plus T to the 2 X .">$$\delta(X) = E[\Theta \mid X] = X \cdot E\!\left[\frac{T^2}{1+T^2} \,\Big|\, X\right].$$</span>
+        The shrinkage factor <span class="tts-math" data-tts="T to the 2 over 1 plus T to the 2">$T^2/(1+T^2)$</span> is itself averaged over the posterior of <span class="tts-math" data-tts="T">$T$</span> — automatically accounting
         for our uncertainty about how much to shrink.
       </p>
 </div>
 <p data-cid="ch15-260">
-      Compare this to the plug-in empirical Bayes estimator, which uses a point estimate $\hat\tau$. The
-      hierarchical Bayes estimator integrates over the whole posterior of $T$ instead. When $n$ is small, this
+      Compare this to the plug-in empirical Bayes estimator, which uses a point estimate <span class="tts-math" data-tts="tau">$\hat\tau$</span>. The
+      hierarchical Bayes estimator integrates over the whole posterior of <span class="tts-math" data-tts="T">$T$</span> instead. When <span class="tts-math" data-tts="n">$n$</span> is small, this
       difference matters: empirical Bayes understates uncertainty.
     </p>
 <h3 data-cid="ch15-270">Example 15.2 — ridge regression as a hierarchical model</h3>
 <div class="box example" data-cid="ch15-280">
 <span class="box-label">Worked example — Bayesian ridge</span>
 <p data-cid="ch15-290">
-        In the linear model $Y \mid B = \beta \sim N(X\beta, \sigma^2 I)$ with $\sigma^2$ known, put a prior
-        $B \sim N(0, \tau^2 I)$. The posterior is
-        $$B \mid Y = y \sim N\!\left((X'X + \kappa I)^{-1} X'Y, \; \sigma^2 (X'X + \kappa I)^{-1}\right),$$
-        where $\kappa = \sigma^2 / \tau^2$. The posterior mean $(X'X + \kappa I)^{-1} X'Y$ is the ridge regression
+        In the linear model <span class="tts-math" data-tts="Y given B equals beta distributed as N X beta sigma to the 2 I">$Y \mid B = \beta \sim N(X\beta, \sigma^2 I)$</span> with <span class="tts-math" data-tts="sigma to the 2">$\sigma^2$</span> known, put a prior
+        <span class="tts-math" data-tts="B distributed as N 0 tau to the 2 I">$B \sim N(0, \tau^2 I)$</span>. The posterior is
+        <span class="tts-math" data-tts="B given Y equals y distributed as N X primeX plus kappa I inverse X primeY sigma to the 2 X primeX plus kappa I inverse">$$B \mid Y = y \sim N\!\left((X'X + \kappa I)^{-1} X'Y, \; \sigma^2 (X'X + \kappa I)^{-1}\right),$$</span>
+        where <span class="tts-math" data-tts="kappa equals sigma to the 2 over tau to the 2">$\kappa = \sigma^2 / \tau^2$</span>. The posterior mean <span class="tts-math" data-tts="X primeX plus kappa I inverse X primeY">$(X'X + \kappa I)^{-1} X'Y$</span> is the ridge regression
         estimator! Ridge — originally introduced for numerical stability — is exactly Bayesian inference under a
-        Gaussian prior. A hierarchical extension promotes $\tau$ to a random variable with its own hyperprior $G$.
+        Gaussian prior. A hierarchical extension promotes <span class="tts-math" data-tts="tau">$\tau$</span> to a random variable with its own hyperprior <span class="tts-math" data-tts="G">$G$</span>.
       </p>
 </div>
 <h3 data-cid="ch15-300">The 8-schools model — the prototypical multilevel example</h3>
 <p data-cid="ch15-310">
       No introduction to hierarchical Bayes is complete without the 8-schools example (Rubin, 1981). Eight schools
-      ran a coaching program for the SAT. School $i$ reports an estimated effect $y_i$ with known standard error
-      $\sigma_i$. We model
-      $$y_i \mid \theta_i \sim N(\theta_i, \sigma_i^2), \qquad \theta_i \mid \mu, \tau \sim N(\mu, \tau^2),
-        \qquad \mu \sim \text{flat}, \quad \tau \sim \text{half-Cauchy}(0, 5).$$
-      The hyperparameter $\tau$ controls how much the schools' true effects can vary. If $\tau = 0$, all schools
-      share the same effect $\mu$ (complete pooling). If $\tau \to \infty$, each school is on its own (no pooling).
-      The posterior on $\tau$ tells us how much partial pooling is supported by the data.
+      ran a coaching program for the SAT. School <span class="tts-math" data-tts="i">$i$</span> reports an estimated effect <span class="tts-math" data-tts="y sub i">$y_i$</span> with known standard error
+      <span class="tts-math" data-tts="sigma sub i">$\sigma_i$</span>. We model
+      <span class="tts-math" data-tts="y sub i given theta sub i distributed as N theta sub i sigma sub i to the 2 theta sub i given mu tau distributed as N mu tau to the 2 mu distributed as flat tau distributed as half minus Cauchy 0 5 .">$$y_i \mid \theta_i \sim N(\theta_i, \sigma_i^2), \qquad \theta_i \mid \mu, \tau \sim N(\mu, \tau^2),
+        \qquad \mu \sim \text{flat}, \quad \tau \sim \text{half-Cauchy}(0, 5).$$</span>
+      The hyperparameter <span class="tts-math" data-tts="tau">$\tau$</span> controls how much the schools' true effects can vary. If <span class="tts-math" data-tts="tau equals 0">$\tau = 0$</span>, all schools
+      share the same effect <span class="tts-math" data-tts="mu">$\mu$</span> (complete pooling). If <span class="tts-math" data-tts="tau to infinity">$\tau \to \infty$</span>, each school is on its own (no pooling).
+      The posterior on <span class="tts-math" data-tts="tau">$\tau$</span> tells us how much partial pooling is supported by the data.
     </p>
 <div class="box intuition" data-cid="ch15-320">
 <span class="box-label">Why this example is famous</span>
 <p data-cid="ch15-330">
         The 8-schools dataset cleanly demonstrates <em>shrinkage</em>: estimates with large standard errors get
-        pulled toward the global mean $\mu$, while precise estimates are left alone. The strength of pooling is
-        learned from the data via $\tau$. The example is so canonical because the posterior of $\tau$ is
+        pulled toward the global mean <span class="tts-math" data-tts="mu">$\mu$</span>, while precise estimates are left alone. The strength of pooling is
+        learned from the data via <span class="tts-math" data-tts="tau">$\tau$</span>. The example is so canonical because the posterior of <span class="tts-math" data-tts="tau">$\tau$</span> is
         notoriously bimodal-prone and tricky — it forces every MCMC method to prove itself.
       </p>
 </div>
@@ -194,13 +193,13 @@
 <div class="box example" data-cid="ch15-350">
 <span class="box-label">Worked example — rats and tumors</span>
 <p data-cid="ch15-360">
-        $K$ groups, group $k$ has $n_k$ trials and $y_k$ successes. We model
-        $$y_k \mid p_k \sim \mathrm{Binomial}(n_k, p_k), \qquad
-          p_k \mid \alpha, \beta \sim \mathrm{Beta}(\alpha, \beta),$$
-        and put a vague hyperprior on $(\alpha, \beta)$, e.g. $(\alpha + \beta)^{-5/2}$ on
-        $\log(\alpha/\beta), \log(\alpha + \beta)$. Conditional on $\alpha, \beta$, each $p_k$ has a
-        $\mathrm{Beta}(\alpha + y_k, \beta + n_k - y_k)$ posterior. The hyperposterior on $(\alpha, \beta)$ adjusts
-        how strongly we pool $p_1, \dots, p_K$ toward a common mean $\alpha/(\alpha+\beta)$.
+        <span class="tts-math" data-tts="K">$K$</span> groups, group <span class="tts-math" data-tts="k">$k$</span> has <span class="tts-math" data-tts="n sub k">$n_k$</span> trials and <span class="tts-math" data-tts="y sub k">$y_k$</span> successes. We model
+        <span class="tts-math" data-tts="y sub k given p sub k distributed as Binomial n sub k p sub k p sub k given alpha beta distributed as Beta alpha beta">$$y_k \mid p_k \sim \mathrm{Binomial}(n_k, p_k), \qquad
+          p_k \mid \alpha, \beta \sim \mathrm{Beta}(\alpha, \beta),$$</span>
+        and put a vague hyperprior on <span class="tts-math" data-tts="alpha beta">$(\alpha, \beta)$</span>, e.g. <span class="tts-math" data-tts="alpha plus beta to the 5 over 2">$(\alpha + \beta)^{-5/2}$</span> on
+        <span class="tts-math" data-tts="log alpha over beta log alpha plus beta">$\log(\alpha/\beta), \log(\alpha + \beta)$</span>. Conditional on <span class="tts-math" data-tts="alpha beta">$\alpha, \beta$</span>, each <span class="tts-math" data-tts="p sub k">$p_k$</span> has a
+        <span class="tts-math" data-tts="Beta alpha plus y sub k beta plus n sub k minus y sub k">$\mathrm{Beta}(\alpha + y_k, \beta + n_k - y_k)$</span> posterior. The hyperposterior on <span class="tts-math" data-tts="alpha beta">$(\alpha, \beta)$</span> adjusts
+        how strongly we pool <span class="tts-math" data-tts="p sub 1 and so on p sub K">$p_1, \dots, p_K$</span> toward a common mean <span class="tts-math" data-tts="alpha over alpha plus beta">$\alpha/(\alpha+\beta)$</span>.
       </p>
 </div>
 <!-- ===================================================================== -->
@@ -210,32 +209,32 @@
       approximation? Keener walks through a sobering example.
     </p>
 <p data-cid="ch15-390">
-      Take $X \mid \Theta = \theta \sim N(\theta, 1)$. Suppose the <em>true</em> prior $\Lambda$ is a $t$ with 3
+      Take <span class="tts-math" data-tts="X given Theta equals theta distributed as N theta 1">$X \mid \Theta = \theta \sim N(\theta, 1)$</span>. Suppose the <em>true</em> prior <span class="tts-math" data-tts="Lambda">$\Lambda$</span> is a <span class="tts-math" data-tts="t">$t$</span> with 3
       degrees of freedom:
-      $$\lambda(\theta) = \frac{2}{\sqrt{3}\pi \left(1 + \theta^2/3\right)^2}.$$
-      The conjugate alternative $\Lambda_N = N(0, 5/4)$ has densities visually almost identical to $\lambda$;
-      the sup-norm distance is just $\|\lambda - \lambda_N\|_\infty = 0.0333$. By total-variation distance,
-      $|\Lambda(B) - \Lambda_N(B)| \leq 7.1\%$ for every Borel $B$.
+      <span class="tts-math" data-tts="lambda theta equals 2 over root 3 pi 1 plus theta to the 2 over 3 to the 2 .">$$\lambda(\theta) = \frac{2}{\sqrt{3}\pi \left(1 + \theta^2/3\right)^2}.$$</span>
+      The conjugate alternative <span class="tts-math" data-tts="Lambda sub N equals N 0 5 over 4">$\Lambda_N = N(0, 5/4)$</span> has densities visually almost identical to <span class="tts-math" data-tts="lambda">$\lambda$</span>;
+      the sup-norm distance is just <span class="tts-math" data-tts="norm of lambda minus lambda sub N norm of _ infinity equals 0.0333">$\|\lambda - \lambda_N\|_\infty = 0.0333$</span>. By total-variation distance,
+      <span class="tts-math" data-tts="Lambda B minus Lambda sub N B less than or equal to 7.1 %">$|\Lambda(B) - \Lambda_N(B)| \leq 7.1\%$</span> for every Borel <span class="tts-math" data-tts="B">$B$</span>.
     </p>
 <p data-cid="ch15-400">
-      Yet the Bayes estimators behave very differently in the tails. Under $\Lambda_N$, the Bayes rule is
-      $\delta_N(x) = 5x/9$ — a linear shrinkage. Its risk grows quadratically in $\theta$:
-      $$R(\theta, \delta_N) = \frac{25 + 16\theta^2}{81}.$$
-      Under the true $t$-prior, the Bayes rule $\delta$ satisfies $\delta(x) = x - 4/x + o(1/x)$ as
-      $|x| \to \infty$. So $\delta$ <em>stops shrinking</em> in the tails (its risk approaches $1$, the UMVU risk),
-      while $\delta_N$ keeps shrinking and pays a quadratic price.
+      Yet the Bayes estimators behave very differently in the tails. Under <span class="tts-math" data-tts="Lambda sub N">$\Lambda_N$</span>, the Bayes rule is
+      <span class="tts-math" data-tts="delta sub N x equals 5x over 9">$\delta_N(x) = 5x/9$</span> — a linear shrinkage. Its risk grows quadratically in <span class="tts-math" data-tts="theta">$\theta$</span>:
+      <span class="tts-math" data-tts="R theta delta sub N equals 25 plus 16 theta to the 2 over 81 .">$$R(\theta, \delta_N) = \frac{25 + 16\theta^2}{81}.$$</span>
+      Under the true <span class="tts-math" data-tts="t">$t$</span>-prior, the Bayes rule <span class="tts-math" data-tts="delta">$\delta$</span> satisfies <span class="tts-math" data-tts="delta x equals x minus 4 over x plus o 1 over x">$\delta(x) = x - 4/x + o(1/x)$</span> as
+      <span class="tts-math" data-tts="x to infinity">$|x| \to \infty$</span>. So <span class="tts-math" data-tts="delta">$\delta$</span> <em>stops shrinking</em> in the tails (its risk approaches <span class="tts-math" data-tts="1">$1$</span>, the UMVU risk),
+      while <span class="tts-math" data-tts="delta sub N">$\delta_N$</span> keeps shrinking and pays a quadratic price.
     </p>
 <p data-cid="ch15-410">
-      The integrated risk under the true $\Lambda$ is $0.482$ for $\delta$ and $0.901$ for $\delta_N$ — nearly
-      twice as bad. A prior that looked correct to within $3\%$ in density produced an estimator that was
-      <em>nearly $90\%$ worse</em>.
+      The integrated risk under the true <span class="tts-math" data-tts="Lambda">$\Lambda$</span> is <span class="tts-math" data-tts="0.482">$0.482$</span> for <span class="tts-math" data-tts="delta">$\delta$</span> and <span class="tts-math" data-tts="0.901">$0.901$</span> for <span class="tts-math" data-tts="delta sub N">$\delta_N$</span> — nearly
+      twice as bad. A prior that looked correct to within <span class="tts-math" data-tts="3 %">$3\%$</span> in density produced an estimator that was
+      <em>nearly <span class="tts-math" data-tts="90 %">$90\%$</span> worse</em>.
     </p>
 <div class="box warn" data-cid="ch15-420">
 <span class="box-label">Common pitfall — light-tailed conjugate priors</span>
 <p data-cid="ch15-430">
         Gaussian priors have light tails. If the truth has heavier tails, the Gaussian prior is overconfident
-        about how small $\theta$ is. The estimator will shrink large signals too aggressively. A robust workaround
-        is to use a heavy-tailed prior like a $t$ on a few degrees of freedom, accepting that closed-form posteriors
+        about how small <span class="tts-math" data-tts="theta">$\theta$</span> is. The estimator will shrink large signals too aggressively. A robust workaround
+        is to use a heavy-tailed prior like a <span class="tts-math" data-tts="t">$t$</span> on a few degrees of freedom, accepting that closed-form posteriors
         are lost and that you will need MCMC.
       </p>
 </div>
@@ -243,8 +242,8 @@
 <span class="box-label">Pause</span>
 <p data-cid="ch15-450">
         The lesson is not "Bayesian inference is fragile." The lesson is that <em>tail behavior of the prior
-        matters far more than tail behavior of the data</em>. Two priors can agree to $3\%$ everywhere and yet
-        produce estimators that diverge as $|x| \to \infty$. Re-read Figure 15.3 in the book if this still feels
+        matters far more than tail behavior of the data</em>. Two priors can agree to <span class="tts-math" data-tts="3 %">$3\%$</span> everywhere and yet
+        produce estimators that diverge as <span class="tts-math" data-tts="x to infinity">$|x| \to \infty$</span>. Re-read Figure 15.3 in the book if this still feels
         surprising.
       </p>
 </div>
@@ -258,131 +257,131 @@
 <div class="box definition" data-cid="ch15-480">
 <span class="box-label">Definition 15.4 — Markov chain</span>
 <p data-cid="ch15-490">
-        A sequence $X_0, X_1, X_2, \dots$ on a state space $(\mathcal{X}, \mathcal{A})$ is a (time homogeneous)
-        <strong>Markov chain</strong> with transition kernel $Q$ if for every $n \geq 1$, $B \in \mathcal{A}$,
-        and almost every history $x_0, \dots, x_n$,
-        $$P(X_{n+1} \in B \mid X_0 = x_0, \dots, X_n = x_n) = P(X_{n+1} \in B \mid X_n = x_n) = Q_{x_n}(B).$$
+        A sequence <span class="tts-math" data-tts="X sub 0 X sub 1 X sub 2 and so on">$X_0, X_1, X_2, \dots$</span> on a state space <span class="tts-math" data-tts="script X script A">$(\mathcal{X}, \mathcal{A})$</span> is a (time homogeneous)
+        <strong>Markov chain</strong> with transition kernel <span class="tts-math" data-tts="Q">$Q$</span> if for every <span class="tts-math" data-tts="n greater than or equal to 1">$n \geq 1$</span>, <span class="tts-math" data-tts="B in script A">$B \in \mathcal{A}$</span>,
+        and almost every history <span class="tts-math" data-tts="x sub 0 and so on x sub n">$x_0, \dots, x_n$</span>,
+        <span class="tts-math" data-tts="P X sub n plus 1 in B given X sub 0 equals x sub 0 and so on X sub n equals x sub n equals P X sub n plus 1 in B given X sub n equals x sub n equals Q sub x sub n B .">$$P(X_{n+1} \in B \mid X_0 = x_0, \dots, X_n = x_n) = P(X_{n+1} \in B \mid X_n = x_n) = Q_{x_n}(B).$$</span>
       </p>
 </div>
 <p data-cid="ch15-500">
       The chain has no memory beyond its current state. Given the present, the past tells you nothing about the
-      future. The whole dynamics are encoded in $Q$ — for each state $x$, $Q_x$ is a probability distribution over
+      future. The whole dynamics are encoded in <span class="tts-math" data-tts="Q">$Q$</span> — for each state <span class="tts-math" data-tts="x">$x$</span>, <span class="tts-math" data-tts="Q sub x">$Q_x$</span> is a probability distribution over
       "where you go next."
     </p>
 <h3 data-cid="ch15-510">Pushing distributions forward</h3>
 <p data-cid="ch15-520">
-      If $\pi_n$ is the distribution of $X_n$, then the distribution of $X_{n+1}$ is
-      $$\pi_{n+1}(B) = \int Q_x(B) \, d\pi_n(x) \;\overset{\text{def}}{=}\; (\pi_n Q)(B).$$
-      That is, $\pi_{n+1} = \pi_n Q$. Iterating, $\pi_n = \pi_0 Q^n$.
+      If <span class="tts-math" data-tts="pi sub n">$\pi_n$</span> is the distribution of <span class="tts-math" data-tts="X sub n">$X_n$</span>, then the distribution of <span class="tts-math" data-tts="X sub n plus 1">$X_{n+1}$</span> is
+      <span class="tts-math" data-tts="pi sub n plus 1 B equals the integral of Q sub x B d pi sub n x def equals pi sub n Q B .">$$\pi_{n+1}(B) = \int Q_x(B) \, d\pi_n(x) \;\overset{\text{def}}{=}\; (\pi_n Q)(B).$$</span>
+      That is, <span class="tts-math" data-tts="pi sub n plus 1 equals pi sub n Q">$\pi_{n+1} = \pi_n Q$</span>. Iterating, <span class="tts-math" data-tts="pi sub n equals pi sub 0 Q to the n">$\pi_n = \pi_0 Q^n$</span>.
     </p>
 <div class="box definition" data-cid="ch15-530">
 <span class="box-label">Definition — stationary distribution</span>
 <p data-cid="ch15-540">
-        A distribution $\pi$ is <strong>stationary</strong> for $Q$ if $\pi = \pi Q$. If the chain starts at
-        $\pi$, it stays at $\pi$ forever.
+        A distribution <span class="tts-math" data-tts="pi">$\pi$</span> is <strong>stationary</strong> for <span class="tts-math" data-tts="Q">$Q$</span> if <span class="tts-math" data-tts="pi equals pi Q">$\pi = \pi Q$</span>. If the chain starts at
+        <span class="tts-math" data-tts="pi">$\pi$</span>, it stays at <span class="tts-math" data-tts="pi">$\pi$</span> forever.
       </p>
 </div>
 <p data-cid="ch15-550">
-      The whole strategy of MCMC is: design $Q$ so that the posterior is stationary, then run the chain. Under
+      The whole strategy of MCMC is: design <span class="tts-math" data-tts="Q">$Q$</span> so that the posterior is stationary, then run the chain. Under
       mild conditions (irreducibility and aperiodicity, plus some recurrence) the chain forgets its initial
-      distribution and the marginal $\pi_n$ converges to the stationary $\pi$. Concretely, for any nice $f$,
-      $$\frac{1}{n} \sum_{i=1}^n f(X_i) \xrightarrow{\text{a.s.}} \int f \, d\pi.$$
+      distribution and the marginal <span class="tts-math" data-tts="pi sub n">$\pi_n$</span> converges to the stationary <span class="tts-math" data-tts="pi">$\pi$</span>. Concretely, for any nice <span class="tts-math" data-tts="f">$f$</span>,
+      <span class="tts-math" data-tts="1 over n the sum over i equals 1 of to the n f X sub i converges to the integral of f d pi .">$$\frac{1}{n} \sum_{i=1}^n f(X_i) \xrightarrow{\text{a.s.}} \int f \, d\pi.$$</span>
       This is the ergodic theorem — the Markov-chain version of the law of large numbers. It is what makes
       simulated chains usable for estimating posterior expectations.
     </p>
 <h3 data-cid="ch15-560">The finite case as intuition</h3>
 <p data-cid="ch15-570">
-      When $\mathcal{X} = \{1, \dots, m\}$ is finite, the kernel is a transition matrix $Q$ with row sums one.
-      Distributions are row vectors and $\pi_{n+1} = \pi_n Q$ becomes ordinary matrix multiplication.
-      Perron–Frobenius theory then gives: if $Q$ is irreducible and aperiodic, there is a unique left
-      eigenvector $\pi$ with eigenvalue $1$, all other eigenvalues are strictly inside the unit disk, and
-      $Q^n \to \mathbf{1} \pi$ exponentially fast. The rate is controlled by the second-largest eigenvalue
-      modulus — the closer it is to $1$, the slower the convergence. This is the finite-state version of
+      When <span class="tts-math" data-tts="script X equals 1 and so on m">$\mathcal{X} = \{1, \dots, m\}$</span> is finite, the kernel is a transition matrix <span class="tts-math" data-tts="Q">$Q$</span> with row sums one.
+      Distributions are row vectors and <span class="tts-math" data-tts="pi sub n plus 1 equals pi sub n Q">$\pi_{n+1} = \pi_n Q$</span> becomes ordinary matrix multiplication.
+      Perron–Frobenius theory then gives: if <span class="tts-math" data-tts="Q">$Q$</span> is irreducible and aperiodic, there is a unique left
+      eigenvector <span class="tts-math" data-tts="pi">$\pi$</span> with eigenvalue <span class="tts-math" data-tts="1">$1$</span>, all other eigenvalues are strictly inside the unit disk, and
+      <span class="tts-math" data-tts="Q to the n to 1 pi">$Q^n \to \mathbf{1} \pi$</span> exponentially fast. The rate is controlled by the second-largest eigenvalue
+      modulus — the closer it is to <span class="tts-math" data-tts="1">$1$</span>, the slower the convergence. This is the finite-state version of
       "<em>mixing</em>."
     </p>
 <div class="box pause" data-cid="ch15-580">
 <span class="box-label">Pause — MCMC converges to the posterior, but how long do we wait?</span>
 <p data-cid="ch15-590">
-        The theory promises convergence in the limit. In practice we run a chain for some finite $N$ iterations
+        The theory promises convergence in the limit. In practice we run a chain for some finite <span class="tts-math" data-tts="N">$N$</span> iterations
         and hope it has reached stationarity. Two questions immediately appear:
       </p>
 <ul data-cid="ch15-600">
 <li><em>Burn-in.</em> The first samples reflect the initial state, not the posterior. We discard a prefix.
           How long? No general answer — usually 10–50% of the chain.</li>
 <li><em>Mixing.</em> Even after burn-in, consecutive samples are correlated. We need enough samples that
-          the <em>effective sample size</em> $N_{\text{eff}} = N / (1 + 2 \sum_k \rho_k)$ is large, where
-          $\rho_k$ is the lag-$k$ autocorrelation.</li>
+          the <em>effective sample size</em> <span class="tts-math" data-tts="N sub eff equals N over 1 plus 2 sub k rho sub k">$N_{\text{eff}} = N / (1 + 2 \sum_k \rho_k)$</span> is large, where
+          <span class="tts-math" data-tts="rho sub k">$\rho_k$</span> is the lag-<span class="tts-math" data-tts="k">$k$</span> autocorrelation.</li>
 </ul>
 <p data-cid="ch15-610">
-        A chain with autocorrelation $0.99$ at lag 1 needs roughly $200{,}000$ iterations to give the same
-        information as $1{,}000$ independent draws. We are always running on borrowed time.
+        A chain with autocorrelation <span class="tts-math" data-tts="0.99">$0.99$</span> at lag 1 needs roughly <span class="tts-math" data-tts="200 000">$200{,}000$</span> iterations to give the same
+        information as <span class="tts-math" data-tts="1 000">$1{,}000$</span> independent draws. We are always running on borrowed time.
       </p>
 </div>
 <!-- ===================================================================== -->
 <h2 data-cid="ch15-620" id="s15-4">15.4 Metropolis–Hastings algorithm</h2>
 <h3 data-cid="ch15-630">The setup</h3>
 <p data-cid="ch15-640">
-      We have a target density $f$ (the posterior) on a state space $\mathcal{X}$, known up to a normalizing
-      constant. We want a Markov chain whose stationary distribution has density $f$.
+      We have a target density <span class="tts-math" data-tts="f">$f$</span> (the posterior) on a state space <span class="tts-math" data-tts="script X">$\mathcal{X}$</span>, known up to a normalizing
+      constant. We want a Markov chain whose stationary distribution has density <span class="tts-math" data-tts="f">$f$</span>.
     </p>
 <p data-cid="ch15-650">
-      Pick a <strong>jump kernel</strong> $J$ — for each $x_0$, $J_{x_0}$ is a proposal distribution with density
-      $j_{x_0}$. You are free to choose $J$ however you like, as long as it is easy to sample from and connects
+      Pick a <strong>jump kernel</strong> <span class="tts-math" data-tts="J">$J$</span> — for each <span class="tts-math" data-tts="x sub 0">$x_0$</span>, <span class="tts-math" data-tts="J sub x sub 0">$J_{x_0}$</span> is a proposal distribution with density
+      <span class="tts-math" data-tts="j sub x sub 0">$j_{x_0}$</span>. You are free to choose <span class="tts-math" data-tts="J">$J$</span> however you like, as long as it is easy to sample from and connects
       every relevant region of the space.
     </p>
 <h3 data-cid="ch15-660">The algorithm</h3>
 <div class="box definition" data-cid="ch15-670">
 <span class="box-label">Metropolis–Hastings step</span>
 <p data-cid="ch15-680">
-        Given current state $X_n = x_0$:
+        Given current state <span class="tts-math" data-tts="X sub n equals x sub 0">$X_n = x_0$</span>:
       </p>
 <ol data-cid="ch15-690">
-<li>Propose $X^* \sim J_{x_0}$.</li>
+<li>Propose <span class="tts-math" data-tts="X to the times distributed as J sub x sub 0">$X^* \sim J_{x_0}$</span>.</li>
 <li>Compute the acceptance ratio
-            $$r(x_0, x^*) = \frac{f(x^*) / j_{x_0}(x^*)}{f(x_0) / j_{x^*}(x_0)}.$$
+            <span class="tts-math" data-tts="r x sub 0 x to the times equals f x to the times over j sub x sub 0 x to the times f x sub 0 over j sub x to the times x sub 0 .">$$r(x_0, x^*) = \frac{f(x^*) / j_{x_0}(x^*)}{f(x_0) / j_{x^*}(x_0)}.$$</span>
           </li>
-<li>Accept the proposal with probability $\min\{r(x_0, x^*), 1\}$. If accepted, $X_{n+1} = x^*$; otherwise
-            $X_{n+1} = x_0$ (stay in place).</li>
+<li>Accept the proposal with probability <span class="tts-math" data-tts="min r x sub 0 x to the times 1">$\min\{r(x_0, x^*), 1\}$</span>. If accepted, <span class="tts-math" data-tts="X sub n plus 1 equals x to the times">$X_{n+1} = x^*$</span>; otherwise
+            <span class="tts-math" data-tts="X sub n plus 1 equals x sub 0">$X_{n+1} = x_0$</span> (stay in place).</li>
 </ol>
 </div>
 <div class="box intuition" data-cid="ch15-700">
 <span class="box-label">Why the formula has that shape</span>
 <p data-cid="ch15-710">
-        The ratio $r$ is constructed so the chain satisfies <em>detailed balance</em> with $f$:
-        $$f(x_0) \, q(x_0, x^*) = f(x^*) \, q(x^*, x_0),$$
-        where $q(x, y)$ is the actual transition density (proposal times acceptance). Detailed balance implies
-        stationarity: integrate both sides against any test set, and you get $\pi Q = \pi$.
+        The ratio <span class="tts-math" data-tts="r">$r$</span> is constructed so the chain satisfies <em>detailed balance</em> with <span class="tts-math" data-tts="f">$f$</span>:
+        <span class="tts-math" data-tts="f x sub 0 q x sub 0 x to the times equals f x to the times q x to the times x sub 0">$$f(x_0) \, q(x_0, x^*) = f(x^*) \, q(x^*, x_0),$$</span>
+        where <span class="tts-math" data-tts="q x y">$q(x, y)$</span> is the actual transition density (proposal times acceptance). Detailed balance implies
+        stationarity: integrate both sides against any test set, and you get <span class="tts-math" data-tts="pi Q equals pi">$\pi Q = \pi$</span>.
       </p>
 <p data-cid="ch15-720">
-        Crucially, $r$ depends on $f$ only through ratios $f(x^*)/f(x_0)$. The normalizing constant cancels.
+        Crucially, <span class="tts-math" data-tts="r">$r$</span> depends on <span class="tts-math" data-tts="f">$f$</span> only through ratios <span class="tts-math" data-tts="f x to the times over f x sub 0">$f(x^*)/f(x_0)$</span>. The normalizing constant cancels.
         This is what makes the algorithm useful: we never need to know
-        $\int \lambda(\theta) p_\theta(x)\, d\theta$.
+        <span class="tts-math" data-tts="the integral of lambda theta p_ theta x d theta">$\int \lambda(\theta) p_\theta(x)\, d\theta$</span>.
       </p>
 </div>
-<h3 data-cid="ch15-730">Why $\pi$ is stationary (the slow proof)</h3>
+<h3 data-cid="ch15-730">Why <span class="tts-math" data-tts="pi">$\pi$</span> is stationary (the slow proof)</h3>
 <p data-cid="ch15-740">
-      Let $\pi$ be the target with density $f$. We want to show that if $X_0 \sim \pi$, then $X_1 \sim \pi$.
+      Let <span class="tts-math" data-tts="pi">$\pi$</span> be the target with density <span class="tts-math" data-tts="f">$f$</span>. We want to show that if <span class="tts-math" data-tts="X sub 0 distributed as pi">$X_0 \sim \pi$</span>, then <span class="tts-math" data-tts="X sub 1 distributed as pi">$X_1 \sim \pi$</span>.
       By the tower property,
-      $$P(X_1 \in A) = \int Q_{x_0}(A) \, d\pi(x_0),$$
+      <span class="tts-math" data-tts="P X sub 1 in A equals the integral of Q sub x sub 0 A d pi x sub 0">$$P(X_1 \in A) = \int Q_{x_0}(A) \, d\pi(x_0),$$</span>
       where, expanding the algorithm step,
-      $$Q_{x_0}(A) = \mathbf{1}_A(x_0) + \int_A \min\{r(x_0, x^*), 1\}\, j_{x_0}(x^*)\, d\mu(x^*)
-        - \mathbf{1}_A(x_0) \int \min\{r(x_0, x^*), 1\}\, j_{x_0}(x^*)\, d\mu(x^*).$$
+      <span class="tts-math" data-tts="Q sub x sub 0 A equals 1 sub A x sub 0 plus sub A min r x sub 0 x to the times 1 j sub x sub 0 x to the times d mu x to the times minus 1 sub A x sub 0 the integral of min r x sub 0 x to the times 1 j sub x sub 0 x to the times d mu x to the times .">$$Q_{x_0}(A) = \mathbf{1}_A(x_0) + \int_A \min\{r(x_0, x^*), 1\}\, j_{x_0}(x^*)\, d\mu(x^*)
+        - \mathbf{1}_A(x_0) \int \min\{r(x_0, x^*), 1\}\, j_{x_0}(x^*)\, d\mu(x^*).$$</span>
       Plugging in and simplifying, the key step is showing
-      $$\int\!\!\int \min\{r(x_0, x^*), 1\} \, \mathbf{1}_A(x^*) f(x_0) j_{x_0}(x^*)\, d\mu(x_0) d\mu(x^*)
-        = \int\!\!\int \min\{r(x_0, x^*), 1\} \, \mathbf{1}_A(x_0) f(x_0) j_{x_0}(x^*)\, d\mu(x_0) d\mu(x^*).$$
-      Using the explicit formula for $r$, the integrand on both sides becomes
-      $\min\{f(x^*) j_{x^*}(x_0), \, f(x_0) j_{x_0}(x^*)\}$ — symmetric in $(x_0, x^*)$. By Fubini, the two
-      sides are equal, so $\pi$ is stationary.
+      <span class="tts-math" data-tts="the integral of the integral of min r x sub 0 x to the times 1 1 sub A x to the times f x sub 0 j sub x sub 0 x to the times d mu x sub 0 d mu x to the times equals the integral of the integral of min r x sub 0 x to the times 1 1 sub A x sub 0 f x sub 0 j sub x sub 0 x to the times d mu x sub 0 d mu x to the times .">$$\int\!\!\int \min\{r(x_0, x^*), 1\} \, \mathbf{1}_A(x^*) f(x_0) j_{x_0}(x^*)\, d\mu(x_0) d\mu(x^*)
+        = \int\!\!\int \min\{r(x_0, x^*), 1\} \, \mathbf{1}_A(x_0) f(x_0) j_{x_0}(x^*)\, d\mu(x_0) d\mu(x^*).$$</span>
+      Using the explicit formula for <span class="tts-math" data-tts="r">$r$</span>, the integrand on both sides becomes
+      <span class="tts-math" data-tts="min f x to the times j sub x to the times x sub 0 f x sub 0 j sub x sub 0 x to the times">$\min\{f(x^*) j_{x^*}(x_0), \, f(x_0) j_{x_0}(x^*)\}$</span> — symmetric in <span class="tts-math" data-tts="x sub 0 x to the times">$(x_0, x^*)$</span>. By Fubini, the two
+      sides are equal, so <span class="tts-math" data-tts="pi">$\pi$</span> is stationary.
     </p>
 <h3 data-cid="ch15-750">Tuning the proposal</h3>
 <p data-cid="ch15-760">
-      A "random walk" Metropolis uses $J_x = N(x, \tau^2 I)$ for a step size $\tau$. The art is choosing $\tau$:
+      A "random walk" Metropolis uses <span class="tts-math" data-tts="J sub x equals N x tau to the 2 I">$J_x = N(x, \tau^2 I)$</span> for a step size <span class="tts-math" data-tts="tau">$\tau$</span>. The art is choosing <span class="tts-math" data-tts="tau">$\tau$</span>:
     </p>
 <ul data-cid="ch15-770">
-<li>$\tau$ too small: the chain accepts almost every move, but each move is tiny. It explores slowly.</li>
-<li>$\tau$ too large: most proposals land in low-density regions and are rejected. The chain sits still.</li>
-<li>Just right: the acceptance rate sits near $0.234$ for high-dimensional Gaussian targets (a famous
-        result of Roberts, Gelman, and Gilks). For one-dimensional targets, around $0.44$ is the sweet spot.</li>
+<li><span class="tts-math" data-tts="tau">$\tau$</span> too small: the chain accepts almost every move, but each move is tiny. It explores slowly.</li>
+<li><span class="tts-math" data-tts="tau">$\tau$</span> too large: most proposals land in low-density regions and are rejected. The chain sits still.</li>
+<li>Just right: the acceptance rate sits near <span class="tts-math" data-tts="0.234">$0.234$</span> for high-dimensional Gaussian targets (a famous
+        result of Roberts, Gelman, and Gilks). For one-dimensional targets, around <span class="tts-math" data-tts="0.44">$0.44$</span> is the sweet spot.</li>
 </ul>
 <div class="box warn" data-cid="ch15-780">
 <span class="box-label">Common pitfall — poor mixing</span>
@@ -405,16 +404,16 @@
 <div class="box definition" data-cid="ch15-830">
 <span class="box-label">Gibbs sampler (two-variable case)</span>
 <p data-cid="ch15-840">
-        Let $(X, Y) \sim \pi$. Let $R_y$ be the conditional distribution of $X$ given $Y = y$, and
-        $\tilde R_x$ the conditional of $Y$ given $X = x$. Starting from $(X_0, Y_0) = (x_0, y_0)$:
+        Let <span class="tts-math" data-tts="X Y distributed as pi">$(X, Y) \sim \pi$</span>. Let <span class="tts-math" data-tts="R sub y">$R_y$</span> be the conditional distribution of <span class="tts-math" data-tts="X">$X$</span> given <span class="tts-math" data-tts="Y equals y">$Y = y$</span>, and
+        <span class="tts-math" data-tts="R sub x">$\tilde R_x$</span> the conditional of <span class="tts-math" data-tts="Y">$Y$</span> given <span class="tts-math" data-tts="X equals x">$X = x$</span>. Starting from <span class="tts-math" data-tts="X sub 0 Y sub 0 equals x sub 0 y sub 0">$(X_0, Y_0) = (x_0, y_0)$</span>:
       </p>
 <ol data-cid="ch15-850">
-<li>Draw $X_1 \sim R_{y_0}$ (sample $X$ given the current $Y$).</li>
-<li>Draw $Y_1 \sim \tilde R_{x_1}$ (sample $Y$ given the new $X$).</li>
+<li>Draw <span class="tts-math" data-tts="X sub 1 distributed as R sub y sub 0">$X_1 \sim R_{y_0}$</span> (sample <span class="tts-math" data-tts="X">$X$</span> given the current <span class="tts-math" data-tts="Y">$Y$</span>).</li>
+<li>Draw <span class="tts-math" data-tts="Y sub 1 distributed as R sub x sub 1">$Y_1 \sim \tilde R_{x_1}$</span> (sample <span class="tts-math" data-tts="Y">$Y$</span> given the new <span class="tts-math" data-tts="X">$X$</span>).</li>
 <li>Repeat.</li>
 </ol>
 <p data-cid="ch15-860">
-        The chain $(X_i, Y_i)$ has $\pi$ as its stationary distribution.
+        The chain <span class="tts-math" data-tts="X sub i Y sub i">$(X_i, Y_i)$</span> has <span class="tts-math" data-tts="pi">$\pi$</span> as its stationary distribution.
       </p>
 </div>
 <p data-cid="ch15-870">
@@ -424,55 +423,55 @@
 <h3 data-cid="ch15-880">Why Gibbs is so useful</h3>
 <p data-cid="ch15-890">
       The big payoff is <strong>dimension reduction</strong>. To find the joint density from an unnormalized
-      $g$, you would have to compute
-      $$\int\!\!\int g(x, y) \, dx \, dy$$
+      <span class="tts-math" data-tts="g">$g$</span>, you would have to compute
+      <span class="tts-math" data-tts="the integral of the integral of g x y dx dy">$$\int\!\!\int g(x, y) \, dx \, dy$$</span>
       — a high-dimensional integral. For the Gibbs sampler you only need
-      $$\int g(x, y) \, dx \quad \text{and} \quad \int g(x, y) \, dy$$
+      <span class="tts-math" data-tts="the integral of g x y dx and the integral of g x y dy">$$\int g(x, y) \, dx \quad \text{and} \quad \int g(x, y) \, dy$$</span>
       to normalize the one-dimensional conditionals. Univariate integrals are dramatically easier.
     </p>
 <h3 data-cid="ch15-900">Stationarity of Gibbs</h3>
 <p data-cid="ch15-910">
-      Let $\pi_X, \pi_Y$ denote the marginals. By the tower property,
-      $$P((X, Y) \in A) = \int\!\!\int \mathbf{1}_A(x, y)\, dR_y(x)\, d\pi_Y(y). \tag{15.5}$$
+      Let <span class="tts-math" data-tts="pi sub X pi sub Y">$\pi_X, \pi_Y$</span> denote the marginals. By the tower property,
+      <span class="tts-math" data-tts="P X Y in A equals the integral of the integral of 1 sub A x y dR sub y x d pi sub Y y . 15.5">$$P((X, Y) \in A) = \int\!\!\int \mathbf{1}_A(x, y)\, dR_y(x)\, d\pi_Y(y). \tag{15.5}$$</span>
       Reversing the roles,
-      $$P((X, Y) \in A) = \int\!\!\int \mathbf{1}_A(x, y) \, d\tilde R_x(y)\, d\pi_X(x). \tag{15.6}$$
-      Now start the chain at $\pi$. Since $Y_0 \sim \pi_Y$ and $X_1 \mid Y_0 \sim R_{Y_0}$,
-      $$P((X_1, Y_0) \in A) = \int\!\!\int \mathbf{1}_A(x, y)\, dR_y(x)\, d\pi_Y(y),$$
-      which matches (15.5), so $(X_1, Y_0) \sim \pi$ and therefore $X_1 \sim \pi_X$. Then
-      $Y_1 \mid X_1 \sim \tilde R_{X_1}$ and the analogous computation against (15.6) gives
-      $(X_1, Y_1) \sim \pi$. Stationary.
+      <span class="tts-math" data-tts="P X Y in A equals the integral of the integral of 1 sub A x y d R sub x y d pi sub X x . 15.6">$$P((X, Y) \in A) = \int\!\!\int \mathbf{1}_A(x, y) \, d\tilde R_x(y)\, d\pi_X(x). \tag{15.6}$$</span>
+      Now start the chain at <span class="tts-math" data-tts="pi">$\pi$</span>. Since <span class="tts-math" data-tts="Y sub 0 distributed as pi sub Y">$Y_0 \sim \pi_Y$</span> and <span class="tts-math" data-tts="X sub 1 given Y sub 0 distributed as R sub Y sub 0">$X_1 \mid Y_0 \sim R_{Y_0}$</span>,
+      <span class="tts-math" data-tts="P X sub 1 Y sub 0 in A equals the integral of the integral of 1 sub A x y dR sub y x d pi sub Y y">$$P((X_1, Y_0) \in A) = \int\!\!\int \mathbf{1}_A(x, y)\, dR_y(x)\, d\pi_Y(y),$$</span>
+      which matches (15.5), so <span class="tts-math" data-tts="X sub 1 Y sub 0 distributed as pi">$(X_1, Y_0) \sim \pi$</span> and therefore <span class="tts-math" data-tts="X sub 1 distributed as pi sub X">$X_1 \sim \pi_X$</span>. Then
+      <span class="tts-math" data-tts="Y sub 1 given X sub 1 distributed as R sub X sub 1">$Y_1 \mid X_1 \sim \tilde R_{X_1}$</span> and the analogous computation against (15.6) gives
+      <span class="tts-math" data-tts="X sub 1 Y sub 1 distributed as pi">$(X_1, Y_1) \sim \pi$</span>. Stationary.
     </p>
 <h3 data-cid="ch15-920">Worked example — Gibbs for a hierarchical normal model</h3>
 <div class="box example" data-cid="ch15-930">
 <span class="box-label">Worked example — Gibbs for the 8-schools model</span>
 <p data-cid="ch15-940">
         Recall the model:
-        $$y_i \mid \theta_i \sim N(\theta_i, \sigma_i^2), \quad
+        <span class="tts-math" data-tts="y sub i given theta sub i distributed as N theta sub i sigma sub i to the 2 theta sub i given mu tau distributed as N mu tau to the 2 mu distributed as N 0 10 to the 4 tau to the 2 distributed as Inv minus Gamma a b .">$$y_i \mid \theta_i \sim N(\theta_i, \sigma_i^2), \quad
           \theta_i \mid \mu, \tau \sim N(\mu, \tau^2), \quad
-          \mu \sim N(0, 10^4), \quad \tau^2 \sim \text{Inv-Gamma}(a, b).$$
-        We want the joint posterior of $(\theta_1, \dots, \theta_8, \mu, \tau^2)$. Each full conditional is
+          \mu \sim N(0, 10^4), \quad \tau^2 \sim \text{Inv-Gamma}(a, b).$$</span>
+        We want the joint posterior of <span class="tts-math" data-tts="theta sub 1 and so on theta sub 8 mu tau to the 2">$(\theta_1, \dots, \theta_8, \mu, \tau^2)$</span>. Each full conditional is
         a known distribution:
       </p>
 <ol data-cid="ch15-950">
-<li>$\theta_i \mid \text{rest} \sim N\!\left(
+<li><span class="tts-math" data-tts="theta sub i given rest distributed as N y sub i over sigma sub i to the 2 plus mu over tau to the 2 over 1 over sigma sub i to the 2 plus 1 over tau to the 2 1 over 1 over sigma sub i to the 2 plus 1 over tau to the 2">$\theta_i \mid \text{rest} \sim N\!\left(
             \dfrac{y_i / \sigma_i^2 + \mu / \tau^2}{1/\sigma_i^2 + 1/\tau^2},\;
-            \dfrac{1}{1/\sigma_i^2 + 1/\tau^2}\right)$ — a precision-weighted average of the data and the
+            \dfrac{1}{1/\sigma_i^2 + 1/\tau^2}\right)$</span> — a precision-weighted average of the data and the
             group mean.</li>
-<li>$\mu \mid \text{rest} \sim N\!\left(\dfrac{\sum \theta_i / \tau^2}{8/\tau^2 + 1/10^4}, \;
-            \dfrac{1}{8/\tau^2 + 1/10^4}\right)$.</li>
-<li>$\tau^2 \mid \text{rest} \sim \text{Inv-Gamma}\!\left(a + 4, \; b + \tfrac{1}{2}\sum (\theta_i - \mu)^2\right)$.</li>
+<li><span class="tts-math" data-tts="mu given rest distributed as N the sum of theta sub i over tau to the 2 over 8 over tau to the 2 plus 1 over 10 to the 4 1 over 8 over tau to the 2 plus 1 over 10 to the 4">$\mu \mid \text{rest} \sim N\!\left(\dfrac{\sum \theta_i / \tau^2}{8/\tau^2 + 1/10^4}, \;
+            \dfrac{1}{8/\tau^2 + 1/10^4}\right)$</span>.</li>
+<li><span class="tts-math" data-tts="tau to the 2 given rest distributed as Inv minus Gamma a plus 4 b plus 1 over 2 the sum of theta sub i minus mu to the 2">$\tau^2 \mid \text{rest} \sim \text{Inv-Gamma}\!\left(a + 4, \; b + \tfrac{1}{2}\sum (\theta_i - \mu)^2\right)$</span>.</li>
 </ol>
 <p data-cid="ch15-960">
         Each step is a closed-form draw. We cycle through (1), (2), (3) repeatedly. After burn-in, the samples
-        approximate the joint posterior. From them we can estimate $E[\theta_i \mid y]$, posterior intervals,
-        and the distribution of $\tau$ — which tells us how much pooling the data supports.
+        approximate the joint posterior. From them we can estimate <span class="tts-math" data-tts="E theta sub i given y">$E[\theta_i \mid y]$</span>, posterior intervals,
+        and the distribution of <span class="tts-math" data-tts="tau">$\tau$</span> — which tells us how much pooling the data supports.
       </p>
 </div>
 <div class="box intuition" data-cid="ch15-970">
 <span class="box-label">Gibbs as "MH that always accepts"</span>
 <p data-cid="ch15-980">
         If you compute the Metropolis–Hastings acceptance ratio when the proposal is the full conditional,
-        $r = 1$ identically. So Gibbs is Metropolis–Hastings with a free lunch — no rejected moves. The price is
+        <span class="tts-math" data-tts="r equals 1">$r = 1$</span> identically. So Gibbs is Metropolis–Hastings with a free lunch — no rejected moves. The price is
         that you must be able to <em>sample from</em> each full conditional. When conditionals are not standard,
         you fall back to within-Gibbs Metropolis or specialized samplers (HMC, slice sampling).
       </p>
@@ -486,20 +485,20 @@
     </p>
 <h3 data-cid="ch15-1010">The model</h3>
 <p data-cid="ch15-1020">
-      Pixels live on a rectangular grid $\mathcal{T} = \{1, \dots, m\} \times \{1, \dots, n\}$. The unknown
-      greyscale image is $\Theta = (\Theta_z)_{z \in \mathcal{T}}$. The observed data is
-      $$X_z \mid \Theta = \theta \;\stackrel{\text{ind}}{\sim}\; N(\theta_z, \sigma^2), \quad z \in \mathcal{T}.$$
+      Pixels live on a rectangular grid <span class="tts-math" data-tts="script T equals 1 and so on m times 1 and so on n">$\mathcal{T} = \{1, \dots, m\} \times \{1, \dots, n\}$</span>. The unknown
+      greyscale image is <span class="tts-math" data-tts="Theta equals Theta sub z sub z in script T">$\Theta = (\Theta_z)_{z \in \mathcal{T}}$</span>. The observed data is
+      <span class="tts-math" data-tts="X sub z given Theta equals theta ind distributed as N theta sub z sigma to the 2 z in script T.">$$X_z \mid \Theta = \theta \;\stackrel{\text{ind}}{\sim}\; N(\theta_z, \sigma^2), \quad z \in \mathcal{T}.$$</span>
       The prior should encode that nearby pixels are correlated. Define an <em>edge</em> as a pair of pixels
-      $\{z_1, z_2\}$ with $\|z_1 - z_2\| = 1$, and let $\mathcal{E}$ be the edge set. The prior is
-      $$\lambda(\theta) \propto \exp\!\left[-\frac{a}{2} \sum_z \theta_z^2
-        + b \sum_{\{z_1, z_2\} \in \mathcal{E}} \theta_{z_1} \theta_{z_2}\right], \tag{15.8}$$
-      with $|b| &lt; a/4$ for integrability. This is a Gaussian Markov random field.
+      <span class="tts-math" data-tts="z sub 1 z sub 2">$\{z_1, z_2\}$</span> with <span class="tts-math" data-tts="norm of z sub 1 minus z sub 2 norm of equals 1">$\|z_1 - z_2\| = 1$</span>, and let <span class="tts-math" data-tts="script E">$\mathcal{E}$</span> be the edge set. The prior is
+      <span class="tts-math" data-tts="lambda theta proportional to exp minus a over 2 sub z theta sub z to the 2 plus b the sum over z sub 1 z sub 2 of in script E theta sub z sub 1 theta sub z sub 2 15.8">$$\lambda(\theta) \propto \exp\!\left[-\frac{a}{2} \sum_z \theta_z^2
+        + b \sum_{\{z_1, z_2\} \in \mathcal{E}} \theta_{z_1} \theta_{z_2}\right], \tag{15.8}$$</span>
+      with <span class="tts-math" data-tts="b lt a over 4">$|b| &lt; a/4$</span> for integrability. This is a Gaussian Markov random field.
     </p>
 <div class="box intuition" data-cid="ch15-1030">
 <span class="box-label">The Markov random field property</span>
 <p data-cid="ch15-1040">
-        Fix the values of $\theta$ at the four neighbors of pixel $z$. The prior density, viewed as a function
-        of $\theta_z$ alone, factors away from everything outside the neighborhood. So $\Theta_z$ is
+        Fix the values of <span class="tts-math" data-tts="theta">$\theta$</span> at the four neighbors of pixel <span class="tts-math" data-tts="z">$z$</span>. The prior density, viewed as a function
+        of <span class="tts-math" data-tts="theta sub z">$\theta_z$</span> alone, factors away from everything outside the neighborhood. So <span class="tts-math" data-tts="Theta sub z">$\Theta_z$</span> is
         conditionally independent of all non-neighbors given its neighbors. This is the spatial analog of the
         Markov property in time. Image-processing folks call the prior a "Gibbs distribution," which is where
         the sampler got its name.
@@ -508,25 +507,25 @@
 <h3 data-cid="ch15-1050">The trick — checkerboard updates</h3>
 <p data-cid="ch15-1060">
       Partition the grid into "odd" and "even" pixels:
-      $$\mathcal{T}_1 = \{(i,j) : i+j \text{ odd}\}, \qquad \mathcal{T}_2 = \{(i,j) : i+j \text{ even}\}.$$
-      Every neighbor of a pixel in $\mathcal{T}_1$ lives in $\mathcal{T}_2$, and vice versa. Conditional on
-      $\mathcal{T}_1$, the values on $\mathcal{T}_2$ are <em>mutually independent</em>. So you can update all of
-      $\mathcal{T}_2$ in parallel, then all of $\mathcal{T}_1$, alternating.
+      <span class="tts-math" data-tts="script T sub 1 equals i j i plus j odd script T sub 2 equals i j i plus j even .">$$\mathcal{T}_1 = \{(i,j) : i+j \text{ odd}\}, \qquad \mathcal{T}_2 = \{(i,j) : i+j \text{ even}\}.$$</span>
+      Every neighbor of a pixel in <span class="tts-math" data-tts="script T sub 1">$\mathcal{T}_1$</span> lives in <span class="tts-math" data-tts="script T sub 2">$\mathcal{T}_2$</span>, and vice versa. Conditional on
+      <span class="tts-math" data-tts="script T sub 1">$\mathcal{T}_1$</span>, the values on <span class="tts-math" data-tts="script T sub 2">$\mathcal{T}_2$</span> are <em>mutually independent</em>. So you can update all of
+      <span class="tts-math" data-tts="script T sub 2">$\mathcal{T}_2$</span> in parallel, then all of <span class="tts-math" data-tts="script T sub 1">$\mathcal{T}_1$</span>, alternating.
     </p>
 <p data-cid="ch15-1070">
-      With $\tau = 1/\sigma^2$, the posterior conditional for $\theta_z$ given the rest is normal:
-      $$\Theta_z \mid \text{neighbors}, X = x \sim
-        N\!\left(\frac{\tau x_z + b S_z}{a + \tau}, \; \frac{1}{a + \tau}\right), \tag{15.12}$$
-      where $S_z = \sum_{\tilde z \in N_z} \theta_{\tilde z}$ is the sum of neighboring pixel values. Each pixel
-      gets a precision-weighted average of its data $x_z$ and the average of its neighbors. Smoother priors
-      (larger $b$, $\rho$ closer to $1$) shift more weight onto the neighbors.
+      With <span class="tts-math" data-tts="tau equals 1 over sigma to the 2">$\tau = 1/\sigma^2$</span>, the posterior conditional for <span class="tts-math" data-tts="theta sub z">$\theta_z$</span> given the rest is normal:
+      <span class="tts-math" data-tts="Theta sub z given neighbors X equals x distributed as N tau x sub z plus b S sub z over a plus tau 1 over a plus tau 15.12">$$\Theta_z \mid \text{neighbors}, X = x \sim
+        N\!\left(\frac{\tau x_z + b S_z}{a + \tau}, \; \frac{1}{a + \tau}\right), \tag{15.12}$$</span>
+      where <span class="tts-math" data-tts="S sub z equals the sum over z in N sub z of theta sub z">$S_z = \sum_{\tilde z \in N_z} \theta_{\tilde z}$</span> is the sum of neighboring pixel values. Each pixel
+      gets a precision-weighted average of its data <span class="tts-math" data-tts="x sub z">$x_z$</span> and the average of its neighbors. Smoother priors
+      (larger <span class="tts-math" data-tts="b">$b$</span>, <span class="tts-math" data-tts="rho">$\rho$</span> closer to <span class="tts-math" data-tts="1">$1$</span>) shift more weight onto the neighbors.
     </p>
 <div class="box pause" data-cid="ch15-1080">
 <span class="box-label">Pause — over- and under-smoothing</span>
 <p data-cid="ch15-1090">
         In Keener's numerical example (Figure 15.4), three priors are compared on a noisy image of the letter A:
-        $\rho = 0.70$ (under-smoothed), $\rho = 0.8565$ (matched to the empirical correlation), and
-        $\rho = 0.95$ (over-smoothed). The under-smoothed prior actually gives the lowest MSE — a useful lesson
+        <span class="tts-math" data-tts="rho equals 0.70">$\rho = 0.70$</span> (under-smoothed), <span class="tts-math" data-tts="rho equals 0.8565">$\rho = 0.8565$</span> (matched to the empirical correlation), and
+        <span class="tts-math" data-tts="rho equals 0.95">$\rho = 0.95$</span> (over-smoothed). The under-smoothed prior actually gives the lowest MSE — a useful lesson
         that "match the prior to the truth" is not always optimal under squared-error loss. The matched prior
         produces visually nice results; the over-smoothed prior blurs the letter.
       </p>
@@ -547,22 +546,22 @@
 <p data-cid="ch15-1150">
       Start several chains from over-dispersed initial values. Run them all to (apparent) stationarity. If they
       end up exploring different distributions, you have not converged. The <strong>Gelman–Rubin</strong>
-      $\hat R$ statistic compares between-chain to within-chain variance:
-      $$\hat R = \sqrt{\frac{\hat V}{W}}, \qquad \hat V = \frac{n-1}{n} W + \frac{1}{n} B,$$
-      where $W$ is mean within-chain variance and $B$ is between-chain variance. We want $\hat R &lt; 1.01$.
+      <span class="tts-math" data-tts="R">$\hat R$</span> statistic compares between-chain to within-chain variance:
+      <span class="tts-math" data-tts="R equals root V over W V equals n minus 1 over n W plus 1 over n B">$$\hat R = \sqrt{\frac{\hat V}{W}}, \qquad \hat V = \frac{n-1}{n} W + \frac{1}{n} B,$$</span>
+      where <span class="tts-math" data-tts="W">$W$</span> is mean within-chain variance and <span class="tts-math" data-tts="B">$B$</span> is between-chain variance. We want <span class="tts-math" data-tts="R lt 1.01">$\hat R &lt; 1.01$</span>.
     </p>
 <h3 data-cid="ch15-1160">Effective sample size</h3>
 <p data-cid="ch15-1170">
-      $N_{\text{eff}} = N / (1 + 2 \sum_{k=1}^\infty \rho_k)$, with $\rho_k$ the lag-$k$ autocorrelation.
-      Always report $N_{\text{eff}}$ alongside the raw $N$. A chain with $N = 10^5$ and $N_{\text{eff}} = 80$
+      <span class="tts-math" data-tts="N sub eff equals N over 1 plus 2 the sum over k equals 1 of ^ infinity rho sub k">$N_{\text{eff}} = N / (1 + 2 \sum_{k=1}^\infty \rho_k)$</span>, with <span class="tts-math" data-tts="rho sub k">$\rho_k$</span> the lag-<span class="tts-math" data-tts="k">$k$</span> autocorrelation.
+      Always report <span class="tts-math" data-tts="N sub eff">$N_{\text{eff}}$</span> alongside the raw <span class="tts-math" data-tts="N">$N$</span>. A chain with <span class="tts-math" data-tts="N equals 10 to the 5">$N = 10^5$</span> and <span class="tts-math" data-tts="N sub eff equals 80">$N_{\text{eff}} = 80$</span>
       is barely better than 80 independent draws.
     </p>
 <h3 data-cid="ch15-1180">Model comparison</h3>
 <p data-cid="ch15-1190">
-      Bayes factors compare two models $M_1, M_2$ by the ratio of their marginal likelihoods
-      $\int p(y \mid \theta_i, M_i) \lambda(\theta_i \mid M_i)\, d\theta_i$. Computing marginal likelihoods is
-      <em>much</em> harder than computing posteriors — MCMC samples from $p(\theta \mid y)$ do not directly give
-      $p(y)$. Workarounds include bridge sampling, nested sampling, and posterior predictive checks. For
+      Bayes factors compare two models <span class="tts-math" data-tts="M sub 1 M sub 2">$M_1, M_2$</span> by the ratio of their marginal likelihoods
+      <span class="tts-math" data-tts="the integral of p y given theta sub i M sub i lambda theta sub i given M sub i d theta sub i">$\int p(y \mid \theta_i, M_i) \lambda(\theta_i \mid M_i)\, d\theta_i$</span>. Computing marginal likelihoods is
+      <em>much</em> harder than computing posteriors — MCMC samples from <span class="tts-math" data-tts="p theta given y">$p(\theta \mid y)$</span> do not directly give
+      <span class="tts-math" data-tts="p y">$p(y)$</span>. Workarounds include bridge sampling, nested sampling, and posterior predictive checks. For
       out-of-sample prediction, modern practice often prefers <strong>WAIC</strong> or <strong>LOO-CV</strong>,
       which estimate expected log predictive density from a single MCMC run.
     </p>
@@ -579,23 +578,23 @@
 <h2 data-cid="ch15-1220" id="summary">Summary — what you learned in Chapter 15</h2>
 <p data-cid="ch15-1230">The chapter in nine bullets:</p>
 <ol data-cid="ch15-1240">
-<li>A <strong>hierarchical model</strong> writes the prior in stages: $T \sim G$, $\Theta \mid T \sim \Lambda_T$.
-        The marginal prior is then the mixture $\int \Lambda_\tau \, dG(\tau)$.</li>
+<li>A <strong>hierarchical model</strong> writes the prior in stages: <span class="tts-math" data-tts="T distributed as G">$T \sim G$</span>, <span class="tts-math" data-tts="Theta given T distributed as Lambda sub T">$\Theta \mid T \sim \Lambda_T$</span>.
+        The marginal prior is then the mixture <span class="tts-math" data-tts="the integral of Lambda _ tau dG tau">$\int \Lambda_\tau \, dG(\tau)$</span>.</li>
 <li><strong>Informative</strong>, <strong>non-informative</strong>, and <strong>Jeffreys</strong> priors
-        encode different stances toward prior knowledge. Jeffreys's prior $\propto \sqrt{\det I(\theta)}$
+        encode different stances toward prior knowledge. Jeffreys's prior <span class="tts-math" data-tts="proportional to root det I theta">$\propto \sqrt{\det I(\theta)}$</span>
         is reparameterization-invariant.</li>
 <li><strong>Bayesian robustness</strong>: tail behavior of the prior matters far more than its bulk.
-        Two priors agreeing to $3\%$ in density can disagree by a factor of $2$ in integrated risk.</li>
-<li>A <strong>Markov chain</strong> $X_0, X_1, \dots$ has a transition kernel $Q$; distributions evolve by
-        $\pi_{n+1} = \pi_n Q$. A distribution $\pi$ is <strong>stationary</strong> if $\pi = \pi Q$.</li>
-<li>For irreducible aperiodic chains, $\pi_n \to \pi$ and the ergodic theorem replaces the law of large
+        Two priors agreeing to <span class="tts-math" data-tts="3 %">$3\%$</span> in density can disagree by a factor of <span class="tts-math" data-tts="2">$2$</span> in integrated risk.</li>
+<li>A <strong>Markov chain</strong> <span class="tts-math" data-tts="X sub 0 X sub 1 and so on">$X_0, X_1, \dots$</span> has a transition kernel <span class="tts-math" data-tts="Q">$Q$</span>; distributions evolve by
+        <span class="tts-math" data-tts="pi sub n plus 1 equals pi sub n Q">$\pi_{n+1} = \pi_n Q$</span>. A distribution <span class="tts-math" data-tts="pi">$\pi$</span> is <strong>stationary</strong> if <span class="tts-math" data-tts="pi equals pi Q">$\pi = \pi Q$</span>.</li>
+<li>For irreducible aperiodic chains, <span class="tts-math" data-tts="pi sub n to pi">$\pi_n \to \pi$</span> and the ergodic theorem replaces the law of large
         numbers: time averages converge to space averages.</li>
-<li><strong>Metropolis–Hastings</strong> turns any proposal $J$ into a chain with target $f$ by accepting
-        moves with probability $\min\{r(x_0, x^*), 1\}$, where $r$ uses only ratios of $f$ — so normalizing
+<li><strong>Metropolis–Hastings</strong> turns any proposal <span class="tts-math" data-tts="J">$J$</span> into a chain with target <span class="tts-math" data-tts="f">$f$</span> by accepting
+        moves with probability <span class="tts-math" data-tts="min r x sub 0 x to the times 1">$\min\{r(x_0, x^*), 1\}$</span>, where <span class="tts-math" data-tts="r">$r$</span> uses only ratios of <span class="tts-math" data-tts="f">$f$</span> — so normalizing
         constants cancel.</li>
 <li>The <strong>Gibbs sampler</strong> cycles through full conditionals, accepting every proposal.
         It exchanges multi-dimensional integration for repeated one-dimensional sampling.</li>
-<li>Posterior <strong>diagnostics</strong> — trace plots, $\hat R$, effective sample size — are not
+<li>Posterior <strong>diagnostics</strong> — trace plots, <span class="tts-math" data-tts="R">$\hat R$</span>, effective sample size — are not
         optional. The chain promises only asymptotic convergence; we must check the finite-sample reality.</li>
 <li>Failure modes to watch for: <strong>poor mixing</strong>, <strong>multimodality</strong> the chain
         cannot cross, <strong>improper posteriors</strong> from improper priors, and Bayes factors that
@@ -607,7 +606,7 @@
         Before moving to Chapter 16, you should be able to answer (without looking back):
       </p>
 <ul data-cid="ch15-1270">
-<li>Write the three-stage hierarchical model and explain what is gained by treating $\tau$ as random
+<li>Write the three-stage hierarchical model and explain what is gained by treating <span class="tts-math" data-tts="tau">$\tau$</span> as random
           rather than estimating it (empirical Bayes).</li>
 <li>Why does the Metropolis–Hastings acceptance ratio not require the posterior's normalizing constant?</li>
 <li>State the stationarity argument for the two-block Gibbs sampler in one paragraph.</li>
@@ -622,6 +621,6 @@
 </nav>
 </article>
 </main>
-<script src="/js/main.js"></script><script src="/js/comments.js"></script>
+<script src="/js/main.js"></script><script src="/js/comments.js"></script><script src="/js/tts.js"></script>
 </body>
 </html>

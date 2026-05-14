@@ -19,11 +19,11 @@
 
 <main class="layout">
   <aside class="sidebar">
-    <h4>About</h4>
+    <h4>Navigation</h4>
     <ol>
       <li><a href="#about">What this is</a></li>
-      <li><a href="#how">How it works</a></li>
       <li><a href="#books">Books</a></li>
+      <li><a href="#papers">Papers</a></li>
     </ol>
   </aside>
 
@@ -31,41 +31,78 @@
     <section class="hero">
       <div class="kicker">A growing library</div>
       <h1>Slow Books</h1>
-      <p class="subtitle">Math and statistics textbooks rush. These companion guides slow them down — every definition unpacked, every "obvious" step spelled out, with comments you can leave on any paragraph.</p>
+      <p class="subtitle">Math and statistics textbooks rush. These companion guides slow them down — every definition unpacked, every step spelled out, with read-aloud TTS and comments on any paragraph.</p>
     </section>
 
     <h2 id="about">What this is</h2>
     <p>
-      A small static site, served locally, that walks chapter by chapter through dense textbooks at the pace they
-      should have been written. Every paragraph, list, and callout box has a comment button — leave notes on what
-      didn't make sense, and the explainer for that block can be rewritten in response.
+      A site served locally that walks through dense textbooks and research papers at the pace they should have
+      been written. Every paragraph has a comment button — leave notes on anything that doesn't land, and the
+      explanation gets rewritten in response. A TTS player reads blocks aloud at adjustable speed.
     </p>
 
-    <h2 id="how">How it works</h2>
-    <ol>
-      <li>Pick a book below.</li>
-      <li>Read the chapter pages. Hover any block to reveal a <code>💬</code> button (or press <strong>C</strong>).</li>
-      <li>Comments persist to <code>comments/comments.json</code>. They survive reloads, theme changes, and re-edits of the prose.</li>
-      <li>When a section is unclear, leave a comment. The next pass at that block will be rewritten with your feedback in hand.</li>
-    </ol>
-
     <h2 id="books">Books</h2>
-    <ul class="chapter-list">
-      <li>
-        <a href="/books/basic_stat/">
-          <span class="num">01</span>
-          <span class="title">Theoretical Statistics — R. W. Keener</span>
-          <span class="status ready">20 chapters</span>
-        </a>
-      </li>
+    <ul class="content-list" id="books-list">
+      <li style="color:var(--ink-soft);font-size:0.88rem;padding:0.5rem 0">Loading…</li>
     </ul>
 
-    <p style="margin-top: 2rem; color: var(--ink-soft); font-size: 0.9rem;">
-      More books arrive as new <code>books/&lt;slug&gt;/</code> folders. Each book gets its own homepage, chapters, and comment scope — but everything is served from this one site, on one port.
+    <h2 id="papers">Papers</h2>
+    <ul class="content-list" id="papers-list">
+      <li style="color:var(--ink-soft);font-size:0.88rem;padding:0.5rem 0">Loading…</li>
+    </ul>
+
+    <p style="margin-top:1.5rem;color:var(--ink-soft);font-size:0.88rem;">
+      Add a book by creating <code>books/&lt;slug&gt;/</code> with an <code>index.html</code>, <code>chapters/</code>,
+      and a <code>meta.json</code>. Add a paper by creating <code>papers/&lt;slug&gt;/index.html</code>.
     </p>
   </article>
 </main>
 
 <script src="/js/main.js"></script>
+<script>
+(async function () {
+  const booksList  = document.getElementById("books-list");
+  const papersList = document.getElementById("papers-list");
+
+  function empty(el, msg) {
+    el.innerHTML = `<li style="color:var(--ink-soft);font-size:0.88rem;padding:0.5rem 0">${msg}</li>`;
+  }
+
+  function bookCard(item, idx) {
+    const sub = item.subtitle ? `<span class="sub">${item.subtitle}</span>` : "";
+    const badge = item.type === "paper"
+      ? `<span class="badge paper">paper</span>`
+      : `<span class="badge book">${item.n_chapters} ch.</span>`;
+    return `<li><a href="${item.url}">
+      <span class="num">${String(idx + 1).padStart(2, "0")}</span>
+      <span class="title">${item.title}</span>
+      ${badge}
+      ${sub}
+    </a></li>`;
+  }
+
+  try {
+    const r = await fetch("/api/books");
+    if (!r.ok) throw new Error("api error");
+    const { books } = await r.json();
+
+    const booksData  = books.filter(b => !b.type || b.type === "book");
+    const papersData = books.filter(b => b.type === "paper");
+
+    booksList.innerHTML  = booksData.length
+      ? booksData.map(bookCard).join("")
+      : "";
+    papersList.innerHTML = papersData.length
+      ? papersData.map(bookCard).join("")
+      : "";
+
+    if (!booksData.length)  empty(booksList,  "No books yet — add one under <code>books/</code>.");
+    if (!papersData.length) empty(papersList, "No papers yet — add one under <code>papers/</code>.");
+  } catch (_) {
+    empty(booksList,  "Could not load content — is the server running?");
+    empty(papersList, "");
+  }
+})();
+</script>
 </body>
 </html>

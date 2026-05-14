@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GPM: Gaussian Pancake Mechanism · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/>
+</head>
+<body data-book="gpm-backdoor-dp" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/gpm-backdoor-dp/">GPM: Gaussian Pancake Mechanism</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. Introduction</a></li>
+    <li><a href="#s2">2. Background</a></li>
+    <li><a href="#s2-1">2.1 Differential Privacy</a></li>
+    <li><a href="#s2-2">2.2 Gaussian Mechanism</a></li>
+    <li><a href="#s2-3">2.3 Numerical Issues</a></li>
+    <li><a href="#s2-4">2.4 Pancake Distribution</a></li>
+    <li><a href="#s3">3. The GPM Attack</a></li>
+    <li><a href="#s3-1">3.1 Threat Model</a></li>
+    <li><a href="#s3-2">3.2 Undetectability</a></li>
+    <li><a href="#s4">4. Statistical Privacy Leakage</a></li>
+    <li><a href="#s4-1">4.1 Lower Bound</a></li>
+    <li><a href="#s4-2">4.2 Upper Bound</a></li>
+    <li><a href="#s5">5. Distinguishing Attacks</a></li>
+    <li><a href="#s6">6. Mitigations</a></li>
+    <li><a href="#s7">7. Experiments</a></li>
+    <li><a href="#s8">8. Discussion &amp; Implications</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">Security &amp; Privacy / arXiv 2509.23834</div>
+    <h1>GPM: The Gaussian Pancake Mechanism for Planting Undetectable Backdoors in Differential Privacy</h1>
+    <div class="paper-meta">
+      <span class="authors">Haochen Sun, Xi He (University of Waterloo)</span>
+      <span class="venue">arXiv:2509.23834v3 [cs.CR], March 2026</span>
+    </div>
+  </section>
+
+  <!-- ===== ABSTRACT ===== -->
+  <div class="paper-abstract" data-cid="main-0010" id="abstract">
+    <strong>Abstract.</strong>
+    Differential privacy (DP) has become the gold standard for preserving individual privacy in data analysis. However, a critical assumption underlying its rigorous guarantees is that DP mechanisms are <em>correctly implemented and faithfully executed</em>. Several incidents of unintended privacy loss have occurred due to numerical issues in DP software, and those defects have been exploited in privacy attacks. This paper asks: can such passive defects be elevated into <em>active, intentional</em> backdoor attacks that remain completely undetectable?
+
+    The answer is yes. The authors present the <strong>Gaussian pancake mechanism (GPM)</strong>, a novel mechanism that is <em>computationally indistinguishable</em> from the standard Gaussian mechanism (GM) — yet can provide arbitrarily weaker privacy guarantees. Any adversary who plants GPM in a closed-source DP library can later exploit it to achieve near-perfect success at identifying which database was queried, while everyone else (including the server running the software) sees outputs that are statistically indistinguishable from genuine GM. The paper proves GPM's covertness, characterises its statistical privacy leakage, and demonstrates distinguishing attacks with near-100% success in experiments.
+  </div>
+
+  <div class="box warn" data-cid="main-0020">
+    <span class="box-label">Why This Paper Matters</span>
+    <p>If you run a DP service using a closed-source library, this paper shows that no amount of black-box auditing can rule out a hidden backdoor. The attacker's key finding: <em>passing every statistical test does not mean the privacy guarantee holds</em>. Open-source, formally verified DP implementations are the only safe option.</p>
+  </div>
+
+  <!-- ===== SECTION 1: INTRODUCTION ===== -->
+  <h2 data-cid="main-0030" id="s1">1. Introduction</h2>
+
+  <p data-cid="main-0040">
+    Differential privacy has become the dominant framework for formal privacy guarantees. The core idea is simple: any single individual's data should have only a bounded, provable effect on the output of a computation. But this guarantee depends entirely on the mechanism being <em>correctly implemented</em>. In practice, implementations must use finite-precision floating-point arithmetic, not the ideal real-number mathematics in which DP is defined. This gap has already been exploited.
+  </p>
+
+  <p data-cid="main-0050">
+    Known vulnerabilities include: the Laplace mechanism leaking information through its least-significant bits (Mironov 2012); the Exponential mechanism silently assigning zero probability to some outputs due to rounding (Ilvento 2020); and the Gaussian mechanism suffering from enlarged effective sensitivities (Jin et al. 2022). These are <em>accidental</em> bugs — but exploiting them via distinguishing attacks has already achieved over 92% success in identifying the correct database from a pair of neighbouring databases in systems like DP-SGD.
+  </p>
+
+  <p data-cid="main-0060">
+    The question this paper poses is sharper: can we construct an <em>intentional</em> backdoor that (a) is computationally indistinguishable from the authentic Gaussian mechanism by any polynomial-time algorithm, (b) leaves no suspicious traces in execution (no extra network calls, no anomalous system calls), and (c) enables a privileged attacker with a secret key to extract far more information than DP should allow?
+  </p>
+
+  <div class="box intuition" data-cid="main-0070">
+    <span class="box-label">The Key Insight</span>
+    <p>The construction exploits a remarkable fact from lattice cryptography: there exists a probability distribution — the <strong>Gaussian pancake (hCLWE) distribution</strong> — that is computationally indistinguishable from a multivariate Gaussian to any efficient algorithm that does not know a secret vector <span class="tts-math" data-tts="w">$\mathbf{w}$</span>, yet has a very different shape when viewed in the direction of <span class="tts-math" data-tts="w">$\mathbf{w}$</span>. By substituting this distribution for Gaussian noise, the backdoor planter creates a mechanism that looks correct to everyone — but leaks the query result to anyone who knows <span class="tts-math" data-tts="w">$\mathbf{w}$</span>.</p>
+  </div>
+
+  <p data-cid="main-0080">
+    This threat is particularly acute because intellectual property concerns mean that many deployed DP systems are closed-source. The server running the mechanism cannot easily inspect its own software stack. A supply-chain attacker who compromises a randomness library, for example, could install GPM invisibly. The authors name this scenario "supply-chain backdoor planting" and formalise it rigorously.
+  </p>
+
+  <p data-cid="main-0090">
+    Real-world precedents make this threat concrete: early macOS DP implementations used <span class="tts-math" data-tts="epsilon greater than or equal to 16">$\varepsilon \geq 16$</span> (effectively no privacy); the Lazarus Group has compromised closed-source cryptographic software to steal cryptocurrency; and a backdoor was suspected in a published pseudorandom number generator standard (the Dual EC DRBG affair), allowing adversaries to decrypt protected data.
+  </p>
+
+  <!-- ===== SECTION 2: BACKGROUND ===== -->
+  <h2 data-cid="main-0100" id="s2">2. Background</h2>
+
+  <h3 data-cid="main-0110" id="s2-1">2.1 Differential Privacy</h3>
+
+  <p data-cid="main-0120">
+    Differential privacy is defined in terms of <em>neighbouring databases</em>: two databases <span class="tts-math" data-tts="D and D prime">$D$</span> and <span class="tts-math" data-tts="D prime">$D'$</span> are neighbours (written <span class="tts-math" data-tts="D similar to D prime">$D \simeq D'$</span>) if they differ in exactly one row — one person's record is present in one but absent (or different) in the other.
+  </p>
+
+  <div class="box definition" data-cid="main-0130">
+    <span class="box-label">Definition 2.1 — Differential Privacy</span>
+    <p>Given <span class="tts-math" data-tts="epsilon greater than 0">$\varepsilon > 0$</span> and <span class="tts-math" data-tts="0 less than or equal to delta less than 1">$0 \leq \delta < 1$</span>, a mechanism <span class="tts-math" data-tts="M mapping D to Y">$M: \mathcal{D} \to \mathcal{Y}$</span> is <strong><span class="tts-math" data-tts="epsilon delta">$(\varepsilon,\delta)$</span>-differentially private</strong> if, for any pair of neighbouring databases <span class="tts-math" data-tts="D similar to D prime">$D \simeq D'$</span> and any measurable subset <span class="tts-math" data-tts="S subset of Y">$S \subseteq \mathcal{Y}$</span>:</p>
+    <p data-cid="main-0140">
+      <span class="tts-math" data-tts="the probability that M of D is in S, is at most e to the epsilon, times the probability that M of D prime is in S, plus delta">
+        $$\Pr[M(D) \in S] \leq e^{\varepsilon} \Pr[M(D') \in S] + \delta$$
+      </span>
+    </p>
+  </div>
+
+  <div class="box intuition" data-cid="main-0150">
+    <span class="box-label">Reading the DP Definition</span>
+    <p>Think of <span class="tts-math" data-tts="epsilon">$\varepsilon$</span> as a "privacy budget": the smaller it is, the harder it is for any observer to tell from the mechanism's output whether it was run on <span class="tts-math" data-tts="D">$D$</span> or <span class="tts-math" data-tts="D prime">$D'$</span>. The parameter <span class="tts-math" data-tts="delta">$\delta$</span> is a small failure probability — with probability <span class="tts-math" data-tts="1 minus delta">$1 - \delta$</span>, the bound holds strictly. In practice, <span class="tts-math" data-tts="delta">$\delta$</span> is kept extremely small (e.g., <span class="tts-math" data-tts="10 to the power negative 10">$10^{-10}$</span>), making the "failure" event astronomically rare.
+    </p>
+    <p>The exponential factor <span class="tts-math" data-tts="e to the epsilon">$e^\varepsilon$</span> tells you the maximum multiplicative ratio between the probabilities. If <span class="tts-math" data-tts="epsilon equals 0">$\varepsilon = 0$</span>, the two distributions must be identical — perfect privacy. If <span class="tts-math" data-tts="epsilon equals 1">$\varepsilon = 1$</span>, one probability can be at most <span class="tts-math" data-tts="e">$e$</span> (about 2.7) times the other — moderate privacy. A very large <span class="tts-math" data-tts="epsilon">$\varepsilon$</span> gives essentially no protection.</p>
+  </div>
+
+  <h3 data-cid="main-0160" id="s2-2">2.2 The Gaussian Mechanism</h3>
+
+  <p data-cid="main-0170">
+    The Gaussian mechanism (GM) is the most widely deployed DP mechanism for high-dimensional queries. Given a query <span class="tts-math" data-tts="q mapping D to R d">$q: \mathcal{D} \to \mathbb{R}^d$</span>, it adds independent Gaussian noise to each coordinate of the query result. The noise level is calibrated to the query's <em>sensitivity</em>, which is the maximum amount the query result can change when one record changes.
+  </p>
+
+  <div class="box definition" data-cid="main-0180">
+    <span class="box-label">Definition 2.2 — Gaussian Mechanism</span>
+    <p>Given a query <span class="tts-math" data-tts="q mapping D to R d">$q: \mathcal{D} \to \mathbb{R}^d$</span> and noise scale <span class="tts-math" data-tts="sigma greater than 0">$\sigma > 0$</span>, the Gaussian mechanism is:</p>
+    <p data-cid="main-0190">
+      <span class="tts-math" data-tts="M star sub sigma of D equals N of q of D comma sigma squared I sub d">
+        $$M^*_\sigma(D) = \mathcal{N}\!\left(q(D),\, \sigma^2 I_d\right)$$
+      </span>
+    </p>
+    <p>That is, the output is a random draw from a <span class="tts-math" data-tts="d">$d$</span>-dimensional Gaussian centred at the true query result <span class="tts-math" data-tts="q of D">$q(D)$</span>, with covariance <span class="tts-math" data-tts="sigma squared times the identity matrix">$\sigma^2 I_d$</span> — meaning each coordinate is perturbed by independent noise with variance <span class="tts-math" data-tts="sigma squared">$\sigma^2$</span>.</p>
+  </div>
+
+  <div class="box definition" data-cid="main-0200">
+    <span class="box-label">Theorem 2.3 — Privacy Guarantee of GM</span>
+    <p>Let <span class="tts-math" data-tts="Delta">$\Delta$</span> be the <span class="tts-math" data-tts="ell 2">$\ell_2$</span> sensitivity of the query: <span class="tts-math" data-tts="Delta equals the supremum over neighbouring D and D prime of the norm of q of D minus q of D prime">$\Delta := \sup_{D \simeq D'} \|q(D) - q(D')\|$</span>. Then for any <span class="tts-math" data-tts="0 less than delta less than or equal to 0.5">$0 < \delta \leq 0.5$</span>, the Gaussian mechanism <span class="tts-math" data-tts="M star sub sigma">$M^*_\sigma$</span> is <span class="tts-math" data-tts="epsilon delta">$(\varepsilon, \delta)$</span>-DP where:</p>
+    <p data-cid="main-0210">
+      <span class="tts-math" data-tts="epsilon equals Delta over 2 sigma squared, minus Delta over sigma, times Phi inverse of delta, where Phi is the standard Gaussian CDF">
+        $$\varepsilon = \frac{\Delta^2}{2\sigma^2} - \frac{\Delta}{\sigma}\,\Phi^{-1}(\delta)$$
+      </span>
+    </p>
+    <p>Here <span class="tts-math" data-tts="Phi">$\Phi$</span> is the CDF of the standard Gaussian. Since <span class="tts-math" data-tts="delta">$\delta$</span> is small, <span class="tts-math" data-tts="Phi inverse of delta">$\Phi^{-1}(\delta)$</span> is a large negative number, making both terms positive. The commonly seen approximation <span class="tts-math" data-tts="Delta over sigma times the square root of 2 times the natural log of 1.25 over delta">$\frac{\Delta}{\sigma}\sqrt{2\ln\frac{1.25}{\delta}}$</span> is looser but easier to compute.</p>
+  </div>
+
+  <div class="box intuition" data-cid="main-0220">
+    <span class="box-label">Intuition: Larger Sigma = More Privacy</span>
+    <p>As the noise scale <span class="tts-math" data-tts="sigma">$\sigma$</span> grows relative to the sensitivity <span class="tts-math" data-tts="Delta">$\Delta$</span>, the ratio <span class="tts-math" data-tts="Delta over sigma">$\Delta/\sigma$</span> shrinks, making <span class="tts-math" data-tts="epsilon">$\varepsilon$</span> smaller — more privacy. The trade-off is accuracy: bigger noise means the query result is harder to use. The Gaussian mechanism's privacy guarantee is tight: you cannot do better without adding more noise or changing the mechanism.</p>
+  </div>
+
+  <h3 data-cid="main-0230" id="s2-3">2.3 Numerical Issues and Distinguishing Attacks</h3>
+
+  <p data-cid="main-0240">
+    Floating-point implementations of the Gaussian mechanism have a fundamental problem: the real-number mathematics of DP theory must be executed on hardware that uses finite-precision arithmetic (typically 64-bit IEEE 754 doubles). This creates small but exploitable deviations. Specifically:
+  </p>
+
+  <ul data-cid="main-0250">
+    <li><strong>Least-significant bits:</strong> The rounding of floating-point numbers causes the least-significant bits of the output to correlate with the unperturbed query result <span class="tts-math" data-tts="q of D">$q(D)$</span>, leaking more than intended.</li>
+    <li><strong>Sensitivity underestimation:</strong> Basic operations like summation can have their true sensitivity underestimated, causing insufficient noise to be added.</li>
+    <li><strong>Rounding to zero probability:</strong> In the Exponential mechanism, some outputs may receive zero probability due to rounding, effectively setting the privacy cost to <span class="tts-math" data-tts="epsilon equals infinity">$\varepsilon = +\infty$</span>.</li>
+  </ul>
+
+  <p data-cid="main-0260">
+    These bugs enable <em>distinguishing attacks</em>: given a mechanism output <span class="tts-math" data-tts="y">$y$</span> and two neighbouring databases <span class="tts-math" data-tts="D 0 and D 1">$D_0$</span> and <span class="tts-math" data-tts="D 1">$D_1$</span>, the attacker's goal is to guess which database was queried. Jin et al. (2022) achieved over 92% success against DP-SGD by exploiting floating-point artifacts — and those were <em>bugs</em>, not intentional backdoors. GPM shows that intentional backdoors can do far worse.
+  </p>
+
+  <h3 data-cid="main-0270" id="s2-4">2.4 The Gaussian Pancake (hCLWE) Distribution</h3>
+
+  <p data-cid="main-0280">
+    The key mathematical ingredient in GPM is the <strong>homogeneous Continuous Learning With Errors (hCLWE) distribution</strong>, also called the Gaussian pancake distribution. This distribution comes from lattice cryptography and has a remarkable property: it looks exactly like a multivariate Gaussian to any efficient algorithm that does not know a secret unit vector <span class="tts-math" data-tts="w">$\mathbf{w}$</span> — but it has a completely different structure when viewed in the direction of <span class="tts-math" data-tts="w">$\mathbf{w}$</span>.
+  </p>
+
+  <div class="box definition" data-cid="main-0290">
+    <span class="box-label">Definition 2.5 — hCLWE (Gaussian Pancake) Distribution</span>
+    <p>Parameterised by a unit vector <span class="tts-math" data-tts="w in S d minus 1">$\mathbf{w} \in S^{d-1}$</span> (the secret direction) and shape parameters <span class="tts-math" data-tts="beta, gamma greater than 0">$\beta, \gamma > 0$</span>. First define the Gaussian decay function <span class="tts-math" data-tts="rho sub s of x equals exp of negative pi times x over s squared">$\rho_s(\mathbf{x}) := \exp\!\left(-\pi \left\|\frac{\mathbf{x}}{s}\right\|^2\right)$</span>. The probability density function of <span class="tts-math" data-tts="H sub w beta gamma">$H_{\mathbf{w},\beta,\gamma}$</span> is:</p>
+    <p data-cid="main-0300">
+      <span class="tts-math" data-tts="psi sub w beta gamma of y is proportional to rho 1 of y, times the sum over all integers z, of rho sub beta of z minus gamma times y transpose w">
+        $$\psi_{\mathbf{w},\beta,\gamma}(\mathbf{y}) \propto \rho_1(\mathbf{y}) \cdot \sum_{z \in \mathbb{Z}} \rho_\beta\!\left(z - \gamma \mathbf{y}^\top \mathbf{w}\right)$$
+      </span>
+    </p>
+    <p>The outer factor <span class="tts-math" data-tts="rho 1 of y">$\rho_1(\mathbf{y})$</span> gives an overall Gaussian envelope (so the distribution decays to zero far from the origin). The sum over <span class="tts-math" data-tts="z in Z">$z \in \mathbb{Z}$</span> introduces a periodic modulation in the direction of <span class="tts-math" data-tts="w">$\mathbf{w}$</span>, creating a series of "pancake" layers.</p>
+  </div>
+
+  <div class="box intuition" data-cid="main-0310">
+    <span class="box-label">What "Pancakes" Means Geometrically</span>
+    <p>Think of a stack of very thin, flat disks (pancakes) piled on top of each other along the direction of <span class="tts-math" data-tts="w">$\mathbf{w}$</span>. Each pancake is a Gaussian blob with:</p>
+    <ul>
+      <li><strong>Thickness</strong> (in the <span class="tts-math" data-tts="w">$\mathbf{w}$</span> direction): roughly <span class="tts-math" data-tts="beta over gamma">$\beta/\gamma$</span> — very thin when <span class="tts-math" data-tts="beta">$\beta$</span> is small and <span class="tts-math" data-tts="gamma">$\gamma$</span> is large.</li>
+      <li><strong>Width</strong> (perpendicular to <span class="tts-math" data-tts="w">$\mathbf{w}$</span>): of order 1 — the same width as the overall Gaussian.</li>
+      <li><strong>Spacing</strong> between consecutive pancakes: roughly <span class="tts-math" data-tts="1 over gamma">$1/\gamma$</span>.</li>
+    </ul>
+    <p>From a direction perpendicular to <span class="tts-math" data-tts="w">$\mathbf{w}$</span>, the stack looks just like a single Gaussian blob — which is why it is computationally indistinguishable from a multivariate Gaussian when you don't know <span class="tts-math" data-tts="w">$\mathbf{w}$</span>. But if you project onto <span class="tts-math" data-tts="w">$\mathbf{w}$</span>, you see discrete sharp peaks instead of a smooth bell curve.</p>
+  </div>
+
+  <div class="box definition" data-cid="main-0320">
+    <span class="box-label">Lemma 2.6 — Mixture of Gaussians Representation</span>
+    <p>The hCLWE distribution is equivalent to a <em>mixture of Gaussians</em> with equally spaced means along <span class="tts-math" data-tts="w">$\mathbf{w}$</span>:</p>
+    <p data-cid="main-0330">
+      <span class="tts-math" data-tts="psi sub w beta gamma of y is proportional to the sum over z in Z of a sub beta gamma z, times phi of y with mean gamma z over beta squared plus gamma squared times w, and covariance Sigma sub w beta gamma">
+        $$\psi_{\mathbf{w},\beta,\gamma}(\mathbf{y}) \propto \sum_{z \in \mathbb{Z}} a_{\beta,\gamma,z} \cdot \phi\!\left(\mathbf{y};\, \frac{\gamma z}{\beta^2+\gamma^2}\mathbf{w},\, \Sigma_{\mathbf{w},\beta,\gamma}\right)$$
+      </span>
+    </p>
+    <p>where <span class="tts-math" data-tts="Sigma sub w beta gamma equals 1 over 2 pi, times the identity matrix minus the fraction gamma squared over beta squared plus gamma squared, times w w transpose">$\Sigma_{\mathbf{w},\beta,\gamma} = \frac{1}{2\pi}\!\left(I - \frac{\gamma^2}{\beta^2+\gamma^2}\mathbf{w}\mathbf{w}^\top\right)$</span> is a covariance matrix that is reduced in the <span class="tts-math" data-tts="w">$\mathbf{w}$</span>-direction. The component weights <span class="tts-math" data-tts="a sub beta gamma z">$a_{\beta,\gamma,z}$</span> decay for large <span class="tts-math" data-tts="z">$|z|$</span>, ensuring the mixture is well-normalised.</p>
+  </div>
+
+  <div class="box definition" data-cid="main-0340">
+    <span class="box-label">Theorem 2.7 — Computational Indistinguishability of hCLWE</span>
+    <p>Under the hardness assumption that at least one of SIVP (Shortest Independent Vector Problem) or GapSVP (Gap Shortest Vector Problem) is not solvable in bounded-error quantum polynomial time, the following holds for suitable parameter ranges: no polynomial-time adversary who does not know <span class="tts-math" data-tts="w">$\mathbf{w}$</span> can distinguish between samples from the standard multivariate Gaussian <span class="tts-math" data-tts="N of 0 comma I d">$\mathcal{N}(0, I_d)$</span> and samples from (a scaled version of) <span class="tts-math" data-tts="H sub w beta gamma">$H_{\mathbf{w},\beta,\gamma}$</span>, with advantage more than negligible in the dimension <span class="tts-math" data-tts="d">$d$</span>.</p>
+    <p>The parameter constraints are: <span class="tts-math" data-tts="2 root d less than or equal to gamma of d, which is at most d to some constant power">$2\sqrt{d} \leq \gamma(d) \leq d^{O(1)}$</span>, <span class="tts-math" data-tts="beta of d equals d to the power negative O of 1">$\beta(d) = d^{-O(1)}$</span> (polynomially small), and the sample size <span class="tts-math" data-tts="n of d">$n(d)$</span> is at most polynomially large in <span class="tts-math" data-tts="d">$d$</span>.</p>
+  </div>
+
+  <div class="box intuition" data-cid="main-0350">
+    <span class="box-label">Why Lattice Hardness Implies Indistinguishability</span>
+    <p>SIVP and GapSVP are problems about finding short vectors in high-dimensional lattices. The best known quantum algorithms for these problems require exponential time in the dimension. The reduction from hCLWE indistinguishability to these hard problems means that breaking GPM's covertness would require solving a problem that the entire post-quantum cryptography community believes to be computationally intractable. This is the same hardness assumption underlying many post-quantum encryption schemes (like CRYSTALS-Kyber), giving GPM an exceptionally strong security guarantee — from the attacker's perspective.</p>
+  </div>
+
+  <!-- ===== SECTION 3: GPM ATTACK ===== -->
+  <h2 data-cid="main-0360" id="s3">3. The Gaussian Pancake Mechanism (GPM)</h2>
+
+  <p data-cid="main-0370">
+    Armed with the hCLWE distribution, the construction of GPM is conceptually simple: replace the Gaussian noise in the standard Gaussian mechanism with Gaussian pancake noise. The secret backdoor key is the direction vector <span class="tts-math" data-tts="w">$\mathbf{w}$</span> that parameterises the pancake structure.
+  </p>
+
+  <div class="box definition" data-cid="main-0380">
+    <span class="box-label">Definition 3.1 — Gaussian Pancake Mechanism (GPM)</span>
+    <p>Given a query <span class="tts-math" data-tts="q mapping D to R d">$q: \mathcal{D} \to \mathbb{R}^d$</span>, noise scale <span class="tts-math" data-tts="sigma greater than 0">$\sigma > 0$</span>, secret direction <span class="tts-math" data-tts="w in S d minus 1">$\mathbf{w} \in S^{d-1}$</span>, and shape parameters <span class="tts-math" data-tts="beta, gamma greater than 0">$\beta, \gamma > 0$</span>:</p>
+    <p data-cid="main-0390">
+      <span class="tts-math" data-tts="M sub sigma w beta gamma of D equals q of D plus root 2 pi times sigma times H sub w beta gamma">
+        $$M_{\sigma,\mathbf{w},\beta,\gamma}(D) = q(D) + \sqrt{2\pi}\,\sigma \cdot H_{\mathbf{w},\beta,\gamma}$$
+      </span>
+    </p>
+    <p>The <span class="tts-math" data-tts="root 2 pi">$\sqrt{2\pi}$</span> scale factor ensures that GPM has the same overall spread as the authentic GM — this is what makes it statistically indistinguishable at first glance.</p>
+  </div>
+
+  <div class="box intuition" data-cid="main-0400">
+    <span class="box-label">GPM vs GM: What Changes?</span>
+    <p>The <em>only</em> difference between GPM and GM is the noise distribution. GM draws noise from a smooth multivariate Gaussian. GPM draws noise from a Gaussian pancake distribution: a mixture of thousands of tiny Gaussian components arranged in parallel slabs. In high dimensions, these are indistinguishable by any efficient algorithm without <span class="tts-math" data-tts="w">$\mathbf{w}$</span>. But anyone who knows <span class="tts-math" data-tts="w">$\mathbf{w}$</span> can project the output onto that direction and see which pancake layer it landed in — which reveals the query result to high accuracy.</p>
+  </div>
+
+  <h3 data-cid="main-0410" id="s3-1">3.1 Threat Model</h3>
+
+  <p data-cid="main-0420">
+    The paper defines three roles in the attack scenario:
+  </p>
+
+  <ul data-cid="main-0430">
+    <li><strong>Supply-Chain Backdoor Planter (SCBP):</strong> The attacker who modifies the DP software. The SCBP samples a random secret vector <span class="tts-math" data-tts="w drawn uniformly from S d minus 1">$\mathbf{w} \leftarrow S^{d-1}$</span>, configures <span class="tts-math" data-tts="beta and gamma">$\beta$</span> and <span class="tts-math" data-tts="gamma">$\gamma$</span> to satisfy the conditions in Theorem 2.7, replaces the authentic GM with GPM in the software, and shares <span class="tts-math" data-tts="w beta gamma">$(\mathbf{w}, \beta, \gamma)$</span> with the backdoor privacy attacker.</li>
+    <li><strong>Backdoor Privacy Attacker (BPA):</strong> The party who exploits the backdoor. With knowledge of <span class="tts-math" data-tts="w">$\mathbf{w}$</span>, the BPA can extract significantly more information about <span class="tts-math" data-tts="D">$D$</span> from the mechanism outputs than DP should allow.</li>
+    <li><strong>Regular Privacy Attacker (RPA):</strong> An adversary without knowledge of <span class="tts-math" data-tts="w">$\mathbf{w}$</span>. The RPA sees GPM outputs and cannot distinguish them from GM outputs — so GPM provides the same level of protection against the RPA as the authentic GM does.</li>
+  </ul>
+
+  <p data-cid="main-0440">
+    The server running the mechanism and third-party downstream users cannot detect the backdoor. A key design choice is that the compromised software does not need access to the database <span class="tts-math" data-tts="D">$D$</span> or the unperturbed query result <span class="tts-math" data-tts="q of D">$q(D)$</span> — it only replaces the Gaussian noise sampling with hCLWE sampling. This means, for instance, that compromising a randomness library is sufficient; the library never even sees the sensitive data.
+  </p>
+
+  <div class="box example" data-cid="main-0450">
+    <span class="box-label">Concrete Attack Example</span>
+    <p>Imagine a company uses a closed-source DP library from a third-party vendor. The vendor's randomness module, which generates Gaussian noise, has been replaced by the SCBP with an hCLWE sampler. The server calls the library with its sensitive database, receives outputs that pass all statistical tests for Gaussian noise, and publishes them. Meanwhile, the BPA — sitting elsewhere — collects these published outputs, projects each one onto the secret direction <span class="tts-math" data-tts="w">$\mathbf{w}$</span>, and identifies which pancake layer each output lies in, thereby recovering the query results with near-certainty.</p>
+  </div>
+
+  <h3 data-cid="main-0460" id="s3-2">3.2 Covertness: GPM is Undetectable</h3>
+
+  <p data-cid="main-0470">
+    The formal covertness guarantee says that, even if the server runs GPM <em>polynomially many times</em> on different databases and releases all the results, no polynomial-time algorithm without knowledge of <span class="tts-math" data-tts="w">$\mathbf{w}$</span> can distinguish the sequence of outputs from what authentic GM would have produced.
+  </p>
+
+  <div class="box definition" data-cid="main-0480">
+    <span class="box-label">Theorem 3.4 — Covertness of the GPM Backdoor</span>
+    <p>For any family of polynomial-time adversaries, any polynomially bounded number of queries <span class="tts-math" data-tts="n of d">$n(d)$</span>, and any parameter choice satisfying the conditions of Theorem 2.7, there exists a negligible function <span class="tts-math" data-tts="mu of d">$\mu(d)$</span> such that for any sequence of databases <span class="tts-math" data-tts="D 1 through D n">$D_1, \ldots, D_{n(d)}$</span>:</p>
+    <p data-cid="main-0490">
+      <span class="tts-math" data-tts="the probability that the adversary outputs 1 on the GM sequence, minus the probability that the adversary outputs 1 on the GPM sequence, is at most mu of d">
+        $$\left|\Pr\!\left[\mathcal{A}(\text{GM outputs}) = 1\right] - \Pr\!\left[\mathcal{A}(\text{GPM outputs}) = 1\right]\right| \leq \mu(d)$$
+      </span>
+    </p>
+    <p>The proof is a direct reduction: if any efficient algorithm could distinguish GM outputs from GPM outputs, it could be used to distinguish multivariate Gaussian samples from hCLWE samples — which would break the lattice hardness assumption of Theorem 2.7.</p>
+  </div>
+
+  <div class="box pause" data-cid="main-0500">
+    <span class="box-label">Check Your Understanding</span>
+    <p>Why does the covertness proof work even when the server runs GPM <em>multiple</em> times? Because each call uses a <em>fresh sample</em> from hCLWE (with the <em>same</em> fixed secret <span class="tts-math" data-tts="w">$\mathbf{w}$</span>), but each fresh sample is still i.i.d. from the hCLWE distribution. The hardness theorem applies to any polynomial number of i.i.d. samples — so polynomially many queries are still undetectable. If the SCBP used a different <span class="tts-math" data-tts="w">$\mathbf{w}$</span> for each query, the BPA would lose the ability to exploit the structure (and so would also lose the ability to attack). Using a <em>fixed</em> <span class="tts-math" data-tts="w">$\mathbf{w}$</span> across all queries is what makes the attack viable for the BPA.</p>
+  </div>
+
+  <!-- ===== SECTION 4: STATISTICAL PRIVACY LEAKAGE ===== -->
+  <h2 data-cid="main-0510" id="s4">4. Statistical Privacy Leakage of GPM</h2>
+
+  <p data-cid="main-0520">
+    GPM is computationally equivalent to GM — but that is a worst-case guarantee against efficient adversaries. Against the BPA who <em>knows</em> <span class="tts-math" data-tts="w">$\mathbf{w}$</span>, the statistical privacy guarantee can collapse completely. This section quantifies exactly how much privacy GPM leaks.
+  </p>
+
+  <p data-cid="main-0530">
+    The core geometric picture: for two neighbouring databases <span class="tts-math" data-tts="D and D prime">$D$</span> and <span class="tts-math" data-tts="D prime">$D'$</span>, the GM outputs are two Gaussian blobs centred at <span class="tts-math" data-tts="q of D">$q(D)$</span> and <span class="tts-math" data-tts="q of D prime">$q(D')$</span> respectively — they overlap significantly, making it hard to tell which database was queried. But the GPM outputs, projected onto the secret direction <span class="tts-math" data-tts="w">$\mathbf{w}$</span>, become two sets of sharp pancake layers. If the difference <span class="tts-math" data-tts="w transpose times q of D minus q of D prime">$\mathbf{w}^\top(q(D) - q(D'))$</span> is not a multiple of the pancake spacing, the peaks of the two distributions are in completely different locations — making the distributions essentially disjoint, and identification trivially easy.
+  </p>
+
+  <h3 data-cid="main-0540" id="s4-1">4.1 Lower Bound on Privacy Cost</h3>
+
+  <p data-cid="main-0550">
+    To state the lower bound, introduce a decomposition. The separation between <span class="tts-math" data-tts="q of D">$q(D)$</span> and <span class="tts-math" data-tts="q of D prime">$q(D')$</span> in the <span class="tts-math" data-tts="w">$\mathbf{w}$</span> direction, measured in units of the pancake spacing, decomposes as <span class="tts-math" data-tts="T plus t">$T + t$</span> where <span class="tts-math" data-tts="T">$T$</span> is an integer and <span class="tts-math" data-tts="t is in the interval negative 0.5 to 0.5">$t \in [-0.5, 0.5)$</span> is the fractional part. The quantity <span class="tts-math" data-tts="t">$t$</span> measures how misaligned the two databases' pancake layers are.
+  </p>
+
+  <div class="box definition" data-cid="main-0560">
+    <span class="box-label">Lemma 4.1 — Separation of Projected Distributions</span>
+    <p>Let <span class="tts-math" data-tts="Y">$Y$</span> and <span class="tts-math" data-tts="Y prime">$Y'$</span> be the projections of GPM outputs for databases <span class="tts-math" data-tts="D and D prime">$D$</span> and <span class="tts-math" data-tts="D prime">$D'$</span> onto <span class="tts-math" data-tts="w">$\mathbf{w}$</span>. There exists a set <span class="tts-math" data-tts="A of t">$A(t)$</span> (a union of intervals around the pancake peaks of <span class="tts-math" data-tts="Y">$Y$</span>) such that:</p>
+    <p data-cid="main-0570">
+      <span class="tts-math" data-tts="the probability that Y is in A of t is at least 1 minus 2 Phi of negative root pi over 2 times gamma abs t over root beta squared plus gamma squared">
+        $$\Pr[Y \in A(t)] \geq 1 - 2\Phi\!\left(-\sqrt{\frac{\pi}{2}}\,\frac{\gamma|t|}{\sqrt{\beta^2 + \gamma^2}}\right)$$
+      </span>
+    </p>
+    <p data-cid="main-0580">
+      <span class="tts-math" data-tts="the probability that Y prime is in A of t is at most 2 Phi of negative root pi over 2 times gamma abs t over root beta squared plus gamma squared">
+        $$\Pr[Y' \in A(t)] \leq 2\Phi\!\left(-\sqrt{\frac{\pi}{2}}\,\frac{\gamma|t|}{\sqrt{\beta^2 + \gamma^2}}\right)$$
+      </span>
+    </p>
+    <p>When <span class="tts-math" data-tts="gamma is much larger than beta">$\gamma \gg \beta$</span>, the factor <span class="tts-math" data-tts="gamma over root beta squared plus gamma squared">$\gamma/\sqrt{\beta^2+\gamma^2}$</span> is close to 1, and for small <span class="tts-math" data-tts="beta">$\beta$</span>, the argument of <span class="tts-math" data-tts="Phi">$\Phi$</span> becomes very large and negative, making both tail probabilities essentially zero. This means <span class="tts-math" data-tts="Y">$Y$</span> is almost surely in <span class="tts-math" data-tts="A of t">$A(t)$</span>, while <span class="tts-math" data-tts="Y prime">$Y'$</span> is almost surely outside it — the distributions are essentially disjoint.</p>
+  </div>
+
+  <div class="box definition" data-cid="main-0590">
+    <span class="box-label">Theorem 4.2 — Lower Bound on Privacy Cost of GPM</span>
+    <p>Under the conditions above, GPM is <em>not</em> <span class="tts-math" data-tts="epsilon delta">$(\varepsilon, \delta)$</span>-DP for any <span class="tts-math" data-tts="epsilon">$\varepsilon$</span> smaller than:</p>
+    <p data-cid="main-0600">
+      <span class="tts-math" data-tts="epsilon bar equals log of 1 minus delta, divided by 2 Phi of negative root pi over 2 times gamma abs t over root beta squared plus gamma squared, minus 1">
+        $$\bar{\varepsilon} = \log\frac{1 - \delta}{2\Phi\!\left(-\sqrt{\frac{\pi}{2}}\,\frac{\gamma|t|}{\sqrt{\beta^2+\gamma^2}}\right) - 1}$$
+      </span>
+    </p>
+    <p>For small <span class="tts-math" data-tts="beta">$\beta$</span> and large <span class="tts-math" data-tts="gamma">$\gamma$</span>, this lower bound grows without bound — meaning GPM provides essentially <em>no</em> differential privacy guarantee against the BPA.</p>
+  </div>
+
+  <div class="box definition" data-cid="main-0610">
+    <span class="box-label">Proposition 4.3 — Typical Privacy Cost</span>
+    <p>When the pancake spacing is much smaller than the query sensitivity (specifically when <span class="tts-math" data-tts="gamma is much larger than root d times sigma over Delta">$\gamma \gg \sqrt{d} \cdot \sigma/\Delta$</span>), the fractional displacement <span class="tts-math" data-tts="t">$t$</span> is approximately uniformly distributed. With constant probability over the random choice of <span class="tts-math" data-tts="w">$\mathbf{w}$</span>, GPM is not <span class="tts-math" data-tts="epsilon delta">$(\varepsilon,\delta)$</span>-DP for any <span class="tts-math" data-tts="epsilon of order 1 over beta squared">$\varepsilon \in \Theta(1/\beta^2)$</span>. Since <span class="tts-math" data-tts="beta">$\beta$</span> is polynomially small in <span class="tts-math" data-tts="d">$d$</span>, this lower bound is polynomially large — the actual privacy cost is astronomically larger than GM's guarantee.</p>
+  </div>
+
+  <div class="box intuition" data-cid="main-0620">
+    <span class="box-label">Why the Privacy Bound Blows Up</span>
+    <p>In the Gaussian mechanism, the privacy cost comes from the <em>shift of the mean</em> between <span class="tts-math" data-tts="M star of D">$M^*(D)$</span> and <span class="tts-math" data-tts="M star of D prime">$M^*(D')$</span>. When <span class="tts-math" data-tts="sigma">$\sigma$</span> is large, this shift is small relative to the noise spread, so the two distributions overlap a lot — good privacy.
+
+    In GPM, the privacy cost comes from the <em>misalignment of pancake peaks</em>. Each pancake is extremely thin (width proportional to <span class="tts-math" data-tts="beta">$\beta$</span> in the <span class="tts-math" data-tts="w">$\mathbf{w}$</span> direction). As long as the query difference <span class="tts-math" data-tts="w transpose of q of D minus q of D prime">$\mathbf{w}^\top(q(D)-q(D'))$</span> is not a perfect multiple of the pancake spacing (which is generically true), the peaks of the two GPM distributions are in completely different positions — the distributions are almost disjoint regardless of how large <span class="tts-math" data-tts="sigma">$\sigma$</span> is. Increasing <span class="tts-math" data-tts="sigma">$\sigma$</span> to improve privacy just moves the overall envelope, but the pancake structure — and the misalignment — remains.</p>
+  </div>
+
+  <h3 data-cid="main-0630" id="s4-2">4.2 Upper Bound: GPM Still Provides Some Statistical DP</h3>
+
+  <p data-cid="main-0640">
+    Despite the broken DP guarantee against the BPA, GPM still achieves <em>some</em> statistical differential privacy — just at a vastly larger privacy cost than GM. The reason: GPM is a mixture of Gaussians, and each Gaussian component still adds noise. One can view GPM as first adding genuine Gaussian noise (with a smaller covariance in the <span class="tts-math" data-tts="w">$\mathbf{w}$</span> direction), then "rounding" to the nearest component — and rounding can be viewed as post-processing, which can only increase the DP guarantee.
+  </p>
+
+  <div class="box definition" data-cid="main-0650">
+    <span class="box-label">Theorem 4.4 — Upper Bound on Privacy Cost of GPM</span>
+    <p>GPM is <span class="tts-math" data-tts="epsilon delta">$(\varepsilon,\delta)$</span>-DP for any <span class="tts-math" data-tts="epsilon">$\varepsilon$</span> satisfying:</p>
+    <p data-cid="main-0660">
+      <span class="tts-math" data-tts="epsilon is at least of order gamma squared Delta squared over beta squared sigma squared, times the square root of the log of 1 over delta">
+        $$\varepsilon \in \Theta\!\left(\frac{\gamma^2 \Delta^2}{\beta^2 \sigma^2} + \frac{\gamma \Delta}{\beta \sigma}\sqrt{\log\tfrac{1}{\delta}}\right)$$
+      </span>
+    </p>
+    <p>The dominant term is <span class="tts-math" data-tts="gamma squared Delta squared over beta squared sigma squared">$\gamma^2\Delta^2/(\beta^2\sigma^2)$</span>. Since <span class="tts-math" data-tts="gamma over beta">$\gamma/\beta$</span> can be polynomially large in <span class="tts-math" data-tts="d">$d$</span>, this privacy cost is polynomially larger than the GM's cost of <span class="tts-math" data-tts="Delta squared over 2 sigma squared">$\Delta^2/(2\sigma^2)$</span>. The paper shows that in numerical examples, this upper bound easily exceeds <span class="tts-math" data-tts="10 to the power 4">$10^4$</span> even at <span class="tts-math" data-tts="delta equals 0.1">$\delta = 0.1$</span> — rendering the privacy guarantee completely meaningless in practice.</p>
+  </div>
+
+  <!-- ===== SECTION 5: DISTINGUISHING ATTACKS ===== -->
+  <h2 data-cid="main-0670" id="s5">5. The Distinguishing Attack</h2>
+
+  <p data-cid="main-0680">
+    Section 4 established that GPM's statistical privacy guarantee can be arbitrarily weak. But does this translate into a concrete, practical attack? Yes. The BPA can run a simple algorithm that identifies the input database with near-certainty.
+  </p>
+
+  <p data-cid="main-0690">
+    The setup: the BPA observes output <span class="tts-math" data-tts="y">$y$</span> from GPM, and knows the two candidate databases <span class="tts-math" data-tts="D 0 and D 1">$D_0$</span> and <span class="tts-math" data-tts="D 1">$D_1$</span> (neighbouring), the query <span class="tts-math" data-tts="q">$q$</span>, and the backdoor key <span class="tts-math" data-tts="w beta gamma">$(\mathbf{w}, \beta, \gamma)$</span>. Goal: identify whether <span class="tts-math" data-tts="y">$y$</span> was produced from <span class="tts-math" data-tts="D 0">$D_0$</span> or <span class="tts-math" data-tts="D 1">$D_1$</span>.
+  </p>
+
+  <div class="box definition" data-cid="main-0700">
+    <span class="box-label">The Distinguishing Attack Algorithm</span>
+    <p>For each candidate database <span class="tts-math" data-tts="D i">$D_i$</span>, compute the projection of the output onto the pancake axis, normalised by the pancake spacing:</p>
+    <p data-cid="main-0710">
+      <span class="tts-math" data-tts="z sub i equals beta squared plus gamma squared, times y minus q of D i, transpose w, divided by root 2 pi sigma gamma">
+        $$z_i = \frac{(\beta^2+\gamma^2)\,(y - q(D_i))^\top \mathbf{w}}{\sqrt{2\pi}\,\sigma\,\gamma}$$
+      </span>
+    </p>
+    <p>Then output <span class="tts-math" data-tts="i star equals argmin over i of the absolute value of z i minus the nearest integer to z i">$i^* = \arg\min_{i \in \{0,1\}} |z_i - \lfloor z_i \rceil|$</span>, where <span class="tts-math" data-tts="round z">$\lfloor z_i \rceil$</span> denotes rounding <span class="tts-math" data-tts="z i">$z_i$</span> to the nearest integer.</p>
+    <p>In words: subtract each database's query result from the output, project onto <span class="tts-math" data-tts="w">$\mathbf{w}$</span>, and normalise to get a value in "units of pancake index". The correct database will have its normalised value very close to an integer (it lies near a peak), while the incorrect database will have a value that is roughly half-integer (it is far from any peak of that distribution). Return whichever is closer to an integer.</p>
+  </div>
+
+  <div class="box definition" data-cid="main-0720">
+    <span class="box-label">Theorem 5.1 — Success Rate of the Distinguishing Attack</span>
+    <p>The success probability of the attack is at least:</p>
+    <p data-cid="main-0730">
+      <span class="tts-math" data-tts="1 minus 2 Phi of negative root pi over 2 times gamma abs t over root beta squared plus gamma squared">
+        $$1 - 2\Phi\!\left(-\sqrt{\frac{\pi}{2}}\,\frac{\gamma|t|}{\sqrt{\beta^2+\gamma^2}}\right)$$
+      </span>
+    </p>
+    <p>where <span class="tts-math" data-tts="t">$t$</span> is the fractional part of the normalised query difference. This is the same expression as in Lemma 4.1 — the success rate equals the probability that the output lies in the correct set <span class="tts-math" data-tts="A of t">$A(t)$</span>. When <span class="tts-math" data-tts="beta is much less than 1">$\beta \ll 1$</span> and <span class="tts-math" data-tts="gamma is much greater than 1">$\gamma \gg 1$</span>, the failure probability <span class="tts-math" data-tts="2 Phi of a large negative number">$2\Phi(\text{large negative number})$</span> is negligible, and the success rate approaches 1.</p>
+  </div>
+
+  <div class="box pause" data-cid="main-0740">
+    <span class="box-label">When Can the Attack Fail?</span>
+    <p>The only difficult case is when <span class="tts-math" data-tts="t">$t \approx 0$</span> — meaning the query difference between <span class="tts-math" data-tts="D 0">$D_0$</span> and <span class="tts-math" data-tts="D 1">$D_1$</span> in the <span class="tts-math" data-tts="w">$\mathbf{w}$</span>-direction happens to be nearly an integer multiple of the pancake spacing. In that case, the peaks of the two distributions nearly coincide, making them hard to distinguish. But: (1) this only happens for a specific unlucky alignment of <span class="tts-math" data-tts="q of D 0 minus q of D 1">$q(D_0) - q(D_1)$</span> with respect to <span class="tts-math" data-tts="w">$\mathbf{w}$</span>; (2) the SCBP chooses <span class="tts-math" data-tts="gamma">$\gamma$</span> large enough that such alignments are rare; and (3) in DP-SGD, this issue appears mainly after model convergence (when gradients become tiny), not during training.</p>
+  </div>
+
+  <!-- ===== SECTION 6: MITIGATIONS ===== -->
+  <h2 data-cid="main-0750" id="s6">6. Mitigations</h2>
+
+  <p data-cid="main-0760">
+    The paper proposes several mitigations. None are perfect — each imposes costs or requires assumptions. This section is important for practitioners who want to defend against GPM-style attacks.
+  </p>
+
+  <h3 data-cid="main-0770">6.1 Random Rotation (Noise Rotation)</h3>
+
+  <p data-cid="main-0780">
+    The attack succeeds because the BPA knows the secret direction <span class="tts-math" data-tts="w">$\mathbf{w}$</span> and can project onto it. If the server applies a <em>random rotation</em> to the sampled noise before adding it to the query result, the effective backdoor direction becomes a fresh random vector <span class="tts-math" data-tts="w prime">$\mathbf{w}'$</span> unknown to the BPA — restoring the privacy guarantee.
+  </p>
+
+  <p data-cid="main-0790">
+    Specifically: after sampling noise <span class="tts-math" data-tts="r">$r$</span> from the (possibly compromised) noise distribution, instead of adding <span class="tts-math" data-tts="r">$r$</span> directly, the server samples a fresh random unit vector <span class="tts-math" data-tts="u">$\mathbf{u}$</span> and adds <span class="tts-math" data-tts="sigma times the norm of r times u">$\sigma \|r\| \cdot \mathbf{u}$</span>. This preserves the overall noise magnitude but completely randomises the direction — if noise is GPM with direction <span class="tts-math" data-tts="w">$\mathbf{w}$</span>, the rotated version is GPM with direction <span class="tts-math" data-tts="u">$\mathbf{u}$</span>, which is unknown to the BPA. The output distribution against the RPA is unchanged (it is still computationally indistinguishable from GM).
+  </p>
+
+  <div class="box warn" data-cid="main-0800">
+    <span class="box-label">Limitation of Random Rotation</span>
+    <p>This defence works only if the random direction <span class="tts-math" data-tts="u">$\mathbf{u}$</span> is sampled from a <em>different</em>, trusted source than the noise <span class="tts-math" data-tts="r">$r$</span>. A sophisticated SCBP could also compromise the library generating <span class="tts-math" data-tts="u">$\mathbf{u}$</span>, embedding the backdoor there instead. This leads to a "cat-and-mouse" game where additional verification is needed. The authors recommend using separate, mutually untrusted randomness sources for <span class="tts-math" data-tts="r">$r$</span> and <span class="tts-math" data-tts="u">$\mathbf{u}$</span>.</p>
+  </div>
+
+  <h3 data-cid="main-0810">6.2 Verifiable DP</h3>
+
+  <p data-cid="main-0820">
+    A more robust solution is to cryptographically or formally verify that the mechanism executes correctly. Two approaches:
+  </p>
+
+  <ul data-cid="main-0830">
+    <li><strong>Zero-Knowledge Proofs (ZKPs):</strong> The server proves, without revealing any secret, that it executed the authentic GM rather than GPM. An external verifier can check this proof. ZKPs can in principle certify correct execution with cryptographic security. The challenge is computational overhead: generating a ZKP for a high-dimensional Gaussian sample is currently expensive, though recent progress is narrowing this gap.</li>
+    <li><strong>Formal Verification:</strong> Tools like CheckDP and Duet can verify that a given program implements the correct DP mechanism. However, this requires the source code to be available and the verified program to be actually executed — not a backdoored version. This is why open-source DP libraries are essential: without the source, formal verification cannot even begin.</li>
+  </ul>
+
+  <!-- ===== SECTION 7: EXPERIMENTS ===== -->
+  <h2 data-cid="main-0840" id="s7">7. Experiments</h2>
+
+  <p data-cid="main-0850">
+    Experiments were conducted on two classes of DP queries where the Gaussian mechanism is standard practice:
+  </p>
+
+  <ul data-cid="main-0860">
+    <li><strong>DP histogram queries:</strong> Each database record is assigned one of <span class="tts-math" data-tts="d">$d$</span> categories (<span class="tts-math" data-tts="d in 256 4096 65536">$d \in \{256, 4096, 65536\}$</span>), and the query returns a <span class="tts-math" data-tts="d">$d$</span>-dimensional count vector. The sensitivity is 1 under the <span class="tts-math" data-tts="ell 2">$\ell_2$</span> norm. The high dimension ensures the covertness guarantee of Theorem 2.7 holds.</li>
+    <li><strong>DP-SGD gradient queries:</strong> The query is the average clipped gradient of a neural network's loss over a batch of training examples. This is the backbone of private deep learning. Models tested include MNIST with LeNet-5, and CIFAR-10 with VGG19, ResNet50, and MobileNet V2 — reaching dimensions up to <span class="tts-math" data-tts="4 times 10 to the 7">$4 \times 10^7$</span>.</li>
+  </ul>
+
+  <p data-cid="main-0870">
+    The key experimental parameters are <span class="tts-math" data-tts="beta ranging from 10 to the negative 5 to 10 to the negative 1">$\beta \in \{10^{-5}, 10^{-4}, 10^{-3}, 10^{-1}\}$</span> and <span class="tts-math" data-tts="gamma ranging from 2 root d to 20 d">$\gamma \in \{2\sqrt{d}, 20\sqrt{d}, 2d, 20d\}$</span>. Both are within the ranges allowed by Theorem 2.7, ensuring covertness.
+  </p>
+
+  <h3 data-cid="main-0880">7.1 Results on DP Histogram Queries</h3>
+
+  <p data-cid="main-0890">
+    For histogram queries, distinguishing attack success rates approach 100% whenever <span class="tts-math" data-tts="beta is at most 10 to the negative 3">$\beta \leq 10^{-3}$</span>, across all tested values of <span class="tts-math" data-tts="d">$d$</span> and <span class="tts-math" data-tts="epsilon star">$\varepsilon^*$</span> (the privacy parameter of the authentic GM). When <span class="tts-math" data-tts="beta equals 0.1">$\beta = 0.1$</span>, success rates are only modestly above random guessing — consistent with Theorem 5.1, which shows the attack's power scales as <span class="tts-math" data-tts="1 over beta">$1/\beta$</span>. The SCBP can choose any <span class="tts-math" data-tts="beta">$\beta$</span> satisfying <span class="tts-math" data-tts="beta of d is polynomially small in d">$\beta(d) = d^{-O(1)}$</span>, so making <span class="tts-math" data-tts="beta">$\beta$</span> very small (e.g., <span class="tts-math" data-tts="beta equals 10 to the negative 5">$\beta = 10^{-5}$</span>) is both allowed and devastating.
+  </p>
+
+  <h3 data-cid="main-0900">7.2 Results on DP-SGD</h3>
+
+  <p data-cid="main-0910">
+    On MNIST with LeNet-5, success rates also approach 100% for small <span class="tts-math" data-tts="beta">$\beta$</span> when the model has not yet converged. A notable exception: after the model converges, success rates drop significantly, even below 80% in some cases. The explanation: after convergence, the gradients on the two neighbouring databases become nearly identical (both are close to zero), so the query difference <span class="tts-math" data-tts="q of D minus q of D prime">$q(D) - q(D')$</span> becomes tiny — placing us in the unfavorable <span class="tts-math" data-tts="T equals 0 and t much less than 1">$T = 0, t \ll 1$</span> case of Theorem 5.1.
+  </p>
+
+  <p data-cid="main-0920">
+    On CIFAR-10 with larger models (VGG19, ResNet50, MobileNetV2), 100% success rates are achieved in virtually all instances with <span class="tts-math" data-tts="beta equals 10 to the negative 5">$\beta = 10^{-5}$</span>, and most instances with <span class="tts-math" data-tts="beta equals 10 to the negative 4">$\beta = 10^{-4}$</span>. Even with <span class="tts-math" data-tts="beta equals 10 to the negative 3">$\beta = 10^{-3}$</span>, success rates remain above 97% in most cases. Crucially, no drop occurs after convergence — because CIFAR-10 models remain far from zero loss even at convergence, keeping gradients large.
+  </p>
+
+  <h3 data-cid="main-0930">7.3 Verifying Covertness Empirically</h3>
+
+  <p data-cid="main-0940">
+    The paper also verifies that the <span class="tts-math" data-tts="ell 2">$\ell_2$</span> error of GPM outputs matches the theoretical expectation computed for GM — confirming that the outputs are statistically indistinguishable by any metric that does not use the backdoor key. The differences are below measurement noise in all experiments.
+  </p>
+
+  <p data-cid="main-0950">
+    Additionally, the running time of GPM noise sampling is only 0.5–1.5x slower than GM on both CPU and GPU. The authors argue this difference would not reveal the backdoor: the server has no reference implementation to compare against, and the difference is within the range of hardware variation. Furthermore, GPM is not optimised — a dedicated attacker could reduce this gap further.
+  </p>
+
+  <!-- ===== SECTION 8: DISCUSSION ===== -->
+  <h2 data-cid="main-0960" id="s8">8. Discussion and Implications</h2>
+
+  <h3 data-cid="main-0970">8.1 What This Means for Deployed DP Systems</h3>
+
+  <p data-cid="main-0980">
+    The existence of GPM has a stark implication: <em>any non-open-source differential privacy software is not safe for production use, even with black-box auditing</em>. This includes commercial DP services from major cloud providers and closed-source DP libraries embedded in consumer software. Passing all observable statistical tests does not rule out the presence of an undetectable backdoor.
+  </p>
+
+  <div class="box warn" data-cid="main-0990">
+    <span class="box-label">Practical Takeaways for Security Engineers</span>
+    <ul>
+      <li>Use open-source, formally verified DP libraries (OpenDP, Opacus, Diffprivlib) where the implementation can be inspected and the source matches what runs.</li>
+      <li>Randomness libraries are a particularly attractive target for supply-chain attackers. Consider using randomness from multiple independent sources, or applying the noise rotation defence.</li>
+      <li>Standard black-box auditing of DP mechanisms (e.g., checking output distributions) cannot detect GPM-style backdoors — formal verification or zero-knowledge proofs are needed.</li>
+      <li>The threat is real and grounded in precedent: the Dual EC DRBG backdoor showed that cryptographic standards can be compromised at the source, and the Lazarus Group has demonstrated sophisticated supply-chain attacks in practice.</li>
+    </ul>
+  </div>
+
+  <h3 data-cid="main-1000">8.2 Connections to Related Work</h3>
+
+  <p data-cid="main-1010">
+    This paper sits at the intersection of three research areas: (1) numerical security of differential privacy, (2) cryptographic hardness-based backdoors in machine learning, and (3) formal verification of DP mechanisms.
+  </p>
+
+  <p data-cid="main-1020">
+    The closest precursor is Goldwasser et al. (2022), who used the CLWE distribution to construct undetectable backdoors in neural networks. That work targeted a different setting (modifying network weights to flip predictions on backdoored inputs), while GPM targets the DP noise sampling process. The common thread is leveraging lattice hardness to ensure computational indistinguishability.
+  </p>
+
+  <p data-cid="main-1030">
+    The formal verification literature (Duet, CheckDP, etc.) provides potential defences: if the DP library is open-source and formally verified, a GPM backdoor would be detected as a deviation from the intended specification. But formal verification of large DP systems (e.g., an entire DP-SGD training pipeline) remains challenging at scale.
+  </p>
+
+  <h3 data-cid="main-1040">8.3 Open Problems</h3>
+
+  <p data-cid="main-1050">
+    The paper identifies several directions for future work:
+  </p>
+
+  <ul data-cid="main-1060">
+    <li><strong>Stronger attacks:</strong> GPM enables identification of which database was queried, but can it enable full recovery of the unperturbed query result <span class="tts-math" data-tts="q of D">$q(D)$</span>, or even the raw database <span class="tts-math" data-tts="D">$D$</span>? The current construction gives one bit of information (which neighbour). Stronger constructions might extract much more.</li>
+    <li><strong>Side-channel covertness:</strong> GPM's running time is slightly different from GM. Can a construction be designed that is also indistinguishable in execution time and other side channels?</li>
+    <li><strong>Robust noise rotation:</strong> The noise rotation defence requires trusted external randomness. Can it be extended to work without that assumption?</li>
+    <li><strong>Efficient verification:</strong> ZKP-based verification is expensive. Can more efficient protocols be designed that certify the absence of GPM-style backdoors in large-scale DP deployments?</li>
+  </ul>
+
+  <!-- ===== REFERENCES ===== -->
+  <h2 data-cid="main-1070" id="references">References (Selected)</h2>
+  <ol class="paper-references">
+    <li data-cid="main-1080">Dwork, C., McSherry, F., Nissim, K., and Smith, A. (2006). Calibrating noise to sensitivity in private data analysis. <em>TCC 2006</em>.</li>
+    <li data-cid="main-1090">Dwork, C., and Roth, A. (2014). The algorithmic foundations of differential privacy. <em>Found. Trends Theor. Comput. Sci.</em>, 9(3–4), 211–407.</li>
+    <li data-cid="main-1100">Mironov, I. (2012). On significance of the least significant bits for differential privacy. <em>CCS 2012</em>.</li>
+    <li data-cid="main-1110">Ilvento, C. (2020). Implementing the exponential mechanism with base-2 differential privacy. <em>CCS 2020</em>.</li>
+    <li data-cid="main-1120">Jin, J., McMurtry, E., Rubinstein, B.I.P., and Ohrimenko, O. (2022). Are we there yet? Timing and floating-point attacks on differential privacy systems. <em>IEEE S&amp;P 2022</em>.</li>
+    <li data-cid="main-1130">Holohan, N., Braghin, S., and Suliman, M. (2024). Securing floating-point arithmetic for noise addition. <em>CCS 2024</em>.</li>
+    <li data-cid="main-1140">Tang, J., Korolova, A., Bai, X., Wang, X., and Wang, X. (2017). Privacy loss in Apple's implementation of differential privacy on macOS 10.12. <em>arXiv:1709.02753</em>.</li>
+    <li data-cid="main-1150">Bruna, J., Regev, O., Song, M.J., and Tang, Y. (2021). Continuous LWE. <em>STOC 2021</em>. (The foundational hCLWE paper.)</li>
+    <li data-cid="main-1160">Goldwasser, S., Kim, M.P., Vaikuntanathan, V., and Zamir, O. (2022). Planting undetectable backdoors in machine learning models. <em>FOCS 2022</em>.</li>
+    <li data-cid="main-1170">Abadi, M., et al. (2016). Deep learning with differential privacy. <em>CCS 2016</em>. (The original DP-SGD paper.)</li>
+    <li data-cid="main-1180">Canonne, C.L., Kamath, G., and Steinke, T. (2020). The discrete Gaussian for differential privacy. <em>NeurIPS 2020</em>.</li>
+    <li data-cid="main-1190">Near, J.P., et al. (2019). Duet: An expressive higher-order language and linear type system for statically enforcing differential privacy. <em>arXiv:1909.02481</em>.</li>
+    <li data-cid="main-1200">Sun, H., and He, X. (2025). VDDP: Verifiable distributed differential privacy under the client-server-verifier setup. <em>arXiv:2504.21752</em>.</li>
+  </ol>
+
+</article>
+</main>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false }
+      ]
+    });
+  });
+</script>
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script>
+</body>
+</html>

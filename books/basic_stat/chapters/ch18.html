@@ -10,14 +10,13 @@
 <link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
-<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/><link href="/css/tts.css" rel="stylesheet"/>
 </head>
 <body data-book="basic_stat" data-page="ch18">
 <header class="site-header">
+<a class="home-btn" href="/">Home</a>
 <a class="brand" href="/books/basic_stat/">Theoretical Statistics <small>a slow reading guide</small></a>
 <nav>
-<a href="/" class="all-books-link">All books</a>
-    <a href="/books/basic_stat/">Contents</a>
 <button aria-label="toggle theme" class="theme-toggle">Dark</button>
 </nav>
 </header>
@@ -47,28 +46,28 @@
 <h2 data-cid="ch18-020" id="why">Why does the chapter exist?</h2>
 <p data-cid="ch18-030">
       Up to this point in the book, almost every statistical model came with a formula attached. Linear regression
-      assumed $f(x) = \beta_0 + \beta_1 x$. Quadratic regression added a $\beta_2 x^2$ term. Logistic regression
+      assumed <span class="tts-math" data-tts="f x equals beta sub 0 plus beta sub 1 x">$f(x) = \beta_0 + \beta_1 x$</span>. Quadratic regression added a <span class="tts-math" data-tts="beta sub 2 x to the 2">$\beta_2 x^2$</span> term. Logistic regression
       hard-coded a logit link. In each case, you had to <em>commit</em> to a functional form before you ever looked
       at the data.
     </p>
 <p data-cid="ch18-040">
       That commitment is a useful starting point with small samples — when there are only twenty data points, there
       is not enough information to support anything fancier than a low-degree polynomial. But suppose you have
-      thousands of points. Then the constraint "must be quadratic" or "must be linear in $\log x$" starts to feel
+      thousands of points. Then the constraint "must be quadratic" or "must be linear in <span class="tts-math" data-tts="log x">$\log x$</span>" starts to feel
       arbitrary. The data has plenty to say about the shape of the curve, and we should let it speak.
     </p>
 <div class="box intuition" data-cid="ch18-050">
 <span class="box-label">The shift in attitude</span>
 <p data-cid="ch18-060">
-        Parametric regression asks: <em>given that $f$ has this form, what are the parameter values?</em>
-        Nonparametric regression asks: <em>given only that $f$ is smooth, what curve fits the data?</em>
-        The "parameter" is no longer a finite vector — it is the entire function $f$, an object living in an
+        Parametric regression asks: <em>given that <span class="tts-math" data-tts="f">$f$</span> has this form, what are the parameter values?</em>
+        Nonparametric regression asks: <em>given only that <span class="tts-math" data-tts="f">$f$</span> is smooth, what curve fits the data?</em>
+        The "parameter" is no longer a finite vector — it is the entire function <span class="tts-math" data-tts="f">$f$</span>, an object living in an
         infinite-dimensional space.
       </p>
 </div>
 <p data-cid="ch18-070">
-      Keener treats two ways of carrying this out. <strong>Kernel methods</strong> (Section 18.1) build $\hat f$
-      by averaging nearby $Y$-values, with a tunable window controlling how much averaging happens.
+      Keener treats two ways of carrying this out. <strong>Kernel methods</strong> (Section 18.1) build <span class="tts-math" data-tts="f">$\hat f$</span>
+      by averaging nearby <span class="tts-math" data-tts="Y">$Y$</span>-values, with a tunable window controlling how much averaging happens.
       <strong>Smoothing splines</strong> (Section 18.3) instead pose an optimization problem: among all reasonably
       smooth functions, find the one that fits the data well but is not too wiggly. To set up splines properly we
       need a quick excursion into Hilbert spaces, which lives in Section 18.2. And in Section 18.4 the same ideas
@@ -83,190 +82,190 @@
 <h2 data-cid="ch18-090" id="s18-1">18.1 Kernel methods</h2>
 <h3 data-cid="ch18-100">The setup, slowly</h3>
 <p data-cid="ch18-110">
-      We observe pairs $(x_i, Y_i)$ for $i = 1, \dots, n$, related by
-      $$Y_i = f(x_i) + \epsilon_i,$$
-      with errors $\epsilon_i$ that are mean zero, uncorrelated, and share a common variance $\sigma^2$. The
-      design points $x_1 &lt; x_2 &lt; \cdots &lt; x_n$ are treated as known constants; only $Y_i$ is random. We assume
-      $f$ is twice continuously differentiable, but nothing more — in particular, no functional form.
+      We observe pairs <span class="tts-math" data-tts="x sub i Y sub i">$(x_i, Y_i)$</span> for <span class="tts-math" data-tts="i equals 1 and so on n">$i = 1, \dots, n$</span>, related by
+      <span class="tts-math" data-tts="Y sub i equals f x sub i plus epsilon sub i">$$Y_i = f(x_i) + \epsilon_i,$$</span>
+      with errors <span class="tts-math" data-tts="epsilon sub i">$\epsilon_i$</span> that are mean zero, uncorrelated, and share a common variance <span class="tts-math" data-tts="sigma to the 2">$\sigma^2$</span>. The
+      design points <span class="tts-math" data-tts="x sub 1 lt x sub 2 lt times s lt x sub n">$x_1 &lt; x_2 &lt; \cdots &lt; x_n$</span> are treated as known constants; only <span class="tts-math" data-tts="Y sub i">$Y_i$</span> is random. We assume
+      <span class="tts-math" data-tts="f">$f$</span> is twice continuously differentiable, but nothing more — in particular, no functional form.
     </p>
 <p data-cid="ch18-120">
-      The goal is to estimate the curve $f$ at any point $x$ we care about.
+      The goal is to estimate the curve <span class="tts-math" data-tts="f">$f$</span> at any point <span class="tts-math" data-tts="x">$x$</span> we care about.
     </p>
 <h3 data-cid="ch18-130">A naive first try: linear interpolation</h3>
 <p data-cid="ch18-140">
       Here is the simplest possible idea. Just connect the data points with line segments. Define
-      $$\hat h(x) = Y_i \, \frac{x - x_{i+1}}{x_i - x_{i+1}} + Y_{i+1} \, \frac{x - x_i}{x_{i+1} - x_i}, \qquad x \in [x_i, x_{i+1}].$$
+      <span class="tts-math" data-tts="h x equals Y sub i x minus x sub i plus 1 x sub i minus x sub i plus 1 plus Y sub i plus 1 x minus x sub i over x_ i plus 1 minus x sub i x in x sub i x sub i plus 1 .">$$\hat h(x) = Y_i \, \frac{x - x_{i+1}}{x_i - x_{i+1}} + Y_{i+1} \, \frac{x - x_i}{x_{i+1} - x_i}, \qquad x \in [x_i, x_{i+1}].$$</span>
     </p>
 <p data-cid="ch18-150">
       This is the piecewise-linear interpolant. It hits every data point exactly. If the noise level were zero,
-      it would do a respectable job. But because each $Y_i$ carries an error $\epsilon_i$, $\hat h$ inherits all
+      it would do a respectable job. But because each <span class="tts-math" data-tts="Y sub i">$Y_i$</span> carries an error <span class="tts-math" data-tts="epsilon sub i">$\epsilon_i$</span>, <span class="tts-math" data-tts="h">$\hat h$</span> inherits all
       that noise — it jumps up and down with every observation, never averaging out anything. It has essentially
-      no bias and enormous variance. Useless as an estimate of a smooth $f$.
+      no bias and enormous variance. Useless as an estimate of a smooth <span class="tts-math" data-tts="f">$f$</span>.
     </p>
 <div class="box intuition" data-cid="ch18-160">
 <span class="box-label">Why we need smoothing</span>
 <p data-cid="ch18-170">
         The whole point of replication and smoothing in regression is to use neighboring observations to cancel
-        out noise. $\hat h$ never averages anything, so it never gets to use that cancellation. To get a better
-        estimator we need to <em>smear</em> $\hat h$ out — to replace its value at $x$ with a weighted average of
-        its values in a neighborhood of $x$.
+        out noise. <span class="tts-math" data-tts="h">$\hat h$</span> never averages anything, so it never gets to use that cancellation. To get a better
+        estimator we need to <em>smear</em> <span class="tts-math" data-tts="h">$\hat h$</span> out — to replace its value at <span class="tts-math" data-tts="x">$x$</span> with a weighted average of
+        its values in a neighborhood of <span class="tts-math" data-tts="x">$x$</span>.
       </p>
 </div>
 <h3 data-cid="ch18-180">Convolution: the smoothing operation</h3>
 <p data-cid="ch18-190">
       The mathematical way to "smear out" a function is convolution against a kernel. Pick a probability density
-      $W$ that is symmetric around zero and supported on $[-1, 1]$ — a small bump centered at the origin. Pick a
-      <strong>bandwidth</strong> $b &gt; 0$. Define
-      $$\hat f(x) = \frac{1}{b} \int \hat h(t) \, W\!\left( \frac{x - t}{b} \right) dt.$$
+      <span class="tts-math" data-tts="W">$W$</span> that is symmetric around zero and supported on <span class="tts-math" data-tts="1 1">$[-1, 1]$</span> — a small bump centered at the origin. Pick a
+      <strong>bandwidth</strong> <span class="tts-math" data-tts="b gt 0">$b &gt; 0$</span>. Define
+      <span class="tts-math" data-tts="f x equals 1 over b the integral of h t W x minus t over b dt.">$$\hat f(x) = \frac{1}{b} \int \hat h(t) \, W\!\left( \frac{x - t}{b} \right) dt.$$</span>
     </p>
 <p data-cid="ch18-200">
-      Read this slowly. The factor $W((x-t)/b)/b$ is a bump centered at $x$ with width $b$. It assigns weight to
-      values $t$ near $x$ and zero weight to values far from $x$. So $\hat f(x)$ is a weighted average of $\hat h(t)$
-      for $t$ within distance $b$ of $x$.
+      Read this slowly. The factor <span class="tts-math" data-tts="W x minus t over b over b">$W((x-t)/b)/b$</span> is a bump centered at <span class="tts-math" data-tts="x">$x$</span> with width <span class="tts-math" data-tts="b">$b$</span>. It assigns weight to
+      values <span class="tts-math" data-tts="t">$t$</span> near <span class="tts-math" data-tts="x">$x$</span> and zero weight to values far from <span class="tts-math" data-tts="x">$x$</span>. So <span class="tts-math" data-tts="f x">$\hat f(x)$</span> is a weighted average of <span class="tts-math" data-tts="h t">$\hat h(t)$</span>
+      for <span class="tts-math" data-tts="t">$t$</span> within distance <span class="tts-math" data-tts="b">$b$</span> of <span class="tts-math" data-tts="x">$x$</span>.
     </p>
 <p data-cid="ch18-210">
-      A cleaner way to see this: if $Z$ is a random variable with density $W$, then
-      $$\hat f(x) = \mathbb{E}_Z \, \hat h(x - bZ).$$
-      We are averaging $\hat h$ over a small random shift of its argument. The size of the shift is controlled by $b$.
+      A cleaner way to see this: if <span class="tts-math" data-tts="Z">$Z$</span> is a random variable with density <span class="tts-math" data-tts="W">$W$</span>, then
+      <span class="tts-math" data-tts="f x equals E sub Z h x minus bZ .">$$\hat f(x) = \mathbb{E}_Z \, \hat h(x - bZ).$$</span>
+      We are averaging <span class="tts-math" data-tts="h">$\hat h$</span> over a small random shift of its argument. The size of the shift is controlled by <span class="tts-math" data-tts="b">$b$</span>.
     </p>
 <div class="box example" data-cid="ch18-220">
 <span class="box-label">Two popular kernels</span>
 <p data-cid="ch18-230">
-        Both are symmetric, continuous, and supported on $[-1, 1]$:
+        Both are symmetric, continuous, and supported on <span class="tts-math" data-tts="1 1">$[-1, 1]$</span>:
       </p>
 <ul data-cid="ch18-240">
-<li><strong>Triangular:</strong> $W_2(x) = (1 - |x|)_+$. The "+" subscript means "set to zero outside the support".</li>
-<li><strong>Epanechnikov:</strong> $W_4(x) = \tfrac{3}{4}(1 - x^2)_+$. Slightly more efficient theoretically.</li>
+<li><strong>Triangular:</strong> <span class="tts-math" data-tts="W sub 2 x equals 1 minus x _ plus">$W_2(x) = (1 - |x|)_+$</span>. The "+" subscript means "set to zero outside the support".</li>
+<li><strong>Epanechnikov:</strong> <span class="tts-math" data-tts="W sub 4 x equals 3 over 4 1 minus x to the 2 _ plus">$W_4(x) = \tfrac{3}{4}(1 - x^2)_+$</span>. Slightly more efficient theoretically.</li>
 </ul>
 <p data-cid="ch18-250">
-        In practice the choice of kernel barely matters. The choice of $b$ matters enormously.
+        In practice the choice of kernel barely matters. The choice of <span class="tts-math" data-tts="b">$b$</span> matters enormously.
       </p>
 </div>
 <h3 data-cid="ch18-260">The Nadaraya–Watson view</h3>
 <p data-cid="ch18-270">
       It will help to rewrite the estimator as an explicit linear combination of the responses. Since
-      $\hat h(x) = \sum_i u_i(x) Y_i$ with tent-function weights $u_i$, plugging into the convolution gives
-      $$\hat f(x) = \sum_{i=1}^n v_i(x) \, Y_i, \qquad v_i(x) = \frac{1}{b} \int u_i(t) \, W\!\left(\frac{x-t}{b}\right) dt.$$
+      <span class="tts-math" data-tts="h x equals sub i u sub i x Y sub i">$\hat h(x) = \sum_i u_i(x) Y_i$</span> with tent-function weights <span class="tts-math" data-tts="u sub i">$u_i$</span>, plugging into the convolution gives
+      <span class="tts-math" data-tts="f x equals the sum over i equals 1 of to the n v sub i x Y sub i v sub i x equals 1 over b the integral of u sub i t W x minus t over b dt.">$$\hat f(x) = \sum_{i=1}^n v_i(x) \, Y_i, \qquad v_i(x) = \frac{1}{b} \int u_i(t) \, W\!\left(\frac{x-t}{b}\right) dt.$$</span>
     </p>
 <p data-cid="ch18-280">
-      This is the form to keep in mind: $\hat f(x)$ is a linear function of $Y$. Computing its mean and variance is
+      This is the form to keep in mind: <span class="tts-math" data-tts="f x">$\hat f(x)$</span> is a linear function of <span class="tts-math" data-tts="Y">$Y$</span>. Computing its mean and variance is
       now an exercise in handling these weights. The closely related <strong>Nadaraya–Watson</strong> estimator
-      $\hat f_{NW}(x) = \frac{\sum_i K_b(x - x_i) Y_i}{\sum_i K_b(x - x_i)}$ uses the same averaging idea more directly;
+      <span class="tts-math" data-tts="f sub NW x equals sub i K sub b x minus x sub i Y sub i over sub i K sub b x minus x sub i">$\hat f_{NW}(x) = \frac{\sum_i K_b(x - x_i) Y_i}{\sum_i K_b(x - x_i)}$</span> uses the same averaging idea more directly;
       both fall under the umbrella of "kernel regression".
     </p>
-<h3 data-cid="ch18-290">The bias of $\hat f(x)$</h3>
+<h3 data-cid="ch18-290">The bias of <span class="tts-math" data-tts="f x">$\hat f(x)$</span></h3>
 <p data-cid="ch18-300">
-      Take expectations. Because the operation is linear and $E Y_i = f(x_i)$,
-      $$E \hat f(x) = \frac{1}{b} \int E\hat h(t) \, W\!\left(\frac{x-t}{b}\right) dt.$$
-      Now $E \hat h(t)$ is itself just the linear interpolant of the deterministic function $f$, which differs
-      from $f(t)$ by at most $M_2 / (8 n^2)$ where $M_2 = \sup |f''|$ — a Taylor-expansion bound (the book's
-      Eq. 18.5). For large $n$, that piece is tiny.
+      Take expectations. Because the operation is linear and <span class="tts-math" data-tts="E Y sub i equals f x sub i">$E Y_i = f(x_i)$</span>,
+      <span class="tts-math" data-tts="E f x equals 1 over b the integral of E h t W x minus t over b dt.">$$E \hat f(x) = \frac{1}{b} \int E\hat h(t) \, W\!\left(\frac{x-t}{b}\right) dt.$$</span>
+      Now <span class="tts-math" data-tts="E h t">$E \hat h(t)$</span> is itself just the linear interpolant of the deterministic function <span class="tts-math" data-tts="f">$f$</span>, which differs
+      from <span class="tts-math" data-tts="f t">$f(t)$</span> by at most <span class="tts-math" data-tts="M sub 2 over 8 n to the 2">$M_2 / (8 n^2)$</span> where <span class="tts-math" data-tts="M sub 2 equals supremum f prime prime">$M_2 = \sup |f''|$</span> — a Taylor-expansion bound (the book's
+      Eq. 18.5). For large <span class="tts-math" data-tts="n">$n$</span>, that piece is tiny.
     </p>
 <p data-cid="ch18-310">
-      The interesting piece is the convolution of $f$ with the kernel. Writing $Z \sim W$, expanding by Taylor:
-      $$E_Z f(x - bZ) = f(x) - b f'(x) E Z + \tfrac{1}{2} b^2 f''(x) E Z^2 + \cdots$$
-      Because $W$ is symmetric, $E Z = 0$, and the leading correction is the $b^2$ term. After collecting:
-      $$\text{Bias}(\hat f(x)) = E\hat f(x) - f(x) = \tfrac{1}{2} b^2 f''(x) \, E Z^2 + o(b^2) + O(1/n^2).$$
+      The interesting piece is the convolution of <span class="tts-math" data-tts="f">$f$</span> with the kernel. Writing <span class="tts-math" data-tts="Z distributed as W">$Z \sim W$</span>, expanding by Taylor:
+      <span class="tts-math" data-tts="E sub Z f x minus bZ equals f x minus b f prime x E Z plus 1 over 2 b to the 2 f prime prime x E Z to the 2 plus times s">$$E_Z f(x - bZ) = f(x) - b f'(x) E Z + \tfrac{1}{2} b^2 f''(x) E Z^2 + \cdots$$</span>
+      Because <span class="tts-math" data-tts="W">$W$</span> is symmetric, <span class="tts-math" data-tts="E Z equals 0">$E Z = 0$</span>, and the leading correction is the <span class="tts-math" data-tts="b to the 2">$b^2$</span> term. After collecting:
+      <span class="tts-math" data-tts="Bias f x equals E f x minus f x equals 1 over 2 b to the 2 f prime prime x E Z to the 2 plus o b to the 2 plus O 1 over n to the 2 .">$$\text{Bias}(\hat f(x)) = E\hat f(x) - f(x) = \tfrac{1}{2} b^2 f''(x) \, E Z^2 + o(b^2) + O(1/n^2).$$</span>
     </p>
 <div class="box intuition" data-cid="ch18-320">
 <span class="box-label">The shape of the bias</span>
 <p data-cid="ch18-330">
-        Bias scales with $b^2$ — quadratically in the bandwidth. And it is proportional to $f''(x)$, the local
-        curvature of the true function. Where $f$ is straight, the bias is zero (a weighted average of points on a
-        line is still on the line). Where $f$ bends sharply, smoothing produces a systematic distortion:
+        Bias scales with <span class="tts-math" data-tts="b to the 2">$b^2$</span> — quadratically in the bandwidth. And it is proportional to <span class="tts-math" data-tts="f prime prime x">$f''(x)$</span>, the local
+        curvature of the true function. Where <span class="tts-math" data-tts="f">$f$</span> is straight, the bias is zero (a weighted average of points on a
+        line is still on the line). Where <span class="tts-math" data-tts="f">$f$</span> bends sharply, smoothing produces a systematic distortion:
         averaging across a peak pulls the estimate down; averaging across a valley pulls it up. The flatter
         you are, the more you can smooth for free.
       </p>
 </div>
-<h3 data-cid="ch18-340">The variance of $\hat f(x)$</h3>
+<h3 data-cid="ch18-340">The variance of <span class="tts-math" data-tts="f x">$\hat f(x)$</span></h3>
 <p data-cid="ch18-350">
-      Since $\hat f(x) = \sum_i v_i(x) Y_i$ and the $Y_i$ are uncorrelated with variance $\sigma^2$,
-      $$\mathrm{Var}(\hat f(x)) = \sigma^2 \sum_{i=1}^n v_i^2(x).$$
+      Since <span class="tts-math" data-tts="f x equals sub i v sub i x Y sub i">$\hat f(x) = \sum_i v_i(x) Y_i$</span> and the <span class="tts-math" data-tts="Y sub i">$Y_i$</span> are uncorrelated with variance <span class="tts-math" data-tts="sigma to the 2">$\sigma^2$</span>,
+      <span class="tts-math" data-tts="Var f x equals sigma to the 2 the sum over i equals 1 of to the n v sub i to the 2 x .">$$\mathrm{Var}(\hat f(x)) = \sigma^2 \sum_{i=1}^n v_i^2(x).$$</span>
     </p>
 <p data-cid="ch18-360">
-      How many of the $v_i$ are nonzero? Only those with $|x_i - x| \lesssim b$, which on a uniform grid is about
-      $nb$ points. Each such $v_i$ is roughly $\frac{1}{nb} W\!\left(\frac{x - x_i}{b}\right)$. So the sum is a
-      Riemann approximation to an integral, and as $b \to 0$ with $nb \to \infty$,
-      $$\mathrm{Var}(\hat f(x)) \;\approx\; \frac{\sigma^2}{nb} \int W^2(t) \, dt.$$
+      How many of the <span class="tts-math" data-tts="v sub i">$v_i$</span> are nonzero? Only those with <span class="tts-math" data-tts="x sub i minus x b">$|x_i - x| \lesssim b$</span>, which on a uniform grid is about
+      <span class="tts-math" data-tts="nb">$nb$</span> points. Each such <span class="tts-math" data-tts="v sub i">$v_i$</span> is roughly <span class="tts-math" data-tts="1 over nb W x minus x sub i over b">$\frac{1}{nb} W\!\left(\frac{x - x_i}{b}\right)$</span>. So the sum is a
+      Riemann approximation to an integral, and as <span class="tts-math" data-tts="b to 0">$b \to 0$</span> with <span class="tts-math" data-tts="nb to infinity">$nb \to \infty$</span>,
+      <span class="tts-math" data-tts="Var f x approximately sigma to the 2 over nb the integral of W to the 2 t dt.">$$\mathrm{Var}(\hat f(x)) \;\approx\; \frac{\sigma^2}{nb} \int W^2(t) \, dt.$$</span>
     </p>
 <div class="box intuition" data-cid="ch18-370">
 <span class="box-label">The shape of the variance</span>
 <p data-cid="ch18-380">
-        Variance scales like $1/(nb)$. Doubling the bandwidth roughly halves the variance: you are averaging twice
-        as many points, so noise cancels twice as well. Increasing $n$ at fixed $b$ also reduces variance for the
+        Variance scales like <span class="tts-math" data-tts="1 over nb">$1/(nb)$</span>. Doubling the bandwidth roughly halves the variance: you are averaging twice
+        as many points, so noise cancels twice as well. Increasing <span class="tts-math" data-tts="n">$n$</span> at fixed <span class="tts-math" data-tts="b">$b$</span> also reduces variance for the
         same reason.
       </p>
 </div>
 <h3 data-cid="ch18-390">The bias–variance tradeoff, made arithmetic</h3>
 <p data-cid="ch18-400">
       Combining, the mean squared error at a single point is
-      $$\mathrm{MSE}(x) \approx \frac{\sigma^2 \int W^2}{nb} + \tfrac{1}{4} b^4 \big(f''(x)\big)^2 \big(EZ^2\big)^2.$$
-      The first term is variance; it decreases in $b$. The second is squared bias; it increases in $b$. Their sum
+      <span class="tts-math" data-tts="MSE x approximately sigma to the 2 the integral of W to the 2 over nb plus 1 over 4 b to the 4 f prime prime x to the 2 EZ to the 2 to the 2.">$$\mathrm{MSE}(x) \approx \frac{\sigma^2 \int W^2}{nb} + \tfrac{1}{4} b^4 \big(f''(x)\big)^2 \big(EZ^2\big)^2.$$</span>
+      The first term is variance; it decreases in <span class="tts-math" data-tts="b">$b$</span>. The second is squared bias; it increases in <span class="tts-math" data-tts="b">$b$</span>. Their sum
       has a minimum somewhere in between.
     </p>
 <p data-cid="ch18-410">
-      Averaging over $x \in [0, 1]$ to get the <strong>integrated mean squared error</strong>:
-      $$\mathrm{IMSE} \approx \frac{c_1}{nb} + b^4 c_2,$$
-      where $c_1 = \sigma^2 \int W^2$ depends on the noise and the kernel, and $c_2 = \tfrac{1}{4}(EZ^2)^2 \int (f'')^2$
+      Averaging over <span class="tts-math" data-tts="x in 0 1">$x \in [0, 1]$</span> to get the <strong>integrated mean squared error</strong>:
+      <span class="tts-math" data-tts="IMSE approximately c sub 1 over nb plus b to the 4 c sub 2">$$\mathrm{IMSE} \approx \frac{c_1}{nb} + b^4 c_2,$$</span>
+      where <span class="tts-math" data-tts="c sub 1 equals sigma to the 2 the integral of W to the 2">$c_1 = \sigma^2 \int W^2$</span> depends on the noise and the kernel, and <span class="tts-math" data-tts="c sub 2 equals 1 over 4 EZ to the 2 to the 2 the integral of f prime prime to the 2">$c_2 = \tfrac{1}{4}(EZ^2)^2 \int (f'')^2$</span>
       depends on the kernel and the local curvature of the true function. Setting the derivative to zero gives
-      $$b_{\mathrm{opt}} = \left( \frac{c_1}{4 n c_2} \right)^{1/5}.$$
+      <span class="tts-math" data-tts="b sub opt equals c sub 1 over 4 n c sub 2 to the 1 over 5.">$$b_{\mathrm{opt}} = \left( \frac{c_1}{4 n c_2} \right)^{1/5}.$$</span>
     </p>
 <p data-cid="ch18-420">
       And with this choice,
-      $$\mathrm{IMSE} \approx K_f \left( \frac{\sigma^2}{n} \right)^{4/5} \cdot \big(\text{kernel-dependent constant}\big).$$
-      The rate is $n^{-4/5}$, slower than the parametric $n^{-1}$ rate. This is the price of refusing to commit to
+      <span class="tts-math" data-tts="IMSE approximately K sub f sigma to the 2 over n to the 4 over 5 times kernel minus dependent constant .">$$\mathrm{IMSE} \approx K_f \left( \frac{\sigma^2}{n} \right)^{4/5} \cdot \big(\text{kernel-dependent constant}\big).$$</span>
+      The rate is <span class="tts-math" data-tts="n to the 4 over 5">$n^{-4/5}$</span>, slower than the parametric <span class="tts-math" data-tts="n inverse">$n^{-1}$</span> rate. This is the price of refusing to commit to
       a functional form.
     </p>
 <div class="box example" data-cid="ch18-430">
 <span class="box-label">Worked example — a simulated noisy curve</span>
 <p data-cid="ch18-440">
-        Take $f(x) = 16 x^3 - 19.2 x^2 + 4.68 x + 2.3$ on $[0, 1]$ with i.i.d. $N(0, 1)$ errors at $n = 25$ equally
+        Take <span class="tts-math" data-tts="f x equals 16 x to the 3 minus 19.2 x to the 2 plus 4.68 x plus 2.3">$f(x) = 16 x^3 - 19.2 x^2 + 4.68 x + 2.3$</span> on <span class="tts-math" data-tts="0 1">$[0, 1]$</span> with i.i.d. <span class="tts-math" data-tts="N 0 1">$N(0, 1)$</span> errors at <span class="tts-math" data-tts="n equals 25">$n = 25$</span> equally
         spaced design points (this is Keener's example). Try three bandwidths with the triangular kernel:
       </p>
 <ul data-cid="ch18-450">
-<li>$b = 0.05$: very narrow. $\hat f$ tracks every noise spike — high variance, low bias.</li>
-<li>$b = 0.24$: middling. Roughly matches $b_{\mathrm{opt}}$ for this setup. The estimate looks like a smooth
+<li><span class="tts-math" data-tts="b equals 0.05">$b = 0.05$</span>: very narrow. <span class="tts-math" data-tts="f">$\hat f$</span> tracks every noise spike — high variance, low bias.</li>
+<li><span class="tts-math" data-tts="b equals 0.24">$b = 0.24$</span>: middling. Roughly matches <span class="tts-math" data-tts="b sub opt">$b_{\mathrm{opt}}$</span> for this setup. The estimate looks like a smooth
             version of the truth.</li>
-<li>$b = 0.6$: very wide. $\hat f$ becomes nearly constant — almost all variance gone, but the wiggles of $f$ are
+<li><span class="tts-math" data-tts="b equals 0.6">$b = 0.6$</span>: very wide. <span class="tts-math" data-tts="f">$\hat f$</span> becomes nearly constant — almost all variance gone, but the wiggles of <span class="tts-math" data-tts="f">$f$</span> are
             ironed flat. Pure bias.</li>
 </ul>
 <p data-cid="ch18-460">
         Plot all three on the same axes against the truth. The middle one wins. The narrow one is too jumpy; the
-        wide one is too flat. The visible "smoothness" of $\hat f$ is precisely the bandwidth knob, and the
+        wide one is too flat. The visible "smoothness" of <span class="tts-math" data-tts="f">$\hat f$</span> is precisely the bandwidth knob, and the
         bias–variance picture above is the analytic shadow of what your eye sees.
       </p>
 </div>
 <h3 data-cid="ch18-470">Bandwidth selection in practice</h3>
 <p data-cid="ch18-480">
-      The formula for $b_{\mathrm{opt}}$ is gorgeous but useless directly — it depends on $\sigma^2$ and on
-      $\int (f'')^2$, neither of which we know. Two strategies:
+      The formula for <span class="tts-math" data-tts="b sub opt">$b_{\mathrm{opt}}$</span> is gorgeous but useless directly — it depends on <span class="tts-math" data-tts="sigma to the 2">$\sigma^2$</span> and on
+      <span class="tts-math" data-tts="the integral of f prime prime to the 2">$\int (f'')^2$</span>, neither of which we know. Two strategies:
     </p>
 <p data-cid="ch18-490">
-<strong>Plug-in.</strong> Estimate $\sigma^2$ and $\int (f'')^2$ from a pilot fit, then substitute into the
-      formula. Workable but fragile, because $f''$ is harder to estimate than $f$ itself.
+<strong>Plug-in.</strong> Estimate <span class="tts-math" data-tts="sigma to the 2">$\sigma^2$</span> and <span class="tts-math" data-tts="the integral of f prime prime to the 2">$\int (f'')^2$</span> from a pilot fit, then substitute into the
+      formula. Workable but fragile, because <span class="tts-math" data-tts="f prime prime">$f''$</span> is harder to estimate than <span class="tts-math" data-tts="f">$f$</span> itself.
     </p>
 <p data-cid="ch18-500">
 <strong>Cross-validation.</strong> Estimate the prediction error directly by holding out data. The expected
       squared prediction error at a fresh point is
-      $$E[Y - \hat f(x)]^2 = E[f(x) + \epsilon - \hat f(x)]^2 = \sigma^2 + \mathrm{MSE}(x).$$
-      Up to the irreducible $\sigma^2$ that depends on no bandwidth, this is what we want to minimize.
+      <span class="tts-math" data-tts="E Y minus f x to the 2 equals E f x plus epsilon minus f x to the 2 equals sigma to the 2 plus MSE x .">$$E[Y - \hat f(x)]^2 = E[f(x) + \epsilon - \hat f(x)]^2 = \sigma^2 + \mathrm{MSE}(x).$$</span>
+      Up to the irreducible <span class="tts-math" data-tts="sigma to the 2">$\sigma^2$</span> that depends on no bandwidth, this is what we want to minimize.
     </p>
 <p data-cid="ch18-510">
-      A simple procedure: randomly split the data into an estimation half and a validation half, fit $\hat f^*_b$
-      on the estimation half, score it on the validation half, repeat several times, average, and choose the $b$
-      that minimizes the averaged score. Or use leave-one-out: fit $\hat f^{(-i)}_b$ omitting the $i$th point,
-      compute $\sum_i (Y_i - \hat f^{(-i)}_b(x_i))^2$, minimize over $b$.
+      A simple procedure: randomly split the data into an estimation half and a validation half, fit <span class="tts-math" data-tts="f to the times sub b">$\hat f^*_b$</span>
+      on the estimation half, score it on the validation half, repeat several times, average, and choose the <span class="tts-math" data-tts="b">$b$</span>
+      that minimizes the averaged score. Or use leave-one-out: fit <span class="tts-math" data-tts="f to the i sub b">$\hat f^{(-i)}_b$</span> omitting the <span class="tts-math" data-tts="i">$i$</span>th point,
+      compute <span class="tts-math" data-tts="sub i Y sub i minus f to the i sub b x sub i to the 2">$\sum_i (Y_i - \hat f^{(-i)}_b(x_i))^2$</span>, minimize over <span class="tts-math" data-tts="b">$b$</span>.
     </p>
 <div class="box pause" data-cid="ch18-520">
 <span class="box-label">Pause — why cross-validation works</span>
 <p data-cid="ch18-530">
-        Why is leave-one-out unbiased for prediction error? Because $Y_i$ was not used to build $\hat f^{(-i)}_b$,
-        so $Y_i - \hat f^{(-i)}_b(x_i)$ has the same distribution as the error at a genuinely new point. Squaring
+        Why is leave-one-out unbiased for prediction error? Because <span class="tts-math" data-tts="Y sub i">$Y_i$</span> was not used to build <span class="tts-math" data-tts="f to the i sub b">$\hat f^{(-i)}_b$</span>,
+        so <span class="tts-math" data-tts="Y sub i minus f to the i sub b x sub i">$Y_i - \hat f^{(-i)}_b(x_i)$</span> has the same distribution as the error at a genuinely new point. Squaring
         and averaging estimates the expected squared prediction error. The bandwidth that minimizes this estimate
         is automatically close to the bandwidth that minimizes the true risk.
       </p>
 <p data-cid="ch18-540">
-        Note: cross-validation does <em>not</em> estimate $\sigma^2 + \mathrm{IMSE}$ for one fixed dataset — it
+        Note: cross-validation does <em>not</em> estimate <span class="tts-math" data-tts="sigma to the 2 plus IMSE">$\sigma^2 + \mathrm{IMSE}$</span> for one fixed dataset — it
         estimates the average over datasets. But for choosing among bandwidths that distinction does not matter:
         the optimum is the same.
       </p>
@@ -274,38 +273,38 @@
 <div class="box warn" data-cid="ch18-550">
 <span class="box-label">Common pitfall — boundary effects</span>
 <p data-cid="ch18-560">
-        Near the endpoints of the design region, the kernel "wants" to average over points on both sides of $x$,
+        Near the endpoints of the design region, the kernel "wants" to average over points on both sides of <span class="tts-math" data-tts="x">$x$</span>,
         but on one side there are no points. The estimator becomes effectively one-sided, and its bias is suddenly
-        $O(b)$ rather than $O(b^2)$ — a much worse rate. The bias formula derived above breaks down within distance
-        $b$ of an endpoint.
+        <span class="tts-math" data-tts="O b">$O(b)$</span> rather than <span class="tts-math" data-tts="O b to the 2">$O(b^2)$</span> — a much worse rate. The bias formula derived above breaks down within distance
+        <span class="tts-math" data-tts="b">$b$</span> of an endpoint.
       </p>
 <p data-cid="ch18-570">
         Fixes include: using boundary kernels (asymmetric kernels designed for the edge), reflecting the data
         across the boundary, or — most cleanly — using <strong>local polynomial regression</strong>, which
         adapts automatically because the local linear fit handles edges correctly. In Keener's Problem 18.2 you
         derive local quadratic regression: instead of a weighted average, fit a weighted least-squares quadratic
-        $\beta_1 + \beta_2(x_i - x) + \beta_3(x_i - x)^2$ around the target point $x$, and take $\hat f(x) = \hat\beta_1$.
+        <span class="tts-math" data-tts="beta sub 1 plus beta sub 2 x sub i minus x plus beta sub 3 x sub i minus x to the 2">$\beta_1 + \beta_2(x_i - x) + \beta_3(x_i - x)^2$</span> around the target point <span class="tts-math" data-tts="x">$x$</span>, and take <span class="tts-math" data-tts="f x equals beta sub 1">$\hat f(x) = \hat\beta_1$</span>.
       </p>
 </div>
 <div class="box warn" data-cid="ch18-580">
 <span class="box-label">Common pitfall — curse of dimensionality</span>
 <p data-cid="ch18-590">
-        Everything in this section was one-dimensional. What if $x \in \mathbb{R}^d$ for $d \geq 2$? A kernel
-        regression in $d$ dimensions has bandwidth $b$ in <em>each</em> direction, so the effective neighborhood
-        contains roughly $n b^d$ points. To keep that number large you need $b$ large; to keep the bias small you
-        need $b$ small. The two demands fight harder as $d$ grows.
+        Everything in this section was one-dimensional. What if <span class="tts-math" data-tts="x in the real numbers to the d">$x \in \mathbb{R}^d$</span> for <span class="tts-math" data-tts="d greater than or equal to 2">$d \geq 2$</span>? A kernel
+        regression in <span class="tts-math" data-tts="d">$d$</span> dimensions has bandwidth <span class="tts-math" data-tts="b">$b$</span> in <em>each</em> direction, so the effective neighborhood
+        contains roughly <span class="tts-math" data-tts="n b to the d">$n b^d$</span> points. To keep that number large you need <span class="tts-math" data-tts="b">$b$</span> large; to keep the bias small you
+        need <span class="tts-math" data-tts="b">$b$</span> small. The two demands fight harder as <span class="tts-math" data-tts="d">$d$</span> grows.
       </p>
 <p data-cid="ch18-600">
-        The optimal rate becomes $n^{-4/(4 + d)}$. At $d = 1$, this is the $n^{-4/5}$ rate from above. At $d = 5$,
-        it is $n^{-4/9}$ — barely better than the variance going to zero at all. At $d = 10$ you are essentially
+        The optimal rate becomes <span class="tts-math" data-tts="n to the 4 over 4 plus d">$n^{-4/(4 + d)}$</span>. At <span class="tts-math" data-tts="d equals 1">$d = 1$</span>, this is the <span class="tts-math" data-tts="n to the 4 over 5">$n^{-4/5}$</span> rate from above. At <span class="tts-math" data-tts="d equals 5">$d = 5$</span>,
+        it is <span class="tts-math" data-tts="n to the 4 over 9">$n^{-4/9}$</span> — barely better than the variance going to zero at all. At <span class="tts-math" data-tts="d equals 10">$d = 10$</span> you are essentially
         not learning. This is the <strong>curse of dimensionality</strong>: nonparametric methods that work
-        beautifully in 1D break down rapidly as $d$ grows. High-dimensional problems require structural
+        beautifully in 1D break down rapidly as <span class="tts-math" data-tts="d">$d$</span> grows. High-dimensional problems require structural
         assumptions (additivity, sparsity, low-rank, etc.) to make progress.
       </p>
 </div>
 <h2 data-cid="ch18-610" id="s18-2">18.2 Hilbert spaces</h2>
 <p data-cid="ch18-620">
-      To set up the spline approach we need to treat $f$ itself as a "vector" in an infinite-dimensional space.
+      To set up the spline approach we need to treat <span class="tts-math" data-tts="f">$f$</span> itself as a "vector" in an infinite-dimensional space.
       That requires a little bit of functional analysis. We are going slow, because every concept here pays back
       directly in Section 18.3.
     </p>
@@ -313,25 +312,25 @@
 <div class="box definition" data-cid="ch18-640">
 <span class="box-label">Definition 18.1 — norm</span>
 <p data-cid="ch18-650">
-        A <strong>norm</strong> on a real vector space $V$ is a function $\| \cdot \| : V \to \mathbb{R}$ satisfying:
+        A <strong>norm</strong> on a real vector space <span class="tts-math" data-tts="V">$V$</span> is a function <span class="tts-math" data-tts="norm of times norm of V to the real numbers">$\| \cdot \| : V \to \mathbb{R}$</span> satisfying:
       </p>
 <ol data-cid="ch18-660">
-<li>$\|x\| \geq 0$, with $\|x\| = 0$ only when $x = \mathbf{0}$.</li>
-<li>Triangle inequality: $\|x + y\| \leq \|x\| + \|y\|$.</li>
-<li>Homogeneity: $\|cx\| = |c| \cdot \|x\|$ for any scalar $c$.</li>
+<li><span class="tts-math" data-tts="norm of x norm of greater than or equal to 0">$\|x\| \geq 0$</span>, with <span class="tts-math" data-tts="norm of x norm of equals 0">$\|x\| = 0$</span> only when <span class="tts-math" data-tts="x equals 0">$x = \mathbf{0}$</span>.</li>
+<li>Triangle inequality: <span class="tts-math" data-tts="norm of x plus y norm of less than or equal to norm of x norm of plus norm of y norm">$\|x + y\| \leq \|x\| + \|y\|$</span>.</li>
+<li>Homogeneity: <span class="tts-math" data-tts="norm of cx norm of equals c times norm of x norm">$\|cx\| = |c| \cdot \|x\|$</span> for any scalar <span class="tts-math" data-tts="c">$c$</span>.</li>
 </ol>
 </div>
 <p data-cid="ch18-670">
-      A norm gives a notion of distance ($\|x - y\|$) and therefore a notion of convergence: $x_n \to x$ means
-      $\|x_n - x\| \to 0$.
+      A norm gives a notion of distance (<span class="tts-math" data-tts="norm of x minus y norm">$\|x - y\|$</span>) and therefore a notion of convergence: <span class="tts-math" data-tts="x sub n to x">$x_n \to x$</span> means
+      <span class="tts-math" data-tts="norm of x sub n minus x norm of to 0">$\|x_n - x\| \to 0$</span>.
     </p>
 <div class="box definition" data-cid="ch18-680">
 <span class="box-label">Definition 18.2 — inner product</span>
 <p data-cid="ch18-690">
-        An <strong>inner product</strong> on $V$ is a function $\langle \cdot, \cdot \rangle : V \times V \to \mathbb{R}$
-        that is symmetric, bilinear, and positive definite ($\langle x, x \rangle \geq 0$ with equality only at zero).
-        Every inner product induces a norm via $\|x\| = \sqrt{\langle x, x \rangle}$, and that norm automatically
-        satisfies the <strong>Cauchy–Schwarz inequality</strong> $|\langle x, y \rangle| \leq \|x\| \cdot \|y\|$.
+        An <strong>inner product</strong> on <span class="tts-math" data-tts="V">$V$</span> is a function <span class="tts-math" data-tts="times V times V to the real numbers">$\langle \cdot, \cdot \rangle : V \times V \to \mathbb{R}$</span>
+        that is symmetric, bilinear, and positive definite (<span class="tts-math" data-tts="x x greater than or equal to 0">$\langle x, x \rangle \geq 0$</span> with equality only at zero).
+        Every inner product induces a norm via <span class="tts-math" data-tts="norm of x norm of equals root x x">$\|x\| = \sqrt{\langle x, x \rangle}$</span>, and that norm automatically
+        satisfies the <strong>Cauchy–Schwarz inequality</strong> <span class="tts-math" data-tts="x y less than or equal to norm of x norm of times norm of y norm">$|\langle x, y \rangle| \leq \|x\| \cdot \|y\|$</span>.
       </p>
 </div>
 <div class="box intuition" data-cid="ch18-700">
@@ -339,19 +338,19 @@
 <p data-cid="ch18-710">
         An inner product is the abstract version of the dot product. It gives you angles, orthogonality, and
         projections in addition to lengths. Many natural function spaces — like the space of square-integrable
-        functions on $[0, 1]$, with inner product $\int_0^1 f(x) g(x) dx$ — are inner product spaces.
+        functions on <span class="tts-math" data-tts="0 1">$[0, 1]$</span>, with inner product <span class="tts-math" data-tts="sub 0 to the 1 f x g x dx">$\int_0^1 f(x) g(x) dx$</span> — are inner product spaces.
       </p>
 </div>
 <h3 data-cid="ch18-720">The completeness issue</h3>
 <p data-cid="ch18-730">
-      A sequence $x_n$ is called <strong>Cauchy</strong> if $\|x_n - x_m\| \to 0$ as $n, m \to \infty$ — the terms
+      A sequence <span class="tts-math" data-tts="x sub n">$x_n$</span> is called <strong>Cauchy</strong> if <span class="tts-math" data-tts="norm of x sub n minus x sub m norm of to 0">$\|x_n - x_m\| \to 0$</span> as <span class="tts-math" data-tts="n m to infinity">$n, m \to \infty$</span> — the terms
       bunch up. Every convergent sequence is Cauchy. The converse can fail in "incomplete" spaces.
     </p>
 <div class="box example" data-cid="ch18-740">
 <span class="box-label">A standard cautionary example</span>
 <p data-cid="ch18-750">
-        The rationals $\mathbb{Q}$ with the usual distance are incomplete: the sequence $3, 3.1, 3.14, 3.141, \dots$
-        is Cauchy but its limit $\pi$ is not in $\mathbb{Q}$. The fix is to expand $\mathbb{Q}$ to $\mathbb{R}$ by
+        The rationals <span class="tts-math" data-tts="the rationals">$\mathbb{Q}$</span> with the usual distance are incomplete: the sequence <span class="tts-math" data-tts="3 3.1 3.14 3.141 and so on">$3, 3.1, 3.14, 3.141, \dots$</span>
+        is Cauchy but its limit <span class="tts-math" data-tts="pi">$\pi$</span> is not in <span class="tts-math" data-tts="the rationals">$\mathbb{Q}$</span>. The fix is to expand <span class="tts-math" data-tts="the rationals">$\mathbb{Q}$</span> to <span class="tts-math" data-tts="the real numbers">$\mathbb{R}$</span> by
         adjoining all limits of Cauchy sequences. The same expansion exists for any normed space and produces
         its <strong>completion</strong>.
       </p>
@@ -364,7 +363,7 @@
       </p>
 </div>
 <p data-cid="ch18-780">
-      Completeness is what lets us take infinite expansions $x = \sum_k c_k e_k$ and trust that the limit exists.
+      Completeness is what lets us take infinite expansions <span class="tts-math" data-tts="x equals sub k c sub k e sub k">$x = \sum_k c_k e_k$</span> and trust that the limit exists.
       Without it, the spline argument in Section 18.3 would collapse.
     </p>
 <h3 data-cid="ch18-790">Projections</h3>
@@ -374,30 +373,30 @@
 <div class="box definition" data-cid="ch18-810">
 <span class="box-label">Theorem 18.5 — projection onto a closed subspace</span>
 <p data-cid="ch18-820">
-        Let $V$ be a closed subspace of a Hilbert space $H$. For any $x \in H$ there is a unique $y \in V$
-        minimizing $\|x - z\|$ over $z \in V$. This $y$ is characterized by $x - y \in V^\perp$ — the residual is
+        Let <span class="tts-math" data-tts="V">$V$</span> be a closed subspace of a Hilbert space <span class="tts-math" data-tts="H">$H$</span>. For any <span class="tts-math" data-tts="x in H">$x \in H$</span> there is a unique <span class="tts-math" data-tts="y in V">$y \in V$</span>
+        minimizing <span class="tts-math" data-tts="norm of x minus z norm">$\|x - z\|$</span> over <span class="tts-math" data-tts="z in V">$z \in V$</span>. This <span class="tts-math" data-tts="y">$y$</span> is characterized by <span class="tts-math" data-tts="x minus y in V^">$x - y \in V^\perp$</span> — the residual is
         orthogonal to the subspace.
       </p>
 </div>
 <div class="box intuition" data-cid="ch18-830">
 <span class="box-label">Why this generalizes least squares</span>
 <p data-cid="ch18-840">
-        In finite-dimensional least squares, you minimize $\|Y - X\beta\|^2$ and the answer is determined by the
+        In finite-dimensional least squares, you minimize <span class="tts-math" data-tts="norm of Y minus X beta norm of to the 2">$\|Y - X\beta\|^2$</span> and the answer is determined by the
         normal equations: residual perpendicular to the column space. Theorem 18.5 is the infinite-dimensional
-        version of that same statement. We will use it to decompose any candidate function $f$ into a "part that
+        version of that same statement. We will use it to decompose any candidate function <span class="tts-math" data-tts="f">$f$</span> into a "part that
         matters for the spline problem" plus an orthogonal "part that adds roughness without improving fit" —
-        and conclude the optimal $f$ has the orthogonal part equal to zero.
+        and conclude the optimal <span class="tts-math" data-tts="f">$f$</span> has the orthogonal part equal to zero.
       </p>
 </div>
 <h3 data-cid="ch18-850">Orthonormal bases</h3>
 <p data-cid="ch18-860">
-      An orthonormal collection $\{e_t\}$ has $\|e_t\| = 1$ and $\langle e_s, e_t \rangle = 0$ for $s \neq t$.
-      It is a <strong>basis</strong> if no nonzero element of $H$ is orthogonal to all of them. Every Hilbert
+      An orthonormal collection <span class="tts-math" data-tts="e sub t">$\{e_t\}$</span> has <span class="tts-math" data-tts="norm of e sub t norm of equals 1">$\|e_t\| = 1$</span> and <span class="tts-math" data-tts="e sub s e sub t equals 0">$\langle e_s, e_t \rangle = 0$</span> for <span class="tts-math" data-tts="s not equal to t">$s \neq t$</span>.
+      It is a <strong>basis</strong> if no nonzero element of <span class="tts-math" data-tts="H">$H$</span> is orthogonal to all of them. Every Hilbert
       space has an orthonormal basis (by Zorn's lemma in general; by Gram–Schmidt when separable). Once you have
       one, every element expands:
-      $$x = \sum_{k=1}^\infty \langle x, e_k \rangle e_k.$$
+      <span class="tts-math" data-tts="x equals the sum over k equals 1 of ^ infinity x e sub k e sub k.">$$x = \sum_{k=1}^\infty \langle x, e_k \rangle e_k.$$</span>
       The proof tracks partial sums, uses the Pythagorean relation to show they form a Cauchy sequence (this is
-      <strong>Bessel's inequality</strong> $\sum_k \langle x, e_k \rangle^2 \leq \|x\|^2$), and invokes
+      <strong>Bessel's inequality</strong> <span class="tts-math" data-tts="sub k x e sub k to the 2 less than or equal to norm of x norm of to the 2">$\sum_k \langle x, e_k \rangle^2 \leq \|x\|^2$</span>), and invokes
       completeness to obtain the limit.
     </p>
 <h2 data-cid="ch18-870" id="s18-3">18.3 Splines</h2>
@@ -408,80 +407,80 @@
       with both criteria expressed in a single objective.
     </p>
 <p data-cid="ch18-900">
-      Concretely, for $x_i \in [0, 1]$ and an integer $m \geq 1$, choose $\hat f$ to minimize
-      $$J(f) = \sum_{i=1}^n \big( Y_i - f(x_i) \big)^2 + \lambda \, \big\| f^{(m)} \big\|_2^2,$$
-      where $\|g\|_2^2 = \int_0^1 g^2$ is the squared $L^2$ norm. The first sum is residual sum of squares — the
-      fit term. The second is a <strong>roughness penalty</strong>: the integrated squared $m$th derivative.
-      The constant $\lambda \geq 0$ is the <strong>smoothing parameter</strong>.
+      Concretely, for <span class="tts-math" data-tts="x sub i in 0 1">$x_i \in [0, 1]$</span> and an integer <span class="tts-math" data-tts="m greater than or equal to 1">$m \geq 1$</span>, choose <span class="tts-math" data-tts="f">$\hat f$</span> to minimize
+      <span class="tts-math" data-tts="J f equals the sum over i equals 1 of to the n Y sub i minus f x sub i to the 2 plus lambda norm of f to the m norm of sub 2 to the 2">$$J(f) = \sum_{i=1}^n \big( Y_i - f(x_i) \big)^2 + \lambda \, \big\| f^{(m)} \big\|_2^2,$$</span>
+      where <span class="tts-math" data-tts="norm of g norm of sub 2 to the 2 equals sub 0 to the 1 g to the 2">$\|g\|_2^2 = \int_0^1 g^2$</span> is the squared <span class="tts-math" data-tts="L to the 2">$L^2$</span> norm. The first sum is residual sum of squares — the
+      fit term. The second is a <strong>roughness penalty</strong>: the integrated squared <span class="tts-math" data-tts="m">$m$</span>th derivative.
+      The constant <span class="tts-math" data-tts="lambda greater than or equal to 0">$\lambda \geq 0$</span> is the <strong>smoothing parameter</strong>.
     </p>
 <div class="box intuition" data-cid="ch18-910">
-<span class="box-label">The two extremes of $\lambda$</span>
+<span class="box-label">The two extremes of <span class="tts-math" data-tts="lambda">$\lambda$</span></span>
 <p></p>
 <ul data-cid="ch18-920">
-<li>$\lambda = 0$: no penalty. $\hat f$ can interpolate the data exactly — and will, oscillating wildly to do so.</li>
-<li>$\lambda \to \infty$: the penalty dominates. $\|f^{(m)}\|_2 = 0$ forces $f^{(m)} \equiv 0$, meaning $\hat f$
-            is a polynomial of degree at most $m - 1$. Pure parametric.</li>
+<li><span class="tts-math" data-tts="lambda equals 0">$\lambda = 0$</span>: no penalty. <span class="tts-math" data-tts="f">$\hat f$</span> can interpolate the data exactly — and will, oscillating wildly to do so.</li>
+<li><span class="tts-math" data-tts="lambda to infinity">$\lambda \to \infty$</span>: the penalty dominates. <span class="tts-math" data-tts="norm of f to the m norm of sub 2 equals 0">$\|f^{(m)}\|_2 = 0$</span> forces <span class="tts-math" data-tts="f to the m equivalent to 0">$f^{(m)} \equiv 0$</span>, meaning <span class="tts-math" data-tts="f">$\hat f$</span>
+            is a polynomial of degree at most <span class="tts-math" data-tts="m minus 1">$m - 1$</span>. Pure parametric.</li>
 </ul>
 <p data-cid="ch18-930">
-        In between, $\lambda$ trades off fit against smoothness exactly as bandwidth $b$ did for kernels. Large
-        $\lambda$ = more smoothing = lower variance, higher bias. Small $\lambda$ = less smoothing = higher
-        variance, lower bias. Cross-validation is the standard way to pick $\lambda$.
+        In between, <span class="tts-math" data-tts="lambda">$\lambda$</span> trades off fit against smoothness exactly as bandwidth <span class="tts-math" data-tts="b">$b$</span> did for kernels. Large
+        <span class="tts-math" data-tts="lambda">$\lambda$</span> = more smoothing = lower variance, higher bias. Small <span class="tts-math" data-tts="lambda">$\lambda$</span> = less smoothing = higher
+        variance, lower bias. Cross-validation is the standard way to pick <span class="tts-math" data-tts="lambda">$\lambda$</span>.
       </p>
 </div>
 <h3 data-cid="ch18-940">The Sobolev space</h3>
 <p data-cid="ch18-950">
-      For the penalty to make sense, $f^{(m)}$ has to exist in some integral sense. The right home for $f$ is the
-      <strong>Sobolev space</strong> $W_m[0, 1]$: functions with $m - 1$ continuous derivatives and an
-      absolutely continuous $(m-1)$st derivative whose derivative-a.e. is square-integrable. Equipped with the
+      For the penalty to make sense, <span class="tts-math" data-tts="f to the m">$f^{(m)}$</span> has to exist in some integral sense. The right home for <span class="tts-math" data-tts="f">$f$</span> is the
+      <strong>Sobolev space</strong> <span class="tts-math" data-tts="W sub m 0 1">$W_m[0, 1]$</span>: functions with <span class="tts-math" data-tts="m minus 1">$m - 1$</span> continuous derivatives and an
+      absolutely continuous <span class="tts-math" data-tts="m minus 1">$(m-1)$</span>st derivative whose derivative-a.e. is square-integrable. Equipped with the
       inner product
-      $$\langle f, g \rangle = \sum_{k=0}^{m-1} f^{(k)}(0) \, g^{(k)}(0) + \int_0^1 f^{(m)}(x) g^{(m)}(x) \, dx,$$
-      $W_m[0, 1]$ is a Hilbert space.
+      <span class="tts-math" data-tts="f g equals the sum from k equals 0 to m minus 1 of f to the k 0 g to the k 0 plus sub 0 to the 1 f to the m x g to the m x dx">$$\langle f, g \rangle = \sum_{k=0}^{m-1} f^{(k)}(0) \, g^{(k)}(0) + \int_0^1 f^{(m)}(x) g^{(m)}(x) \, dx,$$</span>
+      <span class="tts-math" data-tts="W sub m 0 1">$W_m[0, 1]$</span> is a Hilbert space.
     </p>
 <div class="box pause" data-cid="ch18-960">
 <span class="box-label">Why this inner product?</span>
 <p data-cid="ch18-970">
-        The boundary terms $f^{(k)}(0) g^{(k)}(0)$ might look strange. They are there to make the inner product
-        positive definite: if you only used the integral $\int f^{(m)} g^{(m)}$, then any polynomial of degree
-        less than $m$ would have zero "norm" — that's a seminorm, not a norm. Adding the boundary terms repairs
+        The boundary terms <span class="tts-math" data-tts="f to the k 0 g to the k 0">$f^{(k)}(0) g^{(k)}(0)$</span> might look strange. They are there to make the inner product
+        positive definite: if you only used the integral <span class="tts-math" data-tts="the integral of f to the m g to the m">$\int f^{(m)} g^{(m)}$</span>, then any polynomial of degree
+        less than <span class="tts-math" data-tts="m">$m$</span> would have zero "norm" — that's a seminorm, not a norm. Adding the boundary terms repairs
         the deficiency by anchoring the low-order Taylor coefficients.
       </p>
 </div>
 <h3 data-cid="ch18-980">The reproducing kernel</h3>
 <p data-cid="ch18-990">
-      $W_m[0, 1]$ has a remarkable property: there exists a function $K : [0, 1]^2 \to \mathbb{R}$ such that for
-      every $f \in W_m[0, 1]$ and every $y \in [0, 1]$,
-      $$f(y) = \langle f, K(\cdot, y) \rangle.$$
+      <span class="tts-math" data-tts="W sub m 0 1">$W_m[0, 1]$</span> has a remarkable property: there exists a function <span class="tts-math" data-tts="K 0 1 to the 2 to the real numbers">$K : [0, 1]^2 \to \mathbb{R}$</span> such that for
+      every <span class="tts-math" data-tts="f in W sub m 0 1">$f \in W_m[0, 1]$</span> and every <span class="tts-math" data-tts="y in 0 1">$y \in [0, 1]$</span>,
+      <span class="tts-math" data-tts="f y equals f K times y .">$$f(y) = \langle f, K(\cdot, y) \rangle.$$</span>
       Point evaluation is realized as an inner product. This means evaluation is a <em>bounded</em> linear
-      functional on $W_m$ — convergence in $W_m$-norm forces pointwise convergence. Hilbert spaces with this
-      property are called <strong>reproducing kernel Hilbert spaces</strong> (RKHS), and $K$ is the
+      functional on <span class="tts-math" data-tts="W sub m">$W_m$</span> — convergence in <span class="tts-math" data-tts="W sub m">$W_m$</span>-norm forces pointwise convergence. Hilbert spaces with this
+      property are called <strong>reproducing kernel Hilbert spaces</strong> (RKHS), and <span class="tts-math" data-tts="K">$K$</span> is the
       <strong>reproducing kernel</strong>. Keener gives the explicit formula
-      $$K(x, y) = \sum_{k=0}^{m-1} \frac{x^k y^k}{(k!)^2} + \int_0^{x \wedge y} \frac{(x - u)^{m-1} (y - u)^{m-1}}{((m-1)!)^2} \, du.$$
+      <span class="tts-math" data-tts="K x y equals the sum from k equals 0 to m minus 1 of x to the k y to the k over k! to the 2 plus sub 0 to the x y x minus u to the m minus 1 y minus u to the m minus 1 m minus 1 ! to the 2 du.">$$K(x, y) = \sum_{k=0}^{m-1} \frac{x^k y^k}{(k!)^2} + \int_0^{x \wedge y} \frac{(x - u)^{m-1} (y - u)^{m-1}}{((m-1)!)^2} \, du.$$</span>
     </p>
 <h3 data-cid="ch18-1000">The clinching argument: the minimizer is a spline</h3>
 <p data-cid="ch18-1010">
-      Let $\Pi_m$ be the space of polynomials of degree $\leq m - 1$, and let $\eta_i = K(\cdot, x_i)$. Define
-      $$V = \Pi_m \oplus \mathrm{span}\{\eta_1, \dots, \eta_n\}.$$
-      This is a finite-dimensional subspace of $W_m[0, 1]$ (dimension $n + m$).
+      Let <span class="tts-math" data-tts="Pi sub m">$\Pi_m$</span> be the space of polynomials of degree <span class="tts-math" data-tts="less than or equal to m minus 1">$\leq m - 1$</span>, and let <span class="tts-math" data-tts="eta sub i equals K times x sub i">$\eta_i = K(\cdot, x_i)$</span>. Define
+      <span class="tts-math" data-tts="V equals Pi sub m span eta sub 1 and so on eta sub n .">$$V = \Pi_m \oplus \mathrm{span}\{\eta_1, \dots, \eta_n\}.$$</span>
+      This is a finite-dimensional subspace of <span class="tts-math" data-tts="W sub m 0 1">$W_m[0, 1]$</span> (dimension <span class="tts-math" data-tts="n plus m">$n + m$</span>).
     </p>
 <p data-cid="ch18-1020">
-      Any $f \in W_m$ decomposes as $f = g + h$ with $g \in V$ and $h \in V^\perp$. Two crucial facts about $h$:
+      Any <span class="tts-math" data-tts="f in W sub m">$f \in W_m$</span> decomposes as <span class="tts-math" data-tts="f equals g plus h">$f = g + h$</span> with <span class="tts-math" data-tts="g in V">$g \in V$</span> and <span class="tts-math" data-tts="h in V^">$h \in V^\perp$</span>. Two crucial facts about <span class="tts-math" data-tts="h">$h$</span>:
     </p>
 <ul data-cid="ch18-1030">
-<li>$h(x_i) = \langle h, \eta_i \rangle = 0$ for every design point — by orthogonality to each $\eta_i$.</li>
-<li>$h^{(k)}(0) = 0$ for $k = 0, \dots, m - 1$ — by orthogonality to the monomials in $\Pi_m$.</li>
+<li><span class="tts-math" data-tts="h x sub i equals h eta sub i equals 0">$h(x_i) = \langle h, \eta_i \rangle = 0$</span> for every design point — by orthogonality to each <span class="tts-math" data-tts="eta sub i">$\eta_i$</span>.</li>
+<li><span class="tts-math" data-tts="h to the k 0 equals 0">$h^{(k)}(0) = 0$</span> for <span class="tts-math" data-tts="k equals 0 and so on m minus 1">$k = 0, \dots, m - 1$</span> — by orthogonality to the monomials in <span class="tts-math" data-tts="Pi sub m">$\Pi_m$</span>.</li>
 </ul>
 <p data-cid="ch18-1040">
-      Therefore $\|h\|^2 = \|h^{(m)}\|_2^2$ (only the integral term survives) and $\langle g, h \rangle = 0$ gives
-      $\|g^{(m)} + h^{(m)}\|_2^2 = \|g^{(m)}\|_2^2 + \|h^{(m)}\|_2^2$. Plugging into $J$:
-      $$J(g + h) = \sum_i \big(Y_i - g(x_i)\big)^2 + \lambda \|g^{(m)}\|_2^2 + \lambda \|h\|^2 = J(g) + \lambda \|h\|^2.$$
-      So any nonzero $h$-component strictly increases the objective. The minimizer must have $h = 0$, i.e. must
-      live in the finite-dimensional $V$.
+      Therefore <span class="tts-math" data-tts="norm of h norm of to the 2 equals norm of h to the m norm of sub 2 to the 2">$\|h\|^2 = \|h^{(m)}\|_2^2$</span> (only the integral term survives) and <span class="tts-math" data-tts="g h equals 0">$\langle g, h \rangle = 0$</span> gives
+      <span class="tts-math" data-tts="norm of g to the m plus h to the m norm of sub 2 to the 2 equals norm of g to the m norm of sub 2 to the 2 plus norm of h to the m norm of sub 2 to the 2">$\|g^{(m)} + h^{(m)}\|_2^2 = \|g^{(m)}\|_2^2 + \|h^{(m)}\|_2^2$</span>. Plugging into <span class="tts-math" data-tts="J">$J$</span>:
+      <span class="tts-math" data-tts="J g plus h equals sub i Y sub i minus g x sub i to the 2 plus lambda norm of g to the m norm of sub 2 to the 2 plus lambda norm of h norm of to the 2 equals J g plus lambda norm of h norm of to the 2.">$$J(g + h) = \sum_i \big(Y_i - g(x_i)\big)^2 + \lambda \|g^{(m)}\|_2^2 + \lambda \|h\|^2 = J(g) + \lambda \|h\|^2.$$</span>
+      So any nonzero <span class="tts-math" data-tts="h">$h$</span>-component strictly increases the objective. The minimizer must have <span class="tts-math" data-tts="h equals 0">$h = 0$</span>, i.e. must
+      live in the finite-dimensional <span class="tts-math" data-tts="V">$V$</span>.
     </p>
 <div class="box intuition" data-cid="ch18-1050">
 <span class="box-label">What just happened</span>
 <p data-cid="ch18-1060">
-        We started with an infinite-dimensional optimization problem — minimize over all of $W_m[0, 1]$ — and
-        proved that we never need to look outside an $(n + m)$-dimensional subspace. The infinite-dimensional
+        We started with an infinite-dimensional optimization problem — minimize over all of <span class="tts-math" data-tts="W sub m 0 1">$W_m[0, 1]$</span> — and
+        proved that we never need to look outside an <span class="tts-math" data-tts="n plus m">$(n + m)$</span>-dimensional subspace. The infinite-dimensional
         problem collapses to ordinary linear algebra. This is one of the most beautiful applications of Hilbert
         space technology in statistics.
       </p>
@@ -490,93 +489,93 @@
 <div class="box definition" data-cid="ch18-1080">
 <span class="box-label">Definition 18.14 — spline</span>
 <p data-cid="ch18-1090">
-        A <strong>spline of order $q$</strong> with knots $0 &lt; x_1 &lt; \cdots &lt; x_n &lt; 1$ is a function that is a
-        polynomial of degree $\leq q - 1$ on each interval $[x_i, x_{i+1}]$ and has $q - 2$ continuous derivatives
-        on $[0, 1]$.
+        A <strong>spline of order <span class="tts-math" data-tts="q">$q$</span></strong> with knots <span class="tts-math" data-tts="0 lt x sub 1 lt times s lt x sub n lt 1">$0 &lt; x_1 &lt; \cdots &lt; x_n &lt; 1$</span> is a function that is a
+        polynomial of degree <span class="tts-math" data-tts="less than or equal to q minus 1">$\leq q - 1$</span> on each interval <span class="tts-math" data-tts="x sub i x sub i plus 1">$[x_i, x_{i+1}]$</span> and has <span class="tts-math" data-tts="q minus 2">$q - 2$</span> continuous derivatives
+        on <span class="tts-math" data-tts="0 1">$[0, 1]$</span>.
       </p>
 </div>
 <p data-cid="ch18-1100">
-      Working through the derivatives of $\eta_i$ shows that elements of $V$ are splines of order $2m$. Moreover,
-      since $\eta_i$ is a polynomial of degree $\leq m - 1$ on the last interval $[x_n, 1]$, and by a time-reversal
-      argument also on the first interval $[0, x_1]$, the minimizer is in fact a <strong>natural spline</strong>:
-      a spline whose first and last segments are polynomials of low degree $q - 1 = m - 1$ rather than the
-      higher $2q - 1 = 2m - 1$ allowed in the interior.
+      Working through the derivatives of <span class="tts-math" data-tts="eta sub i">$\eta_i$</span> shows that elements of <span class="tts-math" data-tts="V">$V$</span> are splines of order <span class="tts-math" data-tts="2m">$2m$</span>. Moreover,
+      since <span class="tts-math" data-tts="eta sub i">$\eta_i$</span> is a polynomial of degree <span class="tts-math" data-tts="less than or equal to m minus 1">$\leq m - 1$</span> on the last interval <span class="tts-math" data-tts="x sub n 1">$[x_n, 1]$</span>, and by a time-reversal
+      argument also on the first interval <span class="tts-math" data-tts="0 x sub 1">$[0, x_1]$</span>, the minimizer is in fact a <strong>natural spline</strong>:
+      a spline whose first and last segments are polynomials of low degree <span class="tts-math" data-tts="q minus 1 equals m minus 1">$q - 1 = m - 1$</span> rather than the
+      higher <span class="tts-math" data-tts="2q minus 1 equals 2m minus 1">$2q - 1 = 2m - 1$</span> allowed in the interior.
     </p>
 <div class="box example" data-cid="ch18-1110">
-<span class="box-label">Cubic smoothing spline ($m = 2$)</span>
+<span class="box-label">Cubic smoothing spline (<span class="tts-math" data-tts="m equals 2">$m = 2$</span>)</span>
 <p data-cid="ch18-1120">
-        The most-used case: take $m = 2$, so the penalty is $\int (f'')^2$ — the canonical "roughness" measure
+        The most-used case: take <span class="tts-math" data-tts="m equals 2">$m = 2$</span>, so the penalty is <span class="tts-math" data-tts="the integral of f prime prime to the 2">$\int (f'')^2$</span> — the canonical "roughness" measure
         from physics (bending energy of a thin metal strip). The minimizer is a <strong>natural cubic spline</strong>:
-        cubic between consecutive knots, with continuous second derivatives, and linear on $[0, x_1]$ and
-        $[x_n, 1]$. This is the function MATLAB calls <code>csaps</code>, R calls <code>smooth.spline</code>, and
+        cubic between consecutive knots, with continuous second derivatives, and linear on <span class="tts-math" data-tts="0 x sub 1">$[0, x_1]$</span> and
+        <span class="tts-math" data-tts="x sub n 1">$[x_n, 1]$</span>. This is the function MATLAB calls <code>csaps</code>, R calls <code>smooth.spline</code>, and
         most textbooks just call "the smoothing spline".
       </p>
 </div>
-<h3 data-cid="ch18-1130">Computing $\hat f$ via linear algebra</h3>
+<h3 data-cid="ch18-1130">Computing <span class="tts-math" data-tts="f">$\hat f$</span> via linear algebra</h3>
 <p data-cid="ch18-1140">
-      Pick a basis $e_1, \dots, e_k$ for the space of natural splines (or any space containing it). Write
-      $f = \sum_j c_j e_j$. Then $f(x_i) = [A c]_i$ where $A_{ij} = \langle e_j, \eta_i \rangle = e_j(x_i)$, and
-      $\|f^{(m)}\|_2^2 = c^\top B c$ where $B_{ij} = \int_0^1 e_i^{(m)} e_j^{(m)}$. The objective becomes
-      $$J = Y^\top Y - 2 Y^\top A c + c^\top A^\top A c + \lambda c^\top B c,$$
+      Pick a basis <span class="tts-math" data-tts="e sub 1 and so on e sub k">$e_1, \dots, e_k$</span> for the space of natural splines (or any space containing it). Write
+      <span class="tts-math" data-tts="f equals sub j c sub j e sub j">$f = \sum_j c_j e_j$</span>. Then <span class="tts-math" data-tts="f x sub i equals A c sub i">$f(x_i) = [A c]_i$</span> where <span class="tts-math" data-tts="A sub ij equals e sub j eta sub i equals e sub j x sub i">$A_{ij} = \langle e_j, \eta_i \rangle = e_j(x_i)$</span>, and
+      <span class="tts-math" data-tts="norm of f to the m norm of sub 2 to the 2 equals c^ transpose B c">$\|f^{(m)}\|_2^2 = c^\top B c$</span> where <span class="tts-math" data-tts="B sub ij equals sub 0 to the 1 e sub i to the m e sub j to the m">$B_{ij} = \int_0^1 e_i^{(m)} e_j^{(m)}$</span>. The objective becomes
+      <span class="tts-math" data-tts="J equals Y^ transpose Y minus 2 Y^ transpose A c plus c^ transpose A^ transpose A c plus lambda c^ transpose B c">$$J = Y^\top Y - 2 Y^\top A c + c^\top A^\top A c + \lambda c^\top B c,$$</span>
       whose gradient vanishes at
-      $$\hat c = (A^\top A + \lambda B)^{-1} A^\top Y.$$
-      Plugging $\hat c$ back into the basis gives $\hat f = \sum_j \hat c_j e_j$.
+      <span class="tts-math" data-tts="c equals A^ transpose A plus lambda B inverse A^ transpose Y.">$$\hat c = (A^\top A + \lambda B)^{-1} A^\top Y.$$</span>
+      Plugging <span class="tts-math" data-tts="c">$\hat c$</span> back into the basis gives <span class="tts-math" data-tts="f equals sub j c sub j e sub j">$\hat f = \sum_j \hat c_j e_j$</span>.
     </p>
 <p data-cid="ch18-1150">
-      Ridge regression has appeared in disguise. The roughness penalty $\lambda c^\top B c$ is a weighted
-      $\ell_2$ penalty on the coefficients, and $\hat c$ is a ridge estimator with penalty matrix $B$ instead of
-      $I$. The connection runs deep: every smoothing spline is a ridge regression in an appropriate basis.
+      Ridge regression has appeared in disguise. The roughness penalty <span class="tts-math" data-tts="lambda c^ transpose B c">$\lambda c^\top B c$</span> is a weighted
+      <span class="tts-math" data-tts="ell sub 2">$\ell_2$</span> penalty on the coefficients, and <span class="tts-math" data-tts="c">$\hat c$</span> is a ridge estimator with penalty matrix <span class="tts-math" data-tts="B">$B$</span> instead of
+      <span class="tts-math" data-tts="I">$I$</span>. The connection runs deep: every smoothing spline is a ridge regression in an appropriate basis.
     </p>
 <h3 data-cid="ch18-1160">B-splines</h3>
 <p data-cid="ch18-1170">
-      Choosing the basis $\{e_j\}$ cleverly speeds up computation. The truncated-power basis $(x - x_i)_+^{2q-1}$
-      is mathematically clean but produces a dense matrix $B$. <strong>B-splines</strong> are an alternative:
+      Choosing the basis <span class="tts-math" data-tts="e sub j">$\{e_j\}$</span> cleverly speeds up computation. The truncated-power basis <span class="tts-math" data-tts="x minus x sub i _ plus to the 2q minus 1">$(x - x_i)_+^{2q-1}$</span>
+      is mathematically clean but produces a dense matrix <span class="tts-math" data-tts="B">$B$</span>. <strong>B-splines</strong> are an alternative:
       compactly supported basis functions, each one nonzero on only a few adjacent knot intervals. With B-splines,
-      $A$ is sparse and $B$ is banded — $B_{ij} = 0$ when $|i - j| \geq 2$ for the simplest case. Solving the
-      banded linear system takes $O(n)$ time instead of $O(n^3)$. This is what makes large-scale smoothing
+      <span class="tts-math" data-tts="A">$A$</span> is sparse and <span class="tts-math" data-tts="B">$B$</span> is banded — <span class="tts-math" data-tts="B sub ij equals 0">$B_{ij} = 0$</span> when <span class="tts-math" data-tts="i minus j greater than or equal to 2">$|i - j| \geq 2$</span> for the simplest case. Solving the
+      banded linear system takes <span class="tts-math" data-tts="O n">$O(n)$</span> time instead of <span class="tts-math" data-tts="O n to the 3">$O(n^3)$</span>. This is what makes large-scale smoothing
       splines practical.
     </p>
 <div class="box pause" data-cid="ch18-1180">
-<span class="box-label">Pause — cross-validating $\lambda$</span>
+<span class="box-label">Pause — cross-validating <span class="tts-math" data-tts="lambda">$\lambda$</span></span>
 <p data-cid="ch18-1190">
-        The same warnings as for bandwidth apply. A plug-in $\lambda$ is tricky because it depends on unknown
-        derivatives of $f$. <strong>Generalized cross-validation</strong> (GCV) is a closed-form approximation
+        The same warnings as for bandwidth apply. A plug-in <span class="tts-math" data-tts="lambda">$\lambda$</span> is tricky because it depends on unknown
+        derivatives of <span class="tts-math" data-tts="f">$f$</span>. <strong>Generalized cross-validation</strong> (GCV) is a closed-form approximation
         to leave-one-out CV that is standard for splines: minimize
-        $\mathrm{RSS}(\lambda) / (1 - \mathrm{tr}(S_\lambda)/n)^2$
-        over $\lambda$, where $S_\lambda$ is the smoother matrix mapping $Y$ to $\hat Y$. It is fast, automatic,
-        and usually decent. Like all CV methods, it can be wobbly when $n$ is small or the signal-to-noise ratio
-        is low. Plot $\hat f$ at a few $\lambda$ on either side of the GCV optimum before trusting it.
+        <span class="tts-math" data-tts="RSS lambda over 1 minus tr S_ lambda over n to the 2">$\mathrm{RSS}(\lambda) / (1 - \mathrm{tr}(S_\lambda)/n)^2$</span>
+        over <span class="tts-math" data-tts="lambda">$\lambda$</span>, where <span class="tts-math" data-tts="S_ lambda">$S_\lambda$</span> is the smoother matrix mapping <span class="tts-math" data-tts="Y">$Y$</span> to <span class="tts-math" data-tts="Y">$\hat Y$</span>. It is fast, automatic,
+        and usually decent. Like all CV methods, it can be wobbly when <span class="tts-math" data-tts="n">$n$</span> is small or the signal-to-noise ratio
+        is low. Plot <span class="tts-math" data-tts="f">$\hat f$</span> at a few <span class="tts-math" data-tts="lambda">$\lambda$</span> on either side of the GCV optimum before trusting it.
       </p>
 </div>
 <h2 data-cid="ch18-1200" id="s18-4">18.4 Density estimation</h2>
 <p data-cid="ch18-1210">
-      The same machinery applies, with a small twist, to estimating an unknown density $f$ from i.i.d. samples
-      $X_1, \dots, X_n \sim Q$.
+      The same machinery applies, with a small twist, to estimating an unknown density <span class="tts-math" data-tts="f">$f$</span> from i.i.d. samples
+      <span class="tts-math" data-tts="X sub 1 and so on X sub n distributed as Q">$X_1, \dots, X_n \sim Q$</span>.
     </p>
 <h3 data-cid="ch18-1220">The empirical distribution is too rough</h3>
 <p data-cid="ch18-1230">
       The first thing you might try is the <strong>empirical distribution</strong>
-      $$\hat Q(A) = \frac{1}{n} \#\{i : X_i \in A\},$$
-      which puts mass $1/n$ at each observation. It is a perfectly good estimator of the distribution function
-      $Q$. But if $Q$ has a smooth density $f$, $\hat Q$ has no density at all — it is a sum of point masses.
-      It is the analogue of the linear-interpolant $\hat h$ from Section 18.1: correct on average but too rough
+      <span class="tts-math" data-tts="Q A equals 1 over n # i X sub i in A">$$\hat Q(A) = \frac{1}{n} \#\{i : X_i \in A\},$$</span>
+      which puts mass <span class="tts-math" data-tts="1 over n">$1/n$</span> at each observation. It is a perfectly good estimator of the distribution function
+      <span class="tts-math" data-tts="Q">$Q$</span>. But if <span class="tts-math" data-tts="Q">$Q$</span> has a smooth density <span class="tts-math" data-tts="f">$f$</span>, <span class="tts-math" data-tts="Q">$\hat Q$</span> has no density at all — it is a sum of point masses.
+      It is the analogue of the linear-interpolant <span class="tts-math" data-tts="h">$\hat h$</span> from Section 18.1: correct on average but too rough
       to be useful.
     </p>
 <h3 data-cid="ch18-1240">The kernel density estimator</h3>
 <p data-cid="ch18-1250">
-      Smooth $\hat Q$ by convolution with a kernel. Take $W$ a symmetric probability density, $b &gt; 0$, and define
-      $$\hat f(x) = \frac{1}{b} \int W\!\left(\frac{x - t}{b}\right) d\hat Q(t) = \frac{1}{nb} \sum_{i=1}^n W\!\left(\frac{x - X_i}{b}\right).$$
-      You place a small bump of width $b$ on top of each observation and add them up. The result is the
-      <strong>kernel density estimator</strong>. Width $b$ is the bandwidth, with the same role as before.
+      Smooth <span class="tts-math" data-tts="Q">$\hat Q$</span> by convolution with a kernel. Take <span class="tts-math" data-tts="W">$W$</span> a symmetric probability density, <span class="tts-math" data-tts="b gt 0">$b &gt; 0$</span>, and define
+      <span class="tts-math" data-tts="f x equals 1 over b the integral of W x minus t over b d Q t equals 1 over nb the sum over i equals 1 of to the n W x minus X sub i over b .">$$\hat f(x) = \frac{1}{b} \int W\!\left(\frac{x - t}{b}\right) d\hat Q(t) = \frac{1}{nb} \sum_{i=1}^n W\!\left(\frac{x - X_i}{b}\right).$$</span>
+      You place a small bump of width <span class="tts-math" data-tts="b">$b$</span> on top of each observation and add them up. The result is the
+      <strong>kernel density estimator</strong>. Width <span class="tts-math" data-tts="b">$b$</span> is the bandwidth, with the same role as before.
     </p>
 <h3 data-cid="ch18-1260">Bias, variance, optimal bandwidth — the same story</h3>
 <p data-cid="ch18-1270">
       Under mild regularity, expanding by Taylor:
-      $$E \hat f(x) = f(x) + \tfrac{1}{2} b^2 f''(x) \int t^2 W(t) \, dt + o(b^2),$$
-      $$\mathrm{Var}(\hat f(x)) = \frac{f(x) \|W\|_2^2}{nb} + o(1/(nb)).$$
+      <span class="tts-math" data-tts="E f x equals f x plus 1 over 2 b to the 2 f prime prime x the integral of t to the 2 W t dt plus o b to the 2">$$E \hat f(x) = f(x) + \tfrac{1}{2} b^2 f''(x) \int t^2 W(t) \, dt + o(b^2),$$</span>
+      <span class="tts-math" data-tts="Var f x equals f x norm of W norm of sub 2 to the 2 over nb plus o 1 over nb .">$$\mathrm{Var}(\hat f(x)) = \frac{f(x) \|W\|_2^2}{nb} + o(1/(nb)).$$</span>
       Integrate to get
-      $$\mathrm{IMSE} = \frac{\|W\|_2^2}{nb} + \tfrac{1}{4} b^4 \|f''\|_2^2 \left(\int t^2 W\right)^2 + o(\cdots),$$
-      whose minimum over $b$ scales like $n^{-1/5}$, giving the optimal $\mathrm{IMSE} \sim n^{-4/5}$ — the same
+      <span class="tts-math" data-tts="IMSE equals norm of W norm of sub 2 to the 2 over nb plus 1 over 4 b to the 4 norm of f prime prime norm of sub 2 to the 2 the integral of t to the 2 W to the 2 plus o times s">$$\mathrm{IMSE} = \frac{\|W\|_2^2}{nb} + \tfrac{1}{4} b^4 \|f''\|_2^2 \left(\int t^2 W\right)^2 + o(\cdots),$$</span>
+      whose minimum over <span class="tts-math" data-tts="b">$b$</span> scales like <span class="tts-math" data-tts="n to the 1 over 5">$n^{-1/5}$</span>, giving the optimal <span class="tts-math" data-tts="IMSE distributed as n to the 4 over 5">$\mathrm{IMSE} \sim n^{-4/5}$</span> — the same
       rate as for kernel regression. Once again, bias and variance are the two faces of the bandwidth knob, and
       the optimal balance is achieved at a rate slower than parametric but still going to zero.
     </p>
@@ -584,32 +583,32 @@
 <span class="box-label">Pause — cross-validation for densities</span>
 <p data-cid="ch18-1290">
         For density estimation, there is no obvious "prediction error" to cross-validate. Instead, the standard
-        trick is to minimize an unbiased estimate of $\int (\hat f - f)^2 = \int \hat f^2 - 2 \int \hat f f + \int f^2$.
-        The last term does not depend on $b$. The first term is computable from $\hat f$ alone. The middle term
-        has unbiased estimator $\frac{2}{n} \sum_i \hat f^{(-i)}(X_i)$ where $\hat f^{(-i)}$ omits $X_i$. So the
+        trick is to minimize an unbiased estimate of <span class="tts-math" data-tts="the integral of f minus f to the 2 equals the integral of f to the 2 minus 2 the integral of f f plus the integral of f to the 2">$\int (\hat f - f)^2 = \int \hat f^2 - 2 \int \hat f f + \int f^2$</span>.
+        The last term does not depend on <span class="tts-math" data-tts="b">$b$</span>. The first term is computable from <span class="tts-math" data-tts="f">$\hat f$</span> alone. The middle term
+        has unbiased estimator <span class="tts-math" data-tts="2 over n sub i f to the i X sub i">$\frac{2}{n} \sum_i \hat f^{(-i)}(X_i)$</span> where <span class="tts-math" data-tts="f to the i">$\hat f^{(-i)}$</span> omits <span class="tts-math" data-tts="X sub i">$X_i$</span>. So the
         criterion to minimize is
-        $$\int \hat f_b^2(x) \, dx - \frac{2}{n} \sum_i \hat f^{(-i)}_b(X_i).$$
+        <span class="tts-math" data-tts="the integral of f sub b to the 2 x dx minus 2 over n sub i f to the i sub b X sub i .">$$\int \hat f_b^2(x) \, dx - \frac{2}{n} \sum_i \hat f^{(-i)}_b(X_i).$$</span>
         This is called <strong>least-squares cross-validation</strong> for density estimation. Same flavor as
         leave-one-out for regression — different bookkeeping.
       </p>
 </div>
 <h3 data-cid="ch18-1300">The spline analogue: log-densities</h3>
 <p data-cid="ch18-1310">
-      Can we run the spline machinery on density estimation directly? Not quite: $f$ has to be nonnegative and
+      Can we run the spline machinery on density estimation directly? Not quite: <span class="tts-math" data-tts="f">$f$</span> has to be nonnegative and
       integrate to one, and minimizing a penalized log-likelihood without those constraints can blow up. The
-      standard trick (Silverman, 1982) is to parametrize $f$ through its logarithm $\theta = \log f$ and
+      standard trick (Silverman, 1982) is to parametrize <span class="tts-math" data-tts="f">$f$</span> through its logarithm <span class="tts-math" data-tts="theta equals log f">$\theta = \log f$</span> and
       maximize a penalized log-likelihood
-      $$J(\theta) = \frac{1}{n} \sum_{i=1}^n \theta(X_i) - \int_0^1 e^{\theta(x)} dx - \lambda \|\theta^{(m)}\|_2^2.$$
+      <span class="tts-math" data-tts="J theta equals 1 over n the sum over i equals 1 of to the n theta X sub i minus sub 0 to the 1 e to the theta x dx minus lambda norm of theta to the m norm of sub 2 to the 2.">$$J(\theta) = \frac{1}{n} \sum_{i=1}^n \theta(X_i) - \int_0^1 e^{\theta(x)} dx - \lambda \|\theta^{(m)}\|_2^2.$$</span>
       The first term wants the density large at observed points; the second term enforces the integral constraint
-      via a Lagrange-like mechanism; the third is the familiar roughness penalty. One can show $J$ is strictly
-      concave (so the maximizer is unique when it exists), and that for sensible $\lambda$ the maximizer is
-      consistent at rates close to $n^{-(4m-1)/(4m+1)}$ in supremum norm.
+      via a Lagrange-like mechanism; the third is the familiar roughness penalty. One can show <span class="tts-math" data-tts="J">$J$</span> is strictly
+      concave (so the maximizer is unique when it exists), and that for sensible <span class="tts-math" data-tts="lambda">$\lambda$</span> the maximizer is
+      consistent at rates close to <span class="tts-math" data-tts="n to the 4m minus 1 over 4m plus 1">$n^{-(4m-1)/(4m+1)}$</span> in supremum norm.
     </p>
 <div class="box warn" data-cid="ch18-1320">
 <span class="box-label">Common pitfall — bandwidth equals scale</span>
 <p data-cid="ch18-1330">
-        For kernel density estimation in one dimension, "optimal $b$" formulas like Silverman's rule of thumb
-        $b \approx 1.06 \hat\sigma n^{-1/5}$ are popular shortcuts. They are tuned to Gaussian densities; for
+        For kernel density estimation in one dimension, "optimal <span class="tts-math" data-tts="b">$b$</span>" formulas like Silverman's rule of thumb
+        <span class="tts-math" data-tts="b approximately 1.06 sigma n to the 1 over 5">$b \approx 1.06 \hat\sigma n^{-1/5}$</span> are popular shortcuts. They are tuned to Gaussian densities; for
         bimodal or heavy-tailed distributions they badly oversmooth — fusing two peaks into one. Always plot the
         kernel estimate at several bandwidths around the rule-of-thumb value before declaring a finding. The
         same warning applies in kernel regression: do not trust a single bandwidth blindly.
@@ -618,30 +617,30 @@
 <h2 data-cid="ch18-1340" id="summary">Summary — what you learned in Chapter 18</h2>
 <p data-cid="ch18-1350">The chapter in seven bullets:</p>
 <ol data-cid="ch18-1360">
-<li>In <strong>nonparametric regression</strong> $Y_i = f(x_i) + \epsilon_i$, the unknown $f$ is treated as a
+<li>In <strong>nonparametric regression</strong> <span class="tts-math" data-tts="Y sub i equals f x sub i plus epsilon sub i">$Y_i = f(x_i) + \epsilon_i$</span>, the unknown <span class="tts-math" data-tts="f">$f$</span> is treated as a
         smooth function rather than a member of a finite-parameter family.</li>
-<li><strong>Kernel regression</strong> estimates $f$ by a locally weighted average of responses:
-        $\hat f(x) = \sum_i v_i(x) Y_i$ with weights concentrated within a bandwidth $b$ of $x$.</li>
-<li>The <strong>bias–variance tradeoff</strong> is the heart of every smoothing method. Bias scales like $b^2$
-        and is driven by $f''$; variance scales like $1/(nb)$. The optimum balances them at $b \asymp n^{-1/5}$,
-        giving the canonical nonparametric rate $\mathrm{IMSE} \asymp n^{-4/5}$.</li>
+<li><strong>Kernel regression</strong> estimates <span class="tts-math" data-tts="f">$f$</span> by a locally weighted average of responses:
+        <span class="tts-math" data-tts="f x equals sub i v sub i x Y sub i">$\hat f(x) = \sum_i v_i(x) Y_i$</span> with weights concentrated within a bandwidth <span class="tts-math" data-tts="b">$b$</span> of <span class="tts-math" data-tts="x">$x$</span>.</li>
+<li>The <strong>bias–variance tradeoff</strong> is the heart of every smoothing method. Bias scales like <span class="tts-math" data-tts="b to the 2">$b^2$</span>
+        and is driven by <span class="tts-math" data-tts="f prime prime">$f''$</span>; variance scales like <span class="tts-math" data-tts="1 over nb">$1/(nb)$</span>. The optimum balances them at <span class="tts-math" data-tts="b n to the 1 over 5">$b \asymp n^{-1/5}$</span>,
+        giving the canonical nonparametric rate <span class="tts-math" data-tts="IMSE n to the 4 over 5">$\mathrm{IMSE} \asymp n^{-4/5}$</span>.</li>
 <li><strong>Cross-validation</strong> is the standard practical tool for choosing the bandwidth or smoothing
-        parameter, because the asymptotically optimal formulas depend on unknown derivatives of $f$.</li>
+        parameter, because the asymptotically optimal formulas depend on unknown derivatives of <span class="tts-math" data-tts="f">$f$</span>.</li>
 <li><strong>Hilbert space theory</strong> — norms, inner products, completeness, projections, orthonormal
-        bases — provides the language for treating $f$ as a vector in an infinite-dimensional space.</li>
+        bases — provides the language for treating <span class="tts-math" data-tts="f">$f$</span> as a vector in an infinite-dimensional space.</li>
 <li><strong>Smoothing splines</strong> arise as the minimizer of penalized least squares
-        $\sum (Y_i - f(x_i))^2 + \lambda \int (f^{(m)})^2$. The minimizer always lives in a finite-dimensional
+        <span class="tts-math" data-tts="the sum of Y sub i minus f x sub i to the 2 plus lambda the integral of f to the m to the 2">$\sum (Y_i - f(x_i))^2 + \lambda \int (f^{(m)})^2$</span>. The minimizer always lives in a finite-dimensional
         space of natural splines, so the problem collapses to ridge regression in a B-spline basis.</li>
 <li><strong>Kernel density estimation</strong> applies the same convolution idea to the empirical distribution,
-        producing $\hat f$ with the same $n^{-4/5}$ rate and the same bias–variance structure. A penalized
+        producing <span class="tts-math" data-tts="f">$\hat f$</span> with the same <span class="tts-math" data-tts="n to the 4 over 5">$n^{-4/5}$</span> rate and the same bias–variance structure. A penalized
         log-likelihood approach extends the spline machinery to densities.</li>
 </ol>
 <div class="box pause" data-cid="ch18-1370">
 <span class="box-label">Did this land?</span>
 <p data-cid="ch18-1380">Before moving on, you should be able to answer (without looking back):</p>
 <ul data-cid="ch18-1390">
-<li>Why is the optimal nonparametric rate $n^{-4/5}$ rather than $n^{-1}$? Where does the $4/5$ come from?</li>
-<li>State the bias formula for the kernel estimator. Why is $f''(x)$ involved?</li>
+<li>Why is the optimal nonparametric rate <span class="tts-math" data-tts="n to the 4 over 5">$n^{-4/5}$</span> rather than <span class="tts-math" data-tts="n inverse">$n^{-1}$</span>? Where does the <span class="tts-math" data-tts="4 over 5">$4/5$</span> come from?</li>
+<li>State the bias formula for the kernel estimator. Why is <span class="tts-math" data-tts="f prime prime x">$f''(x)$</span> involved?</li>
 <li>Describe how cross-validation chooses a bandwidth, and why it works.</li>
 <li>Explain in one sentence why the smoothing spline always lives in a finite-dimensional subspace.</li>
 <li>What is the curse of dimensionality, in formulas?</li>
@@ -655,6 +654,6 @@
 </nav>
 </article>
 </main>
-<script src="/js/main.js"></script><script src="/js/comments.js"></script>
+<script src="/js/main.js"></script><script src="/js/comments.js"></script><script src="/js/tts.js"></script>
 </body>
 </html>

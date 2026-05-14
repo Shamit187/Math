@@ -10,14 +10,13 @@
 <link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
-<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/><link href="/css/tts.css" rel="stylesheet"/>
 </head>
 <body data-book="basic_stat" data-page="ch08">
 <header class="site-header">
+<a class="home-btn" href="/">Home</a>
 <a class="brand" href="/books/basic_stat/">Theoretical Statistics <small>a slow reading guide</small></a>
 <nav>
-<a href="/" class="all-books-link">All books</a>
-    <a href="/books/basic_stat/">Contents</a>
 <button aria-label="toggle theme" class="theme-toggle">Dark</button>
 </nav>
 </header>
@@ -49,7 +48,7 @@
 </section>
 <h2 data-cid="ch08-020" id="why">Why does statistics need large-sample theory?</h2>
 <p data-cid="ch08-030">
-  Up to now, the book has been about <em>exact</em> properties. An estimator is unbiased or not; sufficient or not; minimum variance or not. These exact properties are wonderful when you can get them, but the world is not always so kind. Two estimators may both be reasonable, neither one exactly unbiased, both with intractable distributions for finite $n$. How are we supposed to choose?
+  Up to now, the book has been about <em>exact</em> properties. An estimator is unbiased or not; sufficient or not; minimum variance or not. These exact properties are wonderful when you can get them, but the world is not always so kind. Two estimators may both be reasonable, neither one exactly unbiased, both with intractable distributions for finite <span class="tts-math" data-tts="n">$n$</span>. How are we supposed to choose?
 </p>
 <p data-cid="ch08-040">
   The answer that runs nearly every statistics paper since 1900: ask what happens as the sample size grows. If two estimators both converge to the truth, look at the <em>shape and scale</em> of their errors after suitable magnification. Whichever has the smaller asymptotic variance wins. This is a deal: we trade exactness for tractability.
@@ -57,20 +56,20 @@
 <div class="box intuition" data-cid="ch08-050">
 <span class="box-label">The promise of asymptotics</span>
 <p data-cid="ch08-060">
-  A handful of limit theorems — the law of large numbers, the central limit theorem, the delta method, Slutsky's theorem — covers the vast majority of inference problems. The cost is that every conclusion comes with the asterisk "for $n$ large enough". Most of this chapter is about learning what that asterisk means precisely.
+  A handful of limit theorems — the law of large numbers, the central limit theorem, the delta method, Slutsky's theorem — covers the vast majority of inference problems. The cost is that every conclusion comes with the asterisk "for <span class="tts-math" data-tts="n">$n$</span> large enough". Most of this chapter is about learning what that asterisk means precisely.
 </p>
 </div>
 <p data-cid="ch08-070">
-  This is also where readers most often get confused. We are going to define <strong>three</strong> different notions of convergence for random variables, and the differences between them are subtle. We will go slowly. By the end you should be able to look at a symbol like $Y_n \xrightarrow{p} Y$ or $Y_n \Rightarrow Y$ and know <em>exactly</em> what is being claimed — and just as importantly, what is <em>not</em>.
+  This is also where readers most often get confused. We are going to define <strong>three</strong> different notions of convergence for random variables, and the differences between them are subtle. We will go slowly. By the end you should be able to look at a symbol like <span class="tts-math" data-tts="Y sub n converges in probability to Y">$Y_n \xrightarrow{p} Y$</span> or <span class="tts-math" data-tts="Y sub n implies Y">$Y_n \Rightarrow Y$</span> and know <em>exactly</em> what is being claimed — and just as importantly, what is <em>not</em>.
 </p>
 <!-- ===================================================================== -->
 <h2 data-cid="ch08-080" id="s8-1">8.1 Convergence in Probability</h2>
 <h3 data-cid="ch08-090">The intuition first</h3>
 <p data-cid="ch08-100">
-  Imagine a sequence of measurements $Y_1, Y_2, \dots$ — say, repeated estimates of some true value $Y$. We want to say "the estimates get close to $Y$". But each $Y_n$ is random, so "close" is itself a probabilistic statement. The simplest version is:
+  Imagine a sequence of measurements <span class="tts-math" data-tts="Y sub 1 Y sub 2 and so on">$Y_1, Y_2, \dots$</span> — say, repeated estimates of some true value <span class="tts-math" data-tts="Y">$Y$</span>. We want to say "the estimates get close to <span class="tts-math" data-tts="Y">$Y$</span>". But each <span class="tts-math" data-tts="Y sub n">$Y_n$</span> is random, so "close" is itself a probabilistic statement. The simplest version is:
 </p>
 <p data-cid="ch08-110">
-<strong>Pick a tolerance $\epsilon &gt; 0$. The probability that $Y_n$ misses $Y$ by at least $\epsilon$ should shrink to zero.</strong>
+<strong>Pick a tolerance <span class="tts-math" data-tts="epsilon gt 0">$\epsilon &gt; 0$</span>. The probability that <span class="tts-math" data-tts="Y sub n">$Y_n$</span> misses <span class="tts-math" data-tts="Y">$Y$</span> by at least <span class="tts-math" data-tts="epsilon">$\epsilon$</span> should shrink to zero.</strong>
 </p>
 <p data-cid="ch08-120">
   That is the entire content of convergence in probability. Now in symbols.
@@ -78,19 +77,19 @@
 <div class="box definition" data-cid="ch08-130">
 <span class="box-label">Definition 8.1 — convergence in probability</span>
 <p data-cid="ch08-140">
-  A sequence of random variables $Y_n$ converges in probability to $Y$, written
-  $$Y_n \xrightarrow{p} Y,$$
-  if for every $\epsilon &gt; 0$,
-  $$P\big(\,|Y_n - Y| \geq \epsilon\,\big) \to 0 \quad \text{as } n \to \infty.$$
+  A sequence of random variables <span class="tts-math" data-tts="Y sub n">$Y_n$</span> converges in probability to <span class="tts-math" data-tts="Y">$Y$</span>, written
+  <span class="tts-math" data-tts="Y sub n converges in probability to Y">$$Y_n \xrightarrow{p} Y,$$</span>
+  if for every <span class="tts-math" data-tts="epsilon gt 0">$\epsilon &gt; 0$</span>,
+  <span class="tts-math" data-tts="P Y sub n minus Y greater than or equal to epsilon to 0 as n to infinity .">$$P\big(\,|Y_n - Y| \geq \epsilon\,\big) \to 0 \quad \text{as } n \to \infty.$$</span>
 </p>
 </div>
 <div class="box intuition" data-cid="ch08-150">
 <span class="box-label">Reading the definition</span>
 <p data-cid="ch08-160">
-  Two quantifiers: "for every $\epsilon$" comes first, then "as $n \to \infty$". So we are <em>not</em> saying "pick $n$ large enough and then $Y_n = Y$". We are saying that for any tolerance the user names, eventually $Y_n$ lands within that tolerance of $Y$ with arbitrarily high probability.
+  Two quantifiers: "for every <span class="tts-math" data-tts="epsilon">$\epsilon$</span>" comes first, then "as <span class="tts-math" data-tts="n to infinity">$n \to \infty$</span>". So we are <em>not</em> saying "pick <span class="tts-math" data-tts="n">$n$</span> large enough and then <span class="tts-math" data-tts="Y sub n equals Y">$Y_n = Y$</span>". We are saying that for any tolerance the user names, eventually <span class="tts-math" data-tts="Y sub n">$Y_n$</span> lands within that tolerance of <span class="tts-math" data-tts="Y">$Y$</span> with arbitrarily high probability.
 </p>
 <p data-cid="ch08-170">
-  In particular, $Y_n$ does not need to <em>equal</em> $Y$ ever. It only needs to be close most of the time.
+  In particular, <span class="tts-math" data-tts="Y sub n">$Y_n$</span> does not need to <em>equal</em> <span class="tts-math" data-tts="Y">$Y$</span> ever. It only needs to be close most of the time.
 </p>
 </div>
 <h3 data-cid="ch08-180">Chebyshev — the one-line route to convergence in probability</h3>
@@ -100,64 +99,64 @@
 <div class="box definition" data-cid="ch08-200">
 <span class="box-label">Theorem 8.2 — Chebyshev's inequality</span>
 <p data-cid="ch08-210">
-  For any random variable $X$ and any constant $a &gt; 0$,
-  $$P\big(\,|X| \geq a\,\big) \leq \frac{E X^2}{a^2}.$$
+  For any random variable <span class="tts-math" data-tts="X">$X$</span> and any constant <span class="tts-math" data-tts="a gt 0">$a &gt; 0$</span>,
+  <span class="tts-math" data-tts="P X greater than or equal to a less than or equal to E X to the 2 over a to the 2 .">$$P\big(\,|X| \geq a\,\big) \leq \frac{E X^2}{a^2}.$$</span>
 </p>
 </div>
 <p data-cid="ch08-220">
   The proof fits on one line. For every outcome,
-  $$\mathbf{1}\{|X| \geq a\} \leq \frac{X^2}{a^2}$$
-  because the right-hand side is $\geq 1$ exactly when $|X| \geq a$, and is $\geq 0$ always. Take expectations of both sides.
+  <span class="tts-math" data-tts="1 X greater than or equal to a less than or equal to X to the 2 over a to the 2">$$\mathbf{1}\{|X| \geq a\} \leq \frac{X^2}{a^2}$$</span>
+  because the right-hand side is <span class="tts-math" data-tts="greater than or equal to 1">$\geq 1$</span> exactly when <span class="tts-math" data-tts="X greater than or equal to a">$|X| \geq a$</span>, and is <span class="tts-math" data-tts="greater than or equal to 0">$\geq 0$</span> always. Take expectations of both sides.
 </p>
 <p data-cid="ch08-230">
-  Now plug this into the definition. If $E(Y_n - Y)^2 \to 0$, then for every $\epsilon &gt; 0$,
-  $$P\big(\,|Y_n - Y| \geq \epsilon\,\big) \leq \frac{E(Y_n - Y)^2}{\epsilon^2} \to 0,$$
-  so $Y_n \xrightarrow{p} Y$. This is Keener's Proposition 8.3. In words: <strong>mean-square convergence implies convergence in probability</strong>.
+  Now plug this into the definition. If <span class="tts-math" data-tts="E Y sub n minus Y to the 2 to 0">$E(Y_n - Y)^2 \to 0$</span>, then for every <span class="tts-math" data-tts="epsilon gt 0">$\epsilon &gt; 0$</span>,
+  <span class="tts-math" data-tts="P Y sub n minus Y greater than or equal to epsilon less than or equal to E Y sub n minus Y to the 2 over epsilon to the 2 to 0">$$P\big(\,|Y_n - Y| \geq \epsilon\,\big) \leq \frac{E(Y_n - Y)^2}{\epsilon^2} \to 0,$$</span>
+  so <span class="tts-math" data-tts="Y sub n converges in probability to Y">$Y_n \xrightarrow{p} Y$</span>. This is Keener's Proposition 8.3. In words: <strong>mean-square convergence implies convergence in probability</strong>.
 </p>
 <h3 data-cid="ch08-240">The weak law of large numbers</h3>
 <div class="box example" data-cid="ch08-250">
 <span class="box-label">Worked example — WLLN for the sample mean</span>
 <p data-cid="ch08-260">
-  Suppose $X_1, X_2, \dots$ are i.i.d. with mean $\mu$ and variance $\sigma^2 &lt; \infty$. Let $\bar{X}_n = (X_1 + \cdots + X_n)/n$. Then
-  $$E(\bar{X}_n - \mu)^2 = \operatorname{Var}(\bar{X}_n) = \frac{\sigma^2}{n} \to 0,$$
-  and so $\bar{X}_n \xrightarrow{p} \mu$.
+  Suppose <span class="tts-math" data-tts="X sub 1 X sub 2 and so on">$X_1, X_2, \dots$</span> are i.i.d. with mean <span class="tts-math" data-tts="mu">$\mu$</span> and variance <span class="tts-math" data-tts="sigma to the 2 lt infinity">$\sigma^2 &lt; \infty$</span>. Let <span class="tts-math" data-tts="X bar sub n equals X sub 1 plus times s plus X sub n over n">$\bar{X}_n = (X_1 + \cdots + X_n)/n$</span>. Then
+  <span class="tts-math" data-tts="E X bar sub n minus mu to the 2 equals Var X bar sub n equals sigma to the 2 over n to 0">$$E(\bar{X}_n - \mu)^2 = \operatorname{Var}(\bar{X}_n) = \frac{\sigma^2}{n} \to 0,$$</span>
+  and so <span class="tts-math" data-tts="X bar sub n converges in probability to mu">$\bar{X}_n \xrightarrow{p} \mu$</span>.
 </p>
 <p data-cid="ch08-270">
   This is the <strong>weak law of large numbers</strong>: averages converge in probability to the population mean. Note that the proof took two lines once we had Chebyshev — that is the power of mean-square convergence as a shortcut.
 </p>
 </div>
 <p data-cid="ch08-280">
-  Two pedagogical notes. First, the WLLN actually holds whenever $E|X_i| &lt; \infty$, even if $\sigma^2 = \infty$ — but proving that requires more work. Second, the WLLN says <em>nothing</em> about how fast convergence happens. For that we will need the central limit theorem in Section 8.2.
+  Two pedagogical notes. First, the WLLN actually holds whenever <span class="tts-math" data-tts="E X sub i lt infinity">$E|X_i| &lt; \infty$</span>, even if <span class="tts-math" data-tts="sigma to the 2 equals infinity">$\sigma^2 = \infty$</span> — but proving that requires more work. Second, the WLLN says <em>nothing</em> about how fast convergence happens. For that we will need the central limit theorem in Section 8.2.
 </p>
 <h3 data-cid="ch08-290">Continuous functions preserve convergence in probability</h3>
 <div class="box definition" data-cid="ch08-300">
 <span class="box-label">Proposition 8.5 — continuous mapping (in probability)</span>
 <p data-cid="ch08-310">
-  If $f$ is continuous at $c$ and $Y_n \xrightarrow{p} c$, then $f(Y_n) \xrightarrow{p} f(c)$.
+  If <span class="tts-math" data-tts="f">$f$</span> is continuous at <span class="tts-math" data-tts="c">$c$</span> and <span class="tts-math" data-tts="Y sub n converges in probability to c">$Y_n \xrightarrow{p} c$</span>, then <span class="tts-math" data-tts="f Y sub n converges in probability to f c">$f(Y_n) \xrightarrow{p} f(c)$</span>.
 </p>
 </div>
 <p data-cid="ch08-320">
-  The argument is the kind of $\epsilon$–$\delta$ trick you have seen in real analysis. Continuity at $c$ means: given any $\epsilon &gt; 0$ there exists $\delta_\epsilon &gt; 0$ such that $|y - c| &lt; \delta_\epsilon$ implies $|f(y) - f(c)| &lt; \epsilon$. Contrapositively, $|f(y) - f(c)| \geq \epsilon$ implies $|y - c| \geq \delta_\epsilon$. Hence
-  $$P\big(\,|f(Y_n) - f(c)| \geq \epsilon\,\big) \leq P\big(\,|Y_n - c| \geq \delta_\epsilon\,\big) \to 0.$$
+  The argument is the kind of <span class="tts-math" data-tts="epsilon">$\epsilon$</span>–<span class="tts-math" data-tts="delta">$\delta$</span> trick you have seen in real analysis. Continuity at <span class="tts-math" data-tts="c">$c$</span> means: given any <span class="tts-math" data-tts="epsilon gt 0">$\epsilon &gt; 0$</span> there exists <span class="tts-math" data-tts="delta _ epsilon gt 0">$\delta_\epsilon &gt; 0$</span> such that <span class="tts-math" data-tts="y minus c lt delta _ epsilon">$|y - c| &lt; \delta_\epsilon$</span> implies <span class="tts-math" data-tts="f y minus f c lt epsilon">$|f(y) - f(c)| &lt; \epsilon$</span>. Contrapositively, <span class="tts-math" data-tts="f y minus f c greater than or equal to epsilon">$|f(y) - f(c)| \geq \epsilon$</span> implies <span class="tts-math" data-tts="y minus c greater than or equal to delta _ epsilon">$|y - c| \geq \delta_\epsilon$</span>. Hence
+  <span class="tts-math" data-tts="P f Y sub n minus f c greater than or equal to epsilon less than or equal to P Y sub n minus c greater than or equal to delta _ epsilon to 0.">$$P\big(\,|f(Y_n) - f(c)| \geq \epsilon\,\big) \leq P\big(\,|Y_n - c| \geq \delta_\epsilon\,\big) \to 0.$$</span>
 </p>
 <p data-cid="ch08-330">
   This proposition, applied component-wise to random vectors, immediately gives us:
 </p>
 <p data-cid="ch08-340">
-<strong>If $X_n \xrightarrow{p} a$ and $Y_n \xrightarrow{p} b$, then $X_n + Y_n \xrightarrow{p} a + b$ and $X_n Y_n \xrightarrow{p} ab$.</strong>
+<strong>If <span class="tts-math" data-tts="X sub n converges in probability to a">$X_n \xrightarrow{p} a$</span> and <span class="tts-math" data-tts="Y sub n converges in probability to b">$Y_n \xrightarrow{p} b$</span>, then <span class="tts-math" data-tts="X sub n plus Y sub n converges in probability to a plus b">$X_n + Y_n \xrightarrow{p} a + b$</span> and <span class="tts-math" data-tts="X sub n Y sub n converges in probability to ab">$X_n Y_n \xrightarrow{p} ab$</span>.</strong>
 </p>
 <p data-cid="ch08-350">
-  Addition and multiplication are continuous functions $\mathbb{R}^2 \to \mathbb{R}$, so the result follows by treating $(X_n, Y_n)$ as a random vector.
+  Addition and multiplication are continuous functions <span class="tts-math" data-tts="the real numbers to the 2 to the real numbers">$\mathbb{R}^2 \to \mathbb{R}$</span>, so the result follows by treating <span class="tts-math" data-tts="X sub n Y sub n">$(X_n, Y_n)$</span> as a random vector.
 </p>
 <h3 data-cid="ch08-360">Consistent estimators</h3>
 <p data-cid="ch08-370">
-  When we have a parametric family indexed by $\theta \in \Omega$, we write $\xrightarrow{P_\theta}$ to remind ourselves which probability measure is in play.
+  When we have a parametric family indexed by <span class="tts-math" data-tts="theta in Omega">$\theta \in \Omega$</span>, we write <span class="tts-math" data-tts="converges to">$\xrightarrow{P_\theta}$</span> to remind ourselves which probability measure is in play.
 </p>
 <div class="box definition" data-cid="ch08-380">
 <span class="box-label">Definition 8.6 — consistency</span>
 <p data-cid="ch08-390">
-  A sequence of estimators $\delta_n$ is <strong>consistent</strong> for $g(\theta)$ if for every $\theta \in \Omega$,
-  $$\delta_n \xrightarrow{P_\theta} g(\theta) \quad \text{as } n \to \infty.$$
+  A sequence of estimators <span class="tts-math" data-tts="delta sub n">$\delta_n$</span> is <strong>consistent</strong> for <span class="tts-math" data-tts="g theta">$g(\theta)$</span> if for every <span class="tts-math" data-tts="theta in Omega">$\theta \in \Omega$</span>,
+  <span class="tts-math" data-tts="delta sub n converges to g theta as n to infinity .">$$\delta_n \xrightarrow{P_\theta} g(\theta) \quad \text{as } n \to \infty.$$</span>
 </p>
 </div>
 <p data-cid="ch08-400">
@@ -165,81 +164,81 @@
 </p>
 <p data-cid="ch08-410">
   By Chebyshev again, a sufficient condition is that the mean-squared error vanishes:
-  $$R(\theta, \delta_n) = E_\theta (\delta_n - g(\theta))^2 = b_n(\theta)^2 + \operatorname{Var}_\theta(\delta_n) \to 0,$$
-  where $b_n(\theta) = E_\theta \delta_n - g(\theta)$ is the bias. So: bias and variance both shrinking to zero implies consistency. This is the workhorse check.
+  <span class="tts-math" data-tts="R theta delta sub n equals E_ theta delta sub n minus g theta to the 2 equals b sub n theta to the 2 plus Var_ theta delta sub n to 0">$$R(\theta, \delta_n) = E_\theta (\delta_n - g(\theta))^2 = b_n(\theta)^2 + \operatorname{Var}_\theta(\delta_n) \to 0,$$</span>
+  where <span class="tts-math" data-tts="b sub n theta equals E_ theta delta sub n minus g theta">$b_n(\theta) = E_\theta \delta_n - g(\theta)$</span> is the bias. So: bias and variance both shrinking to zero implies consistency. This is the workhorse check.
 </p>
 <div class="box pause" data-cid="ch08-420">
 <span class="box-label">Pause</span>
 <p data-cid="ch08-430">
-  Re-read the definition once more. "For every $\epsilon &gt; 0$, $P(|Y_n - Y| \geq \epsilon) \to 0$" is one of those statements that looks simple but encodes two layers of "for all". The user picks $\epsilon$; then $n$ goes to infinity. The probability shrinks <em>at a rate that may depend on $\epsilon$</em> — small $\epsilon$ takes longer.
+  Re-read the definition once more. "For every <span class="tts-math" data-tts="epsilon gt 0">$\epsilon &gt; 0$</span>, <span class="tts-math" data-tts="P Y sub n minus Y greater than or equal to epsilon to 0">$P(|Y_n - Y| \geq \epsilon) \to 0$</span>" is one of those statements that looks simple but encodes two layers of "for all". The user picks <span class="tts-math" data-tts="epsilon">$\epsilon$</span>; then <span class="tts-math" data-tts="n">$n$</span> goes to infinity. The probability shrinks <em>at a rate that may depend on <span class="tts-math" data-tts="epsilon">$\epsilon$</span></em> — small <span class="tts-math" data-tts="epsilon">$\epsilon$</span> takes longer.
 </p>
 </div>
 <!-- ===================================================================== -->
 <h2 data-cid="ch08-440" id="s8-2">8.2 Convergence in Distribution</h2>
 <h3 data-cid="ch08-450">What convergence in probability misses</h3>
 <p data-cid="ch08-460">
-  Suppose $\delta_n$ is consistent for $g(\theta)$, so $\delta_n - g(\theta) \xrightarrow{p} 0$. Great — but how <em>fast</em>? And what does the distribution of the error look like, after we zoom in by the right factor? Convergence in probability cannot answer these. For that we need a notion of convergence that tracks the whole shape of the distribution.
+  Suppose <span class="tts-math" data-tts="delta sub n">$\delta_n$</span> is consistent for <span class="tts-math" data-tts="g theta">$g(\theta)$</span>, so <span class="tts-math" data-tts="delta sub n minus g theta converges in probability to 0">$\delta_n - g(\theta) \xrightarrow{p} 0$</span>. Great — but how <em>fast</em>? And what does the distribution of the error look like, after we zoom in by the right factor? Convergence in probability cannot answer these. For that we need a notion of convergence that tracks the whole shape of the distribution.
 </p>
 <div class="box definition" data-cid="ch08-470">
 <span class="box-label">Definition 8.7 — convergence in distribution</span>
 <p data-cid="ch08-480">
-  A sequence of random variables $Y_n$, with CDFs $H_n$, <strong>converges in distribution</strong> (or "in law") to $Y$ with CDF $H$, written
-  $$Y_n \Rightarrow Y \quad \text{or} \quad Y_n \Rightarrow P_Y,$$
+  A sequence of random variables <span class="tts-math" data-tts="Y sub n">$Y_n$</span>, with CDFs <span class="tts-math" data-tts="H sub n">$H_n$</span>, <strong>converges in distribution</strong> (or "in law") to <span class="tts-math" data-tts="Y">$Y$</span> with CDF <span class="tts-math" data-tts="H">$H$</span>, written
+  <span class="tts-math" data-tts="Y sub n implies Y or Y sub n implies P sub Y">$$Y_n \Rightarrow Y \quad \text{or} \quad Y_n \Rightarrow P_Y,$$</span>
   if
-  $$H_n(y) \to H(y) \quad \text{as } n \to \infty$$
-  <em>at every $y$ where $H$ is continuous</em>.
+  <span class="tts-math" data-tts="H sub n y to H y as n to infinity">$$H_n(y) \to H(y) \quad \text{as } n \to \infty$$</span>
+  <em>at every <span class="tts-math" data-tts="y">$y$</span> where <span class="tts-math" data-tts="H">$H$</span> is continuous</em>.
 </p>
 </div>
 <h3 data-cid="ch08-490">Why "only at continuity points"?</h3>
 <div class="box example" data-cid="ch08-500">
 <span class="box-label">Example 8.8 — the degenerate sequence</span>
 <p data-cid="ch08-510">
-  Let $Y_n = 1/n$ deterministically, and let $Y = 0$. Intuitively $Y_n \to Y$ in every reasonable sense. The CDFs are step functions:
-  $$H_n(y) = \mathbf{1}\{1/n \leq y\}, \qquad H(y) = \mathbf{1}\{0 \leq y\}.$$
-  For $y &gt; 0$: $H_n(y) = 1$ eventually, so $H_n(y) \to 1 = H(y)$. For $y &lt; 0$: $H_n(y) = 0$, $H(y) = 0$. But at $y = 0$: $H_n(0) = 0$ for all $n$, while $H(0) = 1$.
+  Let <span class="tts-math" data-tts="Y sub n equals 1 over n">$Y_n = 1/n$</span> deterministically, and let <span class="tts-math" data-tts="Y equals 0">$Y = 0$</span>. Intuitively <span class="tts-math" data-tts="Y sub n to Y">$Y_n \to Y$</span> in every reasonable sense. The CDFs are step functions:
+  <span class="tts-math" data-tts="H sub n y equals 1 1 over n less than or equal to y H y equals 1 0 less than or equal to y .">$$H_n(y) = \mathbf{1}\{1/n \leq y\}, \qquad H(y) = \mathbf{1}\{0 \leq y\}.$$</span>
+  For <span class="tts-math" data-tts="y gt 0">$y &gt; 0$</span>: <span class="tts-math" data-tts="H sub n y equals 1">$H_n(y) = 1$</span> eventually, so <span class="tts-math" data-tts="H sub n y to 1 equals H y">$H_n(y) \to 1 = H(y)$</span>. For <span class="tts-math" data-tts="y lt 0">$y &lt; 0$</span>: <span class="tts-math" data-tts="H sub n y equals 0">$H_n(y) = 0$</span>, <span class="tts-math" data-tts="H y equals 0">$H(y) = 0$</span>. But at <span class="tts-math" data-tts="y equals 0">$y = 0$</span>: <span class="tts-math" data-tts="H sub n 0 equals 0">$H_n(0) = 0$</span> for all <span class="tts-math" data-tts="n">$n$</span>, while <span class="tts-math" data-tts="H 0 equals 1">$H(0) = 1$</span>.
 </p>
 <p data-cid="ch08-520">
-  Convergence fails at $y = 0$ — which is exactly the discontinuity point of $H$. If we demanded convergence there, we would have to declare that $1/n$ does not converge to $0$, which is absurd. So we only ask for convergence at continuity points.
+  Convergence fails at <span class="tts-math" data-tts="y equals 0">$y = 0$</span> — which is exactly the discontinuity point of <span class="tts-math" data-tts="H">$H$</span>. If we demanded convergence there, we would have to declare that <span class="tts-math" data-tts="1 over n">$1/n$</span> does not converge to <span class="tts-math" data-tts="0">$0$</span>, which is absurd. So we only ask for convergence at continuity points.
 </p>
 </div>
 <h3 data-cid="ch08-530">An equivalent definition via expectations</h3>
 <div class="box definition" data-cid="ch08-540">
 <span class="box-label">Theorem 8.9 — Portmanteau (the useful direction)</span>
 <p data-cid="ch08-550">
-  $Y_n \Rightarrow Y$ if and only if $E f(Y_n) \to E f(Y)$ for every <em>bounded continuous</em> function $f$.
+  <span class="tts-math" data-tts="Y sub n implies Y">$Y_n \Rightarrow Y$</span> if and only if <span class="tts-math" data-tts="E f Y sub n to E f Y">$E f(Y_n) \to E f(Y)$</span> for every <em>bounded continuous</em> function <span class="tts-math" data-tts="f">$f$</span>.
 </p>
 </div>
 <p data-cid="ch08-560">
   This is often taken as the <em>real</em> definition, because it generalizes cleanly to random vectors and even random functions. For our purposes, the most immediate payoff is:
 </p>
 <p data-cid="ch08-570">
-<strong>Continuous mapping (in distribution).</strong> If $g$ is continuous and $Y_n \Rightarrow Y$, then $g(Y_n) \Rightarrow g(Y)$. The proof is a one-liner using Theorem 8.9: if $f$ is bounded continuous, so is $f \circ g$, so $E(f \circ g)(Y_n) \to E(f \circ g)(Y)$, which is exactly what the equivalent definition demands for $g(Y_n) \Rightarrow g(Y)$.
+<strong>Continuous mapping (in distribution).</strong> If <span class="tts-math" data-tts="g">$g$</span> is continuous and <span class="tts-math" data-tts="Y sub n implies Y">$Y_n \Rightarrow Y$</span>, then <span class="tts-math" data-tts="g Y sub n implies g Y">$g(Y_n) \Rightarrow g(Y)$</span>. The proof is a one-liner using Theorem 8.9: if <span class="tts-math" data-tts="f">$f$</span> is bounded continuous, so is <span class="tts-math" data-tts="f g">$f \circ g$</span>, so <span class="tts-math" data-tts="E f g Y sub n to E f g Y">$E(f \circ g)(Y_n) \to E(f \circ g)(Y)$</span>, which is exactly what the equivalent definition demands for <span class="tts-math" data-tts="g Y sub n implies g Y">$g(Y_n) \Rightarrow g(Y)$</span>.
 </p>
 <h3 data-cid="ch08-580">The central limit theorem</h3>
 <div class="box definition" data-cid="ch08-590">
 <span class="box-label">Theorem 8.12 — Central Limit Theorem</span>
 <p data-cid="ch08-600">
-  Suppose $X_1, X_2, \dots$ are i.i.d. with mean $\mu$ and variance $\sigma^2 &lt; \infty$. Let $\bar{X}_n = (X_1 + \cdots + X_n)/n$. Then
-  $$\sqrt{n}\,(\bar{X}_n - \mu) \Rightarrow N(0, \sigma^2).$$
+  Suppose <span class="tts-math" data-tts="X sub 1 X sub 2 and so on">$X_1, X_2, \dots$</span> are i.i.d. with mean <span class="tts-math" data-tts="mu">$\mu$</span> and variance <span class="tts-math" data-tts="sigma to the 2 lt infinity">$\sigma^2 &lt; \infty$</span>. Let <span class="tts-math" data-tts="X bar sub n equals X sub 1 plus times s plus X sub n over n">$\bar{X}_n = (X_1 + \cdots + X_n)/n$</span>. Then
+  <span class="tts-math" data-tts="root n X bar sub n minus mu implies N 0 sigma to the 2 .">$$\sqrt{n}\,(\bar{X}_n - \mu) \Rightarrow N(0, \sigma^2).$$</span>
 </p>
 </div>
 <p data-cid="ch08-610">
-  Two things to notice. First, the scaling is $\sqrt{n}$ — not $n$, not $n^2$. This is the right rate for averages, and the CLT is the reason. Second, the limit is normal regardless of the original distribution of the $X_i$ (as long as $\sigma^2 &lt; \infty$). This universality is what makes the CLT so absurdly useful.
+  Two things to notice. First, the scaling is <span class="tts-math" data-tts="root n">$\sqrt{n}$</span> — not <span class="tts-math" data-tts="n">$n$</span>, not <span class="tts-math" data-tts="n to the 2">$n^2$</span>. This is the right rate for averages, and the CLT is the reason. Second, the limit is normal regardless of the original distribution of the <span class="tts-math" data-tts="X sub i">$X_i$</span> (as long as <span class="tts-math" data-tts="sigma to the 2 lt infinity">$\sigma^2 &lt; \infty$</span>). This universality is what makes the CLT so absurdly useful.
 </p>
 <p data-cid="ch08-620">
-  As a quick application: if $H_n$ is the CDF of $\sqrt{n}(\bar{X}_n - \mu)$, then
-  $$P\!\left( \mu - \frac{a}{\sqrt{n}} &lt; \bar{X}_n \leq \mu + \frac{a}{\sqrt{n}} \right) = H_n(a) - H_n(-a) \to \Phi(a/\sigma) - \Phi(-a/\sigma).$$
-  Compare to what the WLLN gives us: only that the probability $\to 1$ as the window widens. The CLT is sharper by a whole order of magnitude.
+  As a quick application: if <span class="tts-math" data-tts="H sub n">$H_n$</span> is the CDF of <span class="tts-math" data-tts="root n X bar sub n minus mu">$\sqrt{n}(\bar{X}_n - \mu)$</span>, then
+  <span class="tts-math" data-tts="P mu minus a over root n lt X bar sub n less than or equal to mu plus a over root n equals H sub n a minus H sub n minus a to Phi a over sigma minus Phi minus a over sigma .">$$P\!\left( \mu - \frac{a}{\sqrt{n}} &lt; \bar{X}_n \leq \mu + \frac{a}{\sqrt{n}} \right) = H_n(a) - H_n(-a) \to \Phi(a/\sigma) - \Phi(-a/\sigma).$$</span>
+  Compare to what the WLLN gives us: only that the probability <span class="tts-math" data-tts="to 1">$\to 1$</span> as the window widens. The CLT is sharper by a whole order of magnitude.
 </p>
 <p data-cid="ch08-630">
-  Refined error bounds exist. The <strong>Berry–Esseen theorem</strong> bounds the difference between $P(\sqrt{n}(\bar{X}_n - \mu) \leq x)$ and $\Phi(x/\sigma)$ by a constant times $E|X_1 - \mu|^3 / (\sigma^3 \sqrt{n})$, uniformly in $x$. So the CLT approximation has $O(1/\sqrt{n})$ error.
+  Refined error bounds exist. The <strong>Berry–Esseen theorem</strong> bounds the difference between <span class="tts-math" data-tts="P root n X bar sub n minus mu less than or equal to x">$P(\sqrt{n}(\bar{X}_n - \mu) \leq x)$</span> and <span class="tts-math" data-tts="Phi x over sigma">$\Phi(x/\sigma)$</span> by a constant times <span class="tts-math" data-tts="E X sub 1 minus mu to the 3 over sigma to the 3 root n">$E|X_1 - \mu|^3 / (\sigma^3 \sqrt{n})$</span>, uniformly in <span class="tts-math" data-tts="x">$x$</span>. So the CLT approximation has <span class="tts-math" data-tts="O 1 over root n">$O(1/\sqrt{n})$</span> error.
 </p>
 <h3 data-cid="ch08-640">Slutsky's theorem — the calculus of mixed convergence</h3>
 <div class="box definition" data-cid="ch08-650">
 <span class="box-label">Theorem 8.13 — Slutsky</span>
 <p data-cid="ch08-660">
-  If $Y_n \Rightarrow Y$, $A_n \xrightarrow{p} a$, and $B_n \xrightarrow{p} b$, then
-  $$A_n + B_n Y_n \Rightarrow a + b\,Y.$$
+  If <span class="tts-math" data-tts="Y sub n implies Y">$Y_n \Rightarrow Y$</span>, <span class="tts-math" data-tts="A sub n converges in probability to a">$A_n \xrightarrow{p} a$</span>, and <span class="tts-math" data-tts="B sub n converges in probability to b">$B_n \xrightarrow{p} b$</span>, then
+  <span class="tts-math" data-tts="A sub n plus B sub n Y sub n implies a plus b Y.">$$A_n + B_n Y_n \Rightarrow a + b\,Y.$$</span>
 </p>
 </div>
 <p data-cid="ch08-670">
@@ -252,14 +251,14 @@
 <div class="box definition" data-cid="ch08-700">
 <span class="box-label">Proposition 8.14 — the delta method</span>
 <p data-cid="ch08-710">
-  Under the conditions of the CLT, if $f$ is differentiable at $\mu$, then
-  $$\sqrt{n}\,\big(f(\bar{X}_n) - f(\mu)\big) \Rightarrow N\!\big(0,\, [f'(\mu)]^2 \sigma^2 \big).$$
+  Under the conditions of the CLT, if <span class="tts-math" data-tts="f">$f$</span> is differentiable at <span class="tts-math" data-tts="mu">$\mu$</span>, then
+  <span class="tts-math" data-tts="root n f X bar sub n minus f mu implies N 0 f prime mu to the 2 sigma to the 2 .">$$\sqrt{n}\,\big(f(\bar{X}_n) - f(\mu)\big) \Rightarrow N\!\big(0,\, [f'(\mu)]^2 \sigma^2 \big).$$</span>
 </p>
 </div>
 <p data-cid="ch08-720">
-  The sketch (with a continuous derivative for simplicity): by the mean value theorem, $f(\bar{X}_n) = f(\mu) + f'(\mu_n)(\bar{X}_n - \mu)$ for some $\mu_n$ between $\bar{X}_n$ and $\mu$. Since $\bar{X}_n \xrightarrow{p} \mu$, also $\mu_n \xrightarrow{p} \mu$, hence $f'(\mu_n) \xrightarrow{p} f'(\mu)$ by continuity. Then Slutsky gives
-  $$\sqrt{n}\,(f(\bar{X}_n) - f(\mu)) = f'(\mu_n) \cdot \sqrt{n}\,(\bar{X}_n - \mu) \Rightarrow f'(\mu) \cdot Z,$$
-  with $Z \sim N(0, \sigma^2)$.
+  The sketch (with a continuous derivative for simplicity): by the mean value theorem, <span class="tts-math" data-tts="f X bar sub n equals f mu plus f prime mu sub n X bar sub n minus mu">$f(\bar{X}_n) = f(\mu) + f'(\mu_n)(\bar{X}_n - \mu)$</span> for some <span class="tts-math" data-tts="mu sub n">$\mu_n$</span> between <span class="tts-math" data-tts="X bar sub n">$\bar{X}_n$</span> and <span class="tts-math" data-tts="mu">$\mu$</span>. Since <span class="tts-math" data-tts="X bar sub n converges in probability to mu">$\bar{X}_n \xrightarrow{p} \mu$</span>, also <span class="tts-math" data-tts="mu sub n converges in probability to mu">$\mu_n \xrightarrow{p} \mu$</span>, hence <span class="tts-math" data-tts="f prime mu sub n converges in probability to f prime mu">$f'(\mu_n) \xrightarrow{p} f'(\mu)$</span> by continuity. Then Slutsky gives
+  <span class="tts-math" data-tts="root n f X bar sub n minus f mu equals f prime mu sub n times root n X bar sub n minus mu implies f prime mu times Z">$$\sqrt{n}\,(f(\bar{X}_n) - f(\mu)) = f'(\mu_n) \cdot \sqrt{n}\,(\bar{X}_n - \mu) \Rightarrow f'(\mu) \cdot Z,$$</span>
+  with <span class="tts-math" data-tts="Z distributed as N 0 sigma to the 2">$Z \sim N(0, \sigma^2)$</span>.
 </p>
 <div class="box pause" data-cid="ch08-730">
 <span class="box-label">Pause — the three modes side by side</span>
@@ -267,130 +266,130 @@
   Let us pause and be explicit. We have so far defined two notions:
 </p>
 <ul data-cid="ch08-750">
-<li><strong>In probability:</strong> $Y_n \xrightarrow{p} Y$ means $P(|Y_n - Y| \geq \epsilon) \to 0$ for every $\epsilon &gt; 0$. The variables $Y_n, Y$ must live on the same probability space — we are comparing their <em>values</em>.</li>
-<li><strong>In distribution:</strong> $Y_n \Rightarrow Y$ means the CDFs $H_n$ converge to $H$ at continuity points. The $Y_n$ and $Y$ need not even live on the same space — we are only comparing <em>laws</em>.</li>
+<li><strong>In probability:</strong> <span class="tts-math" data-tts="Y sub n converges in probability to Y">$Y_n \xrightarrow{p} Y$</span> means <span class="tts-math" data-tts="P Y sub n minus Y greater than or equal to epsilon to 0">$P(|Y_n - Y| \geq \epsilon) \to 0$</span> for every <span class="tts-math" data-tts="epsilon gt 0">$\epsilon &gt; 0$</span>. The variables <span class="tts-math" data-tts="Y sub n Y">$Y_n, Y$</span> must live on the same probability space — we are comparing their <em>values</em>.</li>
+<li><strong>In distribution:</strong> <span class="tts-math" data-tts="Y sub n implies Y">$Y_n \Rightarrow Y$</span> means the CDFs <span class="tts-math" data-tts="H sub n">$H_n$</span> converge to <span class="tts-math" data-tts="H">$H$</span> at continuity points. The <span class="tts-math" data-tts="Y sub n">$Y_n$</span> and <span class="tts-math" data-tts="Y">$Y$</span> need not even live on the same space — we are only comparing <em>laws</em>.</li>
 </ul>
 <p data-cid="ch08-760">
   A third mode (almost sure) is coming in Section 8.7. The hierarchy will be:
-  $$\text{a.s.} \;\Longrightarrow\; \text{in probability} \;\Longrightarrow\; \text{in distribution.}$$
+  <span class="tts-math" data-tts="a.s. in probability in distribution.">$$\text{a.s.} \;\Longrightarrow\; \text{in probability} \;\Longrightarrow\; \text{in distribution.}$$</span>
   Strict implications — none of the reverse arrows hold in general.
 </p>
 </div>
 <div class="box warn" data-cid="ch08-770">
 <span class="box-label">Common pitfall</span>
 <p data-cid="ch08-780">
-<strong>Convergence in distribution does NOT imply convergence in probability.</strong> Suppose $Y \sim N(0,1)$ and let $Y_n = -Y$ for every $n$. Then $Y_n \sim N(0,1)$ for every $n$ (because the normal is symmetric), so trivially $Y_n \Rightarrow Y$ — they share a distribution. But $|Y_n - Y| = 2|Y|$, which does not go to zero in probability at all. The CDFs agree exactly, yet the variables can be far apart on every outcome.
+<strong>Convergence in distribution does NOT imply convergence in probability.</strong> Suppose <span class="tts-math" data-tts="Y distributed as N 0 1">$Y \sim N(0,1)$</span> and let <span class="tts-math" data-tts="Y sub n equals minus Y">$Y_n = -Y$</span> for every <span class="tts-math" data-tts="n">$n$</span>. Then <span class="tts-math" data-tts="Y sub n distributed as N 0 1">$Y_n \sim N(0,1)$</span> for every <span class="tts-math" data-tts="n">$n$</span> (because the normal is symmetric), so trivially <span class="tts-math" data-tts="Y sub n implies Y">$Y_n \Rightarrow Y$</span> — they share a distribution. But <span class="tts-math" data-tts="Y sub n minus Y equals 2 Y">$|Y_n - Y| = 2|Y|$</span>, which does not go to zero in probability at all. The CDFs agree exactly, yet the variables can be far apart on every outcome.
 </p>
 <p data-cid="ch08-790">
-  Moral: convergence in distribution says nothing about <em>joint</em> behavior of $Y_n$ and $Y$. It only constrains their marginals.
+  Moral: convergence in distribution says nothing about <em>joint</em> behavior of <span class="tts-math" data-tts="Y sub n">$Y_n$</span> and <span class="tts-math" data-tts="Y">$Y$</span>. It only constrains their marginals.
 </p>
 <p data-cid="ch08-800">
-  The one exception is when the limit is a <em>constant</em>: $Y_n \Rightarrow c$ does imply $Y_n \xrightarrow{p} c$. Constants have no "joint" structure to lose.
+  The one exception is when the limit is a <em>constant</em>: <span class="tts-math" data-tts="Y sub n implies c">$Y_n \Rightarrow c$</span> does imply <span class="tts-math" data-tts="Y sub n converges in probability to c">$Y_n \xrightarrow{p} c$</span>. Constants have no "joint" structure to lose.
 </p>
 </div>
 <h3 data-cid="ch08-810">Uniform integrability — when expectations also converge</h3>
 <p data-cid="ch08-820">
-  Convergence in distribution gives $E f(Y_n) \to E f(Y)$ for <em>bounded</em> continuous $f$. If $f$ is unbounded, this can fail. The fix is a moment-type condition.
+  Convergence in distribution gives <span class="tts-math" data-tts="E f Y sub n to E f Y">$E f(Y_n) \to E f(Y)$</span> for <em>bounded</em> continuous <span class="tts-math" data-tts="f">$f$</span>. If <span class="tts-math" data-tts="f">$f$</span> is unbounded, this can fail. The fix is a moment-type condition.
 </p>
 <div class="box definition" data-cid="ch08-830">
 <span class="box-label">Definition 8.15 — uniform integrability</span>
 <p data-cid="ch08-840">
-  Random variables $X_n$ are <strong>uniformly integrable</strong> if
-  $$\sup_{n \geq 1} E\!\left[\, |X_n| \, \mathbf{1}\{|X_n| \geq t\} \,\right] \to 0 \quad \text{as } t \to \infty.$$
+  Random variables <span class="tts-math" data-tts="X sub n">$X_n$</span> are <strong>uniformly integrable</strong> if
+  <span class="tts-math" data-tts="sub n greater than or equal to 1 E X sub n 1 X sub n greater than or equal to t to 0 as t to infinity .">$$\sup_{n \geq 1} E\!\left[\, |X_n| \, \mathbf{1}\{|X_n| \geq t\} \,\right] \to 0 \quad \text{as } t \to \infty.$$</span>
 </p>
 </div>
 <p data-cid="ch08-850">
-  In plain language: no matter how far out into the tail you go, eventually the tail mass is small uniformly across the sequence. A bounded moment $\sup_n E|X_n|^{1+\epsilon} &lt; \infty$ is enough to guarantee uniform integrability. The headline consequence (Theorem 8.16): if $X_n \Rightarrow X$ and $\{X_n\}$ is uniformly integrable, then $E X_n \to E X$.
+  In plain language: no matter how far out into the tail you go, eventually the tail mass is small uniformly across the sequence. A bounded moment <span class="tts-math" data-tts="sub n E X sub n to the 1 plus epsilon lt infinity">$\sup_n E|X_n|^{1+\epsilon} &lt; \infty$</span> is enough to guarantee uniform integrability. The headline consequence (Theorem 8.16): if <span class="tts-math" data-tts="X sub n implies X">$X_n \Rightarrow X$</span> and <span class="tts-math" data-tts="X sub n">$\{X_n\}$</span> is uniformly integrable, then <span class="tts-math" data-tts="E X sub n to E X">$E X_n \to E X$</span>.
 </p>
 <!-- ===================================================================== -->
 <h2 data-cid="ch08-860" id="s8-3">8.3 Maximum Likelihood Estimation</h2>
 <h3 data-cid="ch08-870">The construction</h3>
 <p data-cid="ch08-880">
-  Let $X$ be data with density $p_\theta$. View this density, evaluated at the observed data and read as a function of $\theta$, as the <strong>likelihood</strong>:
-  $$L(\theta) = p_\theta(X).$$
-  The <strong>maximum likelihood estimator (MLE)</strong> $\hat\theta = \hat\theta(X)$ is the value of $\theta$ that maximizes $L$. Equivalently — and almost always more conveniently — it maximizes the log-likelihood $\ell(\theta) = \log L(\theta)$.
+  Let <span class="tts-math" data-tts="X">$X$</span> be data with density <span class="tts-math" data-tts="p_ theta">$p_\theta$</span>. View this density, evaluated at the observed data and read as a function of <span class="tts-math" data-tts="theta">$\theta$</span>, as the <strong>likelihood</strong>:
+  <span class="tts-math" data-tts="L theta equals p_ theta X .">$$L(\theta) = p_\theta(X).$$</span>
+  The <strong>maximum likelihood estimator (MLE)</strong> <span class="tts-math" data-tts="theta equals theta X">$\hat\theta = \hat\theta(X)$</span> is the value of <span class="tts-math" data-tts="theta">$\theta$</span> that maximizes <span class="tts-math" data-tts="L">$L$</span>. Equivalently — and almost always more conveniently — it maximizes the log-likelihood <span class="tts-math" data-tts="ell theta equals log L theta">$\ell(\theta) = \log L(\theta)$</span>.
 </p>
 <p data-cid="ch08-890">
-  Two reasons this works in practice. First, logarithms turn products into sums, so $\ell(\theta) = \sum_i \log p_\theta(X_i)$ when we have an i.i.d. sample. Second, the maximum of $\log$ is achieved at the same place as the maximum of the original, since $\log$ is strictly increasing.
+  Two reasons this works in practice. First, logarithms turn products into sums, so <span class="tts-math" data-tts="ell theta equals sub i log p_ theta X sub i">$\ell(\theta) = \sum_i \log p_\theta(X_i)$</span> when we have an i.i.d. sample. Second, the maximum of <span class="tts-math" data-tts="log">$\log$</span> is achieved at the same place as the maximum of the original, since <span class="tts-math" data-tts="log">$\log$</span> is strictly increasing.
 </p>
 <p data-cid="ch08-900">
-  A useful invariance fact: the MLE of $g(\theta)$ is $g(\hat\theta)$. This means once you have the MLE for a parameter, the MLE of any reparameterization comes for free.
+  A useful invariance fact: the MLE of <span class="tts-math" data-tts="g theta">$g(\theta)$</span> is <span class="tts-math" data-tts="g theta">$g(\hat\theta)$</span>. This means once you have the MLE for a parameter, the MLE of any reparameterization comes for free.
 </p>
 <div class="box example" data-cid="ch08-910">
 <span class="box-label">Example 8.17 — MLE in an exponential family</span>
 <p data-cid="ch08-920">
   For a canonical one-parameter exponential family
-  $$p_\eta(x) = \exp\{\eta T(x) - A(\eta)\}\, h(x),$$
-  with an i.i.d. sample of size $n$, the log-likelihood is
-  $$\ell(\eta) = \eta \sum_{i=1}^n T(X_i) - n A(\eta) + \text{const}.$$
-  Setting $\ell'(\eta) = 0$ gives $\sum T(X_i) - n A'(\eta) = 0$, i.e. $A'(\hat\eta) = \bar{T}$ where $\bar{T} = n^{-1} \sum T(X_i)$. With $\psi = (A')^{-1}$, the MLE is
-  $$\hat\eta = \psi(\bar{T}).$$
-  Since $\ell''(\eta) = -A''(\eta) = -\operatorname{Var}_\eta(T) &lt; 0$, the log-likelihood is strictly concave — there is a unique maximum.
+  <span class="tts-math" data-tts="p_ eta x equals exp eta T x minus A eta h x">$$p_\eta(x) = \exp\{\eta T(x) - A(\eta)\}\, h(x),$$</span>
+  with an i.i.d. sample of size <span class="tts-math" data-tts="n">$n$</span>, the log-likelihood is
+  <span class="tts-math" data-tts="ell eta equals eta the sum over i equals 1 of to the n T X sub i minus n A eta plus const.">$$\ell(\eta) = \eta \sum_{i=1}^n T(X_i) - n A(\eta) + \text{const}.$$</span>
+  Setting <span class="tts-math" data-tts="ell prime eta equals 0">$\ell'(\eta) = 0$</span> gives <span class="tts-math" data-tts="the sum of T X sub i minus n A prime eta equals 0">$\sum T(X_i) - n A'(\eta) = 0$</span>, i.e. <span class="tts-math" data-tts="A prime eta equals T bar">$A'(\hat\eta) = \bar{T}$</span> where <span class="tts-math" data-tts="T bar equals n inverse the sum of T X sub i">$\bar{T} = n^{-1} \sum T(X_i)$</span>. With <span class="tts-math" data-tts="psi equals A prime inverse">$\psi = (A')^{-1}$</span>, the MLE is
+  <span class="tts-math" data-tts="eta equals psi T bar .">$$\hat\eta = \psi(\bar{T}).$$</span>
+  Since <span class="tts-math" data-tts="ell prime prime eta equals minus A prime prime eta equals minus Var_ eta T lt 0">$\ell''(\eta) = -A''(\eta) = -\operatorname{Var}_\eta(T) &lt; 0$</span>, the log-likelihood is strictly concave — there is a unique maximum.
 </p>
 </div>
 <h3 data-cid="ch08-930">Asymptotic distribution via the delta method</h3>
 <p data-cid="ch08-940">
-  In the exponential-family example, $\bar{T}$ is an average of i.i.d. variables, so the CLT applies: $\sqrt{n}(\bar{T} - A'(\eta)) \Rightarrow N(0, A''(\eta))$. And $\hat\eta = \psi(\bar{T})$ is a smooth function of an average. The delta method then gives
-  $$\sqrt{n}\,(\hat\eta - \eta) \Rightarrow N\!\left( 0,\, \frac{1}{A''(\eta)} \right).$$
-  But $A''(\eta)$ is precisely the Fisher information from a single observation. So the asymptotic variance of $\hat\eta$ equals the inverse Fisher information — the Cramér–Rao lower bound. In this asymptotic sense, the MLE is <strong>efficient</strong>: it achieves the best variance any unbiased estimator could hope for. A general theory of asymptotic efficiency is taken up in Chapters 9 and 16.
+  In the exponential-family example, <span class="tts-math" data-tts="T bar">$\bar{T}$</span> is an average of i.i.d. variables, so the CLT applies: <span class="tts-math" data-tts="root n T bar minus A prime eta implies N 0 A prime prime eta">$\sqrt{n}(\bar{T} - A'(\eta)) \Rightarrow N(0, A''(\eta))$</span>. And <span class="tts-math" data-tts="eta equals psi T bar">$\hat\eta = \psi(\bar{T})$</span> is a smooth function of an average. The delta method then gives
+  <span class="tts-math" data-tts="root n eta minus eta implies N 0 1 over A prime prime eta .">$$\sqrt{n}\,(\hat\eta - \eta) \Rightarrow N\!\left( 0,\, \frac{1}{A''(\eta)} \right).$$</span>
+  But <span class="tts-math" data-tts="A prime prime eta">$A''(\eta)$</span> is precisely the Fisher information from a single observation. So the asymptotic variance of <span class="tts-math" data-tts="eta">$\hat\eta$</span> equals the inverse Fisher information — the Cramér–Rao lower bound. In this asymptotic sense, the MLE is <strong>efficient</strong>: it achieves the best variance any unbiased estimator could hope for. A general theory of asymptotic efficiency is taken up in Chapters 9 and 16.
 </p>
 <!-- ===================================================================== -->
 <h2 data-cid="ch08-950" id="s8-4">8.4 Medians and Percentiles</h2>
 <h3 data-cid="ch08-960">Why study the median asymptotically?</h3>
 <p data-cid="ch08-970">
-  The sample mean $\bar{X}_n$ is one summary of central tendency; the sample median $\tilde{X}_n$ is another. The mean is sensitive to outliers; the median is not. Both should be in the toolkit. We have the CLT for $\bar{X}_n$. What is the analogous statement for $\tilde{X}_n$?
+  The sample mean <span class="tts-math" data-tts="X bar sub n">$\bar{X}_n$</span> is one summary of central tendency; the sample median <span class="tts-math" data-tts="X tilde sub n">$\tilde{X}_n$</span> is another. The mean is sensitive to outliers; the median is not. Both should be in the toolkit. We have the CLT for <span class="tts-math" data-tts="X bar sub n">$\bar{X}_n$</span>. What is the analogous statement for <span class="tts-math" data-tts="X tilde sub n">$\tilde{X}_n$</span>?
 </p>
 <p data-cid="ch08-980">
-  Arrange $X_1, \dots, X_n$ in increasing order: $X_{(1)} \leq X_{(2)} \leq \cdots \leq X_{(n)}$. These are the <strong>order statistics</strong>. The sample median is the middle one (or the average of the two middle ones for even $n$).
+  Arrange <span class="tts-math" data-tts="X sub 1 and so on X sub n">$X_1, \dots, X_n$</span> in increasing order: <span class="tts-math" data-tts="X sub 1 less than or equal to X sub 2 less than or equal to times s less than or equal to X sub n">$X_{(1)} \leq X_{(2)} \leq \cdots \leq X_{(n)}$</span>. These are the <strong>order statistics</strong>. The sample median is the middle one (or the average of the two middle ones for even <span class="tts-math" data-tts="n">$n$</span>).
 </p>
 <div class="box example" data-cid="ch08-990">
 <span class="box-label">Worked example — asymptotic normality of the sample median</span>
 <p data-cid="ch08-1000">
-  Suppose $X_1, X_2, \dots$ are i.i.d. with CDF $F$. Assume $F$ has a unique median $\theta$, so $F(\theta) = 1/2$, and that $F'(\theta)$ exists, is finite, and positive. Then we will show
-  $$\sqrt{n}\,(\tilde{X}_n - \theta) \Rightarrow N\!\left( 0,\, \frac{1}{4\,[F'(\theta)]^2} \right).$$
+  Suppose <span class="tts-math" data-tts="X sub 1 X sub 2 and so on">$X_1, X_2, \dots$</span> are i.i.d. with CDF <span class="tts-math" data-tts="F">$F$</span>. Assume <span class="tts-math" data-tts="F">$F$</span> has a unique median <span class="tts-math" data-tts="theta">$\theta$</span>, so <span class="tts-math" data-tts="F theta equals 1 over 2">$F(\theta) = 1/2$</span>, and that <span class="tts-math" data-tts="F prime theta">$F'(\theta)$</span> exists, is finite, and positive. Then we will show
+  <span class="tts-math" data-tts="root n X tilde sub n minus theta implies N 0 1 over 4 F prime theta to the 2 .">$$\sqrt{n}\,(\tilde{X}_n - \theta) \Rightarrow N\!\left( 0,\, \frac{1}{4\,[F'(\theta)]^2} \right).$$</span>
 </p>
 <p data-cid="ch08-1010">
-<strong>The trick.</strong> The event $\{\tilde{X}_n \leq \theta + a/\sqrt{n}\}$ is the same as the event $\{S_n \geq m\}$, where
-  $$S_n = \#\{ i \leq n : X_i \leq \theta + a/\sqrt{n}\}$$
-  counts how many observations fell below the threshold. Why? Because the sample median is the $m$-th order statistic; the median lies below a threshold $t$ iff at least $m$ observations lie below $t$.
+<strong>The trick.</strong> The event <span class="tts-math" data-tts="X tilde sub n less than or equal to theta plus a over root n">$\{\tilde{X}_n \leq \theta + a/\sqrt{n}\}$</span> is the same as the event <span class="tts-math" data-tts="S sub n greater than or equal to m">$\{S_n \geq m\}$</span>, where
+  <span class="tts-math" data-tts="S sub n equals # i less than or equal to n X sub i less than or equal to theta plus a over root n">$$S_n = \#\{ i \leq n : X_i \leq \theta + a/\sqrt{n}\}$$</span>
+  counts how many observations fell below the threshold. Why? Because the sample median is the <span class="tts-math" data-tts="m">$m$</span>-th order statistic; the median lies below a threshold <span class="tts-math" data-tts="t">$t$</span> iff at least <span class="tts-math" data-tts="m">$m$</span> observations lie below <span class="tts-math" data-tts="t">$t$</span>.
 </p>
 <p data-cid="ch08-1020">
-  Then $S_n \sim \text{Binomial}\big(n,\, p_n\big)$ with $p_n = F(\theta + a/\sqrt{n})$. A binomial is a sum of i.i.d. Bernoullis, so the CLT applies:
-  $$\frac{S_n - n p_n}{\sqrt{n}} \approx N(0,\, p_n(1-p_n)).$$
-  Working through the algebra and using $F(\theta) = 1/2$, $F'(\theta) &gt; 0$, and $\sqrt{F(\theta+a/\sqrt{n})(1 - F(\theta+a/\sqrt{n}))} \to 1/2$,
-  $$P\big(\sqrt{n}(\tilde{X}_n - \theta) \leq a\big) \to \Phi(2 a F'(\theta)).$$
-  The right side is the CDF of $N(0,\, 1/(4 [F'(\theta)]^2))$ evaluated at $a$. Done.
+  Then <span class="tts-math" data-tts="S sub n distributed as Binomial n p sub n">$S_n \sim \text{Binomial}\big(n,\, p_n\big)$</span> with <span class="tts-math" data-tts="p sub n equals F theta plus a over root n">$p_n = F(\theta + a/\sqrt{n})$</span>. A binomial is a sum of i.i.d. Bernoullis, so the CLT applies:
+  <span class="tts-math" data-tts="S sub n minus n p sub n over root n approximately N 0 p sub n 1 minus p sub n .">$$\frac{S_n - n p_n}{\sqrt{n}} \approx N(0,\, p_n(1-p_n)).$$</span>
+  Working through the algebra and using <span class="tts-math" data-tts="F theta equals 1 over 2">$F(\theta) = 1/2$</span>, <span class="tts-math" data-tts="F prime theta gt 0">$F'(\theta) &gt; 0$</span>, and <span class="tts-math" data-tts="root F theta plus a over root n 1 minus F theta plus a over root n to 1 over 2">$\sqrt{F(\theta+a/\sqrt{n})(1 - F(\theta+a/\sqrt{n}))} \to 1/2$</span>,
+  <span class="tts-math" data-tts="P root n X tilde sub n minus theta less than or equal to a to Phi 2 a F prime theta .">$$P\big(\sqrt{n}(\tilde{X}_n - \theta) \leq a\big) \to \Phi(2 a F'(\theta)).$$</span>
+  The right side is the CDF of <span class="tts-math" data-tts="N 0 1 over 4 F prime theta to the 2">$N(0,\, 1/(4 [F'(\theta)]^2))$</span> evaluated at <span class="tts-math" data-tts="a">$a$</span>. Done.
 </p>
 </div>
 <p data-cid="ch08-1030">
   The same argument generalizes to any quantile (Theorem 8.18):
-  $$\sqrt{n}\,(\tilde\theta_n - \theta) \Rightarrow N\!\left( 0,\, \frac{\gamma(1-\gamma)}{[F'(\theta)]^2}\right),$$
-  where $\theta$ is the population $\gamma$-quantile and $\tilde\theta_n$ is the sample $\gamma$-quantile. The variance scales with $\gamma(1-\gamma)$ — largest in the middle (where the median sits), smaller in the tails.
+  <span class="tts-math" data-tts="root n theta sub n minus theta implies N 0 gamma 1 minus gamma over F prime theta to the 2">$$\sqrt{n}\,(\tilde\theta_n - \theta) \Rightarrow N\!\left( 0,\, \frac{\gamma(1-\gamma)}{[F'(\theta)]^2}\right),$$</span>
+  where <span class="tts-math" data-tts="theta">$\theta$</span> is the population <span class="tts-math" data-tts="gamma">$\gamma$</span>-quantile and <span class="tts-math" data-tts="theta sub n">$\tilde\theta_n$</span> is the sample <span class="tts-math" data-tts="gamma">$\gamma$</span>-quantile. The variance scales with <span class="tts-math" data-tts="gamma 1 minus gamma">$\gamma(1-\gamma)$</span> — largest in the middle (where the median sits), smaller in the tails.
 </p>
 <!-- ===================================================================== -->
 <h2 data-cid="ch08-1040" id="s8-5">8.5 Asymptotic Relative Efficiency</h2>
 <h3 data-cid="ch08-1050">Comparing two estimators of the same thing</h3>
 <p data-cid="ch08-1060">
-  Suppose two estimator sequences $\hat\theta_n$ and $\tilde\theta_n$ both satisfy
-  $$\sqrt{n}(\hat\theta_n - \theta) \Rightarrow N(0, \sigma^2_{\hat\theta}), \qquad \sqrt{n}(\tilde\theta_n - \theta) \Rightarrow N(0, \sigma^2_{\tilde\theta}).$$
-  Define the <strong>asymptotic relative efficiency (ARE)</strong> of $\hat\theta$ with respect to $\tilde\theta$ as
-  $$\operatorname{ARE} = \frac{\sigma^2_{\tilde\theta}}{\sigma^2_{\hat\theta}}.$$
+  Suppose two estimator sequences <span class="tts-math" data-tts="theta sub n">$\hat\theta_n$</span> and <span class="tts-math" data-tts="theta sub n">$\tilde\theta_n$</span> both satisfy
+  <span class="tts-math" data-tts="root n theta sub n minus theta implies N 0 sigma to the 2 sub theta root n theta sub n minus theta implies N 0 sigma to the 2 sub theta .">$$\sqrt{n}(\hat\theta_n - \theta) \Rightarrow N(0, \sigma^2_{\hat\theta}), \qquad \sqrt{n}(\tilde\theta_n - \theta) \Rightarrow N(0, \sigma^2_{\tilde\theta}).$$</span>
+  Define the <strong>asymptotic relative efficiency (ARE)</strong> of <span class="tts-math" data-tts="theta">$\hat\theta$</span> with respect to <span class="tts-math" data-tts="theta">$\tilde\theta$</span> as
+  <span class="tts-math" data-tts="ARE equals sigma to the 2 sub theta sigma to the 2 sub theta .">$$\operatorname{ARE} = \frac{\sigma^2_{\tilde\theta}}{\sigma^2_{\hat\theta}}.$$</span>
 </p>
 <p data-cid="ch08-1070">
-  The interpretation: ARE is the ratio of sample sizes needed for the two estimators to have comparable error distributions. If ARE $&gt; 1$, $\hat\theta$ is more efficient (needs fewer samples). If ARE $&lt; 1$, $\tilde\theta$ is more efficient.
+  The interpretation: ARE is the ratio of sample sizes needed for the two estimators to have comparable error distributions. If ARE <span class="tts-math" data-tts="gt 1">$&gt; 1$</span>, <span class="tts-math" data-tts="theta">$\hat\theta$</span> is more efficient (needs fewer samples). If ARE <span class="tts-math" data-tts="lt 1">$&lt; 1$</span>, <span class="tts-math" data-tts="theta">$\tilde\theta$</span> is more efficient.
 </p>
 <h3 data-cid="ch08-1080">Mean vs. median under a symmetric location family</h3>
 <p data-cid="ch08-1090">
-  Suppose the data are i.i.d. from a density $f(x - \theta)$ with $f$ symmetric about zero. Then both the mean and median estimate $\theta$. By the CLT and Theorem 8.18:
-  $$\sqrt{n}(\bar{X}_n - \theta) \Rightarrow N(0, \sigma^2), \qquad \sqrt{n}(\tilde{X}_n - \theta) \Rightarrow N\!\left(0, \frac{1}{4 f^2(0)}\right),$$
-  where $\sigma^2 = \int x^2 f(x)\, dx$. The ARE of mean to median is
-  $$\operatorname{ARE} = \frac{1}{4 \sigma^2 f^2(0)}.$$
+  Suppose the data are i.i.d. from a density <span class="tts-math" data-tts="f x minus theta">$f(x - \theta)$</span> with <span class="tts-math" data-tts="f">$f$</span> symmetric about zero. Then both the mean and median estimate <span class="tts-math" data-tts="theta">$\theta$</span>. By the CLT and Theorem 8.18:
+  <span class="tts-math" data-tts="root n X bar sub n minus theta implies N 0 sigma to the 2 root n X tilde sub n minus theta implies N 0 1 over 4 f to the 2 0">$$\sqrt{n}(\bar{X}_n - \theta) \Rightarrow N(0, \sigma^2), \qquad \sqrt{n}(\tilde{X}_n - \theta) \Rightarrow N\!\left(0, \frac{1}{4 f^2(0)}\right),$$</span>
+  where <span class="tts-math" data-tts="sigma to the 2 equals the integral of x to the 2 f x dx">$\sigma^2 = \int x^2 f(x)\, dx$</span>. The ARE of mean to median is
+  <span class="tts-math" data-tts="ARE equals 1 over 4 sigma to the 2 f to the 2 0 .">$$\operatorname{ARE} = \frac{1}{4 \sigma^2 f^2(0)}.$$</span>
 </p>
 <p data-cid="ch08-1100">
-<strong>Normal data:</strong> $f(x) = e^{-x^2/2}/\sqrt{2\pi}$, so $\sigma^2 = 1$ and $1/(4 f^2(0)) = \pi/2$. The mean's variance is $1$, the median's is $\pi/2 \approx 1.57$. Mean wins, ARE $= \pi/2 \approx 1.57$ — roughly $57\%$ more observations are needed if you use the median instead of the mean. (Unsurprising: the mean is UMVU under normality.)
+<strong>Normal data:</strong> <span class="tts-math" data-tts="f x equals e to the x to the 2 over 2 over root 2 pi">$f(x) = e^{-x^2/2}/\sqrt{2\pi}$</span>, so <span class="tts-math" data-tts="sigma to the 2 equals 1">$\sigma^2 = 1$</span> and <span class="tts-math" data-tts="1 over 4 f to the 2 0 equals pi over 2">$1/(4 f^2(0)) = \pi/2$</span>. The mean's variance is <span class="tts-math" data-tts="1">$1$</span>, the median's is <span class="tts-math" data-tts="pi over 2 approximately 1.57">$\pi/2 \approx 1.57$</span>. Mean wins, ARE <span class="tts-math" data-tts="pi over 2 approximately 1.57">$= \pi/2 \approx 1.57$</span> — roughly <span class="tts-math" data-tts="57 %">$57\%$</span> more observations are needed if you use the median instead of the mean. (Unsurprising: the mean is UMVU under normality.)
 </p>
 <p data-cid="ch08-1110">
-<strong>Laplace data:</strong> $f(x) = \tfrac{1}{2} e^{-|x|}$, so $\sigma^2 = 2$ and $1/(4 f^2(0)) = 1$. Now the median's variance is half the mean's, and the median is the MLE. ARE of mean to median is $1/2$. The median wins.
+<strong>Laplace data:</strong> <span class="tts-math" data-tts="f x equals 1 over 2 e to the x">$f(x) = \tfrac{1}{2} e^{-|x|}$</span>, so <span class="tts-math" data-tts="sigma to the 2 equals 2">$\sigma^2 = 2$</span> and <span class="tts-math" data-tts="1 over 4 f to the 2 0 equals 1">$1/(4 f^2(0)) = 1$</span>. Now the median's variance is half the mean's, and the median is the MLE. ARE of mean to median is <span class="tts-math" data-tts="1 over 2">$1/2$</span>. The median wins.
 </p>
 <div class="box intuition" data-cid="ch08-1120">
 <span class="box-label">The lesson</span>
@@ -407,44 +406,44 @@
 <div class="box definition" data-cid="ch08-1170">
 <span class="box-label">Definition 8.20 — orders of magnitude (deterministic)</span>
 <p data-cid="ch08-1180">
-  For sequences $a_n, b_n$:
+  For sequences <span class="tts-math" data-tts="a sub n b sub n">$a_n, b_n$</span>:
 </p>
 <ul data-cid="ch08-1190">
-<li>$a_n = o(b_n)$ means $a_n / b_n \to 0$ — "$a_n$ is of strictly smaller order than $b_n$".</li>
-<li>$a_n = O(b_n)$ means $|a_n / b_n|$ is bounded — "$a_n$ is at most the order of $b_n$".</li>
-<li>$a_n \sim b_n$ means $a_n / b_n \to 1$ — "$a_n$ is asymptotic to $b_n$".</li>
+<li><span class="tts-math" data-tts="a sub n equals o b sub n">$a_n = o(b_n)$</span> means <span class="tts-math" data-tts="a sub n over b sub n to 0">$a_n / b_n \to 0$</span> — "<span class="tts-math" data-tts="a sub n">$a_n$</span> is of strictly smaller order than <span class="tts-math" data-tts="b sub n">$b_n$</span>".</li>
+<li><span class="tts-math" data-tts="a sub n equals O b sub n">$a_n = O(b_n)$</span> means <span class="tts-math" data-tts="a sub n over b sub n">$|a_n / b_n|$</span> is bounded — "<span class="tts-math" data-tts="a sub n">$a_n$</span> is at most the order of <span class="tts-math" data-tts="b sub n">$b_n$</span>".</li>
+<li><span class="tts-math" data-tts="a sub n distributed as b sub n">$a_n \sim b_n$</span> means <span class="tts-math" data-tts="a sub n over b sub n to 1">$a_n / b_n \to 1$</span> — "<span class="tts-math" data-tts="a sub n">$a_n$</span> is asymptotic to <span class="tts-math" data-tts="b sub n">$b_n$</span>".</li>
 </ul>
 </div>
 <p data-cid="ch08-1200">
-  As shorthand: $a_n = o(1)$ just means $a_n \to 0$, and $a_n = O(1)$ just means $a_n$ is bounded.
+  As shorthand: <span class="tts-math" data-tts="a sub n equals o 1">$a_n = o(1)$</span> just means <span class="tts-math" data-tts="a sub n to 0">$a_n \to 0$</span>, and <span class="tts-math" data-tts="a sub n equals O 1">$a_n = O(1)$</span> just means <span class="tts-math" data-tts="a sub n">$a_n$</span> is bounded.
 </p>
 <p data-cid="ch08-1210">
   These symbols sit happily inside equations. For instance, the Taylor expansion
-  $$f(x + \epsilon) = f(x) + \epsilon f'(x) + \tfrac{1}{2} \epsilon^2 f''(x) + o(\epsilon^2) \quad \text{as } \epsilon \to 0$$
-  says the remainder shrinks faster than $\epsilon^2$. If a third derivative exists, the remainder is actually $O(\epsilon^3)$ — a stronger claim.
+  <span class="tts-math" data-tts="f x plus epsilon equals f x plus epsilon f prime x plus 1 over 2 epsilon to the 2 f prime prime x plus o epsilon to the 2 as epsilon to 0">$$f(x + \epsilon) = f(x) + \epsilon f'(x) + \tfrac{1}{2} \epsilon^2 f''(x) + o(\epsilon^2) \quad \text{as } \epsilon \to 0$$</span>
+  says the remainder shrinks faster than <span class="tts-math" data-tts="epsilon to the 2">$\epsilon^2$</span>. If a third derivative exists, the remainder is actually <span class="tts-math" data-tts="O epsilon to the 3">$O(\epsilon^3)$</span> — a stronger claim.
 </p>
-<h3 data-cid="ch08-1220">Stochastic versions: $o_p$ and $O_p$</h3>
+<h3 data-cid="ch08-1220">Stochastic versions: <span class="tts-math" data-tts="o sub p">$o_p$</span> and <span class="tts-math" data-tts="O sub p">$O_p$</span></h3>
 <div class="box definition" data-cid="ch08-1230">
 <span class="box-label">Definition 8.21 — orders of magnitude (stochastic)</span>
 <p data-cid="ch08-1240">
-  For random variables $X_n$ and constants $b_n$:
+  For random variables <span class="tts-math" data-tts="X sub n">$X_n$</span> and constants <span class="tts-math" data-tts="b sub n">$b_n$</span>:
 </p>
 <ul data-cid="ch08-1250">
-<li>$X_n = o_p(b_n)$ means $X_n / b_n \xrightarrow{p} 0$.</li>
-<li>$X_n = O_p(1)$ means $\sup_n P(|X_n| &gt; K) \to 0$ as $K \to \infty$ — the distributions of $X_n$ are <strong>tight</strong>.</li>
-<li>$X_n = O_p(b_n)$ means $X_n / b_n = O_p(1)$.</li>
+<li><span class="tts-math" data-tts="X sub n equals o sub p b sub n">$X_n = o_p(b_n)$</span> means <span class="tts-math" data-tts="X sub n over b sub n converges in probability to 0">$X_n / b_n \xrightarrow{p} 0$</span>.</li>
+<li><span class="tts-math" data-tts="X sub n equals O sub p 1">$X_n = O_p(1)$</span> means <span class="tts-math" data-tts="sub n P X sub n gt K to 0">$\sup_n P(|X_n| &gt; K) \to 0$</span> as <span class="tts-math" data-tts="K to infinity">$K \to \infty$</span> — the distributions of <span class="tts-math" data-tts="X sub n">$X_n$</span> are <strong>tight</strong>.</li>
+<li><span class="tts-math" data-tts="X sub n equals O sub p b sub n">$X_n = O_p(b_n)$</span> means <span class="tts-math" data-tts="X sub n over b sub n equals O sub p 1">$X_n / b_n = O_p(1)$</span>.</li>
 </ul>
 </div>
 <p data-cid="ch08-1260">
-<strong>Tightness</strong> ($O_p(1)$) is a probabilistic version of "bounded": for any $\epsilon$, all the mass of all the $X_n$ can be packed inside a single compact interval $[-K, K]$ except for at most $\epsilon$. Convergence in distribution implies tightness, so $X_n \Rightarrow X$ gives $X_n = O_p(1)$ for free.
+<strong>Tightness</strong> (<span class="tts-math" data-tts="O sub p 1">$O_p(1)$</span>) is a probabilistic version of "bounded": for any <span class="tts-math" data-tts="epsilon">$\epsilon$</span>, all the mass of all the <span class="tts-math" data-tts="X sub n">$X_n$</span> can be packed inside a single compact interval <span class="tts-math" data-tts="K K">$[-K, K]$</span> except for at most <span class="tts-math" data-tts="epsilon">$\epsilon$</span>. Convergence in distribution implies tightness, so <span class="tts-math" data-tts="X sub n implies X">$X_n \Rightarrow X$</span> gives <span class="tts-math" data-tts="X sub n equals O sub p 1">$X_n = O_p(1)$</span> for free.
 </p>
 <p data-cid="ch08-1270">
   The CLT then reads, very compactly:
-  $$\bar{X}_n = \mu + O_p(1/\sqrt{n}).$$
-  This single equation packages the WLLN (the $O_p(1/\sqrt n)$ term vanishes, so $\bar{X}_n \to \mu$ in probability) <em>and</em> the CLT scaling (errors are $\sqrt n$-small, in a tightness sense) into one line.
+  <span class="tts-math" data-tts="X bar sub n equals mu plus O sub p 1 over root n .">$$\bar{X}_n = \mu + O_p(1/\sqrt{n}).$$</span>
+  This single equation packages the WLLN (the <span class="tts-math" data-tts="O sub p 1 over root n">$O_p(1/\sqrt n)$</span> term vanishes, so <span class="tts-math" data-tts="X bar sub n to mu">$\bar{X}_n \to \mu$</span> in probability) <em>and</em> the CLT scaling (errors are <span class="tts-math" data-tts="root n">$\sqrt n$</span>-small, in a tightness sense) into one line.
 </p>
 <p data-cid="ch08-1280">
-  These symbols obey a useful calculus: products multiply orders, $X_n = O_p(a_n)$ and $Y_n = O_p(b_n)$ give $X_n Y_n = O_p(a_n b_n)$. And if $f(\epsilon) = o(\epsilon^\alpha)$ and $X_n = O_p(a_n)$ with $a_n \to 0$, then $f(X_n) = o_p(a_n^\alpha)$. This is the cleanest route to a rigorous delta method proof.
+  These symbols obey a useful calculus: products multiply orders, <span class="tts-math" data-tts="X sub n equals O sub p a sub n">$X_n = O_p(a_n)$</span> and <span class="tts-math" data-tts="Y sub n equals O sub p b sub n">$Y_n = O_p(b_n)$</span> give <span class="tts-math" data-tts="X sub n Y sub n equals O sub p a sub n b sub n">$X_n Y_n = O_p(a_n b_n)$</span>. And if <span class="tts-math" data-tts="f epsilon equals o epsilon ^ alpha">$f(\epsilon) = o(\epsilon^\alpha)$</span> and <span class="tts-math" data-tts="X sub n equals O sub p a sub n">$X_n = O_p(a_n)$</span> with <span class="tts-math" data-tts="a sub n to 0">$a_n \to 0$</span>, then <span class="tts-math" data-tts="f X sub n equals o sub p a sub n^ alpha">$f(X_n) = o_p(a_n^\alpha)$</span>. This is the cleanest route to a rigorous delta method proof.
 </p>
 <!-- ===================================================================== -->
 <h2 data-cid="ch08-1290" id="s8-7">8.7 Almost Sure Convergence</h2>
@@ -455,27 +454,27 @@
 <div class="box definition" data-cid="ch08-1320">
 <span class="box-label">Definition 8.25 — almost sure convergence</span>
 <p data-cid="ch08-1330">
-  Random variables $Y_1, Y_2, \dots$ defined on a common probability space <strong>converge almost surely</strong> to $Y$ if
-  $$P\big(\, Y_n \to Y \,\big) = 1.$$
+  Random variables <span class="tts-math" data-tts="Y sub 1 Y sub 2 and so on">$Y_1, Y_2, \dots$</span> defined on a common probability space <strong>converge almost surely</strong> to <span class="tts-math" data-tts="Y">$Y$</span> if
+  <span class="tts-math" data-tts="P Y sub n to Y equals 1.">$$P\big(\, Y_n \to Y \,\big) = 1.$$</span>
 </p>
 </div>
 <p data-cid="ch08-1340">
-  Read that carefully. Inside the probability is the event "$Y_n \to Y$" — the set of outcomes $\omega$ such that the actual numerical sequence $Y_1(\omega), Y_2(\omega), \dots$ converges to $Y(\omega)$ in the ordinary sense. We are asking that this event have probability one.
+  Read that carefully. Inside the probability is the event "<span class="tts-math" data-tts="Y sub n to Y">$Y_n \to Y$</span>" — the set of outcomes <span class="tts-math" data-tts="omega">$\omega$</span> such that the actual numerical sequence <span class="tts-math" data-tts="Y sub 1 omega Y sub 2 omega and so on">$Y_1(\omega), Y_2(\omega), \dots$</span> converges to <span class="tts-math" data-tts="Y omega">$Y(\omega)$</span> in the ordinary sense. We are asking that this event have probability one.
 </p>
 <h3 data-cid="ch08-1350">How does this differ from convergence in probability?</h3>
 <p data-cid="ch08-1360">
-  Convergence in probability says: at each $n$, the probability that $Y_n$ misses $Y$ by $\epsilon$ is small. Almost sure convergence is stronger: with probability one, you can pick $N$ large enough that $|Y_n - Y| &lt; \epsilon$ <em>for every</em> $n \geq N$. The "for every" is the key — it is a statement about tails of the whole sequence, not about one $n$ at a time.
+  Convergence in probability says: at each <span class="tts-math" data-tts="n">$n$</span>, the probability that <span class="tts-math" data-tts="Y sub n">$Y_n$</span> misses <span class="tts-math" data-tts="Y">$Y$</span> by <span class="tts-math" data-tts="epsilon">$\epsilon$</span> is small. Almost sure convergence is stronger: with probability one, you can pick <span class="tts-math" data-tts="N">$N$</span> large enough that <span class="tts-math" data-tts="Y sub n minus Y lt epsilon">$|Y_n - Y| &lt; \epsilon$</span> <em>for every</em> <span class="tts-math" data-tts="n greater than or equal to N">$n \geq N$</span>. The "for every" is the key — it is a statement about tails of the whole sequence, not about one <span class="tts-math" data-tts="n">$n$</span> at a time.
 </p>
 <p data-cid="ch08-1370">
-  Formally, set $M_n = \sup_{k \geq n} |Y_k - Y|$. Then $Y_n \to Y$ pointwise iff $M_n \to 0$. So $Y_n \to Y$ almost surely iff $M_n \xrightarrow{p} 0$. The technical content of almost-sure convergence is convergence in probability of the supremum from $n$ onward.
+  Formally, set <span class="tts-math" data-tts="M sub n equals sub k greater than or equal to n Y sub k minus Y">$M_n = \sup_{k \geq n} |Y_k - Y|$</span>. Then <span class="tts-math" data-tts="Y sub n to Y">$Y_n \to Y$</span> pointwise iff <span class="tts-math" data-tts="M sub n to 0">$M_n \to 0$</span>. So <span class="tts-math" data-tts="Y sub n to Y">$Y_n \to Y$</span> almost surely iff <span class="tts-math" data-tts="M sub n converges in probability to 0">$M_n \xrightarrow{p} 0$</span>. The technical content of almost-sure convergence is convergence in probability of the supremum from <span class="tts-math" data-tts="n">$n$</span> onward.
 </p>
 <div class="box intuition" data-cid="ch08-1380">
 <span class="box-label">A worked contrast</span>
 <p data-cid="ch08-1390">
-  Let $Y_n \sim \text{Bernoulli}(1/n)$. Then $P(Y_n = 1) = 1/n \to 0$, so $Y_n \xrightarrow{p} 0$ trivially. But almost sure convergence depends on the <em>joint</em> distribution. If the $Y_n$ are independent, the Borel–Cantelli lemma applies: $\sum P(Y_n = 1) = \sum 1/n = \infty$, so infinitely many $Y_n = 1$ happen with probability one. Almost sure convergence <em>fails</em>.
+  Let <span class="tts-math" data-tts="Y sub n distributed as Bernoulli 1 over n">$Y_n \sim \text{Bernoulli}(1/n)$</span>. Then <span class="tts-math" data-tts="P Y sub n equals 1 equals 1 over n to 0">$P(Y_n = 1) = 1/n \to 0$</span>, so <span class="tts-math" data-tts="Y sub n converges in probability to 0">$Y_n \xrightarrow{p} 0$</span> trivially. But almost sure convergence depends on the <em>joint</em> distribution. If the <span class="tts-math" data-tts="Y sub n">$Y_n$</span> are independent, the Borel–Cantelli lemma applies: <span class="tts-math" data-tts="the sum of P Y sub n equals 1 equals the sum of 1 over n equals infinity">$\sum P(Y_n = 1) = \sum 1/n = \infty$</span>, so infinitely many <span class="tts-math" data-tts="Y sub n equals 1">$Y_n = 1$</span> happen with probability one. Almost sure convergence <em>fails</em>.
 </p>
 <p data-cid="ch08-1400">
-  But if instead $Y_n = \mathbf{1}\{U \leq 1/n\}$ for a single uniform $U$, then once $1/n &lt; U$ we have $Y_n = 0$ forever, and almost sure convergence holds.
+  But if instead <span class="tts-math" data-tts="Y sub n equals 1 U less than or equal to 1 over n">$Y_n = \mathbf{1}\{U \leq 1/n\}$</span> for a single uniform <span class="tts-math" data-tts="U">$U$</span>, then once <span class="tts-math" data-tts="1 over n lt U">$1/n &lt; U$</span> we have <span class="tts-math" data-tts="Y sub n equals 0">$Y_n = 0$</span> forever, and almost sure convergence holds.
 </p>
 <p data-cid="ch08-1410">
   Same marginals; different joints; different almost-sure behavior.
@@ -485,25 +484,25 @@
 <div class="box definition" data-cid="ch08-1430">
 <span class="box-label">Theorem 8.27 — Strong Law of Large Numbers</span>
 <p data-cid="ch08-1440">
-  If $X_1, X_2, \dots$ are i.i.d. with finite mean $\mu = E X_i$, then
-  $$\bar{X}_n \to \mu \quad \text{almost surely as } n \to \infty.$$
+  If <span class="tts-math" data-tts="X sub 1 X sub 2 and so on">$X_1, X_2, \dots$</span> are i.i.d. with finite mean <span class="tts-math" data-tts="mu equals E X sub i">$\mu = E X_i$</span>, then
+  <span class="tts-math" data-tts="X bar sub n to mu almost surely as n to infinity .">$$\bar{X}_n \to \mu \quad \text{almost surely as } n \to \infty.$$</span>
 </p>
 </div>
 <p data-cid="ch08-1450">
-  The WLLN gave us $\bar{X}_n \xrightarrow{p} \mu$ in two lines using Chebyshev. The SLLN is stronger — and a great deal harder to prove. Conceptually, the WLLN says "for any fixed large $n$, $\bar{X}_n$ is probably near $\mu$"; the SLLN says "if you sit there and watch the sequence, you will see it converge in the ordinary sense, with probability one".
+  The WLLN gave us <span class="tts-math" data-tts="X bar sub n converges in probability to mu">$\bar{X}_n \xrightarrow{p} \mu$</span> in two lines using Chebyshev. The SLLN is stronger — and a great deal harder to prove. Conceptually, the WLLN says "for any fixed large <span class="tts-math" data-tts="n">$n$</span>, <span class="tts-math" data-tts="X bar sub n">$\bar{X}_n$</span> is probably near <span class="tts-math" data-tts="mu">$\mu$</span>"; the SLLN says "if you sit there and watch the sequence, you will see it converge in the ordinary sense, with probability one".
 </p>
 <!-- ===================================================================== -->
 <h2 data-cid="ch08-1460" id="summary">Summary — what you learned in Chapter 8</h2>
 <p data-cid="ch08-1470">The chapter in eight bullets:</p>
 <ol data-cid="ch08-1480">
-<li><strong>Convergence in probability:</strong> $Y_n \xrightarrow{p} Y$ iff for every $\epsilon$, $P(|Y_n - Y| \geq \epsilon) \to 0$. Mean-square convergence implies it (Chebyshev).</li>
-<li><strong>Weak law of large numbers:</strong> $\bar{X}_n \xrightarrow{p} \mu$ when the $X_i$ are i.i.d. with finite mean. Consistency of estimators is just convergence in probability to the truth.</li>
-<li><strong>Convergence in distribution:</strong> $Y_n \Rightarrow Y$ iff the CDFs converge at continuity points; equivalently, $E f(Y_n) \to E f(Y)$ for bounded continuous $f$.</li>
-<li><strong>Central limit theorem:</strong> $\sqrt{n}(\bar{X}_n - \mu) \Rightarrow N(0, \sigma^2)$. The scaling rate is $\sqrt{n}$, the limit is universal.</li>
-<li><strong>Slutsky and the delta method:</strong> the calculus for combining $\Rightarrow$ with $\xrightarrow{p}$. A smooth function $f$ of an average has $\sqrt{n}(f(\bar{X}_n) - f(\mu)) \Rightarrow N(0, [f'(\mu)]^2 \sigma^2)$.</li>
-<li><strong>MLE and quantiles:</strong> MLEs in exponential families are smooth functions of an average and inherit asymptotic normality with variance equal to the inverse Fisher information. Sample quantiles are asymptotically normal with variance $\gamma(1-\gamma)/[F'(\theta)]^2$.</li>
+<li><strong>Convergence in probability:</strong> <span class="tts-math" data-tts="Y sub n converges in probability to Y">$Y_n \xrightarrow{p} Y$</span> iff for every <span class="tts-math" data-tts="epsilon">$\epsilon$</span>, <span class="tts-math" data-tts="P Y sub n minus Y greater than or equal to epsilon to 0">$P(|Y_n - Y| \geq \epsilon) \to 0$</span>. Mean-square convergence implies it (Chebyshev).</li>
+<li><strong>Weak law of large numbers:</strong> <span class="tts-math" data-tts="X bar sub n converges in probability to mu">$\bar{X}_n \xrightarrow{p} \mu$</span> when the <span class="tts-math" data-tts="X sub i">$X_i$</span> are i.i.d. with finite mean. Consistency of estimators is just convergence in probability to the truth.</li>
+<li><strong>Convergence in distribution:</strong> <span class="tts-math" data-tts="Y sub n implies Y">$Y_n \Rightarrow Y$</span> iff the CDFs converge at continuity points; equivalently, <span class="tts-math" data-tts="E f Y sub n to E f Y">$E f(Y_n) \to E f(Y)$</span> for bounded continuous <span class="tts-math" data-tts="f">$f$</span>.</li>
+<li><strong>Central limit theorem:</strong> <span class="tts-math" data-tts="root n X bar sub n minus mu implies N 0 sigma to the 2">$\sqrt{n}(\bar{X}_n - \mu) \Rightarrow N(0, \sigma^2)$</span>. The scaling rate is <span class="tts-math" data-tts="root n">$\sqrt{n}$</span>, the limit is universal.</li>
+<li><strong>Slutsky and the delta method:</strong> the calculus for combining <span class="tts-math" data-tts="implies">$\Rightarrow$</span> with <span class="tts-math" data-tts="converges in probability to">$\xrightarrow{p}$</span>. A smooth function <span class="tts-math" data-tts="f">$f$</span> of an average has <span class="tts-math" data-tts="root n f X bar sub n minus f mu implies N 0 f prime mu to the 2 sigma to the 2">$\sqrt{n}(f(\bar{X}_n) - f(\mu)) \Rightarrow N(0, [f'(\mu)]^2 \sigma^2)$</span>.</li>
+<li><strong>MLE and quantiles:</strong> MLEs in exponential families are smooth functions of an average and inherit asymptotic normality with variance equal to the inverse Fisher information. Sample quantiles are asymptotically normal with variance <span class="tts-math" data-tts="gamma 1 minus gamma over F prime theta to the 2">$\gamma(1-\gamma)/[F'(\theta)]^2$</span>.</li>
 <li><strong>Asymptotic relative efficiency:</strong> the ratio of asymptotic variances of two competing estimators. Means beat medians under normality; medians beat means under Laplace.</li>
-<li><strong>Scales of magnitude:</strong> $o(\cdot)$, $O(\cdot)$, $o_p(\cdot)$, $O_p(\cdot)$ — the shorthand that compresses asymptotic statements. <strong>Almost sure convergence</strong> is the strongest mode: convergence pointwise on a probability-one set of outcomes.</li>
+<li><strong>Scales of magnitude:</strong> <span class="tts-math" data-tts="o times">$o(\cdot)$</span>, <span class="tts-math" data-tts="O times">$O(\cdot)$</span>, <span class="tts-math" data-tts="o sub p times">$o_p(\cdot)$</span>, <span class="tts-math" data-tts="O sub p times">$O_p(\cdot)$</span> — the shorthand that compresses asymptotic statements. <strong>Almost sure convergence</strong> is the strongest mode: convergence pointwise on a probability-one set of outcomes.</li>
 </ol>
 <div class="box pause" data-cid="ch08-1490">
 <span class="box-label">Did this land?</span>
@@ -516,7 +515,7 @@
 <li>Why is the CLT a finer statement than the WLLN?</li>
 <li>State the delta method. What is the variance of the limit?</li>
 <li>The sample median is asymptotically normal — with what variance?</li>
-<li>What does $\bar{X}_n = \mu + O_p(1/\sqrt{n})$ encode?</li>
+<li>What does <span class="tts-math" data-tts="X bar sub n equals mu plus O sub p 1 over root n">$\bar{X}_n = \mu + O_p(1/\sqrt{n})$</span> encode?</li>
 <li>Why does almost sure convergence depend on the joint distribution while convergence in probability does not?</li>
 </ul>
 <p data-cid="ch08-1520">If any of these feel shaky, re-read the matching section. There's no hurry.</p>
@@ -527,6 +526,6 @@
 </nav>
 </article>
 </main>
-<script src="/js/main.js"></script><script src="/js/comments.js"></script>
+<script src="/js/main.js"></script><script src="/js/comments.js"></script><script src="/js/tts.js"></script>
 </body>
 </html>

@@ -10,14 +10,13 @@
 <link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
-<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/><link href="/css/tts.css" rel="stylesheet"/>
 </head>
 <body data-book="basic_stat" data-page="ch14">
 <header class="site-header">
+<a class="home-btn" href="/">Home</a>
 <a class="brand" href="/books/basic_stat/">Theoretical Statistics <small>a slow reading guide</small></a>
 <nav>
-<a href="/" class="all-books-link">All books</a>
-    <a href="/books/basic_stat/">Contents</a>
 <button aria-label="toggle theme" class="theme-toggle">Dark</button>
 </nav>
 </header>
@@ -29,10 +28,10 @@
 <li><a href="#s14-1">14.1 Canonical form</a></li>
 <li><a href="#s14-2">14.2 Estimation</a></li>
 <li><a href="#s14-3">14.3 Gauss–Markov theorem</a></li>
-<li><a href="#s14-4">14.4 Estimating $\sigma^2$</a></li>
+<li><a href="#s14-4">14.4 Estimating <span class="tts-math" data-tts="sigma to the 2">$\sigma^2$</span></a></li>
 <li><a href="#s14-5">14.5 Simple linear regression</a></li>
-<li><a href="#s14-6">14.6 Noncentral $F$ and $\chi^2$</a></li>
-<li><a href="#s14-7">14.7 Testing: the $F$-test</a></li>
+<li><a href="#s14-6">14.6 Noncentral <span class="tts-math" data-tts="F">$F$</span> and <span class="tts-math" data-tts="chi to the 2">$\chi^2$</span></a></li>
+<li><a href="#s14-7">14.7 Testing: the <span class="tts-math" data-tts="F">$F$</span>-test</a></li>
 <li><a href="#s14-8">14.8 Simultaneous intervals</a></li>
 <li><a href="#summary">Summary</a></li>
 </ol>
@@ -56,19 +55,19 @@
 </p>
 <p data-cid="ch14-040">
   The unifying object is the equation
-  $$Y = X\beta + \epsilon. \tag{14.1}$$
-  Here $Y \in \mathbb{R}^n$ is the data vector, $X$ is an $n \times p$ matrix of known constants (the
-  <strong>design matrix</strong>), $\beta \in \mathbb{R}^p$ is an unknown parameter vector, and
-  $\epsilon \in \mathbb{R}^n$ is unobserved random noise. The standard distributional assumption is that the
+  <span class="tts-math" data-tts="Y equals X beta plus epsilon . 14.1">$$Y = X\beta + \epsilon. \tag{14.1}$$</span>
+  Here <span class="tts-math" data-tts="Y in the real numbers to the n">$Y \in \mathbb{R}^n$</span> is the data vector, <span class="tts-math" data-tts="X">$X$</span> is an <span class="tts-math" data-tts="n times p">$n \times p$</span> matrix of known constants (the
+  <strong>design matrix</strong>), <span class="tts-math" data-tts="beta in the real numbers to the p">$\beta \in \mathbb{R}^p$</span> is an unknown parameter vector, and
+  <span class="tts-math" data-tts="epsilon in the real numbers to the n">$\epsilon \in \mathbb{R}^n$</span> is unobserved random noise. The standard distributional assumption is that the
   errors are i.i.d. normal:
-  $$\epsilon \sim N(0, \sigma^2 I), \qquad \text{so that} \qquad Y \sim N(X\beta, \sigma^2 I). \tag{14.3}$$
+  <span class="tts-math" data-tts="epsilon distributed as N 0 sigma to the 2 I so that Y distributed as N X beta sigma to the 2 I . 14.3">$$\epsilon \sim N(0, \sigma^2 I), \qquad \text{so that} \qquad Y \sim N(X\beta, \sigma^2 I). \tag{14.3}$$</span>
 </p>
 <div class="box intuition" data-cid="ch14-050">
 <span class="box-label">What the equation is saying</span>
 <p data-cid="ch14-060">
-  $Y$ is a noisy observation of a signal that lives in a $p$-dimensional family of possibilities. The signal
-  $X\beta$ is some linear combination of the columns of $X$; the noise $\epsilon$ kicks $Y$ away from that signal
-  by a random amount in every direction. Statistics, in this chapter, is the art of looking at $Y$ and reading
+  <span class="tts-math" data-tts="Y">$Y$</span> is a noisy observation of a signal that lives in a <span class="tts-math" data-tts="p">$p$</span>-dimensional family of possibilities. The signal
+  <span class="tts-math" data-tts="X beta">$X\beta$</span> is some linear combination of the columns of <span class="tts-math" data-tts="X">$X$</span>; the noise <span class="tts-math" data-tts="epsilon">$\epsilon$</span> kicks <span class="tts-math" data-tts="Y">$Y$</span> away from that signal
+  by a random amount in every direction. Statistics, in this chapter, is the art of looking at <span class="tts-math" data-tts="Y">$Y$</span> and reading
   off the signal.
 </p>
 </div>
@@ -78,18 +77,18 @@
 <div class="box example" data-cid="ch14-080">
 <span class="box-label">Example 14.1 — quadratic regression</span>
 <p data-cid="ch14-090">
-  We model a response $Y_i$ as a quadratic function of an explanatory variable $x_i$:
-  $$Y_i = \beta_1 + \beta_2 x_i + \beta_3 x_i^2 + \epsilon_i, \quad i = 1, \dots, n.$$
-  The design matrix has rows $(1, x_i, x_i^2)$. "Linear model" refers to linearity in $\beta$, <em>not</em> in $x$;
-  the $x_i^2$ term is fine because the parameters still enter linearly.
+  We model a response <span class="tts-math" data-tts="Y sub i">$Y_i$</span> as a quadratic function of an explanatory variable <span class="tts-math" data-tts="x sub i">$x_i$</span>:
+  <span class="tts-math" data-tts="Y sub i equals beta sub 1 plus beta sub 2 x sub i plus beta sub 3 x sub i to the 2 plus epsilon sub i i equals 1 and so on n.">$$Y_i = \beta_1 + \beta_2 x_i + \beta_3 x_i^2 + \epsilon_i, \quad i = 1, \dots, n.$$</span>
+  The design matrix has rows <span class="tts-math" data-tts="1 x sub i x sub i to the 2">$(1, x_i, x_i^2)$</span>. "Linear model" refers to linearity in <span class="tts-math" data-tts="beta">$\beta$</span>, <em>not</em> in <span class="tts-math" data-tts="x">$x$</span>;
+  the <span class="tts-math" data-tts="x sub i to the 2">$x_i^2$</span> term is fine because the parameters still enter linearly.
 </p>
 </div>
 <div class="box example" data-cid="ch14-100">
 <span class="box-label">Example 14.2 — one-way ANOVA</span>
 <p data-cid="ch14-110">
-  We have three independent samples from $N(\beta_1, \sigma^2)$, $N(\beta_2, \sigma^2)$, $N(\beta_3, \sigma^2)$.
-  Stacking the observations into $Y$ and using a design matrix whose columns are indicator vectors for the three
-  groups, we recover $Y = X\beta + \epsilon$. The "treatment effects" $\beta_1, \beta_2, \beta_3$ are just the
+  We have three independent samples from <span class="tts-math" data-tts="N beta sub 1 sigma to the 2">$N(\beta_1, \sigma^2)$</span>, <span class="tts-math" data-tts="N beta sub 2 sigma to the 2">$N(\beta_2, \sigma^2)$</span>, <span class="tts-math" data-tts="N beta sub 3 sigma to the 2">$N(\beta_3, \sigma^2)$</span>.
+  Stacking the observations into <span class="tts-math" data-tts="Y">$Y$</span> and using a design matrix whose columns are indicator vectors for the three
+  groups, we recover <span class="tts-math" data-tts="Y equals X beta plus epsilon">$Y = X\beta + \epsilon$</span>. The "treatment effects" <span class="tts-math" data-tts="beta sub 1 beta sub 2 beta sub 3">$\beta_1, \beta_2, \beta_3$</span> are just the
   group means.
 </p>
 </div>
@@ -97,145 +96,145 @@
 <span class="box-label">Pause</span>
 <p data-cid="ch14-130">
   Regression and ANOVA look completely different in an introductory book — one is about lines, the other about
-  comparing groups. The design matrix is the bridge. Once you pick $X$, the rest of the machinery (estimation,
+  comparing groups. The design matrix is the bridge. Once you pick <span class="tts-math" data-tts="X">$X$</span>, the rest of the machinery (estimation,
   testing, intervals) doesn't care which problem you started with.
 </p>
 </div>
-<h3 data-cid="ch14-140">The mean vector $\xi$ — a cleaner parameter</h3>
+<h3 data-cid="ch14-140">The mean vector <span class="tts-math" data-tts="xi">$\xi$</span> — a cleaner parameter</h3>
 <p data-cid="ch14-150">
-  The parameter $\beta$ is convenient to interpret but technically awkward. Why? Because when the columns of
-  $X$ are linearly dependent, two different $\beta$'s can give the same mean for $Y$. Specifically, if
-  $Xv = 0$ for some nonzero $v$, then $\beta$ and $\beta + v$ produce identical distributions for $Y$. The data
+  The parameter <span class="tts-math" data-tts="beta">$\beta$</span> is convenient to interpret but technically awkward. Why? Because when the columns of
+  <span class="tts-math" data-tts="X">$X$</span> are linearly dependent, two different <span class="tts-math" data-tts="beta">$\beta$</span>'s can give the same mean for <span class="tts-math" data-tts="Y">$Y$</span>. Specifically, if
+  <span class="tts-math" data-tts="Xv equals 0">$Xv = 0$</span> for some nonzero <span class="tts-math" data-tts="v">$v$</span>, then <span class="tts-math" data-tts="beta">$\beta$</span> and <span class="tts-math" data-tts="beta plus v">$\beta + v$</span> produce identical distributions for <span class="tts-math" data-tts="Y">$Y$</span>. The data
   cannot tell them apart.
 </p>
 <p data-cid="ch14-160">
   The book's fix is to reparametrize. Let
-  $$\xi \stackrel{\text{def}}{=} EY = X\beta.$$
-  If $c_1, \dots, c_p$ are the columns of $X$, then $\xi = \beta_1 c_1 + \cdots + \beta_p c_p$, so $\xi$ lies in
-  the column space of $X$. We give that subspace a name:
-  $$\omega \stackrel{\text{def}}{=} \operatorname{span}\{c_1, \dots, c_p\} = \{X\beta : \beta \in \mathbb{R}^p\}.$$
-  $\omega$ is a vector subspace of $\mathbb{R}^n$ of dimension $r$ where $r = \operatorname{rank}(X) \leq p$.
+  <span class="tts-math" data-tts="xi def equals EY equals X beta .">$$\xi \stackrel{\text{def}}{=} EY = X\beta.$$</span>
+  If <span class="tts-math" data-tts="c sub 1 and so on c sub p">$c_1, \dots, c_p$</span> are the columns of <span class="tts-math" data-tts="X">$X$</span>, then <span class="tts-math" data-tts="xi equals beta sub 1 c sub 1 plus times s plus beta sub p c sub p">$\xi = \beta_1 c_1 + \cdots + \beta_p c_p$</span>, so <span class="tts-math" data-tts="xi">$\xi$</span> lies in
+  the column space of <span class="tts-math" data-tts="X">$X$</span>. We give that subspace a name:
+  <span class="tts-math" data-tts="omega def equals span c sub 1 and so on c sub p equals X beta beta in the real numbers to the p .">$$\omega \stackrel{\text{def}}{=} \operatorname{span}\{c_1, \dots, c_p\} = \{X\beta : \beta \in \mathbb{R}^p\}.$$</span>
+  <span class="tts-math" data-tts="omega">$\omega$</span> is a vector subspace of <span class="tts-math" data-tts="the real numbers to the n">$\mathbb{R}^n$</span> of dimension <span class="tts-math" data-tts="r">$r$</span> where <span class="tts-math" data-tts="r equals rank X less than or equal to p">$r = \operatorname{rank}(X) \leq p$</span>.
 </p>
 <div class="box intuition" data-cid="ch14-170">
 <span class="box-label">Two parameters, one truth</span>
 <p data-cid="ch14-180">
-  $\beta$ lives in $\mathbb{R}^p$ and is what the applied scientist usually wants. $\xi$ lives in $\omega
-  \subseteq \mathbb{R}^n$ and is what the geometry wants. The map $\beta \mapsto X\beta = \xi$ is one-to-one
-  precisely when $X$ has full rank $r = p$. When it doesn't, $\xi$ is still identifiable but $\beta$ is not — a
+  <span class="tts-math" data-tts="beta">$\beta$</span> lives in <span class="tts-math" data-tts="the real numbers to the p">$\mathbb{R}^p$</span> and is what the applied scientist usually wants. <span class="tts-math" data-tts="xi">$\xi$</span> lives in <span class="tts-math" data-tts="omega subset of or equal to the real numbers to the n">$\omega
+  \subseteq \mathbb{R}^n$</span> and is what the geometry wants. The map <span class="tts-math" data-tts="beta X beta equals xi">$\beta \mapsto X\beta = \xi$</span> is one-to-one
+  precisely when <span class="tts-math" data-tts="X">$X$</span> has full rank <span class="tts-math" data-tts="r equals p">$r = p$</span>. When it doesn't, <span class="tts-math" data-tts="xi">$\xi$</span> is still identifiable but <span class="tts-math" data-tts="beta">$\beta$</span> is not — a
   warning sign for multicollinearity, which we return to.
 </p>
 </div>
 <h2 data-cid="ch14-190" id="s14-1">14.1 Canonical form</h2>
 <p data-cid="ch14-200">
-  Almost every result in this chapter becomes easy if we first rotate $Y$ into a coordinate system tailored to the
-  subspace $\omega$. The trick is to pick an orthonormal basis $v_1, \dots, v_n$ for $\mathbb{R}^n$ such that
-  the <strong>first $r$ vectors $v_1, \dots, v_r$ span $\omega$</strong> and the remaining $v_{r+1}, \dots, v_n$
-  span the orthogonal complement $\omega^\perp$.
+  Almost every result in this chapter becomes easy if we first rotate <span class="tts-math" data-tts="Y">$Y$</span> into a coordinate system tailored to the
+  subspace <span class="tts-math" data-tts="omega">$\omega$</span>. The trick is to pick an orthonormal basis <span class="tts-math" data-tts="v sub 1 and so on v sub n">$v_1, \dots, v_n$</span> for <span class="tts-math" data-tts="the real numbers to the n">$\mathbb{R}^n$</span> such that
+  the <strong>first <span class="tts-math" data-tts="r">$r$</span> vectors <span class="tts-math" data-tts="v sub 1 and so on v sub r">$v_1, \dots, v_r$</span> span <span class="tts-math" data-tts="omega">$\omega$</span></strong> and the remaining <span class="tts-math" data-tts="v sub r plus 1 and so on v sub n">$v_{r+1}, \dots, v_n$</span>
+  span the orthogonal complement <span class="tts-math" data-tts="omega ^">$\omega^\perp$</span>.
 </p>
 <p data-cid="ch14-210">
-  Define the orthogonal matrix $O$ with columns $v_1, \dots, v_n$ (so $O'O = OO' = I$) and let
-  $$Z = O'Y. \tag{14.4}$$
-  The vector $Z \in \mathbb{R}^n$ contains the coefficients of $Y$ in the new basis.
+  Define the orthogonal matrix <span class="tts-math" data-tts="O">$O$</span> with columns <span class="tts-math" data-tts="v sub 1 and so on v sub n">$v_1, \dots, v_n$</span> (so <span class="tts-math" data-tts="O primeO equals OO prime equals I">$O'O = OO' = I$</span>) and let
+  <span class="tts-math" data-tts="Z equals O primeY. 14.4">$$Z = O'Y. \tag{14.4}$$</span>
+  The vector <span class="tts-math" data-tts="Z in the real numbers to the n">$Z \in \mathbb{R}^n$</span> contains the coefficients of <span class="tts-math" data-tts="Y">$Y$</span> in the new basis.
 </p>
 <div class="box intuition" data-cid="ch14-220">
 <span class="box-label">Geometric picture</span>
 <p data-cid="ch14-230">
-  Imagine $\mathbb{R}^n$ as a room. The subspace $\omega$ is a (flat) plane through the origin — perhaps a
-  two-dimensional surface inside a three-dimensional room, if $n=3$ and $r=2$. We choose coordinate axes so
-  that the first $r$ axes lie <em>in</em> the plane and the remaining $n-r$ axes are perpendicular to it. After
-  rotation, the components $Z_1, \dots, Z_r$ measure where $Y$ sits "within the plane" and $Z_{r+1}, \dots, Z_n$
+  Imagine <span class="tts-math" data-tts="the real numbers to the n">$\mathbb{R}^n$</span> as a room. The subspace <span class="tts-math" data-tts="omega">$\omega$</span> is a (flat) plane through the origin — perhaps a
+  two-dimensional surface inside a three-dimensional room, if <span class="tts-math" data-tts="n equals 3">$n=3$</span> and <span class="tts-math" data-tts="r equals 2">$r=2$</span>. We choose coordinate axes so
+  that the first <span class="tts-math" data-tts="r">$r$</span> axes lie <em>in</em> the plane and the remaining <span class="tts-math" data-tts="n minus r">$n-r$</span> axes are perpendicular to it. After
+  rotation, the components <span class="tts-math" data-tts="Z sub 1 and so on Z sub r">$Z_1, \dots, Z_r$</span> measure where <span class="tts-math" data-tts="Y">$Y$</span> sits "within the plane" and <span class="tts-math" data-tts="Z sub r plus 1 and so on Z sub n">$Z_{r+1}, \dots, Z_n$</span>
   measure how far it sticks out.
 </p>
 </div>
 <p data-cid="ch14-240">
-  Because rotations preserve the normal family, the rotated noise $\epsilon^* = O'\epsilon$ is still
-  $N(0, \sigma^2 I)$. Setting $\eta = O' \xi$, we get
-  $$Z \sim N(\eta, \sigma^2 I). \tag{14.5}$$
-  Now the magic: since $\xi$ lies in $\omega$ and $v_{r+1}, \dots, v_n$ are orthogonal to $\omega$,
-  $$\eta_{r+1} = \cdots = \eta_n = 0. \tag{14.6}$$
+  Because rotations preserve the normal family, the rotated noise <span class="tts-math" data-tts="epsilon to the times equals O prime epsilon">$\epsilon^* = O'\epsilon$</span> is still
+  <span class="tts-math" data-tts="N 0 sigma to the 2 I">$N(0, \sigma^2 I)$</span>. Setting <span class="tts-math" data-tts="eta equals O prime xi">$\eta = O' \xi$</span>, we get
+  <span class="tts-math" data-tts="Z distributed as N eta sigma to the 2 I . 14.5">$$Z \sim N(\eta, \sigma^2 I). \tag{14.5}$$</span>
+  Now the magic: since <span class="tts-math" data-tts="xi">$\xi$</span> lies in <span class="tts-math" data-tts="omega">$\omega$</span> and <span class="tts-math" data-tts="v sub r plus 1 and so on v sub n">$v_{r+1}, \dots, v_n$</span> are orthogonal to <span class="tts-math" data-tts="omega">$\omega$</span>,
+  <span class="tts-math" data-tts="eta sub r plus 1 equals times s equals eta sub n equals 0. 14.6">$$\eta_{r+1} = \cdots = \eta_n = 0. \tag{14.6}$$</span>
 </p>
 <p data-cid="ch14-250">
-  In canonical coordinates, the model is brutally simple. The first $r$ components $Z_1, \dots, Z_r$ are
-  independent normals with unknown means $\eta_1, \dots, \eta_r$ and common variance $\sigma^2$. The last
-  $n - r$ components $Z_{r+1}, \dots, Z_n$ are independent $N(0, \sigma^2)$ — pure noise. All of the signal is
-  packed into the first $r$ coordinates.
+  In canonical coordinates, the model is brutally simple. The first <span class="tts-math" data-tts="r">$r$</span> components <span class="tts-math" data-tts="Z sub 1 and so on Z sub r">$Z_1, \dots, Z_r$</span> are
+  independent normals with unknown means <span class="tts-math" data-tts="eta sub 1 and so on eta sub r">$\eta_1, \dots, \eta_r$</span> and common variance <span class="tts-math" data-tts="sigma to the 2">$\sigma^2$</span>. The last
+  <span class="tts-math" data-tts="n minus r">$n - r$</span> components <span class="tts-math" data-tts="Z sub r plus 1 and so on Z sub n">$Z_{r+1}, \dots, Z_n$</span> are independent <span class="tts-math" data-tts="N 0 sigma to the 2">$N(0, \sigma^2)$</span> — pure noise. All of the signal is
+  packed into the first <span class="tts-math" data-tts="r">$r$</span> coordinates.
 </p>
 <div class="box pause" data-cid="ch14-260">
 <span class="box-label">Pause</span>
 <p data-cid="ch14-270">
-  Read that paragraph again. The whole linear model has collapsed into "$r$ noisy estimates of unknown means,
-  plus $n - r$ leftover noise terms whose mean is known to be zero". Everything else — least squares,
-  Gauss–Markov, $F$-tests — is bookkeeping on top of this picture.
+  Read that paragraph again. The whole linear model has collapsed into "<span class="tts-math" data-tts="r">$r$</span> noisy estimates of unknown means,
+  plus <span class="tts-math" data-tts="n minus r">$n - r$</span> leftover noise terms whose mean is known to be zero". Everything else — least squares,
+  Gauss–Markov, <span class="tts-math" data-tts="F">$F$</span>-tests — is bookkeeping on top of this picture.
 </p>
 </div>
 <p data-cid="ch14-280">
   The joint density factors into a clean exponential family with complete sufficient statistic
-  $$\left( Z_1, \dots, Z_r, \sum_{i=1}^n Z_i^2 \right). \tag{14.7}$$
+  <span class="tts-math" data-tts="Z sub 1 and so on Z sub r the sum over i equals 1 of to the n Z sub i to the 2 . 14.7">$$\left( Z_1, \dots, Z_r, \sum_{i=1}^n Z_i^2 \right). \tag{14.7}$$</span>
   This is what justifies all the UMVU claims that follow.
 </p>
 <h2 data-cid="ch14-290" id="s14-2">14.2 Estimation</h2>
 <p data-cid="ch14-300">
-  In the canonical form $EZ_i = \eta_i$ for $i = 1, \dots, r$. So $Z_i$ is the unbiased estimator of $\eta_i$,
+  In the canonical form <span class="tts-math" data-tts="EZ sub i equals eta sub i">$EZ_i = \eta_i$</span> for <span class="tts-math" data-tts="i equals 1 and so on r">$i = 1, \dots, r$</span>. So <span class="tts-math" data-tts="Z sub i">$Z_i$</span> is the unbiased estimator of <span class="tts-math" data-tts="eta sub i">$\eta_i$</span>,
   and since it is a function of the complete sufficient statistic, it is in fact the UMVU estimator.
 </p>
 <p data-cid="ch14-310">
-  Translating back: since $\xi = \sum_{i=1}^r \eta_i v_i$, the obvious estimator is
-  $$\hat{\xi} = \sum_{i=1}^r Z_i v_i. \tag{14.8}$$
+  Translating back: since <span class="tts-math" data-tts="xi equals the sum over i equals 1 of to the r eta sub i v sub i">$\xi = \sum_{i=1}^r \eta_i v_i$</span>, the obvious estimator is
+  <span class="tts-math" data-tts="xi hat equals the sum over i equals 1 of to the r Z sub i v sub i. 14.8">$$\hat{\xi} = \sum_{i=1}^r Z_i v_i. \tag{14.8}$$</span>
   And the residual vector is
-  $$e = Y - \hat{\xi} = \sum_{i=r+1}^n Z_i v_i. \tag{14.10}$$
+  <span class="tts-math" data-tts="e equals Y minus xi hat equals the sum over i equals r plus 1 of to the n Z sub i v sub i. 14.10">$$e = Y - \hat{\xi} = \sum_{i=r+1}^n Z_i v_i. \tag{14.10}$$</span>
 </p>
 <p data-cid="ch14-320">
-  Each piece of $Y$ has a job. The first $r$ coefficients build $\hat{\xi}$ — the estimate of the signal. The
-  remaining $n - r$ coefficients build $e$ — the residual, which contains pure noise.
+  Each piece of <span class="tts-math" data-tts="Y">$Y$</span> has a job. The first <span class="tts-math" data-tts="r">$r$</span> coefficients build <span class="tts-math" data-tts="xi hat">$\hat{\xi}$</span> — the estimate of the signal. The
+  remaining <span class="tts-math" data-tts="n minus r">$n - r$</span> coefficients build <span class="tts-math" data-tts="e">$e$</span> — the residual, which contains pure noise.
 </p>
 <h3 data-cid="ch14-330">The geometric meaning: projection</h3>
 <p data-cid="ch14-340">
-  $\hat{\xi} \in \omega$ and $e \in \omega^\perp$, and they add up to $Y$. So we have orthogonally
-  <strong>decomposed</strong> $Y$ into "the part in $\omega$" plus "the part orthogonal to $\omega$".
+  <span class="tts-math" data-tts="xi hat in omega">$\hat{\xi} \in \omega$</span> and <span class="tts-math" data-tts="e in omega ^">$e \in \omega^\perp$</span>, and they add up to <span class="tts-math" data-tts="Y">$Y$</span>. So we have orthogonally
+  <strong>decomposed</strong> <span class="tts-math" data-tts="Y">$Y$</span> into "the part in <span class="tts-math" data-tts="omega">$\omega$</span>" plus "the part orthogonal to <span class="tts-math" data-tts="omega">$\omega$</span>".
 </p>
 <p data-cid="ch14-350">
-  By the Pythagorean theorem, for any other point $\tilde{\xi} \in \omega$,
-  $$\|Y - \tilde{\xi}\|^2 = \|\hat{\xi} - \tilde{\xi}\|^2 + \|e\|^2 \;\geq\; \|e\|^2 = \|Y - \hat{\xi}\|^2.$$
-  So $\hat{\xi}$ is the unique point in $\omega$ closest to $Y$. This is the geometric definition of orthogonal
-  projection, and the map $Y \mapsto \hat{\xi}$ is a linear operator we'll write as
-  $$\hat{\xi} = PY.$$
-  The matrix $P$ is the <strong>projection matrix onto $\omega$</strong> — also affectionately known as the
-  <em>hat matrix</em>, because it puts a hat on $Y$.
+  By the Pythagorean theorem, for any other point <span class="tts-math" data-tts="xi tilde in omega">$\tilde{\xi} \in \omega$</span>,
+  <span class="tts-math" data-tts="norm of Y minus xi tilde norm of to the 2 equals norm of xi hat minus xi tilde norm of to the 2 plus norm of e norm of to the 2 greater than or equal to norm of e norm of to the 2 equals norm of Y minus xi hat norm of to the 2.">$$\|Y - \tilde{\xi}\|^2 = \|\hat{\xi} - \tilde{\xi}\|^2 + \|e\|^2 \;\geq\; \|e\|^2 = \|Y - \hat{\xi}\|^2.$$</span>
+  So <span class="tts-math" data-tts="xi hat">$\hat{\xi}$</span> is the unique point in <span class="tts-math" data-tts="omega">$\omega$</span> closest to <span class="tts-math" data-tts="Y">$Y$</span>. This is the geometric definition of orthogonal
+  projection, and the map <span class="tts-math" data-tts="Y xi hat">$Y \mapsto \hat{\xi}$</span> is a linear operator we'll write as
+  <span class="tts-math" data-tts="xi hat equals PY.">$$\hat{\xi} = PY.$$</span>
+  The matrix <span class="tts-math" data-tts="P">$P$</span> is the <strong>projection matrix onto <span class="tts-math" data-tts="omega">$\omega$</span></strong> — also affectionately known as the
+  <em>hat matrix</em>, because it puts a hat on <span class="tts-math" data-tts="Y">$Y$</span>.
 </p>
 <div class="box definition" data-cid="ch14-360">
 <span class="box-label">Definition — projection matrix</span>
 <p data-cid="ch14-370">
-  An $n \times n$ matrix $P$ is the orthogonal projection onto a subspace $\omega$ if $PY$ is the closest point
-  in $\omega$ to every $Y \in \mathbb{R}^n$. Equivalently, $P$ is symmetric and <strong>idempotent</strong>
-  ($P^2 = P$). In our basis, $P = v_1 v_1' + \cdots + v_r v_r'$.
+  An <span class="tts-math" data-tts="n times n">$n \times n$</span> matrix <span class="tts-math" data-tts="P">$P$</span> is the orthogonal projection onto a subspace <span class="tts-math" data-tts="omega">$\omega$</span> if <span class="tts-math" data-tts="PY">$PY$</span> is the closest point
+  in <span class="tts-math" data-tts="omega">$\omega$</span> to every <span class="tts-math" data-tts="Y in the real numbers to the n">$Y \in \mathbb{R}^n$</span>. Equivalently, <span class="tts-math" data-tts="P">$P$</span> is symmetric and <strong>idempotent</strong>
+  (<span class="tts-math" data-tts="P to the 2 equals P">$P^2 = P$</span>). In our basis, <span class="tts-math" data-tts="P equals v sub 1 v sub 1 prime plus times s plus v sub r v sub r prime">$P = v_1 v_1' + \cdots + v_r v_r'$</span>.
 </p>
 </div>
 <div class="box intuition" data-cid="ch14-380">
-<span class="box-label">Why $P^2 = P$?</span>
+<span class="box-label">Why <span class="tts-math" data-tts="P to the 2 equals P">$P^2 = P$</span>?</span>
 <p data-cid="ch14-390">
   Projecting twice is the same as projecting once. If you're already on the floor, dropping to the floor again
-  doesn't move you. Algebraically: $P\hat{\xi} = \hat{\xi}$ because $\hat{\xi} \in \omega$, and so
-  $P^2 Y = P(PY) = P\hat{\xi} = \hat{\xi} = PY$ for every $Y$.
+  doesn't move you. Algebraically: <span class="tts-math" data-tts="P xi hat equals xi hat">$P\hat{\xi} = \hat{\xi}$</span> because <span class="tts-math" data-tts="xi hat in omega">$\hat{\xi} \in \omega$</span>, and so
+  <span class="tts-math" data-tts="P to the 2 Y equals P PY equals P xi hat equals xi hat equals PY">$P^2 Y = P(PY) = P\hat{\xi} = \hat{\xi} = PY$</span> for every <span class="tts-math" data-tts="Y">$Y$</span>.
 </p>
 </div>
 <h3 data-cid="ch14-400">Least squares — same answer, different starting point</h3>
 <p data-cid="ch14-410">
-  An alternative motivation for $\hat{\xi}$ doesn't mention canonical bases at all. Pick $\hat{\beta}$ to
+  An alternative motivation for <span class="tts-math" data-tts="xi hat">$\hat{\xi}$</span> doesn't mention canonical bases at all. Pick <span class="tts-math" data-tts="beta hat">$\hat{\beta}$</span> to
   minimize the sum of squared errors
-  $$\|Y - X\beta\|^2 = \sum_{i=1}^n \bigl[ Y_i - (X\beta)_i \bigr]^2. \tag{14.11}$$
+  <span class="tts-math" data-tts="norm of Y minus X beta norm of to the 2 equals the sum over i equals 1 of to the n Y sub i minus X beta sub i to the 2. 14.11">$$\|Y - X\beta\|^2 = \sum_{i=1}^n \bigl[ Y_i - (X\beta)_i \bigr]^2. \tag{14.11}$$</span>
   Setting partial derivatives to zero gives the <strong>normal equations</strong>:
-  $$X'Y = X'X\hat{\beta}. \tag{14.12}$$
-  When $X$ has full rank ($r = p$), $X'X$ is invertible and
-  $$\hat{\beta} = (X'X)^{-1} X' Y. \tag{14.13}$$
-  Then $\hat{\xi} = X\hat{\beta} = X(X'X)^{-1} X' Y$, so the projection matrix has the explicit formula
-  $$P = X(X'X)^{-1} X'. \tag{14.14}$$
+  <span class="tts-math" data-tts="X primeY equals X primeX beta hat . 14.12">$$X'Y = X'X\hat{\beta}. \tag{14.12}$$</span>
+  When <span class="tts-math" data-tts="X">$X$</span> has full rank (<span class="tts-math" data-tts="r equals p">$r = p$</span>), <span class="tts-math" data-tts="X primeX">$X'X$</span> is invertible and
+  <span class="tts-math" data-tts="beta hat equals X primeX inverse X prime Y. 14.13">$$\hat{\beta} = (X'X)^{-1} X' Y. \tag{14.13}$$</span>
+  Then <span class="tts-math" data-tts="xi hat equals X beta hat equals X X primeX inverse X prime Y">$\hat{\xi} = X\hat{\beta} = X(X'X)^{-1} X' Y$</span>, so the projection matrix has the explicit formula
+  <span class="tts-math" data-tts="P equals X X primeX inverse X prime. 14.14">$$P = X(X'X)^{-1} X'. \tag{14.14}$$</span>
 </p>
 <div class="box intuition" data-cid="ch14-420">
 <span class="box-label">Two routes to the same place</span>
 <p data-cid="ch14-430">
-  Canonical-form route: rotate $Y$ until $\omega$ is the first $r$ coordinate axes, keep the first $r$
-  coefficients, rotate back. Least-squares route: write the squared-error criterion in terms of $\beta$ and
-  minimize. Both produce $\hat{\xi}$. The first is conceptually clean; the second is what you actually
+  Canonical-form route: rotate <span class="tts-math" data-tts="Y">$Y$</span> until <span class="tts-math" data-tts="omega">$\omega$</span> is the first <span class="tts-math" data-tts="r">$r$</span> coordinate axes, keep the first <span class="tts-math" data-tts="r">$r$</span>
+  coefficients, rotate back. Least-squares route: write the squared-error criterion in terms of <span class="tts-math" data-tts="beta">$\beta$</span> and
+  minimize. Both produce <span class="tts-math" data-tts="xi hat">$\hat{\xi}$</span>. The first is conceptually clean; the second is what you actually
   compute.
 </p>
 </div>
@@ -246,15 +245,15 @@
   estimators.
 </p>
 <p data-cid="ch14-460">
-  Relax the assumptions: only require $E\epsilon = 0$ and $\operatorname{Cov}(\epsilon) = \sigma^2 I$. No
-  normality. The $\epsilon_i$ may not even share a distribution. A <strong>linear estimator</strong> of some
-  scalar function $a' \xi$ is any estimator of the form $b' Y = b_1 Y_1 + \cdots + b_n Y_n$.
+  Relax the assumptions: only require <span class="tts-math" data-tts="E epsilon equals 0">$E\epsilon = 0$</span> and <span class="tts-math" data-tts="Cov epsilon equals sigma to the 2 I">$\operatorname{Cov}(\epsilon) = \sigma^2 I$</span>. No
+  normality. The <span class="tts-math" data-tts="epsilon sub i">$\epsilon_i$</span> may not even share a distribution. A <strong>linear estimator</strong> of some
+  scalar function <span class="tts-math" data-tts="a prime xi">$a' \xi$</span> is any estimator of the form <span class="tts-math" data-tts="b prime Y equals b sub 1 Y sub 1 plus times s plus b sub n Y sub n">$b' Y = b_1 Y_1 + \cdots + b_n Y_n$</span>.
 </p>
 <div class="box definition" data-cid="ch14-470">
 <span class="box-label">Theorem 14.4 — Gauss–Markov</span>
 <p data-cid="ch14-480">
-  Suppose $EY = X\beta$ and $\operatorname{Cov}(Y) = \sigma^2 I$. Then for every constant vector $a$, the
-  least-squares estimator $a' \hat{\xi}$ of $a'\xi$ is unbiased and has <strong>uniformly minimum variance
+  Suppose <span class="tts-math" data-tts="EY equals X beta">$EY = X\beta$</span> and <span class="tts-math" data-tts="Cov Y equals sigma to the 2 I">$\operatorname{Cov}(Y) = \sigma^2 I$</span>. Then for every constant vector <span class="tts-math" data-tts="a">$a$</span>, the
+  least-squares estimator <span class="tts-math" data-tts="a prime xi hat">$a' \hat{\xi}$</span> of <span class="tts-math" data-tts="a prime xi">$a'\xi$</span> is unbiased and has <strong>uniformly minimum variance
   among all linear unbiased estimators</strong>.
 </p>
 </div>
@@ -262,113 +261,113 @@
 <span class="box-label">Least squares is BLUE — what's blue?</span>
 <p data-cid="ch14-500">
   BLUE stands for <strong>Best Linear Unbiased Estimator</strong>. "Best" means smallest variance, "linear"
-  means $b'Y$, "unbiased" means $E b'Y = a'\xi$. Gauss–Markov says least squares wins inside this restricted
+  means <span class="tts-math" data-tts="b primeY">$b'Y$</span>, "unbiased" means <span class="tts-math" data-tts="E b primeY equals a prime xi">$E b'Y = a'\xi$</span>. Gauss–Markov says least squares wins inside this restricted
   arena, even when we drop the normality assumption that gave us UMVU in the previous section.
 </p>
 <p data-cid="ch14-510">
   The catch is in the word "linear". Drop that restriction, and least squares might be beaten — if the noise
   is heavy-tailed, the sample median can have smaller variance than the sample mean, and the median is not a
-  linear function of $Y$. Gauss–Markov is a statement about a class of estimators, not a universal optimality
+  linear function of <span class="tts-math" data-tts="Y">$Y$</span>. Gauss–Markov is a statement about a class of estimators, not a universal optimality
   claim.
 </p>
 </div>
 <p data-cid="ch14-520">
-  The proof sketch is short. Using the identity $\operatorname{Cov}(AY) = A \operatorname{Cov}(Y) A'$ from
-  Chapter 1, the variance of any linear estimator $b' Y$ is $\sigma^2 \|b\|^2$. The least-squares estimator
-  $a' \hat{\xi} = a' P Y = (Pa)' Y$ has variance $\sigma^2 \|Pa\|^2$. Under normality, both estimators are
-  unbiased and $a'\hat{\xi}$ is UMVU, so $\|Pa\|^2 \leq \|b\|^2$. But that inequality involves only second
-  moments of $Y$, which are the same whether or not $Y$ is normal — hence it holds in the relaxed setting too.
+  The proof sketch is short. Using the identity <span class="tts-math" data-tts="Cov AY equals A Cov Y A prime">$\operatorname{Cov}(AY) = A \operatorname{Cov}(Y) A'$</span> from
+  Chapter 1, the variance of any linear estimator <span class="tts-math" data-tts="b prime Y">$b' Y$</span> is <span class="tts-math" data-tts="sigma to the 2 norm of b norm of to the 2">$\sigma^2 \|b\|^2$</span>. The least-squares estimator
+  <span class="tts-math" data-tts="a prime xi hat equals a prime P Y equals Pa prime Y">$a' \hat{\xi} = a' P Y = (Pa)' Y$</span> has variance <span class="tts-math" data-tts="sigma to the 2 norm of Pa norm of to the 2">$\sigma^2 \|Pa\|^2$</span>. Under normality, both estimators are
+  unbiased and <span class="tts-math" data-tts="a prime xi hat">$a'\hat{\xi}$</span> is UMVU, so <span class="tts-math" data-tts="norm of Pa norm of to the 2 less than or equal to norm of b norm of to the 2">$\|Pa\|^2 \leq \|b\|^2$</span>. But that inequality involves only second
+  moments of <span class="tts-math" data-tts="Y">$Y$</span>, which are the same whether or not <span class="tts-math" data-tts="Y">$Y$</span> is normal — hence it holds in the relaxed setting too.
 </p>
 <div class="box example" data-cid="ch14-530">
 <span class="box-label">Example 14.5 — when nonlinear beats linear</span>
 <p data-cid="ch14-540">
-  Take $Y_i = \beta + \epsilon_i$ with $\epsilon_i$ i.i.d. from the double-exponential (Laplace) density
-  $f(x) = e^{-\sqrt{2}|x|/\sigma} / (\sigma \sqrt{2})$. The conditions of Gauss–Markov hold, and the sample
-  mean $\bar Y$ is the best <em>linear</em> unbiased estimator with variance $\sigma^2/n$. But the sample
-  median $\tilde Y$ has asymptotic variance $\sigma^2/(2n)$ — roughly half as large. The median is nonlinear,
+  Take <span class="tts-math" data-tts="Y sub i equals beta plus epsilon sub i">$Y_i = \beta + \epsilon_i$</span> with <span class="tts-math" data-tts="epsilon sub i">$\epsilon_i$</span> i.i.d. from the double-exponential (Laplace) density
+  <span class="tts-math" data-tts="f x equals e to the root 2 x over sigma over sigma root 2">$f(x) = e^{-\sqrt{2}|x|/\sigma} / (\sigma \sqrt{2})$</span>. The conditions of Gauss–Markov hold, and the sample
+  mean <span class="tts-math" data-tts="Y">$\bar Y$</span> is the best <em>linear</em> unbiased estimator with variance <span class="tts-math" data-tts="sigma to the 2 over n">$\sigma^2/n$</span>. But the sample
+  median <span class="tts-math" data-tts="Y">$\tilde Y$</span> has asymptotic variance <span class="tts-math" data-tts="sigma to the 2 over 2n">$\sigma^2/(2n)$</span> — roughly half as large. The median is nonlinear,
   so Gauss–Markov says nothing about it; the median wins because the Laplace distribution has heavier tails
   than the normal.
 </p>
 </div>
-<h2 data-cid="ch14-550" id="s14-4">14.4 Estimating $\sigma^2$</h2>
+<h2 data-cid="ch14-550" id="s14-4">14.4 Estimating <span class="tts-math" data-tts="sigma to the 2">$\sigma^2$</span></h2>
 <p data-cid="ch14-560">
-  We have an estimator for $\xi$. We also need one for the noise variance $\sigma^2$. In canonical form,
-  $Z_{r+1}, \dots, Z_n$ are i.i.d. $N(0, \sigma^2)$, so $EZ_i^2 = \sigma^2$ for those indices. The natural
+  We have an estimator for <span class="tts-math" data-tts="xi">$\xi$</span>. We also need one for the noise variance <span class="tts-math" data-tts="sigma to the 2">$\sigma^2$</span>. In canonical form,
+  <span class="tts-math" data-tts="Z sub r plus 1 and so on Z sub n">$Z_{r+1}, \dots, Z_n$</span> are i.i.d. <span class="tts-math" data-tts="N 0 sigma to the 2">$N(0, \sigma^2)$</span>, so <span class="tts-math" data-tts="EZ sub i to the 2 equals sigma to the 2">$EZ_i^2 = \sigma^2$</span> for those indices. The natural
   estimator averages their squares:
-  $$S^2 = \frac{1}{n - r} \sum_{i=r+1}^n Z_i^2. \tag{14.18}$$
+  <span class="tts-math" data-tts="S to the 2 equals 1 over n minus r the sum over i equals r plus 1 of to the n Z sub i to the 2. 14.18">$$S^2 = \frac{1}{n - r} \sum_{i=r+1}^n Z_i^2. \tag{14.18}$$</span>
 </p>
 <p data-cid="ch14-570">
-  This $S^2$ is unbiased and (being a function of the complete sufficient statistic) UMVU. Better, it has a
-  geometric expression that doesn't require constructing the basis. Since $e = \sum_{i=r+1}^n Z_i v_i$ and the
-  $v_i$ are orthonormal, $\|e\|^2 = \sum_{i=r+1}^n Z_i^2$, giving
-  $$S^2 = \frac{\|e\|^2}{n - r} = \frac{\|Y - \hat{\xi}\|^2}{n - r}. \tag{14.20}$$
+  This <span class="tts-math" data-tts="S to the 2">$S^2$</span> is unbiased and (being a function of the complete sufficient statistic) UMVU. Better, it has a
+  geometric expression that doesn't require constructing the basis. Since <span class="tts-math" data-tts="e equals the sum over i equals r plus 1 of to the n Z sub i v sub i">$e = \sum_{i=r+1}^n Z_i v_i$</span> and the
+  <span class="tts-math" data-tts="v sub i">$v_i$</span> are orthonormal, <span class="tts-math" data-tts="norm of e norm of to the 2 equals the sum over i equals r plus 1 of to the n Z sub i to the 2">$\|e\|^2 = \sum_{i=r+1}^n Z_i^2$</span>, giving
+  <span class="tts-math" data-tts="S to the 2 equals norm of e norm of to the 2 over n minus r equals norm of Y minus xi hat norm of to the 2 over n minus r . 14.20">$$S^2 = \frac{\|e\|^2}{n - r} = \frac{\|Y - \hat{\xi}\|^2}{n - r}. \tag{14.20}$$</span>
 </p>
 <div class="box intuition" data-cid="ch14-580">
 <span class="box-label">Where do the degrees of freedom come from?</span>
 <p data-cid="ch14-590">
-  We divide by $n - r$, not $n$. Reason: we used $r$ "degrees of freedom" to estimate the $r$ unknown
-  components of $\hat{\xi}$. The residual lives in the $(n - r)$-dimensional space $\omega^\perp$, and that
-  is the number of independent squared deviations contributing to $\|e\|^2$. Dividing by $n - r$ gives an
-  unbiased estimator; dividing by $n$ would underestimate $\sigma^2$.
+  We divide by <span class="tts-math" data-tts="n minus r">$n - r$</span>, not <span class="tts-math" data-tts="n">$n$</span>. Reason: we used <span class="tts-math" data-tts="r">$r$</span> "degrees of freedom" to estimate the <span class="tts-math" data-tts="r">$r$</span> unknown
+  components of <span class="tts-math" data-tts="xi hat">$\hat{\xi}$</span>. The residual lives in the <span class="tts-math" data-tts="n minus r">$(n - r)$</span>-dimensional space <span class="tts-math" data-tts="omega ^">$\omega^\perp$</span>, and that
+  is the number of independent squared deviations contributing to <span class="tts-math" data-tts="norm of e norm of to the 2">$\|e\|^2$</span>. Dividing by <span class="tts-math" data-tts="n minus r">$n - r$</span> gives an
+  unbiased estimator; dividing by <span class="tts-math" data-tts="n">$n$</span> would underestimate <span class="tts-math" data-tts="sigma to the 2">$\sigma^2$</span>.
 </p>
 </div>
 <p data-cid="ch14-600">
-  Because $\hat{\xi}$ is a function of $Z_1, \dots, Z_r$ and $e$ is a function of $Z_{r+1}, \dots, Z_n$, they
+  Because <span class="tts-math" data-tts="xi hat">$\hat{\xi}$</span> is a function of <span class="tts-math" data-tts="Z sub 1 and so on Z sub r">$Z_1, \dots, Z_r$</span> and <span class="tts-math" data-tts="e">$e$</span> is a function of <span class="tts-math" data-tts="Z sub r plus 1 and so on Z sub n">$Z_{r+1}, \dots, Z_n$</span>, they
   are <strong>independent</strong>. And
-  $$\frac{(n - r) S^2}{\sigma^2} = \sum_{i=r+1}^n (Z_i / \sigma)^2 \sim \chi^2_{n-r}. \tag{14.21}$$
-  These two facts — independence of $\hat{\xi}$ and $S^2$, plus the chi-square distribution of $S^2$ — are
-  what power every confidence interval and $F$-test in the rest of the chapter.
+  <span class="tts-math" data-tts="n minus r S to the 2 over sigma to the 2 equals the sum over i equals r plus 1 of to the n Z sub i over sigma to the 2 distributed as chi to the 2 sub n minus r. 14.21">$$\frac{(n - r) S^2}{\sigma^2} = \sum_{i=r+1}^n (Z_i / \sigma)^2 \sim \chi^2_{n-r}. \tag{14.21}$$</span>
+  These two facts — independence of <span class="tts-math" data-tts="xi hat">$\hat{\xi}$</span> and <span class="tts-math" data-tts="S to the 2">$S^2$</span>, plus the chi-square distribution of <span class="tts-math" data-tts="S to the 2">$S^2$</span> — are
+  what power every confidence interval and <span class="tts-math" data-tts="F">$F$</span>-test in the rest of the chapter.
 </p>
-<h3 data-cid="ch14-610">Confidence intervals for linear functions of $\xi$</h3>
+<h3 data-cid="ch14-610">Confidence intervals for linear functions of <span class="tts-math" data-tts="xi">$\xi$</span></h3>
 <p data-cid="ch14-620">
-  The standard deviation of $a' \hat{\xi}$ is $\sigma \|Pa\|$, estimated by $\hat{\sigma}_{a'\hat\xi} = S \|Pa\|$.
-  Dividing the centered estimator by this estimated standard deviation gives a $t$-statistic with $n - r$
+  The standard deviation of <span class="tts-math" data-tts="a prime xi hat">$a' \hat{\xi}$</span> is <span class="tts-math" data-tts="sigma norm of Pa norm">$\sigma \|Pa\|$</span>, estimated by <span class="tts-math" data-tts="sigma hat sub a prime xi equals S norm of Pa norm">$\hat{\sigma}_{a'\hat\xi} = S \|Pa\|$</span>.
+  Dividing the centered estimator by this estimated standard deviation gives a <span class="tts-math" data-tts="t">$t$</span>-statistic with <span class="tts-math" data-tts="n minus r">$n - r$</span>
   degrees of freedom, yielding the interval
-  $$\Bigl( a'\hat{\xi} - \hat{\sigma}_{a'\hat\xi} \, t_{\alpha/2, n - r}, \;\;
-            a'\hat{\xi} + \hat{\sigma}_{a'\hat\xi} \, t_{\alpha/2, n - r} \Bigr)$$
-  with coverage $1 - \alpha$. When $X$ has full rank, the $i$th coordinate of $\beta$ has interval
-  $$\Bigl( \hat{\beta}_i - S \sqrt{[(X'X)^{-1}]_{ii}} \, t_{\alpha/2, n-p}, \;\;
-            \hat{\beta}_i + S \sqrt{[(X'X)^{-1}]_{ii}} \, t_{\alpha/2, n-p} \Bigr). \tag{14.22}$$
+  <span class="tts-math" data-tts="a prime xi hat minus sigma hat sub a prime xi t sub alpha over 2 n minus r a prime xi hat plus sigma hat sub a prime xi t sub alpha over 2 n minus r">$$\Bigl( a'\hat{\xi} - \hat{\sigma}_{a'\hat\xi} \, t_{\alpha/2, n - r}, \;\;
+            a'\hat{\xi} + \hat{\sigma}_{a'\hat\xi} \, t_{\alpha/2, n - r} \Bigr)$$</span>
+  with coverage <span class="tts-math" data-tts="1 minus alpha">$1 - \alpha$</span>. When <span class="tts-math" data-tts="X">$X$</span> has full rank, the <span class="tts-math" data-tts="i">$i$</span>th coordinate of <span class="tts-math" data-tts="beta">$\beta$</span> has interval
+  <span class="tts-math" data-tts="beta hat sub i minus S root X primeX ^ minus 1 sub ii t sub alpha over 2 n minus p beta hat sub i plus S root X primeX ^ minus 1 sub ii t sub alpha over 2 n minus p . 14.22">$$\Bigl( \hat{\beta}_i - S \sqrt{[(X'X)^{-1}]_{ii}} \, t_{\alpha/2, n-p}, \;\;
+            \hat{\beta}_i + S \sqrt{[(X'X)^{-1}]_{ii}} \, t_{\alpha/2, n-p} \Bigr). \tag{14.22}$$</span>
 </p>
 <h2 data-cid="ch14-630" id="s14-5">14.5 Simple linear regression</h2>
 <p data-cid="ch14-640">
   Time to make all of this concrete with the simplest non-trivial example. Specify
-  $$Y_i = \beta_1 + \beta_2 (x_i - \bar x) + \epsilon_i, \quad i = 1, \dots, n,$$
-  with $\epsilon_i$ i.i.d. $N(0, \sigma^2)$ and $\bar x = n^{-1} \sum x_i$. The reason for centering the
-  $x$'s is that it makes the columns of $X$ orthogonal — which makes the algebra clean. The design matrix is
-  $$X = \begin{pmatrix} 1 &amp; x_1 - \bar x \\ \vdots &amp; \vdots \\ 1 &amp; x_n - \bar x \end{pmatrix}.$$
+  <span class="tts-math" data-tts="Y sub i equals beta sub 1 plus beta sub 2 x sub i minus x plus epsilon sub i i equals 1 and so on n">$$Y_i = \beta_1 + \beta_2 (x_i - \bar x) + \epsilon_i, \quad i = 1, \dots, n,$$</span>
+  with <span class="tts-math" data-tts="epsilon sub i">$\epsilon_i$</span> i.i.d. <span class="tts-math" data-tts="N 0 sigma to the 2">$N(0, \sigma^2)$</span> and <span class="tts-math" data-tts="x equals n inverse the sum of x sub i">$\bar x = n^{-1} \sum x_i$</span>. The reason for centering the
+  <span class="tts-math" data-tts="x">$x$</span>'s is that it makes the columns of <span class="tts-math" data-tts="X">$X$</span> orthogonal — which makes the algebra clean. The design matrix is
+  <span class="tts-math" data-tts="X equals 1 amp x sub 1 minus x amp 1 amp x sub n minus x .">$$X = \begin{pmatrix} 1 &amp; x_1 - \bar x \\ \vdots &amp; \vdots \\ 1 &amp; x_n - \bar x \end{pmatrix}.$$</span>
 </p>
 <p data-cid="ch14-650">
-  Because $\sum (x_i - \bar x) = 0$, the columns are orthogonal and
-  $$X'X = \begin{pmatrix} n &amp; 0 \\ 0 &amp; s_{xx} \end{pmatrix}, \qquad
-       (X'X)^{-1} = \begin{pmatrix} 1/n &amp; 0 \\ 0 &amp; 1/s_{xx} \end{pmatrix},$$
-  where $s_{xx} = \sum (x_i - \bar x)^2$. Then
-  $$\hat{\beta} = (X'X)^{-1} X' Y = \begin{pmatrix} \bar Y \\[2pt] \sum Y_i (x_i - \bar x) / s_{xx} \end{pmatrix},$$
+  Because <span class="tts-math" data-tts="the sum of x sub i minus x equals 0">$\sum (x_i - \bar x) = 0$</span>, the columns are orthogonal and
+  <span class="tts-math" data-tts="X primeX equals n amp 0 0 amp s sub xx X primeX inverse equals 1 over n amp 0 0 amp 1 over s sub xx">$$X'X = \begin{pmatrix} n &amp; 0 \\ 0 &amp; s_{xx} \end{pmatrix}, \qquad
+       (X'X)^{-1} = \begin{pmatrix} 1/n &amp; 0 \\ 0 &amp; 1/s_{xx} \end{pmatrix},$$</span>
+  where <span class="tts-math" data-tts="s sub xx equals the sum of x sub i minus x to the 2">$s_{xx} = \sum (x_i - \bar x)^2$</span>. Then
+  <span class="tts-math" data-tts="beta hat equals X primeX inverse X prime Y equals Y 2pt the sum of Y sub i x sub i minus x over s sub xx">$$\hat{\beta} = (X'X)^{-1} X' Y = \begin{pmatrix} \bar Y \\[2pt] \sum Y_i (x_i - \bar x) / s_{xx} \end{pmatrix},$$</span>
   with covariance matrix
-  $$\operatorname{Cov}(\hat{\beta}) = \sigma^2 (X'X)^{-1} = \begin{pmatrix} \sigma^2/n &amp; 0 \\ 0 &amp; \sigma^2/s_{xx} \end{pmatrix}. \tag{14.23}$$
+  <span class="tts-math" data-tts="Cov beta hat equals sigma to the 2 X primeX inverse equals sigma to the 2 over n amp 0 0 amp sigma to the 2 over s sub xx . 14.23">$$\operatorname{Cov}(\hat{\beta}) = \sigma^2 (X'X)^{-1} = \begin{pmatrix} \sigma^2/n &amp; 0 \\ 0 &amp; \sigma^2/s_{xx} \end{pmatrix}. \tag{14.23}$$</span>
 </p>
 <div class="box intuition" data-cid="ch14-660">
 <span class="box-label">What centering bought us</span>
 <p data-cid="ch14-670">
-  $\hat{\beta}_1$ and $\hat{\beta}_2$ are <em>uncorrelated</em>. The intercept (the value of the regression at
-  $x = \bar x$) and the slope are estimated independently. Without centering, the two estimates would be
+  <span class="tts-math" data-tts="beta hat sub 1">$\hat{\beta}_1$</span> and <span class="tts-math" data-tts="beta hat sub 2">$\hat{\beta}_2$</span> are <em>uncorrelated</em>. The intercept (the value of the regression at
+  <span class="tts-math" data-tts="x equals x">$x = \bar x$</span>) and the slope are estimated independently. Without centering, the two estimates would be
   correlated, which would muddle their interpretation. This is a small example of why thoughtful design
   matters even before any data are collected.
 </p>
 </div>
 <p data-cid="ch14-680">
   The residual sum of squares can be written in terms of the sample correlation
-  $$\hat\rho = \frac{\sum (Y_i - \bar Y)(x_i - \bar x)}{\sqrt{\sum(Y_i - \bar Y)^2 \, s_{xx}}}$$
+  <span class="tts-math" data-tts="rho equals the sum of Y sub i minus Y x sub i minus x over root the sum of Y sub i minus Y to the 2 s_ xx">$$\hat\rho = \frac{\sum (Y_i - \bar Y)(x_i - \bar x)}{\sqrt{\sum(Y_i - \bar Y)^2 \, s_{xx}}}$$</span>
   as
-  $$S^2 = \frac{1}{n - 2} \sum (Y_i - \bar Y)^2 (1 - \hat\rho^2),$$
-  which exposes the slogan: $\hat\rho^2$ is the proportion of variation in $Y$ "explained" by the linear
-  relationship with $x$. This is your $R^2$.
+  <span class="tts-math" data-tts="S to the 2 equals 1 over n minus 2 the sum of Y sub i minus Y to the 2 1 minus rho to the 2">$$S^2 = \frac{1}{n - 2} \sum (Y_i - \bar Y)^2 (1 - \hat\rho^2),$$</span>
+  which exposes the slogan: <span class="tts-math" data-tts="rho to the 2">$\hat\rho^2$</span> is the proportion of variation in <span class="tts-math" data-tts="Y">$Y$</span> "explained" by the linear
+  relationship with <span class="tts-math" data-tts="x">$x$</span>. This is your <span class="tts-math" data-tts="R to the 2">$R^2$</span>.
 </p>
 <div class="box warn" data-cid="ch14-690">
 <span class="box-label">Common pitfall — extrapolation</span>
 <p data-cid="ch14-700">
-  The confidence interval for the fitted value $\hat{\beta}_1 + \hat{\beta}_2(x - \bar x)$ has width
-  proportional to $\sqrt{1/n + (x - \bar x)^2 / s_{xx}}$. That widens as $x$ moves away from $\bar x$. Far
+  The confidence interval for the fitted value <span class="tts-math" data-tts="beta hat sub 1 plus beta hat sub 2 x minus x">$\hat{\beta}_1 + \hat{\beta}_2(x - \bar x)$</span> has width
+  proportional to <span class="tts-math" data-tts="root 1 over n plus x minus x to the 2 over s_ xx">$\sqrt{1/n + (x - \bar x)^2 / s_{xx}}$</span>. That widens as <span class="tts-math" data-tts="x">$x$</span> moves away from <span class="tts-math" data-tts="x">$\bar x$</span>. Far
   outside the observed range, the interval doesn't widen <em>enough</em> — because it assumes the model is
   still linear out there. Predicting next year's housing prices from last decade's data, or extrapolating a
   dose-response curve beyond tested doses, can fail in ways no confidence interval will warn you about.
@@ -377,9 +376,9 @@
 <div class="box warn" data-cid="ch14-710">
 <span class="box-label">Common pitfall — multicollinearity</span>
 <p data-cid="ch14-720">
-  When two columns of $X$ are highly correlated, $X'X$ is close to singular, $(X'X)^{-1}$ has huge diagonal
-  entries, and the standard errors of $\hat{\beta}_i$ explode. Predictions $\hat{\xi} = X\hat{\beta}$ can
-  still be fine — the geometry $\xi \in \omega$ is unaffected — but the individual coefficients become
+  When two columns of <span class="tts-math" data-tts="X">$X$</span> are highly correlated, <span class="tts-math" data-tts="X primeX">$X'X$</span> is close to singular, <span class="tts-math" data-tts="X primeX inverse">$(X'X)^{-1}$</span> has huge diagonal
+  entries, and the standard errors of <span class="tts-math" data-tts="beta hat sub i">$\hat{\beta}_i$</span> explode. Predictions <span class="tts-math" data-tts="xi hat equals X beta hat">$\hat{\xi} = X\hat{\beta}$</span> can
+  still be fine — the geometry <span class="tts-math" data-tts="xi in omega">$\xi \in \omega$</span> is unaffected — but the individual coefficients become
   uninterpretable. Don't try to read "the effect of weight controlling for BMI" off a model where weight and
   BMI are nearly proportional.
 </p>
@@ -387,13 +386,13 @@
 <div class="box warn" data-cid="ch14-730">
 <span class="box-label">Common pitfall — omitted-variable bias</span>
 <p data-cid="ch14-740">
-  If the true mean depends on a variable $w$ that you forgot to include, your fitted slope on $x$ absorbs the
-  influence of $w$ to the extent that $w$ correlates with $x$. The estimator is no longer unbiased for the
+  If the true mean depends on a variable <span class="tts-math" data-tts="w">$w$</span> that you forgot to include, your fitted slope on <span class="tts-math" data-tts="x">$x$</span> absorbs the
+  influence of <span class="tts-math" data-tts="w">$w$</span> to the extent that <span class="tts-math" data-tts="w">$w$</span> correlates with <span class="tts-math" data-tts="x">$x$</span>. The estimator is no longer unbiased for the
   parameter you think it is. Gauss–Markov assumes <em>you have the right model</em>; it says nothing about
   what happens when the design matrix is misspecified.
 </p>
 </div>
-<h2 data-cid="ch14-750" id="s14-6">14.6 Noncentral $F$ and $\chi^2$ distributions</h2>
+<h2 data-cid="ch14-750" id="s14-6">14.6 Noncentral <span class="tts-math" data-tts="F">$F$</span> and <span class="tts-math" data-tts="chi to the 2">$\chi^2$</span> distributions</h2>
 <p data-cid="ch14-760">
   Two definitions to set up before the next section. Both arise as distributions of quadratic forms in normal
   random vectors with non-zero means.
@@ -401,118 +400,118 @@
 <div class="box definition" data-cid="ch14-770">
 <span class="box-label">Definition 14.7 — noncentral chi-square</span>
 <p data-cid="ch14-780">
-  If $Z_1 \sim N(\delta, 1)$ and $Z_2, \dots, Z_p$ are independent $N(0,1)$, then
-  $W = \sum_{i=1}^p Z_i^2$ has the <strong>noncentral chi-square distribution</strong> with $p$ degrees of
-  freedom and noncentrality $\delta^2$, written $W \sim \chi^2_p(\delta^2)$.
+  If <span class="tts-math" data-tts="Z sub 1 distributed as N delta 1">$Z_1 \sim N(\delta, 1)$</span> and <span class="tts-math" data-tts="Z sub 2 and so on Z sub p">$Z_2, \dots, Z_p$</span> are independent <span class="tts-math" data-tts="N 0 1">$N(0,1)$</span>, then
+  <span class="tts-math" data-tts="W equals the sum over i equals 1 of to the p Z sub i to the 2">$W = \sum_{i=1}^p Z_i^2$</span> has the <strong>noncentral chi-square distribution</strong> with <span class="tts-math" data-tts="p">$p$</span> degrees of
+  freedom and noncentrality <span class="tts-math" data-tts="delta to the 2">$\delta^2$</span>, written <span class="tts-math" data-tts="W distributed as chi to the 2 sub p delta to the 2">$W \sim \chi^2_p(\delta^2)$</span>.
 </p>
 </div>
 <p data-cid="ch14-790">
-  More usefully, if $Z \sim N_p(\mu, I)$, then $Z'Z \sim \chi^2_p(\|\mu\|^2)$ — the noncentrality depends only
-  on $\|\mu\|^2$, not on the direction of $\mu$. This follows by rotating $\mu$ to lie along the first
-  coordinate axis. Generalizing, if $Z \sim N_p(\mu, \Sigma)$ with $\Sigma$ positive definite, then
-  $$Z' \Sigma^{-1} Z \sim \chi^2_p(\mu' \Sigma^{-1} \mu).$$
+  More usefully, if <span class="tts-math" data-tts="Z distributed as N sub p mu I">$Z \sim N_p(\mu, I)$</span>, then <span class="tts-math" data-tts="Z primeZ distributed as chi to the 2 sub p norm of mu norm of to the 2">$Z'Z \sim \chi^2_p(\|\mu\|^2)$</span> — the noncentrality depends only
+  on <span class="tts-math" data-tts="norm of mu norm of to the 2">$\|\mu\|^2$</span>, not on the direction of <span class="tts-math" data-tts="mu">$\mu$</span>. This follows by rotating <span class="tts-math" data-tts="mu">$\mu$</span> to lie along the first
+  coordinate axis. Generalizing, if <span class="tts-math" data-tts="Z distributed as N sub p mu Sigma">$Z \sim N_p(\mu, \Sigma)$</span> with <span class="tts-math" data-tts="Sigma">$\Sigma$</span> positive definite, then
+  <span class="tts-math" data-tts="Z prime Sigma inverse Z distributed as chi to the 2 sub p mu prime Sigma inverse mu .">$$Z' \Sigma^{-1} Z \sim \chi^2_p(\mu' \Sigma^{-1} \mu).$$</span>
 </p>
 <div class="box definition" data-cid="ch14-800">
-<span class="box-label">Definition 14.10 — noncentral $F$</span>
+<span class="box-label">Definition 14.10 — noncentral <span class="tts-math" data-tts="F">$F$</span></span>
 <p data-cid="ch14-810">
-  If $V \sim \chi^2_k(\delta^2)$ and $W \sim \chi^2_m$ are independent, then
-  $$\frac{V/k}{W/m} \sim F_{k,m}(\delta^2),$$
-  the <strong>noncentral $F$-distribution</strong> with degrees of freedom $k$ and $m$ and noncentrality
-  $\delta^2$. When $\delta^2 = 0$ this reduces to the ordinary $F_{k,m}$.
+  If <span class="tts-math" data-tts="V distributed as chi to the 2 sub k delta to the 2">$V \sim \chi^2_k(\delta^2)$</span> and <span class="tts-math" data-tts="W distributed as chi to the 2 sub m">$W \sim \chi^2_m$</span> are independent, then
+  <span class="tts-math" data-tts="V over k over W over m distributed as F sub k m delta to the 2">$$\frac{V/k}{W/m} \sim F_{k,m}(\delta^2),$$</span>
+  the <strong>noncentral <span class="tts-math" data-tts="F">$F$</span>-distribution</strong> with degrees of freedom <span class="tts-math" data-tts="k">$k$</span> and <span class="tts-math" data-tts="m">$m$</span> and noncentrality
+  <span class="tts-math" data-tts="delta to the 2">$\delta^2$</span>. When <span class="tts-math" data-tts="delta to the 2 equals 0">$\delta^2 = 0$</span> this reduces to the ordinary <span class="tts-math" data-tts="F sub k m">$F_{k,m}$</span>.
 </p>
 </div>
 <div class="box intuition" data-cid="ch14-820">
 <span class="box-label">Why we need the noncentral versions</span>
 <p data-cid="ch14-830">
-  Under the null hypothesis, our test statistic will follow $F_{k,m}$ (central). Under the alternative, it
-  follows $F_{k,m}(\delta^2)$ — the noncentral version, with $\delta^2$ measuring how far the truth is from
+  Under the null hypothesis, our test statistic will follow <span class="tts-math" data-tts="F sub k m">$F_{k,m}$</span> (central). Under the alternative, it
+  follows <span class="tts-math" data-tts="F sub k m delta to the 2">$F_{k,m}(\delta^2)$</span> — the noncentral version, with <span class="tts-math" data-tts="delta to the 2">$\delta^2$</span> measuring how far the truth is from
   the null. The noncentral distribution is what we need for power calculations: how often does the test
-  reject when the null is false? That probability depends on $\delta^2$.
+  reject when the null is false? That probability depends on <span class="tts-math" data-tts="delta to the 2">$\delta^2$</span>.
 </p>
 </div>
 <h2 data-cid="ch14-840" id="s14-7">14.7 Testing in the general linear model</h2>
 <p data-cid="ch14-850">
   This is the chapter's main payoff. We are going to test whether the data are consistent with a smaller
-  subspace $\omega_0 \subset \omega$.
+  subspace <span class="tts-math" data-tts="omega sub 0 subset of omega">$\omega_0 \subset \omega$</span>.
 </p>
 <p data-cid="ch14-860">
-  Setup: assume $Y \sim N(\xi, \sigma^2 I)$ with $\xi \in \omega$, and let $\omega_0$ be a $q$-dimensional
-  subspace of $\omega$, $0 \leq q &lt; r$. Test
-  $$H_0: \xi \in \omega_0 \quad \text{versus} \quad H_1: \xi \in \omega \setminus \omega_0.$$
+  Setup: assume <span class="tts-math" data-tts="Y distributed as N xi sigma to the 2 I">$Y \sim N(\xi, \sigma^2 I)$</span> with <span class="tts-math" data-tts="xi in omega">$\xi \in \omega$</span>, and let <span class="tts-math" data-tts="omega sub 0">$\omega_0$</span> be a <span class="tts-math" data-tts="q">$q$</span>-dimensional
+  subspace of <span class="tts-math" data-tts="omega">$\omega$</span>, <span class="tts-math" data-tts="0 less than or equal to q lt r">$0 \leq q &lt; r$</span>. Test
+  <span class="tts-math" data-tts="H sub 0 xi in omega sub 0 versus H sub 1 xi in omega minus omega sub 0.">$$H_0: \xi \in \omega_0 \quad \text{versus} \quad H_1: \xi \in \omega \setminus \omega_0.$$</span>
 </p>
 <p data-cid="ch14-870">
-  Null hypotheses of this form arise constantly. "$\beta_1 = \beta_2$" forces a one-dimensional constraint on
-  $\beta$, cutting $\omega$ down to a smaller subspace $\omega_0$. "All slopes are zero" forces every
-  non-intercept coefficient to vanish, collapsing $\omega$ to a one-dimensional subspace (the constant
+  Null hypotheses of this form arise constantly. "<span class="tts-math" data-tts="beta sub 1 equals beta sub 2">$\beta_1 = \beta_2$</span>" forces a one-dimensional constraint on
+  <span class="tts-math" data-tts="beta">$\beta$</span>, cutting <span class="tts-math" data-tts="omega">$\omega$</span> down to a smaller subspace <span class="tts-math" data-tts="omega sub 0">$\omega_0$</span>. "All slopes are zero" forces every
+  non-intercept coefficient to vanish, collapsing <span class="tts-math" data-tts="omega">$\omega$</span> to a one-dimensional subspace (the constant
   functions).
 </p>
-<h3 data-cid="ch14-880">The $F$-statistic — comparing two fits</h3>
+<h3 data-cid="ch14-880">The <span class="tts-math" data-tts="F">$F$</span>-statistic — comparing two fits</h3>
 <p data-cid="ch14-890">
-  Let $\hat{\xi} = PY$ be the projection onto $\omega$ (the unrestricted fit) and $\hat{\xi}_0 = P_0 Y$ the
-  projection onto $\omega_0$ (the restricted fit). The unrestricted model fits at least as well, so
-  $\|Y - \hat{\xi}\|^2 \leq \|Y - \hat{\xi}_0\|^2$. The question is whether the improvement is convincing or
+  Let <span class="tts-math" data-tts="xi hat equals PY">$\hat{\xi} = PY$</span> be the projection onto <span class="tts-math" data-tts="omega">$\omega$</span> (the unrestricted fit) and <span class="tts-math" data-tts="xi hat sub 0 equals P sub 0 Y">$\hat{\xi}_0 = P_0 Y$</span> the
+  projection onto <span class="tts-math" data-tts="omega sub 0">$\omega_0$</span> (the restricted fit). The unrestricted model fits at least as well, so
+  <span class="tts-math" data-tts="norm of Y minus xi hat norm of to the 2 less than or equal to norm of Y minus xi hat sub 0 norm of to the 2">$\|Y - \hat{\xi}\|^2 \leq \|Y - \hat{\xi}_0\|^2$</span>. The question is whether the improvement is convincing or
   is just noise.
 </p>
 <p data-cid="ch14-900">
   The test statistic is
-  $$T = \frac{n - r}{r - q} \cdot \frac{\|Y - \hat{\xi}_0\|^2 - \|Y - \hat{\xi}\|^2}{\|Y - \hat{\xi}\|^2}.$$
-  By the Pythagorean theorem (since $Y - \hat{\xi} \in \omega^\perp$ and $\hat{\xi} - \hat{\xi}_0 \in \omega$
+  <span class="tts-math" data-tts="T equals n minus r over r minus q times norm of Y minus xi hat sub 0 norm of to the 2 minus norm of Y minus xi hat norm of to the 2 over norm of Y minus xi hat norm of to the 2 .">$$T = \frac{n - r}{r - q} \cdot \frac{\|Y - \hat{\xi}_0\|^2 - \|Y - \hat{\xi}\|^2}{\|Y - \hat{\xi}\|^2}.$$</span>
+  By the Pythagorean theorem (since <span class="tts-math" data-tts="Y minus xi hat in omega ^">$Y - \hat{\xi} \in \omega^\perp$</span> and <span class="tts-math" data-tts="xi hat minus xi hat sub 0 in omega">$\hat{\xi} - \hat{\xi}_0 \in \omega$</span>
   are orthogonal),
-  $$\|Y - \hat{\xi}_0\|^2 = \|Y - \hat{\xi}\|^2 + \|\hat{\xi} - \hat{\xi}_0\|^2,$$
+  <span class="tts-math" data-tts="norm of Y minus xi hat sub 0 norm of to the 2 equals norm of Y minus xi hat norm of to the 2 plus norm of xi hat minus xi hat sub 0 norm of to the 2">$$\|Y - \hat{\xi}_0\|^2 = \|Y - \hat{\xi}\|^2 + \|\hat{\xi} - \hat{\xi}_0\|^2,$$</span>
   so the statistic simplifies to
-  $$T = \frac{\|\hat{\xi} - \hat{\xi}_0\|^2}{(r - q) S^2}. \tag{14.24}$$
+  <span class="tts-math" data-tts="T equals norm of xi hat minus xi hat sub 0 norm of to the 2 over r minus q S to the 2 . 14.24">$$T = \frac{\|\hat{\xi} - \hat{\xi}_0\|^2}{(r - q) S^2}. \tag{14.24}$$</span>
 </p>
 <div class="box intuition" data-cid="ch14-910">
-<span class="box-label">What $T$ is measuring</span>
+<span class="box-label">What <span class="tts-math" data-tts="T">$T$</span> is measuring</span>
 <p data-cid="ch14-920">
-  Numerator: the squared distance between the two fitted means $\hat{\xi}$ and $\hat{\xi}_0$, scaled by the
+  Numerator: the squared distance between the two fitted means <span class="tts-math" data-tts="xi hat">$\hat{\xi}$</span> and <span class="tts-math" data-tts="xi hat sub 0">$\hat{\xi}_0$</span>, scaled by the
   number of additional dimensions allowed under the full model. Denominator: the residual variance estimate.
-  $T$ is large when constraining $\xi$ to $\omega_0$ forces a fit that is much worse than the unrestricted
+  <span class="tts-math" data-tts="T">$T$</span> is large when constraining <span class="tts-math" data-tts="xi">$\xi$</span> to <span class="tts-math" data-tts="omega sub 0">$\omega_0$</span> forces a fit that is much worse than the unrestricted
   fit — relative to ordinary noise.
 </p>
 </div>
 <div class="box definition" data-cid="ch14-930">
-<span class="box-label">Theorem 14.11 — the $F$ distribution of $T$</span>
+<span class="box-label">Theorem 14.11 — the <span class="tts-math" data-tts="F">$F$</span> distribution of <span class="tts-math" data-tts="T">$T$</span></span>
 <p data-cid="ch14-940">
-  Under the general linear model, $T \sim F_{r-q,\, n-r}(\delta^2)$ with noncentrality
-  $$\delta^2 = \frac{\|\xi - P_0 \xi\|^2}{\sigma^2}. \tag{14.25}$$
-  Under $H_0$, $\xi \in \omega_0$ so $P_0 \xi = \xi$ and $\delta^2 = 0$; the statistic follows the central
-  $F_{r-q, n-r}$.
+  Under the general linear model, <span class="tts-math" data-tts="T distributed as F sub r minus q n minus r delta to the 2">$T \sim F_{r-q,\, n-r}(\delta^2)$</span> with noncentrality
+  <span class="tts-math" data-tts="delta to the 2 equals norm of xi minus P sub 0 xi norm of to the 2 over sigma to the 2 . 14.25">$$\delta^2 = \frac{\|\xi - P_0 \xi\|^2}{\sigma^2}. \tag{14.25}$$</span>
+  Under <span class="tts-math" data-tts="H sub 0">$H_0$</span>, <span class="tts-math" data-tts="xi in omega sub 0">$\xi \in \omega_0$</span> so <span class="tts-math" data-tts="P sub 0 xi equals xi">$P_0 \xi = \xi$</span> and <span class="tts-math" data-tts="delta to the 2 equals 0">$\delta^2 = 0$</span>; the statistic follows the central
+  <span class="tts-math" data-tts="F sub r minus q n minus r">$F_{r-q, n-r}$</span>.
 </p>
 </div>
 <p data-cid="ch14-950">
-  Proof idea. Choose the orthonormal basis $v_1, \dots, v_n$ so that $v_1, \dots, v_q$ span $\omega_0$ and
-  $v_1, \dots, v_r$ span $\omega$. Then $\hat{\xi}_0 = \sum_{i=1}^q Z_i v_i$, $\hat{\xi} = \sum_{i=1}^r Z_i v_i$,
-  and the difference is $\hat{\xi} - \hat{\xi}_0 = \sum_{i=q+1}^r Z_i v_i$, whose squared length is
-  $\sum_{i=q+1}^r Z_i^2$. The residual squared length is $\sum_{i=r+1}^n Z_i^2$. Since the $Z_i$ are
+  Proof idea. Choose the orthonormal basis <span class="tts-math" data-tts="v sub 1 and so on v sub n">$v_1, \dots, v_n$</span> so that <span class="tts-math" data-tts="v sub 1 and so on v sub q">$v_1, \dots, v_q$</span> span <span class="tts-math" data-tts="omega sub 0">$\omega_0$</span> and
+  <span class="tts-math" data-tts="v sub 1 and so on v sub r">$v_1, \dots, v_r$</span> span <span class="tts-math" data-tts="omega">$\omega$</span>. Then <span class="tts-math" data-tts="xi hat sub 0 equals the sum over i equals 1 of to the q Z sub i v sub i">$\hat{\xi}_0 = \sum_{i=1}^q Z_i v_i$</span>, <span class="tts-math" data-tts="xi hat equals the sum over i equals 1 of to the r Z sub i v sub i">$\hat{\xi} = \sum_{i=1}^r Z_i v_i$</span>,
+  and the difference is <span class="tts-math" data-tts="xi hat minus xi hat sub 0 equals the sum over i equals q plus 1 of to the r Z sub i v sub i">$\hat{\xi} - \hat{\xi}_0 = \sum_{i=q+1}^r Z_i v_i$</span>, whose squared length is
+  <span class="tts-math" data-tts="the sum over i equals q plus 1 of to the r Z sub i to the 2">$\sum_{i=q+1}^r Z_i^2$</span>. The residual squared length is <span class="tts-math" data-tts="the sum over i equals r plus 1 of to the n Z sub i to the 2">$\sum_{i=r+1}^n Z_i^2$</span>. Since the <span class="tts-math" data-tts="Z sub i">$Z_i$</span> are
   independent, numerator and denominator are independent, and standard chi-square algebra delivers the
-  $F$-distribution claim with the stated noncentrality.
+  <span class="tts-math" data-tts="F">$F$</span>-distribution claim with the stated noncentrality.
 </p>
 <p data-cid="ch14-960">
-  This is the <strong>$F$-test</strong>. It is the workhorse hypothesis test of applied statistics — the test
+  This is the <strong><span class="tts-math" data-tts="F">$F$</span>-test</strong>. It is the workhorse hypothesis test of applied statistics — the test
   printed at the bottom of every regression output, the test that decides "is this added predictor worth
   keeping?", "is this factor significant?", "do these groups differ?".
 </p>
 <div class="box example" data-cid="ch14-970">
-<span class="box-label">Example — analysis of variance ($F$-test for one-way ANOVA)</span>
+<span class="box-label">Example — analysis of variance (<span class="tts-math" data-tts="F">$F$</span>-test for one-way ANOVA)</span>
 <p data-cid="ch14-980">
-  In Example 14.2, $\omega$ has dimension $r = 3$ (one parameter per group). Testing $H_0: \beta_1 = \beta_2
-  = \beta_3$ collapses $\omega$ to the one-dimensional space of constant vectors, so $q = 1$. The numerator
-  $\|\hat{\xi} - \hat{\xi}_0\|^2$ becomes $\sum_k n_k (\bar Y_k - \bar Y)^2$ — the
-  <em>between-group sum of squares</em>. The denominator $S^2$ involves the within-group sum of squares
-  $\sum_k \sum_{i \in k} (Y_{ki} - \bar Y_k)^2$. The ratio is the classical ANOVA $F$-statistic. The whole
-  table you see in a one-way ANOVA printout is a bookkeeping device for this single $T \sim F_{r-q, n-r}$.
+  In Example 14.2, <span class="tts-math" data-tts="omega">$\omega$</span> has dimension <span class="tts-math" data-tts="r equals 3">$r = 3$</span> (one parameter per group). Testing <span class="tts-math" data-tts="H sub 0 beta sub 1 equals beta sub 2 equals beta sub 3">$H_0: \beta_1 = \beta_2
+  = \beta_3$</span> collapses <span class="tts-math" data-tts="omega">$\omega$</span> to the one-dimensional space of constant vectors, so <span class="tts-math" data-tts="q equals 1">$q = 1$</span>. The numerator
+  <span class="tts-math" data-tts="norm of xi hat minus xi hat sub 0 norm of to the 2">$\|\hat{\xi} - \hat{\xi}_0\|^2$</span> becomes <span class="tts-math" data-tts="sub k n sub k Y sub k minus Y to the 2">$\sum_k n_k (\bar Y_k - \bar Y)^2$</span> — the
+  <em>between-group sum of squares</em>. The denominator <span class="tts-math" data-tts="S to the 2">$S^2$</span> involves the within-group sum of squares
+  <span class="tts-math" data-tts="sub k the sum over i in k of Y sub ki minus Y sub k to the 2">$\sum_k \sum_{i \in k} (Y_{ki} - \bar Y_k)^2$</span>. The ratio is the classical ANOVA <span class="tts-math" data-tts="F">$F$</span>-statistic. The whole
+  table you see in a one-way ANOVA printout is a bookkeeping device for this single <span class="tts-math" data-tts="T distributed as F sub r minus q n minus r">$T \sim F_{r-q, n-r}$</span>.
 </p>
 </div>
 <div class="box example" data-cid="ch14-990">
 <span class="box-label">Example 14.12 — comparing two regression slopes</span>
 <p data-cid="ch14-1000">
-  Two populations, each with a regression through the origin: $Y_i = x_i \beta_1 + \epsilon_i$ for the first
-  $n_1$ observations and $Y_i = x_i \beta_2 + \epsilon_i$ for the next $n_2$. Test $H_0: \beta_1 = \beta_2$.
+  Two populations, each with a regression through the origin: <span class="tts-math" data-tts="Y sub i equals x sub i beta sub 1 plus epsilon sub i">$Y_i = x_i \beta_1 + \epsilon_i$</span> for the first
+  <span class="tts-math" data-tts="n sub 1">$n_1$</span> observations and <span class="tts-math" data-tts="Y sub i equals x sub i beta sub 2 plus epsilon sub i">$Y_i = x_i \beta_2 + \epsilon_i$</span> for the next <span class="tts-math" data-tts="n sub 2">$n_2$</span>. Test <span class="tts-math" data-tts="H sub 0 beta sub 1 equals beta sub 2">$H_0: \beta_1 = \beta_2$</span>.
   Algebra yields
-  $$T = \frac{\sum_{i=1}^{n_1} x_i^2 \;\; \sum_{i=n_1+1}^n x_i^2}{S^2 \sum_{i=1}^n x_i^2} \, (\hat{\beta}_1 - \hat{\beta}_2)^2,$$
-  which under $H_0$ follows $F_{1, n-2}$. The noncentrality under $H_1$ is the same expression with $\beta$'s
-  in place of $\hat{\beta}$'s and $\sigma^2$ in place of $S^2$ — useful for sample-size calculations.
+  <span class="tts-math" data-tts="T equals the sum from i equals 1 to n sub 1 of x sub i to the 2 the sum over i equals n sub 1 plus 1 of to the n x sub i to the 2 S to the 2 the sum over i equals 1 of to the n x sub i to the 2 beta hat sub 1 minus beta hat sub 2 to the 2">$$T = \frac{\sum_{i=1}^{n_1} x_i^2 \;\; \sum_{i=n_1+1}^n x_i^2}{S^2 \sum_{i=1}^n x_i^2} \, (\hat{\beta}_1 - \hat{\beta}_2)^2,$$</span>
+  which under <span class="tts-math" data-tts="H sub 0">$H_0$</span> follows <span class="tts-math" data-tts="F sub 1 n minus 2">$F_{1, n-2}$</span>. The noncentrality under <span class="tts-math" data-tts="H sub 1">$H_1$</span> is the same expression with <span class="tts-math" data-tts="beta">$\beta$</span>'s
+  in place of <span class="tts-math" data-tts="beta hat">$\hat{\beta}$</span>'s and <span class="tts-math" data-tts="sigma to the 2">$\sigma^2$</span> in place of <span class="tts-math" data-tts="S to the 2">$S^2$</span> — useful for sample-size calculations.
 </p>
 </div>
 <h2 data-cid="ch14-1010" id="s14-8">14.8 Simultaneous confidence intervals</h2>
@@ -523,96 +522,96 @@
   stated probability.
 </p>
 <p data-cid="ch14-1030">
-  In one-way ANOVA with $p$ groups of size $c$, the least-squares estimates are the group means
-  $\hat{\beta}_m = \bar Y_{m\cdot}$, independent and distributed $N(\beta_m, \sigma^2 / c)$.
-  $S^2 = \|Y - \hat{\xi}\|^2 / (p(c-1))$, with $(n - r) S^2 / \sigma^2 \sim \chi^2_{p(c-1)}$.
+  In one-way ANOVA with <span class="tts-math" data-tts="p">$p$</span> groups of size <span class="tts-math" data-tts="c">$c$</span>, the least-squares estimates are the group means
+  <span class="tts-math" data-tts="beta hat sub m equals Y sub m times">$\hat{\beta}_m = \bar Y_{m\cdot}$</span>, independent and distributed <span class="tts-math" data-tts="N beta sub m sigma to the 2 over c">$N(\beta_m, \sigma^2 / c)$</span>.
+  <span class="tts-math" data-tts="S to the 2 equals norm of Y minus xi hat norm of to the 2 over p c minus 1">$S^2 = \|Y - \hat{\xi}\|^2 / (p(c-1))$</span>, with <span class="tts-math" data-tts="n minus r S to the 2 over sigma to the 2 distributed as chi to the 2 sub p c minus 1">$(n - r) S^2 / \sigma^2 \sim \chi^2_{p(c-1)}$</span>.
 </p>
 <h3 data-cid="ch14-1040">The studentized maximum modulus and the studentized range</h3>
 <p data-cid="ch14-1050">
-  To cover all $p$ individual means simultaneously, take intervals
-  $$I_k = \left( \hat{\beta}_k - \frac{S}{\sqrt{c}} q, \;\; \hat{\beta}_k + \frac{S}{\sqrt{c}} q \right)$$
-  where $q$ is the upper $\alpha$ quantile of the <strong>studentized maximum modulus distribution</strong>
-  — the distribution of $\max_k |Z_k| / \sqrt{W}$ for independent $Z_k \sim N(0,1)$ and $m W \sim \chi^2_m$.
-  The simultaneous coverage probability $P(\beta_k \in I_k, \forall k) = 1 - \alpha$ does not depend on
-  $\beta$ or $\sigma$.
+  To cover all <span class="tts-math" data-tts="p">$p$</span> individual means simultaneously, take intervals
+  <span class="tts-math" data-tts="I sub k equals beta hat sub k minus S over root c q beta hat sub k plus S over root c q">$$I_k = \left( \hat{\beta}_k - \frac{S}{\sqrt{c}} q, \;\; \hat{\beta}_k + \frac{S}{\sqrt{c}} q \right)$$</span>
+  where <span class="tts-math" data-tts="q">$q$</span> is the upper <span class="tts-math" data-tts="alpha">$\alpha$</span> quantile of the <strong>studentized maximum modulus distribution</strong>
+  — the distribution of <span class="tts-math" data-tts="sub k Z sub k over root W">$\max_k |Z_k| / \sqrt{W}$</span> for independent <span class="tts-math" data-tts="Z sub k distributed as N 0 1">$Z_k \sim N(0,1)$</span> and <span class="tts-math" data-tts="m W distributed as chi to the 2 sub m">$m W \sim \chi^2_m$</span>.
+  The simultaneous coverage probability <span class="tts-math" data-tts="P beta sub k in I sub k for all k equals 1 minus alpha">$P(\beta_k \in I_k, \forall k) = 1 - \alpha$</span> does not depend on
+  <span class="tts-math" data-tts="beta">$\beta$</span> or <span class="tts-math" data-tts="sigma">$\sigma$</span>.
 </p>
 <p data-cid="ch14-1060">
-  To cover all <em>pairwise differences</em> $\beta_j - \beta_i$, replace the studentized maximum modulus
-  with the <strong>studentized range</strong>, the distribution of $(\max_k Z_k - \min_k Z_k)/\sqrt{W}$.
+  To cover all <em>pairwise differences</em> <span class="tts-math" data-tts="beta sub j minus beta sub i">$\beta_j - \beta_i$</span>, replace the studentized maximum modulus
+  with the <strong>studentized range</strong>, the distribution of <span class="tts-math" data-tts="sub k Z sub k minus sub k Z sub k over root W">$(\max_k Z_k - \min_k Z_k)/\sqrt{W}$</span>.
   This is Tukey's HSD ("honest significant difference") procedure.
 </p>
 <h3 data-cid="ch14-1070">Scheffé's method — the general recipe</h3>
 <p data-cid="ch14-1080">
-  A more general approach due to Scheffé handles any linear function of $\xi$ (or of $\beta$, when $X$
-  is full rank). Let $\psi = A\xi$ for some $q \times n$ matrix $A$ with linearly independent rows (after
-  possibly replacing $A$ by $AP$, which doesn't change $\psi$). The least-squares estimator is
-  $\hat{\psi} = A\hat{\xi}$, with covariance $\sigma^2 B$ where $B = AA'$ is positive definite.
+  A more general approach due to Scheffé handles any linear function of <span class="tts-math" data-tts="xi">$\xi$</span> (or of <span class="tts-math" data-tts="beta">$\beta$</span>, when <span class="tts-math" data-tts="X">$X$</span>
+  is full rank). Let <span class="tts-math" data-tts="psi equals A xi">$\psi = A\xi$</span> for some <span class="tts-math" data-tts="q times n">$q \times n$</span> matrix <span class="tts-math" data-tts="A">$A$</span> with linearly independent rows (after
+  possibly replacing <span class="tts-math" data-tts="A">$A$</span> by <span class="tts-math" data-tts="AP">$AP$</span>, which doesn't change <span class="tts-math" data-tts="psi">$\psi$</span>). The least-squares estimator is
+  <span class="tts-math" data-tts="psi hat equals A xi hat">$\hat{\psi} = A\hat{\xi}$</span>, with covariance <span class="tts-math" data-tts="sigma to the 2 B">$\sigma^2 B$</span> where <span class="tts-math" data-tts="B equals AA prime">$B = AA'$</span> is positive definite.
 </p>
 <p data-cid="ch14-1090">
-  By Lemma 14.9, $(\hat{\psi} - \psi)' B^{-1} (\hat{\psi} - \psi) / \sigma^2 \sim \chi^2_q$, independent of
-  $(n - r) S^2 / \sigma^2 \sim \chi^2_{n - r}$. So
-  $$\frac{(\hat{\psi} - \psi)' B^{-1} (\hat{\psi} - \psi)}{q S^2} \sim F_{q, n - r},$$
-  giving a confidence <em>ellipse</em> for $\psi$:
-  $$P\Bigl( (\hat{\psi} - \psi)' B^{-1} (\hat{\psi} - \psi) \leq q S^2 F_{\alpha, q, n-r} \Bigr) = 1 - \alpha.$$
+  By Lemma 14.9, <span class="tts-math" data-tts="psi hat minus psi prime B inverse psi hat minus psi over sigma to the 2 distributed as chi to the 2 sub q">$(\hat{\psi} - \psi)' B^{-1} (\hat{\psi} - \psi) / \sigma^2 \sim \chi^2_q$</span>, independent of
+  <span class="tts-math" data-tts="n minus r S to the 2 over sigma to the 2 distributed as chi to the 2 sub n minus r">$(n - r) S^2 / \sigma^2 \sim \chi^2_{n - r}$</span>. So
+  <span class="tts-math" data-tts="psi hat minus psi prime B inverse psi hat minus psi q S to the 2 distributed as F sub q n minus r">$$\frac{(\hat{\psi} - \psi)' B^{-1} (\hat{\psi} - \psi)}{q S^2} \sim F_{q, n - r},$$</span>
+  giving a confidence <em>ellipse</em> for <span class="tts-math" data-tts="psi">$\psi$</span>:
+  <span class="tts-math" data-tts="P psi hat minus psi prime B inverse psi hat minus psi less than or equal to q S to the 2 F sub alpha q n minus r equals 1 minus alpha .">$$P\Bigl( (\hat{\psi} - \psi)' B^{-1} (\hat{\psi} - \psi) \leq q S^2 F_{\alpha, q, n-r} \Bigr) = 1 - \alpha.$$</span>
 </p>
 <p data-cid="ch14-1100">
-  Then, by the Schwarz inequality, the linear functional $h' \psi$ falls inside the random interval
-  $$\Bigl( h' \hat{\psi} - \hat{\sigma}_{h'\hat\psi} \sqrt{q F_{\alpha, q, n-r}}, \;\;
-            h' \hat{\psi} + \hat{\sigma}_{h'\hat\psi} \sqrt{q F_{\alpha, q, n-r}} \Bigr)$$
-  simultaneously for <em>every</em> $h \in \mathbb{R}^q$, with probability exactly $1 - \alpha$. Here
-  $\hat{\sigma}_{h'\hat\psi} = S \sqrt{h' B h}$.
+  Then, by the Schwarz inequality, the linear functional <span class="tts-math" data-tts="h prime psi">$h' \psi$</span> falls inside the random interval
+  <span class="tts-math" data-tts="h prime psi hat minus sigma hat sub h prime psi root q F_ alpha q n minus r h prime psi hat plus sigma hat sub h prime psi root q F_ alpha q n minus r">$$\Bigl( h' \hat{\psi} - \hat{\sigma}_{h'\hat\psi} \sqrt{q F_{\alpha, q, n-r}}, \;\;
+            h' \hat{\psi} + \hat{\sigma}_{h'\hat\psi} \sqrt{q F_{\alpha, q, n-r}} \Bigr)$$</span>
+  simultaneously for <em>every</em> <span class="tts-math" data-tts="h in the real numbers to the q">$h \in \mathbb{R}^q$</span>, with probability exactly <span class="tts-math" data-tts="1 minus alpha">$1 - \alpha$</span>. Here
+  <span class="tts-math" data-tts="sigma hat sub h prime psi equals S root h prime B h">$\hat{\sigma}_{h'\hat\psi} = S \sqrt{h' B h}$</span>.
 </p>
 <div class="box intuition" data-cid="ch14-1110">
 <span class="box-label">What Scheffé really gives you</span>
 <p data-cid="ch14-1120">
-  A single random ellipse containing the true $\psi$ with probability $1 - \alpha$. Projecting that ellipse
-  onto any direction $h$ gives a confidence interval for $h' \psi$. All those intervals are valid
+  A single random ellipse containing the true <span class="tts-math" data-tts="psi">$\psi$</span> with probability <span class="tts-math" data-tts="1 minus alpha">$1 - \alpha$</span>. Projecting that ellipse
+  onto any direction <span class="tts-math" data-tts="h">$h$</span> gives a confidence interval for <span class="tts-math" data-tts="h prime psi">$h' \psi$</span>. All those intervals are valid
   simultaneously — you may go data-snooping after the fact and the global coverage probability is unchanged.
   The price for this freedom is that the intervals are wider than they would be for any single
-  pre-specified $h$.
+  pre-specified <span class="tts-math" data-tts="h">$h$</span>.
 </p>
 </div>
 <div class="box example" data-cid="ch14-1130">
 <span class="box-label">Example 14.15 — confidence bands for a regression line</span>
 <p data-cid="ch14-1140">
-  In simple linear regression, the value of the regression function at $x$ is $\beta_1 + \beta_2(x - \bar
-  x)$. Applying Scheffé with $\psi = \beta$ (so $q = 2$) gives the band
-  $$\hat{\beta}_1 + \hat{\beta}_2 (x - \bar x) \pm S \sqrt{\frac{1}{n} + \frac{(x - \bar x)^2}{s_{xx}}} \sqrt{2 F_{\alpha, 2, n-2}}$$
-  containing the true regression line at every $x \in \mathbb{R}$ simultaneously with probability $1 -
-  \alpha$. This is the curving "hourglass" band around a regression fit; the width grows as $x$ moves away
-  from $\bar x$ — and that growth is the price of guaranteeing simultaneous coverage.
+  In simple linear regression, the value of the regression function at <span class="tts-math" data-tts="x">$x$</span> is <span class="tts-math" data-tts="beta sub 1 plus beta sub 2 x minus x">$\beta_1 + \beta_2(x - \bar
+  x)$</span>. Applying Scheffé with <span class="tts-math" data-tts="psi equals beta">$\psi = \beta$</span> (so <span class="tts-math" data-tts="q equals 2">$q = 2$</span>) gives the band
+  <span class="tts-math" data-tts="beta hat sub 1 plus beta hat sub 2 x minus x plus or minus S root 1 over n plus x minus x to the 2 over s_ xx root 2 F_ alpha 2 n minus 2">$$\hat{\beta}_1 + \hat{\beta}_2 (x - \bar x) \pm S \sqrt{\frac{1}{n} + \frac{(x - \bar x)^2}{s_{xx}}} \sqrt{2 F_{\alpha, 2, n-2}}$$</span>
+  containing the true regression line at every <span class="tts-math" data-tts="x in the real numbers">$x \in \mathbb{R}$</span> simultaneously with probability <span class="tts-math" data-tts="1 minus alpha">$1 -
+  \alpha$</span>. This is the curving "hourglass" band around a regression fit; the width grows as <span class="tts-math" data-tts="x">$x$</span> moves away
+  from <span class="tts-math" data-tts="x">$\bar x$</span> — and that growth is the price of guaranteeing simultaneous coverage.
 </p>
 </div>
 <div class="box example" data-cid="ch14-1150">
 <span class="box-label">Example 14.16 — contrasts in ANOVA</span>
 <p data-cid="ch14-1160">
-  A <strong>contrast</strong> in one-way ANOVA is a linear combination $a'\beta = a_1 \beta_1 + \cdots + a_p
-  \beta_p$ with $\sum a_i = 0$. Contrasts compare weighted averages of means, e.g. $\beta_3 - \beta_1$ or
-  $\frac{1}{2}(\beta_1 + \beta_3) - \frac{1}{2}(\beta_2 + \beta_4)$. The Scheffé intervals over all
+  A <strong>contrast</strong> in one-way ANOVA is a linear combination <span class="tts-math" data-tts="a prime beta equals a sub 1 beta sub 1 plus times s plus a sub p beta sub p">$a'\beta = a_1 \beta_1 + \cdots + a_p
+  \beta_p$</span> with <span class="tts-math" data-tts="the sum of a sub i equals 0">$\sum a_i = 0$</span>. Contrasts compare weighted averages of means, e.g. <span class="tts-math" data-tts="beta sub 3 minus beta sub 1">$\beta_3 - \beta_1$</span> or
+  <span class="tts-math" data-tts="1 over 2 beta sub 1 plus beta sub 3 minus 1 over 2 beta sub 2 plus beta sub 4">$\frac{1}{2}(\beta_1 + \beta_3) - \frac{1}{2}(\beta_2 + \beta_4)$</span>. The Scheffé intervals over all
   contrasts are
-  $$a'\hat\beta \pm \frac{S \|a\|}{\sqrt c} \sqrt{(p - 1) F_{\alpha, p-1, p(c-1)}},$$
-  valid simultaneously for every contrast $a$. Wider than any single $t$-interval would be, but they buy
+  <span class="tts-math" data-tts="a prime beta plus or minus S norm of a norm over root c root p minus 1 F_ alpha p minus 1 p c minus 1">$$a'\hat\beta \pm \frac{S \|a\|}{\sqrt c} \sqrt{(p - 1) F_{\alpha, p-1, p(c-1)}},$$</span>
+  valid simultaneously for every contrast <span class="tts-math" data-tts="a">$a$</span>. Wider than any single <span class="tts-math" data-tts="t">$t$</span>-interval would be, but they buy
   full post-hoc freedom.
 </p>
 </div>
 <h2 data-cid="ch14-1170" id="summary">Summary — what you learned in Chapter 14</h2>
 <p data-cid="ch14-1180">The whole chapter, in eight bullets:</p>
 <ol data-cid="ch14-1190">
-<li>The <strong>general linear model</strong> $Y = X\beta + \epsilon$ unifies regression and ANOVA. The mean
-    $\xi = X\beta$ lives in the column space $\omega$ of $X$.</li>
-<li>In <strong>canonical form</strong>, a rotation puts the unknown signal into the first $r$ coordinates
-    and pure noise into the remaining $n - r$ — making everything that follows transparent.</li>
-<li>The <strong>least-squares estimator</strong> $\hat{\xi} = PY$ is the orthogonal projection of $Y$ onto
-    $\omega$. When $X$ has full rank, $P = X(X'X)^{-1}X'$ and $\hat{\beta} = (X'X)^{-1}X'Y$.</li>
-<li><strong>Residuals</strong> $e = Y - \hat{\xi}$ lie in $\omega^\perp$, orthogonal to the fit; this
+<li>The <strong>general linear model</strong> <span class="tts-math" data-tts="Y equals X beta plus epsilon">$Y = X\beta + \epsilon$</span> unifies regression and ANOVA. The mean
+    <span class="tts-math" data-tts="xi equals X beta">$\xi = X\beta$</span> lives in the column space <span class="tts-math" data-tts="omega">$\omega$</span> of <span class="tts-math" data-tts="X">$X$</span>.</li>
+<li>In <strong>canonical form</strong>, a rotation puts the unknown signal into the first <span class="tts-math" data-tts="r">$r$</span> coordinates
+    and pure noise into the remaining <span class="tts-math" data-tts="n minus r">$n - r$</span> — making everything that follows transparent.</li>
+<li>The <strong>least-squares estimator</strong> <span class="tts-math" data-tts="xi hat equals PY">$\hat{\xi} = PY$</span> is the orthogonal projection of <span class="tts-math" data-tts="Y">$Y$</span> onto
+    <span class="tts-math" data-tts="omega">$\omega$</span>. When <span class="tts-math" data-tts="X">$X$</span> has full rank, <span class="tts-math" data-tts="P equals X X primeX inverseX prime">$P = X(X'X)^{-1}X'$</span> and <span class="tts-math" data-tts="beta hat equals X primeX inverseX primeY">$\hat{\beta} = (X'X)^{-1}X'Y$</span>.</li>
+<li><strong>Residuals</strong> <span class="tts-math" data-tts="e equals Y minus xi hat">$e = Y - \hat{\xi}$</span> lie in <span class="tts-math" data-tts="omega ^">$\omega^\perp$</span>, orthogonal to the fit; this
     decomposition powers Pythagorean arguments throughout.</li>
-<li><strong>Gauss–Markov:</strong> without normality, $a'\hat{\xi}$ is BLUE (Best Linear Unbiased Estimator)
-    for $a'\xi$.</li>
-<li>$S^2 = \|e\|^2 / (n - r)$ is the UMVU estimator of $\sigma^2$, independent of $\hat{\xi}$, and
-    $(n-r)S^2/\sigma^2 \sim \chi^2_{n-r}$.</li>
-<li>The <strong>$F$-test</strong> $T = \|\hat{\xi} - \hat{\xi}_0\|^2 / ((r-q) S^2)$ tests nested hypotheses
-    $H_0: \xi \in \omega_0$ versus $H_1: \xi \in \omega$; under $H_0$, $T \sim F_{r-q, n-r}$, and under
-    $H_1$, $T \sim F_{r-q, n-r}(\delta^2)$ with $\delta^2 = \|\xi - P_0\xi\|^2 / \sigma^2$.</li>
+<li><strong>Gauss–Markov:</strong> without normality, <span class="tts-math" data-tts="a prime xi hat">$a'\hat{\xi}$</span> is BLUE (Best Linear Unbiased Estimator)
+    for <span class="tts-math" data-tts="a prime xi">$a'\xi$</span>.</li>
+<li><span class="tts-math" data-tts="S to the 2 equals norm of e norm of to the 2 over n minus r">$S^2 = \|e\|^2 / (n - r)$</span> is the UMVU estimator of <span class="tts-math" data-tts="sigma to the 2">$\sigma^2$</span>, independent of <span class="tts-math" data-tts="xi hat">$\hat{\xi}$</span>, and
+    <span class="tts-math" data-tts="n minus r S to the 2 over sigma to the 2 distributed as chi to the 2 sub n minus r">$(n-r)S^2/\sigma^2 \sim \chi^2_{n-r}$</span>.</li>
+<li>The <strong><span class="tts-math" data-tts="F">$F$</span>-test</strong> <span class="tts-math" data-tts="T equals norm of xi hat minus xi hat sub 0 norm of to the 2 over r minus q S to the 2">$T = \|\hat{\xi} - \hat{\xi}_0\|^2 / ((r-q) S^2)$</span> tests nested hypotheses
+    <span class="tts-math" data-tts="H sub 0 xi in omega sub 0">$H_0: \xi \in \omega_0$</span> versus <span class="tts-math" data-tts="H sub 1 xi in omega">$H_1: \xi \in \omega$</span>; under <span class="tts-math" data-tts="H sub 0">$H_0$</span>, <span class="tts-math" data-tts="T distributed as F sub r minus q n minus r">$T \sim F_{r-q, n-r}$</span>, and under
+    <span class="tts-math" data-tts="H sub 1">$H_1$</span>, <span class="tts-math" data-tts="T distributed as F sub r minus q n minus r delta to the 2">$T \sim F_{r-q, n-r}(\delta^2)$</span> with <span class="tts-math" data-tts="delta to the 2 equals norm of xi minus P sub 0 xi norm of to the 2 over sigma to the 2">$\delta^2 = \|\xi - P_0\xi\|^2 / \sigma^2$</span>.</li>
 <li><strong>Simultaneous intervals</strong> (studentized max modulus, studentized range, Scheffé)
     protect against multiple-comparisons inflation, at the cost of wider individual intervals.</li>
 </ol>
@@ -622,10 +621,10 @@
   Before moving to Chapter 15, you should be able to answer (without looking back):
 </p>
 <ul data-cid="ch14-1220">
-<li>Why is the hat matrix $P$ symmetric <em>and</em> idempotent? What does each property mean geometrically?</li>
+<li>Why is the hat matrix <span class="tts-math" data-tts="P">$P$</span> symmetric <em>and</em> idempotent? What does each property mean geometrically?</li>
 <li>What does "BLUE" stand for, and why might a non-linear estimator beat a linear one?</li>
-<li>Where do the residual degrees of freedom $n - r$ come from?</li>
-<li>State the $F$-statistic and its distribution under $H_0$ and $H_1$.</li>
+<li>Where do the residual degrees of freedom <span class="tts-math" data-tts="n minus r">$n - r$</span> come from?</li>
+<li>State the <span class="tts-math" data-tts="F">$F$</span>-statistic and its distribution under <span class="tts-math" data-tts="H sub 0">$H_0$</span> and <span class="tts-math" data-tts="H sub 1">$H_1$</span>.</li>
 <li>Name three ways a fitted linear model can mislead even when Gauss–Markov technically applies.</li>
 </ul>
 <p data-cid="ch14-1230">If any of these feel shaky, re-read the matching section. The geometry is what unlocks the chapter; don't
@@ -637,6 +636,6 @@
 </nav>
 </article>
 </main>
-<script src="/js/main.js"></script><script src="/js/comments.js"></script>
+<script src="/js/main.js"></script><script src="/js/comments.js"></script><script src="/js/tts.js"></script>
 </body>
 </html>

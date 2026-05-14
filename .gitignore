@@ -1,1 +1,27 @@
 /.claude
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# TTS model cache (large binary files downloaded at runtime)
+tts/
+
+# Comments data (local runtime state)
+comments/comments.json
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo

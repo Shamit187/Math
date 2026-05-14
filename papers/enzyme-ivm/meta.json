@@ -1,0 +1,6 @@
+{
+  "title": "Enzyme: Incremental View Maintenance for Data Engineering",
+  "authors": "Ritwik Yadav et al., Databricks",
+  "venue": "Databricks, 2026",
+  "description": "System for incrementally maintaining materialized views in large-scale data engineering pipelines at Databricks."
+}

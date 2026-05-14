@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>F3: The Open-Source Data File Format for the Future · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/>
+</head>
+<body data-book="f3-file-format" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/f3-file-format/">F3 File Format</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. Introduction</a></li>
+    <li><a href="#s2">2. Background</a>
+      <ol>
+        <li><a href="#s2-1">2.1 Columnar Formats</a></li>
+        <li><a href="#s2-2">2.2 Interoperability &amp; Extensibility</a></li>
+      </ol>
+    </li>
+    <li><a href="#s3">3. F3 Overview</a></li>
+    <li><a href="#s4">4. Metadata Design</a></li>
+    <li><a href="#s5">5. Data Layout</a>
+      <ol>
+        <li><a href="#s5-1">5.1 Decoupled IOUnit</a></li>
+        <li><a href="#s5-2">5.2 Flexible Dictionary Scope</a></li>
+        <li><a href="#s5-3">5.3 Nested Data</a></li>
+      </ol>
+    </li>
+    <li><a href="#s6">6. Decoders &amp; Wasm</a>
+      <ol>
+        <li><a href="#s6-1">6.1 Decoding API</a></li>
+        <li><a href="#s6-2">6.2 Embedded Wasm</a></li>
+        <li><a href="#s6-3">6.3 Wasm Implementation</a></li>
+        <li><a href="#s6-4">6.4 Native vs. Wasm</a></li>
+      </ol>
+    </li>
+    <li><a href="#s7">7. Evaluation</a></li>
+    <li><a href="#s8">8. Related Work</a></li>
+    <li><a href="#s9">9. Conclusion</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">SIGMOD 2025 · Systems Paper</div>
+    <h1 data-cid="main-0010">F3: The Open-Source Data File Format for the Future</h1>
+    <div class="paper-meta">
+      <span class="authors">Xinyu Zeng, Ruijun Meng, Martin Prammer, Wes McKinney, Jignesh M. Patel, Andrew Pavlo, Huanchen Zhang</span>
+      <span class="venue">Proc. ACM Manag. Data, Vol. 3, No. 4 (SIGMOD 2025), Article 245</span>
+    </div>
+  </section>
+
+  <!-- ABSTRACT -->
+  <div class="paper-abstract" data-cid="main-0020" id="abstract">
+    <strong>Abstract.</strong>
+    Columnar storage formats are the foundation for modern data analytics. The proliferation of
+    open-source file formats — Parquet and ORC in particular — allows seamless data sharing across
+    disparate platforms. However, these formats were created over a decade ago for hardware and
+    workload environments very different from today's. Although both formats have received
+    specification updates over the years, not all deployments support those modifications, and
+    systems often cannot overcome the formats' deficiencies without a ground-up rewrite.
+    This paper presents the <em>Future-proof File Format</em> (F3), a next-generation open-source
+    columnar file format with <strong>interoperability</strong>, <strong>extensibility</strong>,
+    and <strong>efficiency</strong> as its core design principles. F3 provides a data organisation
+    structure and a general-purpose API that lets developers add new encoding schemes without
+    breaking existing readers. Each self-describing F3 file embeds both the data and the
+    WebAssembly (Wasm) binaries needed to decode it — a storage overhead of only kilobytes —
+    guaranteeing compatibility on any platform even when native decoders are unavailable.
+    Benchmarks show F3's layout design achieves efficiency on par with state-of-the-art formats
+    while the Wasm mechanism introduces only a 10–30% decoding slowdown for integers and
+    floats in exchange for universal interoperability.
+  </div>
+
+  <!-- SECTION 1: INTRODUCTION -->
+  <h2 data-cid="main-0030" id="s1">1. Introduction</h2>
+
+  <p data-cid="main-0040">
+    Today's data ecosystem is built on open-source columnar file formats. Parquet and ORC were
+    both born in the early 2010s alongside big-data engines like Hive, Impala, and Spark. For
+    a decade they have been the lingua franca of data lakes and data warehouses, enabling systems
+    written in different languages to exchange data without expensive transformation steps.
+  </p>
+
+  <div class="box intuition" data-cid="main-0050">
+    <span class="box-label">Why columnar storage dominates analytics</span>
+    <p data-cid="main-0060">
+      Imagine a table of one billion sales records, each with 50 columns. An analytics query
+      typically touches only 3–5 columns at a time ("sum of revenue grouped by region").
+      In a <em>row-oriented</em> store every page on disk contains interleaved data from all 50
+      columns, so the query engine must read all 50 columns worth of I/O just to extract the 3
+      it needs. In a <em>columnar</em> store each column lives in its own contiguous region on
+      disk: the query reads only the 3 relevant column stripes, cutting I/O by roughly
+      <span class="tts-math" data-tts="47 over 50">$47/50$</span> ≈ 94%. Additionally, because
+      all values in a column have the same type and are often correlated (e.g., thousands of rows
+      all have <code>region = "US"</code>), lightweight encodings such as run-length encoding or
+      dictionary compression achieve dramatic size reductions that are impossible across
+      heterogeneous row data.
+    </p>
+  </div>
+
+  <p data-cid="main-0070">
+    A decade after their inception, studies show Parquet and ORC are insufficient for modern
+    workloads. Two hardware trends are to blame. First, storage and network bandwidth has
+    improved by orders of magnitude — NVMe SSDs deliver gigabytes per second and cloud object
+    stores like Amazon S3 provide high-bandwidth access — while CPU performance has grown far
+    more slowly. The bottleneck has shifted from I/O to <em>compute</em>: decoding is now often
+    the slowest step. Second, data has grown <em>wider</em>: machine-learning applications store
+    features in tables with thousands of columns, plus high-dimensional embeddings and large
+    binary blobs. Existing formats were never designed for these access patterns.
+  </p>
+
+  <p data-cid="main-0080">
+    A subtler but equally serious problem is <em>extensibility</em>. New compression algorithms
+    (BtrBlocks, FastLanes, Pcodec) and new indexing structures (Bloom filters, zone maps)
+    routinely outperform the techniques baked into Parquet and ORC. But adding a new feature
+    to a format requires updating every implementation — Parquet alone has separate
+    implementations in Java, C++, Rust, Go, Python, and many proprietary engines. In practice,
+    writers stick to the lowest-common-denominator feature set to avoid compatibility breakage.
+    Figure 1 of the paper shows this dramatically: a survey of ~300 real-world Parquet files
+    found most were written with only Parquet v1 (2013) features, even when created by software
+    released after 2020.
+  </p>
+
+  <div class="box warn" data-cid="main-0090">
+    <span class="box-label">The "same mistake" trap</span>
+    <p data-cid="main-0100">
+      Rather than patching Parquet or ORC, recent projects (Lance, Nimble, BtrBlocks, Bullion,
+      TSFile) have each built completely new formats. The F3 authors argue this repeats the
+      original mistake: every new format is optimised for contemporary hardware and workloads,
+      so in another decade we will need yet another format. The solution is a format whose
+      extensibility mechanism is itself a first-class citizen of the specification, not an
+      afterthought.
+    </p>
+  </div>
+
+  <p data-cid="main-0110">
+    F3 addresses this by embedding the <em>decoder code</em> inside the file as a WebAssembly
+    binary. Any reader — regardless of which version of the F3 library it uses — can decode
+    any F3 file by executing the bundled Wasm. The format's three contributions are:
+  </p>
+  <ol data-cid="main-0120">
+    <li>A redesigned file layout specification that fixes inefficiencies in Parquet and ORC (decoupled I/O units, flexible dictionary scope, FlatBuffer metadata).</li>
+    <li>A plug-in decoding API together with the ability to embed Wasm decoder binaries in each file, guaranteeing interoperability across library versions and enabling new encodings without any reader changes.</li>
+    <li>A comprehensive evaluation against Parquet, ORC, Lance, Vortex, and Nimble on compression ratio, read throughput, random access, metadata overhead, and Wasm overhead.</li>
+  </ol>
+
+  <!-- SECTION 2: BACKGROUND -->
+  <h2 data-cid="main-0130" id="s2">2. Background and Motivation</h2>
+
+  <h3 data-cid="main-0140" id="s2-1">2.1 Columnar File Format Anatomy</h3>
+
+  <div class="box definition" data-cid="main-0150">
+    <span class="box-label">PAX Layout (Partition Attributes Across)</span>
+    <p data-cid="main-0160">
+      Both Parquet and ORC use the PAX layout. A file's rows are first split horizontally into
+      <strong>row groups</strong>. Within each row group the data is stored column-by-column.
+      Each column's slice within a row group is called a <strong>column chunk</strong>. This
+      hybrid approach lets a reader skip an entire row group via zone-map statistics without
+      reading any data, and within a row group it can scan a single column chunk without
+      touching the others.
+    </p>
+  </div>
+
+  <p data-cid="main-0170">
+    Column chunks are further subdivided into <strong>pages</strong> (Parquet) or
+    <strong>compression chunks</strong> (ORC). The page is the fundamental unit for encoding,
+    compression, and data skipping. By default, column chunks use dictionary encoding: the
+    first page is a <em>dictionary page</em> listing all distinct values, and subsequent pages
+    store integer codes that index into that dictionary. A file's <strong>footer</strong> stores
+    metadata: schema, per-column statistics, zone maps, and Bloom filters. This footer is
+    serialised using Thrift (Parquet) or Protocol Buffers (ORC).
+  </p>
+
+  <div class="box definition" data-cid="main-0180">
+    <span class="box-label">Key Encoding Schemes</span>
+    <p data-cid="main-0190">
+      <strong>Dictionary encoding</strong> replaces repeated string (or integer) values with
+      compact integer codes. If a column has only 100 distinct city names but 10 million rows,
+      the dictionary stores 100 strings and each row stores a tiny integer index — a massive
+      space saving.
+    </p>
+    <p data-cid="main-0200">
+      <strong>Run-length encoding (RLE)</strong> replaces runs of the same value with a
+      (value, count) pair. A column with one million consecutive <code>1</code>s stores just
+      the pair <code>(1, 1000000)</code> rather than a million copies of <code>1</code>.
+    </p>
+    <p data-cid="main-0210">
+      <strong>Bit-packing</strong> stores each integer using only as many bits as the maximum
+      value requires. If codes range from 0 to 127, only 7 bits per code are needed instead of
+      a full 32-bit integer.
+    </p>
+    <p data-cid="main-0220">
+      <strong>Delta encoding</strong> stores differences between consecutive values. Monotonically
+      increasing timestamps compress extremely well because most deltas are tiny.
+    </p>
+    <p data-cid="main-0230">
+      <strong>Frame of Reference (FOR)</strong> subtracts a baseline value from each entry so
+      the residuals fit in fewer bits.
+    </p>
+    <p data-cid="main-0240">
+      <strong>Cascading encoding</strong> chains multiple schemes. For example: apply dictionary
+      encoding to strings, then RLE to the resulting codes, then bit-pack the run lengths.
+      Each stage further shrinks the representation.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-0250">
+    <span class="box-label">Predicate Pushdown and Projection Pushdown</span>
+    <p data-cid="main-0260">
+      <strong>Projection pushdown</strong> means the query engine tells the file reader which
+      columns it needs, so the reader loads only those column chunks and skips the rest entirely.
+    </p>
+    <p data-cid="main-0270">
+      <strong>Predicate pushdown</strong> (also called filter pushdown) means the file reader
+      evaluates a WHERE-clause filter inside the decoder before materialising rows, discarding
+      non-matching rows as early as possible. Row groups whose zone maps (min/max statistics)
+      prove they cannot satisfy the predicate are skipped entirely without any data I/O.
+    </p>
+    <p data-cid="main-0280">
+      <strong>Late materialisation</strong> extends this idea: the engine operates on compressed
+      column vectors as long as possible, only decompressing and joining rows into the final
+      tuple format after filtering, minimising unnecessary work.
+    </p>
+  </div>
+
+  <p data-cid="main-0290">
+    Columnar formats also optionally store auxiliary data structures: <strong>zone maps</strong>
+    (min/max per row group for each column), <strong>Bloom filters</strong> (probabilistic
+    membership tests for equality predicates), and statistical sketches such as HyperLogLog
+    for cardinality estimation. Recent research suggests these should be stored separately
+    from the data file so they can be tuned or updated independently.
+  </p>
+
+  <h3 data-cid="main-0300" id="s2-2">2.2 The Interoperability and Extensibility Crisis</h3>
+
+  <p data-cid="main-0310">
+    <strong>Interoperability</strong> means a file written by one system can be correctly read
+    by any other system. In practice this has been hard to achieve. When Parquet was first
+    released, the Impala team and the Parquet-Java team developed implementations in parallel
+    and discovered compatibility bugs after the fact. More recently, Parquet added nanosecond
+    timestamps to its specification in 2018, yet as of 2025 major systems including Spark and
+    Apache Iceberg still do not support them.
+  </p>
+
+  <p data-cid="main-0320">
+    <strong>Extensibility</strong> means that new encodings, page types, or compression
+    algorithms can be added without breaking existing readers. Parquet's specification has a
+    mechanism for custom encodings, but in practice it is almost never used. The survey of
+    ~300 real-world files confirms this: nearly all use only the encodings defined in Parquet
+    v1, including only basic dictionary encoding and either gzip or Snappy compression. Writers
+    default to the lowest common denominator because they cannot trust all readers to support
+    newer features.
+  </p>
+
+  <div class="box intuition" data-cid="main-0330">
+    <span class="box-label">Why the fragmented ecosystem is self-reinforcing</span>
+    <p data-cid="main-0340">
+      Suppose you want to ship a new SIMD-accelerated bit-packing codec that compresses
+      integers 30% better than Parquet's built-in scheme. To use it you must: (1) add it to the
+      Parquet specification, (2) implement it in Parquet-Java, Parquet-C++, Parquet-Rust,
+      Parquet-Go, DuckDB, Trino, Spark, Impala, and every proprietary reader, (3) wait for all
+      users to upgrade their deployments. If even one reader fails to upgrade, files written
+      with the new codec become unreadable for that reader. The safest choice is to never use
+      the new codec in production files — which is exactly what the survey shows.
+    </p>
+  </div>
+
+  <!-- SECTION 3: F3 OVERVIEW -->
+  <h2 data-cid="main-0350" id="s3">3. F3 Overview</h2>
+
+  <p data-cid="main-0360">
+    F3 adopts the same PAX layout as Parquet and ORC — row groups, with each row group stored
+    column-by-column — but makes three critical structural changes and adds the Wasm extensibility
+    mechanism. At the highest level, an F3 file has two major parts:
+  </p>
+
+  <div class="box definition" data-cid="main-0370">
+    <span class="box-label">F3 File Structure</span>
+    <p data-cid="main-0380">
+      <strong>Data Part</strong> — Row Groups (RG). Each row group contains one or more
+      <em>IOUnits</em> per column. Each IOUnit contains one or more <em>EncUnits</em>.
+    </p>
+    <p data-cid="main-0390">
+      <strong>Metadata Part</strong> — Composed of four segments:
+    </p>
+    <ul data-cid="main-0400">
+      <li><strong>OptionalData (OptData)</strong>: key-value store for Wasm binaries, future indexes, and filters.</li>
+      <li><strong>ColMetadata</strong>: per-column, per-row-group metadata including offset/size of each IOUnit and metadata for each EncUnit within it. Stored as FlatBuffers for zero-copy deserialization.</li>
+      <li><strong>Footer</strong>: a FlatBuffer acting as a directory to the column-level metadata. Stores the schema, pointers to OptData and ColMetadata, and the shared dictionary table.</li>
+      <li><strong>Postscript</strong>: the sizes of ColMetadata and Footer, plus a checksum of all preceding data. Always the last bytes of the file.</li>
+    </ul>
+  </div>
+
+  <p data-cid="main-0410">
+    The three structural innovations that distinguish F3 from existing formats are:
+  </p>
+
+  <ol data-cid="main-0420">
+    <li><strong>Decoupled IOUnit</strong> — The physical I/O unit is independent from the logical row group. Parquet ties these together, forcing the writer to buffer an entire row group in memory before flushing. F3's IOUnit can be flushed whenever a column buffer reaches a target size (default 8 MB), drastically reducing write-time memory usage.</li>
+    <li><strong>Flexible Dictionary Scope</strong> — In Parquet every column chunk must have exactly one dictionary aligned to the row group. F3 decouples the dictionary scope from the row group, allowing per-IOUnit choices: no dictionary, a local dictionary, or a shared dictionary whose entries can span multiple IOUnits or even multiple columns.</li>
+    <li><strong>FlatBuffer Metadata</strong> — Instead of Thrift (Parquet) or Protocol Buffers (ORC), which require deserialising the entire footer to access any field, F3 serialises each column's metadata into a separate FlatBuffer. FlatBuffers support random access without any deserialisation step, making projection-only metadata lookups extremely cheap.</li>
+  </ol>
+
+  <!-- SECTION 4: METADATA -->
+  <h2 data-cid="main-0430" id="s4">4. Metadata Design</h2>
+
+  <p data-cid="main-0440">
+    The metadata bottleneck is a serious problem for machine-learning workloads. A typical ML
+    training table may have tens of thousands of feature columns, yet a single training job
+    accesses only a small subset. In Parquet and ORC, the footer is serialised as a single opaque
+    blob: to find column <em>k</em>'s byte offset, the reader must deserialise the entire footer.
+    Prior research has shown this cost can rival the time to actually read the data columns
+    themselves.
+  </p>
+
+  <div class="box intuition" data-cid="main-0450">
+    <span class="box-label">FlatBuffers vs. Thrift — why it matters</span>
+    <p data-cid="main-0460">
+      Thrift and Protocol Buffers are <em>sequential</em> encoding formats. To read field 1000
+      you must parse and skip fields 1 through 999. FlatBuffers, by contrast, store a vtable
+      of offsets so any field can be accessed in <span class="tts-math" data-tts="O of 1">$O(1)$</span>
+      without touching surrounding data. For a table with
+      <span class="tts-math" data-tts="N columns">$N$</span> columns and a projection accessing
+      <span class="tts-math" data-tts="k columns">$k$</span> of them, Parquet incurs
+      <span class="tts-math" data-tts="O of N">$O(N)$</span> metadata parsing cost whereas F3
+      incurs only <span class="tts-math" data-tts="O of k">$O(k)$</span>. F3 benchmarks show
+      metadata time stays around 10 ms even for 100,000-column tables, an order of magnitude
+      faster than Parquet.
+    </p>
+  </div>
+
+  <p data-cid="main-0470">
+    F3's metadata is structured in two tiers. The <strong>Footer</strong> is a compact FlatBuffer
+    that lists the schema and the offsets into ColMetadata for each (row group, column) pair.
+    The <strong>ColMetadata</strong> is a sequence of per-column FlatBuffers, each describing
+    the IOUnits and EncUnits for that column across all row groups. The reader consults the
+    Footer first (a small fixed read at the end of the file), identifies which ColMetadata
+    entries it needs, and issues targeted I/O requests for only those entries.
+  </p>
+
+  <p data-cid="main-0480">
+    The <strong>Postscript</strong> stores the sizes of ColMetadata and Footer. If ColMetadata
+    is small enough, a single tail-read can fetch both. For large tables with many columns, the
+    reader fetches only the Footer first and then selectively loads the ColMetadata for the
+    projected columns. IOUnit and EncUnit metadata is embedded in ColMetadata rather than in
+    in-place headers or footers within the data region, so metadata-only queries never touch
+    the data area at all. Per-IOUnit checksums allow integrity verification at a fine granularity
+    without reading the entire file.
+  </p>
+
+  <!-- SECTION 5: DATA LAYOUT -->
+  <h2 data-cid="main-0490" id="s5">5. Data Layout</h2>
+
+  <h3 data-cid="main-0500" id="s5-1">5.1 Decoupled I/O Unit (IOUnit)</h3>
+
+  <p data-cid="main-0510">
+    In Parquet a "row group" is simultaneously the logical partition unit, the dictionary scope,
+    and the physical I/O unit. This overloading creates problems. When writing, Parquet must
+    buffer an <em>entire</em> row group in memory before it can flush any data to disk. With
+    wide ML tables containing 768-dimensional float embeddings, buffering one million rows can
+    require 2 GB or more, causing out-of-memory crashes. When reading, each column chunk within
+    a row group can be anywhere from 50 KB to 50 MB depending on compressibility — non-uniform
+    chunk sizes force the reader to implement a complex I/O coalescing layer to achieve good
+    throughput on cloud storage.
+  </p>
+
+  <div class="box intuition" data-cid="main-0520">
+    <span class="box-label">Why 8 MB is the right I/O unit for cloud storage</span>
+    <p data-cid="main-0530">
+      Cloud object stores like Amazon S3 charge per request and have high per-request latency
+      (tens of milliseconds). Optimal throughput is achieved by making each read request large
+      enough to amortise the per-request overhead — empirically around 8 MB per request.
+      If column chunks are 50 KB, the reader needs 160 requests to read 8 MB of data, each with
+      its own latency penalty. F3 targets exactly 8 MB per IOUnit so a single request retrieves
+      the optimal amount of data from any column, regardless of the column's compressibility.
+    </p>
+  </div>
+
+  <p data-cid="main-0540">
+    F3 separates the logical row group from the physical IOUnit. A row group is now just a
+    semantic partition — a horizontal slice of the table that enables zone-map-based skipping —
+    but it does not constrain when the writer flushes data. The writer flushes an IOUnit for a
+    given column as soon as that column's internal buffer fills to the target IOUnit size. This
+    means different columns are flushed at different times as data streams in, and a column with
+    large values (embeddings) flushes IOUnits far more frequently than a column with tiny integers.
+    The sizes and offsets of each IOUnit are tracked in ColMetadata.
+  </p>
+
+  <p data-cid="main-0550">
+    Each IOUnit is further divided into one or more <strong>EncUnits</strong>. An EncUnit is
+    the smallest granule that encoding and decoding logic operates on — an opaque byte buffer
+    interpreted by the corresponding decoder. The parallelism model aligns naturally: I/O
+    parallelism is at the IOUnit level (multiple IOUnits can be fetched concurrently), while
+    compute parallelism for decoding is at the EncUnit level.
+  </p>
+
+  <div class="box example" data-cid="main-0560">
+    <span class="box-label">Concrete example: reading a column with predicate pushdown</span>
+    <p data-cid="main-0570">
+      Suppose a table has 10 million rows, partitioned into row groups of 1 million rows each.
+      A query asks for all rows where <code>country = "DE"</code> and projects columns
+      <code>revenue</code> and <code>country</code>.
+    </p>
+    <ol data-cid="main-0580">
+      <li>The reader fetches the Footer (one small I/O at the tail of the file). It checks the zone map: row groups 0, 3, and 7 have min/max statistics that include "DE"; groups 1, 2, 4, 5, 6, 8, 9 are entirely non-"DE" regions and are skipped.</li>
+      <li>For row groups 0, 3, 7, the reader fetches only the ColMetadata entries for the <code>country</code> and <code>revenue</code> columns — skipping all other columns' metadata.</li>
+      <li>The reader issues I/O requests for the IOUnits of those two columns in those three row groups. Each IOUnit is exactly 8 MB, yielding optimal request sizes for S3.</li>
+      <li>For each IOUnit the reader invokes the EncUnit decoder with a <code>decode_ranges</code> argument specifying row offsets where <code>country = "DE"</code>, so only matching rows are materialised into Arrow Arrays.</li>
+      <li>The Arrow Arrays for <code>revenue</code> (filtered to matching rows) are passed directly to the query engine without any format conversion.</li>
+    </ol>
+  </div>
+
+  <h3 data-cid="main-0590" id="s5-2">5.2 Flexible Dictionary Scope</h3>
+
+  <p data-cid="main-0600">
+    Dictionary encoding is effective, but its optimum scope varies dramatically by column
+    characteristics. For a column with many distinct values and long string representations
+    (e.g., URLs), the dictionary itself is large. If the dictionary scope is too broad
+    (spanning millions of rows), it must enumerate all distinct URLs in that range —
+    potentially megabytes — while the integer codes remain short. Conversely, a narrow scope
+    means many small dictionaries each potentially storing overlapping values redundantly.
+    For a column with few distinct values (e.g., a <code>status</code> column with values
+    ACTIVE/INACTIVE), a global dictionary shared across the entire file is ideal: the dictionary
+    is tiny and the codes are short everywhere.
+  </p>
+
+  <p data-cid="main-0610">
+    Parquet hard-codes the dictionary scope to equal the row group: exactly one dictionary
+    per column chunk. The F3 authors measured the optimal dictionary scope for 2,080 columns
+    from the Public BI benchmark and found: 13% of columns favour a local dictionary
+    (64K-row scope), 35% favour a global dictionary, and 52% achieve their best compression
+    at an intermediate scope. If you are restricted to choosing only between global and local,
+    the better of the two choices achieves near-best compression ratio (within 5% of optimal)
+    for 88% of columns. The remaining 12% require an intermediate scope that neither extreme
+    can provide.
+  </p>
+
+  <div class="box definition" data-cid="main-0620">
+    <span class="box-label">F3 Dictionary Types</span>
+    <p data-cid="main-0630">
+      Each IOUnit's metadata carries a <em>dictionary type</em> field with three possible values:
+    </p>
+    <ul data-cid="main-0640">
+      <li><strong>noDict</strong>: this IOUnit does not use dictionary encoding.</li>
+      <li><strong>local</strong>: this IOUnit contains its own private dictionary followed by the encoded codes. The dictionary and codes are stored inside the IOUnit itself.</li>
+      <li><strong>shared</strong>: this IOUnit's codes reference a dictionary stored in one or more designated <em>dictionary IOUnits</em>. The IOUnit's metadata stores a <code>dict_id</code> that indexes into a <em>SharedDictTable</em> in the Footer, which lists the IOUnit numbers containing the actual dictionary entries.</li>
+    </ul>
+  </div>
+
+  <p data-cid="main-0650">
+    The shared dictionary design also enables cross-column dictionary sharing. If two string
+    columns contain the same set of values (e.g., <code>ship_to_country</code> and
+    <code>bill_to_country</code>), their codes can reference the same set of dictionary IOUnits.
+    The values appear on disk only once, and both columns' codes index into the same shared
+    dictionary. This is impossible in Parquet, where each column chunk must have its own
+    dictionary. The <code>dict_id</code> to IOUnit mapping table in the Footer makes this
+    cross-column sharing explicit and efficient to resolve.
+  </p>
+
+  <div class="box intuition" data-cid="main-0660">
+    <span class="box-label">Why the dictionary scope matters for compression ratio</span>
+    <p data-cid="main-0670">
+      Consider a column of country codes (e.g., "US", "DE", "FR"). There are only ~200 distinct
+      values. A global dictionary enumerates 200 entries once; every code in the file references
+      one of 200 values, fitting in 8 bits. A local dictionary with a 64K-row scope creates
+      <span class="tts-math" data-tts="N over 64 thousand">$N / 64000$</span> separate
+      dictionaries, each potentially listing the same 200 values — the dictionary storage
+      grows proportionally with file size, eventually overwhelming the savings from short codes.
+      Global scope wins here.
+    </p>
+    <p data-cid="main-0680">
+      Now consider a user-agent string column with 500 million distinct values spread across
+      2 billion rows. A global dictionary must list 500 million entries — potentially gigabytes.
+      The codes themselves are at least 29 bits wide
+      (<span class="tts-math" data-tts="log base 2 of 500 million is approximately 29">$\log_2(500{,}000{,}000) \approx 29$</span>),
+      so the codes alone rival uncompressed storage. A local 64K-row scope produces dictionaries
+      with at most 64K entries each (a few megabytes), and codes need at most 16 bits.
+      Local scope wins here.
+    </p>
+  </div>
+
+  <h3 data-cid="main-0690" id="s5-3">5.3 Nested Data Handling</h3>
+
+  <p data-cid="main-0700">
+    Modern tables frequently contain nested types: lists, structs, and maps. Parquet uses the
+    Dremel model (repetition levels and definition levels) to encode nested data. ORC and Arrow
+    use the Length and Presence (L&P) model (explicit list lengths and a null bitmap). Prior
+    work shows Dremel excels at random access into deeply nested structures, while L&P produces
+    smaller files and maps more naturally to in-memory formats.
+  </p>
+
+  <p data-cid="main-0710">
+    For F3, the authors cite evidence that real-world nested schemas are shallow (rarely
+    exceeding four levels of nesting), meaning the differences between Dremel and L&P are
+    negligible for most practical cases. More importantly, Parquet's Dremel model has caused
+    significant engineering pain when round-tripping data through Apache Arrow: the
+    representation mismatch led to years of delayed or limited support for nested types in
+    many Parquet implementations. F3 adopts Arrow's variant of the L&P model, ensuring that
+    the in-file format maps directly to Arrow's in-memory layout, making round-trips zero-copy.
+  </p>
+
+  <!-- SECTION 6: DECODERS AND WASM -->
+  <h2 data-cid="main-0720" id="s6">6. Decoders and WebAssembly</h2>
+
+  <h3 data-cid="main-0730" id="s6-1">6.1 The Decoding API</h3>
+
+  <p data-cid="main-0740">
+    Every EncUnit is an opaque byte buffer. The file format specification defines a
+    three-function API that every decoder — whether implemented natively or as a Wasm binary —
+    must implement. All decoders produce Apache Arrow Arrays as output, ensuring that query
+    engines can consume F3 data without any format conversion regardless of which encoding
+    was used.
+  </p>
+
+  <div class="box definition" data-cid="main-0750">
+    <span class="box-label">F3 Decoding API (Rust pseudocode)</span>
+    <p data-cid="main-0760">
+      The three functions are:
+    </p>
+    <ul data-cid="main-0770">
+      <li>
+        <code>check(metadata: EncUnitMetadata) -> HashSet&lt;Feature&gt;</code> — Given the
+        metadata for an EncUnit, returns the set of advanced features this decoder supports
+        (e.g., <code>decode_ranges</code> for predicate pushdown, <code>batch_size</code> for
+        vectorised decoding).
+      </li>
+      <li>
+        <code>init(encunit: Bytes, kwargs: HashMap&lt;Feature, Word&gt;) -> *mut Decoder</code> —
+        Initialises the decoder with the raw bytes of the EncUnit and optional arguments.
+        The <code>decode_ranges</code> kwarg specifies which row offsets within the EncUnit
+        to decode, enabling row-level filtering. The <code>batch_size</code> kwarg controls
+        the chunk size for vectorised decoding (typically 2K rows to fit decoded data in CPU
+        cache for downstream operators).
+      </li>
+      <li>
+        <code>decode(decoder: *mut Decoder) -> Option&lt;arrow::ArrayRef&gt;</code> — Called
+        repeatedly to decode the EncUnit incrementally, returning successive Arrow Arrays
+        until all qualifying values are consumed (<code>None</code> signals completion).
+      </li>
+    </ul>
+  </div>
+
+  <p data-cid="main-0780">
+    The use of kwargs makes the API forward-compatible. If a reader encounters an EncUnit
+    whose encoder supports features the reader has not heard of, it can always call
+    <code>check</code> first and fall back to the basic decode path (no kwargs), which every
+    decoder must support. Future features can be added to the kwargs vocabulary without
+    breaking any existing reader.
+  </p>
+
+  <div class="box pause" data-cid="main-0790">
+    <span class="box-label">Pause and think: why Apache Arrow as the output format?</span>
+    <p data-cid="main-0800">
+      Apache Arrow is a columnar in-memory format with broad cross-language support (C, C++,
+      Java, Python, Rust, Go, R, and more). Most modern query engines either natively use Arrow
+      or support near-zero-copy conversion from Arrow. By mandating Arrow as the output of the
+      F3 decoding API, the format ensures that once data is decoded, it can flow into any
+      downstream operator — in any query engine, on any platform — without additional copies
+      or conversions. This is crucial for both efficiency and interoperability.
+    </p>
+  </div>
+
+  <h3 data-cid="main-0810" id="s6-2">6.2 Embedded WebAssembly Decoders</h3>
+
+  <p data-cid="main-0820">
+    The decoding API alone does not solve the extensibility problem: a reader still needs a
+    native implementation of the decoder to use it. F3's key innovation is that it embeds the
+    <em>decoder implementation itself</em> — compiled to WebAssembly — inside the file's
+    OptionalData section. Any reader that does not have a native decoder for a given encoding
+    can fall back to executing the embedded Wasm binary.
+  </p>
+
+  <div class="box definition" data-cid="main-0830">
+    <span class="box-label">WebAssembly (Wasm) — quick primer</span>
+    <p data-cid="main-0840">
+      WebAssembly is a binary instruction format for a stack-based virtual machine, originally
+      designed to run near-native-speed code in web browsers. All major browsers (Chrome,
+      Firefox, Safari, Edge) implement Wasm, as do standalone runtimes (Wasmtime, WasmEdge,
+      Wasmer). It supports compilation targets from C, C++, Rust, Go, Zig, and other languages.
+      Crucially for F3: (1) Wasm is <em>portable</em> — the same binary runs on x86, ARM,
+      RISC-V, and WASM64; (2) Wasm is <em>sandboxed</em> — each instance has its own isolated
+      linear memory, so malicious code cannot access host process memory; (3) Wasm binaries
+      are <em>compact</em> — a complete decoder for a complex codec typically compresses to
+      under 200 KB with Zstd; (4) Wasm supports SIMD operations for data-parallel decoding.
+    </p>
+  </div>
+
+  <p data-cid="main-0850">
+    When an F3 writer creates a file, it compiles each encoder's corresponding decoder
+    (written in any language) to Wasm and stores the Wasm binary in the OptionalData section.
+    The EncUnit metadata records both an encoding ID (a semantic-versioned identifier for the
+    encoding algorithm) and a Wasm ID (a pointer into OptionalData where that encoding's
+    Wasm binary lives). A single Wasm binary covers all EncUnits using the same encoding, so
+    the binary appears only once in the file regardless of how many EncUnits use it.
+  </p>
+
+  <p data-cid="main-0860">
+    This design delivers the "self-describing" promise completely: given an F3 file and a reader
+    that understands the basic file structure, the reader can decode <em>any</em> encoding ever
+    used in that file — including encodings invented after the reader was written — by executing
+    the bundled Wasm. The format never becomes unreadable because of a missing codec library.
+  </p>
+
+  <div class="box intuition" data-cid="main-0870">
+    <span class="box-label">Why Wasm and not alternatives?</span>
+    <p data-cid="main-0880">
+      The authors considered several alternative VM/bytecode formats:
+    </p>
+    <ul data-cid="main-0890">
+      <li><strong>Java bytecode (JVM)</strong>: The JVM is a heavyweight runtime with garbage collection and a large startup cost. Decoding is performance-critical; a GC-pausing runtime is unacceptable.</li>
+      <li><strong>eBPF</strong>: Designed for kernel-space execution, not user-space general computation. Its bytecode is endianness-dependent, limiting portability. Binary sizes and ergonomics are inferior to Wasm.</li>
+      <li><strong>LLVM IR</strong>: LLVM's intermediate representation has an unstable specification, making it unsuitable for long-term file archival. A file created today may be unreadable if LLVM changes its IR in 10 years.</li>
+      <li><strong>Native shared libraries (C++/Rust)</strong>: Dependency management is fragile and platform-specific; no sandbox guarantees.</li>
+    </ul>
+    <p data-cid="main-0900">
+      Wasm wins because it has a stable specification (backed by a W3C standard and all major
+      browser vendors), strong sandbox guarantees, near-native performance via JIT/AOT
+      compilation, SIMD support, and compact binary sizes.
+    </p>
+  </div>
+
+  <h3 data-cid="main-0910" id="s6-3">6.3 Wasm Decoder Implementation Details</h3>
+
+  <p data-cid="main-0920">
+    F3 uses Bytecode Alliance's Wasmtime as its standalone Wasm runtime. The host/guest
+    terminology distinguishes the F3 reader process (host) from the Wasm instance running
+    inside it (guest). The Wasm instance has an isolated linear memory space of up to 4 GB
+    (the 32-bit Wasm address space limit).
+  </p>
+
+  <p data-cid="main-0930">
+    <strong>Input to the decoder.</strong> The EncUnit bytes must be copied from host memory
+    into guest (Wasm) memory before the <code>init</code> call. This memcpy is unavoidable:
+    the Wasm sandbox prevents the guest from directly reading host memory (this would violate
+    the safety guarantee). The authors acknowledge this copy as the main overhead when string
+    data is large, contributing to the higher (46%) slowdown observed for string columns.
+    For optional kwargs (row ranges, batch size, filter conditions), F3 serialises them into a
+    bytes buffer because Wasm only supports numeric types as direct function arguments.
+  </p>
+
+  <p data-cid="main-0940">
+    <strong>Output: zero-copy Arrow Arrays.</strong> After decoding, the Wasm guest has produced
+    Arrow buffers in its linear memory. A naive approach would serialise the Arrow Array to
+    Arrow IPC format and copy it out — but this adds serialisation and copying overhead. F3
+    instead passes the <em>raw memory addresses</em> of the Arrow buffers (both in guest space
+    and the corresponding host addresses of the Wasm linear memory region) out of the Wasm
+    boundary. The host constructs an Arrow Array that points directly to the Wasm guest's
+    memory buffers, with a custom deallocator registered as a Wasm function. When the host-side
+    Arrow Array reference count reaches zero, it calls the Wasm deallocator to free the
+    corresponding guest memory. These "BufferView" objects give the host truly zero-copy access
+    to decoded data without violating the Wasm memory model.
+  </p>
+
+  <div class="box definition" data-cid="main-0950">
+    <span class="box-label">Wasm Instance Pool Optimisation</span>
+    <p data-cid="main-0960">
+      Creating a new Wasm instance per EncUnit is expensive: Wasmtime on Linux allocates a new
+      virtual-memory region (mmap) for each instance's linear memory. F3 maintains a pool of
+      pre-allocated Wasm instances per Wasm binary. Instances are reused across EncUnit decode
+      calls. Each instance uses static (fixed-size) linear memory allocation so the base address
+      never changes — a requirement for the zero-copy output design, since the host Arrow Array
+      uses the absolute host address of the guest's buffers. The EncUnit bytes are also
+      reused across calls by overwriting the same region in guest memory, amortising the
+      allocation overhead of the input copy.
+    </p>
+  </div>
+
+  <h3 data-cid="main-0970" id="s6-4">6.4 Combining Native and Wasm Decoding</h3>
+
+  <p data-cid="main-0980">
+    F3 does not force readers to use Wasm when a native implementation is available and
+    compatible. The decision process for each EncUnit is:
+  </p>
+
+  <ol data-cid="main-0990">
+    <li>The reader checks whether it recognises the EncUnit's encoding ID. If yes, it checks whether its native decoder version is compatible (using semantic versioning) with the encoding version recorded in the file metadata. If compatible, it uses the native decoder — fastest path.</li>
+    <li>If the native decoder version is incompatible (e.g., a breaking change was introduced), the reader retrieves the Wasm binary from OptionalData using the Wasm ID and uses it to decode. The file's embedded Wasm is exactly the version used when the file was written, so it is always correct.</li>
+    <li>If the encoding ID is entirely unrecognised (a new or user-defined encoding the reader has never seen), the reader again falls back to the embedded Wasm. This is how new encodings become readable without any reader update.</li>
+  </ol>
+
+  <p data-cid="main-1000">
+    Compiled Wasm binaries (Wasm modules) are cached globally per binary, so when multiple
+    files share the same encoding, the AOT compilation step (Wasm bytecode to native machine
+    code) is performed only once and amortised across all files.
+  </p>
+
+  <div class="box example" data-cid="main-1010">
+    <span class="box-label">Extensibility in action: a domain-specific codec</span>
+    <p data-cid="main-1020">
+      Suppose a team trains ML models on linear time-series data and develops a new codec
+      (LeCo) that exploits linear correlations to compress time-series columns 60% better than
+      any general codec. With Parquet, deploying this codec means: submitting a Parquet
+      specification change, waiting months for adoption, then waiting for all readers to
+      upgrade. With F3, the team: (1) writes a LeCo encoder/decoder in Rust, (2) compiles the
+      decoder to Wasm (≈150 KB after Zstd compression), (3) writes F3 files that embed this
+      Wasm binary in OptionalData. Any F3 reader — even one written before LeCo existed — can
+      now read these files by executing the embedded Wasm. No coordination required.
+    </p>
+  </div>
+
+  <!-- SECTION 7: EVALUATION -->
+  <h2 data-cid="main-1030" id="s7">7. Evaluation</h2>
+
+  <p data-cid="main-1040">
+    The experimental setup uses a server with 2× Intel Xeon Platinum 8474C CPUs, 1 TB DRAM,
+    and an Intel P5620 NVMe SSD running Debian 12. F3 is implemented in nightly Rust. Baselines
+    are Parquet-rs v53.2.0, ORC C++ v2.1.1, Lance v0.20.0, Vortex v0.21.1, and Nimble
+    (commit a135e2f). All files use default configurations. The OS page cache is cleared before
+    each scan experiment, and each result is the average of five runs. Datasets include
+    ClickBench, TPC-H SF10 lineitem, and six datasets from a prior benchmark covering BI,
+    geospatial, log, and ML workloads.
+  </p>
+
+  <h3 data-cid="main-1050">7.2 Metadata Overhead (Wide-Table Projection)</h3>
+
+  <p data-cid="main-1060">
+    The experiment generates a table of 64K rows with a varying number of float columns
+    (from 100 to 100,000) and projects exactly 10 columns. The metric is time spent on metadata
+    parsing alone (not data I/O or decoding).
+  </p>
+
+  <p data-cid="main-1070">
+    Metadata time grows linearly with column count for all formats because the schema
+    (which names all columns) is proportional to total column count regardless of the
+    serialisation format. Nimble is fastest because it uses a hand-written custom serialisation
+    format that avoids FlatBuffer verification overhead. F3 without FlatBuffer verification
+    beats Nimble at all column counts and remains around 10 ms at 100,000 columns — roughly
+    10× faster than Parquet, which must parse all column metadata even when projecting only 10
+    columns. F3 achieves this by using FlatBuffer random access to load only the ColMetadata
+    entries for the projected columns and skipping the I/O for all other columns' metadata.
+  </p>
+
+  <h3 data-cid="main-1080">7.3 Compression Ratio and Read Throughput</h3>
+
+  <p data-cid="main-1090">
+    F3 uses BtrBlocks and FastLanes (via the Vortex Rust implementation) as its built-in
+    cascading encodings, with no block compression (no Snappy, LZ4, or Zstd on top of encoded
+    data). Results across all eight datasets show:
+  </p>
+
+  <ul data-cid="main-1100">
+    <li>F3's compression ratio is comparable to Parquet and Vortex, though slightly higher (worse) due to extra type metadata bridging F3's type system to Vortex's. Nimble achieves slightly better compression at the cost of lower read throughput.</li>
+    <li>F3's file-reading throughput (rows per second) from NVMe is generally faster than Parquet and ORC. Vectorised decoding (processing a batch of values at a time, keeping decoded data in CPU cache) is the primary reason for the throughput advantage over Parquet's page-at-a-time model.</li>
+    <li>F3 does not use block compression by default. Recent studies show that applying general block compression (Snappy, LZ4) on top of lightweight type-specific encodings actually <em>hurts</em> end-to-end throughput on modern hardware because the compute cost of decompression exceeds the I/O savings.</li>
+  </ul>
+
+  <h3 data-cid="main-1110">7.4 Random Access</h3>
+
+  <p data-cid="main-1120">
+    For each dataset, 10 random rows are selected and the per-row access latency is measured
+    independently. Lance achieves the lowest latency because it avoids cascading encodings —
+    for integer columns it can compute the exact byte offset of a value and read only that
+    value, with minimal read amplification. F3 achieves the second-best latency: the decoupled
+    IOUnit limits read amplification (only the 8 MB IOUnit containing the target row needs to
+    be read), and built-in encodings support random access without fully decoding the EncUnit.
+    Parquet incurs the highest latency because it must decode an entire page or row group to
+    locate a single row.
+  </p>
+
+  <h3 data-cid="main-1130">7.5 Decoupled IOUnit — Write Memory</h3>
+
+  <p data-cid="main-1140">
+    This experiment varies the row group size from
+    <span class="tts-math" data-tts="2 to the 18th power">$2^{18}$</span>
+    to
+    <span class="tts-math" data-tts="2 to the 26th power">$2^{26}$</span>
+    rows and measures peak write-time memory consumption on two datasets: a standard OLAP table
+    and the Laion-5B dataset (tabular attributes plus 768-dimensional float embeddings).
+  </p>
+
+  <p data-cid="main-1150">
+    Parquet's write memory grows proportionally with row group size. On the Laion dataset at
+    the default 1M-row group size, Parquet uses 2 GB of memory to buffer one row group because
+    the embedding columns dominate. F3 and Lance, which decouple I/O granularity from the
+    logical row group, maintain nearly constant and low memory usage regardless of row group
+    size — flushing each column independently once enough data accumulates. ORC and Nimble
+    limit physical row group size by byte count (e.g., 256 MB), which avoids OOM but creates
+    very small and non-contiguous column chunks for wide tables: the average Nimble column
+    chunk for the Laion similarity column is only 92 KB versus F3's consistent 8.2 MB. This
+    fragmentation makes Nimble's projection of the similarity column 40% slower than F3's.
+  </p>
+
+  <h3 data-cid="main-1160">7.6 Flexible Dictionary Scopes</h3>
+
+  <p data-cid="main-1170">
+    The experiment evaluates three scope-selection strategies on 2,080 columns from the
+    Public BI benchmark:
+  </p>
+
+  <ul data-cid="main-1180">
+    <li><strong>Local</strong>: always use a local dictionary per 64K-row block.</li>
+    <li><strong>Global</strong>: always use one dictionary for the entire column.</li>
+    <li><strong>GLBest (SR 1%)</strong>: sample 1% of the column, encode with both Local and Global, keep the winner. Average compression ratio is 90.4% of Local's (smaller is better), but encoding time is 225% of Local's.</li>
+    <li><strong>GLBest (SR 100%)</strong>: encode the full column with both strategies and keep the winner. Best compression (89.7% of Local) at 252% of encoding time.</li>
+  </ul>
+
+  <p data-cid="main-1190">
+    Global dictionary alone achieves 92.2% of Local's ratio on average, meaning it compresses
+    better than local for most columns. The CDF of relative compression ratios confirms that
+    the spread is wide: some columns are heavily favoured by Local, others by Global. GLBest
+    with 1% sampling correctly identifies the better strategy in most cases at modest additional
+    encoding cost. The key takeaway is that F3's design makes all these strategies possible,
+    whereas Parquet's design makes only one possible.
+  </p>
+
+  <h3 data-cid="main-1200">7.7 Wasm Decoder Evaluation</h3>
+
+  <p data-cid="main-1210">
+    Four sub-experiments assess Wasm decoding overhead:
+  </p>
+
+  <div class="box example" data-cid="main-1220">
+    <span class="box-label">Wasm Microbenchmark Results</span>
+    <p data-cid="main-1230">
+      Three codecs are tested against their native counterparts — FastLanes bit-packing (integer),
+      Pcodec (float), and Zstd (string) — plus F3's built-in Vortex encoding suite. Two Wasm
+      compilation profiles: wasm-default (SIMD enabled) and wasm-reduced-size (additional
+      optimisations for binary size). Results:
+    </p>
+    <ul data-cid="main-1240">
+      <li>Integer decoding (FastLanes bit-packing): Wasm slowdown 15–18%.</li>
+      <li>Float decoding (Pcodec): Wasm slowdown 15–17%.</li>
+      <li>String decoding (Zstd): Wasm slowdown up to 46%. The higher overhead is driven by the larger memcpy cost of transferring large string EncUnit bytes from host to guest memory.</li>
+      <li>F3 built-in encoding (Vortex, 15+ cascaded codecs): 35–52% slowdown. The larger binary contributes more compilation overhead but the execution overhead per row is still reasonable.</li>
+    </ul>
+    <p data-cid="main-1250">
+      Notably, wasm-reduced-size sometimes outperforms wasm-default, likely due to better
+      instruction-cache utilisation from the smaller binary.
+    </p>
+  </div>
+
+  <div class="box example" data-cid="main-1260">
+    <span class="box-label">Wasm Binary Size and AOT Compilation</span>
+    <p data-cid="main-1270">
+      Individual extension codecs (FastLanes, Zstd, Pcodec) produce Wasm binaries of tens to
+      a few hundred kilobytes, compressible to single-digit kilobytes with Zstd — negligible
+      relative to any real data file. F3's built-in encoding suite (15+ codecs from Vortex)
+      produces a larger binary (around 10 MB raw), but Zstd compression reduces it to
+      approximately 1 MB. AOT compilation time (Wasm bytecode to native code) for individual
+      extension codecs is under 10 ms. For the full built-in suite it is several hundred
+      milliseconds, but this cost is amortised across all files sharing the same Wasm binary
+      (identified by checksum).
+    </p>
+  </div>
+
+  <div class="box example" data-cid="main-1280">
+    <span class="box-label">End-to-End File Scanning with Wasm</span>
+    <p data-cid="main-1290">
+      When scanning full files using only the embedded Wasm decoder (no native fallback),
+      throughput drops by 9.6% on the core OLAP dataset and up to 25% on the classic dataset
+      compared to native decoding. The authors consider this acceptable given the significant
+      interoperability benefit: old reader versions can still read files encoded with new codecs.
+    </p>
+  </div>
+
+  <div class="box example" data-cid="main-1300">
+    <span class="box-label">Wasm Extensibility Experiment</span>
+    <p data-cid="main-1310">
+      Two synthetic datasets with patterns not handled well by general codecs are used: linear
+      time-series (exploited by LeCo) and sparse feature matrices (exploited by Bullion's
+      codec). When these domain-specific codecs are embedded as Wasm in F3 files (F3-custom-wasm),
+      file sizes drop dramatically — often more than 50% smaller than F3's built-in codecs —
+      while the additional Wasm binary overhead is approximately 150 KB for both custom codecs
+      combined. Scan time with custom Wasm is on par with or faster than the built-in codecs
+      because the simpler domain-specific decoders have less compute overhead per row. This
+      experiment demonstrates the practical value of the extensibility mechanism: domain-specific
+      optimisations that are impossible to deploy in Parquet today are trivially deployable
+      in F3.
+    </p>
+  </div>
+
+  <h3 data-cid="main-1320">7.8 Data Integrity</h3>
+
+  <p data-cid="main-1330">
+    F3 supports per-IOUnit checksums computed at write time and verified at read time. The
+    paper reports negligible performance regression from enabling checksums — both write and
+    read throughput are nearly unchanged — making integrity checking practical to enable by
+    default.
+  </p>
+
+  <!-- SECTION 8: RELATED WORK -->
+  <h2 data-cid="main-1340" id="s8">8. Related Work</h2>
+
+  <p data-cid="main-1350">
+    <strong>Parquet and ORC</strong> are the dominant open columnar formats and have been
+    thoroughly studied in prior work. Liu et al. (VLDB 2023) provide a deep dive into their
+    performance characteristics. Zeng et al. (VLDB 2023) show empirically that neither format
+    is optimal for modern hardware or ML workloads.
+  </p>
+
+  <p data-cid="main-1360">
+    <strong>Lance</strong> is the closest relative to F3 among newer formats. It also separates
+    the physical I/O unit from the logical row group. However, it does not support cascading
+    encoding, flexible dictionary scopes, or embedded Wasm decoders. <strong>Nimble</strong>
+    (Meta) achieves excellent compression via cascading encoding and supports flexible row-group
+    sizes by byte count, but still ties the dictionary scope to the row group and has no
+    extensibility mechanism beyond implementing a new C++ class in its source repository.
+    <strong>BtrBlocks</strong> is an academic format focused on cascading compression strategy;
+    it lacks full metadata support and random-access features. <strong>Vortex</strong> is a
+    high-quality Rust implementation of BtrBlocks and FastLanes with both an in-memory format
+    and a file format — F3 reuses Vortex's encodings as its built-in codec suite. The Vortex
+    team has expressed plans to integrate Wasm decoders in the future.
+  </p>
+
+  <p data-cid="main-1370">
+    <strong>Wasm in databases</strong>: DuckDB-Wasm runs the full DuckDB engine in a browser.
+    Umbra uses Wasm for user-defined operators. Haffner and Dittrich explored Wasm as a
+    query compilation intermediate representation. F3 is the first work to use Wasm as an
+    <em>extensibility and interoperability mechanism inside a file format</em>.
+  </p>
+
+  <!-- SECTION 9: CONCLUSION -->
+  <h2 data-cid="main-1380" id="s9">9. Conclusion</h2>
+
+  <p data-cid="main-1390">
+    F3 makes three concrete bets about how columnar file formats should evolve. First, metadata
+    must support random access (FlatBuffers) to remain fast as tables grow wider. Second, the
+    physical I/O unit must be independent of the logical partitioning unit (IOUnit vs. row group)
+    to support both efficient cloud I/O and low write-time memory for heterogeneous data.
+    Third, encoding extensibility requires embedding the decoder code itself — not just an API
+    contract — inside the file, and WebAssembly is the best available vehicle for doing so
+    portably, safely, and with near-native performance.
+  </p>
+
+  <p data-cid="main-1400">
+    The evaluation demonstrates that these design choices do not require sacrificing efficiency:
+    F3 matches or exceeds the compression ratio and read throughput of Parquet and ORC while
+    providing qualitatively better extensibility guarantees. The Wasm overhead (10–30% for
+    integer/float decoding) is the price of future-proofing, and the authors argue it is a
+    price worth paying.
+  </p>
+
+  <div class="box intuition" data-cid="main-1410">
+    <span class="box-label">The big-picture takeaway</span>
+    <p data-cid="main-1420">
+      File formats are infrastructure that outlives the systems built on top of them. A Parquet
+      file written in 2013 with Hive must still be readable by a Spark job in 2025 — and will
+      need to remain readable in 2035. The worst outcome is a format that can no longer
+      incorporate improvements because every improvement risks breaking some reader. F3's
+      answer is to treat the decoder as <em>part of the file</em>, not part of the reader.
+      This inverts the usual dependency: instead of the file depending on the reader having
+      the right library version, the reader depends only on the file's embedded Wasm, which
+      is always correct for that file. It is a small but profound shift in how we think about
+      the boundary between storage formats and the software that reads them.
+    </p>
+  </div>
+
+  <!-- REFERENCES -->
+  <h2 data-cid="main-1430" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-1440">Apache Arrow. <a href="https://arrow.apache.org/">https://arrow.apache.org/</a>, 2024.</li>
+    <li data-cid="main-1450">Apache ORC. <a href="https://orc.apache.org/">https://orc.apache.org/</a>, 2025.</li>
+    <li data-cid="main-1460">Apache Parquet. <a href="https://parquet.apache.org/">https://parquet.apache.org/</a>, 2025.</li>
+    <li data-cid="main-1470">Future File Format (F3). <a href="https://github.com/future-file-format">https://github.com/future-file-format</a>, 2025.</li>
+    <li data-cid="main-1480">Afroozeh, A. and Boncz, P. The FastLanes Compression Layout: Decoding >100 Billion Integers per Second with Scalar Code. <em>PVLDB</em> 16(9), 2023.</li>
+    <li data-cid="main-1490">Ailamaki, A. et al. Weaving Relations for Cache Performance. <em>VLDB</em>, 2001. (The PAX layout paper.)</li>
+    <li data-cid="main-1500">Kuschewski, M. et al. BtrBlocks: Efficient Columnar Compression for Data Lakes. <em>Proc. ACM Manag. Data</em> 1(2), 2023.</li>
+    <li data-cid="main-1510">Liu, C. et al. A Deep Dive into Common Open Formats for Analytical DBMSs. <em>PVLDB</em> 16(11), 2023.</li>
+    <li data-cid="main-1520">Melnik, S. et al. Dremel: Interactive Analysis of Web-Scale Datasets. <em>PVLDB</em> 3(1-2), 2010.</li>
+    <li data-cid="main-1530">Vakharia, S. et al. Shared Foundations: Modernizing Meta's Data Lakehouse. <em>CIDR</em>, 2023. (Nimble paper.)</li>
+    <li data-cid="main-1540">Vogelsgesang, A. et al. Get Real: How Benchmarks Fail to Represent the Real World. <em>DBTest</em>, 2018. (Public BI benchmark.)</li>
+    <li data-cid="main-1550">Vortex. <a href="https://github.com/spiraldb/vortex/">https://github.com/spiraldb/vortex/</a>, 2025.</li>
+    <li data-cid="main-1560">Wasmtime. <a href="https://wasmtime.dev/">https://wasmtime.dev/</a>, 2024.</li>
+    <li data-cid="main-1570">Zeng, X. et al. An Empirical Evaluation of Columnar Storage Formats. <em>PVLDB</em> 17(2), 2023.</li>
+    <li data-cid="main-1580">Zeng, X. et al. NULLS!: Revisiting Null Representation in Modern Columnar Formats. <em>DaMoN</em>, 2024.</li>
+    <li data-cid="main-1590">Prammer, M. et al. Towards Functional Decomposition of Storage Formats. <em>CIDR</em>, 2025.</li>
+    <li data-cid="main-1600">Kohn, A. et al. DuckDB-Wasm: Fast Analytical Processing for the Web. <em>PVLDB</em> 15(12), 2022.</li>
+    <li data-cid="main-1610">Haas, A. et al. Bringing the Web Up to Speed with WebAssembly. <em>PLDI</em>, 2017.</li>
+    <li data-cid="main-1620">Liao, G. et al. Bullion: A Column Store for Machine Learning. arXiv:2404.08901, 2024.</li>
+    <li data-cid="main-1630">Liu, Y. et al. LeCo: Lightweight Compression via Learning Serial Correlations. <em>Proc. ACM Manag. Data</em> 2(1), 2024.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script>
+</body>
+</html>

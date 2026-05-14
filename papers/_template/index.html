@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Paper Title · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/>
+</head>
+<!-- data-book matches the folder slug; data-page is always "main" for papers -->
+<body data-book="paper-slug" data-page="main">
+<header class="site-header">
+<a class="home-btn" href="/">Home</a>
+<a class="brand" href="/papers/paper-slug/">Paper Title</a>
+<nav>
+<button aria-label="toggle theme" class="theme-toggle">Dark</button>
+</nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. Introduction</a></li>
+    <li><a href="#s2">2. Background</a></li>
+    <li><a href="#s3">3. Main Results</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">Scientific Paper</div>
+    <h1>Paper Title</h1>
+    <div class="paper-meta">
+      <span class="authors">Author One, Author Two</span>
+      <span class="venue">Journal / Conference, Year</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    Write the abstract here. Keep it concise — one paragraph summarising the problem,
+    method, and key result.
+  </div>
+
+  <h2 data-cid="main-020" id="s1">1. Introduction</h2>
+  <p data-cid="main-030">
+    Introduce the problem and motivation. Reference prior work where relevant.
+  </p>
+
+  <h2 data-cid="main-040" id="s2">2. Background</h2>
+  <p data-cid="main-050">
+    Provide the theoretical background needed to follow the paper.
+    Use inline math like <span class="tts-math" data-tts="X sub n">$X_n$</span> and
+    display math like:
+  </p>
+  <p data-cid="main-060">
+    <span class="tts-math" data-tts="the limit as n goes to infinity of X sub n equals mu">
+    $$\lim_{n \to \infty} X_n = \mu$$
+    </span>
+  </p>
+
+  <h2 data-cid="main-070" id="s3">3. Main Results</h2>
+  <div class="box definition" data-cid="main-080">
+    <span class="box-label">Theorem 1</span>
+    <p data-cid="main-090">State the main theorem here.</p>
+  </div>
+  <p data-cid="main-100"><em>Proof.</em> Proof goes here. ∎</p>
+
+  <h2 data-cid="main-110" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-120">Author, A. (Year). Title of paper. <em>Journal</em>, vol(issue), pp.</li>
+    <li data-cid="main-130">Author, B. (Year). Title of book. Publisher.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script>
+</body>
+</html>

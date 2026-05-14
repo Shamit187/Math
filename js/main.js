@@ -10,7 +10,7 @@
     if (!btn) return;
     function sync() {
       const cur = root.getAttribute("data-theme") || "light";
-      btn.textContent = cur === "dark" ? "Light" : "Dark";
+      btn.textContent = cur === "dark" ? "☀ Light" : "☾ Dark";
     }
     sync();
     btn.addEventListener("click", () => {

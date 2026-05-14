@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Integrating Vector Databases across Embedding Models · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/>
+</head>
+<body data-book="vector-db-embedding" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/vector-db-embedding/">Vector DB Integration</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. Introduction</a></li>
+    <li><a href="#s2">2. Background &amp; Definitions</a></li>
+    <li><a href="#s3">3. The Isometry Hypothesis</a></li>
+    <li><a href="#s4">4. Local Isometry &amp; LA2M</a></li>
+    <li><a href="#s5">5. Theoretical Analysis</a></li>
+    <li><a href="#s6">6. Algorithm Design</a></li>
+    <li><a href="#s7">7. Experiments</a></li>
+    <li><a href="#s8">8. Related Work</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">SIGMOD 2025 · Research Paper</div>
+    <h1 data-cid="main-0010">Integrating Vector Databases across Embedding Models</h1>
+    <div class="paper-meta">
+      <span class="authors">Beining Yang, Yang Cao, Yang Ren</span>
+      <span class="venue">Proc. ACM Manag. Data (SIGMOD), Vol. 3, No. 6, Article 338, December 2025</span>
+      <span class="venue">University of Edinburgh &amp; Edinburgh Research Center, Huawei</span>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- ABSTRACT -->
+  <!-- ============================================================ -->
+  <div class="paper-abstract" data-cid="main-0020" id="abstract">
+    <strong>Abstract</strong>
+    Vector databases are the engine behind modern similarity search — retrieving documents,
+    images, or other unstructured data objects by finding vectors that are geometrically
+    close to a query. Every vector database is produced by an <em>embedding model</em> that
+    converts raw objects into high-dimensional vectors, with the guarantee that similar
+    objects land near each other. The catch: different organizations routinely use different
+    embedding models, so their vector databases live in entirely different geometric
+    universes that cannot be naively merged.
+    This paper asks: can we combine vector databases that were built with different embedding
+    models, without re-embedding the data and without access to the models themselves?
+    The authors say yes — rooted in a newly discovered phenomenon called the
+    <em>local isometry hypothesis</em>: even if two embedding spaces disagree globally,
+    they agree locally on which items are most similar. Building on this, they propose
+    <em>LA2M</em> (Localized Align-to-Merge), an algorithm that uses a set of
+    <em>reference vectors</em> — items encoded by both models — to stitch the two
+    spaces together cluster by cluster. Theoretical bounds on the integration error
+    and experiments on five major embedding models (NV-Embed-V2, OpenAI Ada, GloVe,
+    Mistral, FastText) demonstrate high recall of top-k similarity search over the merged databases.
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SECTION 1: INTRODUCTION -->
+  <!-- ============================================================ -->
+  <h2 data-cid="main-0030" id="s1">1. Introduction</h2>
+
+  <p data-cid="main-0040">
+    Similarity search over unstructured data — finding images that look alike, documents
+    that discuss the same topic, or products that share features — is the backbone of
+    recommender systems, retrieval-augmented generation (RAG) for large language models,
+    and privacy-preserving federated search. The standard implementation encodes each
+    data item as a vector using an embedding model, then answers a query by finding the
+    vectors geometrically nearest to the query vector — a <em>top-k nearest-neighbour</em>
+    search. The collection of all encoded vectors is the <em>vector database</em>.
+  </p>
+
+  <div class="box intuition" data-cid="main-0050">
+    <span class="box-label">Intuition — Why this problem is hard</span>
+    <p data-cid="main-0060">
+      Think of an embedding model as a secret translator. It converts every object into
+      a point in some high-dimensional space. Two different translators may choose
+      completely different coordinate systems — rotating, reflecting, stretching, and
+      re-arranging the whole space — even if both translators faithfully capture the
+      same underlying similarity relationships. Simply stacking the two sets of points
+      in one database is like superimposing two city maps drawn at different scales and
+      orientations: a search query will point to random locations that have nothing to
+      do with actual similarity.
+    </p>
+  </div>
+
+  <p data-cid="main-0070">
+    The inability to share vector databases is a stark contrast to relational databases,
+    where different systems routinely share and integrate tables via SQL joins and
+    federated queries. The paper calls out three concrete applications that motivate
+    breaking this barrier:
+  </p>
+
+  <ul data-cid="main-0080">
+    <li><strong>Embedding backfilling.</strong> When a company upgrades its embedding
+    model, historical vectors are incompatible with the new model. Backfilling requires
+    re-embedding every document, which is expensive. Integration would let old and new
+    vectors coexist searchably.</li>
+    <li><strong>Privacy-preserving federated search.</strong> Multiple organizations
+    each hold private data embedded with their own models. They want a collective search
+    without revealing raw data. Integration allows sharing only the vectors.</li>
+    <li><strong>Cloud-edge similarity search.</strong> An edge device (phone, camera)
+    uses a lightweight local model; the cloud uses a more powerful one. Sending the raw
+    image to the cloud is expensive and private. Sending just an embedded query vector
+    is far cheaper.</li>
+  </ul>
+
+  <p data-cid="main-0090">
+    The authors impose a strict constraint: the integration algorithm may only see the
+    embedding vectors themselves. It cannot re-embed the data objects, cannot query the
+    embedding models, and has no access to the model weights or architectures. This
+    makes the problem genuinely hard and industrially realistic.
+  </p>
+
+  <!-- ============================================================ -->
+  <!-- SECTION 2: BACKGROUND -->
+  <!-- ============================================================ -->
+  <h2 data-cid="main-0100" id="s2">2. Background and Definitions</h2>
+
+  <div class="box definition" data-cid="main-0110">
+    <span class="box-label">Definition — Vector Database</span>
+    <p data-cid="main-0120">
+      Let <span class="tts-math" data-tts="script U">$\mathcal{U}$</span> be a universe of
+      data items (documents, images, etc.) with a dissimilarity function
+      <span class="tts-math" data-tts="d sub s i m">$d_{\text{sim}}$</span> that tells us
+      how different any two items are. An <em>embedding function</em>
+      <span class="tts-math" data-tts="emb">$\text{emb}$</span> maps each item
+      <span class="tts-math" data-tts="o in O">$o \in O$</span> to a vector
+      <span class="tts-math" data-tts="emb of o in R to the d">$\text{emb}(o) \in \mathbb{R}^d$</span>
+      such that the Euclidean distance
+      <span class="tts-math" data-tts="norm of x 1 minus x 2">$\|x_1 - x_2\|$</span>
+      approximates
+      <span class="tts-math" data-tts="d sub sim of o 1 and o 2">$d_{\text{sim}}(o_1, o_2)$</span>.
+      The <em>vector database</em>
+      <span class="tts-math" data-tts="emb of O">$\text{emb}(O)$</span> is the set of all
+      embedded vectors for items in <span class="tts-math" data-tts="O">$O$</span>.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-0130">
+    <span class="box-label">Definition — Top-k Similarity Search</span>
+    <p data-cid="main-0140">
+      Given a query item <span class="tts-math" data-tts="o q">$o_q$</span>, find the
+      <span class="tts-math" data-tts="k">$k$</span> items in
+      <span class="tts-math" data-tts="O">$O$</span> most similar to
+      <span class="tts-math" data-tts="o q">$o_q$</span> under
+      <span class="tts-math" data-tts="d sub sim">$d_{\text{sim}}$</span>.
+      In practice this is implemented as finding the
+      <span class="tts-math" data-tts="k">$k$</span> vectors in
+      <span class="tts-math" data-tts="emb of O">$\text{emb}(O)$</span> nearest to
+      <span class="tts-math" data-tts="emb of o q">$\text{emb}(o_q)$</span>
+      — i.e., top-k approximate nearest neighbour (ANN) search.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-0150">
+    <span class="box-label">Definition — Vector Database Integration</span>
+    <p data-cid="main-0160">
+      Let
+      <span class="tts-math" data-tts="D 1">$D_1$</span> and
+      <span class="tts-math" data-tts="D 2">$D_2$</span> be vector databases for
+      datasets
+      <span class="tts-math" data-tts="O 1">$O_1$</span> and
+      <span class="tts-math" data-tts="O 2">$O_2$</span> built with embedding functions
+      <span class="tts-math" data-tts="emb 1">$\text{emb}_1$</span> and
+      <span class="tts-math" data-tts="emb 2">$\text{emb}_2$</span>, respectively.
+      An <em>integration function</em>
+      <span class="tts-math" data-tts="T">$T$</span> takes
+      <span class="tts-math" data-tts="D 1">$D_1$</span> and
+      <span class="tts-math" data-tts="D 2">$D_2$</span> as input (vectors only — no
+      raw objects, no models) and returns a single vector database
+      <span class="tts-math" data-tts="T of D 1 and D 2">$T(D_1, D_2)$</span>
+      for the union
+      <span class="tts-math" data-tts="O 1 union O 2">$O_1 \cup O_2$</span>
+      that supports accurate top-k similarity search.
+    </p>
+  </div>
+
+  <h3 data-cid="main-0170">Key tools used: ANN indices</h3>
+  <p data-cid="main-0180">
+    Vector databases use specialised index structures to answer top-k queries quickly
+    at scale without scanning every vector. Two widely used ones appear in this paper:
+  </p>
+  <ul data-cid="main-0190">
+    <li><strong>FAISS / IVF (Inverted File Index).</strong> Clusters vectors into
+    Voronoi cells; a query searches only the nearest cells rather than the whole database.
+    Think of it as a postal code system: you only look in the right neighbourhood.</li>
+    <li><strong>HNSW (Hierarchical Navigable Small World).</strong> Builds a multilayer
+    graph where each vector is linked to its closest neighbours at various scales. Queries
+    navigate the graph greedily. LA2M can transform HNSW indices directly because it
+    uses distance-preserving maps (isometries).</li>
+  </ul>
+
+  <h3 data-cid="main-0200">Why two vector databases cannot be naively merged</h3>
+  <p data-cid="main-0210">
+    Suppose you take
+    <span class="tts-math" data-tts="D 1">$D_1$</span> (FastText embeddings, 300-dimensional)
+    and
+    <span class="tts-math" data-tts="D 2">$D_2$</span> (NV-Embed-V2 embeddings, 4096-dimensional)
+    and simply concatenate the two lists of vectors into one big database. A query vector
+    from
+    <span class="tts-math" data-tts="emb 2">$\text{emb}_2$</span>
+    will only ever find
+    <span class="tts-math" data-tts="D 2">$D_2$</span> vectors as nearest neighbours,
+    because
+    <span class="tts-math" data-tts="D 1">$D_1$</span> vectors live in an entirely
+    different geometric region — their coordinates are not comparable. Even if the
+    dimensions matched, the coordinate axes would mean different things to each model.
+  </p>
+
+  <div class="box intuition" data-cid="main-0220">
+    <span class="box-label">Intuition — The Encryption Analogy</span>
+    <p data-cid="main-0230">
+      Each embedding model "encrypts" data with its own key. The encryption preserves
+      relative ordering (similar items stay close), but the ciphertexts from different
+      keys look completely unrelated. Integration is like finding a "rosetta stone"
+      that reveals how the two ciphertext spaces relate to each other, without
+      knowing either key.
+    </p>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SECTION 3: ISOMETRY HYPOTHESIS -->
+  <!-- ============================================================ -->
+  <h2 data-cid="main-0240" id="s3">3. The Isometry Hypothesis</h2>
+
+  <p data-cid="main-0250">
+    The central intuition behind the paper is that, even though two embedding models
+    produce different vector spaces, they both capture the same underlying similarity
+    structure. If true, the two spaces would be <em>isometric</em> — related by a
+    rigid transformation (rotation, reflection, translation, and uniform scaling)
+    that preserves all distances exactly.
+  </p>
+
+  <div class="box definition" data-cid="main-0260">
+    <span class="box-label">Definition — Isometry</span>
+    <p data-cid="main-0270">
+      Two sets of vectors
+      <span class="tts-math" data-tts="X">$X$</span> and
+      <span class="tts-math" data-tts="Y">$Y$</span> are <em>isometric</em> if there
+      exists a bijection
+      <span class="tts-math" data-tts="f from X to Y">$f: X \to Y$</span> that
+      preserves all pairwise distances:
+      for every
+      <span class="tts-math" data-tts="x 1 and x 2 in X">$x_1, x_2 \in X$</span>,
+      <span class="tts-math" data-tts="the norm of f of x 1 minus f of x 2 equals the norm of x 1 minus x 2">
+        $$\|f(x_1) - f(x_2)\| = \|x_1 - x_2\|.$$
+      </span>
+      Intuitively, isometric sets have the same "shape" — one is just a rotated,
+      reflected, or translated copy of the other.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-0280">
+    <span class="box-label">Hypothesis A — Global Isometry Hypothesis</span>
+    <p data-cid="main-0290">
+      (1) The geometry of two vector databases
+      <span class="tts-math" data-tts="D 1">$D_1$</span> and
+      <span class="tts-math" data-tts="D 2">$D_2$</span> built from the same set of
+      objects
+      <span class="tts-math" data-tts="O">$O$</span> by different embedding functions
+      are likely isometric.
+      (2) If
+      <span class="tts-math" data-tts="emb 1">$\text{emb}_1$</span> and
+      <span class="tts-math" data-tts="emb 2">$\text{emb}_2$</span> produce isometric
+      databases for
+      <span class="tts-math" data-tts="O">$O$</span>, they will also likely produce
+      approximately isometric databases for items close to those in
+      <span class="tts-math" data-tts="O">$O$</span>.
+    </p>
+  </div>
+
+  <p data-cid="main-0300">
+    This hypothesis is analogous to a well-known finding in NLP: word embedding models
+    (Word2Vec, GloVe) trained on different corpora produce vectors that are related by a
+    single global linear transformation. Cross-lingual word embedding alignment exploits
+    exactly this property.
+  </p>
+
+  <h3 data-cid="main-0310">The Align-to-Merge (A2M) framework</h3>
+  <p data-cid="main-0320">
+    If Hypothesis A holds, integration becomes straightforward via a simple strategy
+    called <em>Align-to-Merge</em> (A2M):
+  </p>
+  <ol data-cid="main-0330">
+    <li>Identify <em>reference vectors</em>: items
+    <span class="tts-math" data-tts="O intersection">$O_\cap = O_1 \cap O_2$</span>
+    encoded by both models. Call their vectors
+    <span class="tts-math" data-tts="X in D 1">$X \subset D_1$</span> and
+    <span class="tts-math" data-tts="Y in D 2">$Y \subset D_2$</span>.</li>
+    <li>Compute the best isometry
+    <span class="tts-math" data-tts="f iso">$f_{\text{iso}}$</span>
+    that maps
+    <span class="tts-math" data-tts="X">$X$</span> to
+    <span class="tts-math" data-tts="Y">$Y$</span>.</li>
+    <li>Apply
+    <span class="tts-math" data-tts="f iso">$f_{\text{iso}}$</span>
+    to all vectors in
+    <span class="tts-math" data-tts="D 1">$D_1$</span>, then combine
+    <span class="tts-math" data-tts="f iso of D 1">$f_{\text{iso}}(D_1)$</span>
+    with
+    <span class="tts-math" data-tts="D 2">$D_2$</span>.</li>
+  </ol>
+
+  <p data-cid="main-0340">
+    The isometry takes the form
+    <span class="tts-math" data-tts="f of x equals s times R times open paren x plus t close paren">
+      $f(x) = s \cdot R(x + \mathbf{t})$
+    </span>, where
+    <span class="tts-math" data-tts="R">$R$</span> is an orthogonal matrix (rotation/reflection),
+    <span class="tts-math" data-tts="t">$\mathbf{t}$</span> is a translation vector,
+    and
+    <span class="tts-math" data-tts="s">$s$</span> is a uniform scaling factor.
+    Finding the best such function reduces to minimising:
+  </p>
+  <p data-cid="main-0350">
+    <span class="tts-math" data-tts="minimize over s, R, and t the sum from i equals 1 to m of the squared norm of s R times open paren x sub i plus t close paren minus y sub i">
+      $$\arg\min_{s,\, R,\, \mathbf{t}} \sum_{i=1}^{m} \|s R(x_i + \mathbf{t}) - y_i\|^2$$
+    </span>
+  </p>
+  <p data-cid="main-0360">
+    This is a classical <em>Procrustes problem</em> from computer vision, with a
+    closed-form solution via Singular Value Decomposition (SVD).
+    Let the SVD of
+    <span class="tts-math" data-tts="Y X transpose">$YX^\top$</span> be
+    <span class="tts-math" data-tts="U Sigma V transpose">$U\Sigma V^\top$</span>. Then:
+  </p>
+  <ul data-cid="main-0370">
+    <li><span class="tts-math" data-tts="R opt equals U V transpose">$R_{\text{opt}} = UV^\top$</span></li>
+    <li><span class="tts-math" data-tts="s opt equals trace of Sigma over trace of X transpose X">
+      $s_{\text{opt}} = \text{trace}(\Sigma) / \text{trace}(X^\top X)$
+    </span></li>
+    <li><span class="tts-math" data-tts="t opt equals y bar minus x bar">
+      $\mathbf{t}_{\text{opt}} = \bar{y} - \bar{x}$
+    </span>, the difference of the two centroid vectors.</li>
+  </ul>
+
+  <div class="box pause" data-cid="main-0380">
+    <span class="box-label">Check your understanding</span>
+    <p data-cid="main-0390">
+      Why is the optimal rotation given by
+      <span class="tts-math" data-tts="U V transpose">$UV^\top$</span> from the SVD
+      of
+      <span class="tts-math" data-tts="Y X transpose">$YX^\top$</span>?
+      Hint: write the sum-of-squares as a trace and use the cyclic property of trace.
+      The key insight is that maximising
+      <span class="tts-math" data-tts="the trace of R times X times Y transpose">
+        $\text{trace}(R \cdot XY^\top)$
+      </span>
+      over orthogonal
+      <span class="tts-math" data-tts="R">$R$</span> has the closed-form solution
+      <span class="tts-math" data-tts="R equals U V transpose">$R = UV^\top$</span>.
+    </p>
+  </div>
+
+  <h3 data-cid="main-0400">Why A2M fails in practice</h3>
+  <p data-cid="main-0410">
+    Experiments on the SciFact benchmark reveal that A2M does not improve — and
+    sometimes hurts — recall@100 versus a naive "Union" baseline that just concatenates
+    the two databases without any transformation. The Union baseline guarantees finding
+    items from
+    <span class="tts-math" data-tts="D 2">$D_2$</span>
+    (since the query is in
+    <span class="tts-math" data-tts="D 2">$D_2$</span>'s
+    space and
+    <span class="tts-math" data-tts="D 1">$D_1$</span>
+    vectors are far away and ignored). A2M moves
+    <span class="tts-math" data-tts="D 1">$D_1$</span>
+    vectors close to
+    <span class="tts-math" data-tts="D 2">$D_2$</span>,
+    but if the isometry is imperfect, it can introduce noise that pushes
+    <span class="tts-math" data-tts="D 2">$D_2$</span>
+    answer vectors out of the top-k results.
+  </p>
+
+  <p data-cid="main-0420">
+    A CIFAR-10 visualisation in the paper shows that even the same image dataset
+    produces clearly non-isometric shapes when embedded by ResNet vs. DenseNet —
+    clusters are rotated, deformed, and their relative positions are rearranged.
+    The hypothesis does not hold globally.
+  </p>
+
+  <div class="box warn" data-cid="main-0430">
+    <span class="box-label">Key Finding</span>
+    <p data-cid="main-0440">
+      Global isometry is too optimistic. Real-life embedding models produce vector
+      databases that are geometrically inconsistent at the global scale — different
+      embeddings disagree on which clusters are close to which. A single global
+      transformation cannot reconcile them.
+    </p>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SECTION 4: LOCAL ISOMETRY AND LA2M -->
+  <!-- ============================================================ -->
+  <h2 data-cid="main-0450" id="s4">4. Local Isometry and the LA2M Algorithm</h2>
+
+  <p data-cid="main-0460">
+    While the global hypothesis fails, the experiments reveal a crucial silver lining:
+    for <em>short</em> inter-vector distances — the distances that matter most for
+    small-k queries — different embedding models agree remarkably well. Measuring
+    the Jaccard index between the top-k results of NV-Embed-V2 and OpenAI-Ada on
+    SciFact, the paper finds:
+  </p>
+  <ul data-cid="main-0470">
+    <li>For
+    <span class="tts-math" data-tts="k equals 1 or 2">$k=1$ or $2$</span>,
+    Jaccard index approaches 1.0 — the two models almost always agree on the nearest neighbour.</li>
+    <li>For
+    <span class="tts-math" data-tts="k equals 100">$k=100$</span>,
+    agreement drops significantly — the models diverge on which 100 documents are most similar.</li>
+  </ul>
+
+  <div class="box definition" data-cid="main-0480">
+    <span class="box-label">Hypothesis B — Local Isometry Hypothesis</span>
+    <p data-cid="main-0490">
+      The global isometry hypothesis (Hypothesis A) holds <em>within local regions</em>
+      of vector databases comprised of vectors with short pairwise distances.
+      In other words, embedding models may disagree on the global geometry but tend
+      to agree on who the nearest neighbours of any given item are.
+    </p>
+  </div>
+
+  <div class="box intuition" data-cid="main-0500">
+    <span class="box-label">Intuition — Why local isometry holds</span>
+    <p data-cid="main-0510">
+      Imagine two maps of the same city, drawn by different cartographers using different
+      coordinate projections. Globally, the maps look different — north is up on one but
+      rotated 30 degrees on the other, and the scale is different across regions.
+      But if you zoom into a single neighbourhood, both maps show the same streets in
+      the same relative positions. The local geometry is preserved even when the global
+      picture disagrees. Embedding models are similar: each model has its own "projection"
+      of the semantic space, but locally — in the neighbourhood of any given document —
+      they largely agree on which documents are most similar.
+    </p>
+  </div>
+
+  <h3 data-cid="main-0520">The LA2M Algorithm (Localized Align-to-Merge)</h3>
+  <p data-cid="main-0530">
+    LA2M exploits Hypothesis B by partitioning the reference vectors into small local
+    clusters and computing a separate isometry for each cluster. The algorithm operates
+    in three steps:
+  </p>
+
+  <div class="box definition" data-cid="main-0540">
+    <span class="box-label">LA2M — Step 1: Grouping</span>
+    <p data-cid="main-0550">
+      Partition the reference vectors
+      <span class="tts-math" data-tts="X in D 1">$X \subset D_1$</span>
+      into clusters
+      <span class="tts-math" data-tts="X 1 through X n">$X_1, \ldots, X_n$</span>,
+      each containing vectors with short inter-distances (i.e., locally close vectors).
+      The matching
+      <span class="tts-math" data-tts="D 2">$D_2$</span>
+      reference vectors are partitioned identically:
+      <span class="tts-math" data-tts="Y 1 through Y n">$Y_1, \ldots, Y_n$</span>.
+      The clusters may overlap.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-0560">
+    <span class="box-label">LA2M — Step 2: Alignment</span>
+    <p data-cid="main-0570">
+      For each pair
+      <span class="tts-math" data-tts="X sub i and Y sub i">$(X_i, Y_i)$</span>,
+      compute a local isometry
+      <span class="tts-math" data-tts="f iso sub i">$f^i_{\text{iso}}$</span>
+      by invoking the A2M Procrustes solution (Section 3).
+      By Hypothesis B, because
+      <span class="tts-math" data-tts="X sub i">$X_i$</span> has short inter-distances,
+      this local isometry should be accurate.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-0580">
+    <span class="box-label">LA2M — Step 3: Merging</span>
+    <p data-cid="main-0590">
+      For each vector
+      <span class="tts-math" data-tts="x in D 1">$x \in D_1$</span>:
+    </p>
+    <ul>
+      <li>If
+      <span class="tts-math" data-tts="x">$x$</span>
+      is a reference vector in cluster
+      <span class="tts-math" data-tts="X sub i">$X_i$</span>,
+      map it directly to its counterpart
+      <span class="tts-math" data-tts="y in Y sub i">$y \in Y_i$</span>.</li>
+      <li>If
+      <span class="tts-math" data-tts="x">$x$</span>
+      is a non-reference vector, find the cluster
+      <span class="tts-math" data-tts="X sub j star">$X_{j^*}$</span>
+      whose centroid
+      <span class="tts-math" data-tts="c sub j star">$c_{j^*}$</span>
+      is closest to
+      <span class="tts-math" data-tts="x">$x$</span>,
+      then apply
+      <span class="tts-math" data-tts="f iso sub j star of x">$f^{j^*}_{\text{iso}}(x)$</span>.
+      The nearest-centroid assignment is:
+      <span class="tts-math" data-tts="j star equals argmin over i of the norm of c sub i minus x">
+        $$j^* = \arg\min_{i \in [1,n]} \|c_i - x\|$$
+      </span>
+      </li>
+    </ul>
+    <p data-cid="main-0600">
+      The integrated database is
+      <span class="tts-math" data-tts="T of D 1 union D 2 minus Y">
+        $T(D_1) \cup (D_2 \setminus Y)$
+      </span>.
+      Query vectors use
+      <span class="tts-math" data-tts="emb 2">$\text{emb}_2$</span>
+      as the ambient space.
+    </p>
+  </div>
+
+  <div class="box example" data-cid="main-0610">
+    <span class="box-label">Example — Querying an Integrated Database</span>
+    <p data-cid="main-0620">
+      Suppose Alice has 10,000 scientific papers embedded with FastText
+      (<span class="tts-math" data-tts="D 1">$D_1$</span>)
+      and Bob has 8,000 papers embedded with NV-Embed-V2
+      (<span class="tts-math" data-tts="D 2">$D_2$</span>).
+      They share 2,000 papers in common (
+      <span class="tts-math" data-tts="O intersection">$O_\cap$</span>),
+      giving reference pairs
+      <span class="tts-math" data-tts="X and Y">$(X, Y)$</span>.
+    </p>
+    <ol>
+      <li>LA2M clusters
+      <span class="tts-math" data-tts="X">$X$</span>
+      into, say, 50 local groups of ~40 papers each.</li>
+      <li>For each group, it computes a local rotation+scale+translation
+      that aligns FastText vectors to NV-Embed-V2 vectors.</li>
+      <li>Alice's 8,000 non-reference FastText papers are each assigned to their
+      nearest reference cluster and transformed using that cluster's isometry.</li>
+      <li>The merged database contains 18,000 paper vectors all in NV-Embed-V2's
+      geometric space.</li>
+      <li>Bob sends Alice a query vector using NV-Embed-V2. Alice searches the
+      merged database and finds relevant papers from both collections — without
+      either party ever seeing the other's raw paper text.</li>
+    </ol>
+  </div>
+
+  <h3 data-cid="main-0630">Benefits and Properties</h3>
+  <p data-cid="main-0640">
+    LA2M has two important structural properties that make it practical:
+  </p>
+  <ul data-cid="main-0650">
+    <li><strong>Model and object oblivious.</strong> LA2M only sees the embedding
+    vectors, never the original data objects or the models. This makes it suitable
+    for privacy-sensitive scenarios.</li>
+    <li><strong>Vector index invariant.</strong> Because LA2M uses isometries (which
+    preserve all distances), it can directly transform vector indices (IVF, HNSW)
+    built on
+    <span class="tts-math" data-tts="D 1">$D_1$</span>
+    into the integrated space, avoiding the need to rebuild the index from scratch.</li>
+  </ul>
+
+  <!-- ============================================================ -->
+  <!-- SECTION 5: THEORETICAL ANALYSIS -->
+  <!-- ============================================================ -->
+  <h2 data-cid="main-0660" id="s5">5. Theoretical Analysis — Error Bounds</h2>
+
+  <p data-cid="main-0670">
+    The paper provides a theoretical handle on why and how LA2M can fail or succeed.
+    It identifies two types of error that arise from integrating non-reference vectors.
+  </p>
+
+  <div class="box definition" data-cid="main-0680">
+    <span class="box-label">Definition — Alignment Error and Integration Error</span>
+    <p data-cid="main-0690">
+      For a local cluster pair
+      <span class="tts-math" data-tts="X sub i and Y sub i">$(X_i, Y_i)$</span>:
+    </p>
+    <ul>
+      <li><strong>Alignment error
+      <span class="tts-math" data-tts="alpha">$\alpha$</span></strong>: how well the
+      computed isometry
+      <span class="tts-math" data-tts="f iso sub i">$f^i_{\text{iso}}$</span>
+      aligns the reference vectors
+      <span class="tts-math" data-tts="X sub i">$X_i$</span>
+      to their targets
+      <span class="tts-math" data-tts="Y sub i">$Y_i$</span>.
+      This is the residual of the Procrustes fit — inherent model disagreement
+      that no isometry can eliminate.</li>
+      <li><strong>Integration error
+      <span class="tts-math" data-tts="beta">$\beta$</span></strong>: for a
+      non-reference vector
+      <span class="tts-math" data-tts="x">$x$</span>,
+      the distance between its transformed position
+      <span class="tts-math" data-tts="T of x">$T(x)$</span>
+      and the ideal position
+      <span class="tts-math" data-tts="emb 2 of o x">$\text{emb}_2(o_x)$</span>
+      (where
+      <span class="tts-math" data-tts="o x">$o_x$</span>
+      is the data item
+      <span class="tts-math" data-tts="x">$x$</span> encodes).
+      This is the "generalisation error" of applying a cluster's isometry to
+      out-of-cluster vectors.</li>
+    </ul>
+  </div>
+
+  <div class="box definition" data-cid="main-0700">
+    <span class="box-label">Theorem 1 — Upper Bound on Integration Error</span>
+    <p data-cid="main-0710">
+      Let
+      <span class="tts-math" data-tts="X hat">$\hat{X}$</span>
+      be the mean-centered reference matrix for a cluster. Let its minimum non-zero
+      singular value be
+      <span class="tts-math" data-tts="sigma min of X">$\sigma_{\min}(X)$</span>.
+      Let
+      <span class="tts-math" data-tts="alpha">$\alpha$</span>
+      be the alignment error and
+      <span class="tts-math" data-tts="alpha star">$\alpha^*$</span>
+      be the residual of the ideal isometry.
+      Then for a non-reference vector
+      <span class="tts-math" data-tts="z">$z$</span>
+      near the cluster:
+    </p>
+    <p data-cid="main-0720">
+      <span class="tts-math" data-tts="the integration error delta of z is at most open paren alpha plus alpha star close paren over sigma min of X, times the norm of z minus c sub X plus c sub Y">
+        $$\delta(z) \;\leq\; \frac{\alpha + \alpha^*}{\sigma_{\min}(X)} \cdot \|z - c_X + c_Y\|$$
+      </span>
+    </p>
+    <p data-cid="main-0730">
+      Here
+      <span class="tts-math" data-tts="c sub X">$c_X$</span> and
+      <span class="tts-math" data-tts="c sub Y">$c_Y$</span>
+      are the centroids of
+      <span class="tts-math" data-tts="X and Y">$X$ and $Y$</span>.
+    </p>
+  </div>
+
+  <p data-cid="main-0740">
+    Let's unpack what each factor in this bound means:
+  </p>
+
+  <ul data-cid="main-0750">
+    <li>
+      <span class="tts-math" data-tts="alpha plus alpha star">$\alpha + \alpha^*$</span>
+      — the total alignment error. This is the inherent model disagreement: how much
+      the two embedding models disagree on the reference vectors. You cannot control
+      this — it's a property of the embedding models.
+    </li>
+    <li>
+      <span class="tts-math" data-tts="1 over sigma min of X">$1/\sigma_{\min}(X)$</span>
+      — the inverse of the smallest singular value of the reference cluster matrix.
+      This is the <em>conditioning factor</em>. A well-conditioned reference cluster
+      (large
+      <span class="tts-math" data-tts="sigma min">$\sigma_{\min}$</span>)
+      leads to small error amplification. A poorly conditioned cluster
+      (small
+      <span class="tts-math" data-tts="sigma min">$\sigma_{\min}$</span>)
+      — e.g., a cluster where all reference vectors lie on a thin line —
+      amplifies the error catastrophically.
+    </li>
+    <li>
+      <span class="tts-math" data-tts="norm of z minus c sub X plus c sub Y">
+        $\|z - c_X + c_Y\|$
+      </span>
+      — how far the non-reference vector
+      <span class="tts-math" data-tts="z">$z$</span>
+      is from the cluster centroid. The further
+      <span class="tts-math" data-tts="z">$z$</span>
+      is from the references used to compute the isometry, the less accurate
+      the integration. This is the classic bias-variance tradeoff: large clusters
+      have high alignment error but low amplification of that error to distant points;
+      small clusters have low alignment error but high sensitivity when applied to
+      points far from the cluster.
+    </li>
+  </ul>
+
+  <div class="box intuition" data-cid="main-0760">
+    <span class="box-label">Intuition — The Conditioning Constraint</span>
+    <p data-cid="main-0770">
+      Imagine trying to determine the exact orientation of a rigid book by observing
+      only a few reference points on its cover. If all your reference points lie on
+      a single line (the spine), you have no information about rotations around that
+      line — the isometry is ambiguous and the error can be huge. But if your reference
+      points span the full 2D surface of the cover, you can determine the orientation
+      precisely. The minimum singular value
+      <span class="tts-math" data-tts="sigma min">$\sigma_{\min}$</span>
+      measures exactly how well the reference cluster "spans" the relevant directions.
+    </p>
+  </div>
+
+  <h3 data-cid="main-0780">Design Implications (I1–I4)</h3>
+  <p data-cid="main-0790">
+    Theorem 1 gives four practical guidelines for designing LA2M:
+  </p>
+  <ul data-cid="main-0800">
+    <li><strong>(I1)</strong> Minimising alignment error
+    <span class="tts-math" data-tts="alpha">$\alpha$</span>
+    is beneficial. Smaller clusters tend to have lower
+    <span class="tts-math" data-tts="alpha">$\alpha$</span>
+    (local isometry holds better).</li>
+    <li><strong>(I2)</strong> But making clusters too small hurts, because
+    <span class="tts-math" data-tts="sigma min">$\sigma_{\min}$</span>
+    shrinks (the cluster becomes rank-deficient) and the error amplification
+    <span class="tts-math" data-tts="1 over sigma min">$1/\sigma_{\min}$</span>
+    blows up.</li>
+    <li><strong>(I3)</strong> Directions in the reference cluster with low variance
+    (small
+    <span class="tts-math" data-tts="sigma sub i">$\sigma_i$</span>)
+    are most susceptible — these are the directions the isometry cannot determine accurately.</li>
+    <li><strong>(I4)</strong> Non-reference vectors far from the cluster centroid
+    suffer more. This means the nearest-centroid assignment in Step 3 of LA2M
+    is natural: use the cluster that is geographically closest.</li>
+  </ul>
+
+  <!-- ============================================================ -->
+  <!-- SECTION 6: ALGORITHM DESIGN -->
+  <!-- ============================================================ -->
+  <h2 data-cid="main-0810" id="s6">6. Algorithm Design Details</h2>
+
+  <h3 data-cid="main-0820">Determining cluster scope</h3>
+  <p data-cid="main-0830">
+    The bound in Theorem 1 implies a tension: smaller clusters improve local isometry
+    accuracy but degrade conditioning. The paper resolves this by setting the cluster
+    size adaptively based on the intrinsic dimensionality of the data and the condition
+    number of the reference matrix. In practice, it uses
+    <span class="tts-math" data-tts="k">$k$</span>-means clustering on reference
+    vectors, with the number of clusters
+    <span class="tts-math" data-tts="n">$n$</span>
+    tuned empirically or by a principled search over the integration error vs. conditioning curve.
+  </p>
+
+  <h3 data-cid="main-0840">Generating reference vectors when none are given</h3>
+  <p data-cid="main-0850">
+    In many scenarios, reference vectors (items encoded by both models) are naturally
+    available — e.g., in backfilling, the overlap between old and new embeddings
+    is known. But in privacy-sensitive federated settings, no such correspondence may
+    be pre-known. The paper provides an interface for LA2M to automatically discover
+    reference vectors:
+  </p>
+  <ol data-cid="main-0860">
+    <li>Sample a small set of query vectors from one database.</li>
+    <li>Query the remote party's database (or a public endpoint of the embedding model)
+    to obtain candidate reference vectors.</li>
+    <li>Use entity linking or data linkage techniques to confirm correspondences.</li>
+  </ol>
+  <p data-cid="main-0870">
+    Experiments show LA2M is robust: reducing the fraction of reference vectors from 80%
+    to 20% degrades integration quality by only about 3%.
+  </p>
+
+  <h3 data-cid="main-0880">Handling non-square dimensions</h3>
+  <p data-cid="main-0890">
+    Different embedding models may produce vectors of different dimensions (e.g.,
+    FastText: 300 dimensions, NV-Embed-V2: 4096 dimensions). The isometry
+    <span class="tts-math" data-tts="f of x equals s R times open paren x plus t close paren">
+      $f(x) = s \cdot R(x + \mathbf{t})$
+    </span>
+    requires the same dimension for
+    <span class="tts-math" data-tts="R">$R$</span>.
+    The paper handles dimension mismatch by padding or projecting to a common dimension
+    as a pre-processing step, or using rectangular transformations (not pure orthogonal
+    matrices).
+  </p>
+
+  <!-- ============================================================ -->
+  <!-- SECTION 7: EXPERIMENTS -->
+  <!-- ============================================================ -->
+  <h2 data-cid="main-0900" id="s7">7. Experiments</h2>
+
+  <h3 data-cid="main-0910">Experimental setup</h3>
+  <p data-cid="main-0920">
+    The paper evaluates on five major embedding models:
+    <strong>NV-Embed-V2</strong> (NVIDIA, 4096-dim), <strong>OpenAI Ada</strong>
+    (OpenAI, 1536-dim), <strong>GloVe</strong> (Stanford, 300-dim),
+    <strong>Mistral</strong>, and <strong>FastText</strong> (Facebook, 300-dim).
+    Five text retrieval benchmarks are used: SciFact, NFCorpus, ArguAna, SciDocs,
+    and FiQA-2018. Each dataset is split so that
+    <span class="tts-math" data-tts="O intersection">$O_\cap$</span>
+    contains one-third of all documents. Evaluation uses recall@100 and a
+    relative NDCG (Normalized Discounted Cumulative Gain) measure.
+  </p>
+
+  <h3 data-cid="main-0930">Baselines compared</h3>
+  <ul data-cid="main-0940">
+    <li><strong>Union</strong>: naive union of the two vector databases without any transformation.</li>
+    <li><strong>A2M</strong>: global isometry alignment (Procrustes) — Hypothesis A.</li>
+    <li><strong>GW</strong>: Gromov-Wasserstein based alignment (optimal transport).</li>
+    <li><strong>CCA</strong>: Canonical Correlation Analysis alignment.</li>
+    <li><strong>A2MMLP</strong>: A2M with a neural MLP as the alignment function instead of a linear isometry.</li>
+    <li><strong>LA2MMLP</strong>: Localized A2M with MLP per cluster.</li>
+    <li><strong>LA2M</strong>: the proposed algorithm (localized Procrustes isometries).</li>
+  </ul>
+
+  <h3 data-cid="main-0950">Main results</h3>
+  <p data-cid="main-0960">
+    The headline result from Table 1: for integrating FastText into NV-Embed-V2 on
+    SciFact, Union achieves 26.3% recall@100, A2M achieves 18.3% (worse than Union),
+    and LA2M achieves <strong>76.7%</strong> — nearly three times the Union baseline.
+    Similar dramatic improvements appear across all model pairs and benchmarks:
+  </p>
+  <ul data-cid="main-0970">
+    <li>NV-Embed-V2 into OpenAI-Ada: Union 32%, A2M 32%, <strong>LA2M 79%</strong> on SciFact.</li>
+    <li>GTE-Qwen2 into NV-Embed-V2: Union 32%, A2M 32%, <strong>LA2M 85%</strong> on SciFact.</li>
+    <li>Mistral into OpenAI-Ada: Union 32%, A2M 27%, <strong>LA2M 77%</strong> on SciFact.</li>
+  </ul>
+
+  <div class="box intuition" data-cid="main-0980">
+    <span class="box-label">Why does LA2M so dramatically outperform A2M?</span>
+    <p data-cid="main-0990">
+      A2M computes a single global isometry — think of trying to fit a single rigid
+      rotation to a world map that has been distorted differently in every country.
+      LA2M fits a separate local isometry to each neighbourhood. In each small region,
+      the local geometry is well-behaved (Hypothesis B holds), so the fit is accurate.
+      The gain isn't just incremental; it's transformative because top-k search is
+      dominated by the nearest neighbours, exactly the local structure that LA2M captures.
+    </p>
+  </div>
+
+  <h3 data-cid="main-1000">Impact of reference vector ratio</h3>
+  <p data-cid="main-1010">
+    The paper varies the fraction
+    <span class="tts-math" data-tts="gamma">$\gamma$</span>
+    of reference vectors from 20% to 80% and compares LA2M's own reference selection
+    strategy against uniform random sampling. Key findings:
+  </p>
+  <ul data-cid="main-1020">
+    <li>LA2M's reference selection consistently outperforms random sampling.</li>
+    <li>LA2M is robust: dropping from 80% to 20% references increases integration error
+    by only ~3%.</li>
+    <li>Even with 20% references, LA2M substantially outperforms Union.</li>
+  </ul>
+
+  <h3 data-cid="main-1030">Validating local vs. global isometry</h3>
+  <p data-cid="main-1040">
+    To confirm the local isometry hypothesis, the paper evaluates a variant of LA2M
+    that uses
+    <span class="tts-math" data-tts="k">$k$</span>-means clustering with varying
+    <span class="tts-math" data-tts="k">$k$</span>:
+  </p>
+  <ul data-cid="main-1050">
+    <li>As
+    <span class="tts-math" data-tts="k">$k$</span> increases (smaller clusters),
+    alignment error
+    <span class="tts-math" data-tts="alpha">$\alpha$</span> decreases — local isometry holds better.</li>
+    <li>But at very large
+    <span class="tts-math" data-tts="k">$k$</span>, recall@100 drops, because tiny clusters are
+    poorly conditioned and cannot reliably transform non-reference vectors.</li>
+    <li>The sweet spot is intermediate cluster sizes — validating the theoretical trade-off from Theorem 1.</li>
+  </ul>
+
+  <h3 data-cid="main-1060">Image search case study</h3>
+  <p data-cid="main-1070">
+    The paper demonstrates privacy-preserving image search on CIFAR-10: Alice uses
+    DenseNet embeddings, Bob uses ResNet embeddings. After LA2M integration, top-1
+    image search gives the correct category for all 10 test queries. The Union
+    baseline fails 9 out of 10 times, returning semantically unrelated images.
+  </p>
+
+  <!-- ============================================================ -->
+  <!-- SECTION 8: RELATED WORK -->
+  <!-- ============================================================ -->
+  <h2 data-cid="main-1080" id="s8">8. Related Work</h2>
+
+  <p data-cid="main-1090">
+    The paper relates to three main areas of prior work:
+  </p>
+
+  <h3 data-cid="main-1100">Cross-lingual word embedding alignment</h3>
+  <p data-cid="main-1110">
+    A large body of NLP work aligns word embeddings across languages — mapping English
+    word vectors to French word vectors so that "cat" and "chat" end up close together.
+    Methods include supervised Procrustes, Gromov-Wasserstein optimal transport,
+    CCA, and adversarial training. These methods exploit a key property discovered
+    by Mikolov et al.: word embeddings exhibit near-<em>global</em> geometric similarity
+    across languages, so a single linear transformation suffices.
+  </p>
+  <p data-cid="main-1120">
+    This is fundamentally different from the vector database integration problem.
+    Vector databases — especially for sentence embeddings or images — do <em>not</em>
+    have global geometric regularity. Moreover, cross-lingual alignment aims to
+    match the global distribution of word vectors, while LA2M targets top-k retrieval
+    accuracy, which demands local precision, not global correspondence.
+  </p>
+
+  <h3 data-cid="main-1130">Vector database efficiency</h3>
+  <p data-cid="main-1140">
+    Much prior work on vector databases focuses on efficiency: faster ANN search via
+    FAISS, ScaNN, DiskANN, HNSW, and product quantization. These systems assume a
+    single embedding space and do not address integration across models.
+  </p>
+
+  <h3 data-cid="main-1150">Domain adaptation and transfer learning</h3>
+  <p data-cid="main-1160">
+    Domain adaptation transfers a model from a source domain to a target domain.
+    This is related but different: it typically requires access to raw data and model
+    internals, whereas LA2M is fully model-oblivious and data-oblivious.
+  </p>
+
+  <!-- ============================================================ -->
+  <!-- SUMMARY BOX -->
+  <!-- ============================================================ -->
+  <h2 data-cid="main-1170">Summary: What Makes This Work Novel</h2>
+
+  <div class="box intuition" data-cid="main-1180">
+    <span class="box-label">The Big Picture</span>
+    <p data-cid="main-1190">
+      The paper's contribution is a surprising and practically important observation:
+      while global embedding geometry disagrees across models, <em>local</em> geometry
+      is consistent. This is the local isometry hypothesis — a hypothesis the paper
+      validates empirically (Jaccard index measurements, T-SNE visualisations) and
+      exploits algorithmically (LA2M). The theoretical bound in Theorem 1 reveals exactly
+      when and why the approach succeeds or fails, guiding cluster size selection. The
+      result is a model-oblivious, data-oblivious integration algorithm that achieves
+      dramatically better recall than prior baselines.
+    </p>
+  </div>
+
+  <div class="box pause" data-cid="main-1200">
+    <span class="box-label">Open Questions</span>
+    <p data-cid="main-1210">
+      The paper leaves several open questions: (1) Can LA2M be extended to integrate
+      more than two vector databases simultaneously? (2) Can the local isometry hypothesis
+      be proved theoretically under some assumptions on the embedding models, rather than
+      just validated empirically? (3) How does LA2M interact with privacy guarantees
+      — can an adversary learn something about the raw data from the transformed vectors?
+      (4) For very heterogeneous embedding models (very different dimensions, very different
+      training corpora), what is the fundamental limit on how well integration can work?
+    </p>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- REFERENCES -->
+  <!-- ============================================================ -->
+  <h2 data-cid="main-1220" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-1230">
+      Beining Yang, Yang Cao, and Yang Ren. (2025). Integrating Vector Databases
+      across Embedding Models. <em>Proc. ACM Manag. Data</em>, 3(6), Article 338.
+      <a href="https://doi.org/10.1145/3769803">doi:10.1145/3769803</a>
+    </li>
+    <li data-cid="main-1240">
+      Johnson, J., Douze, M., &amp; Jégou, H. (2019). Billion-scale similarity search
+      with GPUs. <em>IEEE Transactions on Big Data</em>. (FAISS)
+    </li>
+    <li data-cid="main-1250">
+      Malkov, Y. A., &amp; Yashunin, D. A. (2018). Efficient and Robust Approximate
+      Nearest Neighbor Search Using Hierarchical Navigable Small World Graphs.
+      <em>IEEE TPAMI</em>. (HNSW)
+    </li>
+    <li data-cid="main-1260">
+      Mikolov, T., Le, Q. V., &amp; Sutskever, I. (2013). Exploiting Similarities
+      among Languages for Machine Translation. <em>arXiv:1309.4168</em>.
+      (Cross-lingual word embedding alignment)
+    </li>
+    <li data-cid="main-1270">
+      Schuhmann, C., et al. (2022). LAION-5B: An Open Large-Scale Dataset for
+      Training Next Generation Image-Text Models. <em>NeurIPS 2022</em>.
+    </li>
+    <li data-cid="main-1280">
+      Wadell, P. (2019). Procrustes Analysis. Classical shape analysis technique
+      underpinning the A2M formulation in this paper.
+    </li>
+    <li data-cid="main-1290">
+      Wohlwend, J., et al. (2021). SciFact: Fact Checking Scientific Claims.
+      <em>EMNLP 2021</em>. (One of the benchmark datasets.)
+    </li>
+    <li data-cid="main-1300">
+      Pennington, J., Socher, R., &amp; Manning, C. D. (2014). GloVe: Global
+      Vectors for Word Representation. <em>EMNLP 2014</em>.
+    </li>
+    <li data-cid="main-1310">
+      Bojanowski, P., et al. (2017). Enriching Word Vectors with Subword
+      Information. <em>TACL</em>, 5. (FastText)
+    </li>
+    <li data-cid="main-1320">
+      He, K., et al. (2016). Deep Residual Learning for Image Recognition.
+      <em>CVPR 2016</em>. (ResNet, used in image case study)
+    </li>
+    <li data-cid="main-1330">
+      Huang, G., et al. (2017). Densely Connected Convolutional Networks.
+      <em>CVPR 2017</em>. (DenseNet, used in image case study)
+    </li>
+    <li data-cid="main-1340">
+      Lewis, P., et al. (2020). Retrieval-Augmented Generation for
+      Knowledge-Intensive NLP Tasks. <em>NeurIPS 2020</em>. (RAG motivation)
+    </li>
+  </ol>
+
+</article>
+</main>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    renderMathInElement(document.body, {
+      delimiters: [
+        {left: "$$", right: "$$", display: true},
+        {left: "$", right: "$", display: false}
+      ]
+    });
+  });
+</script>
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script>
+</body>
+</html>

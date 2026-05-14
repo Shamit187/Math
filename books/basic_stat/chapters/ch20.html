@@ -10,14 +10,13 @@
 <link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
-<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/><link href="/css/tts.css" rel="stylesheet"/>
 </head>
 <body data-book="basic_stat" data-page="ch20">
 <header class="site-header">
+<a class="home-btn" href="/">Home</a>
 <a class="brand" href="/books/basic_stat/">Theoretical Statistics <small>a slow reading guide</small></a>
 <nav>
-<a href="/" class="all-books-link">All books</a>
-    <a href="/books/basic_stat/">Contents</a>
 <button aria-label="toggle theme" class="theme-toggle">Dark</button>
 </nav>
 </header>
@@ -47,10 +46,10 @@
 </section>
 <h2 data-cid="ch20-020" id="why">Why be sequential?</h2>
 <p data-cid="ch20-030">
-Every inference procedure you have met so far assumes a fixed sample size $n$, chosen <em>before</em> looking at the data.
+Every inference procedure you have met so far assumes a fixed sample size <span class="tts-math" data-tts="n">$n$</span>, chosen <em>before</em> looking at the data.
 You write down a confidence interval, a test, a posterior — and the sample size is a constant. Now we relax that.
 In a <strong>sequential experiment</strong>, the data arrive one at a time and the experimenter is allowed to decide,
-after each observation, whether to keep collecting or to stop. The sample size $N$ becomes a random variable.
+after each observation, whether to keep collecting or to stop. The sample size <span class="tts-math" data-tts="N">$N$</span> becomes a random variable.
 </p>
 <p data-cid="ch20-040">
 There are three reasons to care:
@@ -58,8 +57,8 @@ There are three reasons to care:
 <ul data-cid="ch20-050">
 <li><strong>Efficiency.</strong> If you are testing whether a drug works and after twenty patients the answer is already obvious,
 why pay to enrol another two hundred? Sequential tests can detect the truth with far fewer observations on average.</li>
-<li><strong>Fixed-precision goals.</strong> Some objectives are not achievable with any predetermined $n$ — for example,
-"give me a confidence interval of width $\leq 0.01$ no matter what the variance turns out to be". This requires
+<li><strong>Fixed-precision goals.</strong> Some objectives are not achievable with any predetermined <span class="tts-math" data-tts="n">$n$</span> — for example,
+"give me a confidence interval of width <span class="tts-math" data-tts="less than or equal to 0.01">$\leq 0.01$</span> no matter what the variance turns out to be". This requires
 looking at the data to decide when enough is enough.</li>
 <li><strong>Adaptive design.</strong> In clinical trials, dose-finding studies, and "multi-armed bandit" problems,
 the choice of <em>what</em> to do next depends on what you have already seen. Stopping is just the simplest instance.</li>
@@ -67,7 +66,7 @@ the choice of <em>what</em> to do next depends on what you have already seen. St
 <div class="box intuition" data-cid="ch20-060">
 <span class="box-label">The whole chapter in one sentence</span>
 <p data-cid="ch20-070">
-Once $N$ is random, almost every classical sampling distribution becomes <em>wrong</em>, the likelihood somehow
+Once <span class="tts-math" data-tts="N">$N$</span> is random, almost every classical sampling distribution becomes <em>wrong</em>, the likelihood somehow
 becomes <em>right</em>, and a new optimization problem appears: choose the stopping rule itself.
 </p>
 </div>
@@ -77,47 +76,47 @@ The chapter opens with a small horror story. It is worth lingering over.
 <div class="box example" data-cid="ch20-090">
 <span class="box-label">Example 20.1 — Sampling to a foregone conclusion</span>
 <p data-cid="ch20-100">
-Let $X_1, X_2, \dots$ be i.i.d. $N(\mu, 1)$, and let $S_n = X_1 + \cdots + X_n$. The classical level-$\alpha$ two-sided
-test of $H_0 : \mu = 0$ rejects when $|S_n| &gt; z_{\alpha/2} \sqrt{n}$. Now imagine a researcher who runs this test
+Let <span class="tts-math" data-tts="X sub 1 X sub 2 and so on">$X_1, X_2, \dots$</span> be i.i.d. <span class="tts-math" data-tts="N mu 1">$N(\mu, 1)$</span>, and let <span class="tts-math" data-tts="S sub n equals X sub 1 plus times s plus X sub n">$S_n = X_1 + \cdots + X_n$</span>. The classical level-<span class="tts-math" data-tts="alpha">$\alpha$</span> two-sided
+test of <span class="tts-math" data-tts="H sub 0 mu equals 0">$H_0 : \mu = 0$</span> rejects when <span class="tts-math" data-tts="S sub n gt z sub alpha over 2 root n">$|S_n| &gt; z_{\alpha/2} \sqrt{n}$</span>. Now imagine a researcher who runs this test
 <em>repeatedly</em>, after each new observation, and stops the moment it rejects:
-$$N = \inf\{ n \geq 1 : |S_n| &gt; z_{\alpha/2} \sqrt{n} \}.$$
+<span class="tts-math" data-tts="N equals infimum n greater than or equal to 1 S sub n gt z sub alpha over 2 root n .">$$N = \inf\{ n \geq 1 : |S_n| &gt; z_{\alpha/2} \sqrt{n} \}.$$</span>
 </p>
 <p data-cid="ch20-110">
-A short argument using the law of large numbers and independence of disjoint blocks $S_{2^{j+1}} - S_{2^j}$
-shows that $P(N = \infty) = 0$ <em>even when</em> $\mu = 0$. So the researcher is guaranteed, with probability one,
-to eventually reject $H_0$ — regardless of whether $H_0$ is true. The nominal level $\alpha$ has been silently
-inflated to $100\%$.
+A short argument using the law of large numbers and independence of disjoint blocks <span class="tts-math" data-tts="S sub 2 to the j plus 1 minus S sub 2 to the j">$S_{2^{j+1}} - S_{2^j}$</span>
+shows that <span class="tts-math" data-tts="P N equals infinity equals 0">$P(N = \infty) = 0$</span> <em>even when</em> <span class="tts-math" data-tts="mu equals 0">$\mu = 0$</span>. So the researcher is guaranteed, with probability one,
+to eventually reject <span class="tts-math" data-tts="H sub 0">$H_0$</span> — regardless of whether <span class="tts-math" data-tts="H sub 0">$H_0$</span> is true. The nominal level <span class="tts-math" data-tts="alpha">$\alpha$</span> has been silently
+inflated to <span class="tts-math" data-tts="100 %">$100\%$</span>.
 </p>
 </div>
 <div class="box warn" data-cid="ch20-120">
 <span class="box-label">Common pitfall</span>
 <p data-cid="ch20-130">
-This is not a quirk of the normal model. <em>Any</em> fixed-$n$ test, monitored continuously and stopped at the
+This is not a quirk of the normal model. <em>Any</em> fixed-<span class="tts-math" data-tts="n">$n$</span> test, monitored continuously and stopped at the
 first rejection, will eventually reject under the null. The technical name is the <strong>law of the iterated
 logarithm</strong> talking, but the moral is simpler: <em>peeking and stopping early invalidates classical inference</em>.
-You may not use a fixed-$n$ critical value with a data-dependent sample size.
+You may not use a fixed-<span class="tts-math" data-tts="n">$n$</span> critical value with a data-dependent sample size.
 </p>
 </div>
 <div class="box pause" data-cid="ch20-140">
 <span class="box-label">Pause</span>
 <p data-cid="ch20-150">
-Read Example 20.1 again. The researcher did nothing dishonest — they ran the same level-$\alpha$ test the textbook
-prescribes, just more often. The mistake is structural: the sampling distribution of $S_N/\sqrt{N}$ <em>is not</em>
-$N(0,1)$ when $N$ is the random stopping time defined above. There exists no $n$ for which the boundary is sharp;
+Read Example 20.1 again. The researcher did nothing dishonest — they ran the same level-<span class="tts-math" data-tts="alpha">$\alpha$</span> test the textbook
+prescribes, just more often. The mistake is structural: the sampling distribution of <span class="tts-math" data-tts="S sub N over root N">$S_N/\sqrt{N}$</span> <em>is not</em>
+<span class="tts-math" data-tts="N 0 1">$N(0,1)$</span> when <span class="tts-math" data-tts="N">$N$</span> is the random stopping time defined above. There exists no <span class="tts-math" data-tts="n">$n$</span> for which the boundary is sharp;
 it is always re-crossed eventually.
 </p>
 <p data-cid="ch20-160">
 Now ask yourself: if a colleague tells you "we collected data until the effect was significant," what should you
-do with their $p$-value? The honest answer is: politely refuse it, and ask for the protocol.
+do with their <span class="tts-math" data-tts="p">$p$</span>-value? The honest answer is: politely refuse it, and ask for the protocol.
 </p>
 </div>
 <h3 data-cid="ch20-170">Surprise: the likelihood is unaffected</h3>
 <p data-cid="ch20-180">
-Here is the philosophical fault line. The sampling distribution of $S_N/\sqrt N$ depends violently on the stopping
-rule. But the <em>likelihood function</em> after stopping does not. Whether you collected $X_1, \dots, X_{10}$
-because you planned to all along, or because some adaptive rule led you to stop at $n=10$,
-$$L(\mu) = \prod_{i=1}^{10} \phi(X_i - \mu)$$
-is the same function of $\mu$. We prove this carefully in Section 20.2 (Wald's fundamental identity), but the
+Here is the philosophical fault line. The sampling distribution of <span class="tts-math" data-tts="S sub N over root N">$S_N/\sqrt N$</span> depends violently on the stopping
+rule. But the <em>likelihood function</em> after stopping does not. Whether you collected <span class="tts-math" data-tts="X sub 1 and so on X sub 10">$X_1, \dots, X_{10}$</span>
+because you planned to all along, or because some adaptive rule led you to stop at <span class="tts-math" data-tts="n equals 10">$n=10$</span>,
+<span class="tts-math" data-tts="L mu equals the product from i equals 1 to 10 of phi X sub i minus mu">$$L(\mu) = \prod_{i=1}^{10} \phi(X_i - \mu)$$</span>
+is the same function of <span class="tts-math" data-tts="mu">$\mu$</span>. We prove this carefully in Section 20.2 (Wald's fundamental identity), but the
 consequence is huge:
 </p>
 <ul data-cid="ch20-190">
@@ -131,240 +130,240 @@ Section 20.3 exploits this.
 </p>
 <h2 data-cid="ch20-210" id="s20-1">20.1 Fixed-width confidence intervals</h2>
 <p data-cid="ch20-220">
-Suppose $X_1, X_2, \dots$ are i.i.d. from a one-parameter exponential family with sufficient statistic $T(X)$.
-By the delta method, the MLE $\hat\lambda_n$ of some smooth parameter $\lambda = g(\theta)$ satisfies
-$$\sqrt n (\hat\lambda_n - \lambda) \Rightarrow N(0, \nu^2(\theta)),$$
-and the standard $1-\alpha$ asymptotic confidence interval is
-$$\hat\lambda_n \pm z_{\alpha/2} \, \nu(\hat\theta_n) / \sqrt n. \tag{20.1}$$
-Its half-width is $z_{\alpha/2} \nu(\hat\theta_n)/\sqrt n$. The trouble: $\nu(\theta)$ is unknown, so for any
-fixed $n$ the width is unpredictable. If we want a guaranteed width $\leq w$, we cannot get there with a fixed-$n$
+Suppose <span class="tts-math" data-tts="X sub 1 X sub 2 and so on">$X_1, X_2, \dots$</span> are i.i.d. from a one-parameter exponential family with sufficient statistic <span class="tts-math" data-tts="T X">$T(X)$</span>.
+By the delta method, the MLE <span class="tts-math" data-tts="lambda sub n">$\hat\lambda_n$</span> of some smooth parameter <span class="tts-math" data-tts="lambda equals g theta">$\lambda = g(\theta)$</span> satisfies
+<span class="tts-math" data-tts="root n lambda sub n minus lambda implies N 0 nu to the 2 theta">$$\sqrt n (\hat\lambda_n - \lambda) \Rightarrow N(0, \nu^2(\theta)),$$</span>
+and the standard <span class="tts-math" data-tts="1 minus alpha">$1-\alpha$</span> asymptotic confidence interval is
+<span class="tts-math" data-tts="lambda sub n plus or minus z sub alpha over 2 nu theta sub n over root n. 20.1">$$\hat\lambda_n \pm z_{\alpha/2} \, \nu(\hat\theta_n) / \sqrt n. \tag{20.1}$$</span>
+Its half-width is <span class="tts-math" data-tts="z sub alpha over 2 nu theta sub n over root n">$z_{\alpha/2} \nu(\hat\theta_n)/\sqrt n$</span>. The trouble: <span class="tts-math" data-tts="nu theta">$\nu(\theta)$</span> is unknown, so for any
+fixed <span class="tts-math" data-tts="n">$n$</span> the width is unpredictable. If we want a guaranteed width <span class="tts-math" data-tts="less than or equal to w">$\leq w$</span>, we cannot get there with a fixed-<span class="tts-math" data-tts="n">$n$</span>
 design.
 </p>
 <h3 data-cid="ch20-230">The sequential fix</h3>
 <p data-cid="ch20-240">
-Keep sampling until the half-width drops below $w/2$. Formally,
-$$N = N_w = \inf\!\left\{ n : w^2 n \geq 4 z_{\alpha/2}^2 \, \nu^2(\hat\theta_n) \right\}. \tag{20.2}$$
-By construction the width of $\hat\lambda_N \pm z_{\alpha/2} \nu(\hat\theta_N)/\sqrt N$ is at most $w$. The
-question is: does it still have coverage $1 - \alpha$?
+Keep sampling until the half-width drops below <span class="tts-math" data-tts="w over 2">$w/2$</span>. Formally,
+<span class="tts-math" data-tts="N equals N sub w equals infimum n w to the 2 n greater than or equal to 4 z sub alpha over 2 to the 2 nu to the 2 theta sub n . 20.2">$$N = N_w = \inf\!\left\{ n : w^2 n \geq 4 z_{\alpha/2}^2 \, \nu^2(\hat\theta_n) \right\}. \tag{20.2}$$</span>
+By construction the width of <span class="tts-math" data-tts="lambda sub N plus or minus z sub alpha over 2 nu theta sub N over root N">$\hat\lambda_N \pm z_{\alpha/2} \nu(\hat\theta_N)/\sqrt N$</span> is at most <span class="tts-math" data-tts="w">$w$</span>. The
+question is: does it still have coverage <span class="tts-math" data-tts="1 minus alpha">$1 - \alpha$</span>?
 </p>
 <p data-cid="ch20-250">
-With a fixed $n$ the answer follows from the CLT. With $N$ a random stopping time we need a new tool: a CLT in
+With a fixed <span class="tts-math" data-tts="n">$n$</span> the answer follows from the CLT. With <span class="tts-math" data-tts="N">$N$</span> a random stopping time we need a new tool: a CLT in
 which the number of summands is itself random.
 </p>
 <div class="box definition" data-cid="ch20-260">
 <span class="box-label">Definition 20.2 — uniformly continuous in probability (u.c.i.p.)</span>
 <p data-cid="ch20-270">
-Random variables $W_n$, $n \geq 1$, are <strong>uniformly continuous in probability</strong> if for every
-$\epsilon &gt; 0$ there exists $\delta &gt; 0$ such that
-$$P\!\left\{ \max_{0 \leq k \leq n\delta} |W_{n+k} - W_n| \geq \epsilon \right\} &lt; \epsilon, \quad \text{for all } n \geq 1.$$
+Random variables <span class="tts-math" data-tts="W sub n">$W_n$</span>, <span class="tts-math" data-tts="n greater than or equal to 1">$n \geq 1$</span>, are <strong>uniformly continuous in probability</strong> if for every
+<span class="tts-math" data-tts="epsilon gt 0">$\epsilon &gt; 0$</span> there exists <span class="tts-math" data-tts="delta gt 0">$\delta &gt; 0$</span> such that
+<span class="tts-math" data-tts="P sub 0 less than or equal to k less than or equal to n delta W sub n plus k minus W sub n greater than or equal to epsilon lt epsilon for all n greater than or equal to 1.">$$P\!\left\{ \max_{0 \leq k \leq n\delta} |W_{n+k} - W_n| \geq \epsilon \right\} &lt; \epsilon, \quad \text{for all } n \geq 1.$$</span>
 </p>
 </div>
 <div class="box intuition" data-cid="ch20-280">
 <span class="box-label">Translation</span>
 <p data-cid="ch20-290">
-"u.c.i.p." just means: a tiny relative perturbation of the index $n$ cannot move $W_n$ very much, uniformly in $n$.
+"u.c.i.p." just means: a tiny relative perturbation of the index <span class="tts-math" data-tts="n">$n$</span> cannot move <span class="tts-math" data-tts="W sub n">$W_n$</span> very much, uniformly in <span class="tts-math" data-tts="n">$n$</span>.
 This is the property a sequence needs in order to be insensitive to whether you stop at the deterministic index
-$n_w$ or the random index $N_w$, provided the two are close.
+<span class="tts-math" data-tts="n sub w">$n_w$</span> or the random index <span class="tts-math" data-tts="N sub w">$N_w$</span>, provided the two are close.
 </p>
 </div>
 <div class="box definition" data-cid="ch20-300">
 <span class="box-label">Theorem 20.3 — Anscombe's CLT</span>
 <p data-cid="ch20-310">
-If $N_w$ are positive-integer-valued random variables with $w^2 N_w \xrightarrow{p} c \in (0, \infty)$ as $w \downarrow 0$,
-if $n_w = \lfloor c/w^2 \rfloor$, and if $W_n$ is u.c.i.p., then
-$$W_{N_w} - W_{n_w} \xrightarrow{p} 0.$$
-In particular, if $W_n \Rightarrow W$, then also $W_{N_w} \Rightarrow W$.
+If <span class="tts-math" data-tts="N sub w">$N_w$</span> are positive-integer-valued random variables with <span class="tts-math" data-tts="w to the 2 N sub w converges in probability to c in 0 infinity">$w^2 N_w \xrightarrow{p} c \in (0, \infty)$</span> as <span class="tts-math" data-tts="w 0">$w \downarrow 0$</span>,
+if <span class="tts-math" data-tts="n sub w equals c over w to the 2">$n_w = \lfloor c/w^2 \rfloor$</span>, and if <span class="tts-math" data-tts="W sub n">$W_n$</span> is u.c.i.p., then
+<span class="tts-math" data-tts="W sub N sub w minus W sub n sub w converges in probability to 0.">$$W_{N_w} - W_{n_w} \xrightarrow{p} 0.$$</span>
+In particular, if <span class="tts-math" data-tts="W sub n implies W">$W_n \Rightarrow W$</span>, then also <span class="tts-math" data-tts="W sub N sub w implies W">$W_{N_w} \Rightarrow W$</span>.
 </p>
 </div>
 <p data-cid="ch20-320">
 The proof in the book uses Kolmogorov's maximal inequality (Lemma 20.4):
-$$P\!\left( \max_{1 \leq k \leq n} |S_k| \geq c \right) \leq \frac{n \sigma_Y^2}{c^2}.$$
-This is the workhorse for showing that normalized partial sums $W_n = \sqrt{n} \bar Y_n$ are u.c.i.p.
+<span class="tts-math" data-tts="P sub 1 less than or equal to k less than or equal to n S sub k greater than or equal to c less than or equal to n sigma sub Y to the 2 over c to the 2 .">$$P\!\left( \max_{1 \leq k \leq n} |S_k| \geq c \right) \leq \frac{n \sigma_Y^2}{c^2}.$$</span>
+This is the workhorse for showing that normalized partial sums <span class="tts-math" data-tts="W sub n equals root n Y sub n">$W_n = \sqrt{n} \bar Y_n$</span> are u.c.i.p.
 </p>
 <div class="box intuition" data-cid="ch20-330">
 <span class="box-label">Why this is the right tool</span>
 <p data-cid="ch20-340">
 Anscombe is saying: <em>if your statistic doesn't wiggle too much locally, you can replace its random index with
 a nearby deterministic index without changing the limit.</em> The CLT you already know transfers wholesale to the
-sequential setting, as long as $N_w \to \infty$ in the prescribed way.
+sequential setting, as long as <span class="tts-math" data-tts="N sub w to infinity">$N_w \to \infty$</span> in the prescribed way.
 </p>
 </div>
 <p data-cid="ch20-350">
-Applying Anscombe to $W_n = \sqrt n (\hat\lambda_n - \lambda)/\nu(\hat\theta_n)$ — together with the strong law to
-guarantee $\hat\theta_N \to \theta$ a.s. — gives
-$$\frac{\sqrt N (\hat\lambda_N - \lambda)}{\nu(\hat\theta_N)} \Rightarrow N(0,1)$$
-as $w \downarrow 0$, and therefore the sequential interval (20.3) has asymptotic coverage $1 - \alpha$. Width
-guaranteed at most $w$ by construction; coverage guaranteed in the limit by Anscombe.
+Applying Anscombe to <span class="tts-math" data-tts="W sub n equals root n lambda sub n minus lambda over nu theta sub n">$W_n = \sqrt n (\hat\lambda_n - \lambda)/\nu(\hat\theta_n)$</span> — together with the strong law to
+guarantee <span class="tts-math" data-tts="theta sub N to theta">$\hat\theta_N \to \theta$</span> a.s. — gives
+<span class="tts-math" data-tts="root N lambda sub N minus lambda over nu theta sub N implies N 0 1">$$\frac{\sqrt N (\hat\lambda_N - \lambda)}{\nu(\hat\theta_N)} \Rightarrow N(0,1)$$</span>
+as <span class="tts-math" data-tts="w 0">$w \downarrow 0$</span>, and therefore the sequential interval (20.3) has asymptotic coverage <span class="tts-math" data-tts="1 minus alpha">$1 - \alpha$</span>. Width
+guaranteed at most <span class="tts-math" data-tts="w">$w$</span> by construction; coverage guaranteed in the limit by Anscombe.
 </p>
 <div class="box pause" data-cid="ch20-360">
 <span class="box-label">Pause</span>
 <p data-cid="ch20-370">
-Notice that the procedure is asymptotic. For any finite $w$ the coverage is only approximate, and small-sample
+Notice that the procedure is asymptotic. For any finite <span class="tts-math" data-tts="w">$w$</span> the coverage is only approximate, and small-sample
 under-coverage is real. The standard improvement is a "two-stage" design (Stein 1945, Problem 20.1): a fixed first
-stage of size $N_1$ to estimate the variance, then a second stage with $N_2$ chosen as a deterministic function of
-the first-stage sample variance, after which the $t$-statistic has an exact $t_{N_1 - 1}$ distribution.
+stage of size <span class="tts-math" data-tts="N sub 1">$N_1$</span> to estimate the variance, then a second stage with <span class="tts-math" data-tts="N sub 2">$N_2$</span> chosen as a deterministic function of
+the first-stage sample variance, after which the <span class="tts-math" data-tts="t">$t$</span>-statistic has an exact <span class="tts-math" data-tts="t sub N sub 1 minus 1">$t_{N_1 - 1}$</span> distribution.
 </p>
 </div>
 <h2 data-cid="ch20-380" id="s20-2">20.2 Stopping times and likelihoods</h2>
 <p data-cid="ch20-390">
 In Chapter 5 we admitted that a sequential experiment was awkward to write down as a random vector — its dimension
-varies. The right tool is the language of <strong>filtrations</strong>: increasing $\sigma$-fields representing
+varies. The right tool is the language of <strong>filtrations</strong>: increasing <span class="tts-math" data-tts="sigma">$\sigma$</span>-fields representing
 "information observed so far".
 </p>
-<h3 data-cid="ch20-400">A $\sigma$-field is a list of yes/no questions you can answer</h3>
+<h3 data-cid="ch20-400">A <span class="tts-math" data-tts="sigma">$\sigma$</span>-field is a list of yes/no questions you can answer</h3>
 <p data-cid="ch20-410">
 The toy example from the book is the cleanest illustration. Toss a coin twice; the outcome space is
-$E = \{TT, TH, HT, HH\}$. Let $X$ be the number of heads. Knowing $X$ tells you whether the event
-$\{X = 1\} = \{HT, TH\}$ occurred, but <em>not</em> whether the first toss was heads. The collection of all events
-you can resolve by observing $X$ is
-$$\sigma(X) = \big\{\emptyset, \{TT\}, \{HT, TH\}, \{HH\}, \dots, E\big\},$$
-a $\sigma$-field of eight sets. "Observing $X$" and "knowing which events in $\sigma(X)$ occurred" carry the same
+<span class="tts-math" data-tts="E equals TT TH HT HH">$E = \{TT, TH, HT, HH\}$</span>. Let <span class="tts-math" data-tts="X">$X$</span> be the number of heads. Knowing <span class="tts-math" data-tts="X">$X$</span> tells you whether the event
+<span class="tts-math" data-tts="X equals 1 equals HT TH">$\{X = 1\} = \{HT, TH\}$</span> occurred, but <em>not</em> whether the first toss was heads. The collection of all events
+you can resolve by observing <span class="tts-math" data-tts="X">$X$</span> is
+<span class="tts-math" data-tts="sigma X equals the empty set TT HT TH HH and so on E">$$\sigma(X) = \big\{\emptyset, \{TT\}, \{HT, TH\}, \{HH\}, \dots, E\big\},$$</span>
+a <span class="tts-math" data-tts="sigma">$\sigma$</span>-field of eight sets. "Observing <span class="tts-math" data-tts="X">$X$</span>" and "knowing which events in <span class="tts-math" data-tts="sigma X">$\sigma(X)$</span> occurred" carry the same
 information.
 </p>
 <div class="box definition" data-cid="ch20-420">
 <span class="box-label">Filtration and natural filtration</span>
 <p data-cid="ch20-430">
-A <strong>filtration</strong> is an increasing sequence of $\sigma$-fields $\mathcal{F}_0 \subset \mathcal{F}_1
-\subset \mathcal{F}_2 \subset \cdots$. The <strong>natural filtration</strong> for a sequence
-$X_1, X_2, \dots$ is
-$$\mathcal{F}_n = \sigma(X_1, \dots, X_n), \quad \text{with } \mathcal{F}_0 = \{\emptyset, E\}.$$
-$\mathcal{F}_n$ is "everything you can know after watching the first $n$ observations".
+A <strong>filtration</strong> is an increasing sequence of <span class="tts-math" data-tts="sigma">$\sigma$</span>-fields <span class="tts-math" data-tts="script F sub 0 subset of script F sub 1 subset of script F sub 2 subset of times s">$\mathcal{F}_0 \subset \mathcal{F}_1
+\subset \mathcal{F}_2 \subset \cdots$</span>. The <strong>natural filtration</strong> for a sequence
+<span class="tts-math" data-tts="X sub 1 X sub 2 and so on">$X_1, X_2, \dots$</span> is
+<span class="tts-math" data-tts="script F sub n equals sigma X sub 1 and so on X sub n with script F sub 0 equals the empty set E .">$$\mathcal{F}_n = \sigma(X_1, \dots, X_n), \quad \text{with } \mathcal{F}_0 = \{\emptyset, E\}.$$</span>
+<span class="tts-math" data-tts="script F sub n">$\mathcal{F}_n$</span> is "everything you can know after watching the first <span class="tts-math" data-tts="n">$n$</span> observations".
 </p>
 </div>
 <h3 data-cid="ch20-440">The crucial restriction on the sample size</h3>
 <p data-cid="ch20-450">
-A sequential design cannot be clairvoyant. You cannot say "I will collect two observations if and only if $X_5 &gt; 10$."
-The decision to stop after $n$ observations must depend only on the first $n$ observations — i.e., on $\mathcal{F}_n$.
+A sequential design cannot be clairvoyant. You cannot say "I will collect two observations if and only if <span class="tts-math" data-tts="X sub 5 gt 10">$X_5 &gt; 10$</span>."
+The decision to stop after <span class="tts-math" data-tts="n">$n$</span> observations must depend only on the first <span class="tts-math" data-tts="n">$n$</span> observations — i.e., on <span class="tts-math" data-tts="script F sub n">$\mathcal{F}_n$</span>.
 </p>
 <div class="box definition" data-cid="ch20-460">
 <span class="box-label">Definition 20.5 — stopping time</span>
 <p data-cid="ch20-470">
-A random variable $N$ taking values in $\{0, 1, 2, \dots, \infty\}$ is a <strong>stopping time</strong> with respect
-to a filtration $\mathcal{F}_n$ if
-$$\{N = n\} \in \mathcal{F}_n \quad \text{for all } n \geq 0.$$
+A random variable <span class="tts-math" data-tts="N">$N$</span> taking values in <span class="tts-math" data-tts="0 1 2 and so on infinity">$\{0, 1, 2, \dots, \infty\}$</span> is a <strong>stopping time</strong> with respect
+to a filtration <span class="tts-math" data-tts="script F sub n">$\mathcal{F}_n$</span> if
+<span class="tts-math" data-tts="N equals n in script F sub n for all n greater than or equal to 0.">$$\{N = n\} \in \mathcal{F}_n \quad \text{for all } n \geq 0.$$</span>
 </p>
 </div>
 <div class="box intuition" data-cid="ch20-480">
 <span class="box-label">Re-reading in plain English</span>
 <p data-cid="ch20-490">
 The event "stop now" must be decidable from the data already collected. No peeking into the future. This single
-constraint is what tames sequential experiments — it allows us to define a $\sigma$-field $\mathcal{F}_N$ of
+constraint is what tames sequential experiments — it allows us to define a <span class="tts-math" data-tts="sigma">$\sigma$</span>-field <span class="tts-math" data-tts="script F sub N">$\mathcal{F}_N$</span> of
 "information available at time of stopping" and to do real probability theory on it.
 </p>
 </div>
 <p data-cid="ch20-500">
-The $\sigma$-field at the stopping time is
-$$\mathcal{F}_N = \big\{ B \in \mathcal{F} : B \cap \{N = n\} \in \mathcal{F}_n \text{ for every } n \big\}.$$
-Inside it live exactly the random variables that depend only on $(X_1, \dots, X_N)$. For instance $\bar X_N$ is
-$\mathcal{F}_N$-measurable, but $X_{N+1}$ is not.
+The <span class="tts-math" data-tts="sigma">$\sigma$</span>-field at the stopping time is
+<span class="tts-math" data-tts="script F sub N equals B in script F B intersect N equals n in script F sub n for every n .">$$\mathcal{F}_N = \big\{ B \in \mathcal{F} : B \cap \{N = n\} \in \mathcal{F}_n \text{ for every } n \big\}.$$</span>
+Inside it live exactly the random variables that depend only on <span class="tts-math" data-tts="X sub 1 and so on X sub N">$(X_1, \dots, X_N)$</span>. For instance <span class="tts-math" data-tts="X sub N">$\bar X_N$</span> is
+<span class="tts-math" data-tts="script F sub N">$\mathcal{F}_N$</span>-measurable, but <span class="tts-math" data-tts="X sub N plus 1">$X_{N+1}$</span> is not.
 </p>
 <h3 data-cid="ch20-510">Wald's fundamental identity</h3>
 <p data-cid="ch20-520">
-This is the technical heart of why likelihoods are unaffected by stopping. Suppose two probability measures $P_0$
-and $P_1$ give the data $X_1, \dots, X_n$ joint densities $f_{0n}$ and $f_{1n}$. Let
-$$L_n = L_n(X_1, \dots, X_n) = \frac{f_{1n}(X_1, \dots, X_n)}{f_{0n}(X_1, \dots, X_n)}$$
+This is the technical heart of why likelihoods are unaffected by stopping. Suppose two probability measures <span class="tts-math" data-tts="P sub 0">$P_0$</span>
+and <span class="tts-math" data-tts="P sub 1">$P_1$</span> give the data <span class="tts-math" data-tts="X sub 1 and so on X sub n">$X_1, \dots, X_n$</span> joint densities <span class="tts-math" data-tts="f sub 0n">$f_{0n}$</span> and <span class="tts-math" data-tts="f sub 1n">$f_{1n}$</span>. Let
+<span class="tts-math" data-tts="L sub n equals L sub n X sub 1 and so on X sub n equals f sub 1n X sub 1 and so on X sub n f sub 0n X sub 1 and so on X sub n">$$L_n = L_n(X_1, \dots, X_n) = \frac{f_{1n}(X_1, \dots, X_n)}{f_{0n}(X_1, \dots, X_n)}$$</span>
 be the sequential likelihood ratio.
 </p>
 <div class="box definition" data-cid="ch20-530">
 <span class="box-label">Theorem 20.6 — Wald's fundamental identity</span>
 <p data-cid="ch20-540">
-If $f_{1n} = 0$ whenever $f_{0n} = 0$, and if $P_0(N &lt; \infty) = P_1(N &lt; \infty) = 1$, then for every
-$B \in \mathcal{F}_N$,
-$$P_1(B) = E_0\!\left[ 1_B \, L_N \right].$$
+If <span class="tts-math" data-tts="f sub 1n equals 0">$f_{1n} = 0$</span> whenever <span class="tts-math" data-tts="f sub 0n equals 0">$f_{0n} = 0$</span>, and if <span class="tts-math" data-tts="P sub 0 N lt infinity equals P sub 1 N lt infinity equals 1">$P_0(N &lt; \infty) = P_1(N &lt; \infty) = 1$</span>, then for every
+<span class="tts-math" data-tts="B in script F sub N">$B \in \mathcal{F}_N$</span>,
+<span class="tts-math" data-tts="P sub 1 B equals E sub 0 1 sub B L sub N .">$$P_1(B) = E_0\!\left[ 1_B \, L_N \right].$$</span>
 </p>
 </div>
 <div class="box intuition" data-cid="ch20-550">
 <span class="box-label">What this is saying</span>
 <p data-cid="ch20-560">
-Restricted to $\mathcal{F}_N$, the measure $P_1$ has density $L_N$ with respect to $P_0$. The likelihood ratio
+Restricted to <span class="tts-math" data-tts="script F sub N">$\mathcal{F}_N$</span>, the measure <span class="tts-math" data-tts="P sub 1">$P_1$</span> has density <span class="tts-math" data-tts="L sub N">$L_N$</span> with respect to <span class="tts-math" data-tts="P sub 0">$P_0$</span>. The likelihood ratio
 "at the stopping time" is the same product you would write down for a fixed sample size — it does not pick up an
-extra factor for the stopping decision. This is because $\{N = n\} \in \mathcal{F}_n$, so on this event $L_N$
-collapses to $L_n$, and the proof is a partition argument:
-$$P_1(B) = \sum_n P_1(B \cap \{N = n\}) = \sum_n E_0\!\left[ 1_{B \cap \{N=n\}} L_n \right] = E_0[1_B L_N].$$
+extra factor for the stopping decision. This is because <span class="tts-math" data-tts="N equals n in script F sub n">$\{N = n\} \in \mathcal{F}_n$</span>, so on this event <span class="tts-math" data-tts="L sub N">$L_N$</span>
+collapses to <span class="tts-math" data-tts="L sub n">$L_n$</span>, and the proof is a partition argument:
+<span class="tts-math" data-tts="P sub 1 B equals sub n P sub 1 B intersect N equals n equals sub n E sub 0 1 sub B intersect N equals n L sub n equals E sub 0 1 sub B L sub N .">$$P_1(B) = \sum_n P_1(B \cap \{N = n\}) = \sum_n E_0\!\left[ 1_{B \cap \{N=n\}} L_n \right] = E_0[1_B L_N].$$</span>
 </p>
 </div>
 <p data-cid="ch20-570">
-Specializing to i.i.d. observations with marginal density $f_\theta$, the likelihood after stopping at $N$ is just
-$\prod_{i=1}^N f_\theta(X_i)$. Bayesian inference based on this likelihood is identical to what you would do with a
-deterministic $n$. The whole stopping rule disappears from the posterior.
+Specializing to i.i.d. observations with marginal density <span class="tts-math" data-tts="f_ theta">$f_\theta$</span>, the likelihood after stopping at <span class="tts-math" data-tts="N">$N$</span> is just
+<span class="tts-math" data-tts="sub i equals 1 to the N f_ theta X sub i">$\prod_{i=1}^N f_\theta(X_i)$</span>. Bayesian inference based on this likelihood is identical to what you would do with a
+deterministic <span class="tts-math" data-tts="n">$n$</span>. The whole stopping rule disappears from the posterior.
 </p>
 <div class="box warn" data-cid="ch20-580">
 <span class="box-label">Common pitfall</span>
 <p data-cid="ch20-590">
 "The likelihood is the same" does <em>not</em> mean "all inference is the same". The likelihood is a function of
-$\theta$ given the data. The sampling distribution of, say, $\hat\theta_N$ — which is what a frequentist uses to
-build a CI — depends on the joint law of $(N, X_1, \dots, X_N)$ and is generally <em>not</em> what it would be at
-a fixed $n$. The two camps disagree on what to do with the same likelihood.
+<span class="tts-math" data-tts="theta">$\theta$</span> given the data. The sampling distribution of, say, <span class="tts-math" data-tts="theta sub N">$\hat\theta_N$</span> — which is what a frequentist uses to
+build a CI — depends on the joint law of <span class="tts-math" data-tts="N X sub 1 and so on X sub N">$(N, X_1, \dots, X_N)$</span> and is generally <em>not</em> what it would be at
+a fixed <span class="tts-math" data-tts="n">$n$</span>. The two camps disagree on what to do with the same likelihood.
 </p>
 </div>
 <h2 data-cid="ch20-600" id="s20-3">20.3 Optimal stopping</h2>
 <p data-cid="ch20-610">
-We now treat the stopping rule as a decision to be optimized. The setup: data $X_1, X_2, \dots$ i.i.d. from $Q_\theta$
-given $\Theta = \theta$; cost $c &gt; 0$ per observation; a loss $L(\Theta)$ for accepting the wrong hypothesis. We want
-to choose both an inferential action $A$ (which hypothesis to accept) and a stopping time $N$ to minimize
-$$E[c N + \rho_N], \tag{20.5}$$
-where $\rho_N$ is the posterior inferential risk after observing $\mathcal{F}_N$.
+We now treat the stopping rule as a decision to be optimized. The setup: data <span class="tts-math" data-tts="X sub 1 X sub 2 and so on">$X_1, X_2, \dots$</span> i.i.d. from <span class="tts-math" data-tts="Q_ theta">$Q_\theta$</span>
+given <span class="tts-math" data-tts="Theta equals theta">$\Theta = \theta$</span>; cost <span class="tts-math" data-tts="c gt 0">$c &gt; 0$</span> per observation; a loss <span class="tts-math" data-tts="L Theta">$L(\Theta)$</span> for accepting the wrong hypothesis. We want
+to choose both an inferential action <span class="tts-math" data-tts="A">$A$</span> (which hypothesis to accept) and a stopping time <span class="tts-math" data-tts="N">$N$</span> to minimize
+<span class="tts-math" data-tts="E c N plus rho sub N 20.5">$$E[c N + \rho_N], \tag{20.5}$$</span>
+where <span class="tts-math" data-tts="rho sub N">$\rho_N$</span> is the posterior inferential risk after observing <span class="tts-math" data-tts="script F sub N">$\mathcal{F}_N$</span>.
 </p>
 <h3 data-cid="ch20-620">The optimal action</h3>
 <p data-cid="ch20-630">
-For testing $H_0 : \Theta \in \Omega_0$ versus $H_1 : \Theta \in \Omega_1$, Theorem 20.7 says: given $\mathcal{F}_N$,
+For testing <span class="tts-math" data-tts="H sub 0 Theta in Omega sub 0">$H_0 : \Theta \in \Omega_0$</span> versus <span class="tts-math" data-tts="H sub 1 Theta in Omega sub 1">$H_1 : \Theta \in \Omega_1$</span>, Theorem 20.7 says: given <span class="tts-math" data-tts="script F sub N">$\mathcal{F}_N$</span>,
 accept the hypothesis with smaller posterior expected loss. The resulting posterior inferential risk is
-$$\rho_N = \min\!\left\{ E[L(\Theta) 1_{\Theta \in \Omega_1} \mid \mathcal{F}_N], \ E[L(\Theta) 1_{\Theta \in \Omega_0} \mid \mathcal{F}_N] \right\}.$$
+<span class="tts-math" data-tts="rho sub N equals min E L Theta 1 sub Theta in Omega sub 1 given script F sub N E L Theta 1 sub Theta in Omega sub 0 given script F sub N .">$$\rho_N = \min\!\left\{ E[L(\Theta) 1_{\Theta \in \Omega_1} \mid \mathcal{F}_N], \ E[L(\Theta) 1_{\Theta \in \Omega_0} \mid \mathcal{F}_N] \right\}.$$</span>
 This is just the Bayes rule with a sequential filtration in place of a fixed one — same idea as Chapter 7,
 new index.
 </p>
 <h3 data-cid="ch20-640">A worked example: Bernoulli with backwards induction</h3>
 <p data-cid="ch20-650">
-The textbook example fixes the framework. Let $X_i$ be Bernoulli($\Theta$), test $H_0 : \Theta \leq 1/2$ vs.
-$H_1 : \Theta &gt; 1/2$, with prior $\Theta \sim \text{Beta}(\alpha, \beta)$ and loss
-$L(\Theta) = K|\Theta - 1/2|$. The conjugate posterior after observing $\mathcal{F}_n$ is
-$\text{Beta}(\alpha_n, \beta_n)$ with $\alpha_n = \alpha + S_n$ and $\beta_n = \beta + n - S_n$, where $S_n$
+The textbook example fixes the framework. Let <span class="tts-math" data-tts="X sub i">$X_i$</span> be Bernoulli(<span class="tts-math" data-tts="Theta">$\Theta$</span>), test <span class="tts-math" data-tts="H sub 0 Theta less than or equal to 1 over 2">$H_0 : \Theta \leq 1/2$</span> vs.
+<span class="tts-math" data-tts="H sub 1 Theta gt 1 over 2">$H_1 : \Theta &gt; 1/2$</span>, with prior <span class="tts-math" data-tts="Theta distributed as Beta alpha beta">$\Theta \sim \text{Beta}(\alpha, \beta)$</span> and loss
+<span class="tts-math" data-tts="L Theta equals K Theta minus 1 over 2">$L(\Theta) = K|\Theta - 1/2|$</span>. The conjugate posterior after observing <span class="tts-math" data-tts="script F sub n">$\mathcal{F}_n$</span> is
+<span class="tts-math" data-tts="Beta alpha sub n beta sub n">$\text{Beta}(\alpha_n, \beta_n)$</span> with <span class="tts-math" data-tts="alpha sub n equals alpha plus S sub n">$\alpha_n = \alpha + S_n$</span> and <span class="tts-math" data-tts="beta sub n equals beta plus n minus S sub n">$\beta_n = \beta + n - S_n$</span>, where <span class="tts-math" data-tts="S sub n">$S_n$</span>
 counts successes.
 </p>
 <p data-cid="ch20-660">
 A short calculation gives
-$$\rho_n = \tfrac{1}{2} K \, E[|\Theta - 1/2| \mid \mathcal{F}_n] + \tfrac{1}{4} K - \tfrac{1}{2} K \frac{\max\{\alpha_n, \beta_n\}}{\alpha_n + \beta_n}.$$
+<span class="tts-math" data-tts="rho sub n equals 1 over 2 K E Theta minus 1 over 2 given script F sub n plus 1 over 4 K minus 1 over 2 K max alpha sub n beta sub n alpha sub n plus beta sub n .">$$\rho_n = \tfrac{1}{2} K \, E[|\Theta - 1/2| \mid \mathcal{F}_n] + \tfrac{1}{4} K - \tfrac{1}{2} K \frac{\max\{\alpha_n, \beta_n\}}{\alpha_n + \beta_n}.$$</span>
 The first two terms have constant expectation. So minimizing (20.5) is equivalent to maximizing
-$$\tfrac{1}{2} K \, E\!\left[ \frac{\max\{\alpha_N, \beta_N\}}{\alpha_N + \beta_N} \right] - c E N. \tag{20.6}$$
-A nice interpretation: think of $c$ as the cost per observation and $K/2$ as the prize for correctly guessing
-$X_{N+1}$. Equation (20.6) is the expected net winnings.
+<span class="tts-math" data-tts="1 over 2 K E max alpha sub N beta sub N alpha sub N plus beta sub N minus c E N. 20.6">$$\tfrac{1}{2} K \, E\!\left[ \frac{\max\{\alpha_N, \beta_N\}}{\alpha_N + \beta_N} \right] - c E N. \tag{20.6}$$</span>
+A nice interpretation: think of <span class="tts-math" data-tts="c">$c$</span> as the cost per observation and <span class="tts-math" data-tts="K over 2">$K/2$</span> as the prize for correctly guessing
+<span class="tts-math" data-tts="X sub N plus 1">$X_{N+1}$</span>. Equation (20.6) is the expected net winnings.
 </p>
 <div class="box intuition" data-cid="ch20-670">
 <span class="box-label">The Markov structure that makes it tractable</span>
 <p data-cid="ch20-680">
-Given the posterior parameters $(\alpha_n, \beta_n)$, future observations are conditionally independent of the past
-— they evolve like a Bayesian player with prior $\text{Beta}(\alpha_n, \beta_n)$. The sequence
-$(\alpha_n, \beta_n)$ is therefore a Markov chain. So the value function depends on the data only through the
-current $(\alpha, \beta)$.
+Given the posterior parameters <span class="tts-math" data-tts="alpha sub n beta sub n">$(\alpha_n, \beta_n)$</span>, future observations are conditionally independent of the past
+— they evolve like a Bayesian player with prior <span class="tts-math" data-tts="Beta alpha sub n beta sub n">$\text{Beta}(\alpha_n, \beta_n)$</span>. The sequence
+<span class="tts-math" data-tts="alpha sub n beta sub n">$(\alpha_n, \beta_n)$</span> is therefore a Markov chain. So the value function depends on the data only through the
+current <span class="tts-math" data-tts="alpha beta">$(\alpha, \beta)$</span>.
 </p>
 </div>
 <div class="box definition" data-cid="ch20-690">
 <span class="box-label">The Bellman equation for the value function</span>
 <p data-cid="ch20-700">
-Let $V(\alpha, \beta)$ be the optimal expected net winnings starting from posterior $\text{Beta}(\alpha, \beta)$.
+Let <span class="tts-math" data-tts="V alpha beta">$V(\alpha, \beta)$</span> be the optimal expected net winnings starting from posterior <span class="tts-math" data-tts="Beta alpha beta">$\text{Beta}(\alpha, \beta)$</span>.
 Bellman's principle of optimality gives
-$$V(\alpha, \beta) = \max\!\left\{ \tfrac{1}{2} K \frac{\max\{\alpha, \beta\}}{\alpha + \beta}, \ \frac{\alpha V(\alpha + 1, \beta) + \beta V(\alpha, \beta + 1)}{\alpha + \beta} - c \right\}. \tag{20.7}$$
+<span class="tts-math" data-tts="V alpha beta equals max 1 over 2 K max alpha beta alpha plus beta alpha V alpha plus 1 beta plus beta V alpha beta plus 1 over alpha plus beta minus c . 20.7">$$V(\alpha, \beta) = \max\!\left\{ \tfrac{1}{2} K \frac{\max\{\alpha, \beta\}}{\alpha + \beta}, \ \frac{\alpha V(\alpha + 1, \beta) + \beta V(\alpha, \beta + 1)}{\alpha + \beta} - c \right\}. \tag{20.7}$$</span>
 </p>
 </div>
 <h3 data-cid="ch20-710">Backwards induction</h3>
 <p data-cid="ch20-720">
-For $n$ large, sampling cost overwhelms the value of one more observation and we may set
-$V(\alpha_n, \beta_n) = \tfrac{1}{2} K \max\{\alpha_n, \beta_n\}/(\alpha + \beta + n)$. Starting from this boundary,
-we recompute $V$ at $n-1$, then $n-2$, and so on back to $V(\alpha, \beta)$ via (20.7). This <strong>backwards
+For <span class="tts-math" data-tts="n">$n$</span> large, sampling cost overwhelms the value of one more observation and we may set
+<span class="tts-math" data-tts="V alpha sub n beta sub n equals 1 over 2 K max alpha sub n beta sub n over alpha plus beta plus n">$V(\alpha_n, \beta_n) = \tfrac{1}{2} K \max\{\alpha_n, \beta_n\}/(\alpha + \beta + n)$</span>. Starting from this boundary,
+we recompute <span class="tts-math" data-tts="V">$V$</span> at <span class="tts-math" data-tts="n minus 1">$n-1$</span>, then <span class="tts-math" data-tts="n minus 2">$n-2$</span>, and so on back to <span class="tts-math" data-tts="V alpha beta">$V(\alpha, \beta)$</span> via (20.7). This <strong>backwards
 induction</strong> is the standard dynamic-programming algorithm.
 </p>
 <p data-cid="ch20-730">
-With $\alpha = \beta = 1$ (uniform prior), $K = 200$, $c = 1$, Keener reports an explicit continuation region:
-the rule continues sampling as long as $(\alpha_n, \beta_n)$ lies in a finite set of 19 lattice points around the
-diagonal. The expected sample size is $E N = 3.13$ and the expected inferential risk is $3.55$ — compared with
-$5.0$ for the best fixed-$n = 3$ design. The sequential design is 29% more efficient on inferential risk for only
-$0.13$ extra observations on average.
+With <span class="tts-math" data-tts="alpha equals beta equals 1">$\alpha = \beta = 1$</span> (uniform prior), <span class="tts-math" data-tts="K equals 200">$K = 200$</span>, <span class="tts-math" data-tts="c equals 1">$c = 1$</span>, Keener reports an explicit continuation region:
+the rule continues sampling as long as <span class="tts-math" data-tts="alpha sub n beta sub n">$(\alpha_n, \beta_n)$</span> lies in a finite set of 19 lattice points around the
+diagonal. The expected sample size is <span class="tts-math" data-tts="E N equals 3.13">$E N = 3.13$</span> and the expected inferential risk is <span class="tts-math" data-tts="3.55">$3.55$</span> — compared with
+<span class="tts-math" data-tts="5.0">$5.0$</span> for the best fixed-<span class="tts-math" data-tts="n equals 3">$n = 3$</span> design. The sequential design is 29% more efficient on inferential risk for only
+<span class="tts-math" data-tts="0.13">$0.13$</span> extra observations on average.
 </p>
 <div class="box pause" data-cid="ch20-740">
 <span class="box-label">Pause</span>
 <p data-cid="ch20-750">
-The continuation region is symmetric in $(\alpha_n, \beta_n)$ — which makes sense, because the prior and the loss
-are symmetric about $\Theta = 1/2$. You stop as soon as either $\alpha_n$ or $\beta_n$ pulls noticeably ahead;
+The continuation region is symmetric in <span class="tts-math" data-tts="alpha sub n beta sub n">$(\alpha_n, \beta_n)$</span> — which makes sense, because the prior and the loss
+are symmetric about <span class="tts-math" data-tts="Theta equals 1 over 2">$\Theta = 1/2$</span>. You stop as soon as either <span class="tts-math" data-tts="alpha sub n">$\alpha_n$</span> or <span class="tts-math" data-tts="beta sub n">$\beta_n$</span> pulls noticeably ahead;
 otherwise the posterior is still indecisive and an extra coin flip is cheap relative to the inferential cost of
 being wrong.
 </p>
@@ -372,94 +371,94 @@ being wrong.
 <h2 data-cid="ch20-760" id="s20-4">20.4 The Sequential Probability Ratio Test</h2>
 <p data-cid="ch20-770">
 The crown jewel of sequential analysis is Wald's <strong>sequential probability ratio test</strong> (SPRT),
-published in 1947. It tests two <em>simple</em> hypotheses — $H_0 : \theta = 0$ vs. $H_1 : \theta = 1$ — with i.i.d.
-observations from $Q_\theta$ with density $q_\theta$. The likelihood ratio after $n$ observations is
-$$L_n = \prod_{i=1}^n \frac{q_1(X_i)}{q_0(X_i)}, \qquad L_0 = 1.$$
+published in 1947. It tests two <em>simple</em> hypotheses — <span class="tts-math" data-tts="H sub 0 theta equals 0">$H_0 : \theta = 0$</span> vs. <span class="tts-math" data-tts="H sub 1 theta equals 1">$H_1 : \theta = 1$</span> — with i.i.d.
+observations from <span class="tts-math" data-tts="Q_ theta">$Q_\theta$</span> with density <span class="tts-math" data-tts="q_ theta">$q_\theta$</span>. The likelihood ratio after <span class="tts-math" data-tts="n">$n$</span> observations is
+<span class="tts-math" data-tts="L sub n equals sub i equals 1 to the n q sub 1 X sub i over q sub 0 X sub i L sub 0 equals 1.">$$L_n = \prod_{i=1}^n \frac{q_1(X_i)}{q_0(X_i)}, \qquad L_0 = 1.$$</span>
 </p>
 <div class="box definition" data-cid="ch20-780">
 <span class="box-label">The SPRT</span>
 <p data-cid="ch20-790">
-Fix two thresholds $A &lt; 1 &lt; B$. At each stage:
+Fix two thresholds <span class="tts-math" data-tts="A lt 1 lt B">$A &lt; 1 &lt; B$</span>. At each stage:
 </p>
 <ul data-cid="ch20-800">
-<li>If $L_n \in (A, B)$: take another observation.</li>
-<li>If $L_n \geq B$: stop and reject $H_0$.</li>
-<li>If $L_n \leq A$: stop and accept $H_0$.</li>
+<li>If <span class="tts-math" data-tts="L sub n in A B">$L_n \in (A, B)$</span>: take another observation.</li>
+<li>If <span class="tts-math" data-tts="L sub n greater than or equal to B">$L_n \geq B$</span>: stop and reject <span class="tts-math" data-tts="H sub 0">$H_0$</span>.</li>
+<li>If <span class="tts-math" data-tts="L sub n less than or equal to A">$L_n \leq A$</span>: stop and accept <span class="tts-math" data-tts="H sub 0">$H_0$</span>.</li>
 </ul>
 <p data-cid="ch20-810">
 The sample size is the stopping time
-$$N = \inf\{ n : L_n \notin (A, B) \}.$$
+<span class="tts-math" data-tts="N equals infimum n L sub n not in A B .">$$N = \inf\{ n : L_n \notin (A, B) \}.$$</span>
 </p>
 </div>
 <div class="box intuition" data-cid="ch20-820">
 <span class="box-label">Why this is the right shape</span>
 <p data-cid="ch20-830">
-Recall Neyman–Pearson: the most powerful fixed-$n$ test rejects when the likelihood ratio is large. The SPRT
-applies the same logic <em>sequentially</em>: keep accumulating evidence in the form of $\log L_n$, which is a
-random walk with negative mean under $H_0$ and positive mean under $H_1$. Stop as soon as the walk crosses a
+Recall Neyman–Pearson: the most powerful fixed-<span class="tts-math" data-tts="n">$n$</span> test rejects when the likelihood ratio is large. The SPRT
+applies the same logic <em>sequentially</em>: keep accumulating evidence in the form of <span class="tts-math" data-tts="log L sub n">$\log L_n$</span>, which is a
+random walk with negative mean under <span class="tts-math" data-tts="H sub 0">$H_0$</span> and positive mean under <span class="tts-math" data-tts="H sub 1">$H_1$</span>. Stop as soon as the walk crosses a
 threshold on either side. The expected time to cross is short when the evidence is decisive and long when the
-data are near the boundary $\theta \approx 1/2$ — which is exactly when you should keep collecting.
+data are near the boundary <span class="tts-math" data-tts="theta approximately 1 over 2">$\theta \approx 1/2$</span> — which is exactly when you should keep collecting.
 </p>
 </div>
 <h3 data-cid="ch20-840">Worked example — Bernoulli SPRT</h3>
 <div class="box example" data-cid="ch20-850">
 <span class="box-label">SPRT for two Bernoulli proportions</span>
 <p data-cid="ch20-860">
-Suppose $X_i \in \{0, 1\}$ and we test $H_0 : p = p_0$ vs. $H_1 : p = p_1$ with $p_1 &gt; p_0$. Then
-$$\frac{q_1(X_i)}{q_0(X_i)} = \left(\frac{p_1}{p_0}\right)^{X_i} \left(\frac{1 - p_1}{1 - p_0}\right)^{1 - X_i},$$
+Suppose <span class="tts-math" data-tts="X sub i in 0 1">$X_i \in \{0, 1\}$</span> and we test <span class="tts-math" data-tts="H sub 0 p equals p sub 0">$H_0 : p = p_0$</span> vs. <span class="tts-math" data-tts="H sub 1 p equals p sub 1">$H_1 : p = p_1$</span> with <span class="tts-math" data-tts="p sub 1 gt p sub 0">$p_1 &gt; p_0$</span>. Then
+<span class="tts-math" data-tts="q sub 1 X sub i over q sub 0 X sub i equals p sub 1 over p sub 0 to the X sub i 1 minus p sub 1 over 1 minus p sub 0 to the 1 minus X sub i">$$\frac{q_1(X_i)}{q_0(X_i)} = \left(\frac{p_1}{p_0}\right)^{X_i} \left(\frac{1 - p_1}{1 - p_0}\right)^{1 - X_i},$$</span>
 so taking logs,
-$$\log L_n = S_n \log\!\frac{p_1}{p_0} + (n - S_n) \log\!\frac{1 - p_1}{1 - p_0},$$
-where $S_n = X_1 + \cdots + X_n$. The SPRT thus monitors the random walk $\log L_n$ and stops when it leaves
-$(\log A, \log B)$. To choose $A$ and $B$ for target error probabilities $\alpha_0$ and $\alpha_1$,
+<span class="tts-math" data-tts="log L sub n equals S sub n log p sub 1 over p sub 0 plus n minus S sub n log 1 minus p sub 1 over 1 minus p sub 0">$$\log L_n = S_n \log\!\frac{p_1}{p_0} + (n - S_n) \log\!\frac{1 - p_1}{1 - p_0},$$</span>
+where <span class="tts-math" data-tts="S sub n equals X sub 1 plus times s plus X sub n">$S_n = X_1 + \cdots + X_n$</span>. The SPRT thus monitors the random walk <span class="tts-math" data-tts="log L sub n">$\log L_n$</span> and stops when it leaves
+<span class="tts-math" data-tts="log A log B">$(\log A, \log B)$</span>. To choose <span class="tts-math" data-tts="A">$A$</span> and <span class="tts-math" data-tts="B">$B$</span> for target error probabilities <span class="tts-math" data-tts="alpha sub 0">$\alpha_0$</span> and <span class="tts-math" data-tts="alpha sub 1">$\alpha_1$</span>,
 Wald's approximate identities give
-$$A \approx \frac{\alpha_1}{1 - \alpha_0}, \qquad B \approx \frac{1 - \alpha_1}{\alpha_0},$$
+<span class="tts-math" data-tts="A approximately alpha sub 1 over 1 minus alpha sub 0 B approximately 1 minus alpha sub 1 over alpha sub 0">$$A \approx \frac{\alpha_1}{1 - \alpha_0}, \qquad B \approx \frac{1 - \alpha_1}{\alpha_0},$$</span>
 known as the <strong>Wald boundaries</strong>. These are slightly conservative (the inequalities are exact upper/lower
 bounds because of "overshoot" past the boundary), but in practice they are excellent.
 </p>
 <p data-cid="ch20-870">
-Concrete numbers: $p_0 = 0.1$, $p_1 = 0.3$, $\alpha_0 = \alpha_1 = 0.05$. Then $A = 0.05/0.95 \approx 0.053$ and
-$B = 0.95/0.05 = 19$, so $\log A \approx -2.94$, $\log B \approx 2.94$. Each $X_i = 1$ contributes
-$\log(0.3/0.1) = \log 3 \approx 1.10$ to $\log L_n$; each $X_i = 0$ contributes $\log(0.7/0.9) \approx -0.25$.
-A test that would need $n \approx 100$ to achieve these errors at fixed $n$ typically resolves in 25–40 observations
+Concrete numbers: <span class="tts-math" data-tts="p sub 0 equals 0.1">$p_0 = 0.1$</span>, <span class="tts-math" data-tts="p sub 1 equals 0.3">$p_1 = 0.3$</span>, <span class="tts-math" data-tts="alpha sub 0 equals alpha sub 1 equals 0.05">$\alpha_0 = \alpha_1 = 0.05$</span>. Then <span class="tts-math" data-tts="A equals 0.05 over 0.95 approximately 0.053">$A = 0.05/0.95 \approx 0.053$</span> and
+<span class="tts-math" data-tts="B equals 0.95 over 0.05 equals 19">$B = 0.95/0.05 = 19$</span>, so <span class="tts-math" data-tts="log A approximately minus 2.94">$\log A \approx -2.94$</span>, <span class="tts-math" data-tts="log B approximately 2.94">$\log B \approx 2.94$</span>. Each <span class="tts-math" data-tts="X sub i equals 1">$X_i = 1$</span> contributes
+<span class="tts-math" data-tts="log 0.3 over 0.1 equals log 3 approximately 1.10">$\log(0.3/0.1) = \log 3 \approx 1.10$</span> to <span class="tts-math" data-tts="log L sub n">$\log L_n$</span>; each <span class="tts-math" data-tts="X sub i equals 0">$X_i = 0$</span> contributes <span class="tts-math" data-tts="log 0.7 over 0.9 approximately minus 0.25">$\log(0.7/0.9) \approx -0.25$</span>.
+A test that would need <span class="tts-math" data-tts="n approximately 100">$n \approx 100$</span> to achieve these errors at fixed <span class="tts-math" data-tts="n">$n$</span> typically resolves in 25–40 observations
 with the SPRT. That is the efficiency gain Wald promised.
 </p>
 </div>
 <h3 data-cid="ch20-880">The optimality theorem</h3>
 <p data-cid="ch20-890">
-Why is the SPRT special? Because it minimizes <em>both</em> $E_0 N$ and $E_1 N$ simultaneously among all sequential
+Why is the SPRT special? Because it minimizes <em>both</em> <span class="tts-math" data-tts="E sub 0 N">$E_0 N$</span> and <span class="tts-math" data-tts="E sub 1 N">$E_1 N$</span> simultaneously among all sequential
 tests with the same or better error probabilities. This is the Wald–Wolfowitz theorem.
 </p>
 <div class="box definition" data-cid="ch20-900">
 <span class="box-label">Theorem 20.9 — Wald–Wolfowitz optimality</span>
 <p data-cid="ch20-910">
-Let the SPRT with thresholds $\tilde A &lt; 1 &lt; \tilde B$ have error probabilities $\tilde\alpha_0, \tilde\alpha_1$
-and sample size $\tilde N$. For any competing sequential test $(N, \varphi)$ with error probabilities
-$\alpha_0 \leq \tilde\alpha_0$ and $\alpha_1 \leq \tilde\alpha_1$,
-$$E_0 N \geq E_0 \tilde N \quad \text{and} \quad E_1 N \geq E_1 \tilde N.$$
+Let the SPRT with thresholds <span class="tts-math" data-tts="A lt 1 lt B">$\tilde A &lt; 1 &lt; \tilde B$</span> have error probabilities <span class="tts-math" data-tts="alpha sub 0 alpha sub 1">$\tilde\alpha_0, \tilde\alpha_1$</span>
+and sample size <span class="tts-math" data-tts="N">$\tilde N$</span>. For any competing sequential test <span class="tts-math" data-tts="N phi">$(N, \varphi)$</span> with error probabilities
+<span class="tts-math" data-tts="alpha sub 0 less than or equal to alpha sub 0">$\alpha_0 \leq \tilde\alpha_0$</span> and <span class="tts-math" data-tts="alpha sub 1 less than or equal to alpha sub 1">$\alpha_1 \leq \tilde\alpha_1$</span>,
+<span class="tts-math" data-tts="E sub 0 N greater than or equal to E sub 0 N and E sub 1 N greater than or equal to E sub 1 N.">$$E_0 N \geq E_0 \tilde N \quad \text{and} \quad E_1 N \geq E_1 \tilde N.$$</span>
 </p>
 </div>
 <div class="box intuition" data-cid="ch20-920">
 <span class="box-label">The shape of the proof</span>
 <p data-cid="ch20-930">
-Recast as a Bayesian problem with prior $\pi = P(\Theta = 1)$, loss $L(0)$ and $L(1)$ for incorrect actions, and
-cost $c$ per observation. Section 20.3 shows the optimal procedure has the form "stop when the posterior
-$\pi_n = P(\Theta = 1 \mid \mathcal{F}_n)$ leaves an interval $(\pi_-, \pi_+)$". Since $\pi_n$ is a monotone
-function of $L_n$,
-$$\pi_n = \frac{\pi L_n}{1 - \pi + \pi L_n},$$
-this is equivalent to "stop when $L_n$ leaves $(A, B)$" — a SPRT. The technical lemma is that <em>every</em>
-choice of $(A, B)$ for the SPRT corresponds to some $(c, \omega)$ in the Bayesian problem, so the SPRT is
-optimal for <em>every</em> prior. A risk inequality that holds for every $\pi \in (0, 1)$ forces
-$E_0 \tilde N \leq E_0 N$ and $E_1 \tilde N \leq E_1 N$ separately.
+Recast as a Bayesian problem with prior <span class="tts-math" data-tts="pi equals P Theta equals 1">$\pi = P(\Theta = 1)$</span>, loss <span class="tts-math" data-tts="L 0">$L(0)$</span> and <span class="tts-math" data-tts="L 1">$L(1)$</span> for incorrect actions, and
+cost <span class="tts-math" data-tts="c">$c$</span> per observation. Section 20.3 shows the optimal procedure has the form "stop when the posterior
+<span class="tts-math" data-tts="pi sub n equals P Theta equals 1 given script F sub n">$\pi_n = P(\Theta = 1 \mid \mathcal{F}_n)$</span> leaves an interval <span class="tts-math" data-tts="pi _ minus pi _ plus">$(\pi_-, \pi_+)$</span>". Since <span class="tts-math" data-tts="pi sub n">$\pi_n$</span> is a monotone
+function of <span class="tts-math" data-tts="L sub n">$L_n$</span>,
+<span class="tts-math" data-tts="pi sub n equals pi L sub n over 1 minus pi plus pi L sub n">$$\pi_n = \frac{\pi L_n}{1 - \pi + \pi L_n},$$</span>
+this is equivalent to "stop when <span class="tts-math" data-tts="L sub n">$L_n$</span> leaves <span class="tts-math" data-tts="A B">$(A, B)$</span>" — a SPRT. The technical lemma is that <em>every</em>
+choice of <span class="tts-math" data-tts="A B">$(A, B)$</span> for the SPRT corresponds to some <span class="tts-math" data-tts="c omega">$(c, \omega)$</span> in the Bayesian problem, so the SPRT is
+optimal for <em>every</em> prior. A risk inequality that holds for every <span class="tts-math" data-tts="pi in 0 1">$\pi \in (0, 1)$</span> forces
+<span class="tts-math" data-tts="E sub 0 N less than or equal to E sub 0 N">$E_0 \tilde N \leq E_0 N$</span> and <span class="tts-math" data-tts="E sub 1 N less than or equal to E sub 1 N">$E_1 \tilde N \leq E_1 N$</span> separately.
 </p>
 </div>
 <div class="box warn" data-cid="ch20-940">
 <span class="box-label">Common pitfall</span>
 <p data-cid="ch20-950">
-The SPRT is optimal for <em>simple vs. simple</em>. For composite hypotheses (e.g. $\theta \leq \theta_0$ vs.
-$\theta &gt; \theta_0$) optimality requires more care — see one-sided SPRTs (Problem 20.8) and "power-one" tests.
-The expected sample size $E_\theta N$ at parameter values <em>between</em> $H_0$ and $H_1$ can be considerably
+The SPRT is optimal for <em>simple vs. simple</em>. For composite hypotheses (e.g. <span class="tts-math" data-tts="theta less than or equal to theta sub 0">$\theta \leq \theta_0$</span> vs.
+<span class="tts-math" data-tts="theta gt theta sub 0">$\theta &gt; \theta_0$</span>) optimality requires more care — see one-sided SPRTs (Problem 20.8) and "power-one" tests.
+The expected sample size <span class="tts-math" data-tts="E_ theta N">$E_\theta N$</span> at parameter values <em>between</em> <span class="tts-math" data-tts="H sub 0">$H_0$</span> and <span class="tts-math" data-tts="H sub 1">$H_1$</span> can be considerably
 larger than at the design points, and may even be infinite. The SPRT's optimality property is precisely at
-$\theta = 0$ and $\theta = 1$, not everywhere.
+<span class="tts-math" data-tts="theta equals 0">$\theta = 0$</span> and <span class="tts-math" data-tts="theta equals 1">$\theta = 1$</span>, not everywhere.
 </p>
 </div>
 <h2 data-cid="ch20-960" id="s20-5">20.5 Sequential design — beyond stopping</h2>
@@ -469,62 +468,62 @@ or <em>input</em> for the next observation, not just whether to take it.
 </p>
 <h3 data-cid="ch20-980">Stochastic approximation (Robbins–Monro)</h3>
 <p data-cid="ch20-990">
-Given a regression function $f(x) = E[Y \mid X = x]$ with unknown shape, find the root $\theta$ with $f(\theta) = t$.
+Given a regression function <span class="tts-math" data-tts="f x equals E Y given X equals x">$f(x) = E[Y \mid X = x]$</span> with unknown shape, find the root <span class="tts-math" data-tts="theta">$\theta$</span> with <span class="tts-math" data-tts="f theta equals t">$f(\theta) = t$</span>.
 The classical approach — fix a design, fit a parametric model — is wasteful if you only care about one feature.
 Robbins and Monro (1951) propose the adaptive recursion
-$$X_{n+1} = X_n - a_n (Y_n - t), \quad n \geq 1, \tag{20.12}$$
-with step sizes $a_n &gt; 0$ satisfying $\sum a_n = \infty$ and $\sum a_n^2 &lt; \infty$. Intuition: if $Y_n &gt; t$
-the response was too high, so move $X$ down; if $Y_n &lt; t$, move $X$ up. The condition $\sum a_n = \infty$
-ensures we can travel arbitrarily far from any starting point; $\sum a_n^2 &lt; \infty$ controls noise accumulation.
+<span class="tts-math" data-tts="X sub n plus 1 equals X sub n minus a sub n Y sub n minus t n greater than or equal to 1 20.12">$$X_{n+1} = X_n - a_n (Y_n - t), \quad n \geq 1, \tag{20.12}$$</span>
+with step sizes <span class="tts-math" data-tts="a sub n gt 0">$a_n &gt; 0$</span> satisfying <span class="tts-math" data-tts="the sum of a sub n equals infinity">$\sum a_n = \infty$</span> and <span class="tts-math" data-tts="the sum of a sub n to the 2 lt infinity">$\sum a_n^2 &lt; \infty$</span>. Intuition: if <span class="tts-math" data-tts="Y sub n gt t">$Y_n &gt; t$</span>
+the response was too high, so move <span class="tts-math" data-tts="X">$X$</span> down; if <span class="tts-math" data-tts="Y sub n lt t">$Y_n &lt; t$</span>, move <span class="tts-math" data-tts="X">$X$</span> up. The condition <span class="tts-math" data-tts="the sum of a sub n equals infinity">$\sum a_n = \infty$</span>
+ensures we can travel arbitrarily far from any starting point; <span class="tts-math" data-tts="the sum of a sub n to the 2 lt infinity">$\sum a_n^2 &lt; \infty$</span> controls noise accumulation.
 </p>
 <div class="box definition" data-cid="ch20-1000">
 <span class="box-label">Theorem 20.12 — Robbins–Monro convergence</span>
 <p data-cid="ch20-1010">
-If $f$ is continuous and strictly increasing, $\sum a_n^2 &lt; \infty$, $\sum a_n = \infty$, and
-$\sup_x [\sigma(x) + |f(x)|]/(1 + |x|) &lt; \infty$, then $X_n \to \theta$ almost surely.
+If <span class="tts-math" data-tts="f">$f$</span> is continuous and strictly increasing, <span class="tts-math" data-tts="the sum of a sub n to the 2 lt infinity">$\sum a_n^2 &lt; \infty$</span>, <span class="tts-math" data-tts="the sum of a sub n equals infinity">$\sum a_n = \infty$</span>, and
+<span class="tts-math" data-tts="sub x sigma x plus f x over 1 plus x lt infinity">$\sup_x [\sigma(x) + |f(x)|]/(1 + |x|) &lt; \infty$</span>, then <span class="tts-math" data-tts="X sub n to theta">$X_n \to \theta$</span> almost surely.
 </p>
 </div>
 <p data-cid="ch20-1020">
-With the canonical choice $a_n = c/n$ and $2c &gt; 1/f'(\theta)$,
-$$\sqrt n (X_n - \theta) \Rightarrow N\!\left( 0, \frac{c^2 \sigma^2(\theta)}{2 c f'(\theta) - 1} \right),$$
-and the variance is minimized by $c = 1/f'(\theta)$. The procedure is asymptotically as good as the MLE — without
+With the canonical choice <span class="tts-math" data-tts="a sub n equals c over n">$a_n = c/n$</span> and <span class="tts-math" data-tts="2c gt 1 over f prime theta">$2c &gt; 1/f'(\theta)$</span>,
+<span class="tts-math" data-tts="root n X sub n minus theta implies N 0 c to the 2 sigma to the 2 theta over 2 c f prime theta minus 1">$$\sqrt n (X_n - \theta) \Rightarrow N\!\left( 0, \frac{c^2 \sigma^2(\theta)}{2 c f'(\theta) - 1} \right),$$</span>
+and the variance is minimized by <span class="tts-math" data-tts="c equals 1 over f prime theta">$c = 1/f'(\theta)$</span>. The procedure is asymptotically as good as the MLE — without
 fitting a model.
 </p>
 <div class="box example" data-cid="ch20-1030">
 <span class="box-label">Example 20.11 — bioassay and the ED50</span>
 <p data-cid="ch20-1040">
-The ED50 is the dose $\theta$ at which the probability of response equals $1/2$. Set $Y \in \{0, 1\}$ indicating
-response, $t = 1/2$, and apply (20.12). Each subject moves the dose toward the unknown median effective dose.
-After many trials, $X_n$ concentrates around the ED50 — without ever knowing the dose-response curve.
+The ED50 is the dose <span class="tts-math" data-tts="theta">$\theta$</span> at which the probability of response equals <span class="tts-math" data-tts="1 over 2">$1/2$</span>. Set <span class="tts-math" data-tts="Y in 0 1">$Y \in \{0, 1\}$</span> indicating
+response, <span class="tts-math" data-tts="t equals 1 over 2">$t = 1/2$</span>, and apply (20.12). Each subject moves the dose toward the unknown median effective dose.
+After many trials, <span class="tts-math" data-tts="X sub n">$X_n$</span> concentrates around the ED50 — without ever knowing the dose-response curve.
 </p>
 </div>
 <h3 data-cid="ch20-1050">Bandit problems</h3>
 <p data-cid="ch20-1060">
-At each stage choose one of $k$ "arms"; each pull of arm $a$ yields a reward governed by an unknown
-$\Theta_a$. The Bayesian formulation puts independent priors $\pi_0(a)$ on each $\Theta_a$ and asks for an
+At each stage choose one of <span class="tts-math" data-tts="k">$k$</span> "arms"; each pull of arm <span class="tts-math" data-tts="a">$a$</span> yields a reward governed by an unknown
+<span class="tts-math" data-tts="Theta sub a">$\Theta_a$</span>. The Bayesian formulation puts independent priors <span class="tts-math" data-tts="pi sub 0 a">$\pi_0(a)$</span> on each <span class="tts-math" data-tts="Theta sub a">$\Theta_a$</span> and asks for an
 allocation policy maximizing the geometric-discounted reward
-$$V = E \sum_{n=0}^\infty \beta^n r(A_n, \Theta_{A_n}),$$
-with discount factor $\beta \in (0, 1)$. This is a famously hard problem — the optimal policy must trade off
+<span class="tts-math" data-tts="V equals E the sum over n equals 0 of ^ infinity beta to the n r A sub n Theta sub A sub n">$$V = E \sum_{n=0}^\infty \beta^n r(A_n, \Theta_{A_n}),$$</span>
+with discount factor <span class="tts-math" data-tts="beta in 0 1">$\beta \in (0, 1)$</span>. This is a famously hard problem — the optimal policy must trade off
 <em>exploration</em> (pull arms about which you know little) against <em>exploitation</em> (pull arms that look
 best so far).
 </p>
 <div class="box definition" data-cid="ch20-1070">
 <span class="box-label">Theorem 20.13 — Gittins</span>
 <p data-cid="ch20-1080">
-There exists, for each arm $a$ in isolation, a function $\nu(a, \pi)$ — the <strong>Gittins index</strong> —
-depending only on $a$'s own reward and posterior, such that the policy "always pull the arm with the largest
-index" is optimal for the $k$-armed bandit.
+There exists, for each arm <span class="tts-math" data-tts="a">$a$</span> in isolation, a function <span class="tts-math" data-tts="nu a pi">$\nu(a, \pi)$</span> — the <strong>Gittins index</strong> —
+depending only on <span class="tts-math" data-tts="a">$a$</span>'s own reward and posterior, such that the policy "always pull the arm with the largest
+index" is optimal for the <span class="tts-math" data-tts="k">$k$</span>-armed bandit.
 </p>
 </div>
 <div class="box intuition" data-cid="ch20-1090">
 <span class="box-label">Why the index theorem is astonishing</span>
 <p data-cid="ch20-1100">
-Naively, the optimal policy for arm $a$ should depend on what the other arms look like — why explore $a$ if some
+Naively, the optimal policy for arm <span class="tts-math" data-tts="a">$a$</span> should depend on what the other arms look like — why explore <span class="tts-math" data-tts="a">$a$</span> if some
 other arm is more promising? Gittins (1979) showed that you can summarize each arm by a single number
-$\nu(a, \pi)$ computed in a one-arm sub-problem against a "fixed-reward" comparison arm $\lambda$. The index is
-the critical $\lambda$ at which immediate stopping becomes optimal:
-$$\nu(a, \pi_0) = \inf\!\{ \lambda : (1 - \beta) H(a, \pi_0, \lambda) = \lambda \}.$$
-The original problem of size $k$ decouples into $k$ stopping problems. This is one of the most remarkable
+<span class="tts-math" data-tts="nu a pi">$\nu(a, \pi)$</span> computed in a one-arm sub-problem against a "fixed-reward" comparison arm <span class="tts-math" data-tts="lambda">$\lambda$</span>. The index is
+the critical <span class="tts-math" data-tts="lambda">$\lambda$</span> at which immediate stopping becomes optimal:
+<span class="tts-math" data-tts="nu a pi sub 0 equals infimum lambda 1 minus beta H a pi sub 0 lambda equals lambda .">$$\nu(a, \pi_0) = \inf\!\{ \lambda : (1 - \beta) H(a, \pi_0, \lambda) = \lambda \}.$$</span>
+The original problem of size <span class="tts-math" data-tts="k">$k$</span> decouples into <span class="tts-math" data-tts="k">$k$</span> stopping problems. This is one of the most remarkable
 decomposition theorems in stochastic control.
 </p>
 </div>
@@ -533,23 +532,23 @@ decomposition theorems in stochastic control.
 Chapter 20, in eight bullets:
 </p>
 <ol data-cid="ch20-1130">
-<li>A <strong>sequential experiment</strong> has a sample size $N$ that is itself a random variable, decided
+<li>A <strong>sequential experiment</strong> has a sample size <span class="tts-math" data-tts="N">$N$</span> that is itself a random variable, decided
 adaptively from the data.</li>
 <li>The <strong>sampling distribution</strong> of standard statistics is generally wrong under data-dependent
 stopping — Example 20.1 shows you can guarantee rejection of a true null just by peeking.</li>
 <li>The <strong>likelihood function</strong>, by contrast, is unaffected by the stopping rule. This is
 Wald's fundamental identity (Theorem 20.6) — and the reason Bayesian inference sails through unchanged.</li>
-<li>A <strong>stopping time</strong> is a random time $N$ with $\{N = n\} \in \mathcal{F}_n$. The filtration
-$\mathcal{F}_n$ formalizes "information available after $n$ observations".</li>
-<li><strong>Anscombe's CLT</strong> lets us substitute a random sample size $N_w$ for a deterministic
-$n_w$ provided $w^2 N_w \to c$ — the basis for sequential fixed-width confidence intervals.</li>
-<li><strong>Optimal stopping</strong> via Bayesian backwards induction balances inferential risk $\rho_N$
-against sampling cost $cE N$; the Bellman equation (20.7) gives a recursive algorithm.</li>
-<li>The <strong>SPRT</strong> for simple vs. simple testing, with thresholds $A &lt; 1 &lt; B$ on the
-likelihood ratio, simultaneously minimizes both $E_0 N$ and $E_1 N$ subject to error-probability constraints
+<li>A <strong>stopping time</strong> is a random time <span class="tts-math" data-tts="N">$N$</span> with <span class="tts-math" data-tts="N equals n in script F sub n">$\{N = n\} \in \mathcal{F}_n$</span>. The filtration
+<span class="tts-math" data-tts="script F sub n">$\mathcal{F}_n$</span> formalizes "information available after <span class="tts-math" data-tts="n">$n$</span> observations".</li>
+<li><strong>Anscombe's CLT</strong> lets us substitute a random sample size <span class="tts-math" data-tts="N sub w">$N_w$</span> for a deterministic
+<span class="tts-math" data-tts="n sub w">$n_w$</span> provided <span class="tts-math" data-tts="w to the 2 N sub w to c">$w^2 N_w \to c$</span> — the basis for sequential fixed-width confidence intervals.</li>
+<li><strong>Optimal stopping</strong> via Bayesian backwards induction balances inferential risk <span class="tts-math" data-tts="rho sub N">$\rho_N$</span>
+against sampling cost <span class="tts-math" data-tts="cE N">$cE N$</span>; the Bellman equation (20.7) gives a recursive algorithm.</li>
+<li>The <strong>SPRT</strong> for simple vs. simple testing, with thresholds <span class="tts-math" data-tts="A lt 1 lt B">$A &lt; 1 &lt; B$</span> on the
+likelihood ratio, simultaneously minimizes both <span class="tts-math" data-tts="E sub 0 N">$E_0 N$</span> and <span class="tts-math" data-tts="E sub 1 N">$E_1 N$</span> subject to error-probability constraints
 (Wald–Wolfowitz, Theorem 20.9).</li>
 <li>Beyond stopping: <strong>stochastic approximation</strong> finds roots of regression functions adaptively,
-and the <strong>Gittins index</strong> reduces $k$-armed bandit problems to $k$ separate one-arm
+and the <strong>Gittins index</strong> reduces <span class="tts-math" data-tts="k">$k$</span>-armed bandit problems to <span class="tts-math" data-tts="k">$k$</span> separate one-arm
 stopping problems.</li>
 </ol>
 <div class="box pause" data-cid="ch20-1140">
@@ -558,12 +557,12 @@ stopping problems.</li>
 Before closing the book, you should be able to answer (without looking back):
 </p>
 <ul data-cid="ch20-1160">
-<li>Why does the classical level-$\alpha$ test, monitored after every observation, eventually reject
-even under $H_0$?</li>
+<li>Why does the classical level-<span class="tts-math" data-tts="alpha">$\alpha$</span> test, monitored after every observation, eventually reject
+even under <span class="tts-math" data-tts="H sub 0">$H_0$</span>?</li>
 <li>State Wald's fundamental identity. Why does it imply Bayesian posteriors do not depend on the
 stopping rule?</li>
 <li>What is u.c.i.p., and why is it the right hypothesis for a CLT with a random sample size?</li>
-<li>Write down the SPRT for $H_0 : p = p_0$ vs. $H_1 : p = p_1$ in a Bernoulli model.</li>
+<li>Write down the SPRT for <span class="tts-math" data-tts="H sub 0 p equals p sub 0">$H_0 : p = p_0$</span> vs. <span class="tts-math" data-tts="H sub 1 p equals p sub 1">$H_1 : p = p_1$</span> in a Bernoulli model.</li>
 <li>In one sentence each: what does the Robbins–Monro recursion do, and what does the Gittins index theorem
 do?</li>
 </ul>
@@ -575,9 +574,9 @@ If any of these feel shaky, re-read the matching section. There is no hurry.
 <span class="box-label">A closing note — end of the book</span>
 <p data-cid="ch20-1190">
 This is the last chapter of Keener's <em>Theoretical Statistics</em>, and of this slow reading guide. You started
-in Chapter 1 with measures and $\sigma$-fields — abstract scaffolding that seemed to have nothing to do with
-data. You ended here, in Chapter 20, with a filtration $\mathcal{F}_n$ representing "information observed so far"
-and a stopping time $N$ that tells you when you have collected enough of it. The whole arc of the book is the
+in Chapter 1 with measures and <span class="tts-math" data-tts="sigma">$\sigma$</span>-fields — abstract scaffolding that seemed to have nothing to do with
+data. You ended here, in Chapter 20, with a filtration <span class="tts-math" data-tts="script F sub n">$\mathcal{F}_n$</span> representing "information observed so far"
+and a stopping time <span class="tts-math" data-tts="N">$N$</span> that tells you when you have collected enough of it. The whole arc of the book is the
 slow population of that scaffolding with statistical content: distributions, sufficiency, estimation, testing,
 asymptotics, decision theory, the linear model, and now sequential design.
 </p>
@@ -597,6 +596,6 @@ Chapter 1 assumed you knew calculus. That assumption is now justified.
 </nav>
 </article>
 </main>
-<script src="/js/main.js"></script><script src="/js/comments.js"></script>
+<script src="/js/main.js"></script><script src="/js/comments.js"></script><script src="/js/tts.js"></script>
 </body>
 </html>

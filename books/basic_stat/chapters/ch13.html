@@ -10,14 +10,13 @@
 <link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
-<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/><link href="/css/tts.css" rel="stylesheet"/>
 </head>
 <body data-book="basic_stat" data-page="ch13">
 <header class="site-header">
+<a class="home-btn" href="/">Home</a>
 <a class="brand" href="/books/basic_stat/">Theoretical Statistics <small>a slow reading guide</small></a>
 <nav>
-<a href="/" class="all-books-link">All books</a>
-    <a href="/books/basic_stat/">Contents</a>
 <button aria-label="toggle theme" class="theme-toggle">Dark</button>
 </nav>
 </header>
@@ -48,12 +47,12 @@
   In Chapter 12 we lived in a clean one-parameter world. The Neyman–Pearson lemma gave us the most powerful test for a simple null against a simple alternative, and the monotone likelihood ratio property extended that to a uniformly most powerful (UMP) test for one-sided hypotheses about a single scalar parameter. Life was good.
 </p>
 <p data-cid="ch13-040">
-  Then reality intrudes. Most real testing problems have more than one parameter. The classic example: you want to test whether a normal population has mean zero — but you don't know the variance. The variance $\sigma^2$ is a <strong>nuisance parameter</strong>. It's not the thing you care about, but it sits in the likelihood and you can't pretend it isn't there.
+  Then reality intrudes. Most real testing problems have more than one parameter. The classic example: you want to test whether a normal population has mean zero — but you don't know the variance. The variance <span class="tts-math" data-tts="sigma to the 2">$\sigma^2$</span> is a <strong>nuisance parameter</strong>. It's not the thing you care about, but it sits in the likelihood and you can't pretend it isn't there.
 </p>
 <div class="box intuition" data-cid="ch13-050">
 <span class="box-label">The core difficulty</span>
 <p data-cid="ch13-060">
-  As soon as a nuisance parameter enters the picture, no single test is uniformly most powerful. The "best" test changes depending on the unknown value of $\sigma^2$. So the wish for one optimal procedure is too greedy — we need to ask for less.
+  As soon as a nuisance parameter enters the picture, no single test is uniformly most powerful. The "best" test changes depending on the unknown value of <span class="tts-math" data-tts="sigma to the 2">$\sigma^2$</span>. So the wish for one optimal procedure is too greedy — we need to ask for less.
 </p>
 </div>
 <p data-cid="ch13-070">
@@ -65,27 +64,27 @@
 <h2 data-cid="ch13-090" id="s13-1">13.1 Marginal and conditional distributions</h2>
 <h3 data-cid="ch13-100">The technical groundwork</h3>
 <p data-cid="ch13-110">
-  The chapter opens with a lemma that looks dry but is the engine for everything that follows. The setup: we have two joint distributions $P_0$ and $P_1$ for a pair of random vectors $(Y, T)$. The Radon–Nikodym derivative of $P_1$ with respect to $P_0$ factors:
+  The chapter opens with a lemma that looks dry but is the engine for everything that follows. The setup: we have two joint distributions <span class="tts-math" data-tts="P sub 0">$P_0$</span> and <span class="tts-math" data-tts="P sub 1">$P_1$</span> for a pair of random vectors <span class="tts-math" data-tts="Y T">$(Y, T)$</span>. The Radon–Nikodym derivative of <span class="tts-math" data-tts="P sub 1">$P_1$</span> with respect to <span class="tts-math" data-tts="P sub 0">$P_0$</span> factors:
 </p>
-$$\frac{dP_1}{dP_0}(t, y) = a(y) \, b(t).$$
+<span class="tts-math" data-tts="dP sub 1 over dP sub 0 t y equals a y b t .">$$\frac{dP_1}{dP_0}(t, y) = a(y) \, b(t).$$</span>
 <p data-cid="ch13-120">
-  Notice the structure: $a$ depends only on $y$, $b$ depends only on $t$. The question is: what does this factorization say about the marginal distribution of $T$ and the conditional distribution of $Y$ given $T = t$?
+  Notice the structure: <span class="tts-math" data-tts="a">$a$</span> depends only on <span class="tts-math" data-tts="y">$y$</span>, <span class="tts-math" data-tts="b">$b$</span> depends only on <span class="tts-math" data-tts="t">$t$</span>. The question is: what does this factorization say about the marginal distribution of <span class="tts-math" data-tts="T">$T$</span> and the conditional distribution of <span class="tts-math" data-tts="Y">$Y$</span> given <span class="tts-math" data-tts="T equals t">$T = t$</span>?
 </p>
 <div class="box definition" data-cid="ch13-130">
 <span class="box-label">Lemma 13.1</span>
 <p data-cid="ch13-140">
-  Assume $P_1 \ll P_0$ with $dP_1/dP_0(t, y) = a(y) b(t)$ and $a(y) &gt; 0$. Let $Q_i$ be the marginal of $T$ under $P_i$ and $R_{it}$ the conditional of $Y$ given $T = t$ under $P_i$. Then $Q_1 \ll Q_0$ and $R_{1t} \ll R_{0t}$ (for $Q_1$-a.e. $t$), with
+  Assume <span class="tts-math" data-tts="P sub 1 P sub 0">$P_1 \ll P_0$</span> with <span class="tts-math" data-tts="dP sub 1 over dP sub 0 t y equals a y b t">$dP_1/dP_0(t, y) = a(y) b(t)$</span> and <span class="tts-math" data-tts="a y gt 0">$a(y) &gt; 0$</span>. Let <span class="tts-math" data-tts="Q sub i">$Q_i$</span> be the marginal of <span class="tts-math" data-tts="T">$T$</span> under <span class="tts-math" data-tts="P sub i">$P_i$</span> and <span class="tts-math" data-tts="R sub it">$R_{it}$</span> the conditional of <span class="tts-math" data-tts="Y">$Y$</span> given <span class="tts-math" data-tts="T equals t">$T = t$</span> under <span class="tts-math" data-tts="P sub i">$P_i$</span>. Then <span class="tts-math" data-tts="Q sub 1 Q sub 0">$Q_1 \ll Q_0$</span> and <span class="tts-math" data-tts="R sub 1t R sub 0t">$R_{1t} \ll R_{0t}$</span> (for <span class="tts-math" data-tts="Q sub 1">$Q_1$</span>-a.e. <span class="tts-math" data-tts="t">$t$</span>), with
 </p>
-$$\frac{dQ_1}{dQ_0}(t) = b(t) \, E_0\!\left[a(Y) \mid T = t\right]$$
+<span class="tts-math" data-tts="dQ sub 1 over dQ sub 0 t equals b t E sub 0 a Y given T equals t">$$\frac{dQ_1}{dQ_0}(t) = b(t) \, E_0\!\left[a(Y) \mid T = t\right]$$</span>
 <p data-cid="ch13-150">
   and
 </p>
-$$\frac{dR_{1t}}{dR_{0t}}(y) = \frac{a(y)}{\int a \, dR_{0t}}.$$
+<span class="tts-math" data-tts="dR sub 1t dR sub 0t y equals a y over the integral of a dR_ 0t .">$$\frac{dR_{1t}}{dR_{0t}}(y) = \frac{a(y)}{\int a \, dR_{0t}}.$$</span>
 </div>
 <div class="box intuition" data-cid="ch13-160">
 <span class="box-label">What the lemma is actually telling us</span>
 <p data-cid="ch13-170">
-  Read the two formulas side by side. The marginal density of $T$ picks up the factor $b(t)$ — the part of the likelihood ratio that depends only on $t$ — together with a normalizing integral over $y$. The conditional density of $Y$ given $T = t$ picks up the factor $a(y)$ — the part that depends only on $y$ — divided by the same normalizing integral.
+  Read the two formulas side by side. The marginal density of <span class="tts-math" data-tts="T">$T$</span> picks up the factor <span class="tts-math" data-tts="b t">$b(t)$</span> — the part of the likelihood ratio that depends only on <span class="tts-math" data-tts="t">$t$</span> — together with a normalizing integral over <span class="tts-math" data-tts="y">$y$</span>. The conditional density of <span class="tts-math" data-tts="Y">$Y$</span> given <span class="tts-math" data-tts="T equals t">$T = t$</span> picks up the factor <span class="tts-math" data-tts="a y">$a(y)$</span> — the part that depends only on <span class="tts-math" data-tts="y">$y$</span> — divided by the same normalizing integral.
 </p>
 <p data-cid="ch13-180">
   In other words: a multiplicative factorization of the likelihood ratio produces a multiplicative split between the marginal and the conditional. The pieces don't mix.
@@ -93,54 +92,54 @@ $$\frac{dR_{1t}}{dR_{0t}}(y) = \frac{a(y)}{\int a \, dR_{0t}}.$$
 </div>
 <p data-cid="ch13-190">
   Why do we need a lemma for this? In an introductory course you'd just write
-  $$p_1(t, y) = p_1(y \mid t) \, p_1(t)$$
+  <span class="tts-math" data-tts="p sub 1 t y equals p sub 1 y given t p sub 1 t">$$p_1(t, y) = p_1(y \mid t) \, p_1(t)$$</span>
   and split the joint by hand. The lemma is doing the same job, but for general measures — not necessarily a product of Lebesgue and counting, not necessarily having a clean joint density at all. It works whenever the likelihood ratio factors.
 </p>
 <h3 data-cid="ch13-200">Application to exponential families</h3>
 <p data-cid="ch13-210">
-  Now we use the lemma to dissect a multiparameter exponential family. Suppose $X$ has the canonical density
+  Now we use the lemma to dissect a multiparameter exponential family. Suppose <span class="tts-math" data-tts="X">$X$</span> has the canonical density
 </p>
-$$p_{\theta, \eta}(x) = h(x) \exp\!\left[\theta \cdot U(x) + \eta \cdot T(x) - A(\theta, \eta)\right] \tag{13.1}$$
+<span class="tts-math" data-tts="p sub theta eta x equals h x exp theta times U x plus eta times T x minus A theta eta 13.1">$$p_{\theta, \eta}(x) = h(x) \exp\!\left[\theta \cdot U(x) + \eta \cdot T(x) - A(\theta, \eta)\right] \tag{13.1}$$</span>
 <p data-cid="ch13-220">
-  where $\theta$ is $r$-dimensional and $\eta$ is $s$-dimensional. Both $U$ and $T$ are vector-valued sufficient statistics. We can think of $\theta$ as the parameters we care about and $\eta$ as the nuisance.
+  where <span class="tts-math" data-tts="theta">$\theta$</span> is <span class="tts-math" data-tts="r">$r$</span>-dimensional and <span class="tts-math" data-tts="eta">$\eta$</span> is <span class="tts-math" data-tts="s">$s$</span>-dimensional. Both <span class="tts-math" data-tts="U">$U$</span> and <span class="tts-math" data-tts="T">$T$</span> are vector-valued sufficient statistics. We can think of <span class="tts-math" data-tts="theta">$\theta$</span> as the parameters we care about and <span class="tts-math" data-tts="eta">$\eta$</span> as the nuisance.
 </p>
 <div class="box definition" data-cid="ch13-230">
 <span class="box-label">Theorem 13.2</span>
 <p data-cid="ch13-240">
-  For the family (13.1), there exist measures $\lambda_\theta$ and $\nu_t$ such that:
+  For the family (13.1), there exist measures <span class="tts-math" data-tts="lambda _ theta">$\lambda_\theta$</span> and <span class="tts-math" data-tts="nu sub t">$\nu_t$</span> such that:
 </p>
 <ol data-cid="ch13-250">
-<li>With $\theta$ fixed, the marginal distribution of $T$ is an $s$-parameter exponential family with density
-  $$\exp\!\left[\eta \cdot t - A(\theta, \eta)\right]$$
-  with respect to $\lambda_\theta$.</li>
-<li>The conditional distribution of $U$ given $T = t$ is an exponential family with density
-  $$\exp\!\left[\theta \cdot u - A_t(\theta)\right]$$
-  with respect to $\nu_t$. <strong>This density does not depend on $\eta$.</strong></li>
+<li>With <span class="tts-math" data-tts="theta">$\theta$</span> fixed, the marginal distribution of <span class="tts-math" data-tts="T">$T$</span> is an <span class="tts-math" data-tts="s">$s$</span>-parameter exponential family with density
+  <span class="tts-math" data-tts="exp eta times t minus A theta eta">$$\exp\!\left[\eta \cdot t - A(\theta, \eta)\right]$$</span>
+  with respect to <span class="tts-math" data-tts="lambda _ theta">$\lambda_\theta$</span>.</li>
+<li>The conditional distribution of <span class="tts-math" data-tts="U">$U$</span> given <span class="tts-math" data-tts="T equals t">$T = t$</span> is an exponential family with density
+  <span class="tts-math" data-tts="exp theta times u minus A sub t theta">$$\exp\!\left[\theta \cdot u - A_t(\theta)\right]$$</span>
+  with respect to <span class="tts-math" data-tts="nu sub t">$\nu_t$</span>. <strong>This density does not depend on <span class="tts-math" data-tts="eta">$\eta$</span>.</strong></li>
 </ol>
 </div>
 <p data-cid="ch13-260">
-  Stop and stare at part 2. The conditional distribution of $U$ given $T = t$ depends on $\theta$ alone. The nuisance parameter $\eta$ has disappeared from the conditional law. This is the structural fact that powers the entire chapter.
+  Stop and stare at part 2. The conditional distribution of <span class="tts-math" data-tts="U">$U$</span> given <span class="tts-math" data-tts="T equals t">$T = t$</span> depends on <span class="tts-math" data-tts="theta">$\theta$</span> alone. The nuisance parameter <span class="tts-math" data-tts="eta">$\eta$</span> has disappeared from the conditional law. This is the structural fact that powers the entire chapter.
 </p>
 <div class="box pause" data-cid="ch13-270">
 <span class="box-label">Pause — why does conditioning kill the nuisance?</span>
 <p data-cid="ch13-280">
-  Look at the joint density (13.1). The nuisance parameter $\eta$ couples to $T$, not to $U$. So once we condition on $T = t$, the term $\eta \cdot T(x)$ becomes the constant $\eta \cdot t$ inside the exponent — and a constant in the exponent factors out and gets absorbed by the normalizing constant. What's left depends only on $\theta$.
+  Look at the joint density (13.1). The nuisance parameter <span class="tts-math" data-tts="eta">$\eta$</span> couples to <span class="tts-math" data-tts="T">$T$</span>, not to <span class="tts-math" data-tts="U">$U$</span>. So once we condition on <span class="tts-math" data-tts="T equals t">$T = t$</span>, the term <span class="tts-math" data-tts="eta times T x">$\eta \cdot T(x)$</span> becomes the constant <span class="tts-math" data-tts="eta times t">$\eta \cdot t$</span> inside the exponent — and a constant in the exponent factors out and gets absorbed by the normalizing constant. What's left depends only on <span class="tts-math" data-tts="theta">$\theta$</span>.
 </p>
 <p data-cid="ch13-290">
-  Said another way: $T$ is sufficient for $\eta$ when $\theta$ is held fixed at any value. Conditioning on a sufficient statistic strips out everything the statistic was sufficient for.
+  Said another way: <span class="tts-math" data-tts="T">$T$</span> is sufficient for <span class="tts-math" data-tts="eta">$\eta$</span> when <span class="tts-math" data-tts="theta">$\theta$</span> is held fixed at any value. Conditioning on a sufficient statistic strips out everything the statistic was sufficient for.
 </p>
 </div>
 <p data-cid="ch13-300">
-  The proof of Theorem 13.2 is a careful application of Lemma 13.1. Pick a reference point $(\theta_0, \eta_0)$ and write the likelihood ratio $p_{\theta, \eta}/p_{\theta_0, \eta_0}$, which factors into a function of $u$ and a function of $t$. Apply the lemma, and the marginal/conditional split falls out in the stated form.
+  The proof of Theorem 13.2 is a careful application of Lemma 13.1. Pick a reference point <span class="tts-math" data-tts="theta sub 0 eta sub 0">$(\theta_0, \eta_0)$</span> and write the likelihood ratio <span class="tts-math" data-tts="p sub theta eta over p sub theta sub 0 eta sub 0">$p_{\theta, \eta}/p_{\theta_0, \eta_0}$</span>, which factors into a function of <span class="tts-math" data-tts="u">$u$</span> and a function of <span class="tts-math" data-tts="t">$t$</span>. Apply the lemma, and the marginal/conditional split falls out in the stated form.
 </p>
 <h3 data-cid="ch13-310">Why this matters operationally</h3>
 <p data-cid="ch13-320">
   The plan for the rest of the chapter is:
 </p>
 <ol data-cid="ch13-330">
-<li>Take a multiparameter testing problem where $\theta$ is the parameter of interest and $\eta$ is nuisance.</li>
-<li>Condition on the sufficient statistic $T$ for the nuisance.</li>
-<li>The conditional problem only involves $\theta$ — it is a one-parameter testing problem.</li>
+<li>Take a multiparameter testing problem where <span class="tts-math" data-tts="theta">$\theta$</span> is the parameter of interest and <span class="tts-math" data-tts="eta">$\eta$</span> is nuisance.</li>
+<li>Condition on the sufficient statistic <span class="tts-math" data-tts="T">$T$</span> for the nuisance.</li>
+<li>The conditional problem only involves <span class="tts-math" data-tts="theta">$\theta$</span> — it is a one-parameter testing problem.</li>
 <li>Apply Chapter 12's UMP machinery to the conditional problem.</li>
 <li>Show that the resulting conditional test is, in fact, UMP unbiased for the original multiparameter problem.</li>
 </ol>
@@ -150,105 +149,105 @@ $$p_{\theta, \eta}(x) = h(x) \exp\!\left[\theta \cdot U(x) + \eta \cdot T(x) - A
 <h2 data-cid="ch13-350" id="s13-2">13.2 UMP unbiased tests in higher dimensions</h2>
 <h3 data-cid="ch13-360">Unbiased tests and similar tests</h3>
 <p data-cid="ch13-370">
-  Recall the level-$\alpha$ test $\varphi$ is <strong>unbiased</strong> if its power function $\beta_\varphi(\theta) = E_\theta \varphi$ satisfies $\beta_\varphi \leq \alpha$ on the null $\Omega_0$ and $\beta_\varphi \geq \alpha$ on the alternative $\Omega_1$. Loosely: an unbiased test rejects under the alternative at least as often as it rejects under the null.
+  Recall the level-<span class="tts-math" data-tts="alpha">$\alpha$</span> test <span class="tts-math" data-tts="phi">$\varphi$</span> is <strong>unbiased</strong> if its power function <span class="tts-math" data-tts="beta _ phi theta equals E_ theta phi">$\beta_\varphi(\theta) = E_\theta \varphi$</span> satisfies <span class="tts-math" data-tts="beta _ phi less than or equal to alpha">$\beta_\varphi \leq \alpha$</span> on the null <span class="tts-math" data-tts="Omega sub 0">$\Omega_0$</span> and <span class="tts-math" data-tts="beta _ phi greater than or equal to alpha">$\beta_\varphi \geq \alpha$</span> on the alternative <span class="tts-math" data-tts="Omega sub 1">$\Omega_1$</span>. Loosely: an unbiased test rejects under the alternative at least as often as it rejects under the null.
 </p>
 <p data-cid="ch13-380">
-  When the power function is continuous (and for exponential families it always is), unbiasedness forces $\beta_\varphi = \alpha$ exactly on the <strong>boundary</strong>
-  $$\omega = \overline{\Omega_0} \cap \overline{\Omega_1}.$$
-  A test satisfying $\beta_\varphi(\theta) = \alpha$ for all $\theta \in \omega$ is called <strong>$\alpha$-similar</strong>.
+  When the power function is continuous (and for exponential families it always is), unbiasedness forces <span class="tts-math" data-tts="beta _ phi equals alpha">$\beta_\varphi = \alpha$</span> exactly on the <strong>boundary</strong>
+  <span class="tts-math" data-tts="omega equals Omega sub 0 bar intersect Omega sub 1 bar .">$$\omega = \overline{\Omega_0} \cap \overline{\Omega_1}.$$</span>
+  A test satisfying <span class="tts-math" data-tts="beta _ phi theta equals alpha">$\beta_\varphi(\theta) = \alpha$</span> for all <span class="tts-math" data-tts="theta in omega">$\theta \in \omega$</span> is called <strong><span class="tts-math" data-tts="alpha">$\alpha$</span>-similar</strong>.
 </p>
 <div class="box intuition" data-cid="ch13-390">
 <span class="box-label">Why similar?</span>
 <p data-cid="ch13-400">
-  On the boundary $\omega$, the null and the alternative meet. The constraint $\beta_\varphi = \alpha$ on $\omega$ means the test "looks the same" — has the same rejection rate $\alpha$ — at every parameter point on the boundary. Hence "similar".
+  On the boundary <span class="tts-math" data-tts="omega">$\omega$</span>, the null and the alternative meet. The constraint <span class="tts-math" data-tts="beta _ phi equals alpha">$\beta_\varphi = \alpha$</span> on <span class="tts-math" data-tts="omega">$\omega$</span> means the test "looks the same" — has the same rejection rate <span class="tts-math" data-tts="alpha">$\alpha$</span> — at every parameter point on the boundary. Hence "similar".
 </p>
 <p data-cid="ch13-410">
-  Operationally, similar tests are easier to characterize than unbiased tests, because the constraint is an equality (not an inequality) and it only applies on the lower-dimensional boundary $\omega$.
+  Operationally, similar tests are easier to characterize than unbiased tests, because the constraint is an equality (not an inequality) and it only applies on the lower-dimensional boundary <span class="tts-math" data-tts="omega">$\omega$</span>.
 </p>
 </div>
 <div class="box definition" data-cid="ch13-420">
 <span class="box-label">Lemma 13.3 — similar implies unbiased</span>
 <p data-cid="ch13-430">
-  Suppose $\varphi^*$ is $\alpha$-similar with level $\alpha$, and all power functions are continuous. If $\varphi^*$ is uniformly most powerful among $\alpha$-similar tests, then $\varphi^*$ is unbiased and uniformly most powerful among unbiased tests.
+  Suppose <span class="tts-math" data-tts="phi to the times">$\varphi^*$</span> is <span class="tts-math" data-tts="alpha">$\alpha$</span>-similar with level <span class="tts-math" data-tts="alpha">$\alpha$</span>, and all power functions are continuous. If <span class="tts-math" data-tts="phi to the times">$\varphi^*$</span> is uniformly most powerful among <span class="tts-math" data-tts="alpha">$\alpha$</span>-similar tests, then <span class="tts-math" data-tts="phi to the times">$\varphi^*$</span> is unbiased and uniformly most powerful among unbiased tests.
 </p>
 </div>
 <p data-cid="ch13-440">
-  The proof is short: the constant test $\varphi \equiv \alpha$ is similar, so $\varphi^*$ has power at least $\alpha$ on $\Omega_1$ (unbiased). Any unbiased competitor has continuous power and so is automatically similar. The UMP-similar property of $\varphi^*$ then beats it.
+  The proof is short: the constant test <span class="tts-math" data-tts="phi equivalent to alpha">$\varphi \equiv \alpha$</span> is similar, so <span class="tts-math" data-tts="phi to the times">$\varphi^*$</span> has power at least <span class="tts-math" data-tts="alpha">$\alpha$</span> on <span class="tts-math" data-tts="Omega sub 1">$\Omega_1$</span> (unbiased). Any unbiased competitor has continuous power and so is automatically similar. The UMP-similar property of <span class="tts-math" data-tts="phi to the times">$\varphi^*$</span> then beats it.
 </p>
 <div class="box intuition" data-cid="ch13-450">
 <span class="box-label">The strategy in one sentence</span>
 <p data-cid="ch13-460">
-  "Best unbiased" is hard to attack directly. So we attack the easier problem "best among $\alpha$-similar tests", and Lemma 13.3 tells us we got the right answer anyway.
+  "Best unbiased" is hard to attack directly. So we attack the easier problem "best among <span class="tts-math" data-tts="alpha">$\alpha$</span>-similar tests", and Lemma 13.3 tells us we got the right answer anyway.
 </p>
 </div>
 <h3 data-cid="ch13-470">Neyman structure</h3>
 <p data-cid="ch13-480">
-  Similar tests are still a big class. The next reduction narrows them down dramatically. Suppose $T$ is sufficient for the subfamily $\{P_\theta : \theta \in \omega\}$ on the boundary. Then a similar test $\varphi$ has <strong>Neyman structure</strong> if
-  $$E_\theta[\varphi \mid T = t] = \alpha, \quad \text{for a.e. } t, \ \forall \theta \in \omega.$$
+  Similar tests are still a big class. The next reduction narrows them down dramatically. Suppose <span class="tts-math" data-tts="T">$T$</span> is sufficient for the subfamily <span class="tts-math" data-tts="P_ theta theta in omega">$\{P_\theta : \theta \in \omega\}$</span> on the boundary. Then a similar test <span class="tts-math" data-tts="phi">$\varphi$</span> has <strong>Neyman structure</strong> if
+  <span class="tts-math" data-tts="E_ theta phi given T equals t equals alpha for a.e. t for all theta in omega .">$$E_\theta[\varphi \mid T = t] = \alpha, \quad \text{for a.e. } t, \ \forall \theta \in \omega.$$</span>
 </p>
 <div class="box definition" data-cid="ch13-490">
 <span class="box-label">Theorem 13.5</span>
 <p data-cid="ch13-500">
-  If $T$ is <em>complete</em> and sufficient for $\{P_\theta : \theta \in \omega\}$, then every similar test has Neyman structure.
+  If <span class="tts-math" data-tts="T">$T$</span> is <em>complete</em> and sufficient for <span class="tts-math" data-tts="P_ theta theta in omega">$\{P_\theta : \theta \in \omega\}$</span>, then every similar test has Neyman structure.
 </p>
 </div>
 <p data-cid="ch13-510">
-  The proof rides on the definition of completeness. Let $h(T) = E_\theta[\varphi \mid T]$; sufficiency makes $h$ independent of $\theta \in \omega$. By smoothing, $E_\theta h(T) = \alpha$ for all $\theta \in \omega$, i.e. $E_\theta[h(T) - \alpha] = 0$. Completeness then forces $h(T) = \alpha$ almost surely. That's exactly Neyman structure.
+  The proof rides on the definition of completeness. Let <span class="tts-math" data-tts="h T equals E_ theta phi given T">$h(T) = E_\theta[\varphi \mid T]$</span>; sufficiency makes <span class="tts-math" data-tts="h">$h$</span> independent of <span class="tts-math" data-tts="theta in omega">$\theta \in \omega$</span>. By smoothing, <span class="tts-math" data-tts="E_ theta h T equals alpha">$E_\theta h(T) = \alpha$</span> for all <span class="tts-math" data-tts="theta in omega">$\theta \in \omega$</span>, i.e. <span class="tts-math" data-tts="E_ theta h T minus alpha equals 0">$E_\theta[h(T) - \alpha] = 0$</span>. Completeness then forces <span class="tts-math" data-tts="h T equals alpha">$h(T) = \alpha$</span> almost surely. That's exactly Neyman structure.
 </p>
 <div class="box pause" data-cid="ch13-520">
 <span class="box-label">Pause — why is this so useful?</span>
 <p data-cid="ch13-530">
-  Neyman structure converts a global constraint ("the test has level $\alpha$ on the whole boundary") into a pointwise constraint ("the conditional rejection rate given $T = t$ equals $\alpha$ for almost every $t$").
+  Neyman structure converts a global constraint ("the test has level <span class="tts-math" data-tts="alpha">$\alpha$</span> on the whole boundary") into a pointwise constraint ("the conditional rejection rate given <span class="tts-math" data-tts="T equals t">$T = t$</span> equals <span class="tts-math" data-tts="alpha">$\alpha$</span> for almost every <span class="tts-math" data-tts="t">$t$</span>").
 </p>
 <p data-cid="ch13-540">
-  A pointwise constraint is exactly the kind of constraint we can attack with Neyman–Pearson <em>conditionally</em>. For each fixed value of $T = t$, the conditional test maximizing power subject to $E_\theta[\varphi \mid T = t] = \alpha$ is a one-parameter optimization. And we already know how to do that.
+  A pointwise constraint is exactly the kind of constraint we can attack with Neyman–Pearson <em>conditionally</em>. For each fixed value of <span class="tts-math" data-tts="T equals t">$T = t$</span>, the conditional test maximizing power subject to <span class="tts-math" data-tts="E_ theta phi given T equals t equals alpha">$E_\theta[\varphi \mid T = t] = \alpha$</span> is a one-parameter optimization. And we already know how to do that.
 </p>
 </div>
 <h3 data-cid="ch13-550">The main theorem: UMP unbiased tests via conditioning</h3>
 <p data-cid="ch13-560">
-  Now we specialize. Suppose $X$ has density
+  Now we specialize. Suppose <span class="tts-math" data-tts="X">$X$</span> has density
 </p>
-$$p_{\theta, \eta}(x) = h(x) \exp\!\left[\theta U(x) + \eta \cdot T(x) - A(\theta, \eta)\right] \tag{13.2}$$
+<span class="tts-math" data-tts="p sub theta eta x equals h x exp theta U x plus eta times T x minus A theta eta 13.2">$$p_{\theta, \eta}(x) = h(x) \exp\!\left[\theta U(x) + \eta \cdot T(x) - A(\theta, \eta)\right] \tag{13.2}$$</span>
 <p data-cid="ch13-570">
-  with $\theta$ <em>univariate</em> (the parameter of interest) and $\eta$ possibly $s$-dimensional (the nuisance). By Theorem 13.2, the conditional distribution of $U$ given $T = t$ is a one-parameter exponential family with canonical parameter $\theta$, free of $\eta$.
+  with <span class="tts-math" data-tts="theta">$\theta$</span> <em>univariate</em> (the parameter of interest) and <span class="tts-math" data-tts="eta">$\eta$</span> possibly <span class="tts-math" data-tts="s">$s$</span>-dimensional (the nuisance). By Theorem 13.2, the conditional distribution of <span class="tts-math" data-tts="U">$U$</span> given <span class="tts-math" data-tts="T equals t">$T = t$</span> is a one-parameter exponential family with canonical parameter <span class="tts-math" data-tts="theta">$\theta$</span>, free of <span class="tts-math" data-tts="eta">$\eta$</span>.
 </p>
 <p data-cid="ch13-580">
-  This conditional family has the monotone likelihood ratio property, so Chapter 12 (Theorem 12.9) hands us the UMP conditional test for the one-sided problem $H_0: \theta \leq \theta_0$ versus $H_1: \theta &gt; \theta_0$:
+  This conditional family has the monotone likelihood ratio property, so Chapter 12 (Theorem 12.9) hands us the UMP conditional test for the one-sided problem <span class="tts-math" data-tts="H sub 0 theta less than or equal to theta sub 0">$H_0: \theta \leq \theta_0$</span> versus <span class="tts-math" data-tts="H sub 1 theta gt theta sub 0">$H_1: \theta &gt; \theta_0$</span>:
 </p>
-$$\varphi_1 = \begin{cases} 1, &amp; U &gt; c(T) \\ \gamma(T), &amp; U = c(T) \\ 0, &amp; U &lt; c(T) \end{cases}$$
+<span class="tts-math" data-tts="phi sub 1 equals 1 amp U gt c T gamma T amp U equals c T 0 amp U lt c T">$$\varphi_1 = \begin{cases} 1, &amp; U &gt; c(T) \\ \gamma(T), &amp; U = c(T) \\ 0, &amp; U &lt; c(T) \end{cases}$$</span>
 <p data-cid="ch13-590">
-  with $c(\cdot)$ and $\gamma(\cdot)$ chosen so that
-  $$P_{\theta_0, \eta}\!\left(U &gt; c(t) \mid T = t\right) + \gamma(t) P_{\theta_0, \eta}\!\left(U = c(t) \mid T = t\right) = \alpha.$$
+  with <span class="tts-math" data-tts="c times">$c(\cdot)$</span> and <span class="tts-math" data-tts="gamma times">$\gamma(\cdot)$</span> chosen so that
+  <span class="tts-math" data-tts="P sub theta sub 0 eta U gt c t given T equals t plus gamma t P sub theta sub 0 eta U equals c t given T equals t equals alpha .">$$P_{\theta_0, \eta}\!\left(U &gt; c(t) \mid T = t\right) + \gamma(t) P_{\theta_0, \eta}\!\left(U = c(t) \mid T = t\right) = \alpha.$$</span>
 </p>
 <p data-cid="ch13-600">
-  For the two-sided problem $H_0: \theta = \theta_0$ versus $H_1: \theta \neq \theta_0$, Chapter 12's Theorem 12.26 gives the UMP unbiased conditional test:
+  For the two-sided problem <span class="tts-math" data-tts="H sub 0 theta equals theta sub 0">$H_0: \theta = \theta_0$</span> versus <span class="tts-math" data-tts="H sub 1 theta not equal to theta sub 0">$H_1: \theta \neq \theta_0$</span>, Chapter 12's Theorem 12.26 gives the UMP unbiased conditional test:
 </p>
-$$\varphi_2 = \begin{cases} 1, &amp; U &lt; c_-(T) \text{ or } U &gt; c_+(T) \\ \gamma_-(T), &amp; U = c_-(T) \\ \gamma_+(T), &amp; U = c_+(T) \\ 0, &amp; c_-(T) &lt; U &lt; c_+(T) \end{cases}$$
+<span class="tts-math" data-tts="phi sub 2 equals 1 amp U lt c_ minus T or U gt c_ plus T gamma _ minus T amp U equals c_ minus T gamma _ plus T amp U equals c_ plus T 0 amp c_ minus T lt U lt c_ plus T">$$\varphi_2 = \begin{cases} 1, &amp; U &lt; c_-(T) \text{ or } U &gt; c_+(T) \\ \gamma_-(T), &amp; U = c_-(T) \\ \gamma_+(T), &amp; U = c_+(T) \\ 0, &amp; c_-(T) &lt; U &lt; c_+(T) \end{cases}$$</span>
 <p data-cid="ch13-610">
   with constants chosen so that
 </p>
-$$E_{\theta_0, \eta}[\varphi_2 \mid T = t] = \alpha, \qquad E_{\theta_0, \eta}[\varphi_2 U \mid T = t] = \alpha \, E_{\theta_0, \eta}[U \mid T = t].$$
+<span class="tts-math" data-tts="E sub theta sub 0 eta phi sub 2 given T equals t equals alpha E sub theta sub 0 eta phi sub 2 U given T equals t equals alpha E sub theta sub 0 eta U given T equals t .">$$E_{\theta_0, \eta}[\varphi_2 \mid T = t] = \alpha, \qquad E_{\theta_0, \eta}[\varphi_2 U \mid T = t] = \alpha \, E_{\theta_0, \eta}[U \mid T = t].$$</span>
 <div class="box definition" data-cid="ch13-620">
 <span class="box-label">Theorem 13.6 — the main result</span>
 <p data-cid="ch13-630">
-  If (13.2) is a full-rank exponential family with $\Omega$ open, then $\varphi_1$ is UMP unbiased for $H_0: \theta \leq \theta_0$ versus $H_1: \theta &gt; \theta_0$, and $\varphi_2$ is UMP unbiased for $H_0: \theta = \theta_0$ versus $H_1: \theta \neq \theta_0$.
+  If (13.2) is a full-rank exponential family with <span class="tts-math" data-tts="Omega">$\Omega$</span> open, then <span class="tts-math" data-tts="phi sub 1">$\varphi_1$</span> is UMP unbiased for <span class="tts-math" data-tts="H sub 0 theta less than or equal to theta sub 0">$H_0: \theta \leq \theta_0$</span> versus <span class="tts-math" data-tts="H sub 1 theta gt theta sub 0">$H_1: \theta &gt; \theta_0$</span>, and <span class="tts-math" data-tts="phi sub 2">$\varphi_2$</span> is UMP unbiased for <span class="tts-math" data-tts="H sub 0 theta equals theta sub 0">$H_0: \theta = \theta_0$</span> versus <span class="tts-math" data-tts="H sub 1 theta not equal to theta sub 0">$H_1: \theta \neq \theta_0$</span>.
 </p>
 </div>
 <p data-cid="ch13-640">
   The proof is the climax of the chapter. The one-sided case goes like this:
 </p>
 <ol data-cid="ch13-650">
-<li>The boundary is $\omega = \{\theta = \theta_0\}$, and $T$ is complete and sufficient for $\{P_{\theta_0, \eta} : \eta \in \mathbb{R}^s\}$ — a standard exponential family fact under full-rank conditions.</li>
-<li>By construction, $E_{\theta_0, \eta}[\varphi_1 \mid T] = \alpha$. So $\varphi_1$ has Neyman structure, and by smoothing, $\varphi_1$ is $\alpha$-similar.</li>
-<li>Any competing similar test $\varphi$ has Neyman structure (Theorem 13.5), so it satisfies $E_{\theta_0, \eta}[\varphi \mid T = t] = \alpha$ — the very constraint that $\varphi_1$ maximizes against.</li>
-<li>For $\theta &gt; \theta_0$, the conditional optimality of $\varphi_1$ gives $E_{\theta, \eta}[\varphi_1 \mid T = t] \geq E_{\theta, \eta}[\varphi \mid T = t]$. Smoothing produces the same inequality for the unconditional power.</li>
-<li>Verifying level: for $\theta &lt; \theta_0$, the MLR property in the conditional family makes the conditional power non-increasing in $\theta$, so $E_{\theta, \eta} \varphi_1 \leq \alpha$.</li>
-<li>So $\varphi_1$ is UMP $\alpha$-similar. By Lemma 13.3, UMP unbiased.</li>
+<li>The boundary is <span class="tts-math" data-tts="omega equals theta equals theta sub 0">$\omega = \{\theta = \theta_0\}$</span>, and <span class="tts-math" data-tts="T">$T$</span> is complete and sufficient for <span class="tts-math" data-tts="P sub theta sub 0 eta eta in the real numbers to the s">$\{P_{\theta_0, \eta} : \eta \in \mathbb{R}^s\}$</span> — a standard exponential family fact under full-rank conditions.</li>
+<li>By construction, <span class="tts-math" data-tts="E sub theta sub 0 eta phi sub 1 given T equals alpha">$E_{\theta_0, \eta}[\varphi_1 \mid T] = \alpha$</span>. So <span class="tts-math" data-tts="phi sub 1">$\varphi_1$</span> has Neyman structure, and by smoothing, <span class="tts-math" data-tts="phi sub 1">$\varphi_1$</span> is <span class="tts-math" data-tts="alpha">$\alpha$</span>-similar.</li>
+<li>Any competing similar test <span class="tts-math" data-tts="phi">$\varphi$</span> has Neyman structure (Theorem 13.5), so it satisfies <span class="tts-math" data-tts="E sub theta sub 0 eta phi given T equals t equals alpha">$E_{\theta_0, \eta}[\varphi \mid T = t] = \alpha$</span> — the very constraint that <span class="tts-math" data-tts="phi sub 1">$\varphi_1$</span> maximizes against.</li>
+<li>For <span class="tts-math" data-tts="theta gt theta sub 0">$\theta &gt; \theta_0$</span>, the conditional optimality of <span class="tts-math" data-tts="phi sub 1">$\varphi_1$</span> gives <span class="tts-math" data-tts="E sub theta eta phi sub 1 given T equals t greater than or equal to E sub theta eta phi given T equals t">$E_{\theta, \eta}[\varphi_1 \mid T = t] \geq E_{\theta, \eta}[\varphi \mid T = t]$</span>. Smoothing produces the same inequality for the unconditional power.</li>
+<li>Verifying level: for <span class="tts-math" data-tts="theta lt theta sub 0">$\theta &lt; \theta_0$</span>, the MLR property in the conditional family makes the conditional power non-increasing in <span class="tts-math" data-tts="theta">$\theta$</span>, so <span class="tts-math" data-tts="E sub theta eta phi sub 1 less than or equal to alpha">$E_{\theta, \eta} \varphi_1 \leq \alpha$</span>.</li>
+<li>So <span class="tts-math" data-tts="phi sub 1">$\varphi_1$</span> is UMP <span class="tts-math" data-tts="alpha">$\alpha$</span>-similar. By Lemma 13.3, UMP unbiased.</li>
 </ol>
 <p data-cid="ch13-660">
-  The two-sided case is similar in spirit but uses an extra ingredient: differentiating the power function at $\theta_0$ and setting the derivative to zero (a necessary condition for any unbiased test). That condition becomes
-  $$E_{\theta_0, \eta}[\varphi U \mid T] = \alpha \, E_{\theta_0, \eta}[U \mid T],$$
-  which is exactly the second constraint defining $\varphi_2$.
+  The two-sided case is similar in spirit but uses an extra ingredient: differentiating the power function at <span class="tts-math" data-tts="theta sub 0">$\theta_0$</span> and setting the derivative to zero (a necessary condition for any unbiased test). That condition becomes
+  <span class="tts-math" data-tts="E sub theta sub 0 eta phi U given T equals alpha E sub theta sub 0 eta U given T">$$E_{\theta_0, \eta}[\varphi U \mid T] = \alpha \, E_{\theta_0, \eta}[U \mid T],$$</span>
+  which is exactly the second constraint defining <span class="tts-math" data-tts="phi sub 2">$\varphi_2$</span>.
 </p>
 <div class="box pause" data-cid="ch13-670">
 <span class="box-label">Pause — what just happened?</span>
@@ -256,8 +255,8 @@ $$E_{\theta_0, \eta}[\varphi_2 \mid T = t] = \alpha, \qquad E_{\theta_0, \eta}[\
   We took a hard multiparameter testing problem and reduced it to a one-parameter problem by conditioning on the sufficient statistic for the nuisance. Each piece of machinery played a role:
 </p>
 <ul data-cid="ch13-690">
-<li><strong>Exponential family structure (Theorem 13.2)</strong> makes the conditional distribution depend on $\theta$ alone.</li>
-<li><strong>Completeness</strong> forces $\alpha$-similar tests to satisfy a pointwise (Neyman-structure) constraint.</li>
+<li><strong>Exponential family structure (Theorem 13.2)</strong> makes the conditional distribution depend on <span class="tts-math" data-tts="theta">$\theta$</span> alone.</li>
+<li><strong>Completeness</strong> forces <span class="tts-math" data-tts="alpha">$\alpha$</span>-similar tests to satisfy a pointwise (Neyman-structure) constraint.</li>
 <li><strong>Pointwise constraint + Chapter 12 machinery</strong> picks out the conditional UMP test.</li>
 <li><strong>Lemma 13.3</strong> upgrades "UMP similar" to "UMP unbiased".</li>
 </ul>
@@ -268,123 +267,123 @@ $$E_{\theta_0, \eta}[\varphi_2 \mid T = t] = \alpha, \qquad E_{\theta_0, \eta}[\
 <div class="box warn" data-cid="ch13-710">
 <span class="box-label">Common pitfall</span>
 <p data-cid="ch13-720">
-  The conditional level $\alpha$ requirement is the engine, not a side note. Many students try to skip ahead and use unconditional probability to set the critical value. That gives an $\alpha$-level test in the unconditional sense, but it will not be the UMP unbiased test, because it won't have Neyman structure.
+  The conditional level <span class="tts-math" data-tts="alpha">$\alpha$</span> requirement is the engine, not a side note. Many students try to skip ahead and use unconditional probability to set the critical value. That gives an <span class="tts-math" data-tts="alpha">$\alpha$</span>-level test in the unconditional sense, but it will not be the UMP unbiased test, because it won't have Neyman structure.
 </p>
 <p data-cid="ch13-730">
-  The critical value $c(T)$ in $\varphi_1$ is a <em>function of the data $T$</em>. It varies from sample to sample. That's exactly why the test is "conditional".
+  The critical value <span class="tts-math" data-tts="c T">$c(T)$</span> in <span class="tts-math" data-tts="phi sub 1">$\varphi_1$</span> is a <em>function of the data <span class="tts-math" data-tts="T">$T$</span></em>. It varies from sample to sample. That's exactly why the test is "conditional".
 </p>
 </div>
 <h2 data-cid="ch13-740" id="s13-3">13.3 Examples: t-test and Fisher's exact test</h2>
 <h3 data-cid="ch13-750">Example 13.7 — the t-test as a conditional test</h3>
 <p data-cid="ch13-760">
-  Let $X_1, \dots, X_n$ be a random sample from $N(\mu, \sigma^2)$. We want to test $H_0: \mu \leq 0$ versus $H_1: \mu &gt; 0$. The variance $\sigma^2$ is unknown — the classical nuisance parameter.
+  Let <span class="tts-math" data-tts="X sub 1 and so on X sub n">$X_1, \dots, X_n$</span> be a random sample from <span class="tts-math" data-tts="N mu sigma to the 2">$N(\mu, \sigma^2)$</span>. We want to test <span class="tts-math" data-tts="H sub 0 mu less than or equal to 0">$H_0: \mu \leq 0$</span> versus <span class="tts-math" data-tts="H sub 1 mu gt 0">$H_1: \mu &gt; 0$</span>. The variance <span class="tts-math" data-tts="sigma to the 2">$\sigma^2$</span> is unknown — the classical nuisance parameter.
 </p>
 <p data-cid="ch13-770">
   Writing the joint density in exponential-family form:
 </p>
-$$\frac{1}{(2\pi)^{n/2}} \exp\!\left[\frac{\mu}{\sigma^2} U(x) - \frac{1}{2\sigma^2} T(x) - \frac{n \mu^2}{2 \sigma^2} - n \log \sigma\right]$$
+<span class="tts-math" data-tts="1 over 2 pi ^ n over 2 exp mu over sigma to the 2 U x minus 1 over 2 sigma to the 2 T x minus n mu to the 2 over 2 sigma to the 2 minus n log sigma">$$\frac{1}{(2\pi)^{n/2}} \exp\!\left[\frac{\mu}{\sigma^2} U(x) - \frac{1}{2\sigma^2} T(x) - \frac{n \mu^2}{2 \sigma^2} - n \log \sigma\right]$$</span>
 <p data-cid="ch13-780">
-  with $U(x) = x_1 + \cdots + x_n$ and $T(x) = x_1^2 + \cdots + x_n^2$. The canonical parameters are
-  $$\theta = \frac{\mu}{\sigma^2}, \qquad \eta = -\frac{1}{2\sigma^2}.$$
-  Notice that the hypothesis $\mu \leq 0$ translates, since $\sigma^2 &gt; 0$, into the single canonical condition $\theta \leq 0$. So we're in the framework of Theorem 13.6 with $\theta$ univariate and $\eta$ scalar nuisance.
+  with <span class="tts-math" data-tts="U x equals x sub 1 plus times s plus x sub n">$U(x) = x_1 + \cdots + x_n$</span> and <span class="tts-math" data-tts="T x equals x sub 1 to the 2 plus times s plus x sub n to the 2">$T(x) = x_1^2 + \cdots + x_n^2$</span>. The canonical parameters are
+  <span class="tts-math" data-tts="theta equals mu over sigma to the 2 eta equals minus 1 over 2 sigma to the 2 .">$$\theta = \frac{\mu}{\sigma^2}, \qquad \eta = -\frac{1}{2\sigma^2}.$$</span>
+  Notice that the hypothesis <span class="tts-math" data-tts="mu less than or equal to 0">$\mu \leq 0$</span> translates, since <span class="tts-math" data-tts="sigma to the 2 gt 0">$\sigma^2 &gt; 0$</span>, into the single canonical condition <span class="tts-math" data-tts="theta less than or equal to 0">$\theta \leq 0$</span>. So we're in the framework of Theorem 13.6 with <span class="tts-math" data-tts="theta">$\theta$</span> univariate and <span class="tts-math" data-tts="eta">$\eta$</span> scalar nuisance.
 </p>
 <div class="box example" data-cid="ch13-790">
 <span class="box-label">The plan</span>
 <p data-cid="ch13-800">
-  Reject $H_0$ when $U &gt; c(T)$, with $c(\cdot)$ chosen so that
-  $$P_{\mu = 0}\!\left[U &gt; c(t) \mid T = t\right] = \alpha.$$
-  All we need is the conditional distribution of $U$ given $T = t$ when $\mu = 0$.
+  Reject <span class="tts-math" data-tts="H sub 0">$H_0$</span> when <span class="tts-math" data-tts="U gt c T">$U &gt; c(T)$</span>, with <span class="tts-math" data-tts="c times">$c(\cdot)$</span> chosen so that
+  <span class="tts-math" data-tts="P sub mu equals 0 U gt c t given T equals t equals alpha .">$$P_{\mu = 0}\!\left[U &gt; c(t) \mid T = t\right] = \alpha.$$</span>
+  All we need is the conditional distribution of <span class="tts-math" data-tts="U">$U$</span> given <span class="tts-math" data-tts="T equals t">$T = t$</span> when <span class="tts-math" data-tts="mu equals 0">$\mu = 0$</span>.
 </p>
 </div>
 <p data-cid="ch13-810">
-  This conditional distribution is derived elegantly using Basu's theorem. When $\mu = 0$, write $Z_i = X_i / \sigma$, so $Z = (Z_1, \dots, Z_n) \sim N(0, I)$. Then $\|X\|^2 = T$ and
-  $$W = \frac{X}{\|X\|} = \frac{Z}{\|Z\|}.$$
-  The unit vector $W$ has a distribution that doesn't depend on $\sigma$ — it is uniformly distributed on the unit sphere $S^{n-1}$ (by orthogonal invariance of the standard normal). So $W$ is ancillary. Meanwhile $T = \|X\|^2$ is a complete sufficient statistic for the family $\{N(0, \sigma^2)^n : \sigma^2 &gt; 0\}$. <strong>Basu's theorem</strong> then says $T \perp W$.
+  This conditional distribution is derived elegantly using Basu's theorem. When <span class="tts-math" data-tts="mu equals 0">$\mu = 0$</span>, write <span class="tts-math" data-tts="Z sub i equals X sub i over sigma">$Z_i = X_i / \sigma$</span>, so <span class="tts-math" data-tts="Z equals Z sub 1 and so on Z sub n distributed as N 0 I">$Z = (Z_1, \dots, Z_n) \sim N(0, I)$</span>. Then <span class="tts-math" data-tts="norm of X norm of to the 2 equals T">$\|X\|^2 = T$</span> and
+  <span class="tts-math" data-tts="W equals X over norm of X norm equals Z over norm of Z norm .">$$W = \frac{X}{\|X\|} = \frac{Z}{\|Z\|}.$$</span>
+  The unit vector <span class="tts-math" data-tts="W">$W$</span> has a distribution that doesn't depend on <span class="tts-math" data-tts="sigma">$\sigma$</span> — it is uniformly distributed on the unit sphere <span class="tts-math" data-tts="S to the n minus 1">$S^{n-1}$</span> (by orthogonal invariance of the standard normal). So <span class="tts-math" data-tts="W">$W$</span> is ancillary. Meanwhile <span class="tts-math" data-tts="T equals norm of X norm of to the 2">$T = \|X\|^2$</span> is a complete sufficient statistic for the family <span class="tts-math" data-tts="N 0 sigma to the 2 to the n sigma to the 2 gt 0">$\{N(0, \sigma^2)^n : \sigma^2 &gt; 0\}$</span>. <strong>Basu's theorem</strong> then says <span class="tts-math" data-tts="T W">$T \perp W$</span>.
 </p>
 <p data-cid="ch13-820">
-  Because $X = W \sqrt{T}$ and $T \perp W$,
-  $$E\!\left[h(X) \mid T = t\right] = E\!\left[h(W \sqrt{t})\right].$$
-  So conditionally on $T = t$, the vector $X$ is just $W \sqrt{t}$ with $W$ uniform on the sphere. Since $U = \mathbf{1}^\prime X = \sqrt{t} \cdot \mathbf{1}^\prime W$,
-  $$P_{\mu = 0}\!\left[U &gt; c(t) \mid T = t\right] = P\!\left(\mathbf{1}^\prime W &gt; c(t)/\sqrt{t}\right).$$
-  This conditional probability equals $\alpha$ when $c(t)/\sqrt{t} = q$, the upper $\alpha$-quantile of $\mathbf{1}^\prime W$. The UMP unbiased test rejects when
-  $$\frac{U}{\sqrt{T}} \geq q.$$
+  Because <span class="tts-math" data-tts="X equals W root T">$X = W \sqrt{T}$</span> and <span class="tts-math" data-tts="T W">$T \perp W$</span>,
+  <span class="tts-math" data-tts="E h X given T equals t equals E h W root t .">$$E\!\left[h(X) \mid T = t\right] = E\!\left[h(W \sqrt{t})\right].$$</span>
+  So conditionally on <span class="tts-math" data-tts="T equals t">$T = t$</span>, the vector <span class="tts-math" data-tts="X">$X$</span> is just <span class="tts-math" data-tts="W root t">$W \sqrt{t}$</span> with <span class="tts-math" data-tts="W">$W$</span> uniform on the sphere. Since <span class="tts-math" data-tts="U equals 1^ X equals root t times 1^ W">$U = \mathbf{1}^\prime X = \sqrt{t} \cdot \mathbf{1}^\prime W$</span>,
+  <span class="tts-math" data-tts="P sub mu equals 0 U gt c t given T equals t equals P 1^ W gt c t over root t .">$$P_{\mu = 0}\!\left[U &gt; c(t) \mid T = t\right] = P\!\left(\mathbf{1}^\prime W &gt; c(t)/\sqrt{t}\right).$$</span>
+  This conditional probability equals <span class="tts-math" data-tts="alpha">$\alpha$</span> when <span class="tts-math" data-tts="c t over root t equals q">$c(t)/\sqrt{t} = q$</span>, the upper <span class="tts-math" data-tts="alpha">$\alpha$</span>-quantile of <span class="tts-math" data-tts="1^ W">$\mathbf{1}^\prime W$</span>. The UMP unbiased test rejects when
+  <span class="tts-math" data-tts="U over root T greater than or equal to q.">$$\frac{U}{\sqrt{T}} \geq q.$$</span>
 </p>
 <div class="box intuition" data-cid="ch13-830">
 <span class="box-label">Recognize the test</span>
 <p data-cid="ch13-840">
-  The statistic $U/\sqrt{T}$ doesn't look familiar yet. But a tiny algebraic manipulation turns it into the t-statistic.
+  The statistic <span class="tts-math" data-tts="U over root T">$U/\sqrt{T}$</span> doesn't look familiar yet. But a tiny algebraic manipulation turns it into the t-statistic.
 </p>
 </div>
 <p data-cid="ch13-850">
-  Recall $\bar{X} = U/n$ and the sample variance satisfies
-  $$S^2 = \frac{T}{n-1} - \frac{U^2}{n(n-1)}.$$
+  Recall <span class="tts-math" data-tts="X bar equals U over n">$\bar{X} = U/n$</span> and the sample variance satisfies
+  <span class="tts-math" data-tts="S to the 2 equals T over n minus 1 minus U to the 2 over n n minus 1 .">$$S^2 = \frac{T}{n-1} - \frac{U^2}{n(n-1)}.$$</span>
   Then
-  $$t = \frac{\bar{X}}{S/\sqrt{n}} = \frac{U/\sqrt{n}}{\sqrt{(T - U^2/n)/(n-1)}} = \frac{\sqrt{n-1} \cdot \operatorname{Sign}(U)}{\sqrt{nT/U^2 - 1}} = g\!\left(\frac{U}{\sqrt{T}}\right)$$
-  for a strictly increasing function $g$. So $U/\sqrt{T} &gt; q$ if and only if $t &gt; g(q)$. Under $\mu = 0$, the statistic $t$ has the Student t-distribution on $n - 1$ degrees of freedom, so we take $g(q) = t_{\alpha, n-1}$.
+  <span class="tts-math" data-tts="t equals X bar over S over root n equals U over root n root T minus U to the 2 over n over n minus 1 equals root n minus 1 times Sign U root nT over U to the 2 minus 1 equals g U over root T">$$t = \frac{\bar{X}}{S/\sqrt{n}} = \frac{U/\sqrt{n}}{\sqrt{(T - U^2/n)/(n-1)}} = \frac{\sqrt{n-1} \cdot \operatorname{Sign}(U)}{\sqrt{nT/U^2 - 1}} = g\!\left(\frac{U}{\sqrt{T}}\right)$$</span>
+  for a strictly increasing function <span class="tts-math" data-tts="g">$g$</span>. So <span class="tts-math" data-tts="U over root T gt q">$U/\sqrt{T} &gt; q$</span> if and only if <span class="tts-math" data-tts="t gt g q">$t &gt; g(q)$</span>. Under <span class="tts-math" data-tts="mu equals 0">$\mu = 0$</span>, the statistic <span class="tts-math" data-tts="t">$t$</span> has the Student t-distribution on <span class="tts-math" data-tts="n minus 1">$n - 1$</span> degrees of freedom, so we take <span class="tts-math" data-tts="g q equals t sub alpha n minus 1">$g(q) = t_{\alpha, n-1}$</span>.
 </p>
 <div class="box example" data-cid="ch13-860">
 <span class="box-label">The conclusion</span>
 <p data-cid="ch13-870">
-  The UMP unbiased level-$\alpha$ test of $H_0: \mu \leq 0$ versus $H_1: \mu &gt; 0$ rejects when
-  $$t = \frac{\bar{X}}{S/\sqrt{n}} &gt; t_{\alpha, n-1}.$$
-  This is exactly the textbook one-sample t-test. The two-sided version, rejecting when $|t| &gt; t_{\alpha/2, n-1}$, is the UMP unbiased test of $H_0: \mu = 0$ versus $H_1: \mu \neq 0$.
+  The UMP unbiased level-<span class="tts-math" data-tts="alpha">$\alpha$</span> test of <span class="tts-math" data-tts="H sub 0 mu less than or equal to 0">$H_0: \mu \leq 0$</span> versus <span class="tts-math" data-tts="H sub 1 mu gt 0">$H_1: \mu &gt; 0$</span> rejects when
+  <span class="tts-math" data-tts="t equals X bar over S over root n gt t sub alpha n minus 1.">$$t = \frac{\bar{X}}{S/\sqrt{n}} &gt; t_{\alpha, n-1}.$$</span>
+  This is exactly the textbook one-sample t-test. The two-sided version, rejecting when <span class="tts-math" data-tts="t gt t sub alpha over 2 n minus 1">$|t| &gt; t_{\alpha/2, n-1}$</span>, is the UMP unbiased test of <span class="tts-math" data-tts="H sub 0 mu equals 0">$H_0: \mu = 0$</span> versus <span class="tts-math" data-tts="H sub 1 mu not equal to 0">$H_1: \mu \neq 0$</span>.
 </p>
 </div>
 <div class="box pause" data-cid="ch13-880">
 <span class="box-label">Pause — why the t-test was the right answer all along</span>
 <p data-cid="ch13-890">
-  In a first course, the t-test is introduced as "the natural thing to do when $\sigma$ is unknown — just plug in $S$ for $\sigma$ in the $z$-statistic". This rationale leaves you with a nagging question: is this really the <em>best</em> test, or just <em>a</em> reasonable test?
+  In a first course, the t-test is introduced as "the natural thing to do when <span class="tts-math" data-tts="sigma">$\sigma$</span> is unknown — just plug in <span class="tts-math" data-tts="S">$S$</span> for <span class="tts-math" data-tts="sigma">$\sigma$</span> in the <span class="tts-math" data-tts="z">$z$</span>-statistic". This rationale leaves you with a nagging question: is this really the <em>best</em> test, or just <em>a</em> reasonable test?
 </p>
 <p data-cid="ch13-900">
-  The answer, given by Theorem 13.6 plus Basu's theorem: yes, it is the best. Among all unbiased level-$\alpha$ tests, the t-test has the highest power at every alternative. The "plug in $S$" rule isn't a heuristic — it's a consequence of conditioning on the sufficient statistic for the nuisance.
+  The answer, given by Theorem 13.6 plus Basu's theorem: yes, it is the best. Among all unbiased level-<span class="tts-math" data-tts="alpha">$\alpha$</span> tests, the t-test has the highest power at every alternative. The "plug in <span class="tts-math" data-tts="S">$S$</span>" rule isn't a heuristic — it's a consequence of conditioning on the sufficient statistic for the nuisance.
 </p>
 </div>
 <h3 data-cid="ch13-910">Example 13.8 — Fisher's exact test</h3>
 <p data-cid="ch13-920">
-  The second showcase is a discrete example: testing independence in a $2 \times 2$ contingency table. Two yes/no questions $A$ and $B$ are asked of $n$ respondents. With $p_{ij} = P(X = i, Y = j)$ for $i, j \in \{1, 2\}$, the counts $N_{ij} = \#\{k : X_k = i, Y_k = j\}$ are multinomial. We want to test independence: $p_{ij} = p_{i+} p_{+j}$ for all $i, j$.
+  The second showcase is a discrete example: testing independence in a <span class="tts-math" data-tts="2 times 2">$2 \times 2$</span> contingency table. Two yes/no questions <span class="tts-math" data-tts="A">$A$</span> and <span class="tts-math" data-tts="B">$B$</span> are asked of <span class="tts-math" data-tts="n">$n$</span> respondents. With <span class="tts-math" data-tts="p sub ij equals P X equals i Y equals j">$p_{ij} = P(X = i, Y = j)$</span> for <span class="tts-math" data-tts="i j in 1 2">$i, j \in \{1, 2\}$</span>, the counts <span class="tts-math" data-tts="N sub ij equals # k X sub k equals i Y sub k equals j">$N_{ij} = \#\{k : X_k = i, Y_k = j\}$</span> are multinomial. We want to test independence: <span class="tts-math" data-tts="p sub ij equals p sub i plus p sub j">$p_{ij} = p_{i+} p_{+j}$</span> for all <span class="tts-math" data-tts="i j">$i, j$</span>.
 </p>
 <p data-cid="ch13-930">
-  After noting that "positive dependence" (whether defined via covariance or via $P(X = 2 \mid Y = 2) &gt; P(X = 2)$) is equivalent to the odds-ratio condition $p_{11} p_{22} &gt; p_{12} p_{21}$, we re-parametrize. Take
+  After noting that "positive dependence" (whether defined via covariance or via <span class="tts-math" data-tts="P X equals 2 given Y equals 2 gt P X equals 2">$P(X = 2 \mid Y = 2) &gt; P(X = 2)$</span>) is equivalent to the odds-ratio condition <span class="tts-math" data-tts="p sub 11 p sub 22 gt p sub 12 p sub 21">$p_{11} p_{22} &gt; p_{12} p_{21}$</span>, we re-parametrize. Take
 </p>
-$$U = N_{11}, \qquad T_1 = N_{11} + N_{12}, \qquad T_2 = N_{11} + N_{21}.$$
+<span class="tts-math" data-tts="U equals N sub 11 T sub 1 equals N sub 11 plus N sub 12 T sub 2 equals N sub 11 plus N sub 21.">$$U = N_{11}, \qquad T_1 = N_{11} + N_{12}, \qquad T_2 = N_{11} + N_{21}.$$</span>
 <p data-cid="ch13-940">
-  The values $T_1$ and $T_2$ are the row and column marginal sums. A bit of algebra rewrites the multinomial joint as a two-parameter canonical exponential family in $(U, T_1, T_2)$:
+  The values <span class="tts-math" data-tts="T sub 1">$T_1$</span> and <span class="tts-math" data-tts="T sub 2">$T_2$</span> are the row and column marginal sums. A bit of algebra rewrites the multinomial joint as a two-parameter canonical exponential family in <span class="tts-math" data-tts="U T sub 1 T sub 2">$(U, T_1, T_2)$</span>:
 </p>
-$$P(T = t, U = u) = h(u, t) \exp\!\left\{\theta u + \eta \cdot t - A(\theta, \eta)\right\}$$
+<span class="tts-math" data-tts="P T equals t U equals u equals h u t exp theta u plus eta times t minus A theta eta">$$P(T = t, U = u) = h(u, t) \exp\!\left\{\theta u + \eta \cdot t - A(\theta, \eta)\right\}$$</span>
 <p data-cid="ch13-950">
   with
-  $$\theta = \log \frac{p_{11} p_{22}}{p_{12} p_{21}}, \qquad \eta = \begin{pmatrix} \log(p_{12}/p_{22}) \\ \log(p_{21}/p_{22}) \end{pmatrix}.$$
-  The parameter $\theta$ is the log odds-ratio — exactly the thing we want to test. The two-component $\eta$ is nuisance, capturing the marginal frequencies.
+  <span class="tts-math" data-tts="theta equals log p sub 11 p sub 22 p sub 12 p sub 21 eta equals log p sub 12 over p sub 22 log p sub 21 over p sub 22 .">$$\theta = \log \frac{p_{11} p_{22}}{p_{12} p_{21}}, \qquad \eta = \begin{pmatrix} \log(p_{12}/p_{22}) \\ \log(p_{21}/p_{22}) \end{pmatrix}.$$</span>
+  The parameter <span class="tts-math" data-tts="theta">$\theta$</span> is the log odds-ratio — exactly the thing we want to test. The two-component <span class="tts-math" data-tts="eta">$\eta$</span> is nuisance, capturing the marginal frequencies.
 </p>
 <p data-cid="ch13-960">
-  Independence is the statement $\theta = 0$. We're in the setup of Theorem 13.6 with $T = (T_1, T_2)$ as the nuisance sufficient statistic.
+  Independence is the statement <span class="tts-math" data-tts="theta equals 0">$\theta = 0$</span>. We're in the setup of Theorem 13.6 with <span class="tts-math" data-tts="T equals T sub 1 T sub 2">$T = (T_1, T_2)$</span> as the nuisance sufficient statistic.
 </p>
 <div class="box example" data-cid="ch13-970">
 <span class="box-label">The conditional distribution</span>
 <p data-cid="ch13-980">
-  Under $\theta = 0$, we may take $p_{ij} = 1/4$ for all $i, j$ (because the conditional distribution doesn't depend on the value of $\eta$, only on $\theta$). Then $X_k$ and $Y_k$ are independent, the marginals $T_1$ and $T_2$ are independent binomials with success probability $1/2$, and a calculation gives
-  $$P_0(U = u \mid T = t) = \frac{\binom{t_1}{u} \binom{n - t_1}{t_2 - u}}{\binom{n}{t_2}}.$$
+  Under <span class="tts-math" data-tts="theta equals 0">$\theta = 0$</span>, we may take <span class="tts-math" data-tts="p sub ij equals 1 over 4">$p_{ij} = 1/4$</span> for all <span class="tts-math" data-tts="i j">$i, j$</span> (because the conditional distribution doesn't depend on the value of <span class="tts-math" data-tts="eta">$\eta$</span>, only on <span class="tts-math" data-tts="theta">$\theta$</span>). Then <span class="tts-math" data-tts="X sub k">$X_k$</span> and <span class="tts-math" data-tts="Y sub k">$Y_k$</span> are independent, the marginals <span class="tts-math" data-tts="T sub 1">$T_1$</span> and <span class="tts-math" data-tts="T sub 2">$T_2$</span> are independent binomials with success probability <span class="tts-math" data-tts="1 over 2">$1/2$</span>, and a calculation gives
+  <span class="tts-math" data-tts="P sub 0 U equals u given T equals t equals t sub 1 over u n minus t sub 1 t sub 2 minus u n t sub 2 .">$$P_0(U = u \mid T = t) = \frac{\binom{t_1}{u} \binom{n - t_1}{t_2 - u}}{\binom{n}{t_2}}.$$</span>
 </p>
 <p data-cid="ch13-990">
-  This is the <strong>hypergeometric distribution</strong>: the number of red balls in a sample of size $t_2$ drawn without replacement from an urn with $t_1$ red and $n - t_1$ white balls.
+  This is the <strong>hypergeometric distribution</strong>: the number of red balls in a sample of size <span class="tts-math" data-tts="t sub 2">$t_2$</span> drawn without replacement from an urn with <span class="tts-math" data-tts="t sub 1">$t_1$</span> red and <span class="tts-math" data-tts="n minus t sub 1">$n - t_1$</span> white balls.
 </p>
 </div>
 <p data-cid="ch13-1000">
-  The UMP unbiased test of $\theta \leq 0$ versus $\theta &gt; 0$ rejects when $U &gt; c(T)$, with $c(\cdot)$ and a randomization $\gamma(\cdot)$ chosen so that the conditional rejection probability equals $\alpha$ under the hypergeometric distribution. This is <strong>Fisher's exact test</strong>.
+  The UMP unbiased test of <span class="tts-math" data-tts="theta less than or equal to 0">$\theta \leq 0$</span> versus <span class="tts-math" data-tts="theta gt 0">$\theta &gt; 0$</span> rejects when <span class="tts-math" data-tts="U gt c T">$U &gt; c(T)$</span>, with <span class="tts-math" data-tts="c times">$c(\cdot)$</span> and a randomization <span class="tts-math" data-tts="gamma times">$\gamma(\cdot)$</span> chosen so that the conditional rejection probability equals <span class="tts-math" data-tts="alpha">$\alpha$</span> under the hypergeometric distribution. This is <strong>Fisher's exact test</strong>.
 </p>
 <div class="box intuition" data-cid="ch13-1010">
 <span class="box-label">Conditioning on the margins</span>
 <p data-cid="ch13-1020">
-  Notice what conditioning on $T$ means in plain terms: we condition on the row sums $T_1$ and column sums $T_2$. Given those marginal totals, the only remaining degree of freedom in the $2 \times 2$ table is $U = N_{11}$ — once you know $N_{11}$ and the margins, you can fill in the other three cells.
+  Notice what conditioning on <span class="tts-math" data-tts="T">$T$</span> means in plain terms: we condition on the row sums <span class="tts-math" data-tts="T sub 1">$T_1$</span> and column sums <span class="tts-math" data-tts="T sub 2">$T_2$</span>. Given those marginal totals, the only remaining degree of freedom in the <span class="tts-math" data-tts="2 times 2">$2 \times 2$</span> table is <span class="tts-math" data-tts="U equals N sub 11">$U = N_{11}$</span> — once you know <span class="tts-math" data-tts="N sub 11">$N_{11}$</span> and the margins, you can fill in the other three cells.
 </p>
 <p data-cid="ch13-1030">
-  So the optimal test for independence treats the margins as ancillary and looks at how surprising the observed $N_{11}$ is under the hypergeometric reference distribution. That is precisely Fisher's recipe, and we've now derived it from optimality principles rather than from intuition alone.
+  So the optimal test for independence treats the margins as ancillary and looks at how surprising the observed <span class="tts-math" data-tts="N sub 11">$N_{11}$</span> is under the hypergeometric reference distribution. That is precisely Fisher's recipe, and we've now derived it from optimality principles rather than from intuition alone.
 </p>
 </div>
 <div class="box warn" data-cid="ch13-1040">
 <span class="box-label">Common pitfall</span>
 <p data-cid="ch13-1050">
-  Fisher's exact test conditions on <em>both</em> sets of marginal totals being fixed. People sometimes wonder whether this is statistically justified — after all, in many real studies only one margin is genuinely fixed by design. The chapter's answer is firm: conditioning on $T$ is forced by the requirement that the test be UMP unbiased, because $T = (T_1, T_2)$ is the complete sufficient statistic for the nuisance parameter $\eta$.
+  Fisher's exact test conditions on <em>both</em> sets of marginal totals being fixed. People sometimes wonder whether this is statistically justified — after all, in many real studies only one margin is genuinely fixed by design. The chapter's answer is firm: conditioning on <span class="tts-math" data-tts="T">$T$</span> is forced by the requirement that the test be UMP unbiased, because <span class="tts-math" data-tts="T equals T sub 1 T sub 2">$T = (T_1, T_2)$</span> is the complete sufficient statistic for the nuisance parameter <span class="tts-math" data-tts="eta">$\eta$</span>.
 </p>
 <p data-cid="ch13-1060">
   In other words: the conditioning isn't a modeling choice or an approximation. It is what makes the test optimal.
@@ -394,12 +393,12 @@ $$P(T = t, U = u) = h(u, t) \exp\!\left\{\theta u + \eta \cdot t - A(\theta, \et
 <p data-cid="ch13-1080">The chapter, in seven bullets:</p>
 <ol data-cid="ch13-1090">
 <li>With more than one parameter, UMP tests usually do not exist. The remedy is to <strong>restrict competition</strong> to unbiased tests.</li>
-<li>For a multiparameter exponential family, the marginal of the nuisance statistic and the conditional distribution of the parameter-of-interest statistic factor cleanly. <strong>The conditional law depends only on the parameter of interest</strong> — the nuisance $\eta$ drops out.</li>
-<li><strong>Lemma 13.3</strong> says "UMP among $\alpha$-similar tests" implies "UMP among unbiased tests". This lets us substitute an easier optimization problem.</li>
-<li>When the nuisance sufficient statistic $T$ is <strong>complete</strong>, similar tests have <strong>Neyman structure</strong>: a pointwise conditional constraint $E[\varphi \mid T = t] = \alpha$.</li>
+<li>For a multiparameter exponential family, the marginal of the nuisance statistic and the conditional distribution of the parameter-of-interest statistic factor cleanly. <strong>The conditional law depends only on the parameter of interest</strong> — the nuisance <span class="tts-math" data-tts="eta">$\eta$</span> drops out.</li>
+<li><strong>Lemma 13.3</strong> says "UMP among <span class="tts-math" data-tts="alpha">$\alpha$</span>-similar tests" implies "UMP among unbiased tests". This lets us substitute an easier optimization problem.</li>
+<li>When the nuisance sufficient statistic <span class="tts-math" data-tts="T">$T$</span> is <strong>complete</strong>, similar tests have <strong>Neyman structure</strong>: a pointwise conditional constraint <span class="tts-math" data-tts="E phi given T equals t equals alpha">$E[\varphi \mid T = t] = \alpha$</span>.</li>
 <li>The pointwise constraint reduces to a <strong>one-parameter conditional problem</strong> we already know how to solve via Chapter 12 Neyman–Pearson and MLR machinery.</li>
-<li>The <strong>one-sample t-test</strong> is the UMP unbiased test of $H_0: \mu = 0$ in a normal sample with unknown variance. It falls out by conditioning on $\sum X_i^2$ and using Basu's theorem.</li>
-<li><strong>Fisher's exact test</strong> is the UMP unbiased test of independence in a $2 \times 2$ contingency table. Conditioning on the marginal totals turns the test into a hypergeometric calculation.</li>
+<li>The <strong>one-sample t-test</strong> is the UMP unbiased test of <span class="tts-math" data-tts="H sub 0 mu equals 0">$H_0: \mu = 0$</span> in a normal sample with unknown variance. It falls out by conditioning on <span class="tts-math" data-tts="the sum of X sub i to the 2">$\sum X_i^2$</span> and using Basu's theorem.</li>
+<li><strong>Fisher's exact test</strong> is the UMP unbiased test of independence in a <span class="tts-math" data-tts="2 times 2">$2 \times 2$</span> contingency table. Conditioning on the marginal totals turns the test into a hypergeometric calculation.</li>
 </ol>
 <div class="box pause" data-cid="ch13-1100">
 <span class="box-label">Did this land?</span>
@@ -423,6 +422,6 @@ $$P(T = t, U = u) = h(u, t) \exp\!\left\{\theta u + \eta \cdot t - A(\theta, \et
 </nav>
 </article>
 </main>
-<script src="/js/main.js"></script><script src="/js/comments.js"></script>
+<script src="/js/main.js"></script><script src="/js/comments.js"></script><script src="/js/tts.js"></script>
 </body>
 </html>

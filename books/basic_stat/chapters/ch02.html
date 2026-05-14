@@ -10,14 +10,13 @@
 <link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
-<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/><link href="/css/tts.css" rel="stylesheet"/>
 </head>
 <body data-book="basic_stat" data-page="ch02">
 <header class="site-header">
+<a class="home-btn" href="/">Home</a>
 <a class="brand" href="/books/basic_stat/">Theoretical Statistics <small>a slow reading guide</small></a>
 <nav>
-<a href="/" class="all-books-link">All books</a>
-    <a href="/books/basic_stat/">Contents</a>
 <button aria-label="toggle theme" class="theme-toggle">Dark</button>
 </nav>
 </header>
@@ -49,7 +48,7 @@
 Chapter 1 built the vocabulary for talking about <em>one</em> distribution at a time. But statistics is rarely about a
 single distribution. We have data, we don't know the distribution that produced it, and we want to <em>infer</em>
 the distribution from the data. To make that tractable, we usually assume the distribution belongs to some
-<strong>parametric family</strong>: a collection of candidate distributions indexed by a parameter $\theta$.
+<strong>parametric family</strong>: a collection of candidate distributions indexed by a parameter <span class="tts-math" data-tts="theta">$\theta$</span>.
 </p>
 <p data-cid="ch02-040">
 Most of the parametric families you have ever heard of — Bernoulli, binomial, Poisson, geometric, negative binomial,
@@ -74,156 +73,156 @@ We are going to assemble a single formula that, with different ingredients, prod
 Before stating it, here are the ingredients — each one is something you have met in Chapter 1.
 </p>
 <ul data-cid="ch02-100">
-<li>$\mu$ — a base measure on $\mathbb{R}^n$. Usually Lebesgue measure (continuous data) or counting measure on the integers (discrete data).</li>
-<li>$h : \mathbb{R}^n \to [0, \infty)$ — a fixed non-negative "carrier" function. It does <em>not</em> depend on any parameter; it just says where the distribution can live and shapes things slightly.</li>
-<li>$T_1, \dots, T_s : \mathbb{R}^n \to \mathbb{R}$ — a finite list of measurable functions of the data, called <strong>sufficient statistics</strong>. (We will see why this name fits in Chapter 3.)</li>
-<li>$\eta = (\eta_1, \dots, \eta_s) \in \mathbb{R}^s$ — a vector of <strong>canonical parameters</strong>, one for each $T_i$.</li>
+<li><span class="tts-math" data-tts="mu">$\mu$</span> — a base measure on <span class="tts-math" data-tts="the real numbers to the n">$\mathbb{R}^n$</span>. Usually Lebesgue measure (continuous data) or counting measure on the integers (discrete data).</li>
+<li><span class="tts-math" data-tts="h the real numbers to the n to 0 infinity">$h : \mathbb{R}^n \to [0, \infty)$</span> — a fixed non-negative "carrier" function. It does <em>not</em> depend on any parameter; it just says where the distribution can live and shapes things slightly.</li>
+<li><span class="tts-math" data-tts="T sub 1 and so on T sub s the real numbers to the n to the real numbers">$T_1, \dots, T_s : \mathbb{R}^n \to \mathbb{R}$</span> — a finite list of measurable functions of the data, called <strong>sufficient statistics</strong>. (We will see why this name fits in Chapter 3.)</li>
+<li><span class="tts-math" data-tts="eta equals eta sub 1 and so on eta sub s in the real numbers to the s">$\eta = (\eta_1, \dots, \eta_s) \in \mathbb{R}^s$</span> — a vector of <strong>canonical parameters</strong>, one for each <span class="tts-math" data-tts="T sub i">$T_i$</span>.</li>
 </ul>
 <p data-cid="ch02-110">
-The recipe combines them by exponentiating a linear combination of the $T_i$'s, multiplying by the carrier $h$,
-and then renormalizing so the result integrates to $1$. The normalization constant is what makes the whole thing
+The recipe combines them by exponentiating a linear combination of the <span class="tts-math" data-tts="T sub i">$T_i$</span>'s, multiplying by the carrier <span class="tts-math" data-tts="h">$h$</span>,
+and then renormalizing so the result integrates to <span class="tts-math" data-tts="1">$1$</span>. The normalization constant is what makes the whole thing
 work, and it gets a name of its own.
 </p>
 <div class="box definition" data-cid="ch02-120">
 <span class="box-label">Definition 2.1 — canonical exponential family</span>
-<p data-cid="ch02-130">For each $\eta \in \mathbb{R}^s$, let</p>
-$$A(\eta) = \log \int \exp\!\left[\sum_{i=1}^s \eta_i T_i(x)\right] h(x) \, d\mu(x). \tag{2.1}$$
-<p data-cid="ch02-140">Whenever $A(\eta) &lt; \infty$, the function</p>
-$$p_\eta(x) = \exp\!\left[\sum_{i=1}^s \eta_i T_i(x) - A(\eta)\right] h(x) \tag{2.2}$$
-<p data-cid="ch02-150">is a probability density with respect to $\mu$. The set</p>
-$$\Xi = \{\eta \in \mathbb{R}^s : A(\eta) &lt; \infty\}$$
-<p data-cid="ch02-160">is the <strong>natural parameter space</strong>, and $\{p_\eta : \eta \in \Xi\}$ is an
-<strong>$s$-parameter exponential family in canonical form</strong>.</p>
+<p data-cid="ch02-130">For each <span class="tts-math" data-tts="eta in the real numbers to the s">$\eta \in \mathbb{R}^s$</span>, let</p>
+<span class="tts-math" data-tts="A eta equals log the integral of exp the sum over i equals 1 of to the s eta sub i T sub i x h x d mu x . 2.1">$$A(\eta) = \log \int \exp\!\left[\sum_{i=1}^s \eta_i T_i(x)\right] h(x) \, d\mu(x). \tag{2.1}$$</span>
+<p data-cid="ch02-140">Whenever <span class="tts-math" data-tts="A eta lt infinity">$A(\eta) &lt; \infty$</span>, the function</p>
+<span class="tts-math" data-tts="p_ eta x equals exp the sum over i equals 1 of to the s eta sub i T sub i x minus A eta h x 2.2">$$p_\eta(x) = \exp\!\left[\sum_{i=1}^s \eta_i T_i(x) - A(\eta)\right] h(x) \tag{2.2}$$</span>
+<p data-cid="ch02-150">is a probability density with respect to <span class="tts-math" data-tts="mu">$\mu$</span>. The set</p>
+<span class="tts-math" data-tts="Xi equals eta in the real numbers to the s A eta lt infinity">$$\Xi = \{\eta \in \mathbb{R}^s : A(\eta) &lt; \infty\}$$</span>
+<p data-cid="ch02-160">is the <strong>natural parameter space</strong>, and <span class="tts-math" data-tts="p_ eta eta in Xi">$\{p_\eta : \eta \in \Xi\}$</span> is an
+<strong><span class="tts-math" data-tts="s">$s$</span>-parameter exponential family in canonical form</strong>.</p>
 </div>
 <div class="box intuition" data-cid="ch02-170">
 <span class="box-label">Decoding the formula</span>
 <p data-cid="ch02-180">
-Look at the exponent: $\sum \eta_i T_i(x) - A(\eta)$. The first piece, $\sum \eta_i T_i(x)$, is the only place
-$x$ and $\eta$ meet — and they meet linearly. The second piece, $A(\eta)$, depends only on the parameter, not on $x$.
-Its job is bookkeeping: $A(\eta)$ is whatever it has to be to make $\int p_\eta \, d\mu = 1$. That is why we took
-the logarithm in (2.1) — exponentiating $-A(\eta)$ then divides out the total mass.
+Look at the exponent: <span class="tts-math" data-tts="the sum of eta sub i T sub i x minus A eta">$\sum \eta_i T_i(x) - A(\eta)$</span>. The first piece, <span class="tts-math" data-tts="the sum of eta sub i T sub i x">$\sum \eta_i T_i(x)$</span>, is the only place
+<span class="tts-math" data-tts="x">$x$</span> and <span class="tts-math" data-tts="eta">$\eta$</span> meet — and they meet linearly. The second piece, <span class="tts-math" data-tts="A eta">$A(\eta)$</span>, depends only on the parameter, not on <span class="tts-math" data-tts="x">$x$</span>.
+Its job is bookkeeping: <span class="tts-math" data-tts="A eta">$A(\eta)$</span> is whatever it has to be to make <span class="tts-math" data-tts="the integral of p_ eta d mu equals 1">$\int p_\eta \, d\mu = 1$</span>. That is why we took
+the logarithm in (2.1) — exponentiating <span class="tts-math" data-tts="A eta">$-A(\eta)$</span> then divides out the total mass.
 </p>
 <p data-cid="ch02-190">
-So the formula says: <em>any</em> density of the form "$h(x)$ times an exponential of a linear function of the
-$T_i(x)$'s, divided by a normalizing constant" is in the family. The structure is rigid; only the linear
-coefficients $\eta_i$ vary across the family.
+So the formula says: <em>any</em> density of the form "<span class="tts-math" data-tts="h x">$h(x)$</span> times an exponential of a linear function of the
+<span class="tts-math" data-tts="T sub i x">$T_i(x)$</span>'s, divided by a normalizing constant" is in the family. The structure is rigid; only the linear
+coefficients <span class="tts-math" data-tts="eta sub i">$\eta_i$</span> vary across the family.
 </p>
 </div>
 <p data-cid="ch02-200">
 A glossary of the Greek letters and subscripts, since they all matter:
 </p>
 <ul data-cid="ch02-210">
-<li>$\eta_i$ ("eta-sub-$i$", Greek "eta") — the $i$-th canonical parameter. Real-valued.</li>
-<li>$T_i(x)$ — the $i$-th sufficient statistic. A function of the data, not of $\eta$.</li>
-<li>$A(\eta)$ — the <strong>log-partition function</strong> or <strong>cumulant generating function of the family</strong>. The single most important object in the chapter; almost every theorem we prove is about its derivatives.</li>
-<li>$\Xi$ ("Xi", Greek capital X) — the set of $\eta$'s for which $A(\eta)$ is finite. Some parameter values blow the normalizer up to $\infty$; we must exclude them.</li>
-<li>$h(x)$ — the carrier. Often $h(x) = 1$ on the support and $0$ off it, but not always.</li>
+<li><span class="tts-math" data-tts="eta sub i">$\eta_i$</span> ("eta-sub-<span class="tts-math" data-tts="i">$i$</span>", Greek "eta") — the <span class="tts-math" data-tts="i">$i$</span>-th canonical parameter. Real-valued.</li>
+<li><span class="tts-math" data-tts="T sub i x">$T_i(x)$</span> — the <span class="tts-math" data-tts="i">$i$</span>-th sufficient statistic. A function of the data, not of <span class="tts-math" data-tts="eta">$\eta$</span>.</li>
+<li><span class="tts-math" data-tts="A eta">$A(\eta)$</span> — the <strong>log-partition function</strong> or <strong>cumulant generating function of the family</strong>. The single most important object in the chapter; almost every theorem we prove is about its derivatives.</li>
+<li><span class="tts-math" data-tts="Xi">$\Xi$</span> ("Xi", Greek capital X) — the set of <span class="tts-math" data-tts="eta">$\eta$</span>'s for which <span class="tts-math" data-tts="A eta">$A(\eta)$</span> is finite. Some parameter values blow the normalizer up to <span class="tts-math" data-tts="infinity">$\infty$</span>; we must exclude them.</li>
+<li><span class="tts-math" data-tts="h x">$h(x)$</span> — the carrier. Often <span class="tts-math" data-tts="h x equals 1">$h(x) = 1$</span> on the support and <span class="tts-math" data-tts="0">$0$</span> off it, but not always.</li>
 </ul>
 <h3 data-cid="ch02-220">A worked example with concrete numbers</h3>
 <div class="box example" data-cid="ch02-230">
 <span class="box-label">Example 2.1 — the exponential distribution</span>
 <p data-cid="ch02-240">
-Let $\mu$ be Lebesgue measure on $\mathbb{R}$, $h(x) = 1_{(0, \infty)}(x)$ (the indicator that $x &gt; 0$),
-$s = 1$, and $T_1(x) = x$. Then
+Let <span class="tts-math" data-tts="mu">$\mu$</span> be Lebesgue measure on <span class="tts-math" data-tts="the real numbers">$\mathbb{R}$</span>, <span class="tts-math" data-tts="h x equals 1 sub 0 infinity x">$h(x) = 1_{(0, \infty)}(x)$</span> (the indicator that <span class="tts-math" data-tts="x gt 0">$x &gt; 0$</span>),
+<span class="tts-math" data-tts="s equals 1">$s = 1$</span>, and <span class="tts-math" data-tts="T sub 1 x equals x">$T_1(x) = x$</span>. Then
 </p>
-$$A(\eta) = \log \int_0^\infty e^{\eta x} \, dx.$$
+<span class="tts-math" data-tts="A eta equals log sub 0^ infinity e to the eta x dx.">$$A(\eta) = \log \int_0^\infty e^{\eta x} \, dx.$$</span>
 <p data-cid="ch02-250">
-This integral converges only when $\eta &lt; 0$ (otherwise $e^{\eta x}$ does not decay). For $\eta &lt; 0$,
-$\int_0^\infty e^{\eta x} \, dx = -1/\eta$, so
+This integral converges only when <span class="tts-math" data-tts="eta lt 0">$\eta &lt; 0$</span> (otherwise <span class="tts-math" data-tts="e to the eta x">$e^{\eta x}$</span> does not decay). For <span class="tts-math" data-tts="eta lt 0">$\eta &lt; 0$</span>,
+<span class="tts-math" data-tts="sub 0^ infinity e to the eta x dx equals minus 1 over eta">$\int_0^\infty e^{\eta x} \, dx = -1/\eta$</span>, so
 </p>
-$$A(\eta) = \log(-1/\eta), \qquad \Xi = (-\infty, 0).$$
+<span class="tts-math" data-tts="A eta equals log minus 1 over eta Xi equals minus infinity 0 .">$$A(\eta) = \log(-1/\eta), \qquad \Xi = (-\infty, 0).$$</span>
 <p data-cid="ch02-260">
-The resulting density is $p_\eta(x) = e^{\eta x - \log(-1/\eta)} \cdot 1_{(0,\infty)}(x) = (-\eta) e^{\eta x} \cdot 1_{(0,\infty)}(x)$.
-Writing $\lambda = -\eta &gt; 0$, this is $\lambda e^{-\lambda x}$ — the familiar exponential density with rate $\lambda$.
+The resulting density is <span class="tts-math" data-tts="p_ eta x equals e to the eta x minus log minus 1 over eta times 1 sub 0 infinity x equals minus eta e to the eta x times 1 sub 0 infinity x">$p_\eta(x) = e^{\eta x - \log(-1/\eta)} \cdot 1_{(0,\infty)}(x) = (-\eta) e^{\eta x} \cdot 1_{(0,\infty)}(x)$</span>.
+Writing <span class="tts-math" data-tts="lambda equals minus eta gt 0">$\lambda = -\eta &gt; 0$</span>, this is <span class="tts-math" data-tts="lambda e to the lambda x">$\lambda e^{-\lambda x}$</span> — the familiar exponential density with rate <span class="tts-math" data-tts="lambda">$\lambda$</span>.
 </p>
 </div>
 <div class="box pause" data-cid="ch02-270">
 <span class="box-label">Pause — the parameter you know vs. the parameter the theory likes</span>
 <p data-cid="ch02-280">
-Notice that the natural parameter $\eta$ is not the rate $\lambda$ you learned in undergrad. It is $-\lambda$.
-The canonical parameter is whatever makes the density factor cleanly into $e^{\eta T(x)}$ times stuff — it does
+Notice that the natural parameter <span class="tts-math" data-tts="eta">$\eta$</span> is not the rate <span class="tts-math" data-tts="lambda">$\lambda$</span> you learned in undergrad. It is <span class="tts-math" data-tts="lambda">$-\lambda$</span>.
+The canonical parameter is whatever makes the density factor cleanly into <span class="tts-math" data-tts="e to the eta T x">$e^{\eta T(x)}$</span> times stuff — it does
 not have to match the parameter you are used to. This mismatch is normal and we deal with it next.
 </p>
 </div>
 <h3 data-cid="ch02-290">Reparameterization: writing the family in your favorite coordinates</h3>
 <p data-cid="ch02-300">
 Most textbook distributions are parameterized in a "natural-language" way — the exponential by its rate
-$\lambda$ or mean $1/\lambda$, the normal by $(\mu, \sigma^2)$, the binomial by success probability $p$.
-These parameters are usually not the canonical $\eta$. To accommodate this, we allow a change of variables.
+<span class="tts-math" data-tts="lambda">$\lambda$</span> or mean <span class="tts-math" data-tts="1 over lambda">$1/\lambda$</span>, the normal by <span class="tts-math" data-tts="mu sigma to the 2">$(\mu, \sigma^2)$</span>, the binomial by success probability <span class="tts-math" data-tts="p">$p$</span>.
+These parameters are usually not the canonical <span class="tts-math" data-tts="eta">$\eta$</span>. To accommodate this, we allow a change of variables.
 </p>
 <div class="box definition" data-cid="ch02-310">
 <span class="box-label">Definition 2.1' — general exponential family</span>
 <p data-cid="ch02-320">
-Let $\eta : \Omega \to \Xi$ be a function from some parameter space $\Omega$ into the natural parameter space.
-For $\theta \in \Omega$, define
+Let <span class="tts-math" data-tts="eta Omega to Xi">$\eta : \Omega \to \Xi$</span> be a function from some parameter space <span class="tts-math" data-tts="Omega">$\Omega$</span> into the natural parameter space.
+For <span class="tts-math" data-tts="theta in Omega">$\theta \in \Omega$</span>, define
 </p>
-$$p_\theta(x) = \exp\!\left[\sum_{i=1}^s \eta_i(\theta) T_i(x) - B(\theta)\right] h(x),$$
-<p data-cid="ch02-330">where $B(\theta) = A(\eta(\theta))$. The family $\{p_\theta : \theta \in \Omega\}$ is an
-<strong>$s$-parameter exponential family</strong>.</p>
+<span class="tts-math" data-tts="p_ theta x equals exp the sum over i equals 1 of to the s eta sub i theta T sub i x minus B theta h x">$$p_\theta(x) = \exp\!\left[\sum_{i=1}^s \eta_i(\theta) T_i(x) - B(\theta)\right] h(x),$$</span>
+<p data-cid="ch02-330">where <span class="tts-math" data-tts="B theta equals A eta theta">$B(\theta) = A(\eta(\theta))$</span>. The family <span class="tts-math" data-tts="p_ theta theta in Omega">$\{p_\theta : \theta \in \Omega\}$</span> is an
+<strong><span class="tts-math" data-tts="s">$s$</span>-parameter exponential family</strong>.</p>
 </div>
 <div class="box intuition" data-cid="ch02-340">
 <span class="box-label">What just happened</span>
 <p data-cid="ch02-350">
 We did not change the family of distributions — we changed the <em>labels</em> on the distributions. Each
-$\theta$ in $\Omega$ picks out an $\eta(\theta)$ in $\Xi$, and the density $p_\theta$ is identical to $p_{\eta(\theta)}$.
+<span class="tts-math" data-tts="theta">$\theta$</span> in <span class="tts-math" data-tts="Omega">$\Omega$</span> picks out an <span class="tts-math" data-tts="eta theta">$\eta(\theta)$</span> in <span class="tts-math" data-tts="Xi">$\Xi$</span>, and the density <span class="tts-math" data-tts="p_ theta">$p_\theta$</span> is identical to <span class="tts-math" data-tts="p sub eta theta">$p_{\eta(\theta)}$</span>.
 So you can work in whatever coordinates you find natural, and switch to canonical coordinates only when you need
 the differential identities of Section 2.2.
 </p>
 </div>
 <div class="box example" data-cid="ch02-360">
 <span class="box-label">Example 2.2 — the normal distribution as a 2-parameter family</span>
-<p data-cid="ch02-370">The $N(\mu, \sigma^2)$ density is</p>
-$$p_\theta(x) = \frac{1}{\sqrt{2\pi\sigma^2}} e^{-(x-\mu)^2/(2\sigma^2)}.$$
-<p data-cid="ch02-380">Expand the squared term and group by powers of $x$:</p>
-$$p_\theta(x) = \frac{1}{\sqrt{2\pi}} \exp\!\left[\frac{\mu}{\sigma^2} x - \frac{1}{2\sigma^2} x^2 - \left(\frac{\mu^2}{2\sigma^2} + \log\sigma\right)\right].$$
-<p data-cid="ch02-390">Reading off the ingredients with $\theta = (\mu, \sigma^2)$:</p>
+<p data-cid="ch02-370">The <span class="tts-math" data-tts="N mu sigma to the 2">$N(\mu, \sigma^2)$</span> density is</p>
+<span class="tts-math" data-tts="p_ theta x equals 1 over root 2 pi sigma to the 2 e to the x minus mu to the 2 over 2 sigma to the 2.">$$p_\theta(x) = \frac{1}{\sqrt{2\pi\sigma^2}} e^{-(x-\mu)^2/(2\sigma^2)}.$$</span>
+<p data-cid="ch02-380">Expand the squared term and group by powers of <span class="tts-math" data-tts="x">$x$</span>:</p>
+<span class="tts-math" data-tts="p_ theta x equals 1 over root 2 pi exp mu over sigma to the 2 x minus 1 over 2 sigma to the 2 x to the 2 minus mu to the 2 over 2 sigma to the 2 plus log sigma .">$$p_\theta(x) = \frac{1}{\sqrt{2\pi}} \exp\!\left[\frac{\mu}{\sigma^2} x - \frac{1}{2\sigma^2} x^2 - \left(\frac{\mu^2}{2\sigma^2} + \log\sigma\right)\right].$$</span>
+<p data-cid="ch02-390">Reading off the ingredients with <span class="tts-math" data-tts="theta equals mu sigma to the 2">$\theta = (\mu, \sigma^2)$</span>:</p>
 <ul data-cid="ch02-400">
-<li>$T_1(x) = x$ with $\eta_1(\theta) = \mu/\sigma^2$,</li>
-<li>$T_2(x) = x^2$ with $\eta_2(\theta) = -1/(2\sigma^2)$,</li>
-<li>$B(\theta) = \mu^2/(2\sigma^2) + \log\sigma$,</li>
-<li>$h(x) = 1/\sqrt{2\pi}$.</li>
+<li><span class="tts-math" data-tts="T sub 1 x equals x">$T_1(x) = x$</span> with <span class="tts-math" data-tts="eta sub 1 theta equals mu over sigma to the 2">$\eta_1(\theta) = \mu/\sigma^2$</span>,</li>
+<li><span class="tts-math" data-tts="T sub 2 x equals x to the 2">$T_2(x) = x^2$</span> with <span class="tts-math" data-tts="eta sub 2 theta equals minus 1 over 2 sigma to the 2">$\eta_2(\theta) = -1/(2\sigma^2)$</span>,</li>
+<li><span class="tts-math" data-tts="B theta equals mu to the 2 over 2 sigma to the 2 plus log sigma">$B(\theta) = \mu^2/(2\sigma^2) + \log\sigma$</span>,</li>
+<li><span class="tts-math" data-tts="h x equals 1 over root 2 pi">$h(x) = 1/\sqrt{2\pi}$</span>.</li>
 </ul>
-<p data-cid="ch02-410">So $N(\mu, \sigma^2)$ is a 2-parameter exponential family with sufficient statistics $x$ and $x^2$.</p>
+<p data-cid="ch02-410">So <span class="tts-math" data-tts="N mu sigma to the 2">$N(\mu, \sigma^2)$</span> is a 2-parameter exponential family with sufficient statistics <span class="tts-math" data-tts="x">$x$</span> and <span class="tts-math" data-tts="x to the 2">$x^2$</span>.</p>
 </div>
 <div class="box warn" data-cid="ch02-420">
 <span class="box-label">Common pitfall — keeping track of which is which</span>
 <p data-cid="ch02-430">
-Two distinct objects share the letter "$A$": the function $A(\eta)$ defined in canonical coordinates, and the
-function $B(\theta) = A(\eta(\theta))$ in the original coordinates. They have the same values but different
-derivatives because they are functions of different variables. When the chapter writes "$\partial A / \partial \eta_j$"
+Two distinct objects share the letter "<span class="tts-math" data-tts="A">$A$</span>": the function <span class="tts-math" data-tts="A eta">$A(\eta)$</span> defined in canonical coordinates, and the
+function <span class="tts-math" data-tts="B theta equals A eta theta">$B(\theta) = A(\eta(\theta))$</span> in the original coordinates. They have the same values but different
+derivatives because they are functions of different variables. When the chapter writes "<span class="tts-math" data-tts="partial A over partial eta sub j">$\partial A / \partial \eta_j$</span>"
 the differentiation is in canonical coordinates. Forgetting this leads to chain-rule errors.
 </p>
 </div>
 <h3 data-cid="ch02-440">i.i.d. samples — exponential structure survives</h3>
 <p data-cid="ch02-450">
-Statisticians almost never work with one observation. They work with a sample $X_1, \dots, X_n$, usually i.i.d.
+Statisticians almost never work with one observation. They work with a sample <span class="tts-math" data-tts="X sub 1 and so on X sub n">$X_1, \dots, X_n$</span>, usually i.i.d.
 A beautiful property of exponential families is that <em>i.i.d. samples form another exponential family</em>,
 with the same canonical parameters but new sufficient statistics that are sums.
 </p>
 <p data-cid="ch02-460">
-Suppose each $X_j$ has the marginal density $\exp[\sum_i \eta_i(\theta) T_i(x) - B(\theta)] h(x)$. By independence,
-the joint density of $(X_1, \dots, X_n)$ is the product of the marginals, which equals
+Suppose each <span class="tts-math" data-tts="X sub j">$X_j$</span> has the marginal density <span class="tts-math" data-tts="exp sub i eta sub i theta T sub i x minus B theta h x">$\exp[\sum_i \eta_i(\theta) T_i(x) - B(\theta)] h(x)$</span>. By independence,
+the joint density of <span class="tts-math" data-tts="X sub 1 and so on X sub n">$(X_1, \dots, X_n)$</span> is the product of the marginals, which equals
 </p>
-$$\exp\!\left[\sum_{i=1}^s \eta_i(\theta) \!\left(\sum_{j=1}^n T_i(X_j)\right) - n B(\theta)\right] \prod_{j=1}^n h(X_j). \tag{2.3}$$
+<span class="tts-math" data-tts="exp the sum over i equals 1 of to the s eta sub i theta the sum over j equals 1 of to the n T sub i X sub j minus n B theta sub j equals 1 to the n h X sub j . 2.3">$$\exp\!\left[\sum_{i=1}^s \eta_i(\theta) \!\left(\sum_{j=1}^n T_i(X_j)\right) - n B(\theta)\right] \prod_{j=1}^n h(X_j). \tag{2.3}$$</span>
 <p data-cid="ch02-470">This is again exponential family form, with new ingredients</p>
-$$\tilde T_i(x) = \sum_{j=1}^n T_i(x_j), \quad \tilde B(\theta) = n B(\theta), \quad \tilde h(x) = \prod_{j=1}^n h(x_j).$$
+<span class="tts-math" data-tts="T sub i x equals the sum over j equals 1 of to the n T sub i x sub j B theta equals n B theta h x equals sub j equals 1 to the n h x sub j .">$$\tilde T_i(x) = \sum_{j=1}^n T_i(x_j), \quad \tilde B(\theta) = n B(\theta), \quad \tilde h(x) = \prod_{j=1}^n h(x_j).$$</span>
 <div class="box example" data-cid="ch02-480">
 <span class="box-label">Example 2.3 — i.i.d. normal sample</span>
-<p data-cid="ch02-490">For $X_1, \dots, X_n \stackrel{\text{iid}}{\sim} N(\mu, \sigma^2)$, the joint density is exponential family with</p>
-$$\tilde T_1 = \sum_{j=1}^n X_j, \qquad \tilde T_2 = \sum_{j=1}^n X_j^2,$$
+<p data-cid="ch02-490">For <span class="tts-math" data-tts="X sub 1 and so on X sub n iid distributed as N mu sigma to the 2">$X_1, \dots, X_n \stackrel{\text{iid}}{\sim} N(\mu, \sigma^2)$</span>, the joint density is exponential family with</p>
+<span class="tts-math" data-tts="T sub 1 equals the sum over j equals 1 of to the n X sub j T sub 2 equals the sum over j equals 1 of to the n X sub j to the 2">$$\tilde T_1 = \sum_{j=1}^n X_j, \qquad \tilde T_2 = \sum_{j=1}^n X_j^2,$$</span>
 <p data-cid="ch02-500">
-the same canonical parameters $\eta_1 = \mu/\sigma^2$ and $\eta_2 = -1/(2\sigma^2)$ as before, and
-$\tilde B(\theta) = n[\mu^2/(2\sigma^2) + \log\sigma]$. The whole information content of the sample is squeezed
-into the two numbers $\sum X_j$ and $\sum X_j^2$. (We will prove this rigorously in Chapter 3 as a statement
+the same canonical parameters <span class="tts-math" data-tts="eta sub 1 equals mu over sigma to the 2">$\eta_1 = \mu/\sigma^2$</span> and <span class="tts-math" data-tts="eta sub 2 equals minus 1 over 2 sigma to the 2">$\eta_2 = -1/(2\sigma^2)$</span> as before, and
+<span class="tts-math" data-tts="B theta equals n mu to the 2 over 2 sigma to the 2 plus log sigma">$\tilde B(\theta) = n[\mu^2/(2\sigma^2) + \log\sigma]$</span>. The whole information content of the sample is squeezed
+into the two numbers <span class="tts-math" data-tts="the sum of X sub j">$\sum X_j$</span> and <span class="tts-math" data-tts="the sum of X sub j to the 2">$\sum X_j^2$</span>. (We will prove this rigorously in Chapter 3 as a statement
 about sufficiency.)
 </p>
 </div>
 <div class="box intuition" data-cid="ch02-510">
 <span class="box-label">Why this matters in practice</span>
 <p data-cid="ch02-520">
-Whatever conclusions you draw from a normal sample of size $n$, you can draw them by looking only at
-$\sum X_j$ and $\sum X_j^2$. The remaining $n - 2$ numbers in the data are statistical noise — they tell you
-nothing about $\mu$ and $\sigma^2$ that the two sums do not already say. This dimensional collapse is the
+Whatever conclusions you draw from a normal sample of size <span class="tts-math" data-tts="n">$n$</span>, you can draw them by looking only at
+<span class="tts-math" data-tts="the sum of X sub j">$\sum X_j$</span> and <span class="tts-math" data-tts="the sum of X sub j to the 2">$\sum X_j^2$</span>. The remaining <span class="tts-math" data-tts="n minus 2">$n - 2$</span> numbers in the data are statistical noise — they tell you
+nothing about <span class="tts-math" data-tts="mu">$\mu$</span> and <span class="tts-math" data-tts="sigma to the 2">$\sigma^2$</span> that the two sums do not already say. This dimensional collapse is the
 single most useful thing exponential families do for us.
 </p>
 </div>
@@ -231,35 +230,35 @@ single most useful thing exponential families do for us.
 <h2 data-cid="ch02-530" id="s2-2">2.2 Differential Identities</h2>
 <h3 data-cid="ch02-540">The payoff: moments by differentiation</h3>
 <p data-cid="ch02-550">
-Here is the promised reward. In a canonical exponential family, taking partial derivatives of $A(\eta)$ gives
+Here is the promised reward. In a canonical exponential family, taking partial derivatives of <span class="tts-math" data-tts="A eta">$A(\eta)$</span> gives
 us expectations of the sufficient statistics. No integrals, no clever substitutions — just calculus.
 </p>
 <p data-cid="ch02-560">
-The argument is short, almost suspiciously so. Start from the definition of $A$:
+The argument is short, almost suspiciously so. Start from the definition of <span class="tts-math" data-tts="A">$A$</span>:
 </p>
-$$e^{A(\eta)} = \int \exp\!\left[\sum_i \eta_i T_i(x)\right] h(x) \, d\mu(x).$$
+<span class="tts-math" data-tts="e to the A eta equals the integral of exp sub i eta sub i T sub i x h x d mu x .">$$e^{A(\eta)} = \int \exp\!\left[\sum_i \eta_i T_i(x)\right] h(x) \, d\mu(x).$$</span>
 <p data-cid="ch02-570">
-If we could differentiate both sides with respect to $\eta_j$, and if we could swap the order of differentiation
+If we could differentiate both sides with respect to <span class="tts-math" data-tts="eta sub j">$\eta_j$</span>, and if we could swap the order of differentiation
 and integration on the right, we would get
 </p>
-$$e^{A(\eta)} \, \frac{\partial A(\eta)}{\partial \eta_j} = \int T_j(x) \exp\!\left[\sum_i \eta_i T_i(x)\right] h(x) \, d\mu(x).$$
+<span class="tts-math" data-tts="e to the A eta partial A eta over partial eta sub j equals the integral of T sub j x exp sub i eta sub i T sub i x h x d mu x .">$$e^{A(\eta)} \, \frac{\partial A(\eta)}{\partial \eta_j} = \int T_j(x) \exp\!\left[\sum_i \eta_i T_i(x)\right] h(x) \, d\mu(x).$$</span>
 <p data-cid="ch02-580">
-Dividing both sides by $e^{A(\eta)}$ rewrites the right-hand side as an expectation under $p_\eta$, because
-$p_\eta(x) = e^{\sum_i \eta_i T_i(x) - A(\eta)} h(x)$. We arrive at the master identity:
+Dividing both sides by <span class="tts-math" data-tts="e to the A eta">$e^{A(\eta)}$</span> rewrites the right-hand side as an expectation under <span class="tts-math" data-tts="p_ eta">$p_\eta$</span>, because
+<span class="tts-math" data-tts="p_ eta x equals e to the sub i eta sub i T sub i x minus A eta h x">$p_\eta(x) = e^{\sum_i \eta_i T_i(x) - A(\eta)} h(x)$</span>. We arrive at the master identity:
 </p>
-$$\boxed{\quad E_\eta T_j(X) = \frac{\partial A(\eta)}{\partial \eta_j} \quad} \tag{2.4}$$
+<span class="tts-math" data-tts="E_ eta T sub j X equals partial A eta over partial eta sub j 2.4">$$\boxed{\quad E_\eta T_j(X) = \frac{\partial A(\eta)}{\partial \eta_j} \quad} \tag{2.4}$$</span>
 <p data-cid="ch02-590">
 The big asterisk on this derivation is the "if we could swap differentiation and integration" step. The next
 theorem says: <em>inside the interior of the natural parameter space, we can.</em>
 </p>
 <div class="box definition" data-cid="ch02-600">
 <span class="box-label">Theorem 2.4 — differentiation under the integral</span>
-<p data-cid="ch02-610">Let $\Xi_f$ be the set of $\eta \in \mathbb{R}^s$ for which</p>
-$$\int |f(x)| \exp\!\left[\sum_i \eta_i T_i(x)\right] h(x) \, d\mu(x) &lt; \infty.$$
+<p data-cid="ch02-610">Let <span class="tts-math" data-tts="Xi sub f">$\Xi_f$</span> be the set of <span class="tts-math" data-tts="eta in the real numbers to the s">$\eta \in \mathbb{R}^s$</span> for which</p>
+<span class="tts-math" data-tts="the integral of f x exp sub i eta sub i T sub i x h x d mu x lt infinity .">$$\int |f(x)| \exp\!\left[\sum_i \eta_i T_i(x)\right] h(x) \, d\mu(x) &lt; \infty.$$</span>
 <p data-cid="ch02-620">Then</p>
-$$g(\eta) = \int f(x) \exp\!\left[\sum_i \eta_i T_i(x)\right] h(x) \, d\mu(x)$$
+<span class="tts-math" data-tts="g eta equals the integral of f x exp sub i eta sub i T sub i x h x d mu x">$$g(\eta) = \int f(x) \exp\!\left[\sum_i \eta_i T_i(x)\right] h(x) \, d\mu(x)$$</span>
 <p data-cid="ch02-630">
-is continuous and has continuous partial derivatives of all orders for $\eta$ in the interior $\Xi_f^\circ$.
+is continuous and has continuous partial derivatives of all orders for <span class="tts-math" data-tts="eta">$\eta$</span> in the interior <span class="tts-math" data-tts="Xi sub f^">$\Xi_f^\circ$</span>.
 These derivatives can be computed by differentiating under the integral sign.
 </p>
 </div>
@@ -278,61 +277,61 @@ Equation (2.4) was just the first derivative. Differentiating once more gives th
 turns out to be the variance/covariance, not the raw second moment. The clean way to see this is to differentiate
 (2.4) again:
 </p>
-$$\frac{\partial^2 A(\eta)}{\partial \eta_j \partial \eta_k} = \frac{\partial}{\partial \eta_k} E_\eta T_j(X).$$
+<span class="tts-math" data-tts="partial to the 2 A eta over partial eta sub j partial eta sub k equals partial over partial eta sub k E_ eta T sub j X .">$$\frac{\partial^2 A(\eta)}{\partial \eta_j \partial \eta_k} = \frac{\partial}{\partial \eta_k} E_\eta T_j(X).$$</span>
 <p data-cid="ch02-680">
 Carrying out the derivative inside the expectation (Theorem 2.4 again) gives
-$\operatorname{Cov}_\eta(T_j(X), T_k(X))$. In particular,
+<span class="tts-math" data-tts="Cov_ eta T sub j X T sub k X">$\operatorname{Cov}_\eta(T_j(X), T_k(X))$</span>. In particular,
 </p>
-$$\frac{\partial^2 A(\eta)}{\partial \eta_j^2} = \operatorname{Var}_\eta(T_j(X)).$$
+<span class="tts-math" data-tts="partial to the 2 A eta over partial eta sub j to the 2 equals Var_ eta T sub j X .">$$\frac{\partial^2 A(\eta)}{\partial \eta_j^2} = \operatorname{Var}_\eta(T_j(X)).$$</span>
 <p data-cid="ch02-690">
 We will get to a full statement of this in Section 2.4 in the language of cumulant generating functions.
-For now, the slogan: <em>first derivatives of $A$ give means, second derivatives give variances and covariances.</em>
+For now, the slogan: <em>first derivatives of <span class="tts-math" data-tts="A">$A$</span> give means, second derivatives give variances and covariances.</em>
 </p>
 <div class="box example" data-cid="ch02-700">
 <span class="box-label">Worked example — Poisson via differentiation</span>
-<p data-cid="ch02-710">For $X \sim \text{Poisson}(\lambda)$, the mass function is</p>
-$$P(X = x) = \frac{\lambda^x e^{-\lambda}}{x!} = \frac{1}{x!} \exp[x \log\lambda - \lambda], \quad x = 0, 1, 2, \dots$$
+<p data-cid="ch02-710">For <span class="tts-math" data-tts="X distributed as Poisson lambda">$X \sim \text{Poisson}(\lambda)$</span>, the mass function is</p>
+<span class="tts-math" data-tts="P X equals x equals lambda to the x e to the lambda x! equals 1 over x! exp x log lambda minus lambda x equals 0 1 2 and so on">$$P(X = x) = \frac{\lambda^x e^{-\lambda}}{x!} = \frac{1}{x!} \exp[x \log\lambda - \lambda], \quad x = 0, 1, 2, \dots$$</span>
 <p data-cid="ch02-720">
-Setting $\eta = \log\lambda$ (so $\lambda = e^\eta$), $T(x) = x$, $h(x) = 1/x!$, and $\mu$ counting measure
-on $\{0, 1, 2, \dots\}$, the mass function becomes
+Setting <span class="tts-math" data-tts="eta equals log lambda">$\eta = \log\lambda$</span> (so <span class="tts-math" data-tts="lambda equals e^ eta">$\lambda = e^\eta$</span>), <span class="tts-math" data-tts="T x equals x">$T(x) = x$</span>, <span class="tts-math" data-tts="h x equals 1 over x!">$h(x) = 1/x!$</span>, and <span class="tts-math" data-tts="mu">$\mu$</span> counting measure
+on <span class="tts-math" data-tts="0 1 2 and so on">$\{0, 1, 2, \dots\}$</span>, the mass function becomes
 </p>
-$$P(X = x) = \frac{1}{x!} \exp[\eta x - e^\eta].$$
+<span class="tts-math" data-tts="P X equals x equals 1 over x! exp eta x minus e^ eta .">$$P(X = x) = \frac{1}{x!} \exp[\eta x - e^\eta].$$</span>
 <p data-cid="ch02-730">
-So $A(\eta) = e^\eta$. The natural parameter space is all of $\mathbb{R}$ (every $\eta$ gives a finite $A$).
+So <span class="tts-math" data-tts="A eta equals e^ eta">$A(\eta) = e^\eta$</span>. The natural parameter space is all of <span class="tts-math" data-tts="the real numbers">$\mathbb{R}$</span> (every <span class="tts-math" data-tts="eta">$\eta$</span> gives a finite <span class="tts-math" data-tts="A">$A$</span>).
 Differentiating:
 </p>
-$$E_\eta X = A'(\eta) = e^\eta = \lambda, \quad \operatorname{Var}_\eta(X) = A''(\eta) = e^\eta = \lambda.$$
+<span class="tts-math" data-tts="E_ eta X equals A prime eta equals e^ eta equals lambda Var_ eta X equals A prime prime eta equals e^ eta equals lambda .">$$E_\eta X = A'(\eta) = e^\eta = \lambda, \quad \operatorname{Var}_\eta(X) = A''(\eta) = e^\eta = \lambda.$$</span>
 <p data-cid="ch02-740">
-Mean and variance both equal $\lambda$ — a classical fact derived without ever summing
-$\sum_x x \lambda^x e^{-\lambda}/x!$ by hand. And every higher derivative gives $\lambda$ too, so all cumulants of
-the Poisson are equal to $\lambda$.
+Mean and variance both equal <span class="tts-math" data-tts="lambda">$\lambda$</span> — a classical fact derived without ever summing
+<span class="tts-math" data-tts="sub x x lambda to the x e to the lambda over x!">$\sum_x x \lambda^x e^{-\lambda}/x!$</span> by hand. And every higher derivative gives <span class="tts-math" data-tts="lambda">$\lambda$</span> too, so all cumulants of
+the Poisson are equal to <span class="tts-math" data-tts="lambda">$\lambda$</span>.
 </p>
 </div>
 <div class="box example" data-cid="ch02-750">
 <span class="box-label">Worked example — Bernoulli via differentiation</span>
-<p data-cid="ch02-760">For $X \sim \text{Bernoulli}(p)$ on $\{0, 1\}$,</p>
-$$P(X = x) = p^x (1-p)^{1-x} = \exp\!\left[x \log\frac{p}{1-p} + \log(1-p)\right].$$
+<p data-cid="ch02-760">For <span class="tts-math" data-tts="X distributed as Bernoulli p">$X \sim \text{Bernoulli}(p)$</span> on <span class="tts-math" data-tts="0 1">$\{0, 1\}$</span>,</p>
+<span class="tts-math" data-tts="P X equals x equals p to the x 1 minus p to the 1 minus x equals exp x log p over 1 minus p plus log 1 minus p .">$$P(X = x) = p^x (1-p)^{1-x} = \exp\!\left[x \log\frac{p}{1-p} + \log(1-p)\right].$$</span>
 <p data-cid="ch02-770">
-The canonical parameter is $\eta = \log\frac{p}{1-p}$ (the <strong>log-odds</strong> or <strong>logit</strong>),
-$T(x) = x$, $h(x) = 1$, and $\mu$ is counting measure on $\{0, 1\}$. Solving for $p$ gives $p = e^\eta/(1 + e^\eta)$,
-so $1 - p = 1/(1 + e^\eta)$ and
+The canonical parameter is <span class="tts-math" data-tts="eta equals log p over 1 minus p">$\eta = \log\frac{p}{1-p}$</span> (the <strong>log-odds</strong> or <strong>logit</strong>),
+<span class="tts-math" data-tts="T x equals x">$T(x) = x$</span>, <span class="tts-math" data-tts="h x equals 1">$h(x) = 1$</span>, and <span class="tts-math" data-tts="mu">$\mu$</span> is counting measure on <span class="tts-math" data-tts="0 1">$\{0, 1\}$</span>. Solving for <span class="tts-math" data-tts="p">$p$</span> gives <span class="tts-math" data-tts="p equals e^ eta over 1 plus e^ eta">$p = e^\eta/(1 + e^\eta)$</span>,
+so <span class="tts-math" data-tts="1 minus p equals 1 over 1 plus e^ eta">$1 - p = 1/(1 + e^\eta)$</span> and
 </p>
-$$A(\eta) = -\log(1-p) = \log(1 + e^\eta).$$
+<span class="tts-math" data-tts="A eta equals minus log 1 minus p equals log 1 plus e^ eta .">$$A(\eta) = -\log(1-p) = \log(1 + e^\eta).$$</span>
 <p data-cid="ch02-780">Differentiating:</p>
-$$E_\eta X = A'(\eta) = \frac{e^\eta}{1 + e^\eta} = p, \qquad \operatorname{Var}_\eta(X) = A''(\eta) = \frac{e^\eta}{(1+e^\eta)^2} = p(1-p).$$
+<span class="tts-math" data-tts="E_ eta X equals A prime eta equals e^ eta over 1 plus e^ eta equals p Var_ eta X equals A prime prime eta equals e^ eta over 1 plus e^ eta to the 2 equals p 1 minus p .">$$E_\eta X = A'(\eta) = \frac{e^\eta}{1 + e^\eta} = p, \qquad \operatorname{Var}_\eta(X) = A''(\eta) = \frac{e^\eta}{(1+e^\eta)^2} = p(1-p).$$</span>
 <p data-cid="ch02-790">
 Both classical results in one line. Notice also that the logit appears here not because anyone chose it
-deliberately, but because it is forced on us by the requirement that the density factor into "$e^{\eta x}$ times
-stuff that doesn't depend on $\eta$".
+deliberately, but because it is forced on us by the requirement that the density factor into "<span class="tts-math" data-tts="e to the eta x">$e^{\eta x}$</span> times
+stuff that doesn't depend on <span class="tts-math" data-tts="eta">$\eta$</span>".
 </p>
 </div>
 <div class="box pause" data-cid="ch02-800">
 <span class="box-label">Pause — boundary vs. interior</span>
 <p data-cid="ch02-810">
-Theorem 2.4 applies in the <em>interior</em> $\Xi^\circ$ of the natural parameter space. The boundary points
-are excluded. For the exponential family in Example 2.1, $\Xi = (-\infty, 0)$ is open and equals its interior;
-no issue. For some families, the boundary represents degenerate cases (e.g.\ a binomial with $p = 0$ or $p = 1$),
-and the derivative identities can fail there. Always check that $\eta$ is interior before invoking (2.4).
+Theorem 2.4 applies in the <em>interior</em> <span class="tts-math" data-tts="Xi ^">$\Xi^\circ$</span> of the natural parameter space. The boundary points
+are excluded. For the exponential family in Example 2.1, <span class="tts-math" data-tts="Xi equals minus infinity 0">$\Xi = (-\infty, 0)$</span> is open and equals its interior;
+no issue. For some families, the boundary represents degenerate cases (e.g.\ a binomial with <span class="tts-math" data-tts="p equals 0">$p = 0$</span> or <span class="tts-math" data-tts="p equals 1">$p = 1$</span>),
+and the derivative identities can fail there. Always check that <span class="tts-math" data-tts="eta">$\eta$</span> is interior before invoking (2.4).
 </p>
 </div>
 <!-- ===================================================================== -->
@@ -346,62 +345,62 @@ theorems of measure theory — and it will reappear in every later chapter.
 <p data-cid="ch02-850">
 A derivative is a limit. So differentiating under an integral amounts to asking: when does
 </p>
-$$\lim_{n \to \infty} \int f_n \, d\mu \;=\; \int \lim_{n \to \infty} f_n \, d\mu \;?$$
+<span class="tts-math" data-tts="the limit as n to infinity of the integral of f sub n d mu equals the integral of the limit as n to infinity of f sub n d mu ?">$$\lim_{n \to \infty} \int f_n \, d\mu \;=\; \int \lim_{n \to \infty} f_n \, d\mu \;?$$</span>
 <p data-cid="ch02-860">
 That is, when can I push a limit inside an integral? The unsettling answer is: <em>not always.</em> Example 2.6
-below shows a sequence where the limit of the integrals is $1$ but the integral of the limit is $0$. Something
+below shows a sequence where the limit of the integrals is <span class="tts-math" data-tts="1">$1$</span> but the integral of the limit is <span class="tts-math" data-tts="0">$0$</span>. Something
 has to prevent this kind of bad behavior, and that something is a "dominating function" — an integrable umbrella
 that caps the entire sequence from above.
 </p>
 <div class="box definition" data-cid="ch02-870">
 <span class="box-label">Theorem 2.5 — dominated convergence</span>
 <p data-cid="ch02-880">
-Let $f_n$, $n \geq 1$, be measurable functions with $|f_n| \leq g$ (a.e.\ $\mu$) for all $n$. If $\int g \, d\mu &lt; \infty$
-and $\lim_{n \to \infty} f_n(x) = f(x)$ for $\mu$-almost every $x$, then
+Let <span class="tts-math" data-tts="f sub n">$f_n$</span>, <span class="tts-math" data-tts="n greater than or equal to 1">$n \geq 1$</span>, be measurable functions with <span class="tts-math" data-tts="f sub n less than or equal to g">$|f_n| \leq g$</span> (a.e.\ <span class="tts-math" data-tts="mu">$\mu$</span>) for all <span class="tts-math" data-tts="n">$n$</span>. If <span class="tts-math" data-tts="the integral of g d mu lt infinity">$\int g \, d\mu &lt; \infty$</span>
+and <span class="tts-math" data-tts="the limit as n to infinity of f sub n x equals f x">$\lim_{n \to \infty} f_n(x) = f(x)$</span> for <span class="tts-math" data-tts="mu">$\mu$</span>-almost every <span class="tts-math" data-tts="x">$x$</span>, then
 </p>
-$$\int f_n \, d\mu \to \int f \, d\mu \quad \text{as } n \to \infty.$$
+<span class="tts-math" data-tts="the integral of f sub n d mu to the integral of f d mu as n to infinity .">$$\int f_n \, d\mu \to \int f \, d\mu \quad \text{as } n \to \infty.$$</span>
 </div>
 <div class="box intuition" data-cid="ch02-890">
 <span class="box-label">Plain English</span>
 <p data-cid="ch02-900">
-"If the sequence of functions $f_n$ stays under a fixed integrable ceiling $g$, then pointwise convergence
-$f_n \to f$ implies convergence of the integrals." The ceiling $g$ keeps the mass from escaping to infinity.
+"If the sequence of functions <span class="tts-math" data-tts="f sub n">$f_n$</span> stays under a fixed integrable ceiling <span class="tts-math" data-tts="g">$g$</span>, then pointwise convergence
+<span class="tts-math" data-tts="f sub n to f">$f_n \to f$</span> implies convergence of the integrals." The ceiling <span class="tts-math" data-tts="g">$g$</span> keeps the mass from escaping to infinity.
 Without it, the functions can "run away" sideways or vertically, and you lose control.
 </p>
 </div>
 <div class="box example" data-cid="ch02-910">
 <span class="box-label">Example 2.6 — what goes wrong without domination</span>
 <p data-cid="ch02-920">
-Let $\mu$ be Lebesgue measure on $\mathbb{R}$ and define $f_n(x) = 1_{(n, n+1)}(x)$ — a bump of height $1$ and
-width $1$ sliding off to the right. For every fixed $x$, $f_n(x) = 0$ once $n$ is large enough, so $f_n \to 0$
-pointwise. But $\int f_n \, d\mu = 1$ for every $n$, while $\int 0 \, d\mu = 0$. The integrals do not converge to
+Let <span class="tts-math" data-tts="mu">$\mu$</span> be Lebesgue measure on <span class="tts-math" data-tts="the real numbers">$\mathbb{R}$</span> and define <span class="tts-math" data-tts="f sub n x equals 1 sub n n plus 1 x">$f_n(x) = 1_{(n, n+1)}(x)$</span> — a bump of height <span class="tts-math" data-tts="1">$1$</span> and
+width <span class="tts-math" data-tts="1">$1$</span> sliding off to the right. For every fixed <span class="tts-math" data-tts="x">$x$</span>, <span class="tts-math" data-tts="f sub n x equals 0">$f_n(x) = 0$</span> once <span class="tts-math" data-tts="n">$n$</span> is large enough, so <span class="tts-math" data-tts="f sub n to 0">$f_n \to 0$</span>
+pointwise. But <span class="tts-math" data-tts="the integral of f sub n d mu equals 1">$\int f_n \, d\mu = 1$</span> for every <span class="tts-math" data-tts="n">$n$</span>, while <span class="tts-math" data-tts="the integral of 0 d mu equals 0">$\int 0 \, d\mu = 0$</span>. The integrals do not converge to
 the integral of the limit.
 </p>
 <p data-cid="ch02-930">
-The trouble: no integrable function $g$ dominates the entire sequence. To bound every $f_n$ you would need
-$g \geq 1$ on $(1, \infty)$, but then $\int g \, d\mu = \infty$.
+The trouble: no integrable function <span class="tts-math" data-tts="g">$g$</span> dominates the entire sequence. To bound every <span class="tts-math" data-tts="f sub n">$f_n$</span> you would need
+<span class="tts-math" data-tts="g greater than or equal to 1">$g \geq 1$</span> on <span class="tts-math" data-tts="1 infinity">$(1, \infty)$</span>, but then <span class="tts-math" data-tts="the integral of g d mu equals infinity">$\int g \, d\mu = \infty$</span>.
 </p>
 </div>
 <h3 data-cid="ch02-940">Applying dominated convergence to swap derivative and integral</h3>
 <p data-cid="ch02-950">
-Let's see how dominated convergence justifies (2.4). For simplicity take $s = 1$, so $A$ is a function of one
-variable. To differentiate at $\eta = 0$ inside an interval $[-2\epsilon, 2\epsilon] \subseteq \Xi$, write the
+Let's see how dominated convergence justifies (2.4). For simplicity take <span class="tts-math" data-tts="s equals 1">$s = 1$</span>, so <span class="tts-math" data-tts="A">$A$</span> is a function of one
+variable. To differentiate at <span class="tts-math" data-tts="eta equals 0">$\eta = 0$</span> inside an interval <span class="tts-math" data-tts="2 epsilon 2 epsilon subset of or equal to Xi">$[-2\epsilon, 2\epsilon] \subseteq \Xi$</span>, write the
 derivative as a limit of difference quotients:
 </p>
-$$\lim_{n \to \infty} \frac{e^{A(\epsilon/n)} - e^{A(0)}}{\epsilon/n} = \lim_{n \to \infty} \int f_n(x) \, d\mu(x), \quad f_n(x) = \frac{e^{\epsilon T(x)/n} - 1}{\epsilon/n} \, h(x). \tag{2.5}$$
+<span class="tts-math" data-tts="the limit as n to infinity of e to the A epsilon over n minus e to the A 0 epsilon over n equals the limit as n to infinity of the integral of f sub n x d mu x f sub n x equals e to the epsilon T x over n minus 1 epsilon over n h x . 2.5">$$\lim_{n \to \infty} \frac{e^{A(\epsilon/n)} - e^{A(0)}}{\epsilon/n} = \lim_{n \to \infty} \int f_n(x) \, d\mu(x), \quad f_n(x) = \frac{e^{\epsilon T(x)/n} - 1}{\epsilon/n} \, h(x). \tag{2.5}$$</span>
 <p data-cid="ch02-960">
-As $n \to \infty$, $f_n(x) \to T(x) h(x)$ pointwise — this is just $\frac{d}{d\eta} e^{\eta T(x)}|_{\eta = 0}$.
-The question is whether $\int f_n \, d\mu \to \int T(x) h(x) \, d\mu$. By dominated convergence, it does — provided
-we can find a dominating $g$.
+As <span class="tts-math" data-tts="n to infinity">$n \to \infty$</span>, <span class="tts-math" data-tts="f sub n x to T x h x">$f_n(x) \to T(x) h(x)$</span> pointwise — this is just <span class="tts-math" data-tts="d over d eta e to the eta T x sub eta equals 0">$\frac{d}{d\eta} e^{\eta T(x)}|_{\eta = 0}$</span>.
+The question is whether <span class="tts-math" data-tts="the integral of f sub n d mu to the integral of T x h x d mu">$\int f_n \, d\mu \to \int T(x) h(x) \, d\mu$</span>. By dominated convergence, it does — provided
+we can find a dominating <span class="tts-math" data-tts="g">$g$</span>.
 </p>
 <p data-cid="ch02-970">
-Using the elementary bounds $|e^t - 1| \leq |t| e^{|t|}$ and $|t| \leq e^{|t|}$ for any real $t$, one shows that
-$|f_n(x)| \leq \frac{1}{\epsilon}\big(e^{2\epsilon T(x)} + e^{-2\epsilon T(x)}\big) h(x) =: g(x)$. And $g$ is integrable because
+Using the elementary bounds <span class="tts-math" data-tts="e to the t minus 1 less than or equal to t e to the t">$|e^t - 1| \leq |t| e^{|t|}$</span> and <span class="tts-math" data-tts="t less than or equal to e to the t">$|t| \leq e^{|t|}$</span> for any real <span class="tts-math" data-tts="t">$t$</span>, one shows that
+<span class="tts-math" data-tts="f sub n x less than or equal to 1 over epsilon e to the 2 epsilon T x plus e to the 2 epsilon T x h x equals g x">$|f_n(x)| \leq \frac{1}{\epsilon}\big(e^{2\epsilon T(x)} + e^{-2\epsilon T(x)}\big) h(x) =: g(x)$</span>. And <span class="tts-math" data-tts="g">$g$</span> is integrable because
 </p>
-$$\int e^{\pm 2\epsilon T(x)} h(x) \, d\mu(x) = e^{A(\pm 2\epsilon)} &lt; \infty,$$
+<span class="tts-math" data-tts="the integral of e to the or minus 2 epsilon T x h x d mu x equals e to the A plus or minus 2 epsilon lt infinity">$$\int e^{\pm 2\epsilon T(x)} h(x) \, d\mu(x) = e^{A(\pm 2\epsilon)} &lt; \infty,$$</span>
 <p data-cid="ch02-980">
-which is precisely why we asked for $\eta$ to be interior to $\Xi$ — we need a small interval $[-2\epsilon, 2\epsilon]$
-on which $A$ is finite, so the bound $g$ is integrable.
+which is precisely why we asked for <span class="tts-math" data-tts="eta">$\eta$</span> to be interior to <span class="tts-math" data-tts="Xi">$\Xi$</span> — we need a small interval <span class="tts-math" data-tts="2 epsilon 2 epsilon">$[-2\epsilon, 2\epsilon]$</span>
+on which <span class="tts-math" data-tts="A">$A$</span> is finite, so the bound <span class="tts-math" data-tts="g">$g$</span> is integrable.
 </p>
 <div class="box intuition" data-cid="ch02-990">
 <span class="box-label">The whole argument in one sentence</span>
@@ -414,36 +413,36 @@ under the integral. That is why Theorem 2.4 is true.
 <div class="box warn" data-cid="ch02-1010">
 <span class="box-label">Common pitfall — pointwise convergence is not enough</span>
 <p data-cid="ch02-1020">
-A frequent mistake is to write "$f_n \to f$ pointwise, so $\int f_n \to \int f$". Example 2.6 is the warning.
+A frequent mistake is to write "<span class="tts-math" data-tts="f sub n to f">$f_n \to f$</span> pointwise, so <span class="tts-math" data-tts="the integral of f sub n to the integral of f">$\int f_n \to \int f$</span>". Example 2.6 is the warning.
 Always check for a dominating function (or use a different theorem like monotone convergence). In exponential
-family arguments, the dominator is essentially always built from $e^{\pm 2\epsilon T(x)} h(x)$ for $\epsilon$
-small enough to keep $\eta \pm 2\epsilon$ inside $\Xi$.
+family arguments, the dominator is essentially always built from <span class="tts-math" data-tts="e to the or minus 2 epsilon T x h x">$e^{\pm 2\epsilon T(x)} h(x)$</span> for <span class="tts-math" data-tts="epsilon">$\epsilon$</span>
+small enough to keep <span class="tts-math" data-tts="eta plus or minus 2 epsilon">$\eta \pm 2\epsilon$</span> inside <span class="tts-math" data-tts="Xi">$\Xi$</span>.
 </p>
 </div>
 <!-- ===================================================================== -->
 <h2 data-cid="ch02-1030" id="s2-4">2.4 Moments, Cumulants, and Generating Functions</h2>
 <h3 data-cid="ch02-1040">The moment generating function</h3>
 <p data-cid="ch02-1050">
-Let $T = (T_1, \dots, T_s)'$ be a random vector in $\mathbb{R}^s$ (the prime denotes transpose; $T$ is a column).
-The <strong>moment generating function</strong> (MGF) of $T$ is
+Let <span class="tts-math" data-tts="T equals T sub 1 and so on T sub s prime">$T = (T_1, \dots, T_s)'$</span> be a random vector in <span class="tts-math" data-tts="the real numbers to the s">$\mathbb{R}^s$</span> (the prime denotes transpose; <span class="tts-math" data-tts="T">$T$</span> is a column).
+The <strong>moment generating function</strong> (MGF) of <span class="tts-math" data-tts="T">$T$</span> is
 </p>
-$$M_T(u) = E\, e^{u_1 T_1 + \cdots + u_s T_s} = E\, e^{u \cdot T}, \quad u \in \mathbb{R}^s,$$
+<span class="tts-math" data-tts="M sub T u equals E e to the u sub 1 T sub 1 plus times s plus u sub s T sub s equals E e to the u times T u in the real numbers to the s">$$M_T(u) = E\, e^{u_1 T_1 + \cdots + u_s T_s} = E\, e^{u \cdot T}, \quad u \in \mathbb{R}^s,$$</span>
 <p data-cid="ch02-1060">and the <strong>cumulant generating function</strong> (CGF) is its logarithm,</p>
-$$K_T(u) = \log M_T(u).$$
+<span class="tts-math" data-tts="K sub T u equals log M sub T u .">$$K_T(u) = \log M_T(u).$$</span>
 <div class="box intuition" data-cid="ch02-1070">
 <span class="box-label">Why "moment generating"</span>
 <p data-cid="ch02-1080">
-Formally expanding the exponential, $e^{u \cdot T} = \sum_{k=0}^\infty (u \cdot T)^k / k!$. Taking expectations,
-$M_T(u) = \sum_k E[(u \cdot T)^k] / k!$. So differentiating $M_T$ at the origin picks off the moments of $T$ —
+Formally expanding the exponential, <span class="tts-math" data-tts="e to the u times T equals the sum over k equals 0 of ^ infinity u times T to the k over k!">$e^{u \cdot T} = \sum_{k=0}^\infty (u \cdot T)^k / k!$</span>. Taking expectations,
+<span class="tts-math" data-tts="M sub T u equals sub k E u times T to the k over k!">$M_T(u) = \sum_k E[(u \cdot T)^k] / k!$</span>. So differentiating <span class="tts-math" data-tts="M sub T">$M_T$</span> at the origin picks off the moments of <span class="tts-math" data-tts="T">$T$</span> —
 exactly the way a Taylor series picks off derivatives of its function. The cumulants are similarly extracted
-from $K_T$; we will see in a moment that they are the more useful objects.
+from <span class="tts-math" data-tts="K sub T">$K_T$</span>; we will see in a moment that they are the more useful objects.
 </p>
 </div>
 <div class="box definition" data-cid="ch02-1090">
 <span class="box-label">Lemma 2.7 — MGF determines distribution</span>
 <p data-cid="ch02-1100">
-If the MGFs $M_X(u)$ and $M_Y(u)$ of two random vectors $X, Y$ are both finite and agree on some set with
-non-empty interior, then $P_X = P_Y$ — they have the same distribution.
+If the MGFs <span class="tts-math" data-tts="M sub X u">$M_X(u)$</span> and <span class="tts-math" data-tts="M sub Y u">$M_Y(u)$</span> of two random vectors <span class="tts-math" data-tts="X Y">$X, Y$</span> are both finite and agree on some set with
+non-empty interior, then <span class="tts-math" data-tts="P sub X equals P sub Y">$P_X = P_Y$</span> — they have the same distribution.
 </p>
 </div>
 <div class="box intuition" data-cid="ch02-1110">
@@ -456,75 +455,75 @@ it against a table, declare victory.
 </div>
 <h3 data-cid="ch02-1130">Moments and cumulants</h3>
 <p data-cid="ch02-1140">
-Define the $(r_1, \dots, r_s)$-th <strong>moment</strong> and <strong>cumulant</strong> of $T$ by
+Define the <span class="tts-math" data-tts="r sub 1 and so on r sub s">$(r_1, \dots, r_s)$</span>-th <strong>moment</strong> and <strong>cumulant</strong> of <span class="tts-math" data-tts="T">$T$</span> by
 </p>
-$$\alpha_{r_1, \dots, r_s} = E[T_1^{r_1} \cdots T_s^{r_s}], \qquad \kappa_{r_1, \dots, r_s} = \frac{\partial^{r_1}}{\partial u_1^{r_1}} \cdots \frac{\partial^{r_s}}{\partial u_s^{r_s}} K_T(u) \Big|_{u=0}.$$
+<span class="tts-math" data-tts="alpha sub r sub 1 and so on r sub s equals E T sub 1 to the r sub 1 times s T sub s to the r sub s kappa sub r sub 1 and so on r sub s equals partial to the r sub 1 partial u sub 1 to the r sub 1 times s partial to the r sub s partial u sub s to the r sub s K sub T u sub u equals 0.">$$\alpha_{r_1, \dots, r_s} = E[T_1^{r_1} \cdots T_s^{r_s}], \qquad \kappa_{r_1, \dots, r_s} = \frac{\partial^{r_1}}{\partial u_1^{r_1}} \cdots \frac{\partial^{r_s}}{\partial u_s^{r_s}} K_T(u) \Big|_{u=0}.$$</span>
 <p data-cid="ch02-1150">
-A parallel formula (Theorem 2.8) says the same partials of $M_T$ at $0$ give the moments $\alpha_{r_1, \dots, r_s}$.
-Both statements require $M_T$ to be finite in some neighborhood of the origin — the same "interior" condition we
+A parallel formula (Theorem 2.8) says the same partials of <span class="tts-math" data-tts="M sub T">$M_T$</span> at <span class="tts-math" data-tts="0">$0$</span> give the moments <span class="tts-math" data-tts="alpha sub r sub 1 and so on r sub s">$\alpha_{r_1, \dots, r_s}$</span>.
+Both statements require <span class="tts-math" data-tts="M sub T">$M_T$</span> to be finite in some neighborhood of the origin — the same "interior" condition we
 needed for differentiation under the integral.
 </p>
 <h3 data-cid="ch02-1160">What cumulants are, intuitively</h3>
 <p data-cid="ch02-1170">
-For $s = 1$, the relation $K = \log M$ implies $K' = M'/M$. Differentiating once more (using the quotient rule)
-gives $K'' = (M M'' - (M')^2)/M^2$. Evaluating both at $u = 0$, where $M(0) = 1$, yields
+For <span class="tts-math" data-tts="s equals 1">$s = 1$</span>, the relation <span class="tts-math" data-tts="K equals log M">$K = \log M$</span> implies <span class="tts-math" data-tts="K prime equals M prime over M">$K' = M'/M$</span>. Differentiating once more (using the quotient rule)
+gives <span class="tts-math" data-tts="K prime prime equals M M prime prime minus M prime to the 2 over M to the 2">$K'' = (M M'' - (M')^2)/M^2$</span>. Evaluating both at <span class="tts-math" data-tts="u equals 0">$u = 0$</span>, where <span class="tts-math" data-tts="M 0 equals 1">$M(0) = 1$</span>, yields
 </p>
-$$\kappa_1 = E T, \qquad \kappa_2 = E T^2 - (E T)^2 = \operatorname{Var}(T).$$
+<span class="tts-math" data-tts="kappa sub 1 equals E T kappa sub 2 equals E T to the 2 minus E T to the 2 equals Var T .">$$\kappa_1 = E T, \qquad \kappa_2 = E T^2 - (E T)^2 = \operatorname{Var}(T).$$</span>
 <p data-cid="ch02-1180">
 So the first cumulant is the mean, the second is the variance. Higher cumulants describe higher-order shape:
-$\kappa_3$ measures skewness, $\kappa_4$ measures (excess) kurtosis, and so on.
+<span class="tts-math" data-tts="kappa sub 3">$\kappa_3$</span> measures skewness, <span class="tts-math" data-tts="kappa sub 4">$\kappa_4$</span> measures (excess) kurtosis, and so on.
 </p>
 <div class="box intuition" data-cid="ch02-1190">
 <span class="box-label">Cumulants vs. moments — why bother with cumulants?</span>
 <p data-cid="ch02-1200">
 Cumulants have a magical additivity property: <strong>cumulants of sums of independent random variables add</strong>.
-If $T = Y_1 + \cdots + Y_n$ with the $Y_j$'s independent, then by independence of $e^{u \cdot Y_j}$'s,
+If <span class="tts-math" data-tts="T equals Y sub 1 plus times s plus Y sub n">$T = Y_1 + \cdots + Y_n$</span> with the <span class="tts-math" data-tts="Y sub j">$Y_j$</span>'s independent, then by independence of <span class="tts-math" data-tts="e to the u times Y sub j">$e^{u \cdot Y_j}$</span>'s,
 </p>
-$$M_T(u) = M_{Y_1}(u) \cdots M_{Y_n}(u), \qquad K_T(u) = K_{Y_1}(u) + \cdots + K_{Y_n}(u).$$
+<span class="tts-math" data-tts="M sub T u equals M sub Y sub 1 u times s M sub Y sub n u K sub T u equals K sub Y sub 1 u plus times s plus K sub Y sub n u .">$$M_T(u) = M_{Y_1}(u) \cdots M_{Y_n}(u), \qquad K_T(u) = K_{Y_1}(u) + \cdots + K_{Y_n}(u).$$</span>
 <p data-cid="ch02-1210">
-Taking partials at $0$, the cumulants of $T$ are sums of the cumulants of the $Y_j$. This is exactly why the
+Taking partials at <span class="tts-math" data-tts="0">$0$</span>, the cumulants of <span class="tts-math" data-tts="T">$T$</span> are sums of the cumulants of the <span class="tts-math" data-tts="Y sub j">$Y_j$</span>. This is exactly why the
 mean of a sum is the sum of the means, the variance of an independent sum is the sum of the variances, and
-similar identities for higher orders. Moments themselves do not add this way (think $E[(X+Y)^2] \neq E X^2 + E Y^2$
+similar identities for higher orders. Moments themselves do not add this way (think <span class="tts-math" data-tts="E X plus Y to the 2 not equal to E X to the 2 plus E Y to the 2">$E[(X+Y)^2] \neq E X^2 + E Y^2$</span>
 in general), but their cumulants do.
 </p>
 </div>
-<h3 data-cid="ch02-1220">Why exponential families love cumulants: $A$ <em>is</em> the CGF (almost)</h3>
+<h3 data-cid="ch02-1220">Why exponential families love cumulants: <span class="tts-math" data-tts="A">$A$</span> <em>is</em> the CGF (almost)</h3>
 <p data-cid="ch02-1230">
-Suppose $X$ has a canonical exponential family density $p_\eta$ and let $T = T(X)$ be the vector of sufficient
+Suppose <span class="tts-math" data-tts="X">$X$</span> has a canonical exponential family density <span class="tts-math" data-tts="p_ eta">$p_\eta$</span> and let <span class="tts-math" data-tts="T equals T X">$T = T(X)$</span> be the vector of sufficient
 statistics. Compute its MGF directly from the density:
 </p>
-$$E_\eta e^{u \cdot T(X)} = \int e^{u \cdot T(x)} e^{\eta \cdot T(x) - A(\eta)} h(x) \, d\mu(x) = e^{A(u + \eta) - A(\eta)},$$
+<span class="tts-math" data-tts="E_ eta e to the u times T X equals the integral of e to the u times T x e to the eta times T x minus A eta h x d mu x equals e to the A u plus eta minus A eta">$$E_\eta e^{u \cdot T(X)} = \int e^{u \cdot T(x)} e^{\eta \cdot T(x) - A(\eta)} h(x) \, d\mu(x) = e^{A(u + \eta) - A(\eta)},$$</span>
 <p data-cid="ch02-1240">
-where the last equality holds whenever $u + \eta \in \Xi$, because then the integrand is itself $p_{u+\eta}$
-multiplied by $e^{A(u+\eta) - A(\eta)}$ and integrates to that constant. Taking the logarithm,
+where the last equality holds whenever <span class="tts-math" data-tts="u plus eta in Xi">$u + \eta \in \Xi$</span>, because then the integrand is itself <span class="tts-math" data-tts="p sub u plus eta">$p_{u+\eta}$</span>
+multiplied by <span class="tts-math" data-tts="e to the A u plus eta minus A eta">$e^{A(u+\eta) - A(\eta)}$</span> and integrates to that constant. Taking the logarithm,
 </p>
-$$\boxed{\quad K_T(u) = A(u + \eta) - A(\eta). \quad}$$
+<span class="tts-math" data-tts="K sub T u equals A u plus eta minus A eta .">$$\boxed{\quad K_T(u) = A(u + \eta) - A(\eta). \quad}$$</span>
 <p data-cid="ch02-1250">
-This is the central identity. It says: <em>the CGF of the sufficient statistic $T$ is just the log-partition
-function $A$ shifted by $\eta$.</em> Differentiating with respect to $u_j$ at $u = 0$ gives
+This is the central identity. It says: <em>the CGF of the sufficient statistic <span class="tts-math" data-tts="T">$T$</span> is just the log-partition
+function <span class="tts-math" data-tts="A">$A$</span> shifted by <span class="tts-math" data-tts="eta">$\eta$</span>.</em> Differentiating with respect to <span class="tts-math" data-tts="u sub j">$u_j$</span> at <span class="tts-math" data-tts="u equals 0">$u = 0$</span> gives
 </p>
-$$\kappa_j = \frac{\partial A(\eta)}{\partial \eta_j} \quad \text{(matches (2.4))},$$
+<span class="tts-math" data-tts="kappa sub j equals partial A eta over partial eta sub j matches 2.4">$$\kappa_j = \frac{\partial A(\eta)}{\partial \eta_j} \quad \text{(matches (2.4))},$$</span>
 <p data-cid="ch02-1260">
-and the matrix of second partials of $A$ at $\eta$ is the covariance matrix of $T$. More generally, all cumulants
-of $T$ are partial derivatives of $A$ at $\eta$. We have promoted $A$ from "normalizing nuisance" to "moment-generating
+and the matrix of second partials of <span class="tts-math" data-tts="A">$A$</span> at <span class="tts-math" data-tts="eta">$\eta$</span> is the covariance matrix of <span class="tts-math" data-tts="T">$T$</span>. More generally, all cumulants
+of <span class="tts-math" data-tts="T">$T$</span> are partial derivatives of <span class="tts-math" data-tts="A">$A$</span> at <span class="tts-math" data-tts="eta">$\eta$</span>. We have promoted <span class="tts-math" data-tts="A">$A$</span> from "normalizing nuisance" to "moment-generating
 machine".
 </p>
 <div class="box example" data-cid="ch02-1270">
 <span class="box-label">Example 2.10 — all cumulants of the Poisson</span>
 <p data-cid="ch02-1280">
-We saw that for Poisson($\lambda$), the canonical parameter is $\eta = \log\lambda$ and $A(\eta) = e^\eta$.
-Every derivative of $A$ is again $e^\eta = \lambda$. So
+We saw that for Poisson(<span class="tts-math" data-tts="lambda">$\lambda$</span>), the canonical parameter is <span class="tts-math" data-tts="eta equals log lambda">$\eta = \log\lambda$</span> and <span class="tts-math" data-tts="A eta equals e^ eta">$A(\eta) = e^\eta$</span>.
+Every derivative of <span class="tts-math" data-tts="A">$A$</span> is again <span class="tts-math" data-tts="e^ eta equals lambda">$e^\eta = \lambda$</span>. So
 </p>
-$$\kappa_1 = \kappa_2 = \kappa_3 = \cdots = \lambda.$$
+<span class="tts-math" data-tts="kappa sub 1 equals kappa sub 2 equals kappa sub 3 equals times s equals lambda .">$$\kappa_1 = \kappa_2 = \kappa_3 = \cdots = \lambda.$$</span>
 <p data-cid="ch02-1290">All cumulants of a Poisson are equal to its mean. This is a uniquely Poisson signature; no other distribution does this.</p>
 </div>
 <div class="box example" data-cid="ch02-1300">
-<span class="box-label">Example 2.11 — normal with $\sigma^2$ fixed</span>
+<span class="box-label">Example 2.11 — normal with <span class="tts-math" data-tts="sigma to the 2">$\sigma^2$</span> fixed</span>
 <p data-cid="ch02-1310">
-The family $\{N(\mu, \sigma^2) : \mu \in \mathbb{R}\}$ with $\sigma^2$ fixed is a 1-parameter exponential family
-with $T(x) = x$, $\eta = \mu/\sigma^2$, and $A(\eta) = \sigma^2 \eta^2 / 2$. Differentiating:
+The family <span class="tts-math" data-tts="N mu sigma to the 2 mu in the real numbers">$\{N(\mu, \sigma^2) : \mu \in \mathbb{R}\}$</span> with <span class="tts-math" data-tts="sigma to the 2">$\sigma^2$</span> fixed is a 1-parameter exponential family
+with <span class="tts-math" data-tts="T x equals x">$T(x) = x$</span>, <span class="tts-math" data-tts="eta equals mu over sigma to the 2">$\eta = \mu/\sigma^2$</span>, and <span class="tts-math" data-tts="A eta equals sigma to the 2 eta to the 2 over 2">$A(\eta) = \sigma^2 \eta^2 / 2$</span>. Differentiating:
 </p>
-$$\kappa_1 = A'(\eta) = \sigma^2 \eta = \mu, \quad \kappa_2 = A''(\eta) = \sigma^2, \quad \kappa_3 = \kappa_4 = \cdots = 0.$$
+<span class="tts-math" data-tts="kappa sub 1 equals A prime eta equals sigma to the 2 eta equals mu kappa sub 2 equals A prime prime eta equals sigma to the 2 kappa sub 3 equals kappa sub 4 equals times s equals 0.">$$\kappa_1 = A'(\eta) = \sigma^2 \eta = \mu, \quad \kappa_2 = A''(\eta) = \sigma^2, \quad \kappa_3 = \kappa_4 = \cdots = 0.$$</span>
 <p data-cid="ch02-1320">
 All cumulants beyond the second are zero — another distinctive signature, this one of the normal. (In fact, a
 theorem of Marcinkiewicz says the normal is the <em>only</em> distribution with finitely many non-zero cumulants.)
@@ -532,37 +531,37 @@ theorem of Marcinkiewicz says the normal is the <em>only</em> distribution with 
 </div>
 <h3 data-cid="ch02-1330">From cumulants to moments and back</h3>
 <p data-cid="ch02-1340">
-The identities $M = e^K$, differentiated repeatedly and evaluated at zero, give a sequence of equations relating
+The identities <span class="tts-math" data-tts="M equals e to the K">$M = e^K$</span>, differentiated repeatedly and evaluated at zero, give a sequence of equations relating
 moments to cumulants:
 </p>
-$$E T = \kappa_1, \quad E T^2 = \kappa_2 + \kappa_1^2, \quad E T^3 = \kappa_3 + 3 \kappa_1 \kappa_2 + \kappa_1^3,$$
-$$E T^4 = \kappa_4 + 3 \kappa_2^2 + 4 \kappa_1 \kappa_3 + 6 \kappa_1^2 \kappa_2 + \kappa_1^4.$$
+<span class="tts-math" data-tts="E T equals kappa sub 1 E T to the 2 equals kappa sub 2 plus kappa sub 1 to the 2 E T to the 3 equals kappa sub 3 plus 3 kappa sub 1 kappa sub 2 plus kappa sub 1 to the 3">$$E T = \kappa_1, \quad E T^2 = \kappa_2 + \kappa_1^2, \quad E T^3 = \kappa_3 + 3 \kappa_1 \kappa_2 + \kappa_1^3,$$</span>
+<span class="tts-math" data-tts="E T to the 4 equals kappa sub 4 plus 3 kappa sub 2 to the 2 plus 4 kappa sub 1 kappa sub 3 plus 6 kappa sub 1 to the 2 kappa sub 2 plus kappa sub 1 to the 4.">$$E T^4 = \kappa_4 + 3 \kappa_2^2 + 4 \kappa_1 \kappa_3 + 6 \kappa_1^2 \kappa_2 + \kappa_1^4.$$</span>
 <p data-cid="ch02-1350">
 These can be inverted to express cumulants in terms of moments. Centering simplifies the algebra: shifting
-$T$ by a constant changes only $\kappa_1$, leaving all higher cumulants alone. So for centered variables ($\kappa_1 = 0$),
+<span class="tts-math" data-tts="T">$T$</span> by a constant changes only <span class="tts-math" data-tts="kappa sub 1">$\kappa_1$</span>, leaving all higher cumulants alone. So for centered variables (<span class="tts-math" data-tts="kappa sub 1 equals 0">$\kappa_1 = 0$</span>),
 </p>
-$$\kappa_3 = E(T - ET)^3, \qquad \kappa_4 = E(T - ET)^4 - 3 \operatorname{Var}^2(T).$$
+<span class="tts-math" data-tts="kappa sub 3 equals E T minus ET to the 3 kappa sub 4 equals E T minus ET to the 4 minus 3 Var to the 2 T .">$$\kappa_3 = E(T - ET)^3, \qquad \kappa_4 = E(T - ET)^4 - 3 \operatorname{Var}^2(T).$$</span>
 <p data-cid="ch02-1360">The first formula says skewness is the third central moment; the second says (excess) kurtosis is the fourth
 central moment, minus the value it would have for a normal.</p>
 <div class="box example" data-cid="ch02-1370">
 <span class="box-label">Worked example — moments of Poisson from cumulants</span>
-<p data-cid="ch02-1380">Using the moment-from-cumulant identities with $\kappa_1 = \kappa_2 = \kappa_3 = \kappa_4 = \lambda$,</p>
-$$E X = \lambda, \quad E X^2 = \lambda + \lambda^2, \quad E X^3 = \lambda + 3\lambda^2 + \lambda^3,$$
-$$E X^4 = \lambda + 7\lambda^2 + 6\lambda^3 + \lambda^4.$$
-<p data-cid="ch02-1390">The classical "Poisson moments" all fall out of "$A(\eta) = e^\eta$" plus the moment/cumulant translation.</p>
+<p data-cid="ch02-1380">Using the moment-from-cumulant identities with <span class="tts-math" data-tts="kappa sub 1 equals kappa sub 2 equals kappa sub 3 equals kappa sub 4 equals lambda">$\kappa_1 = \kappa_2 = \kappa_3 = \kappa_4 = \lambda$</span>,</p>
+<span class="tts-math" data-tts="E X equals lambda E X to the 2 equals lambda plus lambda to the 2 E X to the 3 equals lambda plus 3 lambda to the 2 plus lambda to the 3">$$E X = \lambda, \quad E X^2 = \lambda + \lambda^2, \quad E X^3 = \lambda + 3\lambda^2 + \lambda^3,$$</span>
+<span class="tts-math" data-tts="E X to the 4 equals lambda plus 7 lambda to the 2 plus 6 lambda to the 3 plus lambda to the 4.">$$E X^4 = \lambda + 7\lambda^2 + 6\lambda^3 + \lambda^4.$$</span>
+<p data-cid="ch02-1390">The classical "Poisson moments" all fall out of "<span class="tts-math" data-tts="A eta equals e^ eta">$A(\eta) = e^\eta$</span>" plus the moment/cumulant translation.</p>
 </div>
 <div class="box pause" data-cid="ch02-1400">
 <span class="box-label">Pause — what just happened</span>
 <p data-cid="ch02-1410">
-We did not integrate anything in the last example. We wrote down $A(\eta) = e^\eta$, observed that it is its
+We did not integrate anything in the last example. We wrote down <span class="tts-math" data-tts="A eta equals e^ eta">$A(\eta) = e^\eta$</span>, observed that it is its
 own derivative, read off all cumulants, and translated to moments by a fixed algebraic recipe. This is what
 "exponential families turn statistics into calculus" really means.
 </p>
 </div>
 <h3 data-cid="ch02-1420">Higher-dimensional cumulants</h3>
 <p data-cid="ch02-1430">
-In dimension $s &gt; 1$, the first-order cumulants $\kappa_{1,0,\dots,0}, \kappa_{0,1,0,\dots,0}, \dots$ are the means
-$E T_1, \dots, E T_s$. The second-order cumulants are the entries of the covariance matrix: $\kappa_{2,0,\dots,0} = \operatorname{Var}(T_1)$, $\kappa_{1,1,0,\dots,0} = \operatorname{Cov}(T_1, T_2)$, and so on. Higher mixed cumulants have less elementary
+In dimension <span class="tts-math" data-tts="s gt 1">$s &gt; 1$</span>, the first-order cumulants <span class="tts-math" data-tts="kappa sub 1 0 and so on 0 kappa sub 0 1 0 and so on 0 and so on">$\kappa_{1,0,\dots,0}, \kappa_{0,1,0,\dots,0}, \dots$</span> are the means
+<span class="tts-math" data-tts="E T sub 1 and so on E T sub s">$E T_1, \dots, E T_s$</span>. The second-order cumulants are the entries of the covariance matrix: <span class="tts-math" data-tts="kappa sub 2 0 and so on 0 equals Var T sub 1">$\kappa_{2,0,\dots,0} = \operatorname{Var}(T_1)$</span>, <span class="tts-math" data-tts="kappa sub 1 1 0 and so on 0 equals Cov T sub 1 T sub 2">$\kappa_{1,1,0,\dots,0} = \operatorname{Cov}(T_1, T_2)$</span>, and so on. Higher mixed cumulants have less elementary
 interpretations and become combinatorially complex — but their additivity over independent sums remains the
 property that makes them indispensable for limit theorems.
 </p>
@@ -571,31 +570,31 @@ property that makes them indispensable for limit theorems.
 <p data-cid="ch02-1450">The chapter, distilled to seven bullets:</p>
 <ol data-cid="ch02-1460">
 <li>An <strong>exponential family</strong> is the set of densities of the form
-$p_\eta(x) = h(x) \exp[\sum_i \eta_i T_i(x) - A(\eta)]$, where $A$ is whatever it has to be to normalize.</li>
-<li>The <strong>natural parameter space</strong> $\Xi$ is the set of $\eta$'s for which $A$ is finite. The
-<strong>canonical form</strong> uses $\eta$ as the parameter; reparameterizations swap in $\theta$ via a function
-$\eta(\theta)$.</li>
+<span class="tts-math" data-tts="p_ eta x equals h x exp sub i eta sub i T sub i x minus A eta">$p_\eta(x) = h(x) \exp[\sum_i \eta_i T_i(x) - A(\eta)]$</span>, where <span class="tts-math" data-tts="A">$A$</span> is whatever it has to be to normalize.</li>
+<li>The <strong>natural parameter space</strong> <span class="tts-math" data-tts="Xi">$\Xi$</span> is the set of <span class="tts-math" data-tts="eta">$\eta$</span>'s for which <span class="tts-math" data-tts="A">$A$</span> is finite. The
+<strong>canonical form</strong> uses <span class="tts-math" data-tts="eta">$\eta$</span> as the parameter; reparameterizations swap in <span class="tts-math" data-tts="theta">$\theta$</span> via a function
+<span class="tts-math" data-tts="eta theta">$\eta(\theta)$</span>.</li>
 <li>i.i.d. samples from an exponential family form another exponential family, with sufficient statistics
-$\tilde T_i = \sum_j T_i(X_j)$ — sums replace individual values. This is the first hint of <em>sufficiency</em>.</li>
-<li><strong>Theorem 2.4</strong>: inside the interior of $\Xi$, you can differentiate under the integral
+<span class="tts-math" data-tts="T sub i equals sub j T sub i X sub j">$\tilde T_i = \sum_j T_i(X_j)$</span> — sums replace individual values. This is the first hint of <em>sufficiency</em>.</li>
+<li><strong>Theorem 2.4</strong>: inside the interior of <span class="tts-math" data-tts="Xi">$\Xi$</span>, you can differentiate under the integral
 sign as many times as you like. The key tool is dominated convergence.</li>
 <li>The first identity:
-$E_\eta T_j(X) = \partial A / \partial \eta_j$. The second:
-$\operatorname{Cov}_\eta(T_j, T_k) = \partial^2 A / (\partial \eta_j \partial \eta_k)$.</li>
-<li><strong>Dominated convergence</strong>: if $|f_n| \leq g$ with $\int g \, d\mu &lt; \infty$ and $f_n \to f$ a.e.,
-then $\int f_n \, d\mu \to \int f \, d\mu$. The "umbrella" function $g$ is what makes the swap legal.</li>
-<li>For canonical exponential families the CGF of $T$ is $K_T(u) = A(u + \eta) - A(\eta)$, so all cumulants
-of $T$ are partial derivatives of $A$ at $\eta$. The log-partition function <em>is</em> the cumulant
+<span class="tts-math" data-tts="E_ eta T sub j X equals partial A over partial eta sub j">$E_\eta T_j(X) = \partial A / \partial \eta_j$</span>. The second:
+<span class="tts-math" data-tts="Cov_ eta T sub j T sub k equals partial to the 2 A over partial eta sub j partial eta sub k">$\operatorname{Cov}_\eta(T_j, T_k) = \partial^2 A / (\partial \eta_j \partial \eta_k)$</span>.</li>
+<li><strong>Dominated convergence</strong>: if <span class="tts-math" data-tts="f sub n less than or equal to g">$|f_n| \leq g$</span> with <span class="tts-math" data-tts="the integral of g d mu lt infinity">$\int g \, d\mu &lt; \infty$</span> and <span class="tts-math" data-tts="f sub n to f">$f_n \to f$</span> a.e.,
+then <span class="tts-math" data-tts="the integral of f sub n d mu to the integral of f d mu">$\int f_n \, d\mu \to \int f \, d\mu$</span>. The "umbrella" function <span class="tts-math" data-tts="g">$g$</span> is what makes the swap legal.</li>
+<li>For canonical exponential families the CGF of <span class="tts-math" data-tts="T">$T$</span> is <span class="tts-math" data-tts="K sub T u equals A u plus eta minus A eta">$K_T(u) = A(u + \eta) - A(\eta)$</span>, so all cumulants
+of <span class="tts-math" data-tts="T">$T$</span> are partial derivatives of <span class="tts-math" data-tts="A">$A$</span> at <span class="tts-math" data-tts="eta">$\eta$</span>. The log-partition function <em>is</em> the cumulant
 generating function, up to a shift.</li>
 </ol>
 <div class="box pause" data-cid="ch02-1470">
 <span class="box-label">Did this land?</span>
 <p data-cid="ch02-1480">Before moving to Chapter 3, you should be able to answer (without looking back):</p>
 <ul data-cid="ch02-1490">
-<li>Write the Bernoulli, Poisson, and exponential distributions in canonical exponential family form. What are $T$, $\eta$, $A$, and $h$ in each case?</li>
-<li>Why is $\eta = \log[p/(1-p)]$ — the logit — the canonical parameter of the Bernoulli, rather than $p$ itself?</li>
-<li>State the dominated convergence theorem and explain the role of the dominating function $g$. Why is it not enough that $f_n \to f$ pointwise?</li>
-<li>Derive the mean and variance of the Poisson by differentiating $A(\eta)$. Why is this faster than the direct sum computation?</li>
+<li>Write the Bernoulli, Poisson, and exponential distributions in canonical exponential family form. What are <span class="tts-math" data-tts="T">$T$</span>, <span class="tts-math" data-tts="eta">$\eta$</span>, <span class="tts-math" data-tts="A">$A$</span>, and <span class="tts-math" data-tts="h">$h$</span> in each case?</li>
+<li>Why is <span class="tts-math" data-tts="eta equals log p over 1 minus p">$\eta = \log[p/(1-p)]$</span> — the logit — the canonical parameter of the Bernoulli, rather than <span class="tts-math" data-tts="p">$p$</span> itself?</li>
+<li>State the dominated convergence theorem and explain the role of the dominating function <span class="tts-math" data-tts="g">$g$</span>. Why is it not enough that <span class="tts-math" data-tts="f sub n to f">$f_n \to f$</span> pointwise?</li>
+<li>Derive the mean and variance of the Poisson by differentiating <span class="tts-math" data-tts="A eta">$A(\eta)$</span>. Why is this faster than the direct sum computation?</li>
 </ul>
 <p data-cid="ch02-1500">If any of these feel shaky, re-read the matching section. There's no hurry.</p>
 </div>
@@ -605,6 +604,6 @@ generating function, up to a shift.</li>
 </nav>
 </article>
 </main>
-<script src="/js/main.js"></script><script src="/js/comments.js"></script>
+<script src="/js/main.js"></script><script src="/js/comments.js"></script><script src="/js/tts.js"></script>
 </body>
 </html>
