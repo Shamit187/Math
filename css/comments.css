@@ -1,0 +1,218 @@
+/* ============================================================
+   Comments UI
+   ============================================================ */
+
+/* Mark commentable blocks: position relative so the gutter button can anchor */
+[data-cid] {
+  position: relative;
+}
+
+/* The "comment" button that appears in the right gutter on hover */
+.cmt-btn {
+  position: absolute;
+  top: 0.1rem;
+  right: -2.6rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  border: 1px solid var(--rule);
+  background: var(--bg-elev);
+  color: var(--ink-soft);
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.12s ease, transform 0.12s ease, color 0.12s, border-color 0.12s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
+  user-select: none;
+  z-index: 5;
+}
+
+[data-cid]:hover > .cmt-btn,
+[data-cid].cmt-active > .cmt-btn,
+[data-cid].cmt-has > .cmt-btn {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.cmt-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent-soft);
+}
+
+.cmt-btn .cmt-count {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.62rem;
+  min-width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  font-weight: 700;
+}
+
+/* Highlight the block when it has comments */
+[data-cid].cmt-has {
+  box-shadow: inset 3px 0 0 var(--accent-soft);
+}
+
+/* Move the gutter button inside the block on narrow screens */
+@media (max-width: 1100px) {
+  .cmt-btn { right: 0.2rem; top: 0.2rem; }
+  [data-cid] > h2.cmt-btn, [data-cid] > h3.cmt-btn { right: 0.2rem; }
+}
+
+/* Comments panel attached below a block */
+.cmt-panel {
+  margin: 0.6rem 0 1.4rem;
+  padding: 0.8rem 1rem;
+  background: var(--bg-elev);
+  border: 1px dashed var(--accent-soft);
+  border-radius: 8px;
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  color: var(--ink);
+}
+
+.cmt-panel.hidden { display: none; }
+
+.cmt-panel .cmt-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin-bottom: 0.6rem;
+}
+
+.cmt-panel .cmt-empty {
+  color: var(--ink-soft);
+  font-style: italic;
+  font-size: 0.85rem;
+}
+
+.cmt-item {
+  border-left: 3px solid var(--accent);
+  padding: 0.45rem 0.7rem;
+  background: var(--bg);
+  border-radius: 0 6px 6px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.cmt-item .cmt-text {
+  white-space: pre-wrap;
+  font-family: var(--sans);
+  font-size: 0.92rem;
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+.cmt-item .cmt-meta {
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cmt-item button.cmt-del {
+  background: transparent;
+  border: none;
+  color: var(--ink-soft);
+  cursor: pointer;
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+}
+.cmt-item button.cmt-del:hover {
+  color: var(--warn-edge);
+  background: var(--warn);
+}
+
+/* Form */
+.cmt-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.cmt-form textarea {
+  width: 100%;
+  min-height: 80px;
+  resize: vertical;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.cmt-form textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.cmt-form .cmt-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.cmt-form button {
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  border: 1px solid var(--rule);
+  background: var(--bg-elev);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.cmt-form button.primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.cmt-form button.primary:hover { background: var(--accent-soft); }
+.cmt-form button:hover { border-color: var(--accent-soft); }
+
+.cmt-form .cmt-status {
+  flex: 1;
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+}
+.cmt-form .cmt-status.err { color: var(--warn-edge); }
+.cmt-form .cmt-status.ok { color: var(--example-edge); }
+
+/* Global status badge in the header */
+.cmt-storage-badge {
+  margin-left: 0.7rem;
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid var(--rule);
+  color: var(--ink-soft);
+}
+.cmt-storage-badge.online { color: #3f6b3b; border-color: #b2cca8; }
+[data-theme="dark"] .cmt-storage-badge.online { color: var(--example-edge); border-color: var(--example-edge); }
+.cmt-storage-badge.offline { color: var(--ink-soft); }

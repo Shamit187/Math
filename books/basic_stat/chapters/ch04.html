@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ch 4 — Unbiased Estimation · Theoretical Statistics</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/>
+</head>
+<body data-book="basic_stat" data-page="ch04">
+<header class="site-header">
+<a class="brand" href="/books/basic_stat/">Theoretical Statistics <small>a slow reading guide</small></a>
+<nav>
+<a href="/" class="all-books-link">All books</a>
+    <a href="/books/basic_stat/">Contents</a>
+<button aria-label="toggle theme" class="theme-toggle">Dark</button>
+</nav>
+</header>
+<main class="layout">
+<aside class="sidebar">
+<h4>Chapter 4</h4>
+<ol>
+<li><a href="#s4-1">4.1 Minimum variance unbiased estimators</a></li>
+<li><a href="#s4-2">4.2 Second thoughts about bias</a></li>
+<li><a href="#s4-3">4.3 Normal one-sample — distribution theory</a></li>
+<li><a href="#s4-4">4.4 Normal one-sample — estimation</a></li>
+<li><a href="#s4-5">4.5 Variance bounds and information</a></li>
+<li><a href="#s4-6">4.6 Variance bounds in higher dimensions</a></li>
+<li><a href="#summary">Summary</a></li>
+</ol>
+</aside>
+<article class="content">
+<section class="hero">
+<div class="kicker">Chapter 4</div>
+<h1>Unbiased Estimation</h1>
+<p class="subtitle" data-cid="ch04-010">From "best unbiased" to "maybe bias isn't the enemy": how risk, sufficiency, and Fisher information conspire to set the speed limit on estimation.</p>
+<div class="meta">
+<span>Book pages: 61–83</span>
+<span>~45 min reading time</span>
+<span>Prereqs: Chapters 1–3</span>
+</div>
+</section>
+<h2 data-cid="ch04-020" id="s4-1">4.1 Minimum Variance Unbiased Estimators</h2>
+<h3 data-cid="ch04-030">Why this chapter exists at all</h3>
+<p data-cid="ch04-040">
+  In Chapter 3 we learned that "best estimator" is a slippery phrase. Two estimators can each be better on a different
+  part of the parameter space — their risk curves cross, and there is no clean winner. So we either change the loss
+  function, change the criterion (minimax, Bayes), or change the <em>class of estimators</em> we consider. This
+  chapter pursues the third option.
+</p>
+<p data-cid="ch04-050">
+  The idea is simple: if we restrict to estimators that are <strong>unbiased</strong> — meaning they hit the right
+  answer on average — then comparing risks under squared-error loss reduces to comparing variances. And once we
+  can compare variances directly, we can ask for a single best estimator: the one whose variance is smallest at
+  <em>every</em> $\theta$ simultaneously. When such an estimator exists, it is called UMVU.
+</p>
+<p data-cid="ch04-060">
+  The promise is enticing. The catch is that unbiased estimators sometimes don't exist, sometimes don't beat
+  biased competitors, and occasionally are even ridiculous. We'll get to all three. First, the setup.
+</p>
+<div class="box definition" data-cid="ch04-070">
+<span class="box-label">Definition 4.1 — unbiased estimator</span>
+<p data-cid="ch04-080">An estimator $\delta$ is <strong>unbiased</strong> for the parametric function $g(\theta)$ if
+$$E_\theta \,\delta(X) = g(\theta), \quad \forall \theta \in \Omega.$$
+If at least one unbiased estimator exists, $g$ is called <strong>U-estimable</strong>.</p>
+</div>
+<p data-cid="ch04-090">
+  Read the definition carefully. The estimator must equal $g(\theta)$ on average — and it must do so for
+  <em>every</em> $\theta$, not just one. That uniform requirement is what makes unbiasedness restrictive. It also
+  rules out trivial cheats like "always return $0$": that estimator is only unbiased if $g \equiv 0$.
+</p>
+<h3 data-cid="ch04-100">Not every $g$ is U-estimable</h3>
+<p data-cid="ch04-110">
+  Whether $g$ can be estimated unbiasedly depends on what the family of distributions actually lets the data say.
+  Two cautionary tales.
+</p>
+<div class="box example" data-cid="ch04-120">
+<span class="box-label">Example 4.1 — uniform $(0, \theta)$</span>
+<p data-cid="ch04-130">Suppose $X \sim \text{Uniform}(0, \theta)$. An estimator $\delta(X)$ is unbiased for $g(\theta)$ iff
+$$\int_0^\theta \delta(x) \, \theta^{-1} \, dx = g(\theta), \quad \forall \theta &gt; 0,$$
+which rearranges to
+$$\int_0^\theta \delta(x) \, dx = \theta\, g(\theta).$$
+Letting $\theta \downarrow 0$ forces $\theta\, g(\theta) \to 0$. Differentiating both sides with respect to $\theta$
+(fundamental theorem of calculus) gives
+$$\delta(x) = \frac{d}{dx}\bigl(x\, g(x)\bigr) = g(x) + x\, g'(x).$$
+So once $g$ is reasonably smooth, the unbiased estimator is forced upon us. For $g(\theta) = \theta$, this gives
+$\delta(X) = 2X$.</p>
+</div>
+<div class="box example" data-cid="ch04-140">
+<span class="box-label">Example 4.2 — binomial and the impossible $\sin\theta$</span>
+<p data-cid="ch04-150">If $X \sim \text{Binomial}(n, \theta)$ and we want $g(\theta) = \sin\theta$, then unbiasedness reads
+$$\sum_{k=0}^n \delta(k) \binom{n}{k} \theta^k (1 - \theta)^{n - k} = \sin\theta, \quad \forall \theta \in (0, 1).$$
+The left side is a polynomial in $\theta$ of degree at most $n$. The right side is $\sin\theta$, which is not a
+polynomial. No estimator can fix that — $\sin\theta$ is simply <em>not</em> U-estimable from a binomial sample.</p>
+</div>
+<div class="box intuition" data-cid="ch04-160">
+<span class="box-label">Read this geometrically</span>
+<p data-cid="ch04-170">
+  Unbiasedness is a linear constraint on the function $\delta$. The set of "things estimable unbiasedly" is therefore
+  the image of estimators under the linear map $\delta \mapsto E_\theta\, \delta$. If your target $g$ lies outside
+  that image, you are out of luck — and no amount of cleverness will help.
+</p>
+</div>
+<h3 data-cid="ch04-180">From bias to variance to UMVU</h3>
+<p data-cid="ch04-190">
+  With squared-error loss $L(\theta, d) = (d - g(\theta))^2$, the risk of an unbiased estimator collapses to its
+  variance:
+</p>
+$$R(\theta, \delta) = E_\theta\bigl(\delta(X) - g(\theta)\bigr)^2 = \operatorname{Var}_\theta\bigl(\delta(X)\bigr).$$
+<p data-cid="ch04-200">So the natural goal is: minimize variance, simultaneously, over all $\theta$.</p>
+<div class="box definition" data-cid="ch04-210">
+<span class="box-label">Definition 4.3 — UMVU</span>
+<p data-cid="ch04-220">An unbiased estimator $\delta$ is <strong>uniformly minimum variance unbiased</strong> (UMVU) if
+$$\operatorname{Var}_\theta(\delta) \leq \operatorname{Var}_\theta(\delta^*), \quad \forall \theta \in \Omega,$$
+for every competing unbiased estimator $\delta^*$.</p>
+</div>
+<p data-cid="ch04-230">
+  "Uniformly" is the load-bearing word. A UMVU estimator must dominate every alternative at <em>every</em>
+  parameter value at once. There is no reason in general to expect such an animal to exist. Yet — and this is the
+  magic — when the family has a <em>complete sufficient statistic</em>, a UMVU does exist whenever the target is
+  U-estimable at all.
+</p>
+<div class="box definition" data-cid="ch04-240">
+<span class="box-label">Theorem 4.4 — UMVU via complete sufficient statistic</span>
+<p data-cid="ch04-250">If $g$ is U-estimable and $T$ is complete sufficient, then there is an essentially unique unbiased estimator
+based on $T$, and it is UMVU.</p>
+</div>
+<p data-cid="ch04-260">
+  The proof is short and worth following because it ties together every notion from Chapter 3.
+</p>
+<p data-cid="ch04-270"><strong>Sketch.</strong> Take any unbiased $\delta(X)$ and Rao–Blackwellize:
+$\eta(T) = E[\delta \mid T]$. By smoothing, $E_\theta\, \eta(T) = E_\theta\, \delta = g(\theta)$, so $\eta(T)$ is
+unbiased. If $\eta^*(T)$ is another unbiased estimator built from $T$, then $E_\theta[\eta(T) - \eta^*(T)] = 0$
+for every $\theta$; completeness forces $\eta(T) = \eta^*(T)$ a.s. So $\eta(T)$ is essentially unique. And
+Rao–Blackwell guarantees its variance never exceeds that of any other unbiased $\delta^*$, by conditioning
+$\delta^*$ on $T$.</p>
+<div class="box intuition" data-cid="ch04-280">
+<span class="box-label">The trick in one sentence</span>
+<p data-cid="ch04-290">
+  "Find any unbiased estimator, then condition on the complete sufficient statistic." Sufficiency keeps the
+  unbiasedness; completeness keeps the answer unique; Rao–Blackwell shrinks the variance. Three Chapter-3 ideas in
+  one line.
+</p>
+</div>
+<h3 data-cid="ch04-300">How to actually find a UMVU</h3>
+<p data-cid="ch04-310">The theorem suggests two strategies:</p>
+<ol data-cid="ch04-320">
+<li><strong>Solve for $\eta(T)$ directly.</strong> Write down $E_\theta \,\eta(T) = g(\theta)$ as an integral or sum
+equation and solve for $\eta$.</li>
+<li><strong>Rao–Blackwellize.</strong> Take any unbiased estimator you can think of — even a silly one — and compute
+$E[\delta \mid T]$.</li>
+</ol>
+<div class="box example" data-cid="ch04-330">
+<span class="box-label">Example 4.5 — uniform sample, redux</span>
+<p data-cid="ch04-340">Let $X_1, \dots, X_n$ be i.i.d. $\text{Uniform}(0, \theta)$. The maximum $T = \max\{X_1, \dots, X_n\}$ is complete
+sufficient (Example 3.16). Its density is $n t^{n-1}/\theta^n$ on $(0, \theta)$. So $\eta(T)$ unbiased for $g(\theta)$
+means
+$$\int_0^\theta \eta(t)\, \frac{n t^{n-1}}{\theta^n}\, dt = g(\theta),$$
+i.e. $n \int_0^\theta t^{n-1} \eta(t)\, dt = \theta^n g(\theta)$. Differentiating,
+$$n \theta^{n-1} \eta(\theta) = \frac{d}{d\theta}\bigl(\theta^n g(\theta)\bigr), \qquad \eta(t) = g(t) + \frac{t\, g'(t)}{n}.$$
+For $g(\theta) = \theta$, we get the UMVU estimator $\eta(T) = \tfrac{n+1}{n} T$.</p>
+<p data-cid="ch04-350">The "naïve" unbiased estimator was $\delta = 2\bar X$. A direct computation gives
+$$\operatorname{Var}_\theta\bigl(\eta(T)\bigr) = \frac{\theta^2}{n(n+2)}, \qquad
+\operatorname{Var}_\theta(\delta) = \frac{\theta^2}{3n},$$
+so the ratio is $3/(n+2) \to 0$. The UMVU is dramatically better than the moment-matching estimator. This is what
+sufficiency buys you.</p>
+</div>
+<div class="box example" data-cid="ch04-360">
+<span class="box-label">Example 4.6 — binomial $\theta^2$</span>
+<p data-cid="ch04-370">Let $X_1, \dots, X_n$ be i.i.d. Bernoulli$(\theta)$, so $T = \sum X_i \sim \text{Binomial}(n, \theta)$ is complete
+sufficient. To estimate $g(\theta) = \theta^2$, start with the silly-but-unbiased $\delta = X_1 X_2$:
+$E_\theta[X_1 X_2] = \theta^2$. Now condition on $T$:
+$$P_\theta(X_1 = X_2 = 1 \mid T = t) = \frac{\theta^2 \binom{n-2}{t-2} \theta^{t-2} (1-\theta)^{n-t}}{\binom{n}{t} \theta^t (1-\theta)^{n-t}} = \frac{t(t-1)}{n(n-1)}.$$
+The UMVU estimator of $\theta^2$ is therefore $T(T-1)/[n(n-1)]$.</p>
+</div>
+<p data-cid="ch04-380">
+  Notice how that second example illustrates the strategy beautifully: a useless-looking estimator (just multiply
+  the first two observations) becomes the best possible estimator after one conditioning step. The "wasted" observations
+  $X_3, \dots, X_n$ are exactly what $T$ uses to clean it up.
+</p>
+<div class="box warn" data-cid="ch04-390">
+<span class="box-label">Common pitfall</span>
+<p data-cid="ch04-400">
+  UMVU does not always exist. If the family lacks a complete sufficient statistic, the unbiasedness constraint can
+  be too weak to pick out a single winner — different unbiased estimators may beat each other on different parts of
+  $\Omega$. Theorem 4.4 is a sufficient condition, not a necessary one, but in practice "find the complete sufficient
+  statistic" is the recipe.
+</p>
+</div>
+<h2 data-cid="ch04-410" id="s4-2">4.2 Second Thoughts About Bias</h2>
+<p data-cid="ch04-420">
+  The development so far has been seductive: a single best estimator, a clean recipe, a satisfying theorem. But the
+  whole construction rests on a premise that deserves scrutiny — that unbiasedness is the <em>right</em> property
+  to demand. It often isn't.
+</p>
+<h3 data-cid="ch04-430">Bias-variance trade-off: a biased estimator can win</h3>
+<p data-cid="ch04-440">
+  Back to the uniform example. The UMVU estimator of $\theta$ was $\eta(T) = \tfrac{n+1}{n}T$. But we restricted to
+  the form $\delta_a = aT$; what is the <em>best</em> multiplier $a$ under squared-error <em>risk</em>, not variance?
+</p>
+<p data-cid="ch04-450">
+  Recall $E_\theta T = n\theta/(n+1)$ and $E_\theta T^2 = n\theta^2/(n+2)$. The risk of $\delta_a = aT$ is
+</p>
+$$R(\theta, \delta_a) = a^2 E_\theta T^2 - 2 a \theta E_\theta T + \theta^2 = \theta^2 \left(\frac{n}{n+2} a^2 - \frac{2n}{n+1} a + 1\right).$$
+<p data-cid="ch04-460">
+  This quadratic in $a$ is minimized at $a^\star = (n+2)/(n+1)$, giving
+  $R(\theta, \delta_{a^\star}) = \theta^2/(n+1)^2$. Compare this with the UMVU risk,
+  $\theta^2/[n(n+2)] = \theta^2/(n^2 + 2n)$. Since $(n+1)^2 = n^2 + 2n + 1 &gt; n^2 + 2n$, the biased $\delta_{a^\star}$
+  has strictly smaller risk.
+</p>
+<div class="box pause" data-cid="ch04-470">
+<span class="box-label">Pause — what just happened?</span>
+<p data-cid="ch04-480">
+  The UMVU estimator is, by definition, the best <em>unbiased</em> estimator. A biased estimator with smaller variance
+  can beat it overall. The bias buys us variance reduction, and that's a good trade. The general identity is
+</p>
+<p data-cid="ch04-490">
+$$R(\theta, \delta) = \operatorname{Var}_\theta(\delta) + b^2(\theta, \delta), \qquad b(\theta, \delta) = E_\theta\, \delta - g(\theta).$$
+</p>
+<p data-cid="ch04-500">
+  Bias contributes <em>quadratically</em>. A little bias hurts only a little. Trading a chunk of variance for a sliver
+  of bias is often a great deal.
+</p>
+</div>
+<p data-cid="ch04-510">
+  This is not a curiosity. The bias-variance trade-off is at the heart of nonparametric curve estimation, ridge
+  regression, the Stein shrinkage phenomenon, and essentially every modern smoothing or regularization technique.
+  Insisting on $b = 0$ leaves a lot of statistical power on the table.
+</p>
+<h3 data-cid="ch04-520">Sometimes the only unbiased estimator is absurd</h3>
+<div class="box example" data-cid="ch04-530">
+<span class="box-label">Example 4.7 — truncated Poisson</span>
+<p data-cid="ch04-540">Suppose $X$ has mass function
+$$P_\theta(X = x) = \frac{\theta^x e^{-\theta}}{x!\,(1 - e^{-\theta})}, \quad x = 1, 2, \dots,$$
+a Poisson truncated to $\{1, 2, \dots\}$. We want to estimate $g(\theta) = e^{-\theta}$ (the missing mass). The
+unbiasedness equation forces
+$$\sum_{k=1}^\infty \frac{\delta(k)}{k!} \theta^k = 1 - e^{-\theta} = \sum_{k=1}^\infty \frac{(-1)^{k+1}}{k!} \theta^k.$$
+Matching coefficients term by term gives $\delta(k) = (-1)^{k+1}$. The UMVU estimator of $e^{-\theta} \in (0, 1)$ is
+therefore $(-1)^{X+1}$: it equals $+1$ when $X$ is odd and $-1$ when $X$ is even.</p>
+</div>
+<div class="box warn" data-cid="ch04-550">
+<span class="box-label">Common pitfall — "best unbiased" can be ridiculous</span>
+<p data-cid="ch04-560">
+  The estimator $(-1)^{X+1}$ takes values $\pm 1$ while the parameter lives in $(0, 1)$. It is provably UMVU, and
+  provably absurd. Unbiasedness is not the same as "good". When the unbiasedness constraint is too restrictive,
+  the only estimator satisfying it can be useless. A reasonable biased estimator — for instance, $e^{-\bar X}$ in
+  the un-truncated problem — would crush it.
+</p>
+</div>
+<p data-cid="ch04-570">
+  Keep both observations in mind throughout the rest of the chapter. We will keep developing the unbiased theory,
+  because it is mathematically clean and historically influential, but the takeaway is not "always be unbiased". It
+  is: "unbiasedness gives one well-defined optimum; whether you want that optimum is a separate question".
+</p>
+<h2 data-cid="ch04-580" id="s4-3">4.3 Normal One-Sample Problem — Distribution Theory</h2>
+<p data-cid="ch04-590">
+  The most important concrete example in introductory statistics is the i.i.d. sample $X_1, \dots, X_n \sim N(\mu, \sigma^2)$.
+  Almost every $t$-test, $F$-test, and confidence interval you've seen depends on knowing the joint distribution of
+  $\bar X$ and $S^2$. Here we derive those facts cleanly, using moment generating functions and the gamma family.
+</p>
+<h3 data-cid="ch04-600">Four facts about a normal random variable</h3>
+<p data-cid="ch04-610">Let $X \sim N(\mu, \sigma^2)$ and $Z = (X - \mu)/\sigma$. Then:</p>
+<ol data-cid="ch04-620">
+<li><strong>Standardization:</strong> $Z \sim N(0, 1)$, and more generally $aX + b \sim N(a\mu + b, a^2 \sigma^2)$.</li>
+<li><strong>MGF of $Z$:</strong> $M_Z(u) = e^{u^2/2}$. (Complete the square in $\int e^{uz} e^{-z^2/2}\, dz/\sqrt{2\pi}$.)</li>
+<li><strong>MGF of $X$:</strong> $M_X(u) = e^{u\mu + u^2 \sigma^2/2}$, since $X = \mu + \sigma Z$.</li>
+<li><strong>Sums of independent normals:</strong> if $X_i \sim N(\mu_i, \sigma_i^2)$ independent, then $X_1 + X_2 \sim N(\mu_1 + \mu_2, \sigma_1^2 + \sigma_2^2)$, by multiplying MGFs.</li>
+</ol>
+<div class="box intuition" data-cid="ch04-630">
+<span class="box-label">Why MGFs do the heavy lifting</span>
+<p data-cid="ch04-640">
+  Convolution of densities is painful; multiplication of MGFs is trivial. As long as the MGF exists, "the MGF
+  determines the distribution" (Lemma 2.7) means we can identify the distribution of a sum just by recognizing the
+  product. Every distributional result in this section follows that template.
+</p>
+</div>
+<h3 data-cid="ch04-650">Sample mean and sample variance</h3>
+<p data-cid="ch04-660">Let $X_1, \dots, X_n$ be a random sample from $N(\mu, \sigma^2)$. By Example 2.3 this is a two-parameter
+full-rank exponential family with complete sufficient statistic
+$T = \bigl(\sum X_i, \, \sum X_i^2\bigr)$. Define</p>
+$$\bar X = \frac{1}{n} \sum_{i=1}^n X_i, \qquad S^2 = \frac{1}{n - 1} \sum_{i=1}^n (X_i - \bar X)^2.$$
+<p data-cid="ch04-670">The mapping $T \leftrightarrow (\bar X, S^2)$ is one-to-one (using
+$\sum X_i^2 = (n-1) S^2 + n \bar X^2$), so $(\bar X, S^2)$ is also complete sufficient.</p>
+<p data-cid="ch04-680">From the four facts above, summing and rescaling:</p>
+$$\bar X \sim N\!\left(\mu, \frac{\sigma^2}{n}\right).$$
+<p data-cid="ch04-690">From Example 3.22 (Basu), $\bar X$ and $S^2$ are independent. So we just need the marginal distribution of $S^2$.</p>
+<h3 data-cid="ch04-700">The gamma and chi-square families</h3>
+<p data-cid="ch04-710">
+  The gamma distribution $\Gamma(\alpha, \beta)$ with shape $\alpha &gt; 0$ and scale $\beta &gt; 0$ has density
+</p>
+$$f_{\alpha, \beta}(x) = \frac{x^{\alpha - 1} e^{-x/\beta}}{\beta^\alpha\, \Gamma(\alpha)}, \quad x &gt; 0.$$
+
+<p data-cid="ch04-720">Its MGF, valid for $u &lt; 1/\beta$, is $M(u) = (1 - u\beta)^{-\alpha}$. Multiplying MGFs gives the key
+convolution rule:
+$$X \sim \Gamma(\alpha_x, \beta), \, Y \sim \Gamma(\alpha_y, \beta) \text{ independent} \implies X + Y \sim \Gamma(\alpha_x + \alpha_y, \beta).$$
+</p>
+<div class="box definition" data-cid="ch04-730">
+<span class="box-label">Definition 4.8 — chi-square distribution</span>
+<p data-cid="ch04-740">The chi-square distribution on $p$ degrees of freedom, $\chi^2_p$, is the distribution of $Z_1^2 + \cdots + Z_p^2$
+where $Z_1, \dots, Z_p$ are i.i.d. $N(0, 1)$.</p>
+</div>
+<p data-cid="ch04-750">
+  A short calculation gives the MGF of $Z^2$: $M_{Z^2}(u) = (1 - 2u)^{-1/2}$, which is the MGF of $\Gamma(1/2, 2)$.
+  By the convolution rule, $\chi^2_p = \Gamma(p/2, 2)$ with MGF $(1 - 2u)^{-p/2}$ for $u &lt; 1/2$.
+</p>
+<h3 data-cid="ch04-760">The distribution of $(n-1)S^2/\sigma^2$</h3>
+<p data-cid="ch04-770">Set $Z_i = (X_i - \mu)/\sigma$, all i.i.d. $N(0, 1)$. Let
+$$V \equiv \frac{(n-1) S^2}{\sigma^2} = \sum_{i=1}^n (Z_i - \bar Z)^2.$$
+Expanding the square,
+$$\sum_{i=1}^n (Z_i - \bar Z)^2 = \sum_{i=1}^n Z_i^2 - n \bar Z^2.$$
+So $V + n \bar Z^2 = \sum Z_i^2 \sim \chi^2_n$. Now $\sqrt n\, \bar Z \sim N(0, 1)$, so $n \bar Z^2 \sim \chi^2_1$.
+Independence of $V$ (a function of $S^2$) and $n \bar Z^2$ (a function of $\bar X$) lets us factor the joint MGF:
+$$M_V(u)\, M_{n \bar Z^2}(u) = (1 - 2u)^{-n/2} \implies M_V(u) = (1 - 2u)^{-(n-1)/2}.$$
+That's the MGF of $\chi^2_{n-1}$. So</p>
+$$\frac{(n-1) S^2}{\sigma^2} \sim \chi^2_{n-1}.$$
+
+<div class="box pause" data-cid="ch04-780">
+<span class="box-label">Pause — what did the proof actually use?</span>
+<p data-cid="ch04-790">
+  Three ingredients: (i) the convolution rule for gammas, (ii) the independence of $\bar X$ and $S^2$ from Basu's
+  theorem, and (iii) the uniqueness of MGFs. The "degrees of freedom decrement" — $n$ becomes $n - 1$ — comes from
+  algebraically separating out $\bar Z^2$. That single subtraction is the entire intuition behind "we lose a degree of
+  freedom for estimating the mean."
+</p>
+</div>
+<p data-cid="ch04-800">
+  Combined: $\bar X \sim N(\mu, \sigma^2/n)$ and $(n-1) S^2/\sigma^2 \sim \chi^2_{n-1}$, independent. This pair of
+  facts is the engine that runs the entire normal one-sample theory: $t$-statistics, confidence intervals for $\mu$
+  and $\sigma^2$, the $F$-test for ratios of variances, and the construction of UMVU estimators in the next section.
+</p>
+<h2 data-cid="ch04-810" id="s4-4">4.4 Normal One-Sample Problem — Estimation</h2>
+<p data-cid="ch04-820">
+  Now we cash in. Since $(\bar X, S^2)$ is complete sufficient, any unbiased function of it is automatically UMVU
+  by Theorem 4.4. The plan: compute moments of $S$ (using the gamma representation) and put together UMVU estimators
+  of various functions of $(\mu, \sigma^2)$.
+</p>
+<h3 data-cid="ch04-830">Moments of $S$</h3>
+<p data-cid="ch04-840">Since $V = (n-1) S^2/\sigma^2 \sim \chi^2_{n-1} = \Gamma((n-1)/2, 2)$, we have $S^r = \sigma^r V^{r/2}/(n-1)^{r/2}$
+and</p>
+$$E_\theta S^r = \frac{\sigma^r}{(n-1)^{r/2}} E V^{r/2} = \frac{\sigma^r\, 2^{r/2}\, \Gamma\!\left(\tfrac{r + n - 1}{2}\right)}{(n - 1)^{r/2}\, \Gamma\!\left(\tfrac{n-1}{2}\right)},$$
+valid for $n + r &gt; 1$.
+
+<p data-cid="ch04-850">Rearranging, the quantity
+$$\widehat{\sigma^r} = \frac{(n - 1)^{r/2}\, \Gamma\!\left(\tfrac{n - 1}{2}\right)}{2^{r/2}\, \Gamma\!\left(\tfrac{r + n - 1}{2}\right)}\, S^r$$
+is unbiased for $\sigma^r$, and hence UMVU. Special cases worth noting:</p>
+<ul data-cid="ch04-860">
+<li><strong>$r = 2$:</strong> $S^2$ itself is UMVU for $\sigma^2$. (The constant collapses to $1$.)</li>
+<li><strong>$r = 1$:</strong> The UMVU estimator of $\sigma$ is <em>not</em> $S$. It is $S$ times a gamma-function
+correction factor. $S$ is biased downward as an estimator of $\sigma$ (Jensen's inequality applied to
+$\sqrt{\cdot}$).</li>
+</ul>
+<div class="box pause" data-cid="ch04-870">
+<span class="box-label">Did you ever question this?</span>
+<p data-cid="ch04-880">
+  Almost every textbook treats $S$ as "the standard deviation". It is a fine estimator, but it is biased — and the
+  bias is non-trivial for small $n$. By Stirling's formula the correction factor is $1 - r(r-2)/(4n) + O(1/n^2)$,
+  so for $r = 1$ the bias is $O(1/n)$ and disappears for large samples. Practitioners ignore it for good reason.
+  But notice the lesson: even in the simplest, most studied model, the "obvious" estimator is biased.
+</p>
+</div>
+<h3 data-cid="ch04-890">UMVU for $\mu$ and friends</h3>
+<p data-cid="ch04-900">Since $E \bar X = \mu$, the sample mean $\bar X$ is UMVU for $\mu$.</p>
+<p data-cid="ch04-910">For $\mu^2$: $\bar X^2$ is <em>not</em> unbiased, because
+$E \bar X^2 = \mu^2 + \sigma^2/n$. Subtracting an unbiased estimator of $\sigma^2/n$ fixes it:
+$$\widehat{\mu^2} = \bar X^2 - \frac{S^2}{n}, \quad \text{UMVU for } \mu^2.$$</p>
+<p data-cid="ch04-920">For the signal-to-noise ratio $\mu/\sigma$: use independence. $\bar X$ is UMVU for $\mu$ and depends only on
+$\bar X$. The UMVU for $1/\sigma$ (the $r = -1$ case above) depends only on $S$. Since $\bar X$ and $S$ are
+independent, their product is unbiased for $\mu/\sigma$:
+$$\widehat{\mu/\sigma} = \frac{\sqrt{2}\, \Gamma\!\left(\tfrac{n-1}{2}\right)}{\sqrt{n-1}\, \Gamma\!\left(\tfrac{n-2}{2}\right)}\cdot \frac{\bar X}{S}.$$
+This is a rescaled $1/t$-statistic.</p>
+<h3 data-cid="ch04-930">UMVU for a normal quantile</h3>
+<p data-cid="ch04-940">The $p$th quantile of $N(\mu, \sigma^2)$ is $x_p = \mu + \sigma\, \Phi^{-1}(p)$. Combining the UMVU estimators of
+$\mu$ and $\sigma$ (which are independent, so we just add):</p>
+$$\widehat{x_p} = \bar X + \frac{\sqrt{n - 1}\, \Gamma\!\left(\tfrac{n-1}{2}\right)}{\sqrt{2}\, \Gamma(n/2)}\, S\, \Phi^{-1}(p).$$
+
+<div class="box intuition" data-cid="ch04-950">
+<span class="box-label">Pattern recognition</span>
+<p data-cid="ch04-960">
+  Every formula in this section has the same shape: "the right gamma-function correction times the natural moment
+  estimator". The corrections come from the chi-square distribution of $S^2$. Independence of $\bar X$ and $S$ lets
+  us combine them additively or multiplicatively without worry. This is why the normal model is the gold standard
+  example — every quantity has a closed-form UMVU.
+</p>
+</div>
+<h2 data-cid="ch04-970" id="s4-5">4.5 Variance Bounds and Information</h2>
+<p data-cid="ch04-980">
+  Theorem 4.4 tells us how to <em>build</em> a UMVU when a complete sufficient statistic is available. But what is
+  the smallest variance any unbiased estimator could possibly have? That question — independent of any specific
+  construction — leads to the Cramér–Rao bound and to Fisher information.
+</p>
+<h3 data-cid="ch04-990">The covariance inequality, the engine of the bound</h3>
+<p data-cid="ch04-1000">
+  For any random variables $X, Y$ with finite variances, the Cauchy–Schwarz-style inequality
+</p>
+$$\operatorname{Cov}^2(X, Y) \leq \operatorname{Var}(X)\, \operatorname{Var}(Y) \tag{4.11}$$
+
+<p data-cid="ch04-1010">follows from expanding $E[(X - EX)\sigma_Y \pm (Y - EY)\sigma_X]^2 \geq 0$. Rearranging,
+$$\operatorname{Var}(X) \geq \frac{\operatorname{Cov}^2(X, Y)}{\operatorname{Var}(Y)}.$$
+This looks unhelpful — it bounds $\operatorname{Var}(X)$ in terms of $\operatorname{Var}(X)$ itself via the
+covariance. The trick is to choose $Y$ cleverly so that $\operatorname{Cov}(\delta, Y)$ is the <em>same</em>
+for every unbiased $\delta$. Then the right side is a constant, depending only on $g$ and the model.</p>
+<h3 data-cid="ch04-1020">The likelihood-ratio choice and Hammersley–Chapman–Robbins</h3>
+<p data-cid="ch04-1030">Let $\mathcal{P} = \{P_\theta\}$ have densities $p_\theta$, and suppose $\theta + \Delta \in \Omega$. Define the
+<strong>likelihood ratio</strong> $L(x) = p_{\theta + \Delta}(x)/p_\theta(x)$ (taking $L = 1$ where $p_\theta = 0$,
+under the regularity that $p_{\theta + \Delta}$ also vanishes there). Then for $h$ integrable under $P_{\theta + \Delta}$,
+$$E_{\theta + \Delta}\, h(X) = \int h\, p_{\theta + \Delta}\, d\mu = \int h\, L\, p_\theta\, d\mu = E_\theta\, L(X)\, h(X).$$
+Apply this with $h = 1$ (so $E_\theta L = 1$) and $h = \delta$ (so $E_{\theta + \Delta}\, \delta = E_\theta\, L \delta$).
+Let $\psi(X) = L(X) - 1$; then $E_\theta\, \psi = 0$ and
+$$E_\theta\, \psi\, \delta = E_\theta\, L \delta - E_\theta\, \delta = E_{\theta + \Delta}\, \delta - E_\theta\, \delta = g(\theta + \Delta) - g(\theta).$$
+That is: $\operatorname{Cov}_\theta(\delta, \psi)$ is the <em>same</em> for every unbiased $\delta$. Substituting
+into the covariance inequality gives the <strong>Hammersley–Chapman–Robbins bound</strong>:</p>
+$$\operatorname{Var}_\theta(\delta) \geq \frac{\bigl[g(\theta + \Delta) - g(\theta)\bigr]^2}{E_\theta\bigl(p_{\theta + \Delta}(X)/p_\theta(X) - 1\bigr)^2}. \tag{4.13}$$
+
+<div class="box intuition" data-cid="ch04-1040">
+<span class="box-label">Why does this work?</span>
+<p data-cid="ch04-1050">
+  The estimator $\delta$ must "move" the right amount when $\theta$ moves to $\theta + \Delta$ — its mean must shift
+  by exactly $g(\theta + \Delta) - g(\theta)$. The likelihood ratio $L$ is the random object that, on the data side,
+  encodes the change in $\theta$. If small changes in $\theta$ produce big shifts in $L$, then the data are
+  informative and small variance is feasible. If they don't, no estimator can pick up the signal.
+</p>
+</div>
+<h3 data-cid="ch04-1060">Fisher information by taking $\Delta \to 0$</h3>
+<p data-cid="ch04-1070">Under regularity that lets us interchange limits and integrals, dividing top and bottom of (4.13) by $\Delta^2$
+and letting $\Delta \to 0$ gives
+$$\operatorname{Var}_\theta(\delta) \geq \frac{[g'(\theta)]^2}{I(\theta)},$$
+where the <strong>Fisher information</strong> is
+$$I(\theta) = E_\theta \!\left(\frac{\partial \log p_\theta(X)}{\partial \theta}\right)^{\!2}. \tag{4.14}$$
+</p>
+<p data-cid="ch04-1080">The function $\partial \log p_\theta/\partial \theta$ is called the <strong>score</strong>. Two facts about it,
+under regularity allowing differentiation under the integral:</p>
+<ol data-cid="ch04-1090">
+<li>$E_\theta[\partial \log p_\theta(X)/\partial \theta] = 0$. (Differentiate $\int p_\theta\, d\mu = 1$ in $\theta$.)</li>
+<li>$I(\theta) = \operatorname{Var}_\theta(\partial \log p_\theta(X)/\partial \theta) = -E_\theta[\partial^2 \log p_\theta(X)/\partial \theta^2]$. (Differentiate again.) Eq. (4.15)–(4.16).</li>
+</ol>
+<div class="box intuition" data-cid="ch04-1100">
+<span class="box-label">Three faces of Fisher information</span>
+<p data-cid="ch04-1110">
+  $I(\theta)$ can be computed as:
+</p>
+<ul data-cid="ch04-1120">
+<li>the expected squared score — its definition,</li>
+<li>the variance of the score — since the score has mean zero,</li>
+<li>the negative expected curvature of the log-likelihood — usually the easiest to compute.</li>
+</ul>
+<p data-cid="ch04-1130">
+  The third form is why people call $I(\theta)$ "curvature": a sharply peaked log-likelihood means small variance is
+  possible. A flat log-likelihood means the data barely distinguish $\theta$ from neighbouring values.
+</p>
+</div>
+<h3 data-cid="ch04-1140">The Cramér–Rao bound</h3>
+<div class="box definition" data-cid="ch04-1150">
+<span class="box-label">Theorem 4.9 — Cramér–Rao / information bound</span>
+<p data-cid="ch04-1160">Let $\mathcal{P} = \{P_\theta : \theta \in \Omega\}$ be a dominated family with $\Omega \subseteq \mathbb{R}$ open,
+densities $p_\theta$ differentiable in $\theta$. Suppose $\delta$ has mean $g(\theta)$, $E_\theta \delta^2 &lt; \infty$,
+and the regularity
+$$g'(\theta) = E_\theta\bigl[\delta(X)\, \psi(X, \theta)\bigr], \qquad \psi(X, \theta) = \frac{\partial \log p_\theta(X)}{\partial \theta}, \tag{4.17}$$
+holds. Then
+$$\operatorname{Var}_\theta(\delta) \geq \frac{[g'(\theta)]^2}{I(\theta)}, \quad \theta \in \Omega.$$</p>
+</div>
+<div class="box warn" data-cid="ch04-1170">
+<span class="box-label">Common pitfall — regularity matters</span>
+<p data-cid="ch04-1180">
+  Condition (4.17) involves the estimator $\delta$. So in principle some estimators might violate it and have
+  variance below the bound. Under mild conditions (Woodroofe–Simons 1983) the bound still holds for almost every
+  $\theta$, but the literature is full of subtler results. The practical advice: when the model has bounded support
+  that depends on $\theta$ (uniform $(0, \theta)$, shifted exponential, etc.), Cramér–Rao often does not apply.
+  Hammersley–Chapman–Robbins is the safer tool there.
+</p>
+</div>
+<h3 data-cid="ch04-1190">Reparameterization</h3>
+<p data-cid="ch04-1200">If $\theta = h(\xi)$ is a smooth one-to-one reparameterization, the chain rule gives
+$$\tilde I(\xi) = [h'(\xi)]^2\, I(\theta). \tag{4.18}$$
+That is, information transforms <em>quadratically</em> under change of variable. A useful sanity check: in any
+parameterization, $1/I$ scales like the variance of an unbiased estimator should — confirming the bound is a
+genuine geometric quantity, not a coincidence of coordinates.</p>
+<h3 data-cid="ch04-1210">Two showcase computations</h3>
+<div class="box example" data-cid="ch04-1220">
+<span class="box-label">Example 4.10 — exponential families</span>
+<p data-cid="ch04-1230">For a one-parameter canonical exponential family $p_\eta(x) = \exp[\eta T(x) - A(\eta)] h(x)$, the score is
+$T - A'(\eta)$, and
+$$I(\eta) = \operatorname{Var}_\eta(T) = A''(\eta).$$
+If we instead use the mean parameterization $\mu = A'(\eta) = E_\eta T$, then (4.18) gives
+$I(\mu) = 1/\operatorname{Var}_\mu(T)$. Since $T$ is itself UMVU for $\mu$, with variance $\operatorname{Var}_\mu(T)$,
+the Cramér–Rao bound $1/I(\mu) = \operatorname{Var}_\mu(T)$ is <strong>achieved exactly</strong>. Exponential families
+are the canonical examples where the bound is sharp.</p>
+</div>
+<div class="box example" data-cid="ch04-1240">
+<span class="box-label">Example 4.11 — location families</span>
+<p data-cid="ch04-1250">If $P_\theta$ has density $p_\theta(x) = f(x - \theta)$, a change of variables shows
+$$I(\theta) = \int \frac{[f'(x)]^2}{f(x)}\, dx,$$
+which does not depend on $\theta$. Location families have constant Fisher information — translating the parameter
+just translates the problem, so the local geometry is the same everywhere.</p>
+</div>
+<h3 data-cid="ch04-1260">Information adds under independence</h3>
+<p data-cid="ch04-1270">If $X$ and $Y$ are independent with densities $p_\theta$ and $q_\theta$, then the score of the joint density is
+the sum of the individual scores, and independence makes the cross-term vanish:
+$$I_{X, Y}(\theta) = I_X(\theta) + I_Y(\theta).$$
+Iterating: for a random sample of size $n$, the total information is $n\, I(\theta)$. This is the formal statement
+of "information accumulates linearly with sample size", and it is the origin of the $\sqrt n$ rate that pervades
+asymptotic statistics.</p>
+<div class="box pause" data-cid="ch04-1280">
+<span class="box-label">Why $1/\sqrt n$?</span>
+<p data-cid="ch04-1290">
+  If unbiased estimators have variance at least $[g'(\theta)]^2/[n I(\theta)]$, then their standard deviation is at
+  least $|g'(\theta)|/\sqrt{n I(\theta)}$ — i.e. $\Theta(1/\sqrt n)$. The whole edifice of $\sqrt n$-asymptotic
+  theory rests on this single inequality.
+</p>
+</div>
+<h2 data-cid="ch04-1300" id="s4-6">4.6 Variance Bounds in Higher Dimensions</h2>
+<p data-cid="ch04-1310">
+  Everything in the previous section extends to a vector parameter $\theta \in \mathbb{R}^s$, replacing the score by
+  the gradient and the variance by a covariance matrix.
+</p>
+<h3 data-cid="ch04-1320">The Fisher information matrix</h3>
+<p data-cid="ch04-1330">In regular models,
+$$I(\theta)_{ij} = E_\theta \!\left[\frac{\partial \log p_\theta(X)}{\partial \theta_i}\, \frac{\partial \log p_\theta(X)}{\partial \theta_j}\right] = \operatorname{Cov}_\theta\!\left(\frac{\partial \log p_\theta}{\partial \theta_i},\, \frac{\partial \log p_\theta}{\partial \theta_j}\right) = -E_\theta\!\left[\frac{\partial^2 \log p_\theta(X)}{\partial \theta_i\, \partial \theta_j}\right].$$
+In matrix notation, with $\nabla_\theta$ the gradient and $\nabla^2_\theta$ the Hessian,
+$$I(\theta) = E_\theta\bigl[(\nabla_\theta \log p_\theta)(\nabla_\theta \log p_\theta)'\bigr] = -E_\theta\, \nabla^2_\theta \log p_\theta(X).$$
+The equality between the first two forms uses $E_\theta\, \nabla_\theta \log p_\theta = 0$, the vector version of the
+zero-mean-score property.</p>
+<h3 data-cid="ch04-1340">The multivariate Cramér–Rao bound</h3>
+<p data-cid="ch04-1350">For an unbiased estimator $\delta$ of a scalar function $g: \Omega \to \mathbb{R}$,
+$$\operatorname{Var}_\theta(\delta) \geq \nabla g(\theta)'\, I^{-1}(\theta)\, \nabla g(\theta).$$
+The gradient $\nabla g$ tells us which direction in parameter space the target $g$ is sensitive to;
+$I^{-1}(\theta)$ is the inverse information matrix in that direction.</p>
+<div class="box intuition" data-cid="ch04-1360">
+<span class="box-label">Direction matters</span>
+<p data-cid="ch04-1370">
+  If the model has lots of information about $\theta_1$ but little about $\theta_2$, then estimating a function that
+  depends mostly on $\theta_1$ is easy, and one that depends mostly on $\theta_2$ is hard. The quadratic form
+  $\nabla g'\, I^{-1}\, \nabla g$ captures this directional asymmetry. It's the same flavour as
+  $\operatorname{Var}(v' X) = v'\, \operatorname{Cov}(X)\, v$ from Chapter 1: information replaces covariance, and
+  $I^{-1}$ replaces $\operatorname{Cov}$.
+</p>
+</div>
+<div class="box example" data-cid="ch04-1380">
+<span class="box-label">Example 4.12 — multivariate exponential families</span>
+<p data-cid="ch04-1390">For an $s$-parameter canonical exponential family $p_\eta(x) = \exp[\eta \cdot T(x) - A(\eta)] h(x)$,
+$$\frac{\partial^2 \log p_\eta(X)}{\partial \eta_i\, \partial \eta_j} = -\frac{\partial^2 A(\eta)}{\partial \eta_i\, \partial \eta_j},$$
+so the Fisher information is just the Hessian of the cumulant function:
+$$I(\eta) = \nabla^2 A(\eta).$$
+Compact, elegant, and one of the most-used identities in all of statistics.</p>
+</div>
+<h3 data-cid="ch04-1400">Reparameterization in higher dimensions</h3>
+<p data-cid="ch04-1410">Under $\theta = h(\xi)$ with Jacobian $D h(\xi)$ defined by $[Dh]_{ij} = \partial h_i/\partial \xi_j$, the chain
+rule gives
+$$\tilde I(\xi) = [Dh(\xi)]'\, I(\theta)\, [Dh(\xi)].$$
+This is the matrix analogue of $\tilde I = [h']^2 I$. Once you've memorized "information transforms by sandwiching
+with the Jacobian", you can switch between any parameterizations the problem suggests without doing the integrals
+again.</p>
+<h2 data-cid="ch04-1420" id="summary">Summary</h2>
+<p data-cid="ch04-1430">The whole chapter, condensed:</p>
+<ol data-cid="ch04-1440">
+<li>An estimator is <strong>unbiased</strong> if $E_\theta\, \delta = g(\theta)$ for every $\theta$. Not every $g$
+admits an unbiased estimator — that question (U-estimability) is settled by the form of the family.</li>
+<li>If a complete sufficient statistic $T$ exists and $g$ is U-estimable, there is a unique unbiased function of $T$,
+and it is <strong>UMVU</strong> (Theorem 4.4). Find it either by solving $E_\theta\, \eta(T) = g(\theta)$ or by
+Rao–Blackwellizing any unbiased estimator.</li>
+<li>UMVU is not always the right goal. A small bias can buy a large variance reduction (bias-variance trade-off),
+and sometimes the only unbiased estimator is absurd (truncated Poisson).</li>
+<li>For an i.i.d. normal sample, $\bar X \sim N(\mu, \sigma^2/n)$ and $(n-1)S^2/\sigma^2 \sim \chi^2_{n-1}$,
+independent. From these come UMVU estimators of every smooth function of $(\mu, \sigma^2)$ — usually equal to the
+natural moment estimator times a gamma-function correction.</li>
+<li><strong>Fisher information</strong> $I(\theta) = E[(\partial \log p_\theta/\partial \theta)^2]
+= -E[\partial^2 \log p_\theta/\partial \theta^2]$ measures how much the data say about $\theta$. Information adds
+under independence, scales linearly with sample size, and transforms quadratically under reparameterization.</li>
+<li>The <strong>Cramér–Rao bound</strong>: any unbiased estimator of $g(\theta)$ has variance at least
+$[g'(\theta)]^2/I(\theta)$ (scalar case), or $\nabla g'\, I^{-1}\, \nabla g$ (vector case). In exponential families
+parameterized by the mean, the bound is achieved exactly.</li>
+<li>For models with parameter-dependent support, Cramér–Rao often fails; the <strong>Hammersley–Chapman–Robbins</strong>
+inequality (4.13) is the robust alternative.</li>
+</ol>
+<div class="box pause" data-cid="ch04-1450">
+<span class="box-label">Did this land?</span>
+<p data-cid="ch04-1460">Before moving to Chapter 5, you should be able to answer (without looking back):</p>
+<ul data-cid="ch04-1470">
+<li>State the recipe for finding a UMVU when a complete sufficient statistic is available.</li>
+<li>Give an example where the UMVU is worse than a biased estimator under squared-error risk.</li>
+<li>Why is $S$ a biased estimator of $\sigma$, and what is the UMVU?</li>
+<li>Write down three equivalent expressions for $I(\theta)$ and say when each is most useful.</li>
+<li>Why does Fisher information for a sample of size $n$ equal $n$ times the per-observation information?</li>
+<li>When does the Cramér–Rao bound apply, and when must you fall back on Hammersley–Chapman–Robbins?</li>
+</ul>
+<p data-cid="ch04-1480">If anything feels shaky, the relevant section is short — re-read it before the curved exponential families of
+Chapter 5, where Fisher information becomes the central object.</p>
+</div>
+<nav class="chapter-nav">
+<a href="ch03.html"><span class="label">← Previous</span><span class="title">3. Risk, Sufficiency, Completeness, and Ancillarity</span></a>
+<a class="next" href="ch05.html"><span class="label">Next →</span><span class="title">5. Curved Exponential Families</span></a>
+</nav>
+</article>
+</main>
+<script src="/js/main.js"></script><script src="/js/comments.js"></script>
+</body>
+</html>

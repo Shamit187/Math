@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ch 16 — Asymptotic Optimality · Theoretical Statistics</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/>
+</head>
+<body data-book="basic_stat" data-page="ch16">
+<header class="site-header">
+<a class="brand" href="/books/basic_stat/">Theoretical Statistics <small>a slow reading guide</small></a>
+<nav>
+<a href="/" class="all-books-link">All books</a>
+    <a href="/books/basic_stat/">Contents</a>
+<button aria-label="toggle theme" class="theme-toggle">Dark</button>
+</nav>
+</header>
+<main class="layout">
+<aside class="sidebar">
+<h4>Chapter 16</h4>
+<ol>
+<li><a href="#orientation">Orientation</a></li>
+<li><a href="#s16-1">16.1 Superefficiency</a></li>
+<li><a href="#s16-2">16.2 Contiguity</a></li>
+<li><a href="#s16-3">16.3 Local asymptotic normality</a></li>
+<li><a href="#s16-4">16.4 Minimax estimation of a normal mean</a></li>
+<li><a href="#s16-5">16.5 Posterior distributions</a></li>
+<li><a href="#s16-6">16.6 Locally asymptotically minimax estimation</a></li>
+<li><a href="#summary">Summary</a></li>
+</ol>
+</aside>
+<article class="content">
+<section class="hero">
+<div class="kicker">Chapter 16</div>
+<h1>Asymptotic Optimality</h1>
+<p class="subtitle" data-cid="ch16-010">In what sense is the MLE "the best possible" estimator when the sample is large? Hodges' counterexample, contiguity, LAN, and the Hájek–Le Cam minimax bound.</p>
+<div class="meta">
+<span>Book pages: 319–342</span>
+<span>~70 min reading time</span>
+<span>Prereqs: Chs. 4, 7, 8, 9, 12</span>
+</div>
+</section>
+<h2 data-cid="ch16-020" id="orientation">Why this chapter is harder than the others</h2>
+<p data-cid="ch16-030">
+  The folklore is simple: "the MLE is asymptotically efficient — it achieves the Cramér–Rao bound in the limit". Theorem 9.14 said something close to that. But "achieves the Cramér–Rao bound" is a statement about <em>variance</em>, and an asymptotic statement at one parameter value. The first thing Keener does in this chapter is wreck that folklore with a single example (Hodges, 1951) which beats the MLE in variance at one point while being arbitrarily bad nearby.
+</p>
+<p data-cid="ch16-040">
+  So we have to be careful. Asymptotic efficiency cannot just mean "smallest asymptotic variance" — that lets cheaters in. The honest formulation has to control the whole distribution, uniformly in a neighbourhood of the true parameter. The right tool turns out to be a local minimax bound: among estimators with reasonable behaviour over a $1/\sqrt{n}$ neighbourhood of $\theta_0$, none can outperform the MLE.
+</p>
+<p data-cid="ch16-050">
+  The proof of that bound rests on three deep technical ideas, and the chapter is built around them in sequence:
+</p>
+<ol data-cid="ch16-060">
+<li><strong>Contiguity</strong> (§16.2) — an asymptotic version of "absolutely continuous". When two sequences of distributions are contiguous, what happens under one happens under the other.</li>
+<li><strong>Local asymptotic normality</strong> (§16.3) — when the log-likelihood ratio between $\theta_0$ and a $1/\sqrt{n}$-shifted alternative looks, in large samples, like the log-likelihood ratio of a Gaussian shift experiment.</li>
+<li><strong>Anderson's lemma plus a normal-mean minimax theorem</strong> (§16.4) — the answer for an exact Gaussian shift experiment. Once the local Gaussian limit is established, the asymptotic problem inherits the answer from the exact one.</li>
+</ol>
+<div class="box intuition" data-cid="ch16-070">
+<span class="box-label">The big picture in one sentence</span>
+<p data-cid="ch16-080">
+  In a regular parametric model, the sequence of statistical experiments around a fixed $\theta_0$ converges (in a strong sense, the LAN sense) to a single Gaussian shift experiment. Optimal procedures in the limit experiment translate back into asymptotically optimal procedures in the original sequence. The MLE is one such procedure.
+</p>
+</div>
+<p data-cid="ch16-090">
+  Keep this picture in the back of your mind. Every theorem in this chapter is one step toward making it precise.
+</p>
+<!-- ============================================================== -->
+<h2 data-cid="ch16-100" id="s16-1">16.1 Superefficiency: why naive efficiency fails</h2>
+<h3 data-cid="ch16-110">The naive conjecture</h3>
+<p data-cid="ch16-120">
+  Let $X_1, X_2, \dots$ be i.i.d. with density $f_\theta$, $\theta \in \Omega$. Recall the information bound: for an unbiased estimator $\delta_n$ of $g(\theta)$,
+  $$\operatorname{Var}_\theta(\delta_n) \geq \frac{[g'(\theta)]^2}{n \, I(\theta)}.$$
+  Forget unbiasedness; suppose only that $\sqrt{n}(\delta_n - g(\theta)) \Rightarrow N(0, \sigma^2(\theta))$. It seems natural to conjecture
+  $$\sigma^2(\theta) \geq \frac{[g'(\theta)]^2}{I(\theta)}. \qquad (\text{the naive bound})$$
+</p>
+<p data-cid="ch16-130">
+  Hodges' example destroys this conjecture.
+</p>
+<div class="box example" data-cid="ch16-140">
+<span class="box-label">Example 16.1 — Hodges' superefficient estimator</span>
+<p data-cid="ch16-150">
+  Let $X_1, X_2, \dots$ be i.i.d. $N(\theta, 1)$ and let $\bar{X}_n = (X_1 + \cdots + X_n)/n$. Pick $a \in (0, 1)$ and define
+  $$\delta_n = \begin{cases} \bar{X}_n, &amp; |\bar{X}_n| \geq 1/n^{1/4}, \\ a \bar{X}_n, &amp; |\bar{X}_n| &lt; 1/n^{1/4}. \end{cases}$$
+  So we use the sample mean, except in a shrinking window around the origin, where we shrink toward zero.
+</p>
+</div>
+<p data-cid="ch16-160">
+  Now compute the limiting distribution of $\sqrt{n}(\delta_n - \theta)$:
+</p>
+<ul data-cid="ch16-170">
+<li><strong>If $\theta \neq 0$:</strong> for large $n$, $\bar{X}_n$ is close to $\theta$, far from the shrinking window. So $\delta_n = \bar{X}_n$ with probability tending to one, and $\sqrt{n}(\delta_n - \theta) \Rightarrow N(0, 1)$.</li>
+<li><strong>If $\theta = 0$:</strong> for large $n$, $|\bar{X}_n| &lt; 1/n^{1/4}$ with probability tending to one (because $\bar{X}_n = O_p(1/\sqrt{n})$ and $1/\sqrt{n} \ll 1/n^{1/4}$). So $\delta_n = a \bar{X}_n$, and $\sqrt{n}(\delta_n - 0) = a \sqrt{n}\bar{X}_n \Rightarrow N(0, a^2)$.</li>
+</ul>
+<p data-cid="ch16-180">
+  Combine these:
+  $$\sqrt{n}(\delta_n - \theta) \Rightarrow N(0, \sigma^2(\theta)), \qquad \sigma^2(\theta) = \begin{cases} 1, &amp; \theta \neq 0, \\ a^2, &amp; \theta = 0. \end{cases}$$
+  Since $I(\theta) = 1$ for the unit-variance normal, the Cramér–Rao floor is $1$. Yet at $\theta = 0$ the estimator achieves $a^2 &lt; 1$. The naive conjecture fails.
+</p>
+<div class="box intuition" data-cid="ch16-190">
+<span class="box-label">Where the trick lives</span>
+<p data-cid="ch16-200">
+  The estimator achieves superefficiency at $\theta = 0$ by being <em>worse</em> at nearby parameter values that the asymptotic variance, evaluated pointwise, cannot see. Look at $\theta_n = (1 + a)/(2 n^{1/4})$ — the midpoint of the shrinkage window. The estimator $\delta_n$ never takes values in that window, so $|\delta_n - \theta_n| \geq (1 - a)/(2 n^{1/4})$ deterministically. Squaring and multiplying by $n$:
+  $$n \, R(\theta_n, \delta_n) \geq n \cdot \frac{(1 - a)^2}{4 \sqrt{n}} = \frac{(1 - a)^2 \sqrt{n}}{4} \to \infty.$$
+</p>
+<p data-cid="ch16-210">
+  So the scaled risk blows up at a sequence of parameters $\theta_n \to 0$ even though it is finite (and small) at $\theta = 0$ itself. Pointwise convergence of scaled risk is too coarse a tool. We must look at risk <em>uniformly</em> on a $1/\sqrt{n}$-neighbourhood — that is what the local asymptotic minimax framework will deliver.
+</p>
+</div>
+<div class="box warn" data-cid="ch16-220">
+<span class="box-label">Common pitfall</span>
+<p data-cid="ch16-230">
+  Reading "asymptotic variance" in a paper and immediately comparing to $1/I(\theta)$ is dangerous unless the paper is honest about uniformity. Hodges' estimator looks fantastic in any "limiting distribution" table: $N(0, a^2)$ at $\theta = 0$, $N(0, 1)$ elsewhere. The pathology is hidden in the rate at which the limit kicks in, and shows up only when you sweep $\theta$ at the right rate.
+</p>
+</div>
+<div class="box pause" data-cid="ch16-240">
+<span class="box-label">Pause — regular vs. irregular models</span>
+<p data-cid="ch16-250">
+  Hodges' example lives inside a <strong>regular</strong> model: smooth density in $\theta$, finite Fisher information, MLE asymptotically normal. The pathology is in the <em>estimator</em>, not the model. By contrast, in an <strong>irregular</strong> model — say $X_i \sim \text{Uniform}(0, \theta)$ — the support depends on $\theta$, Fisher information is undefined, the MLE $\hat{\theta}_n = \max_i X_i$ converges at rate $1/n$ rather than $1/\sqrt{n}$, and the limiting distribution is exponential, not Gaussian. The entire LAN framework in this chapter <em>does not apply</em> to such models. Asymptotic optimality theory for irregular models is its own subject. Throughout this chapter, "regular" means quadratic-mean differentiable, which we make precise in §16.2.
+</p>
+</div>
+<!-- ============================================================== -->
+<h2 data-cid="ch16-260" id="s16-2">16.2 Contiguity</h2>
+<h3 data-cid="ch16-270">From absolute continuity to its asymptotic shadow</h3>
+<p data-cid="ch16-280">
+  Two measures $Q$ and $\tilde{Q}$ on the same space are mutually absolutely continuous iff they assign mass zero to the same sets. Statistically, this is the condition under which the hypotheses $X \sim Q$ versus $X \sim \tilde{Q}$ cannot be distinguished perfectly (level $\alpha &lt; 1$ implies power $\beta &lt; 1$).
+</p>
+<p data-cid="ch16-290">
+  Contiguity is the asymptotic analogue. Now we have a <em>sequence</em> of measures $Q_n, \tilde{Q}_n$ on a sequence of spaces $(\mathcal{X}_n, \mathcal{A}_n)$ — typically $\mathcal{X}_n = \mathbb{R}^n$, with $n$ the sample size.
+</p>
+<div class="box definition" data-cid="ch16-300">
+<span class="box-label">Definition 16.2 — contiguity</span>
+<p data-cid="ch16-310">
+  The measures $\tilde{Q}_n$ are <strong>contiguous</strong> to the measures $Q_n$, written $\tilde{Q}_n \triangleleft Q_n$, if
+  $$Q_n(A_n) \to 0 \quad \Longrightarrow \quad \tilde{Q}_n(A_n) \to 0$$
+  for every sequence of measurable sets $A_n$.
+</p>
+</div>
+<div class="box intuition" data-cid="ch16-320">
+<span class="box-label">Translation</span>
+<p data-cid="ch16-330">
+  "Anywhere $Q_n$ ultimately puts no mass, $\tilde{Q}_n$ also ultimately puts no mass." It is absolute continuity, smeared across the sequence. The competing hypotheses $Q_n$ vs. $\tilde{Q}_n$ remain hard to distinguish — a test with vanishing level under $Q_n$ has vanishing power under $\tilde{Q}_n$. They are <strong>mutually contiguous</strong> if the implication also runs the other way; then a test with power tending to one has level also tending to one.
+</p>
+</div>
+<h3 data-cid="ch16-340">The canonical example: shifted Gaussians</h3>
+<div class="box example" data-cid="ch16-350">
+<span class="box-label">Example 16.3 — multivariate normal shifts</span>
+<p data-cid="ch16-360">
+  Let $Q_n = N_n(\mu_n, \sigma^2 I)$ and $\tilde{Q}_n = N_n(\nu_n, \sigma^2 I)$ with $\mu_n, \nu_n \in \mathbb{R}^n$. By the Neyman–Pearson lemma the best level-$\alpha$ test has power $\Phi(\|\mu_n - \nu_n\|/\sigma - z_\alpha)$. Any indicator test $1_{A_n}$ has power $\tilde{Q}_n(A_n)$, bounded by the optimum:
+  $$\tilde{Q}_n(A_n) \leq \Phi\!\left(\frac{\|\mu_n - \nu_n\|}{\sigma} - z_{\alpha_n}\right), \qquad \alpha_n = Q_n(A_n).$$
+  If $\|\mu_n - \nu_n\|$ stays bounded and $\alpha_n \to 0$, then $z_{\alpha_n} \to \infty$ and $\tilde{Q}_n(A_n) \to 0$. So $\limsup \|\mu_n - \nu_n\| &lt; \infty$ implies mutual contiguity. If $\|\mu_n - \nu_n\| \to \infty$, the symmetric likelihood-ratio test separates the two hypotheses asymptotically, and contiguity fails.
+</p>
+</div>
+<p data-cid="ch16-370">
+  Specialize to the i.i.d. case: $\mu_n = \theta \mathbf{1}$, $\nu_n = (\theta + \delta_n) \mathbf{1}$. Then $\|\mu_n - \nu_n\|^2 = n \delta_n^2$, so contiguity holds iff $\limsup n \delta_n^2 &lt; \infty$, i.e. iff $\delta_n = O(1/\sqrt{n})$. This is the first instance of a recurring fact:
+</p>
+<div class="box intuition" data-cid="ch16-380">
+<span class="box-label">The $1/\sqrt{n}$ rate, demystified</span>
+<p data-cid="ch16-390">
+  In regular i.i.d. models, parameter shifts of order $1/\sqrt{n}$ are the largest shifts that <em>cannot</em> be detected with probability approaching one. Shifts asymptotically larger than $1/\sqrt{n}$ become perfectly separable; shifts asymptotically smaller become asymptotically indistinguishable from no shift at all. The interesting regime — where statistics happens — is exactly $\delta_n \asymp 1/\sqrt{n}$.
+</p>
+</div>
+<h3 data-cid="ch16-400">Likelihood ratios and contiguity</h3>
+<div class="box definition" data-cid="ch16-410">
+<span class="box-label">Lemma 16.4</span>
+<p data-cid="ch16-420">
+  Suppose $\tilde{Q}_n \ll Q_n$ with likelihood ratio $L_n = d\tilde{Q}_n/dQ_n$. Let $X_n \sim Q_n$. If the sequence $L_n(X_n)$ is uniformly integrable, then $\tilde{Q}_n \triangleleft Q_n$.
+</p>
+</div>
+<p data-cid="ch16-430">
+  The proof is a one-line application of the bound
+  $$\tilde{Q}_n(A_n) = \int_{A_n} L_n \, dQ_n \leq t \, Q_n(A_n) + E[L_n(X_n) \mathbf{1}\{L_n(X_n) \geq t\}].$$
+  The first piece kills if $Q_n(A_n) \to 0$ for fixed $t$; the second kills by sending $t \to \infty$ using uniform integrability.
+</p>
+<div class="box pause" data-cid="ch16-440">
+<span class="box-label">Pause — what contiguity buys you operationally</span>
+<p data-cid="ch16-450">
+  Suppose you have proved $T_n(X_n) \xrightarrow{p} c$ under $Q_n$. If $\tilde{Q}_n \triangleleft Q_n$, then automatically $T_n(\tilde{X}_n) \xrightarrow{p} c$ under $\tilde{Q}_n$ (Proposition 16.5). This is the technical workhorse of the chapter: it lets us prove things "at $\theta_0$" and then transport them to $\theta_0 + t/\sqrt{n}$ without re-doing the calculation.
+</p>
+</div>
+<h3 data-cid="ch16-460">Differentiability in quadratic mean</h3>
+<p data-cid="ch16-470">
+  Ordinary pointwise differentiation of $\theta \mapsto p_\theta$ is too brittle for general models. The right notion, due to Le Cam, treats densities as points in the Hilbert space $L^2(\mu)$ and takes derivatives there.
+</p>
+<div class="box definition" data-cid="ch16-480">
+<span class="box-label">Definition 16.7 — quadratic-mean differentiability</span>
+<p data-cid="ch16-490">
+  A map $\theta \mapsto f_\theta$ from $\mathbb{R}$ into $L^2(\mu)$ is <strong>differentiable in quadratic mean</strong> at $\theta_0$ with derivative $V \in L^2(\mu)$ if
+  $$\left\| \frac{f_{\theta_0 + \epsilon} - f_{\theta_0}}{\epsilon} - V \right\|_2 \to 0 \quad \text{as } \epsilon \to 0.$$
+  For $\theta \in \mathbb{R}^p$ the analogous definition uses $\|\epsilon\|$ in the denominator and a vector-valued derivative $V$.
+</p>
+</div>
+<p data-cid="ch16-500">
+  In particular we apply this to $\theta \mapsto \sqrt{p_\theta}$. When pointwise derivatives exist with enough regularity, the quadratic-mean derivative is just the pointwise derivative (Lemma 16.9). The reformulated definition of Fisher information is
+  $$I(\theta) = 4 \|V_\theta\|_2^2 = 4 \int \left(\frac{\partial \sqrt{p_\theta}}{\partial \theta}\right)^2 d\mu, \tag{16.2}$$
+  which matches the classical formula $\int (\partial \log p_\theta / \partial \theta)^2 \, p_\theta \, d\mu$ whenever both are defined, but is more broadly valid.
+</p>
+<div class="box definition" data-cid="ch16-510">
+<span class="box-label">Theorem 16.10</span>
+<p data-cid="ch16-520">
+  If $\{P_\theta\}$ is a dominated family with densities $p_\theta$ and $\theta \mapsto \sqrt{p_\theta}$ is differentiable in quadratic mean at $\theta_0$, then the product measures $P^n_{\theta_0 + \Delta/\sqrt{n}}$ are contiguous to $P^n_{\theta_0}$ for every fixed $\Delta$.
+</p>
+</div>
+<p data-cid="ch16-530">
+  This is the formal version of "regular models behave well on the $1/\sqrt{n}$ scale". The non-trivial work is showing that quadratic-mean differentiability gives uniform integrability of the likelihood ratios $L_n$, which then triggers Lemma 16.4.
+</p>
+<!-- ============================================================== -->
+<h2 data-cid="ch16-540" id="s16-3">16.3 Local asymptotic normality</h2>
+<h3 data-cid="ch16-550">Reading off the right limit experiment</h3>
+<p data-cid="ch16-560">
+  Here is the central insight of the chapter, told as a calculation. If $X \sim N_p(\theta, \Sigma)$ with $\Sigma$ known, the log-likelihood ratio between $t$ and $0$ is
+  $$\ell(t, 0) = \log\frac{dP_t}{dP_0}(X) = t' \Sigma^{-1} X - \tfrac{1}{2} t' \Sigma^{-1} t. \tag{16.3}$$
+  Linear in $t$ with a Gaussian coefficient, quadratic in $t$ with a constant coefficient.
+</p>
+<p data-cid="ch16-570">
+  Now do the same calculation for $n$ i.i.d. observations from $f_\theta$, comparing $\theta$ to a $1/\sqrt{n}$-shifted alternative $\theta + t/\sqrt{n}$. Writing $W_i(\omega) = \log[f_\omega(X_i)/f_\theta(X_i)]$ and Taylor-expanding to second order,
+  $$\ell_n(\theta + t/\sqrt{n}, \theta) = \sum_{i=1}^n W_i(\theta + t/\sqrt{n}) \approx \frac{t}{\sqrt{n}} \sum_i W_i'(\theta) + \frac{t^2}{2n} \sum_i W_i''(\theta).$$
+  By the CLT, the first piece is approximately $t S_n$ with $S_n \Rightarrow N(0, I(\theta))$; by the LLN the second piece is $-\tfrac{1}{2} t^2 I(\theta) + o_p(1)$. So
+  $$\ell_n(\theta + t/\sqrt{n}, \theta) \approx t S_n - \tfrac{1}{2} t^2 I(\theta). \tag{16.4}$$
+</p>
+<div class="box intuition" data-cid="ch16-580">
+<span class="box-label">What just happened</span>
+<p data-cid="ch16-590">
+  Look at (16.3) and (16.4) side by side. They have the same shape — linear-Gaussian-plus-quadratic-deterministic — with $S_n$ playing the role of $\Sigma^{-1} X$ and $I(\theta)$ playing the role of $\Sigma^{-1}$. The local log-likelihood ratios of the i.i.d. experiment converge to the log-likelihood ratios of a Gaussian shift experiment. This is the content of LAN.
+</p>
+</div>
+<div class="box definition" data-cid="ch16-600">
+<span class="box-label">Definition 16.11 — local asymptotic normality</span>
+<p data-cid="ch16-610">
+  A sequence of models $\mathcal{P}_n = \{P_{\theta, n} : \theta \in \Omega \subset \mathbb{R}^p\}$ is <strong>locally asymptotically normal (LAN)</strong> at $\theta$ if there exist random vectors $S_n = S_n(\theta)$ and a positive-definite matrix $J = J(\theta)$ such that:
+</p>
+<ol data-cid="ch16-620">
+<li>For every convergent sequence $t_n \to t \in \mathbb{R}^p$,
+    $$\ell_n(\theta + t_n/\sqrt{n}, \theta) - \left[ t' S_n - \tfrac{1}{2} t' J t \right] \xrightarrow{P_{\theta,n}} 0.$$
+  </li>
+<li>Under $P_{\theta, n}$, $S_n \Rightarrow Z \sim N(0, J)$.</li>
+</ol>
+</div>
+<div class="box definition" data-cid="ch16-630">
+<span class="box-label">Theorem 16.14</span>
+<p data-cid="ch16-640">
+  If $X_1, X_2, \dots$ are i.i.d. with density $p_\theta$ and $\omega \mapsto \sqrt{p_\omega}$ is differentiable in quadratic mean at $\theta$ in the interior of $\Omega$, then the product models are LAN at $\theta$ with $J = I(\theta)$.
+</p>
+</div>
+<p data-cid="ch16-650">
+  The matrix $J$ is just the Fisher information at the true parameter (defined via the $L^2$ derivative, per (16.2)). The random vector $S_n$ is the rescaled score; under the true $P_{\theta,n}$ it tends to $N(0, J)$. Under a contiguous alternative $P_{\theta + t_n/\sqrt{n}, n}$, contiguity plus a change-of-measure argument shows $S_n \Rightarrow N(Jt, J)$ — the limiting distribution shifts in mean by $Jt$ but keeps the same covariance. This is exactly the Gaussian shift experiment's behaviour.
+</p>
+<h3 data-cid="ch16-660">How the MLE plugs in</h3>
+<p data-cid="ch16-670">
+  Maximizing the LAN quadratic $t' S_n - \tfrac{1}{2} t' J t$ over $t$ gives $\hat{t} = J^{-1} S_n$. Since the MLE $\hat{\theta}_n$ maximizes $\ell_n$ in $\omega$, the LAN approximation suggests
+  $$\sqrt{n}(\hat{\theta}_n - \theta) \approx J^{-1} S_n.$$
+  Under suitable regularity (multivariate version of Theorem 9.14), this is exact in the limit:
+  $$\sqrt{n}(\hat{\theta}_n - \theta) - J^{-1} S_n \xrightarrow{P_\theta} 0. \tag{16.5}$$
+</p>
+<p data-cid="ch16-680">
+  From now on, "$\hat{\theta}_n$ satisfies (16.5)" is the working assumption. It is the abstract analogue of "the estimator is regular and asymptotically normal at the efficient rate". Maximum likelihood is the canonical example, but the theory accommodates other estimators (one-step estimators, M-estimators, etc.) that meet the same conclusion.
+</p>
+<div class="box pause" data-cid="ch16-690">
+<span class="box-label">Pause — what LAN is and is not</span>
+<p data-cid="ch16-700">
+  LAN is not a definition of "regular model" — it is a <em>consequence</em> of regularity (Theorem 16.14 for the i.i.d. case). It is the precise way of saying "this experiment looks like a Gaussian shift around $\theta$, on the $1/\sqrt{n}$ scale". Once we know LAN holds, all subsequent results in this chapter (the posterior approximation Theorem 16.23, Lemma 16.24, the minimax bound 16.25) hold by working in the limit Gaussian experiment and pulling conclusions back. The technical machinery is just bookkeeping that lets us pull back rigorously.
+</p>
+</div>
+<!-- ============================================================== -->
+<h2 data-cid="ch16-710" id="s16-4">16.4 Minimax estimation of a normal mean</h2>
+<h3 data-cid="ch16-720">The exact problem we must solve first</h3>
+<p data-cid="ch16-730">
+  Since LAN tells us the local experiment converges to a Gaussian shift, we need to know what the optimal procedure is in a Gaussian shift experiment. So forget asymptotics for a moment. Let $X \sim N_p(\theta, I)$ with $\theta \in \mathbb{R}^p$. Under squared error loss, is the obvious estimator $\delta(X) = X$ minimax?
+</p>
+<div class="box intuition" data-cid="ch16-740">
+<span class="box-label">The Bayesian trick to prove minimaxity</span>
+<p data-cid="ch16-750">
+  Recall (Theorem 7.1, §16.4): if a Bayes estimator has Bayes risk equal to its supremum risk, the estimator is minimax. More usefully, if a <em>sequence</em> of Bayes risks approaches a constant, that constant is a lower bound on the minimax risk. So we put a prior on $\theta$, find the Bayes estimator and its Bayes risk, then push the prior to be increasingly "spread out".
+</p>
+</div>
+<p data-cid="ch16-760">
+  Take $\Theta \sim N(0, \sigma^2 I)$. Standard conjugate-normal arithmetic gives
+  $$\Theta \mid X = x \sim N\!\left( \frac{\sigma^2 x}{1 + \sigma^2}, \frac{\sigma^2}{1 + \sigma^2} I \right),$$
+  so the Bayes estimator is $\tilde{\theta} = \sigma^2 X / (1 + \sigma^2)$ with Bayes risk $p \sigma^2 / (1 + \sigma^2)$. Standard Bayes-bound logic gives
+  $$\sup_\theta R(\theta, \delta) \geq \frac{p \sigma^2}{1 + \sigma^2}$$
+  for every $\delta$. Letting $\sigma \to \infty$: $\sup_\theta R(\theta, \delta) \geq p$ for every $\delta$. But the risk of $X$ is exactly $p$. So $X$ is minimax.
+</p>
+<h3 data-cid="ch16-770">From squared error to bowl-shaped losses</h3>
+<p data-cid="ch16-780">
+  The same conclusion holds for a much wider class of loss functions, but we need a geometric tool to prove it.
+</p>
+<div class="box definition" data-cid="ch16-790">
+<span class="box-label">Definition 16.16 — bowl-shaped</span>
+<p data-cid="ch16-800">
+  $W : \mathbb{R}^p \to [0, \infty]$ is <strong>bowl-shaped</strong> if every sublevel set $\{x : W(x) \leq \alpha\}$ is convex and symmetric about zero.
+</p>
+</div>
+<p data-cid="ch16-810">
+  Examples: $W(x) = \|x\|^2$, $W(x) = \|x\|$, $W(x) = \mathbf{1}\{\|x\| &gt; c\}$. Anything obtained by stacking convex symmetric "level sets" qualifies. It includes most loss functions you would actually use.
+</p>
+<div class="box definition" data-cid="ch16-820">
+<span class="box-label">Theorem 16.17 — Anderson's lemma</span>
+<p data-cid="ch16-830">
+  If $f$ is a Lebesgue density on $\mathbb{R}^p$ with $\{x : f(x) \geq \alpha\}$ convex and symmetric for every $\alpha$, and $W$ is bowl-shaped, then
+  $$\int W(x - c) f(x) \, dx \geq \int W(x) f(x) \, dx \quad \text{for every } c \in \mathbb{R}^p.$$
+</p>
+</div>
+<p data-cid="ch16-840">
+  Translation: among location shifts of a "symmetric unimodal" density, expected bowl-shaped loss is minimized at the centre. The proof goes via the Brunn–Minkowski inequality (Theorem 16.18) on Lebesgue measures of Minkowski sums; we skip the gymnastics here. What you should remember is the upshot:
+</p>
+<div class="box definition" data-cid="ch16-850">
+<span class="box-label">Theorem 16.20</span>
+<p data-cid="ch16-860">
+  Let $X \sim N_p(\theta, \Sigma)$ with $\Sigma$ known positive definite. For any bowl-shaped loss $W$, the estimator $\delta(X) = X$ is minimax.
+</p>
+</div>
+<div class="box intuition" data-cid="ch16-870">
+<span class="box-label">Why this is the right input for asymptotics</span>
+<p data-cid="ch16-880">
+  In the LAN limit experiment, the "sufficient statistic" $S_n$ behaves like a normal observation of a mean parameter. Theorem 16.20 says that in that limit experiment, $S_n$ itself — equivalently, the MLE — is minimax. Lemma 16.24 and Theorem 16.25 will say the asymptotic minimax bound for the original sequence equals the minimax risk in the limit experiment.
+</p>
+</div>
+<!-- ============================================================== -->
+<h2 data-cid="ch16-890" id="s16-5">16.5 Posterior distributions</h2>
+<h3 data-cid="ch16-900">Strong (total-variation) convergence</h3>
+<p data-cid="ch16-910">
+  We will need to compare posterior distributions to their Gaussian approximations in a sense stronger than weak convergence. The right norm is total variation:
+</p>
+<div class="box definition" data-cid="ch16-920">
+<span class="box-label">Definition 16.21 — total variation distance</span>
+<p data-cid="ch16-930">
+  For probability measures $P, Q$ with densities $p, q$ with respect to a common $\mu$,
+  $$\|P - Q\| = \sup_{|f| \leq 1} \left| \int f \, dP - \int f \, dQ \right| = \int |p - q| \, d\mu = 2 \int (1 - \min\{1, L\}) \, dP,$$
+  where $L = q/p$. Strong convergence $P_n \to P$ means $\|P_n - P\| \to 0$ and is strictly stronger than convergence in distribution.
+</p>
+</div>
+<p data-cid="ch16-940">
+  Strong convergence has the convenient property that $\int f \, dP_n \to \int f \, dP$ for every bounded measurable $f$, not just continuous ones. We will need this when integrating bounded bowl-shaped loss functions against approximated posteriors.
+</p>
+<h3 data-cid="ch16-950">The Bernstein–von-Mises-type approximation</h3>
+<p data-cid="ch16-960">
+  Suppose the families are LAN at $\theta_0$ and the prior on $\Theta$ is $N(\theta_0, \Gamma^{-1}/n)$, a normal centred at $\theta_0$ with width also $1/\sqrt{n}$. Heuristically, multiplying the LAN-approximated likelihood by the normal prior gives another normal, and the posterior approximation is
+  $$G_{x,n} = N\!\left( \theta_0 + (\Gamma + J)^{-1} J (\hat{\theta}_n - \theta_0), \, (\Gamma + J)^{-1}/n \right). \tag{16.11}$$
+</p>
+<div class="box definition" data-cid="ch16-970">
+<span class="box-label">Theorem 16.23</span>
+<p data-cid="ch16-980">
+  Under LAN at $\theta_0$ and (16.5), let $F_X$ be the true posterior and $G_X$ the normal approximation (16.11). Then
+  $$\|F_X - G_X\| \xrightarrow{p} 0 \quad \text{as } n \to \infty.$$
+</p>
+</div>
+<p data-cid="ch16-990">
+  The proof sketch is worth understanding even if you skip the details. Introduce a "double" model where the prior–likelihood pair gives the true joint distribution $P$, and a parallel model where the prior is the same but the conditional of $\Theta$ given $X$ is $G_x$ — call this joint $\tilde{P}$. Their dominating measure is $\bar{P} = \tfrac{1}{2}(P + \tilde{P})$. The total-variation distance $\|F_x - G_x\|$ rewrites as the integral of $1 - \min\{1, L(x, \theta)\}$, where $L$ is the ratio of the two joint densities. Showing $L \to 1$ in probability is then a direct consequence of the LAN approximation for $\ell_n$ and the estimator approximation (16.5).
+</p>
+<div class="box intuition" data-cid="ch16-1000">
+<span class="box-label">Why this matters for optimality</span>
+<p data-cid="ch16-1010">
+  Posteriors are how Bayes estimators are computed. If we can replace the true posterior by a normal posterior in total variation, then for any bounded loss, Bayes risk in the original problem matches Bayes risk in a normal problem — and that we have already solved in §16.4. This is the bridge.
+</p>
+</div>
+<!-- ============================================================== -->
+<h2 data-cid="ch16-1020" id="s16-6">16.6 Locally asymptotically minimax estimation</h2>
+<h3 data-cid="ch16-1030">The Bayes-risk lemma</h3>
+<p data-cid="ch16-1040">
+  Combining the posterior approximation (Theorem 16.23) with Anderson's lemma (Theorem 16.17):
+</p>
+<div class="box definition" data-cid="ch16-1050">
+<span class="box-label">Lemma 16.24</span>
+<p data-cid="ch16-1060">
+  Under LAN at $\theta$ and (16.5), for a Bayesian model with prior $\Theta \sim N(\theta, \sigma^2 J^{-1}/n)$ and any bounded bowl-shaped $W$,
+  $$\lim_{n \to \infty} \inf_\delta E_n W\!\left( \sqrt{n}(\delta - \Theta) \right) = E W\!\left( \frac{\sigma Z}{\sqrt{1 + \sigma^2}} \right),$$
+  where $Z \sim N(0, J^{-1})$.
+</p>
+</div>
+<p data-cid="ch16-1070">
+  Read this as: the asymptotic Bayes risk (with $1/\sqrt{n}$-scaled prior) equals the Bayes risk in the limit Gaussian shift experiment with the corresponding limit prior. The Bayes estimator in the limit experiment is the posterior mean of the limit normal, and Anderson's lemma identifies it as risk-optimal under bowl-shaped loss.
+</p>
+<h3 data-cid="ch16-1080">The main theorem</h3>
+<div class="box definition" data-cid="ch16-1090">
+<span class="box-label">Theorem 16.25 — Hájek (1972), local asymptotic minimax</span>
+<p data-cid="ch16-1100">
+  Suppose the families are LAN at $\theta_0$ in the interior of $\Omega$ and $\hat{\theta}_n$ satisfies (16.5). For any bowl-shaped $W$ and any sequence of estimators $\delta_n$,
+  $$\lim_{b \to \infty} \lim_{c \to \infty} \liminf_{n \to \infty} \sup_{\|\theta - \theta_0\| \leq c/\sqrt{n}} E_\theta \min\!\left\{ b, W\!\left( \sqrt{n}(\delta_n - \theta) \right) \right\} \geq E W(Z),$$
+  where $Z \sim N(0, J^{-1})$. The bound is achieved when $\delta_n = \hat{\theta}_n$.
+</p>
+</div>
+<div class="box intuition" data-cid="ch16-1110">
+<span class="box-label">How to read the nested limits</span>
+<p data-cid="ch16-1120">
+  The truncation by $b$ tames unbounded losses. The radius $c/\sqrt{n}$ defines the local neighbourhood. The inner $\liminf$ asks: for fixed $b$ and $c$, can we keep the worst-case-on-the-neighbourhood risk small? The chain of limits says no — as $c$ and $b$ grow, the worst-case asymptotic risk over a $1/\sqrt{n}$-neighbourhood is at least the risk of $Z \sim N(0, J^{-1})$, which is exactly the asymptotic risk of the MLE. And the MLE attains the bound. So the MLE is, in this precise sense, locally asymptotically minimax.
+</p>
+</div>
+<h3 data-cid="ch16-1130">The proof strategy in one paragraph</h3>
+<p data-cid="ch16-1140">
+  Sup is at least average against a prior. Use the Bayesian prior $\pi_n = N(\theta_0, \sigma^2 J^{-1}/n)$ from Lemma 16.24, which concentrates on a $1/\sqrt{n}$ neighbourhood. Bayes risk is a lower bound for the supremum on that neighbourhood (modulo prior-mass corrections that vanish as $c \to \infty$). Lemma 16.24 says the Bayes risk converges to $E W(\sigma Z / \sqrt{1 + \sigma^2})$. Send $b \to \infty$ to remove the truncation; send $c \to \infty$ to absorb the neighbourhood; send $\sigma \to \infty$ to make the prior diffuse. The right-hand side becomes $E W(Z)$.
+</p>
+<h3 data-cid="ch16-1150">Worked example: normal location</h3>
+<div class="box example" data-cid="ch16-1160">
+<span class="box-label">The most concrete case</span>
+<p data-cid="ch16-1170">
+  Take $X_1, \dots, X_n$ i.i.d. $N(\theta, 1)$. The model is regular, $I(\theta) = 1$, so $J = 1$. The MLE is $\hat{\theta}_n = \bar{X}_n$, satisfying $\sqrt{n}(\bar{X}_n - \theta) \sim N(0, 1)$ exactly. Theorem 16.25 with squared error loss $W(x) = x^2$ becomes
+  $$\liminf_{n \to \infty} \sup_{|\theta - \theta_0| \leq c/\sqrt{n}} E_\theta \left[ n (\delta_n - \theta)^2 \right] \geq E[Z^2] = 1$$
+  (after taking $c \to \infty$). The bound is achieved by $\bar{X}_n$, whose scaled risk equals $1$ identically.
+</p>
+<p data-cid="ch16-1180">
+  Now revisit Hodges' estimator (Example 16.1) with $a = 1/2$. At $\theta_0 = 0$ the pointwise scaled risk converges to $a^2 = 1/4 &lt; 1$. But the <em>local supremum</em> scaled risk over $|\theta| \leq c/\sqrt{n}$ does <em>not</em> beat $1$ — in fact we computed that it diverges to infinity at the window's midpoint $\theta_n = (1+a)/(2 n^{1/4})$, which sits well outside a $1/\sqrt{n}$-neighbourhood but pulls in the worst-case behaviour anyway as $c$ grows. So Hodges' estimator satisfies the Theorem 16.25 lower bound with room to spare; what it does not do is beat the MLE in the local-minimax sense. Hodges' "win" at the origin is the kind of pointwise victory the local-sup formulation precisely rules out as a measure of efficiency.
+</p>
+</div>
+<div class="box pause" data-cid="ch16-1190">
+<span class="box-label">Pause — does this say "MLE is the unique best"?</span>
+<p data-cid="ch16-1200">
+  No. Theorem 16.25 says that no estimator beats the MLE in local minimax risk, and that the MLE attains the bound. Other estimators may also attain the bound — any estimator satisfying (16.5) does so (because the proof uses only (16.5), not the MLE per se). One-step estimators, posterior means, M-estimators built from the score function — all of these can be asymptotically minimax. What is ruled out is doing <em>strictly better</em>. There is no asymptotic free lunch in regular models.
+</p>
+</div>
+<h3 data-cid="ch16-1210">The convolution theorem, briefly</h3>
+<p data-cid="ch16-1220">
+  A close cousin of Theorem 16.25, due to Hájek and Le Cam, is the <strong>convolution theorem</strong>: any "regular" estimator $\delta_n$ (one whose limiting distribution under $P_{\theta + t/\sqrt{n}, n}$ does not depend on $t$, in a certain sense) has the form
+  $$\sqrt{n}(\delta_n - \theta) \Rightarrow Z + V,$$
+  where $Z \sim N(0, J^{-1})$ is the MLE's limit and $V$ is some independent "noise" term. In words: every regular estimator is at least as variable as the MLE, plus independent extra noise. Keener does not state this in §16.6 but it is the same circle of ideas, and you will meet it under that name in any text on semiparametric efficiency (van der Vaart, Bickel–Klaassen–Ritov–Wellner).
+</p>
+<h3 data-cid="ch16-1230">Asymptotic sufficiency of the MLE</h3>
+<p data-cid="ch16-1240">
+  Theorem 16.26 (stated, not proved) gives a complementary structural result: under LAN at every $\theta$, $\hat{\theta}_n$ is asymptotically sufficient. There exists a sequence of "ideal" families $Q_{\theta, n}$ for which $\hat{\theta}_n$ is exactly sufficient and which approximate the true $P_{\theta, n}$ in total variation uniformly on $1/\sqrt{n}$-neighbourhoods. So $\hat{\theta}_n$ asymptotically contains all the information in the sample. Combined with Theorem 16.25, this is the rigorous form of "the MLE is asymptotically efficient".
+</p>
+<!-- ============================================================== -->
+<h2 data-cid="ch16-1250" id="summary">Summary — what you learned in Chapter 16</h2>
+<ol data-cid="ch16-1260">
+<li><strong>Naive efficiency is broken.</strong> Hodges' estimator shows that pointwise asymptotic variance is not a good measure of efficiency: it can be beaten at one point while being arbitrarily bad nearby.</li>
+<li><strong>Contiguity</strong> is the asymptotic version of absolute continuity for sequences of measures. In regular i.i.d. models, distributions at $\theta_0$ and at $\theta_0 + \Delta/\sqrt{n}$ are mutually contiguous.</li>
+<li><strong>Quadratic-mean differentiability</strong> of $\sqrt{p_\theta}$ is the right regularity hypothesis. It defines Fisher information $I(\theta) = 4 \|V_\theta\|_2^2$ and triggers Theorem 16.10.</li>
+<li><strong>Local asymptotic normality (LAN)</strong> says the local log-likelihood ratios at $\theta + t/\sqrt{n}$ converge in shape to a Gaussian shift experiment's: quadratic in $t$, with $S_n \Rightarrow N(0, J)$.</li>
+<li><strong>The MLE satisfies $\sqrt{n}(\hat{\theta}_n - \theta) = J^{-1} S_n + o_p(1)$</strong>, which is (16.5). All optimality results use this approximation as a black box.</li>
+<li><strong>Anderson's lemma plus the Bayes-bound trick</strong> identify $X$ as minimax for the Gaussian shift experiment $N_p(\theta, \Sigma)$ under any bowl-shaped loss.</li>
+<li><strong>Posterior approximation</strong> (Theorem 16.23): under LAN, the true posterior is close in total variation to a Gaussian posterior. This transports the §16.4 minimax answer into the asymptotic regime.</li>
+<li><strong>Hájek's local asymptotic minimax theorem</strong> (16.25): for bowl-shaped loss, the worst-case asymptotic risk over a $1/\sqrt{n}$-neighbourhood of $\theta_0$ is at least $E W(Z)$ with $Z \sim N(0, J^{-1})$. The MLE attains the bound.</li>
+<li><strong>The MLE is asymptotically sufficient</strong> (Theorem 16.26): in a precise total-variation sense, $\hat{\theta}_n$ captures the information of the whole sample.</li>
+</ol>
+<div class="box pause" data-cid="ch16-1270">
+<span class="box-label">Did this land?</span>
+<p data-cid="ch16-1280">Before moving to Chapter 17, you should be able to answer:</p>
+<ul data-cid="ch16-1290">
+<li>What is Hodges' estimator and what does it disprove?</li>
+<li>State the definition of contiguity. Why is $1/\sqrt{n}$ the magic rate in regular i.i.d. models?</li>
+<li>What does it mean for $\theta \mapsto \sqrt{p_\theta}$ to be differentiable in quadratic mean, and how does this give a definition of Fisher information that does not need pointwise differentiation?</li>
+<li>Write down the LAN expansion of $\ell_n(\theta + t/\sqrt{n}, \theta)$. Which term is the "score" and which is the "information"?</li>
+<li>Why is the limit minimax problem in §16.4 the right "target" for the asymptotic minimax problem in §16.6? Trace the role of Anderson's lemma and Theorem 16.23 in the transfer.</li>
+<li>State Theorem 16.25. Why must we take a $\liminf$ over a neighbourhood — i.e., why is pointwise asymptotic risk not enough?</li>
+<li>Give one regular model and one irregular model. For each, say whether LAN applies and what convergence rate the MLE has.</li>
+</ul>
+<p data-cid="ch16-1300">If any of these are shaky, re-read the matching section. Chapter 17 will use contiguity from §16.2 directly for likelihood-ratio tests, but the rest of the LAN machinery does not appear later — it is its own self-contained achievement.</p>
+</div>
+<nav class="chapter-nav">
+<a href="ch15.html"><span class="label">← Previous</span><span class="title">15. Bayesian Inference: Modeling and Computation</span></a>
+<a class="next" href="ch17.html"><span class="label">Next →</span><span class="title">17. Large-Sample Theory for Likelihood Ratio Tests</span></a>
+</nav>
+</article>
+</main>
+<script src="/js/main.js"></script><script src="/js/comments.js"></script>
+</body>
+</html>

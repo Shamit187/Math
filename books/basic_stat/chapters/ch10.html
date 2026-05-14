@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ch 10 — Equivariant Estimation · Theoretical Statistics</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/>
+</head>
+<body data-book="basic_stat" data-page="ch10">
+<header class="site-header">
+<a class="brand" href="/books/basic_stat/">Theoretical Statistics <small>a slow reading guide</small></a>
+<nav>
+<a href="/" class="all-books-link">All books</a>
+    <a href="/books/basic_stat/">Contents</a>
+<button aria-label="toggle theme" class="theme-toggle">Dark</button>
+</nav>
+</header>
+<main class="layout">
+<aside class="sidebar">
+<h4>Chapter 10</h4>
+<ol>
+<li><a href="#why">Why equivariance?</a></li>
+<li><a href="#s10-1">10.1 Group structure</a></li>
+<li><a href="#s10-2">10.2 Estimation</a></li>
+<li><a href="#summary">Summary</a></li>
+</ol>
+</aside>
+<article class="content">
+<section class="hero">
+<div class="kicker">Chapter 10</div>
+<h1>Equivariant Estimation</h1>
+<p class="subtitle" data-cid="ch10-010">When the problem has a symmetry, the estimator should have it too — and that single demand is often enough to single out a best procedure.</p>
+<div class="meta">
+<span>Book pages: 195–204</span>
+<span>~25 min reading time</span>
+<span>Prereqs: Ch. 1, 4 (UMVU), basic group idea</span>
+</div>
+</section>
+<h2 data-cid="ch10-020" id="why">Why does this chapter exist?</h2>
+<p data-cid="ch10-030">
+  Chapter 4 told a story about <em>unbiased</em> estimators: if you restrict attention to estimators that get the right answer on average, sometimes a best choice emerges (UMVU). Chapter 10 tells the same kind of story with a different restriction. Instead of "unbiased", we ask for an estimator that <strong>respects the symmetry of the problem</strong>.
+</p>
+<p data-cid="ch10-040">
+  The symmetry, in this chapter, is a translation. If you measured everyone's height in centimetres, you got an estimate $\hat\theta$. If you re-measure with the floor a metre lower — adding $100$ to every datum — what should the estimate become? Obviously $\hat\theta + 100$. An estimator that always does this is called <strong>equivariant</strong>. We will see that demanding equivariance is enough, in clean cases, to single out a single optimal estimator, the <em>Pitman estimator</em>.
+</p>
+<div class="box intuition" data-cid="ch10-050">
+<span class="box-label">The one-sentence summary</span>
+<p data-cid="ch10-060">If the underlying problem doesn't change when you shift the data, the optimal estimator's risk shouldn't either — and that forces the risk to be constant in $\theta$, which lets us compare equivariant estimators just by a single number.</p>
+</div>
+<p data-cid="ch10-070">
+  At a deeper level, the chapter introduces the language of <strong>group actions</strong>. The group of allowed shifts acts on the data space, on the parameter space, and on the set of estimators all at once, and equivariance is the condition that these three actions are compatible. This is the first time the book uses group theory in a serious way; we will go slowly with the abstraction so that the location example doesn't feel like an isolated trick.
+</p>
+<!-- ===================================================================== -->
+<h2 data-cid="ch10-080" id="s10-1">10.1 Group Structure</h2>
+<h3 data-cid="ch10-090">The group, the data, and the parameter</h3>
+<p data-cid="ch10-100">
+  We will work throughout with the simplest possible group, the real line under addition. Calling it a "group" is overkill from a computational point of view — we are only ever going to add numbers — but the framing is what generalises later (to scale parameters in the exercises, and to much more elaborate symmetries in advanced texts).
+</p>
+<div class="box definition" data-cid="ch10-110">
+<span class="box-label">The setup</span>
+<p data-cid="ch10-120">
+  Let $G = \mathbb{R}$ with group operation $g_1 \ast g_2 = g_1 + g_2$. We let $G$ act on two spaces:
+</p>
+<ul data-cid="ch10-130">
+<li>On the <strong>parameter space</strong> $\mathbb{R}$: $\quad g \star \theta = g + \theta$.</li>
+<li>On the <strong>data space</strong> $\mathbb{R}^n$: $\quad g \star x = x + g\mathbf{1} = (x_1+g, \dots, x_n+g)'$, where $\mathbf{1}$ is the column of ones.</li>
+</ul>
+</div>
+<p data-cid="ch10-140">
+  Two different actions, one group: shifting the parameter by $g$, or shifting <em>every</em> coordinate of the data by the same $g$. The notation $\star$ (instead of $+$) is a reminder that the group is acting <em>on something</em>, not just combining with itself.
+</p>
+<h3 data-cid="ch10-150">The model: a location family</h3>
+<p data-cid="ch10-160">
+  Location models are the natural home for this kind of symmetry. We imagine each observation as
+  $$X_i = \theta + \epsilon_i, \qquad i = 1, \dots, n,$$
+  where $\epsilon = (\epsilon_1, \dots, \epsilon_n)'$ has a <em>fixed</em> distribution $P_0$ (the noise law) and $\theta$ is the unknown thing we want. In vector form,
+  $$X = \theta \mathbf{1} + \epsilon \sim P_\theta.$$
+  The family $\mathcal{P} = \{P_\theta : \theta \in \mathbb{R}\}$ is called a <strong>location family</strong>; $\theta$ is the <strong>location parameter</strong>.
+</p>
+<div class="box intuition" data-cid="ch10-170">
+<span class="box-label">Why the noise distribution is "fixed"</span>
+<p data-cid="ch10-180">
+  Saying $P_0$ doesn't depend on $\theta$ is the formal version of "the only thing changing as $\theta$ varies is the centre of the cloud, not its shape". The errors $\epsilon_i$ are not assumed independent — they only need a common joint law $P_0$. Independence is a convenience, not a requirement of the equivariance machinery.
+</p>
+</div>
+<p data-cid="ch10-190">
+  A very direct consequence of the construction: $P_\theta$ is obtained from $P_0$ by shifting. If $\epsilon \sim P_0$ and we apply $g\star$ to the data, the resulting random vector is distributed as $P_{g\star\theta}$:
+  $$P_{g\star\theta}(X \in B) = P\bigl(\theta\mathbf{1} + g\mathbf{1} + \epsilon \in B\bigr) = P_\theta(g\star X \in B).$$
+  This little identity is the technical bridge between the group action on data and the group action on parameters. Hold on to it; it is used several times below.
+</p>
+<h3 data-cid="ch10-200">Equivariant estimators</h3>
+<div class="box definition" data-cid="ch10-210">
+<span class="box-label">Definition 10.1 — equivariance</span>
+<p data-cid="ch10-220">
+  An estimator $\delta : \mathbb{R}^n \to \mathbb{R}$ of the location parameter is <strong>equivariant</strong> if
+  $$\delta(x_1 + g, \dots, x_n + g) = \delta(x_1, \dots, x_n) + g,$$
+  for every $g \in \mathbb{R}$ and every $x \in \mathbb{R}^n$. Equivalently,
+  $$\delta(g \star x) = g \star \delta(x).$$
+</p>
+</div>
+<p data-cid="ch10-230">
+  Read this last line carefully. The same group element $g$ acts on the left-hand side on the data space, and on the right-hand side on the parameter (= estimator-output) space. Equivariance says these two actions are compatible: the estimator <em>commutes</em> with the group action.
+</p>
+<div class="box example" data-cid="ch10-240">
+<span class="box-label">Examples of equivariant estimators</span>
+<p data-cid="ch10-250">
+  All of these are equivariant:
+</p>
+<ul data-cid="ch10-260">
+<li>The sample mean $\bar X = (X_1 + \dots + X_n)/n$. Add $g$ to every $X_i$ and the mean increases by exactly $g$.</li>
+<li>The sample median $\operatorname{med}(X_1, \dots, X_n)$. Shifting all data by $g$ shifts the median by $g$.</li>
+<li>$X_n$ — the last observation — is equivariant too. Crude, but valid.</li>
+</ul>
+<p data-cid="ch10-270">
+  A counterexample: $\delta(X) = \bar X^2$ is <em>not</em> equivariant. Squaring destroys the shift relationship.
+</p>
+</div>
+<h3 data-cid="ch10-280">Invariant loss</h3>
+<p data-cid="ch10-290">
+  Equivariance restricts which estimators we will consider. For the optimality theory to work, we also need the loss function to respect the same symmetry.
+</p>
+<div class="box definition" data-cid="ch10-300">
+<span class="box-label">Definition 10.2 — invariant loss</span>
+<p data-cid="ch10-310">
+  A loss function $L(\theta, d)$ is <strong>invariant</strong> if
+  $$L(g \star \theta, g \star d) = L(\theta, d)$$
+  for all $g, \theta, d$. Setting $\rho(x) = L(0, x)$ and choosing $g = -\theta$, the condition collapses to
+  $$L(\theta, d) = \rho(d - \theta).$$
+</p>
+</div>
+<p data-cid="ch10-320">
+  So an invariant loss depends only on the <em>error</em> $d - \theta$, not on $\theta$ and $d$ separately. Squared error $(d-\theta)^2$, absolute error $|d-\theta|$, and Huber loss are all invariant; weighted squared error $\theta^2 (d-\theta)^2$ is not.
+</p>
+<div class="box intuition" data-cid="ch10-330">
+<span class="box-label">Why invariance of the loss is needed</span>
+<p data-cid="ch10-340">
+  We want "how good is the estimate" to mean the same thing in every translated copy of the problem. If the cost of being off by one unit depended on where you stood, the symmetry would not be a real symmetry — the world would prefer some values of $\theta$ to others.
+</p>
+</div>
+<h3 data-cid="ch10-350">The payoff: constant risk</h3>
+<p data-cid="ch10-360">
+  Here is the first concrete reward of all this setup. If $\delta$ is equivariant and $L$ is invariant, the risk function of $\delta$ is constant in $\theta$:
+  $$R(\theta, \delta) = E_\theta\,\rho\bigl(\delta(X) - \theta\bigr) = E\,\rho\bigl(\delta(\theta\mathbf{1} + \epsilon) - \theta\bigr) = E\,\rho\bigl(\delta(\epsilon)\bigr).$$
+  The last expression doesn't mention $\theta$ at all.
+</p>
+<div class="box intuition" data-cid="ch10-370">
+<span class="box-label">What just happened</span>
+<p data-cid="ch10-380">
+  Step by step: equivariance gave $\delta(\theta\mathbf{1} + \epsilon) = \delta(\epsilon) + \theta$. So $\delta(X) - \theta = \delta(\epsilon)$. Plug into $\rho$ and take expectations — the dependence on $\theta$ is gone.
+</p>
+</div>
+<div class="box pause" data-cid="ch10-390">
+<span class="box-label">Pause — why constant risk matters</span>
+<p data-cid="ch10-400">
+  In general, comparing two estimators is hard because the comparison can depend on the unknown $\theta$: estimator $A$ might be better near $\theta = 0$, estimator $B$ near $\theta = 100$. Inside the equivariant class, that problem disappears. Each equivariant estimator carries a single number for its risk. We can sort them on a line, and (when the infimum is achieved) there is a clear winner — the <strong>minimum risk equivariant</strong> (MRE) estimator $\delta^*$.
+</p>
+</div>
+<h3 data-cid="ch10-410">The maximal invariant</h3>
+<p data-cid="ch10-420">
+  Constant-risk-on-the-class is morally satisfying, but we still need to find the MRE. The trick is to write every equivariant estimator in terms of one fixed equivariant estimator plus an <strong>invariant</strong> correction.
+</p>
+<p data-cid="ch10-430">
+  Call a function $h : \mathbb{R}^n \to \mathbb{R}^k$ <strong>invariant</strong> if $h(g \star x) = h(x)$ for every $g$ and $x$. (Note the contrast: <em>equivariant</em> functions shift along with the data; <em>invariant</em> functions ignore the shift entirely.)
+</p>
+<p data-cid="ch10-440">
+  Define
+  $$Y = Y(X) = (X_1 - X_n,\ X_2 - X_n,\ \dots,\ X_{n-1} - X_n)'.$$
+  The vector $Y$ is invariant: adding $g$ to every coordinate of $X$ doesn't change any of the differences. It is also a "<strong>maximal</strong>" invariant, in the following sense:
+</p>
+<div class="box definition" data-cid="ch10-450">
+<span class="box-label">Maximal invariant</span>
+<p data-cid="ch10-460">
+  If $h : \mathbb{R}^n \to \mathbb{R}$ is any invariant function, then $h$ depends on $X$ only through $Y$. Concretely: $h(X) = h(Y_1, \dots, Y_{n-1}, 0)$, which is a function of $Y$.
+</p>
+</div>
+<p data-cid="ch10-470">
+  The proof is one line — take $g = -X_n$:
+  $$h(X) = h(X - X_n \mathbf{1}) = h(X_1 - X_n, \dots, X_{n-1} - X_n, 0).$$
+  Every invariant function factors through $Y$. We call $Y$ the <strong>maximal invariant</strong> because it captures every drop of information that is invariant under the group.
+</p>
+<div class="box pause" data-cid="ch10-480">
+<span class="box-label">Pause — why "orbit structure" matters</span>
+<p data-cid="ch10-490">
+  Think of the action of $G$ on $\mathbb{R}^n$ as partitioning the data space into <strong>orbits</strong>: two points $x, x'$ are in the same orbit if some shift carries one to the other. For the location group, the orbit of $x$ is the line $\{x + g\mathbf{1} : g \in \mathbb{R}\}$. The maximal invariant $Y$ is a coordinate <em>for the orbits</em> — two points have the same $Y$ exactly when they live on the same orbit. So invariant functions are functions on the orbit space, and the position <em>along</em> the orbit is precisely the thing the group can change. The MRE will reduce to: "decide the right position along the orbit, conditional on which orbit we are on."
+</p>
+</div>
+<h3 data-cid="ch10-500">Parametrising the equivariant class</h3>
+<p data-cid="ch10-510">
+  Suppose $\delta_0$ and $\delta$ are both equivariant. Look at their difference:
+  $$\delta_0(g \star x) - \delta(g \star x) = [\delta_0(x) + g] - [\delta(x) + g] = \delta_0(x) - \delta(x).$$
+  So $\delta_0 - \delta$ is invariant, hence a function of $Y$:
+  $$\delta_0(X) - \delta(X) = v(Y) \quad \text{for some } v.$$
+  Rearranged: every equivariant estimator has the form
+  $$\delta(X) = \delta_0(X) - v(Y)$$
+  for some function $v$. Conversely, any such $\delta$ is equivariant — adding $g$ to $X$ leaves $Y$ unchanged but shifts $\delta_0(X)$ by $g$.
+</p>
+<div class="box intuition" data-cid="ch10-520">
+<span class="box-label">What this representation buys us</span>
+<p data-cid="ch10-530">
+  Optimising over equivariant estimators is the same as optimising over functions $v(\cdot)$ of the maximal invariant. The hard, infinite-dimensional class of equivariant rules has collapsed to "pick a function on the orbit space". And because the risk is constant in $\theta$, we can do the optimisation at $\theta = 0$.
+</p>
+</div>
+<h3 data-cid="ch10-540">Density of the location family</h3>
+<p data-cid="ch10-550">
+  One last piece of bookkeeping before the optimisation. If $P_0$ has density $f$ with respect to Lebesgue measure on $\mathbb{R}^n$, then $P_\theta$ has density
+  $$f_\theta(x) = f(x_1 - \theta, \dots, x_n - \theta) = f(x - \theta\mathbf{1}).$$
+  This is the change-of-variables version of "$X = \theta\mathbf{1} + \epsilon$". Conversely, any family whose densities have this form is a location family.
+</p>
+<!-- ===================================================================== -->
+<h2 data-cid="ch10-560" id="s10-2">10.2 Estimation</h2>
+<h3 data-cid="ch10-570">The main theorem</h3>
+<p data-cid="ch10-580">
+  We now have everything we need. Take a fixed equivariant estimator $\delta_0$ with finite risk and write every equivariant $\delta$ as $\delta_0(X) - v(Y)$. The risk is constant in $\theta$, so we evaluate at $\theta = 0$, where $X = \epsilon \sim P_0$:
+  $$R(\theta, \delta) = E_0\,\rho\bigl(\delta_0(X) - v(Y)\bigr).$$
+  By the tower property,
+  $$R(\theta, \delta) = E_0\Bigl[\,E_0\bigl[\rho(\delta_0(X) - v(Y)) \mid Y\bigr]\,\Bigr].$$
+  The inner expectation sees $Y = y$ as a constant, so for each $y$ we are free to pick the value $v = v(y)$ that minimises
+  $$E_0\bigl[\rho(\delta_0(X) - v) \mid Y = y\bigr].$$
+  Doing this for each $y$ independently — that is, choosing $v^*(y)$ as the conditional minimiser — gives the smallest possible risk inside the equivariant class.
+</p>
+<div class="box definition" data-cid="ch10-590">
+<span class="box-label">Theorem 10.4 — the MRE estimator</span>
+<p data-cid="ch10-600">
+  Suppose there is an equivariant estimator $\delta_0$ with finite risk, and that for almost every $y \in \mathbb{R}^{n-1}$ the function $v \mapsto E_0[\rho(\delta_0(X) - v) \mid Y = y]$ has a minimiser $v^*(y)$. Then
+  $$\delta^*(X) = \delta_0(X) - v^*(Y)$$
+  is the <strong>minimum risk equivariant</strong> estimator.
+</p>
+</div>
+<div class="box intuition" data-cid="ch10-610">
+<span class="box-label">In plain English</span>
+<p data-cid="ch10-620">
+  Pick any equivariant starting point $\delta_0$ — say, $X_n$ or $\bar X$. Then for each value of the maximal invariant $Y$ (each "orbit"), compute the conditional distribution of $\delta_0(X)$ given that orbit, and shift $\delta_0$ by the value that minimises the expected loss. The result does not depend on which $\delta_0$ you started with: any two starting estimators differ by an invariant function of $Y$, so the optimal correction absorbs that difference.
+</p>
+</div>
+<h3 data-cid="ch10-630">Computing the conditional distribution</h3>
+<p data-cid="ch10-640">
+  Pick the simplest possible starting estimator: $\delta_0(X) = X_n$. To minimise the conditional expectation we need the conditional density of $X_n$ given $Y$. A change of variables $y_i = x_i - x_n$ in the joint density of $X$ produces the joint density of $(Y, X_n)$ under $P_0$:
+  $$f_{Y, X_n}(y, t) = f(y_1 + t,\ \dots,\ y_{n-1} + t,\ t).$$
+  Integrating out $t$ gives the marginal density of $Y$,
+  $$f_Y(y) = \int f(y_1 + t,\ \dots,\ y_{n-1} + t,\ t) \, dt,$$
+  and the conditional density of $X_n$ given $Y = y$ is the ratio:
+  $$f_{X_n \mid Y}(t \mid y) = \frac{f(y_1 + t,\ \dots,\ y_{n-1} + t,\ t)}{f_Y(y)}.$$
+</p>
+<p data-cid="ch10-650">
+  So $v^*(y)$ is the value minimising
+  $$\frac{\int \rho(t - v) f(y_1 + t,\ \dots,\ y_{n-1} + t,\ t)\,dt}{\int f(y_1 + t,\ \dots,\ y_{n-1} + t,\ t)\,dt}.$$
+  A second change of variables, $t = x_n - u$, with $x_i$ defined so that $x_i - x_n = y_i$ (so $y_i + t = x_i - u$), rewrites this as a function of the original data:
+  $$\delta^*(x) = x_n - v^*(y) = \arg\min_d\ \frac{\int \rho(d - u)\,f(x_1 - u,\ \dots,\ x_n - u)\,du}{\int f(x_1 - u,\ \dots,\ x_n - u)\,du}. \tag{10.1}$$
+</p>
+<h3 data-cid="ch10-660">The Bayesian re-reading</h3>
+<div class="box intuition" data-cid="ch10-670">
+<span class="box-label">A striking formal coincidence</span>
+<p data-cid="ch10-680">
+  Look at (10.1). The integrand $f(x_1 - u, \dots, x_n - u)$ is exactly the likelihood at $\theta = u$. The ratio inside the $\arg\min$ is the posterior expectation of $\rho(d - \theta)$, <em>if</em> the prior on $\theta$ were Lebesgue measure ($d\theta$). The MRE estimator is, formally, the Bayes rule against the improper "flat" prior.
+</p>
+</div>
+<p data-cid="ch10-690">
+  This is not a coincidence. Lebesgue measure $\lambda$ is the unique (up to scaling) measure invariant under the action of the group: $\lambda(g \star B) = \lambda(B)$. In general, a measure invariant under a group action is called a <strong>Haar measure</strong>. The deep principle, which carries beyond location families, is:
+</p>
+<div class="box definition" data-cid="ch10-700">
+<span class="box-label">Equivariant = formal Bayes against Haar</span>
+<p data-cid="ch10-710">
+  With suitable structure, the best equivariant estimator is the Bayes rule against the Haar measure on the parameter space, treated as a (typically improper) prior. For location problems on $\mathbb{R}$, the Haar measure is Lebesgue measure.
+</p>
+</div>
+<div class="box warn" data-cid="ch10-720">
+<span class="box-label">Common pitfall</span>
+<p data-cid="ch10-730">
+  Lebesgue measure on $\mathbb{R}$ has $\lambda(\mathbb{R}) = \infty$, so it is not a probability measure. As a prior in a Bayesian model it is <em>improper</em> — strictly speaking, illegal. The "Bayes posterior" you get from it is still a perfectly good probability measure, so the formal calculation goes through, but you should never describe the MRE as <em>actually</em> Bayes against a uniform prior. It is Bayes <em>formally</em>, and that is a precise statement: the computation is identical, but the prior is not a probability.
+</p>
+</div>
+<h3 data-cid="ch10-740">The Pitman estimator</h3>
+<p data-cid="ch10-750">
+  Specialise to squared-error loss $\rho(t) = t^2$. For any random variable $W$ with density $h$, the value of $d$ minimising $E(W - d)^2$ is $E W = \int u h(u)\,du$. Applying this to (10.1) with $h(u) \propto f(x_1 - u, \dots, x_n - u)$ gives the closed-form
+  $$\delta^*(X) = \frac{\int u\, f(X_1 - u,\ \dots,\ X_n - u)\, du}{\int f(X_1 - u,\ \dots,\ X_n - u)\, du}. \tag{10.2}$$
+  This $\delta^*$ is called the <strong>Pitman estimator</strong>. It is the MRE under squared-error loss for a location family with error density $f$.
+</p>
+<div class="box pause" data-cid="ch10-760">
+<span class="box-label">Re-read this formula slowly</span>
+<p data-cid="ch10-770">
+  The numerator and denominator both integrate the likelihood $\theta \mapsto f(X - \theta\mathbf{1})$, treated as a function of $\theta$. The denominator turns it into a probability density (the "formal posterior"); the numerator computes its mean. The Pitman estimator is the centre of mass of the likelihood viewed as a function of the unknown shift.
+</p>
+</div>
+<h3 data-cid="ch10-780">Worked example: standard exponential noise</h3>
+<div class="box example" data-cid="ch10-790">
+<span class="box-label">Example 10.5 — Pitman under exponential errors</span>
+<p data-cid="ch10-800">
+  Let $\epsilon_1, \dots, \epsilon_n$ be i.i.d. standard exponential, so the joint density is
+  $$f(e) = \begin{cases} e^{-(e_1 + \dots + e_n)}, &amp; \min_i e_i &gt; 0 \\ 0, &amp; \text{otherwise}. \end{cases}$$
+  Let $M = \min\{X_1, \dots, X_n\}$. The condition $\min_i (X_i - u) &gt; 0$ is the same as $u &lt; M$. So
+  $$f(X_1 - u, \dots, X_n - u) = \begin{cases} e^{nu - (X_1 + \dots + X_n)}, &amp; u &lt; M \\ 0, &amp; \text{otherwise}. \end{cases}$$
+  Plug into (10.2):
+  $$\delta^* = \frac{\int_{-\infty}^M u\, e^{nu - (X_1 + \dots + X_n)}\,du}{\int_{-\infty}^M e^{nu - (X_1 + \dots + X_n)}\,du}.$$
+  The constant $e^{-(X_1 + \dots + X_n)}$ cancels. Substitute $t = n(u - M)/n = u - M$ (so $u = t + M$, $du = dt$, limits become $t \in (-\infty, 0)$):
+  $$\delta^* = \frac{\int_{-\infty}^0 (t + M)\, e^{nt}\,dt}{\int_{-\infty}^0 e^{nt}\,dt} = M - \frac{1}{n}.$$
+  So the MRE of $\theta$ for exponential noise under squared error is $M - 1/n$ — the minimum, shifted left by $1/n$.
+</p>
+</div>
+<div class="box intuition" data-cid="ch10-810">
+<span class="box-label">Why $M - 1/n$ is reasonable</span>
+<p data-cid="ch10-820">
+  Each $X_i = \theta + \epsilon_i$ with $\epsilon_i &gt; 0$, so $M \geq \theta$ always — the minimum overshoots $\theta$. The expected amount of overshoot is $1/n$ (the mean of the minimum of $n$ i.i.d. standard exponentials). Subtracting $1/n$ corrects for that bias. The same answer drops out of the abstract machinery, with no separate "unbiasedness" argument required.
+</p>
+</div>
+<h3 data-cid="ch10-830">Where the location story generalises</h3>
+<p data-cid="ch10-840">
+  Problem 8 of the chapter extends the same construction to a <strong>scale family</strong>: take $G = (0, \infty)$ under multiplication, acting on the parameter by $g \star \sigma = g\sigma$ and on positive data by $g \star x = gx$. An estimator is equivariant if $\delta(gx) = g\,\delta(x)$, an invariant loss has the form $L(\sigma, d) = \rho(d/\sigma)$, and the maximal invariant becomes the vector of ratios $(x_1/x_n, \dots, x_{n-1}/x_n)$. The Haar measure of the multiplicative group is $d\sigma/\sigma$, and the MRE is formally Bayes against this improper prior. Nothing about the proofs changes — only the symbols.
+</p>
+<div class="box pause" data-cid="ch10-850">
+<span class="box-label">Pause — the moral</span>
+<p data-cid="ch10-860">
+  Whenever a problem has a transitive group symmetry on its parameter space, the same scaffolding applies: equivariance forces risk to be constant on the parameter space; the orbit space (= maximal invariant) reduces the optimisation to a conditional one; and the best procedure is formal Bayes against the Haar measure. Equivariance is not really about location parameters — it is about <em>using the group</em> the problem already has.
+</p>
+</div>
+<!-- ===================================================================== -->
+<h2 data-cid="ch10-870" id="summary">Summary — what you learned in Chapter 10</h2>
+<p data-cid="ch10-880">The whole chapter, in six bullets:</p>
+<ol data-cid="ch10-890">
+<li>A <strong>group</strong> $G$ acts on data and parameter spaces simultaneously. For location problems on $\mathbb{R}$, $G = (\mathbb{R}, +)$, and the action is "shift everything by $g$".</li>
+<li>An estimator is <strong>equivariant</strong> if shifting the data shifts the estimate by the same amount: $\delta(g \star x) = g \star \delta(x)$.</li>
+<li>A loss is <strong>invariant</strong> if it depends only on the error $d - \theta$. Under equivariance + invariant loss, the <strong>risk is constant in $\theta$</strong>, so we can rank equivariant estimators by a single number.</li>
+<li>The <strong>maximal invariant</strong> $Y = (X_1 - X_n, \dots, X_{n-1} - X_n)$ indexes the orbits of the group action. Every equivariant estimator has the form $\delta_0(X) - v(Y)$ for some $v$.</li>
+<li>The <strong>MRE</strong> estimator is obtained by choosing $v(y)$ to minimise the conditional expected loss given $Y = y$. With squared-error loss this yields the explicit <strong>Pitman estimator</strong> (10.2): the centre of mass of the likelihood, treated as a density in $\theta$.</li>
+<li>Formally, the MRE is <strong>Bayes against the Haar measure</strong>. For the location group the Haar measure is Lebesgue measure — an improper but workable "flat" prior.</li>
+</ol>
+<div class="box pause" data-cid="ch10-900">
+<span class="box-label">Did this land?</span>
+<p data-cid="ch10-910">
+  Before moving to Chapter 11, you should be able to answer (without looking back):
+</p>
+<ul data-cid="ch10-920">
+<li>Why is the risk of an equivariant estimator constant in $\theta$?</li>
+<li>What does it mean for $Y$ to be a "maximal" invariant, and why does that make every equivariant estimator a function of $\delta_0$ and $Y$?</li>
+<li>State the Pitman estimator and re-derive it for exponential errors.</li>
+<li>In what sense is the MRE "Bayes with a flat prior"? Why is the word <em>formally</em> important?</li>
+</ul>
+<p data-cid="ch10-930">If any of these feel shaky, re-read the matching section. There's no hurry.</p>
+</div>
+<nav class="chapter-nav">
+<a href="ch09.html"><span class="label">← Previous</span><span class="title">9. Estimating Equations and Maximum Likelihood</span></a>
+<a class="next" href="ch11.html"><span class="label">Next →</span><span class="title">11. Empirical Bayes and Shrinkage Estimators</span></a>
+</nav>
+</article>
+</main>
+<script src="/js/main.js"></script><script src="/js/comments.js"></script>
+</body>
+</html>

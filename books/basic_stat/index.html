@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Theoretical Statistics — Slow Reading Guide</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/>
+</head>
+<body data-book="basic_stat" data-page="index">
+<header class="site-header">
+<a class="brand" href="/books/basic_stat/">Theoretical Statistics <small>a slow reading guide</small></a>
+<nav>
+<a href="/" class="all-books-link">All books</a>
+    <a href="/books/basic_stat/">Contents</a>
+<button aria-label="toggle theme" class="theme-toggle">Dark</button>
+</nav>
+</header>
+<main class="layout">
+<aside class="sidebar">
+<h4>About</h4>
+<ol>
+<li><a href="#about">About this guide</a></li>
+<li><a href="#how-to-read">How to read</a></li>
+<li><a href="#notation">Notation we'll use</a></li>
+<li><a href="#chapters">Chapters</a></li>
+</ol>
+</aside>
+<article class="content">
+<section class="hero">
+<div class="kicker">Companion to Keener's Theoretical Statistics</div>
+<h1>A Slow Reading Guide</h1>
+<p class="subtitle" data-cid="index-010">Walking through every step of a graduate-level statistics textbook — the way it should have been written for first-time readers.</p>
+<div class="meta">
+<span>Source: R. W. Keener, <em>Theoretical Statistics: Topics for a Core Course</em> (Springer, 2010)</span>
+<span>20 chapters · 557 pages</span>
+</div>
+</section>
+<h2 data-cid="index-020" id="about">About this guide</h2>
+<p data-cid="index-030">
+      Math textbooks tend to rush. They give you a definition, two theorems, and a proof before you've had time to ask
+      what any of the symbols actually mean. This site is the opposite. We're going to take Keener's <em>Theoretical
+      Statistics</em> and walk through it slowly — every definition unpacked, every "obvious" step spelled out, every
+      bit of motivation that a textbook author thought was beneath them.
+    </p>
+<p data-cid="index-040">
+      The book itself is excellent, but it assumes you already know what's worth caring about. We won't.
+    </p>
+<div class="box intuition" data-cid="index-050">
+<span class="box-label">The promise</span>
+<p data-cid="index-060">If you read a paragraph and don't understand it, that's a bug in this guide — not in you. Every paragraph
+        should land. Tell me when one doesn't.</p>
+</div>
+<h2 data-cid="index-070" id="how-to-read">How to read this</h2>
+<p data-cid="index-080">Each chapter page mirrors a chapter of the book and is divided the same way. As you read, watch for these boxes:</p>
+<div class="box definition" data-cid="index-090">
+<span class="box-label">Definition</span>
+<p data-cid="index-100">The textbook's formal statement, but stated cleanly with the symbols labeled.</p>
+</div>
+<div class="box intuition" data-cid="index-110">
+<span class="box-label">Intuition</span>
+<p data-cid="index-120">What this <em>actually means</em> in plain language, with a picture or analogy.</p>
+</div>
+<div class="box pause" data-cid="index-130">
+<span class="box-label">Pause</span>
+<p data-cid="index-140">Stop. Re-read this sentence. The next idea depends on it.</p>
+</div>
+<div class="box example" data-cid="index-150">
+<span class="box-label">Worked example</span>
+<p data-cid="index-160">Concrete numbers. Every step shown, nothing skipped.</p>
+</div>
+<div class="box warn" data-cid="index-170">
+<span class="box-label">Common pitfall</span>
+<p data-cid="index-180">The mistake almost everyone makes the first time.</p>
+</div>
+<h2 data-cid="index-190" id="notation">Notation we'll use</h2>
+<p data-cid="index-200">Some symbols recur constantly. Memorize these now — it saves pain later.</p>
+<ul data-cid="index-210">
+<li>$\mathcal{X}$ — a generic set (the "sample space" or universe). Read as <em>script-X</em>.</li>
+<li>$\mathcal{A}$ — a collection of subsets of $\mathcal{X}$ (later: a $\sigma$-field).</li>
+<li>$\mu$ — a measure (Greek "mu"). Assigns sizes to sets.</li>
+<li>$P$ — a probability measure. A measure that happens to assign $1$ to the whole space.</li>
+<li>$X, Y, Z$ — random variables (functions, not numbers).</li>
+<li>$\sim$ — "is distributed as". $X \sim P$ means $X$ has distribution $P$.</li>
+<li>$f, p$ — densities (the things that integrate to give probabilities).</li>
+<li>$E[X]$ — expectation of $X$.</li>
+</ul>
+<h2 data-cid="index-220" id="chapters">Chapters</h2>
+<p data-cid="index-230">Status legend: <strong>Ready</strong> means the explainer is written. <strong>Draft</strong> means the page
+      exists with section structure but the prose is still being written.</p>
+<ul class="chapter-list" data-cid="index-240">
+<li><a href="chapters/ch01.html"><span class="num">01</span><span class="title">Probability and Measure</span><span class="status ready">Ready</span></a></li>
+<li><a href="chapters/ch02.html"><span class="num">02</span><span class="title">Exponential Families</span><span class="status ready">Ready</span></a></li>
+<li><a href="chapters/ch03.html"><span class="num">03</span><span class="title">Risk, Sufficiency, Completeness, and Ancillarity</span><span class="status ready">Ready</span></a></li>
+<li><a href="chapters/ch04.html"><span class="num">04</span><span class="title">Unbiased Estimation</span><span class="status ready">Ready</span></a></li>
+<li><a href="chapters/ch05.html"><span class="num">05</span><span class="title">Curved Exponential Families</span><span class="status ready">Ready</span></a></li>
+<li><a href="chapters/ch06.html"><span class="num">06</span><span class="title">Conditional Distributions</span><span class="status ready">Ready</span></a></li>
+<li><a href="chapters/ch07.html"><span class="num">07</span><span class="title">Bayesian Estimation</span><span class="status ready">Ready</span></a></li>
+<li><a href="chapters/ch08.html"><span class="num">08</span><span class="title">Large-Sample Theory</span><span class="status ready">Ready</span></a></li>
+<li><a href="chapters/ch09.html"><span class="num">09</span><span class="title">Estimating Equations and Maximum Likelihood</span><span class="status ready">Ready</span></a></li>
+<li><a href="chapters/ch10.html"><span class="num">10</span><span class="title">Equivariant Estimation</span><span class="status ready">Ready</span></a></li>
+<li><a href="chapters/ch11.html"><span class="num">11</span><span class="title">Empirical Bayes and Shrinkage Estimators</span><span class="status ready">Ready</span></a></li>
+<li><a href="chapters/ch12.html"><span class="num">12</span><span class="title">Hypothesis Testing</span><span class="status ready">Ready</span></a></li>
+<li><a href="chapters/ch13.html"><span class="num">13</span><span class="title">Optimal Tests in Higher Dimensions</span><span class="status ready">Ready</span></a></li>
+<li><a href="chapters/ch14.html"><span class="num">14</span><span class="title">General Linear Model</span><span class="status ready">Ready</span></a></li>
+<li><a href="chapters/ch15.html"><span class="num">15</span><span class="title">Bayesian Inference: Modeling and Computation</span><span class="status ready">Ready</span></a></li>
+<li><a href="chapters/ch16.html"><span class="num">16</span><span class="title">Asymptotic Optimality</span><span class="status ready">Ready</span></a></li>
+<li><a href="chapters/ch17.html"><span class="num">17</span><span class="title">Large-Sample Theory for Likelihood Ratio Tests</span><span class="status ready">Ready</span></a></li>
+<li><a href="chapters/ch18.html"><span class="num">18</span><span class="title">Nonparametric Regression</span><span class="status ready">Ready</span></a></li>
+<li><a href="chapters/ch19.html"><span class="num">19</span><span class="title">Bootstrap Methods</span><span class="status ready">Ready</span></a></li>
+<li><a href="chapters/ch20.html"><span class="num">20</span><span class="title">Sequential Methods</span><span class="status ready">Ready</span></a></li>
+</ul>
+<div class="box pause" data-cid="index-250" style="margin-top:2.5rem">
+<span class="box-label">Next</span>
+<p data-cid="index-260">Open <a href="chapters/ch01.html">Chapter 1 — Probability and Measure</a>. It's the foundation everything else
+        rests on. Take your time with it.</p>
+</div>
+</article>
+</main>
+<script src="/js/main.js"></script><script src="/js/comments.js"></script>
+</body>
+</html>

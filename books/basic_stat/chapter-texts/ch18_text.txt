@@ -1,0 +1,1621 @@
+
+===== PAGE 1 =====
+
+18
+Nonparametric Regression
+Regression models are used to study how a dependent or response variable
+depends on an independent variable or variables. The regression function f (x)
+is deﬁned as the mean for a response variable Y when the independent variable
+equals x. In model form, with n observations, we may write
+Y
+i =f (xi) +ǫi, i = 1,...,n,
+with Eǫi = 0.
+Classically, the regression function f is assumed to lie in a class of func-
+tions speciﬁed by a ﬁnite number of parameters. For instance, in quadratic
+regression f is a quadratic function, f (x) = β
+0 +β 1x +β 2x2, speciﬁed by
+three parameters, β 0, β 1, and β 2. This approach feels natural with a small-
+or moderate-size data set, as the data in this case may not be rich enough to
+support ﬁtting a more complicated model. But with more data a researcher
+will often want to consider more involved models, since in most applications
+there is little reason to believe the regression function lies exactly in some nar-
+row parametric family. Of course one could add complexity by increasing the
+number of parameters, ﬁtting perhaps a cubic or quartic function, say, instead
+of a quadratic. But this approach may have limitations, and recently there has
+been considerable interest in replacing parametric assumptions about f with
+more qualitative assumptions about the smoothness of f .
+In this chapter we explore two approaches. We begin with kernel methods,
+based on Clark (1977), which exploit the assumed smoothness of f in a fairly
+direct fashion. With this approach the regression function is estimated as a
+weighted average of the responses with similar values for the independent
+variable. The other approach, splines, is derived by viewing the regression
+functionf as an unknown parameter taking values in an inﬁnite-dimensional
+vector space. This approach is developed in Section 18.3, following a section
+extending results about ﬁnite-dimensional vector spaces to Hilbert spaces.
+The chapter closes with a section showing how similar ideas can be used for
+density estimation.
+R.W. Keener, Theoretical Statistics: Topics for a Core Course, Springer Texts in Statistics, 
+DOI 10.1007/978-0-387-93839-4_18, © Springer Science+Business Media, LLC 2010 
+367 
+
+===== PAGE 2 =====
+
+368 18 Nonparametric Regression
+18.1 Kernel Methods
+Consider a regression model in which
+Yi =f (xi) +ǫi, i = 1,...,n,
+whereǫ1,...,ǫ n are mean zero, uncorrelated random variables with a common
+varianceσ 2. The independent variables x1,...,x n are viewed as (observed or
+known) constants, and the response variables Y1,...,Y n are observed and
+random. The errors ǫ1,...,ǫ n are not observed, and σ 2 is an unobserved pa-
+rameter. The regression function f is unknown and is not assumed to lie in
+any parametric class. But we do assume it is twice continuously diﬀerentiable.
+Finally, for convenience, assume x
+1 < · · ·<xn.
+One conceivable estimator for f might be the function ˆh obtained from
+the data by linear interpolation. This function is Yi whenx =xi and is linear
+between adjacent values for x, so
+ˆh(x) = Yi
+x − xi+1
+xi − xi+1
++Yi+1
+x − xi
+xi+1 − xi
+, x ∈ [xi,x i+1]. (18.1)
+If the errors are very small then ˆh may lie close to f , but when the errors are
+appreciable ˆh will jump up and down too much to be a sensible estimator.
+This can be seen in the plot to the left in Figure 18.1 , with the true regression
+function f shown as a dashed line and ˆh given as a solid line.
+x
+ˆh
+x
+ˆf
+Fig. 18.1. Kernel smoothing: left: ˆh; right: ˆf .
+One way to make a function smoother is through convolution. Doing this
+with ˆh leads to an estimator
+ˆf (x) = 1
+b
+∫
+ˆh(t)W
+(x − t
+b
+)
+dt, (18.2)
+where W is a probability density and b, called the bandwidth, controls the
+amount of smoothing. The plot to the right in Figure 18.1 shows1 ˆf , and it is
+1 The graphs are based on simulated data with f (x) = 16x3 − 19. 2x2 + 4. 68x + 2. 3,
+ǫi ∼ N (0, 1),W (x) = (1 −|x|)+ ,b = 0. 24, andxi+1 −xi = 0. 04. To avoid problems
+with edge eﬀects, ˆf is based on observations (not graphed) with x /∈ [0, 1].
+
+===== PAGE 3 =====
+
+18.1 Kernel Methods 369
+indeed smoother than ˆh. Viewing this integral in (18.2) as an expectation,
+ˆf (x) = EZ ˆh(x − bZ),
+where Z is an absolutely continuous variable with density W . From this we
+can see that ˆf (x) is a weighted average of ˆh(y) over valuesy of order b fromx.
+With increasing b there is more averaging and, as intuition suggests, this will
+improve the variance of ˆf (x). But if f curves near x, averaging will induce
+bias in the estimator ˆf that grows as b increases. We explore this below when
+the independent variables are equally spaced, trying to choose the bandwidth
+to balance these concerns.
+The estimators ˆh and ˆf are both linear functions of Y . Using (18.1),
+ˆ
+h(x) =
+n∑
+i=1
+ui(x)Yi,
+where
+ui(x) =
+
+
+
+
+
+
+
+
+
+
+
+
+
+x − x
+i−1
+xi − xi−1
+, x ∈ [xi−1,x i];
+x − xi+1
+xi − xi+1
+, x ∈ [xi,x i+1];
+0, otherwise.
+Using this in (18.2),
+ˆf (x) = 1
+b
+∫ n∑
+i=1
+ui(t)YiW
+(x − t
+b
+)
+dt =
+n∑
+i=1
+vi(x)Yi, (18.3)
+where
+vi(x) = 1
+b
+∫
+ui(t)W
+(x − t
+b
+)
+dt. (18.4)
+With this linear structure, moments of ˆf (x) should be easy to compute.
+If we let h(x) = Eˆh(x), then by (18.1),
+h(x) = f (xi)x − xi+1
+xi − xi+1
++f (xi+1) x − xi
+xi+1 − xi
+, x ∈ [xi,x i+1],
+so h is the linear interpolant of f . The diﬀerence between h and f can be
+estimated by Taylor approximation. If x ∈ [xi,x i+1], then
+f (x) = f (xi) + (x − xi)f′(xi) +
+∫ x
+xi
+(x − u)f′′(u)du.
+In particular, if x =xi+1 , we have
+f (xi+1) = f (xi) + (xi+1 − xi)f′(xi) +
+∫ xi+1
+xi
+(xi+1 − u)f′′(u)du,
+
+===== PAGE 4 =====
+
+370 18 Nonparametric Regression
+and we can use this to eliminate f′(xi) from the ﬁrst equation in favor of
+f (xi+1). The algebra is messy but straightforward and gives
+f (x) = f (xi) + (x − xi)f (xi+1) − f (xi)
+xi+1 − xi
+−
+∫ x
+xi
+(u − xi)
+(
+1 − x − xi
+xi+1 − xi
+)
+f′′(u)du
+−
+∫ xi+1
+x
+(x − xi)xi+1 − u
+xi+1 − xi
+f′′(u)du
+=h(x) − 1
+2 (x − xi)(xi+1 − x)
+∫ xi+1
+xi
+pi,x (u)f′′(u)du,
+where pi,x is a probability density concentrated on ( xi,x i+1). If f′′is contin-
+uous, then by the (ﬁrst) intermediate value theorem for integrals,
+f (x) = h(x) − 1
+2 (x − xi)(xi+1 − x)f′′(ui,x ),
+whereui,x ∈ (xi,x i+1). In particular, since ( x −xi)(xi+1 −x) ≤ 1
+4 (xi+1 −xi)2,
+if M2 = sup |f′′(x)|, then
+⏐
+⏐f (x) − h(x)
+⏐
+⏐ ≤ M
+2
+8 (xi+1 − xi)2. (18.5)
+For clarity, let us now assume that the xi are equally spaced between
+0 and 1, xi = i/n . Assume also that W is continuous, symmetric, and has
+support [ − 1, 1]. Two popular choices for the kernel are W2(x) =
+(
+1 − |x|
+)+
+and W4(x) = 3
+4 (1 − x2)+. Then
+E ˆf (x) = E 1
+b
+∫
+ˆh(t)W
+(x − t
+b
+)
+dt
+= 1
+b
+∫
+Eˆh(t)W
+(x − t
+b
+)
+dt
+= 1
+b
+∫
+f (t)W
+(x − t
+b
+)
+dt + 1
+b
+∫ (
+h(t) − f (t)
+)
+W
+(x − t
+b
+)
+dt.
+By (18.5), the diﬀerence between f and h is at most M2/ (8n2), and since W
+is a probability density integrating to one, this also bounds the magnitude of
+the ﬁnal term.
+2 If Z has density W , then the other term is
+EZf (x − bZ) = EZ
+[
+f (x) − bZf′(x) + 1
+2b2Z2f′′(x − bZ∗)
+]
+,
+whereZ∗is an intermediate value in ( − 1, 1). Because W is symmetric, EZ =
+0, and by dominated convergence
+2 We neglect “edge eﬀects” here, assuming xi >b and xi+1 < 1 − b.
+
+===== PAGE 5 =====
+
+18.1 Kernel Methods 371
+Bias
+(ˆf (x)
+)
+=E ˆf (x) − f (x) = 1
+2b2f′′(x)EZ 2 +o(b2) +O(1/n 2),
+as b → 0. With the regularity imposed, the asymptotics here also hold uni-
+formly in x provided we stay away from the endpoints 0 and 1.
+From the representation (18.3),
+Var
+(ˆf (x)
+)
+=σ 2
+n∑
+i=1
+v2
+i (x).
+Note that in this sum, the number of nonzero terms is of order nb because
+vi(x) is zero unless |x −xi| ≤b + 1/n . To approximate the terms in this sum,
+note that nui is a probability measure concentrated on ( xi−1,x i+1), and so,
+by (18.4),
+vi(x) = 1
+nbW
+(x − t∗
+i
+(x)
+b
+)
+,
+with t∗
+i
+(x) some value in ( xi−1,x i+1). If M1 = sup |W′(t)|, then
+⏐
+⏐
+⏐
+⏐v
+i(x) − 1
+nbW
+(x − xi
+b
+)⏐
+⏐
+⏐
+⏐ ≤ M
+1
+n2b2.
+Since the pointsxi/b are uniformly spaced and separated by an amount 1/ (nb),
+in a limit in which b → 0 but nb → ∞ , then
+1
+nb
+n∑
+i=1
+W 2
+(x − xi
+b
+)
+is a Riemann approximation for
+∫
+W 2(x−t)dt converging to
+∫
+W 2(t)dt. Thus
+Var
+(ˆf (x)
+)
+= σ 2
+nb
+1
+nb
+n∑
+i=1
+[
+W 2
+(x − xi
+b
+)
++O
+( 1
+nb
+)]
+= σ 2
+nb
+[∫
+W 2(t)dt +o(1)
+]
++O
+( 1
+n2b2
+)
+∼ σ 2
+nb
+∫
+W 2(t)dt.
+Combining our approximations for the bias and variance of ˆf (x), we can
+approximate the mean square error of ˆf (x) as
+MSE(x) = E
+[ ˆf (x) − f (x)
+]2
+= Var
+(ˆf (x)
+)
++ Bias2(ˆf (x)
+)
+≈ σ 2
+nb
+∫
+W 2(t)dt +b4 1
+4
+(
+f′′(x)
+)2
+(EZ 2)2.
+The mean square error measures the performance of ˆf at individual values
+for the independent variable x. For a more global assessment, the integrated
+mean square error may be a natural measure:
+
+===== PAGE 6 =====
+
+372 18 Nonparametric Regression
+IMSE =
+∫ 1
+0
+MSE(x)dx
+=
+∫ 1
+0
+E
+[ ˆf (x) − f (x)
+]2
+dx =E
+∫ 1
+0
+[ ˆf (x) − f (x)
+]2
+dx.
+Using the approximation for the mean square error,
+IMSE ≈ c1
+nb +b4c2,
+where
+c1 =σ 2
+∫
+W 2(t)dt and c2 = 1
+4 (EZ 2)2
+∫ 1
+0
+(
+f′′(x)
+)2
+dx.
+The approximation for the integrated mean square error, viewed as a function
+of b, is minimized at a value where the derivative is zero; that is, at a value
+solving
+− c
+1
+nb2 + 4c2b3 = 0.
+This gives
+bopt =
+( c1
+4nc2
+)1/5
+as an optimal choice (approximately), and with this choice
+IMSE ≈ 5c1/5
+2
+(c1
+4n
+)4/5
+=Kf
+(σ 2
+n
+)4/5 ([∫
+W 2(t)dt
+]4
+[EZ 2]2
+)1/5
+,
+where
+Kf = 5
+4
+(∫ 1
+0
+(
+f′′(x)
+)2
+dx
+)1/5
+,
+which depends on f but is independent of the kernel W . Using W2, IMSE ≈
+0. 353Kf (σ 2/n )4/5 , and using W4, IMSE ≈ 0. 349Kf (σ 2/n )4/5 . Thus W4 has a
+slight theoretical advantage.
+In practice, the choice of the kernel is less important than the choice of the
+bandwidth. The formula for bopt cannot be used directly, since the constants
+c1 and c2 depend on σ 2 and
+∫ 1
+0
+(
+f′′(x)
+)
+dx. One natural idea is to estimate
+these quantities somehow and choose the bandwidth by plugging the estimates
+into the formula for b
+opt. This is feasible, but a bit tricky since derivatives of
+f are often harder to estimate than f itself. Another idea would be to use a
+cross-validation approach based on prediction error. Suppose we wanted to
+predict the outcome at a new location x. The expected squared prediction
+error would be
+E
+[
+Y − ˆf (x)
+]2
+=E[f (x) +ǫ − ˆf (x)
+]2
+=σ 2 + MSE(x).
+If x were chosen at random from a uniform distribution on (0 , 1), then the
+expected squared prediction error would be σ 2 + IMSE. Here is a resampling
+method to estimate this error:
+
+===== PAGE 7 =====
+
+18.2 Hilbert Spaces 373
+1. Partition the data at random into two samples, an estimation sample
+with n1 observations and a validation sample with n2 observations. Let
+ˆf∗
+b denote the kernel estimate for f based on the estimation sample with
+bandwidth b.
+2. Deﬁne
+C(b) = 1
+n2
+n2∑
+i=1
+(
+y2,i − ˆf∗
+b (x2,i )
+)2
+,
+where (x2,i ,y 2,i ), i = 1,...,n 2, are the data in the validation sample.
+3. Repeat steps 1 and 2 m times and deﬁne
+C(b) = 1
+m
+m∑
+i=1
+Ci(b),
+where Ci(b) is the function C(b) for the ith partition.
+The value ˆb minimizing
+ C would be the cross-validation choice for the band-
+width.
+18.2 Hilbert Spaces
+If V is a vector space in Rn with an orthonormal basis e1,...,e p, then any
+x ∈V can be written as
+x =
+p∑
+i=1
+ciei,
+with the constants ci in the expansion given by
+ci =e′
+i
+x, i = 1,...,p.
+Classes of functions may also form vector spaces over R, but these spaces are
+rarely spanned by a ﬁnite set of functions. However, expansions like those
+above may be possible with an inﬁnite collection of basis vectors. To deal
+with inﬁnite sums we need a notion of convergence, and this is based here on
+the norm or length of a vector. And, for the geometric structure of interest,
+we also need inner products. Here are formal deﬁnitions of norms and inner
+products.
+Deﬁnition 18.1. Let V be a vector space over R. A norm on V is a real-
+valued function on V , ∥ · ∥ :V → R, satisfying the following conditions:
+1. For all x in V , ∥x∥ ≥ 0, and ∥x∥ = 0 only if x = O (the zero vector in
+V ).
+2. For all x and y in V , ∥x +y∥ ≤ ∥x∥ + ∥y∥.
+3. For all x ∈V and c ∈ R, ∥cx∥ = |c| × ∥x∥.
+
+===== PAGE 8 =====
+
+374 18 Nonparametric Regression
+Using a norm we can deﬁne convergence xn → x to mean that ∥xn −x∥ →
+0. Then a function f from one normed space to another is continuous if
+f (xn) → f (x) whenever xn → x. For instance the function f (x) = ∥x∥ is
+continuous. The second property of norms implies
+∥xn∥ ≤ ∥xn − x∥ + ∥x∥ and ∥x∥ ≤ ∥x − xn∥ + ∥xn∥.
+Together these imply
+⏐
+⏐f (x
+n) − f (x)
+⏐
+⏐ =
+⏐
+⏐∥x
+n∥ − ∥x∥
+⏐
+⏐ ≤ ∥x
+n − x∥,
+which tends to zero (by deﬁnition) whenever xn → x.
+Deﬁnition 18.2. Let V be a vector space over R. An inner product is a
+function ⟨·, ·⟩ :V × V → R that is symmetric:
+⟨x,y ⟩ = ⟨y,x ⟩, ∀y,x ∈V ;
+bilinear:
+⟨x,ay +bz⟩ =a⟨x,y ⟩ +b⟨x,z ⟩
+and
+⟨ax +by,z ⟩ =a⟨x,z ⟩ +b⟨y,z ⟩,
+for all x, y, z in V and all a, b in R; and positive deﬁnite :
+⟨x,x ⟩ ≥ 0,
+with equality only if x = O. The pair (V, ⟨·, ·⟩) is called an inner product
+space.
+Proposition 18.3. In an inner product space, ∥x∥ =
+√
+⟨x,x ⟩ deﬁnes a norm
+satisfying the Cauchy–Schwarz inequality,
+|⟨x,y ⟩| ≤ ∥x∥ × ∥y∥. (18.6)
+Proof. The ﬁrst property of a norm follows because the inner product is
+positive deﬁnite, the third property follows from the bilinearity which gives
+⟨cx,cx ⟩ = c
+2⟨x,x ⟩, and, anticipating (18.6), the second property of a norm
+follows because
+⏐
+⏐⟨x +y,x +y⟩
+⏐
+⏐ =
+⏐
+⏐⟨x,x ⟩ + 2⟨x,y ⟩ + ⟨y,y ⟩
+⏐
+⏐
+≤ ∥x∥
+2 + 2∥x∥ × ∥y∥ + ∥y∥2 =
+(
+∥x∥ + ∥y∥
+)2
+.
+To ﬁnish we must verify the Cauchy–Schwarz inequality. It is not hard to show
+that ⟨x, O⟩ = 0, and so the inequality is immediate unless x and y are both
+nonzero. In this case,
+
+===== PAGE 9 =====
+
+18.2 Hilbert Spaces 375
+⟨x − cy,x − cy⟩ = ∥x∥2 − 2c⟨x,y ⟩ +c2∥y∥2,
+viewed as a function of c, is minimized when c = ⟨x,y ⟩/ ∥y∥2. But the function
+is nonnegative for all c, and so plugging in the minimizing value we have
+∥x∥2 − 2 ⟨x,y ⟩2
+∥y∥2 + ⟨x,y ⟩2
+∥y∥2 ≥ 0.
+After a bit of rearrangement this gives (18.6). ⊓ ⊔
+One consequence of the Cauchy–Schwarz inequality is that the inner prod-
+uct ⟨·, ·⟩ is continuous, because
+⏐
+⏐⟨˜x, ˜y⟩ − ⟨x,y ⟩
+⏐
+⏐ =
+⏐
+⏐⟨˜x, ˜y − y⟩ + ⟨˜x − x,y ⟩
+⏐
+⏐
+≤ ∥ ˜x∥ × ∥ ˜y − y∥ + ∥˜x − x∥ × ∥y∥,
+which tends to zero as ˜x → x and ˜y → y.
+If a norm ∥ · ∥ comes from an inner product, then
+∥x ± y∥
+2 = ∥x∥2 ± 2⟨x,y ⟩ + ∥y∥2.
+Adding these two relations we have the parallelogram law, stating that
+∥x +y∥2 + ∥x − y∥2 = 2∥x∥2 + 2∥y∥2. (18.7)
+Elementsx andy in an inner product space V are called orthogonal, written
+x ⊥ y, if ⟨x,y ⟩ = 0. Since
+⟨x +y,x +y⟩ = ⟨x,x ⟩ + 2⟨x,y ⟩ + ⟨y,y ⟩,
+we then have the Pythagorean relation,
+∥x +y∥2 = ∥x∥2 + ∥y∥2.
+If W is a subspace of V , then the orthogonal complement of W is
+W⊥=
+{
+x ∈V : ⟨x,y ⟩ = 0, ∀y ∈W
+}
+.
+If xn → x, then ∥xn − x∥ → 0, which implies that
+sup
+m:m≥n
+∥xm − x∥ → 0,
+as n → ∞ . Because
+∥xn − xm∥ ≤ ∥xn − x∥ + ∥x − xm∥,
+convergence implies
+lim
+n→∞
+sup
+m≥n
+∥xn − xm∥ = 0. (18.8)
+Sequences satisfying this equation are called Cauchy, but if the space is not
+rich enough some Cauchy sequences may not converge. For instance, 3, 3 . 1,
+3. 14,... is a Cauchy sequence in Q without a limit in Q, becauseπ is irrational.
+
+===== PAGE 10 =====
+
+376 18 Nonparametric Regression
+Deﬁnition 18.4. A normed vector space V is complete if every Cauchy se-
+quence in V has a limit in V . A complete inner product space is called a
+Hilbert space.
+The next result extends our notion of projections in Euclidean spaces to
+Hilbert spaces.
+Theorem 18.5. Let V be a closed subspace of a Hilbert space H. For any
+x ∈ H there is a unique y ∈V , called the projection of x onto V , minimizing
+∥x −z∥ over z ∈V . Then x −y ∈V
+⊥, and this characterizes y: if ˜y ∈V and
+x − ˜y ∈V⊥, then ˜y =y.
+Proof. Let d = infz∈V ∥x − z∥ (the distance from x to V ), and choose yn in
+V so that ∥x − yn∥ → d. By the parallelogram law,
+∥x − ym +x − yn∥2 + ∥yn − ym∥2 = 2∥x − yn∥2 + 2∥x − ym∥2.
+But
+∥2x − ym − yn∥2 = 4
+
+x −
+1
+2 (yn +ym)
+
+
+2
+≥ 4d2,
+and so
+∥yn − ym∥2 ≤ 2∥x − yn∥2 + 2∥x − ym∥2 − 4d2 → 0,
+asm,n → ∞ . So yn,n ≥ 1, is a Cauchy sequence converging to some element
+y ∈ H. Since V is closed, y ∈V , and by continuity, ∥x−y∥ =d. Next, suppose
+˜y ∈V and ∥x − ˜y∥ =d. If z ∈V then ˜y +cz ∈V for all c ∈ R and
+0 ≤ ∥x − ˜y − cz∥2 − ∥x − ˜y∥2 = − 2c⟨x − ˜y,z ⟩ +c2∥z∥2.
+This can only hold for all c ∈ R if ⟨x − ˜y,z ⟩ = 0, and thus x − ˜y ∈V⊥. Finally,
+since y and ˜y both lie in V and x − y and x − ˜y both lie in V⊥,
+∥y − ˜y∥2 = ⟨x − ˜y,y − ˜y⟩ − ⟨x − y,y − ˜y⟩ = 0,
+showing that y is unique. ⊓ ⊔
+IfV is a closed subspace of a Hilbert space H, letPV x denote the projection
+of x onto V . The following result shows that PV is a linear operator with
+operator norm one (see Problem 18.4).
+Proposition 18.6. If V is a closed subspace of a Hilbert space H, x ∈ H ,
+y ∈ H, and c ∈ R, then
+P
+V (cx +y) = cPV x +PV y
+and
+∥PVx∥ ≤ ∥x∥.
+
+===== PAGE 11 =====
+
+18.2 Hilbert Spaces 377
+Proof. Since V is a subspace and PV x and PV y lie in V , cPV x +PVy ∈ V ;
+and if z ∈V ,
+⟨cx +y − cPV x − PV y,z ⟩ =c⟨x − PVx,z ⟩ + ⟨y − PVy,z ⟩ = 0,
+becausex−PVx ⊥ z andy −PVy ⊥ z. Using Theorem 18.5, cPV x+PVy must
+be the projection of cx +y onto V . For the second assertion, since PV x ∈V
+and x − PVx ∈V⊥are orthogonal, by the Pythagorean relation
+∥PV x∥2 + ∥x − PVx∥2 = ∥x∥2. ⊓ ⊔
+Deﬁnition 18.7. A collection et, t ∈T , is said to be orthonormal if es ⊥ et
+for all s ̸=t and ∥et∥ = 1, for all t.
+As in the ﬁnite-dimensional case, we would like to represent elements in our
+Hilbert space as linear combinations of elements in an orthonormal collection,
+but extra care is necessary because some inﬁnite linear combinations may not
+make sense.
+Deﬁnition 18.8. The linear span of S ⊂ H , denoted span(S), is the collec-
+tion of all ﬁnite linear combinations c
+1x1 + · · · +cnxn with c1,...,c n in R
+and x1,...,x n in S. The closure of this set is denoted
+ span(S).
+Deﬁnition 18.9. An orthonormal collection et, t ∈T , is called an orthonor-
+mal basis for a Hilbert space H if ⟨et,x ⟩ ̸= 0 for some t ∈T , for every nonzero
+x ∈ H.
+Theorem 18.10. Every Hilbert space has an orthonormal basis.
+The proof in general relies on the axiom of choice. (The collection of all
+orthonormal families is inductively ordered, so a maximal element exists by
+Zorn’s lemma, and any maximal element is an orthonormal basis.) When H
+is separable, a basis can be found by applying the Gram–Schmidt algorithm
+to a countable dense set, and in this case the basis will be countable.
+Theorem 18.11. Ife
+n,n ≥ 1, is an orthonormal basis, then each x ∈ H may
+be written as
+x =
+∞∑
+k=1
+⟨x,e k⟩ek.
+Proof. Let
+xn =
+n∑
+k=1
+⟨x,e k⟩ek.
+The inﬁnite sum in the theorem is the limit of these partial sums, so we begin
+by showing that these partial sums form a Cauchy sequence. If j ≤ n,
+
+===== PAGE 12 =====
+
+378 18 Nonparametric Regression
+⟨x − xn,e j ⟩ = ⟨x,e j ⟩ −
+n∑
+k=1
+⟨x,e k ⟩⟨ek,e j ⟩ = 0,
+since ⟨ek,e j ⟩ = 0, unless k = j, and in that case it is 1. From this, x −
+xn ∈ span{e1,...,e n}⊥, and by Theorem 18.5, xn is the projection of x onto
+span{e1,...,e n}. By the Pythagorean relation,
+∥xn∥2 =
+n∑
+k=1
+⟨x,e k⟩2,
+and by Proposition 18.6, ∥xn∥ ≤ ∥x∥. From this we have Bessel’s inequality,
+n∑
+k=1
+⟨x,e k ⟩2 ≤ ∥x∥2,
+and since n here is arbitrary, the coeﬃcients ⟨x,e k⟩, k ≥ 1, are square
+summable. By the Pythagorean relation, if n<m ,
+∥xm − xn∥2 =
+
+
+
+
+
+m∑
+k=n+1
+⟨x,e k⟩ek
+
+
+
+
+
+2
+=
+m∑
+k=n+1
+⟨x,e k⟩2,
+which tends to zero as m and n tend to inﬁnity. So xn, n ≥ 1, is a Cauchy
+sequence, and since H is complete the sequence must have a limit x∞. Because
+the inner product ⟨·, ·⟩ is a continuous function of its arguments, for any j ≥ 1,
+⟨x − x∞,e j ⟩ = lim
+n→∞
+⟨x − xn,e j ⟩.
+But if n ≥ j, ⟨x − xn,e j ⟩ = 0 because xn is the projection of x onto
+span{e1,...,e n}, and so the limit in this expression must be zero. Therefore
+⟨x − x∞,e j ⟩ = 0, j ≥ 1.
+Finally, since ek, k ≥ 1, form an orthonormal basis, x − x∞must be zero,
+proving the theorem. ⊓ ⊔
+18.3 Splines
+Let us consider again our nonparametric regression model
+Yi =f (xi) +ǫi, i = 1,...,n,
+whereǫ1,...,ǫ n are mean zero, uncorrelated random variables with a common
+variance σ 2. As with the kernel approach, there is a presumption that f is
+smooth. The smoothing spline approach tries to take direct advantage of this
+
+===== PAGE 13 =====
+
+18.3 Splines 379
+smoothness by augmenting the usual least squares criteria with a penalty for
+roughness. For instance, if the x
+i lie in [0, 1], the estimator ˆf might be chosen
+to minimize
+J(f ) =
+n∑
+i=1
+(
+Yi − f (xi)
+)2
++λ ∥f (m)∥2
+2
+, (18.9)
+where ∥ · ∥2 is the L2-norm of functions on [0, 1] under Lebesgue measure,
+∥g∥2
+2
+=
+∫ 1
+0
+g2(x)dx.
+The constant λ is called a smoothing parameter. Larger values for λ will lead
+to a smoother ˆf , smaller values will lead to an estimate ˆf that follows the
+observed data more closely, that is, with ˆf (xi) closer to Yi.
+For the roughness penalty in our criteria to make sense, f (m−1) will need
+to be absolutely continuous according to the following deﬁnition.
+Deﬁnition 18.12. A real-valued function g deﬁned on an interval of R is
+absolutely continuous if there exists a function g
+′such that
+g(b) − g(a) =
+∫ b
+a
+g′(x)dx, ∀a<b.
+If g is diﬀerentiable, then g′must be the derivative a.e., so use of a common
+notation should not cause any confusion. Also, if f has m − 1 continuous
+derivatives and g = f (m−1) is absolutely continuous, then we denote g′as
+f (m).
+Deﬁnition 18.13. The Sobolev space Wm[0, 1] is the collection of all func-
+tions f : [0, 1] → R with m − 1 continuous derivatives, f (m−1) absolutely
+continuous, and ∥f (m)∥2 < ∞. With an inner product ⟨·, ·⟩ deﬁned by
+⟨f,g ⟩ =
+m−1∑
+k=0
+f (k)(0)g(k)(0) +
+∫ 1
+0
+f (m)(x)g(m)(x)dx, f,g ∈Wm[0, 1],
+Wm[0, 1] is a Hilbert space.
+These Hilbert spaces have an interesting structure. Suppose we deﬁne
+K(x,y ) =
+m−1∑
+k=0
+1
+k!2xkyk +
+∫ x∧y
+0
+(x − u)m−1(y − u)m−1
+(m − 1)!2 du.
+Then
+∂k
+∂xkK(x,y )
+⏐
+⏐
+x=0 = yk
+k!, k = 0,...,m − 1,
+and
+
+===== PAGE 14 =====
+
+380 18 Nonparametric Regression
+∂m
+∂xmK(x,y ) = (y − x)m−1
+(m − 1)! I{x ≤ y}. (18.10)
+Comparing this with the Taylor expansion
+f (y) =
+m−1∑
+k=0
+1
+k!f (k)(0)yk +
+∫ y
+0
+(y − x)m−1f (m)(x)
+(m − 1)! dx,
+we see that
+f (y) = ⟨f,K (·,y )⟩.
+This formula shows that the evaluation functional, f ⇝ f (y), is a bounded
+linear operator. Hilbert spaces in which this happens are called reproducing
+kernel Hilbert spaces . The function K here is called the reproducing kernel,
+reproducing because
+K(x,y ) = ⟨K(·,x ),K (·,y )⟩.
+The kernel K is a positive deﬁnite function. To see this, ﬁrst note that
+∑
+i,j
+cicjK(xi,x j ) =
+∑
+i,j
+cicj ⟨K(·,x i),K (·,x j )⟩ =
+
+
+
+
+
+∑
+i
+ciK(·,x i)
+
+
+
+
+
+2
+,
+which is nonnegative. If this expression is zero, then h = ∑
+iciK(·,x i) is zero.
+But then ⟨h,f ⟩ = ∑
+i cif (xi) will be zero for all f , which can only happen if
+ci = 0 for all i.
+To minimize J(f ) in (18.9) over f ∈ Wm[0, 1], let Π m denote the vector
+space of all polynomials of degree at most m− 1, letηi =K(·,x i),i = 1,...,n,
+and deﬁne
+V =Π m ⊕ span{η 1,...,η n}.
+An arbitrary function f in Wm[0, 1] can be written as g +h with g ∈V and
+h ∈V⊥. Because h is orthogonal to ηi,h(xi) = ⟨h,η i⟩ = 0. Also, if k ≤ m − 1,
+then the inner product of h with the monomial xk is k!h(k)(0), and because
+h is orthogonal to these monomials, h(k)(0) = 0, k = 0,...,m − 1. It follows
+that ∥h∥ = ∥h(m)∥2, and
+⟨g,h ⟩ =
+∫ 1
+0
+g(m)(x)h(m)(x)dx = 0.
+But then
+∥g(m) +h(m)∥2
+2
+=
+∫ 1
+0
+(
+g(m)(x) +h(m)(x)
+)2
+dx = ∥g(m)∥2
+2
++ ∥h(m)∥2
+2
+,
+and so
+
+===== PAGE 15 =====
+
+18.3 Splines 381
+J(f ) = J(g +h) =
+n∑
+i=1
+(
+Yi − g(xi) − h(xi)
+)2
++λ ∥g(m) +h(m)∥2
+2
+=
+n∑
+i=1
+(
+Yi − g(xi)
+)2
++λ ∥g(m)∥2
+2
++λ ∥h(m)∥2
+2
+=J(g) +λ ∥h∥2.
+From this it is evident that a function minimizing J must lie in V .
+Using (18.10),
+η (m)
+i (x) = (xi − x)m−1
+(m − 1)! I{x ≤ xi}.
+From this, on [0,x i],ηi must be a polynomial of degree 2 m − 1, and on [xi, 1],
+ηi is a polynomial of degree at most m − 1. Taking more derivatives,
+η (m+j)
+i (x) = (− 1)j (xi − x)m−1−j
+(m − 1 − j)! I{x ≤ xi}, j = 1,...,m − 2,
+and so the derivatives of ηi of order 2 m − 2 or less are continuous. Linear
+combinations of the ηi are piecewise polynomials. Functions like these are
+called splines.
+Deﬁnition 18.14. A function f : [0, 1] → R is called a spline of order q with
+(simple) knots 0 <x 1 < · · ·<xn < 1 if, for any i = 0,...,n, the restriction
+of f to [xi,x i+1] (with the convention x0 = 0 and xn+1 = 1 ) is a polynomial
+of degree q − 1 or less, and if the ﬁrst q − 2 derivatives of f are continuous
+on the whole domain [0, 1]. The collection of all splines of order q is denoted
+Sq = Sq (x0,...,x n+1). The space Sq is a vector space.
+From the discussion above, any function f ∈V must be a spline of order
+2m. In addition, all functions f ∈V are polynomials of degree m − 1 on the
+last interval [xn, 1]. So if ˆf minimizes J(f ), it will be a polynomial of degree
+at most m − 1 on [ xn, 1], and by time reversal 3 it will also be a polynomial
+of degree m − 1 or less on the ﬁrst interval [0 ,x 1]. It will then be a natural
+spline according to the following deﬁnition.
+Deﬁnition 18.15. A function f ∈ S2q is called a natural spline of order 2q if
+its restrictions to the ﬁrst and last intervals, [0,x 1] and [xn, 1], are polynomials
+of degree q − 1 or less. Let ˜S2q denote the set of all natural splines.
+These spline spaces (with ﬁxed knots) are ﬁnite-dimensional vector spaces,
+and once we know that the function ˆf minimizingJ lies in a ﬁnite-dimensional
+vector space, ˆf can be identiﬁed using ordinary linear algebra. To see how, let
+ej ,j = 1,...,k , be linearly independent functions with
+3 Formally, the argument just given shows that the function ˜f (t)
+def
+= ˆf (1 − t), that
+minimizes P`
+Yi − f (1 − xi)
+´2
++λ ∥f (m) ∥2
+2
+, must be a polynomial of degree at
+most m − 1 on [1 − x1, 1].
+
+===== PAGE 16 =====
+
+382 18 Nonparametric Regression
+˜S2m ⊂ span{e1,...,e k}.
+If
+f =c1e1 + · · · +ckek,
+then
+f (xi) = ⟨f,η i⟩ =
+∑
+j
+cj ⟨ej,η i⟩ = [Ac]i,
+where A is a matrix with entries
+Aij = ⟨ej,η i⟩, i = 1,...,n, j = 1,...,k.
+Then n∑
+i=1
+(
+Yi − f (xi)
+)2
+= ∥Y − Ac∥2 =Y′Y − 2Y′Ac +c′A′Ac.
+For the other term in J,
+∥f (m)∥2
+2
+=
+
+
+
+
+
+
+k∑
+j=1
+cje(m)
+j
+
+
+
+
+
+
+2
+2
+=
+∑
+i,j
+cicj
+∫ 1
+0
+e(m)
+i (x)e(m)
+j (x)dx =c′Bc,
+where B is a k × k matrix with
+Bij =
+∫ 1
+0
+e(m)
+i (x)e(m)
+j (x)dx, i = 1,...,k, j = 1,...,k.
+Using these formulas,
+J(f ) = Y′Y − 2Y′Ac +c′A′Ac +λc′Bc.
+This is a quadratic function of c with gradient
+2(A′A +λB )c − 2A′Y.
+Setting the gradient to zero, if
+ˆc = (A′A +λB )−1A′Y
+and
+ˆf =
+k∑
+j=1
+ˆcjej,
+then ˆf minimizes J(f ) over Wm[0, 1].
+One collection of linearly independent functions with span containing 4 ˜S2q
+is given by
+4 For some linear combinations of these functions, restriction to the ﬁnal interval
+[x
+n, 1] will give a polynomial of degree greater than q − 1. So the linear span of
+these functions is in fact strictly larger than ˜S2q.
+
+===== PAGE 17 =====
+
+18.3 Splines 383
+ei(x) = (x − xi)2q−1
++ , i = 1,...,n,
+along with the monomials of degree q − 1 or less,
+en+j (x) = xj−1, j = 1,...,q.
+This can be seen recursively. If f ∈ ˜S2q , let
+p =
+q∑
+j=1
+cjen+j
+be a polynomial of degree q − 1 equal to f on [0,x 1]. Then f − p ∈ ˜S2q is
+zero on [0 ,x 1]. By the enforced smoothness for derivatives at the knots, on
+[x1,x 2] f − p will be a polynomial of degree 2 q − 1 with 2 q − 2 derivatives
+equal to zero at x1. Accordingly, on this interval f −p =c1(x −x1)2q−1, and
+it follows that f −p −c1e1 is zero on [0 ,x 2]. Next, with a proper choice of c2,
+f − p − c1e1 − c2e2 will be zero on [0 ,x 3]. Further iteration eventually gives
+f − p − ∑n
+j=1
+cjej = 0 on [0 , 1].
+The choice of the spanning functions e1,...,e k may not seem important
+from a mathematical perspective. But a careful choice can lead to more eﬃ-
+cient numerical algorithms. For instance, ˜S
+2 contains the functions
+e1(x) =
+
+
+
+
+
+
+
+1, x ∈ [0,x
+1];
+x2 − x
+x2 − x1
+, x ∈ [x1,x 2];
+0, otherwise,
+en(x) =
+
+
+
+
+
+
+
+x − x
+n−1
+xn − xn−1
+, x ∈ [xn−1,x n];
+1, x ∈ [xn, 1];
+0, otherwise,
+and
+ei(x) =
+
+
+
+
+
+
+
+
+
+
+
+
+
+x − x
+i−1
+xi − xi−1
+, x ∈ [xi−1,x i];
+xi+1 − x
+xi+1 − xi
+, x ∈ [xi,x i+1];
+0, otherwise,
+i = 2,...,n − 1.
+These functions are called B-splines. The ﬁrst two, e1 and e2, are plotted in
+Figure 18.2. TheB-splines are linearly independent and form what is called a
+local basis for ˜S2, because each basis function vanishes except on at most two
+adjacent intervals of the partition induced by x1,...,x n. Functions expressed
+in this basis can be computed quickly at a point x since all but at most two
+terms in ∑cjej (x) will be zero. In addition, with this basis, the matrix A is
+the identity, and B will be “tridiagonal,” with Bij = 0 if |i −j| ≥2. Matrices
+
+===== PAGE 18 =====
+
+384 18 Nonparametric Regression
+x
+1
+x1 x2 x3
+-e1
+ e2
+Fig. 18.2. B-splines e1 and e2.
+with a banded structure can be inverted and multiplied much more rapidly
+than matrices with arbitrary entries.
+B-spline bases are also available for other spline spaces. The notation
+needed to deﬁne them carefully is a bit involved, but it is not too hard to
+understand why they should exist. In S
+q , the q + 1 functions
+(x − xi)q−1
++ ,..., (x − xi+q )q−1
++
+restricted to [xi+q, 1] are all polynomials of degree q − 1. Because polynomials
+of degree q − 1 form a vector space of dimension q, the restrictions cannot be
+linearly dependent, and some nontrivial linear combination of these functions
+must be zero on [ x
+i+q, 1]. This linear combination gives a function in Sq that
+is zero unless its argument lies in ( xi,x i+q ). With a suitable normalization,
+functions such as this form a B-spline basis for Sq . For further information
+on splines see Wahba (1990) or De Boor (2001)
+18.4 Density Estimation
+The methods just developed for nonparametric regression can also be applied
+to nonparametric density estimation. Let X
+1,...,X n be i.i.d. from some dis-
+tributionQ. One natural estimator for Q would be the empirical distribution
+ˆQ deﬁned by
+ˆQ(A) = 1
+n #
+{
+i ≤ n :Xi ∈A
+}
+.
+This estimator ˆQ(·) is a discrete distribution placing atoms with mass 1/n at
+each observation Xi. So integrals against ˆQn are just averages,
+
+===== PAGE 19 =====
+
+18.4 Density Estimation 385
+∫
+gd ˆQn = 1
+n
+n∑
+i=1
+g(Xi).
+If we believe Q is absolutely continuous with a smooth density f , ˆQ is
+not a very sensible estimator; it is too rough, in much the same way the
+linear interpolant ˆ
+h of the data was too rough for estimating a smooth re-
+gression function. A kernel approach to estimating f uses convolution, as in
+Problem 18.10, to smooth ˆQ. Intuition suggests this may give a reasonable
+estimate for f if the convolving distribution is concentrated near zero. To ac-
+complish this we incorporate a bandwidth b, tending to zero as n → ∞, and
+consider estimators of the form
+ˆf (x) = 1
+b
+∫
+W
+(x − t
+b
+)
+d ˆQ(t) = 1
+nb
+n∑
+i=1
+W
+(x − Xi
+b
+)
+,
+with W a ﬁxed symmetric probability density.
+With the linear structure, formulas for the mean and variance for ˆf (x) are
+easy to derive and study. If f′′is continuous and bounded, then
+E ˆf (x) = f (x) + 1
+2b2f′′(x)
+∫
+t2W (t)dt +o(b2) (18.11)
+and
+Var
+(ˆf (x)
+)
+= 1
+nbf (x)∥W ∥2
+2
++o
+(
+1/ (nb)
+)
+(18.12)
+uniformly in n as b ↓ 0. Combining these, the mean square error for ˆf (x) is
+MSE(x) = E
+(ˆf (x) − f (x)
+)2
+= f (x)
+nb ∥W ∥2
+2
++ 1
+4b4(
+f′′(x)
+)2
+(∫
+t2W (t)dt
+)2
++o
+(
+b4 + 1/ (nb)
+)
+asb ↓0. If b =bn varies with n so that bn → 0 and nbn → ∞ , then this mean
+square error will tend to zero.
+With suitable regularity, this approximation can be integrated, giving
+IMSE = E
+∫ (ˆf (x) − f (x)
+)2
+dx =
+∫
+MSE(x)dx
+= 1
+nb ∥W ∥2
+2
++ 1
+4b4∥f′′∥2
+2
+(∫
+t2W (t)dt
+)2
++o
+(
+b4 + 1/ (nb)
+)
+.
+Minimizing this approximation,
+b ∼ ∥W ∥2/5
+2
+n1/5 ∥f′′∥2/5
+2
+(∫
+t2W (t)dt
+)2/5
+will be asymptotically optimal, and with this choice
+
+===== PAGE 20 =====
+
+386 18 Nonparametric Regression
+IMSE ∼ 5
+4 ∥W ∥8/5
+2 ∥f′′∥2/5
+2
+(∫
+t2W (t)dt
+)2/5
+n−4/5 .
+For further discussion, see Chapter 2 of Wand and Jones (1995)
+A spline approach to density estimation is more challenging. If we assume
+f > 0 and take θ = logf , then an estimator ˆf =eˆθ for f will automatically
+be positive. For regularity, let us assume θ ∈ Wm[0, 1]. In contrast to non-
+parametric regression, since f must integrate to one, θ cannot vary freely over
+Wm[0, 1], but must satisfy the constraint
+∫ 1
+0
+eθ (x)dx = 1.
+Let Ω denote the class of all functions in Wm[0, 1] satisfying this constraint.
+The log-likelihood function is given by
+l(θ ) =
+n∑
+i=1
+θ (Xi).
+A direct maximum likelihood approach to estimating θ orf fails because
+sup
+θ∈Ω
+l(θ ) = ∞,
+with arbitrarily high values for the likelihood achieved by densities with very
+large spikes at the data values. To mitigate this problem, we incorporate a
+penalty for smoothness and choose ˆθ to maximize
+J
+0(θ ) = 1
+n
+n∑
+i=1
+θ (Xi) − λ ∥θ (m)∥2
+2
+.
+To ameliorate troubles with the constraint, Silverman (1982) introduces an-
+other functional,
+J(θ ) = 1
+n
+n∑
+i=1
+θ (Xi) −
+∫ 1
+0
+eθ (x)dx − λ ∥θ (m)∥2
+2
+.
+Theorem 18.16. The function ˆθ ∈Ω maximizes J0 over Ω if and only if ˆθ
+maximizes J over Wm[0, 1].
+Proof. If θ ∈ Wm[0, 1] and c =
+∫ 1
+0 eθ (x)dx, then ˜θ = θ − logc ∈ Ω and
+∥θ (m)∥2 = ∥˜θ (m)∥2. Thus
+J(˜θ ) = J(θ ) − logc − 1 +c.
+Butc− logc ≥ 1 for allc> 0, with equality only if c = 1, and thus J(˜θ ) ≥ J(θ ),
+with equality only if c = 1, that is, only if θ ∈Ω. So any θ maximizingJ over
+Wm[0, 1] must lie in Ω. But on Ω, J =J0 − 1, and the theorem follows. ⊓ ⊔
+
+===== PAGE 21 =====
+
+18.4 Density Estimation 387
+The null family associated with the smoothness penalty here is deﬁned as
+Ω0 =
+{
+θ ∈Ω : ∥θ (m)∥2 = 0
+}
+.
+Functions in Ω0 must be polynomials and can be parameterized as
+θη (x) = η 1x + · · · +ηm−1xm−1 − A(η ),
+where
+A(η ) = log
+∫ 1
+0
+exp
+[m−1∑
+i=1
+ηixi
+]
+dx.
+Then Ω0 = {θη : η ∈ Rm−1} and the corresponding densities, fη = eθ η ,
+η ∈ Rm−1, form an exponential family.
+Ifλ is large, then functions θ ∈Ω that are not close to Ω0 will incur a sub-
+stantial smoothness penalty. For this reason, if ˆθλ is the estimator maximizing
+J, then ˆθλ should converge as λ → ∞ to the maximum likelihood estimator
+for the null family Ω0. Let us call this estimator ˆθ∞. In applications, this ob-
+servation might be used in a reverse fashion to choose a smoothness penalty.
+If there is reason to believe that the data come from some particular expo-
+nential family, a researcher may want to choose a penalty with these target
+distributions as its null family. The next result shows that existence is also
+tied to estimation for the null family.
+Theorem 18.17. With a given data set X
+1,...,X n,J will have a maximizer
+inΩ if ˆθ∞, the maximum likelihood estimator for the null family, exists. This
+will hold with probability one if n ≥ m.
+Proposition 18.18. The functional J is strictly concave.
+Proof. Givenθ 1,θ 2 inWm[0, 1] and α ∈ (0, 1), since the exponential function
+is convex,
+∫ 1
+0
+eαθ 1(x)+(1−α )θ 2(x)dx ≤
+∫ 1
+0
+[
+αeθ 1 (x) + (1 − α )eθ 2(x)
+]
+dx
+=α
+∫ 1
+0
+eθ 1(x)dx + (1 − α )
+∫ 1
+0
+eθ 2 (x)dx,
+with equality only if θ 1 =θ 2. Also,
+∥αθ (m)
+1 + (1 − α )θ (m)
+2 ∥2
+2
+≤
+[
+α ∥θ (m)
+1 ∥2 + (1 − α )∥θ (m)
+2 ∥2
+]2
+≤ α ∥θ (m)
+1 ∥2
+2
++ (1 − α )∥θ (m)
+2 ∥2
+2
+.
+So
+J
+(
+αθ 1 + (1 − α )θ 2
+)
+≥ αJ (θ 1) + (1 − α )J(θ 2),
+with equality if and only if θ 1 =θ 2. ⊓ ⊔
+
+===== PAGE 22 =====
+
+388 18 Nonparametric Regression
+As a consequence of this result, if an estimator ˆθ maximizing J exists, it
+must be unique, for if ˆθ 1 and ˆθ 2 both maximize J, then
+J(ˆθ 1) = 1
+2J(ˆθ 1) + 1
+2J(ˆθ 2) ≤ J
+( ˆθ 1 + ˆθ 2
+2
+)
+≤ J(ˆθ 1).
+The inequalities here must be equalities, and strict concavity then implies
+ˆθ 1 = ˆθ 2.
+The following result, from Silverman (1982), shows that with a suitable
+choice for the penalty scale λ , the estimator ˆθ is consistent.
+Theorem 18.19. Supposeθ ∈W2m[0, 1] and
+θ (2m−1)(0) = θ (2m−1)(1).
+If λ → 0 and nm−δλ → ∞ for some δ >0, then for every ǫ> 0,
+∥ˆθ − θ ∥2
+∞
+=Op
+{
+λ−ǫ (
+n−1λ−1/m +λ (4m−1)/(2 m))}
+.
+In particular, if λ =n−(2m)/(4 m+1),
+∥ˆθ − θ ∥2
+∞
+=Op
+(
+n−(4m−1)/(4 m+1)+ǫ
+)
+,
+for every ǫ> 0.
+18.5 Problems
+1. Estimating σ 2. Consider nonparametric regression with the assumptions
+in Section 18.1 and i.i.d. errors ǫi. A natural estimator for σ 2 might be
+ˆσ 2 = 1
+n
+n∑
+i=1
+(
+Yi − ˆf (xi)
+)2
+,
+with ˆf the kernel estimator for f . Suppose b = cn−1/5 . Is this estimator
+necessarily consistent? Prove or explain why not. In your argument you
+can ignore edge eﬀects.
+2. Locally weighted regression . Like kernel smoothing, locally weighted re-
+gression is a linear approach to nonparametric regression. Let W be a
+continuous, nonnegative, symmetric ( W (x) = W (−x)) function, decreas-
+ing on (0, ∞) with support [ − 1, 1]. The estimate for f at a point x is based
+on weighted least squares, ﬁtting a polynomial to the data with weights
+emphasizing data withx
+i nearx. This problem considers quadratic models
+in which ˆβ is chosen to minimize
+
+===== PAGE 23 =====
+
+18.5 Problems 389
+n∑
+i=1
+W
+(xi − x
+b
+) (
+yi − β 1 − β 2(xi − x) − β 3(xi − x)2)2
+.
+The estimate for f (x) is then ˆf (x) = ˆβ 1. Here the bandwidth b is taken
+to be a small constant (decreasing as n increases), although in practice b
+is often chosen using the xi so that the estimate for f (x) is based on a
+ﬁxed number of data points. For simplicity, you may assume below that
+x
+i =i/n .
+a) Derive an explicit formula for ˆf (xj ) when xj ∈ (b, 1 − b).
+b) Derive approximations for the bias of ˆf (xj ) as n → ∞ andb ↓ 0 with
+nb → ∞ and xj = ⌊nx⌋/n ,x ∈ (0, 1).
+c) Derive an approximation for the variance of ˆf (xj ) in the same limit.
+d) What choice for bandwidth b minimizes the mean square error of ˆf (xj )
+(approximately).
+3. Show that the stated inner product ⟨·, ·⟩ in Deﬁnition 18.13 for Wm[0, 1]
+satisﬁes the conditions in Deﬁnition 18.2
+4. Let X and Y be normed vector spaces over R. A function T : X → Y is
+called a linear operator if
+T (cx1 +x2) = cT (x1) +T (x2), ∀x1,x 2 ∈ X,c ∈ R.
+The operator norm (or spectral norm) of T is deﬁned as
+∥T ∥ = sup
+{
+∥T (x)∥ : ∥x∥ ≤ 1
+}
+,
+and T is called bounded if ∥T ∥< ∞.
+a) Show that a bounded operator T is continuous: If ∥xn −x∥ → 0, then
+∥T (xn) − T (x)∥ → 0.
+b) Show that a continuous linear operator T is bounded.
+c) Let X = Rm and Y = Rn, with the usual Euclidean norms. Let A be
+ann ×m matrix, and deﬁne a linear operator T byT (x) = Ax. Relate
+the operator norm ∥T ∥ to the eigenvalues of A′A.
+5. Consider the set C[0, 1] of continuous real functions on [0, 1] with the L2
+inner product
+⟨x,y ⟩ =
+∫ 1
+0
+x(t)y(t)dt
+and associated norm
+∥x∥2 =
+√
+∫ 1
+0
+x2(t)dt.
+a) Find a Cauchy sequence xn (for this norm) that does not converge,
+showing that C[0, 1] is not complete (with this norm). (The usual norm
+for C[0, 1] is ∥x∥ = supt∈(0, 1) |x(t)|, and with this norm C[0, 1] is com-
+plete.)
+
+===== PAGE 24 =====
+
+390 18 Nonparametric Regression
+b) Let Tt be the evaluation operator, Tt(x) = x(t). Show that Tt is an
+unbounded linear operator.
+6. Show that if fn → f in W2[0, 1], then f′
+n(x) → f′(x).
+7. Find a nontrivial function f ∈ S4(0, 0. 1, 0. 2,..., 1) which is zero unless its
+argument lies between 0 . 2 and 0. 6.
+8. Suppose m = 1, x = (0. 2, 0. 4, 0. 6, 0. 8), and we use the B-spline basis
+described for ˜S2. Calculate the matrices A andB that arise in the formula
+to compute ˆf = ∑ˆcjej .
+9. Semiparametric models. Consider a regression model with two explanatory
+variablesx and w in which
+Yi =f (xi) +βwi +ǫi, i = 1,...,n,
+with 0 < x1 < · · · < xn < 1, f ∈ Wm[0, 1], β ∈ R, and the ǫi i.i.d.
+from N (0,σ 2). This might be called a semiparametric model because the
+dependence on w is modeled parametrically, but the dependence on x
+is nonparametric. Following a penalized least squares approach, consider
+choosing ˆf and ˆβ to minimize
+J(f,β ) =
+n∑
+i=1
+(
+Yi − f (xi) − βwi
+)2
++λ ∥f (m)∥2
+2
+.
+a) Show that the estimator ˆf will still be a natural spline of order 2 m.
+b) Derive explicit formulas based on linear algebra to compute ˆβ and ˆf .
+10. Convolutions. Suppose X ∼ Q and Y ∼ W are independent, and that W
+is absolutely continuous with Lebesgue density w. Show that T =X +Y
+is absolutely continuous with density h given by
+h(t) =
+∫
+w(t − x)dQ(x).
+The distribution of T is called the convolution of Q with W , and this
+shows that if either Q orW is absolutely continuous, their convolution is
+absolutely continuous.
+11. Use dominated convergence to prove (18.11).
+12. Prove (18.12).

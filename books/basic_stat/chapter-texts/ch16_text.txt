@@ -1,0 +1,1708 @@
+
+===== PAGE 1 =====
+
+16
+Asymptotic Optimality
+1
+In a rough sense, Theorem 9.14 shows that the maximum likelihood estimator
+achieves the Cram´ er–Rao lower bound asymptotically, which suggests that it
+is asymptotically fully eﬃcient. In this chapter we explore results on asymp-
+totic optimality formalizing notions of asymptotic eﬃciency and showing that
+maximum likelihood or similar estimators are eﬃcient in regular cases. No-
+tions of asymptotic eﬃciency are quite technical and involved, and the treat-
+ment here is limited. Our main goal is to derive a result from H´ ajek (1972),
+Theorem 16.25 below, which shows that the maximum likelihood estimator is
+locally asymptotically minimax.
+To motivate later results, the ﬁrst section begins with a curious example
+that shows why simple approaches in this area fail.
+16.1 Supereﬃciency
+SupposeX1,X 2,... are i.i.d. with common density fθ ,θ ∈Ω. By the Cram´ er–
+Rao lower bound, if δn = δn(X1,...,X n) is an unbiased estimator of g(θ ),
+then
+Varθ (δn) ≥
+[
+g′(θ )
+]2
+nI(θ ) ,
+where
+I(θ ) = Eθ
+(∂
+∂θ logfθ (Xi)
+)2
+is the Fisher information for a single observation. Suppose we drop the as-
+sumption that δ
+n is unbiased, but assume it is asymptotically normal:
+1 From Section 16.3 on, the results in this chapter are very technical. The material
+on contiguity in Section 16.2 is needed for the discussion of generalized likelihood
+ratio tests in Chapter 17, but results from the remaining sections are not used in
+later chapters.
+R.W. Keener, Theoretical Statistics: Topics for a Core Course, Springer Texts in Statistics, 
+DOI 10.1007/978-0-387-93839-4_16, © Springer Science+Business Media, LLC 2010 
+319
+
+===== PAGE 2 =====
+
+320 16 Asymptotic Optimality
+√
+n
+(
+δn − g(θ )
+)
+⇒ N
+(
+0,σ 2(θ )
+)
+.
+This seems to suggest that δn is almost unbiased and that
+Varθ (√
+nδn) → σ 2(θ ).
+(This supposition is not automatic, but does hold if the sequence n
+(
+δn −g(θ )
+)2
+is uniformly integrable.) It seems natural to conjecture that
+σ 2(θ ) ≥
+[
+g′(θ )
+]2
+I(θ ) .
+But the following example, discovered by Hodges in 1951, shows that this con-
+jecture can fail. The import of this counterexample is that a proper formula-
+tion of asymptotic optimality will need to consider features of an estimator’s
+distribution beyond the asymptotic variance.
+Example 16.1. Let X
+1,X 2,... be i.i.d. from N (θ, 1) and take
+ Xn = (X1 +
+· · · +Xn)/n . Deﬁne δn, graphed in Figure 16.1 , by
+δn =
+{
+Xn, |
+Xn| ≥1/n 1/4 ;
+a
+Xn, |
+Xn|< 1/n 1/4 ,
+where a is some constant in (0 , 1). Let us compute the limiting distribution
+of √
+n(δn − θ ).
+Suppose θ <0. Fix x and consider
+Pθ
+(√
+n(δn − θ ) ≤ x
+)
+=P (δn ≤ θ +x/ √
+n).
+Sinceθ +x/ √
+n → θ <0 and − 1/n 1/4 → 0, for n suﬃciently large,θ +x/ √
+n<
+− 1/n 1/4 , and then
+Pθ
+(√
+n(δn − θ ) ≤ x
+)
+=Pθ (
+Xn ≤ θ +x/ √
+n) = Φ (x).
+So in this case, √
+n(δn − θ ) ⇒ N (0, 1). A similar calculation shows that√
+n(δn − θ ) ⇒ N (0, 1) when θ >0.
+Suppose now that θ = 0. Fix x and consider
+Pθ (√
+nδn ≤ x) = Pθ (δn ≤ x/ √
+n).
+Forn suﬃciently large, a|x|will be less than n1/4 , or, equivalently, a|x√
+n|<
+1/n 1/4 , and then
+P0(√
+nδn ≤ x) = P0(a
+Xn ≤ x/ √
+n) = Φ (x/a) .
+This is the cumulative distribution function for N (0,a 2). So when θ = 0,√
+n(δn − θ ) ⇒ N (0,a 2).
+These calculations show that in general,
+
+===== PAGE 3 =====
+
+16.1 Supereﬃciency 321
+δ n
+θ +x/ √
+n
+1/n 1/ 4
+a/n 1/ 4
+x/ √
+n
+−a/n 1/ 4
+− 1/n 1/ 4
+θ +x/ √
+n
+θ + x
+√
+n
+−1
+n1/ 4
+x
+an1/ 4
+1
+n1/ 4 θ + x
+√
+n
+X
+Fig. 16.1. The Hodges’ estimator δ n.
+√
+n(δn − θ ) ⇒ N
+(
+0,σ 2(θ )
+)
+, (16.1)
+where
+σ 2(θ ) =
+{
+1, θ ̸= 0;
+a2, θ = 0.
+This estimator is called “supereﬃcient” since the variance of the limiting
+distribution when θ = 0 is smaller than 1 /I (θ ) = 1.
+Because √
+n(
+Xn − θ ) ∼ N (0, 1), (16.1) seems to suggest that δn may be
+a better estimator than
+ Xn when n is large. To explore what is going on, let
+us consider the risk functions for these estimators under squared error loss.
+Since R(θ,
+Xn) = Eθ (
+Xn − θ )2 = 1/n ,nR(θ,
+ Xn) = 1. It can be shown that
+nR(θ,δ n) →
+{
+1, θ ̸= 0;
+a2, θ = 0,
+as one might expect from (16.1). But comparison of δn and
+ Xn by pointwise
+convergence of their risk functions scaled up by n does not give a complete
+picture, because the convergence is not uniform in θ . One simple way to see
+this is to note (see Figure 16.1 ) that δn never takes values in the interval
+
+===== PAGE 4 =====
+
+322 16 Asymptotic Optimality
+nR(θ,δ n)
+3
+− 0. 5 0. 5
+θ
+n = 500
+n = 100
+Fig. 16.2. Scaled risk of δ n with n = 100 and n = 500 (a = 1/ 2).
+( a
+n1/4 , 1
+n1/4
+)
+.
+If we deﬁne
+θn = 1 +a
+2n1/4
+to be the midpoint of this interval, then δn will always miss θn by at least half
+the width of the interval, and so
+(δn − θn)2 ≥
+( 1 − a
+2n1/4
+)2
+= (1 − a)2
+4√
+n .
+From this,
+nR(θn,δ n) ≥ n (1 − a)2
+4√
+n = (1 − a)2
+4
+√
+n → ∞ ,
+asn → ∞ . This shows that for large n the risk of δn atθn will be much worse
+than the risk of
+ Xn at θn. Figure 16.2 plots n times the risk function for δn
+when n = 100 and n = 500 with a ﬁxed at 1/ 2. As n increases, the improved
+risk near zero does not seem suﬃcient compensation for the worsening risk
+nearby.
+
+===== PAGE 5 =====
+
+16.2 Contiguity 323
+16.2 Contiguity
+Recall that a measure ˜Q is absolutely continuous with respect to another
+measure Q if ˜Q(N ) = 0 whenever Q(N ) = 0. To impart a statistical conse-
+quence to this notion, suppose we are interested in testing H0 :X ∼ Q versus
+H1 : X ∼ ˜Q. If the level α = E0ϕ (X) is zero, then N = {x : ϕ (x) > 0} is
+a null set under Q, and must then also be a null set under ˜Q. So the power
+β =E1ϕ (X) must also be zero. Conversely, β > 0 implies α> 0. If the mea-
+sures Q and ˜Q are mutually absolutely continuous, α < 1 implies β < 1. In
+this sense the competing distributions Q and ˜Q are hard to distinguish, at
+least perfectly.
+Contiguity might be viewed as an asymptotic notion of absolute continuity.
+It concerns two sequences of distributions, ˜Qn and Qn, n = 1, 2,... . These
+might be viewed as competing joint distributions for data, with n representing
+the sample size. So ˜Qn and Qn are deﬁned on a common measurable space
+(Xn, An), but these spaces generally vary with n. For instance, Xn would be
+Rn if n is the sample size and the individual observations are univariate.
+Deﬁnition 16.2. The measures ˜Qn are contiguous to the measures Qn if
+˜Qn(An) → 0 whenever Qn(An) → 0.
+Contiguity can also be framed in the statistical context of simple versus
+simple testing. Suppose ϕn, n ≥ 1, are tests of H0 : X ∼ Qn versus H1 :
+X ∼ ˜Qn with levels αn = E0ϕn(X) and powers βn = E1ϕn(X). If ˜Qn are
+contiguous to Qn and αn → 0 then βn → 0. If the sequences are mutually
+contiguous (i.e.,Qn is also contiguous to ˜Qn), then βn → 1 impliesαn → 1. In
+this sense the competing hypotheses remain hard to distinguish as n increases
+without bound.
+Example 16.3. Suppose
+Q
+n =Nn(µn,σ 2I) and ˜Qn =Nn(νn,σ 2I)
+whereµn andνn in Rn,n ≥ 1. By the Neyman–Pearson lemma, the best level
+α test of H0 :X ∼ Qn versusH1 :X ∼ ˜Qn rejects H0 if
+(νn − µn) · (X − µn)>σ ∥µn − νn∥zα
+and has power
+Φ
+(∥µn − νn∥
+σ − zα
+)
+.
+Suppose M = lim sup ∥µn − νn∥ < ∞, and let An, n ≥ 1, be Borel sets
+with An ⊂ Rn. The function 1 An , viewed as a test of H0 versusH1 has level
+αn = E01An = Qn(An) and power E11An = ˜Qn(An). But the power of this
+test is at most that of the optimal test, and so
+˜Qn(An) ≤ Φ
+(∥µn − νn∥
+σ − zα n
+)
+.
+
+===== PAGE 6 =====
+
+324 16 Asymptotic Optimality
+But if Qn(An) = αn → 0, then zα n → ∞ , and from this bound, ˜Qn(An) must
+also tend to zero. This shows that ˜Qn,n ≥ 1, are contiguous toQn,n ≥ 1. And
+because we could reverse the roles of µn andνn without changing ∥µn −νn∥,
+when lim sup ∥µn − νn∥< ∞ the sequences will be mutually contiguous.
+Suppose instead that ∥µn − νn∥ → ∞ . If we take
+An =
+{
+x ∈ Rn : (νn − µn) ·
+(
+x − 1
+2 (µn +νn)
+)
+> 0
+}
+,
+corresponding to the critical region for a symmetric likelihood ratio test, then
+Qn(An) = Φ
+(
+− 1
+2σ ∥µn − νn∥
+)
+→ 0
+and
+˜Qn(An) = Φ
+( 1
+2σ ∥µn − νn∥
+)
+→ 1.
+So in this case the measures are not contiguous. Taking subsequences, they
+are also not contiguous if lim sup ∥µ
+n − νn∥ = ∞.
+If µn =θ 1 and νn = (θ +δn)1, then under Qn the entries of X are i.i.d.
+from N (θ,σ 2), and under ˜Qn the entries are i.i.d. from N (θ + δn,σ 2). In
+this case the sequences will be contiguous if lim sup nδ 2
+n < ∞. This may be
+interpreted as meaning that shifts in the common mean of order 1 / √
+n cannot
+be detected with probability approaching one. This sort of behavior is typical
+in regular models; see Theorem 16.10 below.
+Considering the role of the Neyman–Pearson lemma in this example, it
+seems natural that contiguity should be related to likelihood ratios. The notion
+of uniform integrability also plays a role. If X is integrable, then E|X|I
+{
+|X| ≥
+t
+}
+→ 0, as t → ∞, by dominated convergence, and our Deﬁnition 8.15 of
+uniform integrability asserts that this holds uniformly over a collection of
+random variables.
+Lemma 16.4. Suppose ˜Q
+n ≪ Qn with Ln the density (or likelihood ratio)
+d ˜Qn/dQ n. Let Xn ∼ Qn. If the likelihood ratios Ln(Xn),n ≥ 1, are uniformly
+integrable, then the measures ˜Qn are contiguous to the measures Qn.
+As in Lemma 12.18, the likelihood ratios Ln would usually be computed
+as ˜pn/p n, with ˜pn and pn the densities of ˜Qn and Qn with respect to some
+measure µn.
+Proof. Using Ln, and letting E denote expectation when Xn ∼ Qn, we have
+the following bound, valid for any t> 0:
+˜Qn(An) =
+∫
+An
+LndQn =ELn(Xn)I{Xn ∈An}
+≤ tEI {Xn ∈An}+ELn(Xn)I{Ln(Xn) ≥ t}.
+
+===== PAGE 7 =====
+
+16.2 Contiguity 325
+The ﬁrst term in this bound is tQn(An), which tends to zero if Qn(An) → 0.
+So in this case
+lim sup ˜Qn(An) ≤ lim supELn(Xn)I{Ln(Xn) ≥ t}.
+Using uniform integrability, the right-hand side here tends to zero as t → ∞ ,
+and so lim sup ˜Qn(An) must be zero, proving the lemma. ⊓ ⊔
+The next result shows that convergence in probability remains in eﬀect
+following a shift to a contiguous sequence of distributions.
+Proposition 16.5. Suppose X
+n ∼ Qn and ˜Xn ∼ ˜Qn, let Tn be an arbitrary
+sequence of estimators, and assume ˜Qn, n ≥ 1, are contiguous to Qn, n ≥
+1. If Tn(Xn)
+p
+→ c, then Tn( ˜Xn)
+p
+→ c. Similarly, if Tn(Xn) = Op(1), then
+Tn( ˜Xn) = Op(1).
+Proof. From the deﬁnition of convergence in probability, for any ǫ> 0,
+P
+(
+|Tn(Xn) − c| ≥ǫ
+)
+→ 0.
+Viewing this probability as the Qn-measure of a set, by contiguity
+P
+(
+|Tn( ˜Xn) − c| ≥ǫ
+)
+→ 0,
+and sinceǫ is an arbitrary positive number, Tn( ˜Xn)
+p
+→ c. The second assertion
+can be established with a similar argument. ⊓ ⊔
+To state the ﬁnal result about contiguity in its proper generality, we again
+want to view functions as points in a vector space, as we did in Section 12.5,
+now with a diﬀerent notion of convergence. Given a measure µ on ( X, B), let
+L
+2(µ) =
+{
+f :
+∫
+f 2dµ< ∞
+}
+,
+and deﬁne the L2-length of a function f ∈ L2(µ) as
+∥f ∥2 =
+(∫
+f 2dµ
+)1/2
+.
+Then ∥f −g∥2 represents the distance between two functions f andg in L2(µ),
+and with this distance L2(µ) is a metric space, 2 similar in many respects to
+Rn. Using this distance we have the following natural notions of convergence
+and diﬀerentiation.
+2 To be more precise, L2(µ) is a pseudometric space, because ∥f − g∥ can be zero
+for functions f ̸=g if they diﬀer only on a null set. It would be a proper metric
+space if we were to introduce equivalence classes of functions and consider two
+functions the same if they agreed almost everywhere.
+
+===== PAGE 8 =====
+
+326 16 Asymptotic Optimality
+Deﬁnition 16.6. A sequence of functions fn ∈ L 2(µ) converges in L2 to
+f ∈ L2(µ), denoted fn
+L2
+→ f , if ∥fn − f ∥2 → 0.
+Deﬁnition 16.7. A mapping θ ⇝ fθ from R to L2(µ) is diﬀerentiable in
+quadratic mean at θ 0 with derivative V if V ∈ L2(µ) and
+fθ 0 +ǫ − fθ 0
+ǫ
+L2
+→ V,
+as ǫ → 0.
+When the domain of the map is Rp, the derivative, analogous to the gra-
+dient in multivariate calculus, will be a vector-valued function. First-order
+Taylor approximation should give f
+θ 0+ǫ ≈ fθ 0 +ǫ ·V , which motivates the
+following deﬁnition.
+Deﬁnition 16.8. A mapping θ ⇝ f
+θ from Rp to L2(µ) is diﬀerentiable in
+quadratic mean at θ 0 with derivative V if
+∫
+∥V ∥2dµ< ∞ and
+fθ 0 +ǫ − fθ 0 − ǫ ·V
+∥ǫ∥
+L2
+→ 0,
+as ǫ → 0.
+This notion of diﬀerentiation is generally weaker than pointwise diﬀerentia-
+bility. In most cases the following lemma allows us to compute this derivative
+as the gradient, provided it exists.
+Lemma 16.9. Letθ ⇝f
+θ be a mapping from Rp to L2(µ). If ∇θfθ (x) exists
+for almost all x, for θ in some neighborhood of θ 0, and if
+∫
+∥∇θfθ ∥2dµ
+is continuous at θ 0, then the mapping is diﬀerentiable in quadratic mean at
+θ 0 with derivative the gradient ∇θfθ evaluated at θ =θ 0.
+Returning to statistics, let P = {Pθ :θ ∈Ω} be a dominated family with
+densitiespθ ,θ ∈Ω, and assume for now that Ω ⊂ R. Then the functions √
+pθ
+can be viewed as points in L2(µ). When ordinary derivatives exist, (4.14) and
+the chain rule give
+I(θ ) =
+∫ (∂ logpθ
+∂θ
+)2
+pθ dµ = 4
+∫ (∂ √
+pθ
+∂θ
+)2
+dµ.
+This suggests the following deﬁnition for Fisher information:
+I(θ ) = 4 ∥Vθ ∥2
+2
+, (16.2)
+
+===== PAGE 9 =====
+
+16.3 Local Asymptotic Normality 327
+with Vθ the quadratic mean derivative of θ ⇝ √
+pθ . This deﬁnition is more
+general and proper than the formulas given earlier that require extra regular-
+ity. And the next result shows that the regularity necessary to deﬁne Fisher
+information in this way gives contiguity in i.i.d. models with parameter shifts
+of order 1/ √
+n.
+Theorem 16.10. If P = {Pθ : θ ∈ Ω} is a dominated family with densities
+pθ , and if θ ⇝ √
+pθ is diﬀerentiable in quadratic mean at θ 0, then the measures
+Pn
+θ 0+∆/ √
+n, n ≥ 1, are contiguous to measures Pn
+θ 0 , n ≥ 1.
+16.3 Local Asymptotic Normality
+Previous chapters provide a fair amount of information about optimal estima-
+tion sampling from a normal distribution with unknown mean. For instance,
+ifX ∼ N (θ, 1),θ ∈ R, then X is complete suﬃcient, and it is the UMVU and
+best equivariant estimator of θ under squared error loss. And under squared
+error loss, it is also minimax, minimizing sup
+θ Eθ (δ −θ )2. This is established
+and generalized in Section 16.6.
+In large samples, the maximum likelihood estimator ˆθ is approximately
+normal (after suitable rescaling). If ˆθ provides most of the information from
+the data, it would be natural to hope that inference from large samples may
+be similar to inference sampling from a normal distribution. Naturally, this
+will involve some rescaling, because with large samples small changes in pa-
+rameter values will be noticeable from our data. This notion is made precise
+by considering likelihood ratios; a sequence of distribution families is called
+locally asymptotically normal if the likelihood ratios for the families are close
+to those for normal distributions, in an appropriate sense.
+Suppose X ∼ P
+θ = Np(θ,Σ ), θ ∈ Rp, with Σ a ﬁxed positive deﬁnite
+covariance matrix. Then the log-likelihood ratio between parameter values t
+and 0 is
+ℓ(t, 0) = log dPt
+dP0
+(X)
+= − 1
+2 (X − t)′Σ−1(X − t) + 1
+2X′Σ−1X
+=t′Σ−1X − 1
+2t′Σ−1t, (16.3)
+which is a quadratic function of t with the linear coeﬃcients random and the
+quadratic coeﬃcients constant.
+To see why likelihood ratios are approximately of this form in large sam-
+ples, suppose Xi, i ≥ 1, are i.i.d. with common density fθ , θ ∈ Ω ⊂ R. Fix
+θ and deﬁne Wi(ω ) = log
+(
+fω (Xi)/f θ (Xi)
+)
+. Under suﬃcient regularity (see
+Section 4.5),
+
+===== PAGE 10 =====
+
+328 16 Asymptotic Optimality
+Eθ W′
+i (θ ) = Eθ
+∂ logfθ (Xi)
+∂θ = 0,
+Varθ
+(
+W′
+i (θ )
+)
+=Eθ
+(∂ logfθ (Xi)
+∂θ
+)2
+=I(θ ),
+and
+Eθ W′′
+i (θ ) = Eθ
+∂ 2 logfθ (Xi)
+∂θ 2 = −I(θ ).
+By the central limit theorem,
+Sn = 1
+√
+n
+n∑
+i=1
+W′
+i (θ ) ⇒ N
+(
+0,I (θ )
+)
+,
+and by the law of large numbers,
+1
+n
+n∑
+i=1
+W′′
+i (θ )
+p
+→ − I(θ ).
+A two-term Taylor expansion then suggests the following approximation for
+log-likelihood ratios between θ and “contiguous” alternative θ +t/ √
+n:
+ℓn(θ +t/ √
+n,θ ) = log
+[ ∏n
+i=1
+fθ +t/ √
+n(Xi)
+∏n
+i=1
+fθ (Xi)
+]
+=
+n∑
+i=1
+Wi(θ +t/ √
+n)
+≈ t
+√
+n
+n∑
+i=1
+W′
+i (θ ) + t2
+2n
+n∑
+i=1
+W′′
+i (θ )
+≈ tSn − 1
+2t2I(θ ). (16.4)
+This is quite similar in form to (16.3)
+The following deﬁnition formalizes conditions on likelihood ratios suﬃcient
+for the notions of asymptotic optimality developed in Section 16.6, yet weak
+enough to hold in a wide class of applications. These applications include cases
+where the data are not identically distributed and cases where the data are
+dependent.
+Deﬁnition 16.11. Consider a sequence of models,
+P
+n = {Pθ,n :θ ∈Ω ⊂ Rp}, n ≥ 1,
+and let ℓn denote log-likelihood ratios for Pn,
+
+===== PAGE 11 =====
+
+16.3 Local Asymptotic Normality 329
+ℓn(ω,θ ) = log
+[dPω,n
+dPθ,n
+]
+.
+These models are locally asymptotically normal (LAN) at a parameter value
+θ in the interior of Ω if there exist random vectors Sn =Sn(θ ) and a positive
+deﬁnite matrix J =J(θ ) such that:
+1. If tn is any convergent sequence, tn → t ∈ Rp,
+ℓn(θ +tn/ √
+n,θ ) −
+[
+t′Sn − 1
+2t′Jt
+] Pθ,n
+→ 0
+as n → ∞ .
+2. Under Pθ,n , Sn ⇒ Z ∼ N (0,J ) as n → ∞ .
+Remark 16.12. The second condition in this deﬁnition can be replaced by the
+condition that the measures Pθ,n andPθ n,n are contiguous whenever √
+n(θn −
+θ ) remains bounded. Mixtures of these measures are also contiguous if the
+mixing distributions concentrate appropriately near θ . Speciﬁcally, if B(r)
+denotes the ball of radius r about θ and if πn are probability distributions on
+Ω such that lim inf πn
+(
+B(c/ √
+n)
+)
+↑ 1 as c → ∞ , then Pθ,n and ∫Pω,n dπn(ω )
+are contiguous.
+Remark 16.13. If the models are LAN and t
+n → t, the distributions of Sn un-
+derPθ +tn/ √
+n,n are also approximately normal. Speciﬁcally, under Pθ +tn/ √
+n,n ,
+Sn ⇒ N (Jt,J ). To understand the nature of the argument, assume
+Pθ +tn/ √
+n,n ≪ Pθ,n ,
+and let f be a bounded continuous function. With suitable uniform integra-
+bility, one would then expect
+Eθ +tn/ √
+n,n f (Sn) = Eθ,n f (Sn)eℓ n(θ +tn/ √
+n,θ )
+≈ Ef (Z)et′Z−t′Jt/ 2 =Ef (Jt +Z).
+Theorem 16.14. SupposeX1,X 2,... are i.i.d. with common density pθ , and
+let Pθ,n be the joint distribution of X1,...,X n. If the mapping ω ⇝ √
+pω is
+diﬀerentiable in quadratic mean at a parameter value θ in the interior of the
+parameter space Ω ⊂ Rp, then the families Pn = {Pθ,n : θ ∈ Ω} are locally
+asymptotically normal at θ with J the Fisher information given in (16.2),
+J =I(θ ).
+The quadratic approximation t′Sn − 1
+2t′Jt in the LAN deﬁnition is maxi-
+mized at ˆt =J−1Sn. Because the maximum likelihood estimator ˆθn maximizes
+ln(ω ) − ln(θ ) = ℓn
+(
+θ +
+√
+n(ω − θ )
+√
+n ,θ
+)
+overω ∈Ω, the LAN approximation suggests that
+
+===== PAGE 12 =====
+
+330 16 Asymptotic Optimality
+√
+n(ˆθn − θ ) ≈ J−1Sn.
+Regularity conditions akin to those of Theorem 9.14 but extended to the
+multivariate case ensure that
+√
+n(ˆθn − θ ) − J−1Sn
+Pθ
+→ 0, (16.5)
+asn → ∞ . We assume as we proceed that (16.5) holds for suitable estimators
+ˆθn, but these estimators need not be maximum likelihood.
+Example 16.15. Suppose X1,X 2,... are i.i.d. absolutely continuous random
+vectors in R4 with common density
+pθ (x) = ce−∥x−θ∥2
+∥x − θ ∥ .
+The families of joint distributions here are LAN. With the pole in the density,
+the likelihood function is inﬁnite at each data point, so a maximum likelihood
+estimator will be one of the observed data. Section 6.3 of Le Cam and Yang
+(2000) details a general method to ﬁnd estimators ˆθ
+n satisfying (16.5). This
+method is based on using the LAN approximation to improve a reasonable
+preliminary estimator, such as
+Xn in this example.
+16.4 Minimax Estimation of a Normal Mean
+An estimatorδ is called minimax if it minimizes supθ∈Ω R(θ,δ ). In this section
+we ﬁnd minimax estimates for the mean of a normal distribution. These results
+are used in the next section when a locally asymptotically minimax notion of
+asymptotic optimality is developed.
+As an initial problem, suppose X ∼ N
+p(θ,I ), θ ∈ Rp, and consider a
+Bayesian model with prior distribution
+Θ ∼ N (0,σ 2I).
+Then
+Θ |X =x ∼ N
+( σ 2x
+1 +σ 2, σ 2
+1 +σ 2I
+)
+,
+and the Bayes estimator under compound squared error loss is
+˜θ = σ 2X
+1 +σ 2,
+with Bayes risk
+E∥˜θ − Θ ∥2 =EE
+[
+∥˜θ − Θ ∥2 ⏐
+⏐X
+]
+= pσ
+2
+1 +σ 2.
+
+===== PAGE 13 =====
+
+16.4 Minimax Estimation of a Normal Mean 331
+Because ˜θ is Bayes, conditioning on Θ gives
+E∥˜θ − Θ ∥2 =EE
+[
+∥˜θ − Θ ∥2 ⏐
+⏐Θ
+]
+=ER(Θ, ˜θ ) ≤ ER(Θ,δ ) ≤ sup
+θ
+R(θ,δ ),
+for any competing estimator δ . So for any δ ,
+sup
+θ
+R(θ,δ ) ≥ p σ 2
+1 +σ 2. (16.6)
+But this holds for any σ , so letting σ → ∞ we have
+sup
+θ
+R(θ,δ ) ≥ p
+for any δ . But the risk of δ (X) = X equalsp, and so X is minimax.
+As an extension, we show that X is also minimax when the loss function
+has formL(θ,d ) = W (d−θ ) with W “bowl-shaped” according to the following
+deﬁnition.
+Deﬁnition 16.16. A function W : R
+p → [0, ∞] is bowl-shaped if {x :
+W (x) ≤ α } is convex and symmetric about zero for every α ≥ 0.
+The following result due to Anderson (1955) is used to ﬁnd Bayes estima-
+tors with bowl-shaped loss functions.
+Theorem 16.17 (Anderson’s lemma). If f is a Lebesgue density on R
+p
+with {x :f (x) ≥ α } convex and symmetric about zero for every α ≥ 0, and if
+W is bowl-shaped, then
+∫
+W (x − c)f (x)dx ≥
+∫
+W (x)f (x)dx,
+for every c ∈ Rp.
+The proof of this result relies on the following inequality.
+Theorem 16.18 (Brunn–Minkowski). IfA andB are nonempty Borel sets
+in Rp with sum A +B = {x +y :x ∈A,y ∈B} (the Minkowski sum of A and
+B), and λ denotes Lebesgue measure, then
+λ (A +B)1/p ≥ λ (A)1/p +λ (B)1/p .
+Proof. Let a box denote a bounded Cartesian product of intervals and suppose
+A and B are both boxes with a1,...,a p the lengths of the sides of A and
+b1,...,b p the lengths of the sides of B. Then
+λ (A) =
+p∏
+i=1
+ai and λ (B) =
+p∏
+i=1
+bi.
+
+===== PAGE 14 =====
+
+332 16 Asymptotic Optimality
+The sum A +B is also a box, and the lengths of the sides of this box are
+a1 +b1,...,a p +bp. Thus
+λ (A +B) =
+p∏
+i=1
+(ai +bi).
+Since arithmetic averages bound geometric averages (see Problem 3.32),
+( p∏
+i=1
+ai
+ai +bi
+)1/p
++
+( p∏
+i=1
+bi
+ai +bi
+)1/p
+≤ 1
+p
+p∑
+i=1
+ai
+ai +bi
++ 1
+p
+p∑
+i=1
+bi
+ai +bi
+= 1,
+which gives the desired inequality for boxes.
+We next show that the inequality holds when A and B are both ﬁnite
+unions of disjoint boxes. The proof is based on induction on the total number
+of boxes in A and B, and there is no harm assuming that A has at least
+two boxes (if not, just switch A and B). Translating A (if necessary) we can
+assume that some coordinate hyperplane, {x : x
+k = 0 } separates two of the
+boxes in A. Deﬁne half-spaces H+ = {x : xk ≥ 0}, H−= {x : xk < 0}
+and let A±be intersections of A with these half spaces, A+ = A ∩H+ and
+A−= A ∩H−. Note that A±are both ﬁnite intersections of boxes with the
+total number of boxes in each of them less than the number of boxes in A.
+The proportion of the volume of A in H+ is λ (A+)/λ (A), and by translating
+B we make λ (B ∩H+)/λ (B) match this proportion. Deﬁning B±=B ∩H±
+we then have
+λ (A±)
+λ (A) = λ (B±)
+λ (B) . (16.7)
+Because intersection with a half-plane cannot increase the number of boxes in
+a set, the number of boxes in A
++ andB+ and the number of boxes in A−and
+B−are both less than the number of boxes in A andB, and by the inductive
+hypothesis we can assume that the inequality holds for both of these pairs.
+Also note that since A
++ +B+ ⊂ H+ and A−+B−⊂ H−,
+λ
+(
+(A+ +B+) ∪ (A−+B−)
+)
+=λ (A+ +B+) +λ (A−+B−),
+and that A +B ⊃ (A+ +B+) ∪ (A−+B−). Using these, (16.7), and the
+inductive hypothesis,
+λ (A +B) ≥ λ (A+ +B+) +λ (A−+B−)
+≥
+(
+λ (A+)1/p +λ (B+)1/p )p
++
+(
+λ (A−)1/p +λ (B−)1/p )p
+=λ (A+)
+(
+1 + λ (B)1/p
+λ (A)1/p
+)p
++λ (A−)
+(
+1 + λ (B)1/p
+λ (A)1/p
+)p
+=λ (A)
+(
+1 + λ (B)1/p
+λ (A)1/p
+)p
+=
+(
+λ (A)1/p +λ (B)1/p )p
+.
+
+===== PAGE 15 =====
+
+16.4 Minimax Estimation of a Normal Mean 333
+This proves the theorem when A andB are ﬁnite unions of boxes. The general
+case follows by an approximation argument. As a starting point, we use the
+fact that Lebesgue measure is regular, which means that λ (K) < ∞ for all
+compact K, and for any B,
+λ (B) = inf {λ (V ) : V ⊃ B,V open}
+and
+λ (B) = sup {λ (K) : K ⊂ B,K compact}.
+Suppose A is open. Fix ǫ> 0 and let K ⊂ A be a compact set with λ (K) ≥
+λ (A) − ǫ. Because the distance between K and A
+c is positive, we can cover
+K with open boxes centered at all points of K so that each box in the cover
+lies in A. The union ˜A of a ﬁnite subcover will then contain K and lie in A,
+so λ ( ˜A) ≥ λ (A) − ǫ, and ˜A will be a ﬁnite union of disjoint boxes. Similarly,
+if B is open there is a set ˜B ⊂ B that is a ﬁnite union of disjoint boxes with
+λ ( ˜B) ≥ λ (B) − ǫ. Because A +B ⊃ ˜A + ˜B,
+λ (A +B)1/p ≥ λ ( ˜A + ˜B)1/p ≥ λ ( ˜A)1/p +λ ( ˜B)1/p
+≥
+(
+λ (A) − ǫ
+)1/p
++
+(
+λ (B) − ǫ
+)1/p
+. (16.8)
+Lettingǫ → 0, the inequality holds for nonempty open sets. Next, suppose A
+and B are both compact. Deﬁne open sets
+An = {x : ∥x − y∥< 1/n, ∃y ∈A}
+and
+Bn = {x : ∥x − y∥< 1/n, ∃y ∈B}.
+Then
+A +B =
+⋂
+n≥1
+(An +Bn),
+for if s lies in the intersection, then s =an +bn with an ∈An and bn ∈Bn,
+and along a subsequence ( an,b n) → (a,b ) ∈A × B. Then s =a +b ∈A +B.
+Using this,
+λ (A +B)1/p = lim
+n→∞
+λ (An +Bn)1/p
+≥ lim
+n→∞
+(
+λ (An)1/p +λ (Bn)1/p )
+=λ (A)1/p +λ (B)1/p .
+Finally, if A and B are arbitrary Borel sets with positive and ﬁnite measure,
+and if ǫ> 0, there are compact subsets ˜A ⊂ A and ˜B ⊂ B such that λ ( ˜A) ≥
+λ (A) − ǫ and λ ( ˜B) ≥ λ (B) − ǫ. The inequality then follows by the argument
+used in (16.8) ⊓ ⊔
+
+===== PAGE 16 =====
+
+334 16 Asymptotic Optimality
+Corollary 16.19. If A and B are symmetric convex subsets of Rp and c is
+any vector in Rp, then
+λ
+(
+(c +A) ∩B
+)
+≤ λ (A ∩B).
+Proof. LetK+ = (c+A)∩B andK−= (−c+A)∩B. By symmetryK−= −K+
+and so λ (K+) = λ (K−). Deﬁne K = 1
+2 (K+ +K−), and note that K ⊂ A ∩B.
+By the Brunn–Minkowski inequality,
+λ (K)1/p ≥ λ
+(1
+2K+
+)1/p
++λ
+(1
+2K−
+)1/p
+= 1
+2λ (K+)1/p + 1
+2λ (K−)1/p =λ (K+)1/p .
+So
+λ (A ∩B) ≥ λ (K) ≥ λ (K+) = λ
+(
+(c +A) ∩B
+)
+. ⊓ ⊔
+Proof of Theorem 16.17 . For u ≥ 0 deﬁne convex symmetric sets Au = {x :
+W (x) ≤ u} and Bu = {x : f (x) ≥ u}. Using Fubini’s theorem and Corol-
+lary 16.19,
+∫
+W (x − c)f (x)dx =
+∫ ∫∞
+0
+∫∞
+0
+I
+[
+W (x − c)>u,f (x) ≥ v
+]
+dudvdx
+=
+∫∞
+0
+∫∞
+0
+∫
+I(x /∈c +Au,x ∈Bv)dxdudv
+=
+∫∞
+0
+∫∞
+0
+[
+λ (Bv ) − λ
+(
+(c +Au) ∩Bv
+)]
+dudv
+≥
+∫∞
+0
+∫∞
+0
+[
+λ (Bv ) − λ (Au ∩Bv )
+]
+dudv
+=
+∫
+W (x)f (x)dx. ⊓ ⊔
+Theorem 16.20. Suppose X ∼ Np(θ,Σ ) with Σ a known positive deﬁnite
+matrix, and consider estimating the mean θ with loss function L(θ,d ) = W (θ −
+d) and W bowl-shaped. Then X is minimax.
+Proof. Consider a Bayesian formulation in which the prior distribution for Θ
+is N (0,σ 2Σ ). Let ˜Θ =Σ−1/2 Θ and ˜X =Σ−1/2 X and note that
+˜Θ ∼ N (0,σ 2I)
+and
+˜X|˜Θ = ˜θ ∼ N (˜θ,I ).
+As before,
+
+===== PAGE 17 =====
+
+16.5 Posterior Distributions 335
+˜Θ |˜X = ˜x ∼ N
+( σ 2 ˜x
+1 +σ 2, σ 2
+1 +σ 2I
+)
+.
+Since conditioning on ˜X is the same as conditioning on X, multiplication by
+Σ 1/2 gives
+Θ |X =x ∼ N
+( σ 2x
+1 +σ 2, σ 2
+1 +σ 2Σ
+)
+.
+If Z ∼ N
+(
+(0,σ 2Σ/ (1 + σ 2)
+)
+, with density f , then the posterior risk of an
+estimator δ is
+E
+[
+W
+(
+Θ − δ (X)
+)⏐
+⏐X =x
+]
+=EW
+(
+Z + σ
+2x
+1 +σ 2 − δ (x)
+)
+=
+∫
+W
+(
+z + σ 2x
+1 +σ 2 − δ (x)
+)
+f (z)dz.
+By Theorem 16.17, this is minimized if δ (x) = σ 2x/ (1 +σ 2), and so again the
+Bayes estimator is
+˜θ = σ 2X
+1 +σ 2.
+If ǫ =X − Θ , then
+ǫ|Θ =θ ∼ N (0,Σ ),
+and soǫ andΘ are independent and the marginal distribution of ǫ isN (0,Σ 2).
+Using this, the Bayes risk is
+EW (Θ − ˜θ ) = EW
+(
+Θ − σ 2(Θ +ǫ)
+1 +σ 2
+)
+=EW
+( Θ
+1 +σ 2 − σ 2ǫ
+1 +σ 2
+)
+=EW
+( σǫ
+√
+1 +σ 2
+)
+,
+which converges to EW (ǫ) as σ → ∞ by monotone convergence. Arguing as
+we did for (16.6), for any δ
+sup
+θ
+R(θ,δ ) ≥ EW (ǫ).
+Since this is the risk of X (for any θ ), X is minimax. ⊓ ⊔
+16.5 Posterior Distributions
+In this section we derive normal approximations for posterior distributions for
+LAN families. Local asymptotic optimality is derived using these approxima-
+tions with arguments similar to those in the preceding section.
+The approximations for posterior distributions are developed using a no-
+tion of convergence stronger than convergence in distribution, based on the
+following norm.
+
+===== PAGE 18 =====
+
+336 16 Asymptotic Optimality
+Deﬁnition 16.21. The total variation norm of the diﬀerence between two
+probability measuresP and Q is deﬁned as
+∥P − Q∥ = sup
+{
+|
+∫
+fdP −
+∫
+fdQ |: |f | ≤1
+}
+.
+IfP andQ have densitiesp andq with respect to a measure µ, and |f | ≤1,
+then ⏐
+⏐
+⏐
+⏐
+∫
+fdP −
+∫
+fdQ
+⏐
+⏐
+⏐
+⏐ =
+⏐
+⏐
+⏐
+⏐
+∫
+f (p − q)dµ
+⏐
+⏐
+⏐
+⏐ ≤
+∫
+|p − q|dµ.
+This bound is achieved when f = Sign(p − q), and so
+∥P − Q∥ =
+∫
+|p − q|dµ.
+Taking advantage of the fact that p and q both integrate to one,
+∥P − Q∥ =
+∫
+p>q
+(p − q)dµ +
+∫
+q>p
+(q − p)dµ = 2
+∫
+p>q
+(p − q)dµ
+= 2
+∫
+p>q
+(1 − L)dP = 2
+∫ (
+1 − min{1,L }
+)
+dP, (16.9)
+where L =q/p is the likelihood ratio dQ/dP .
+If f is a bounded function, sup |f |= M , and we take f∗= f/M , then
+|f∗| ≤1 and so
+⏐
+⏐
+⏐
+⏐
+∫
+fdP −
+∫
+fdQ
+⏐
+⏐
+⏐
+⏐ =M
+⏐
+⏐
+⏐
+⏐
+∫
+f
+∗dP −
+∫
+f∗dQ
+⏐
+⏐
+⏐
+⏐ ≤ M ∥P − Q∥. (16.10)
+Strong convergence is deﬁned using the total variation norm. Distributions
+P
+n converge strongly to P if ∥Pn − P ∥ → 0. If this happens, then by (16.10)∫
+fdPn →
+∫
+fdP for any bounded measurable f . This can be compared with
+convergence in distribution where, by Theorem 8.9,
+∫
+fdPn →
+∫
+fdP for
+bounded continuous functions, but convergence can fail if f is discontinuous.
+So strong convergence implies convergence in distribution.
+Lemma 16.22. Let ˜P and P be two possible joint distributions for random
+vectors X and Y . Suppose ˜P ≪ P , and let f denote the density d ˜P/dP .
+Let ˜Q and Q denote the marginal distributions for X when (X,Y ) ∼ ˜P and
+(X,Y ) ∼ P , and let ˜R
+x and Rx denote the conditional distributions for Y
+given X =x when (X,Y ) ∼ ˜P and (X,Y ) ∼ P . Then ˜Q ≪ Q with density
+h(x) = d ˜Q
+dQ (x) =
+∫
+f (x,y )dRx(y),
+and ˜Rx ≪ Rx (a.e.) with density
+d ˜Rx
+dRx
+(y) = f (x,y )
+h(x) .
+
+===== PAGE 19 =====
+
+16.5 Posterior Distributions 337
+Proof. Using Lemma 12.18 and smoothing,
+˜Eg(X) = Eg(X)f (X,Y ) = Eg(X)E[f (X,Y )|X] =
+∫
+g(x)h(x)dQ(x).
+To show that the stated densities for the conditional distributions are correct
+we need to show that iterated integration gives the integral against ˜P . This
+is the case because
+∫ ∫
+g(x,y )f (x,y )
+h(x) dRx(y)d ˜Q(x) =
+∫ ∫
+g(x,y )f (x,y )dRx(y)dQ(x)
+=EE [g(X,Y )f (X,Y )|X]
+=Eg(X,Y )f (X,Y ) = ˜Eg(X,Y ). ⊓ ⊔
+To motivate the main result, approximating posterior distributions, sup-
+pose our family is LAN at θ 0, and that the prior distribution for Θ is
+N (θ 0,Γ −1/n ).3 If the LAN approximation and the approximation (16.5) for
+ˆθ were exact, then the likelihood function would be proportional to
+exp
+[
+n(θ − θ 0)′J(ˆθn − θ 0) − n
+2 (θ − θ 0)′J(θ − θ 0)
+]
+,
+and the posterior distribution for Θ would be
+Gx,n =N
+(
+θ 0 + (Γ +J)−1J(ˆθn − θ 0), (Γ +J)−1/n
+)
+. (16.11)
+For convenience, as we proceed dependence on n is suppressed from the no-
+tation.
+Theorem 16.23. Suppose our families are LAN at θ
+0 in the interior of Ω
+and that ˆθ satisﬁes (16.5). Consider a sequence of Bayesian models in which
+Θ ∼ N (θ 0,Γ −1/n ) (truncated to Ω) with Γ a ﬁxed positive deﬁnite matrix.
+Let Fx denote the conditional distribution of Θ given X = x, and let Gx
+denote the normal approximation for this distribution given in (16.11). Then
+∥FX − GX ∥ converges to zero in probability as n → ∞ .
+Proof. (Sketch) Let P denote the joint distribution of X and Θ (in the
+Bayesian model), and let Q denote the marginal distribution for X. Intro-
+duce another model in which X has the same marginal distribution and
+˜Θ |X = x ∼ Gx, the normal approximation for the posterior. Let ˜P denote
+the joint distribution for X and ˜Θ . Finally, let
+ P = 1
+2 (P + ˜P ), so that P ≪
+ P
+and ˜P ≪
+ P , and introduce densities
+f (x,θ ) = dP
+d
+P (x,θ ) and ˜f (x,θ ) = d ˜P
+d
+P (x,θ ).
+3 IfΩ is not all Rp, then we should truncate the prior to Ω. If θ 0 lies in the interior
+ofΩ, only minor changes result and the theorem is correct as stated. But to keep
+the presentation accessible we do not worry about this issue in the proof.
+
+===== PAGE 20 =====
+
+338 16 Asymptotic Optimality
+The marginal distributions for X are the same under P , ˜P , and (thus)
+ P . So
+both marginal densities for X must be one, and by Lemma 16.22, f (x, ·) and
+˜f (x, ·) are densities for Fx and Gx. Using (16.9),
+∥Fx − Gx∥ = 2
+∫ [
+1 − min{1,L (x,θ )}
+]
+dFx(θ ),
+where L is the likelihood ratio
+L(x,θ ) =
+˜f (x,θ )
+f (x,θ ).
+Integrating against the marginal distribution of X,
+E∥FX − GX ∥ = 2E
+[
+1 − min{1,L (X,Θ )}
+]
+,
+and the theorem will follow if L(X,Θ )
+p
+→ 1.
+We next want to rewrite L to take advantage of the things we know about
+the likelihood and Gx. Suppose P ≪ ˜P . Then P has density f (x,θ )/ ˜f (x,θ )
+with respect to ˜P . Because the marginal distributions of X are the same under
+P and ˜P , the marginal density must be one, and the formula in Lemma 16.22
+then gives ∫ f (x, ˜θ )
+˜f (x, ˜θ )
+dGx(˜θ ) = 1. (16.12)
+When P ≪ ˜P fails, this need not hold exactly, but remains approximately
+true.4 Assuming, for convenience, that (16.12) holds exactly, we have
+L(x,θ ) =
+∫ ˜f (x,θ )
+˜f (x, ˜θ )
+f (x, ˜θ )
+f (x,θ )dGx(˜θ ),
+and from this the theorem will follow if
+˜f (X,Θ )
+˜f (X, ˜Θ )
+f (X, ˜Θ )
+f (X,Θ )
+p
+→ 1. (16.13)
+The two fractions here can both be viewed as likelihood ratios, since f and
+˜f are both joint densities. Speciﬁcally, viewing ˜f as proportional to a density
+for X times the normal conditional density Gx,
+˜f (X,Θ )
+˜f (X, ˜Θ )
+= exp
+[
+− n
+2 (Θ − θ 0)′(Γ +J)(Θ − θ 0)
++ n
+2 ( ˜Θ − θ 0)′(Γ +J)( ˜Θ − θ 0)
++n(ˆθ − θ 0)′J(Θ − ˜Θ )
+]
+,
+4 If H is the conditional distribution given X under
+ P , then
+R
+f (x, ˜θ )dHx(˜θ ) = 1.
+SincedGx(˜θ ) = ˜f (x, ˜θ )dHx(˜θ ), the true value for the integral is 1 −P
+` ˜f (X,Θ ) =
+0
+˛
+˛X =x
+´
+. This approaches one by a contiguity argument.
+
+===== PAGE 21 =====
+
+16.6 Locally Asymptotically Minimax Estimation 339
+and viewing f as proportional to the normal density for Θ times a conditional
+density for X givenθ ,
+f (X, ˜Θ )
+f (X,Θ ) = exp
+[
+−n
+2 ( ˜Θ − θ 0)′Γ ( ˜Θ − θ 0) + n
+2 (Θ − θ 0)′Γ (Θ − θ 0)
++ℓn( ˜Θ,θ 0) − ℓn(Θ,θ 0)
+]
+.
+If the LAN approximation for ℓn and approximation (16.5) held exactly, then
+the left-hand side of (16.13) would be one. The proof is completed by arguing
+that the approximations imply convergence in probability. ⊓ ⊔
+16.6 Locally Asymptotically Minimax Estimation
+Our ﬁrst lemma uses the approximations of the previous section and An-
+derson’s lemma (Theorem 16.17) to approximate Bayes risks with the loss
+function a bounded bowl-shaped function.
+Lemma 16.24. Suppose our families are LAN at θ in the interior of Ω and
+that ˆθ satisﬁes (16.5). Consider Bayesian models in which the prior distribu-
+tion for Θ is N (θ,σ
+2J−1/n ). If W is a bounded bowl-shaped function, then
+lim
+n→∞
+inf
+δ
+EnW
+(√
+n(δ − Θ )
+)
+=EW
+( σZ
+√
+1 +σ 2
+)
+,
+whereZ ∼ N (0,J−1).
+Proof. Let
+Gx,n =N
+(
+θ + σ 2(ˆθn − θ )
+1 +σ 2 , σ 2J−1
+n(1 +σ 2)
+)
+,
+the approximation for the posterior distribution from Theorem 16.23, and let
+F
+n,x denote the true posterior distribution of θ . Deﬁne
+ρn(x) = inf
+d
+En
+[
+W
+(√
+n(d − Θ )
+)⏐
+⏐X =x
+]
+= inf
+d
+∫
+W
+(√
+n(d − θ )
+)
+dFx,n (θ ).
+Then, as in Theorem 7.1,
+inf
+δ
+EnW
+(√
+n(δ − Θ )
+)
+=Enρn(X).
+Using (16.10), for any d,
+
+===== PAGE 22 =====
+
+340 16 Asymptotic Optimality
+⏐
+⏐
+⏐
+⏐
+∫
+W
+(√
+n(d − θ )
+)
+dFx,n (θ ) −
+∫
+W
+(√
+n(d − θ )
+)
+dGx,n (θ )
+⏐
+⏐
+⏐
+⏐
+≤ M ∥F
+x,n − Gx,n ∥,
+and it then follows that
+⏐
+⏐
+⏐
+⏐ρ
+n(x) − inf
+d
+∫
+W
+(√
+n(d − θ )
+)
+dGx,n (θ )
+⏐
+⏐
+⏐
+⏐ ≤ M ∥F
+x,n − Gx,n ∥,
+where M = sup |W |. But by Anderson’s lemma (Theorem 16.17),
+inf
+d
+∫
+W
+(√
+n(d − θ )
+)
+dGx,n (θ ) = EW
+( σZ
+√
+1 +σ 2
+)
+.
+So
+⏐
+⏐
+⏐
+⏐E
+nρn(X) − EW
+( σZ
+√
+1 +σ 2
+)⏐
+⏐
+⏐
+⏐ ≤ E
+n
+⏐
+⏐
+⏐
+⏐ρ
+n(X) − EW
+( σZ
+√
+1 +σ 2
+)⏐
+⏐
+⏐
+⏐
+≤ ME
+n∥FX,n − GX,n ∥.
+The lemma follows because this expectation tends to zero by Theorem 16.23.
+⊓ ⊔
+Theorem 16.25. Suppose our families are LAN at θ 0 in the interior of Ω
+and that ˆθ satisﬁes (16.5), and let W be a bowl-shaped function. Then for any
+sequence of estimators δn,
+lim
+b→∞
+lim
+c→∞
+lim inf
+n→∞
+sup
+∥θ−θ 0∥≤c/ √
+n
+Eθ min
+{
+b,W
+(√
+n(δn − θ )
+)}
+≥ EW (Z),
+whereZ ∼ N (0,J−1). The asymptotic lower bound here is achieved if δn = ˆθn.
+Proof. Letπn =N (θ 0,σ 2J−1/n ), the prior distribution for Θ in Lemma 16.24,
+and note that θ 0 +σZ/ √
+n ∼ πn. Also, let Wb = min{b,W }, a bounded bowl-
+shaped function. Then
+inf
+δ
+EWb
+(√
+n(δ − Θ )
+)
+≤ EWb
+(√
+n(δn − Θ )
+)
+=
+∫
+EθWb
+(√
+n(δn − θ )
+)
+dπn(θ )
+≤ sup
+∥θ−θ 0∥≤c/ √
+n
+EθWb
+(√
+n(δn − θ )
+)
+πn
+({
+θ : ∥θ − θ 0∥ ≤ c/ √
+n
+})
++bπn
+({
+θ : ∥θ − θ 0∥>c/ √
+n
+})
+.
+But
+πn
+({
+θ : ∥θ − θ 0∥ ≤ c/ √
+n
+})
+=P
+(
+∥Z∥ ≤ c/σ ).
+
+===== PAGE 23 =====
+
+16.7 Problems 341
+Solving the inequality to bound the supremum and taking the lim inf as n →
+∞, using Lemma 16.24,
+lim inf
+n→∞
+sup
+∥θ−θ 0∥≤c/ √
+n
+EθWb
+(√
+n(δn − θ )
+)
+≥ EWb
+(
+σZ/
+√
+1 +σ 2)
+− bP
+(
+∥Z∥>c/σ )
+P
+(
+∥Z∥ ≤ c/σ ) .
+Letting c → ∞ the denominator on the right-hand side tends to one, leaving
+a lower bound of EWb
+(
+σZ/
+√
+1 +σ 2)
+. Because this lower bound must hold for
+σ arbitrarily large,
+lim
+c→∞
+lim inf
+n→∞
+sup
+∥θ−θ 0∥≤c/ √
+n
+Eθ Wb
+(√
+n(δn − θ )
+)
+≥ EWb(Z).
+The ﬁrst part of the theorem now follows because EWb(Z) → EW (Z) as
+b → ∞ by monotone convergence. The second part that the asymptotic bound
+is achieved if δn = ˆθn holds because √
+n(ˆθn − θ ) ⇒ N (0,J−1) uniformly
+over ∥θ − θ 0∥ ≤ c/ √
+n. Using contiguity, this follows from (16.5) and normal
+approximation for the distributions of Sn mentioned in Remark 16.13. ⊓ ⊔
+In addition to the local risk optimality of ˆθ one can also argue that ˆθ
+is asymptotically suﬃcient, as described in the next result. For a proof see
+Le Cam and Yang (2000).
+Theorem 16.26. Suppose the families P
+n are locally asymptotically normal
+at every θ and that estimators ˆθn satisfy (16.5). Then ˆθn is asymptotically
+suﬃcient. Speciﬁcally, there are other families Qn = {Qθ,n : θ ∈ Ω} such
+that:
+1. Statistic ˆθn is (exactly) suﬃcient for Qn.
+2. For every b> 0 and all θ ∈Ω,
+sup
+|ω−θ|≤b/ √
+n
+∥Qω,n − Pω,n ∥ → 0
+as n → ∞ .
+For a more complete discussion of asymptotic methods in statistics, see
+van der Vaart (1998), Le Cam and Yang (2000), or Le Cam (1986).
+16.7 Problems
+1. Consider a regression model in which Yi = xiβ +ǫi, i = 1, 2,... , with
+theǫi i.i.d. from N (0,σ 2), and assume that ∑∞
+i=1
+x2
+i
+< ∞. Let Qn denote
+the joint distribution of Y1,...,Y n if β =β 0, and let ˜Qn denote the joint
+distribution if β =β 1.
+
+===== PAGE 24 =====
+
+342 16 Asymptotic Optimality
+a) Show that the distributions Qn and ˜Qn are mutually contiguous.
+b) Let Ln denote the likelihood ratio d ˜Qn/dQ n. Find limiting distri-
+butions for Ln when β = β 0 and when β = β 1. Are the limiting
+distributions the same?
+2. Let X1,X 2,... be i.i.d. from a uniform distribution on (0 ,θ ). Let Qn
+denote the joint distribution for X1,...,X n when θ = 1, and let ˜Qn
+denote the joint distribution when θ = 1 + 1/n p with p a ﬁxed positive
+constant. For which values of p are Qn and ˜Qn mutually contiguous?
+3. Prove the second assertion of Proposition 16.5: If the distributions for ˜Xn
+are contiguous to those for Xn, and if Tn(Xn) = Op(1), then Tn( ˜Xn) =
+Op(1).
+4. Let X and Y be random vectors with distributions PX and PY . If h is a
+one-to-one function, show that
+∥PX − PY ∥ = ∥Ph(X) − Ph(Y )∥.
+In particular, if X and Y are random variables and a ̸= 0,
+∥PX − PY ∥ = ∥PaX+b − PaY +b∥.
+5. Show that Xn
+p
+→ 0 if and only if E min
+{
+1, |Xn|
+}
+→ 0.
+6. Deﬁne g(x) = min {1, |x|}and let Z = E
+[
+|Y |
+⏐
+⏐ X
+]
+. Show that Eg(Z) ≥
+Eg(Y ). Use this and the result from Problem 16.5 to show that L(Θ,X )
+p
+→
+1 when (16.13) holds.
+7. Let Yn be integrable random variables. Show that if E
+[
+|Yn|
+⏐
+⏐ Z
+n
+] p
+→ 0,
+then Yn
+p
+→ 0.

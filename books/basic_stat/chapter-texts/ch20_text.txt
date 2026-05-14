@@ -1,0 +1,1691 @@
+
+===== PAGE 1 =====
+
+20
+Sequential Methods
+Sequential experiments, introduced in Chapter 5, call for design decisions as
+data are collected. Optional stopping, in which the data are observed sequen-
+tially and used to decide when to terminate the experiment, would be the
+simplest example. A sequential approach can lead to increased eﬃciency, or it
+may achieve objectives not possible with a classical approach, but there are
+technical, practical, and philosophical issues that deserve attention.
+Example 20.1. Sampling to a Foregone Conclusion . Let X
+1, X2, ... be i.i.d.
+fromN (µ, 1), and let Sn denote the sum of the ﬁrst n observations. The stan-
+dard level α test of H0 :µ = 0 versus H1 :µ ̸= 0 based on these observations
+will reject H0 if |Sn|>zα/2
+√
+n.
+Suppose a researcher proceeds sequentially, stopping the ﬁrst time n that
+|Sn|exceeds zα/2
+√
+n, so the sample size is
+N = inf
+{
+n ≥ 1 : |Sn|>zα/2
+√
+n
+}
+.
+WheneverN is ﬁnite, the classical test will reject H0. If µ ̸= 0, then N will be
+ﬁnite almost surely by the law of large numbers. In fact, N will also be ﬁnite
+almost surely if µ = 0. To see this, note that for any k, {N = ∞} implies
+{
+|Sk| ≤
+√
+kzα/2 , |S2k| ≤
+√
+2kzα/2
+}
+,
+which in turn implies
+{
+|S2k − Sk| ≤(
+√
+k +
+√
+2k)zα/2
+}
+.
+These events have constant probability
+p =P
+(
+|Z| ≤(1 +
+√
+2)zα/2
+)
+< 1,
+where Z ∼ N (0, 1), and so by independence,
+P (N = ∞) ≤ P
+
+
+∞⋂
+j=1
+{
+|S2j+1 − S2j | ≤
+(√
+2j +
+√
+2j+1)
+zα/2
+}
+
+ =
+∞∏
+j=1
+p = 0.
+R.W. Keener, Theoretical Statistics: Topics for a Core Course, Springer Texts in Statistics, 
+DOI 10.1007/978-0-387-93839-4_20, © Springer Science+Business Media, LLC 2010 
+405 
+
+===== PAGE 2 =====
+
+406 20 Sequential Methods
+This example highlights one central technical problem with sequential ex-
+periments; sampling distributions may change with optional stopping. For
+any ﬁxed sample size N , if µ = 0, then S
+N/
+√
+N ∼ N (0, 1), but with the
+random sample size N in the example,
+⏐
+⏐S
+N/
+√
+N
+⏐
+⏐ exceeds z
+α/2 almost surely.
+Historically, there was controversy and concern when this was noted. If a re-
+searcher conducts an experiment sequentially, a standard frequentist analysis
+is not appropriate. For a proper frequentist analysis there must be a speciﬁc
+protocol detailing how the sample size will be determined from the data, so
+that the eﬀects of optional stopping can be taken into account properly when
+probabilities, distributions, and moments of statistics are computed.
+Surprisingly, likelihood functions after a sequential experiment are found
+in the usual way. Since Bayesian inference is driven by the likelihood, posterior
+distributions will be computed in the usual fashion, and a sequential design
+will not aﬀect Bayesian analysis of the data. Due to this, design problems are
+often more tractable with a Bayesian formulation.
+In Section 20.1 a central limit theorem is derived for sequential experiments
+and used to ﬁnd stopping rules that allow asymptotic interval estimation
+with speciﬁed ﬁxed accuracy. Section 20.2 studies stopping times in a more
+formal fashion, explaining why they do not aﬀect likelihood functions. In
+Section 20.3, the backwards induction method, used to ﬁnd optimal stopping
+times, is explored, focusing on a Bayesian approach to hypothesis testing.
+Section 20.4 introduces Wald’s sequential probability ratio test for simple
+versus simple testing in a sequential context. Finally, Section 20.5 explores
+design issues beyond optional stopping, speciﬁcally stochastic approximation
+recursions in which independent regression variables are chosen adaptively,
+and “bandit” allocation problems.
+20.1 Fixed Width Conﬁdence Intervals
+LetX1,X 2,... be i.i.d. from a one-parameter exponential family with marginal
+density
+fθ (x) = h(x) exp
+{
+η (θ )T (x) − B(θ )
+}
+.
+Let Ti = T (Xi) and
+ Tn = (T1 + · · · +Tn)/n . Then the maximum likelihood
+estimator ˆλn of a parameter λ = g(θ ) based on the ﬁrst n observations is a
+function of
+ Tn,
+ˆλn = ˆλ (
+Tn),
+and by the delta method,
+√
+n(ˆλn − λ ) ⇒ N
+(
+0,ν 2(θ )
+)
+,
+where
+ν 2(θ ) =
+[ˆλ′(
+µT (θ )
+)]2
+σ 2
+T (θ ),
+
+===== PAGE 3 =====
+
+20.1 Fixed Width Conﬁdence Intervals 407
+withµT (θ ) = EθTi andσ 2
+T (θ ) = Varθ (Ti). Using this, if ν (·) is continuous and
+ˆθn is the maximum likelihood estimator of θ , then
+(
+ˆλn ± zα/2
+nu(ˆθn)
+/ √
+n
+)
+(20.1)
+is an asymptotic 1 − α conﬁdence interval for λ .
+If a researcher is interested in estimating λ with ﬁxed precision, a conﬁ-
+dence interval with a ﬁxed width w would be desired. Since ν (θ ) will generally
+vary with θ , the interval (20.1) from any ﬁxed sample may fail. But following
+a sequential strategy, the researcher may choose to continue sampling until
+the width 2 z
+α/2 ν (ˆθn)/ √
+n of interval (20.1) is less than w. This leads to a
+sequential experiment with sample size
+N =Nw = inf
+{
+n :w2n ≥ 4z2
+α/2 ν 2(ˆθn)
+}
+. (20.2)
+Ifw is small, N will be large, and it seems reasonable to hope that the interval
+(
+ˆλN ± zα/2 ν (ˆθN )
+√
+N
+)
+(20.3)
+from a sequential experiment will have coverage approximately 1 − α . And
+by construction, the width of this interval is at most w. This is correct, but
+a proper demonstration takes a bit of care, because the sample size N is a
+random variable, whereas sample sizes in our prior results on weak convergence
+were constant. The main result we need is a central limit theorem due to
+Anscombe (1952) in which the number of summands is random. Almost sure
+convergence, introduced in Section 8.7, and the strong law of large numbers
+play a role here.
+The proposed sample size N
+w in (20.2) tends to ∞ almost surely as w ↓ 0.
+If ˆθn → θ almost surely, 1 then ˆθN → θ almost surely and ˆθN−1 → θ almost
+surely. Since
+4z2
+α/2 ν 2(ˆθN ) ≤ w2N <w2 + 4z2
+α/2 ν 2(ˆθN−1),
+it follows that
+w2N → 4z2
+α/2 ν 2(θ )
+almost surely as w ↓0. If we deﬁne
+nw =
+⌊
+4z2
+α/2 ν 2(θ )
+w2
+⌋
+,
+then w2(N − nw ) → 0 almost surely as w ↓ 0. The idea behind Anscombe’s
+central limit theorem is that a shift in the sample size from N to nw will
+change the limiting variable by an amount that is op(1).
+1 When η is continuous, ˆθ n is a continuous function of
+ T n, and this follows from
+the strong law of large numbers.
+
+===== PAGE 4 =====
+
+408 20 Sequential Methods
+Deﬁnition 20.2. Random variables Wn, n ≥ 1, are uniformly continuous in
+probability (u.c.i.p.) if for all ǫ> 0 there exists δ >0 such that
+P
+{
+max
+0≤k≤nδ
+|Wn+k − Wn| ≥ǫ
+}
+<ǫ, for all n ≥ 1.
+Theorem 20.3 (Anscombe). If Nw,w> 0, are positive integer-valued ran-
+dom variables with w2Nw
+p
+→ c ∈ (0, ∞) as w ↓0, if nw = ⌊c/w 2⌋, and if Wn,
+n ≥ 1 are u.c.i.p., then
+WNw − Wnw
+p
+→ 0
+as w ↓0.
+Proof. Fix ǫ> 0. For any δ >0,
+P
+(
+|WNw −Wnw |>ǫ
+)
+≤ P
+(
+w2|Nw −nw|>δ
+)
++P
+(
+max
+w2|n−nw|≤δ
+|Wn −Wnw |>ǫ
+)
+.
+The ﬁrst term here tends to zero regardless of the choice of δ . By the triangle
+inequality, ifm = ⌈nw −δ/w 2⌉(the smallest integer m withw2|m −nw| ≤δ ),
+then
+|Wn − Wnw | ≤ |Wn − Wm|+ |Wnw − Wm|,
+and so
+max
+w2|n−nw|≤δ
+|Wn − Wnw | ≤2 max
+w2|n−nw|≤δ
+|Wn − Wm|.
+Therefore
+P
+(
+max
+w2|n−nw|≤δ
+|Wn − Wnw |>ǫ
+)
+≤ P
+(
+max
+w2|n−nw|≤δ
+|Wn − Wm|>ǫ/ 2
+)
+.
+Since theWn are u.c.i.p., this probability will be less than ǫ/ 2 ifδ is suﬃciently
+small, and the theorem follows as ǫ is arbitrary. ⊓ ⊔
+In Theorem 20.3, if Wn ⇒ W , Wnw ⇒ W , and so
+WNw =Wnw +op(1) ⇒ W.
+One example of particular interest would be normalized partial sums, Wn =√
+n
+Yn with Y1,Y 2,... i.i.d. mean zero, and
+ Yn the average of the ﬁrst n of
+these variables. The following maximal inequality, due to Kolmogorov, is used
+to show these variables are u.c.i.p. Let S
+k =Y1 + · · · +Yk.
+Lemma 20.4. If Y1,...,Y n are i.i.d. with mean zero and common variance
+σ 2
+Y ∈ (0, ∞) , then for any c> 0,
+P
+(
+max
+1≤k≤n
+|Sk| ≥c
+)
+≤ nσ 2
+Y
+c2 .
+
+===== PAGE 5 =====
+
+20.1 Fixed Width Conﬁdence Intervals 409
+Proof. LetAk be the event that Sk is the ﬁrst partial sum with magnitude at
+least c, that is,
+Ak =
+{
+|S1|<c,..., |Sk−1|<c, |Sk| ≥k
+}
+.
+Because Ak is determined by Y1,...,Y k, Sk 1Ak is independent of Sn − Sk =
+Yk+1 + · · · +Yn, and for k ≤ n
+E
+[
+Sk(Sn − Sk)1Ak
+]
+=E[Sk1Ak ] × E[Sn − Sk] = 0.
+But on Ak , S2
+k ≥ c2, and so for k ≤ n,
+E[S2
+n1Ak ] = E
+[
+(Sn − Sk)2 + 2Sk(Sn − Sk ) +S2
+k
+]
+1Ak ≥ c2P (Ak).
+Since {max1≤k≤n |Sk| ≥c} is the disjoint union of A1,...,A n,
+c2P ( max
+1≤k≤n
+|Sk| ≥c) =
+n∑
+k=1
+c2P (Ak ) ≤ E
+[
+S2
+n
+n∑
+i=1
+Ak
+]
+≤ ES 2
+n =nσ 2
+Y ,
+proving the lemma. ⊓ ⊔
+Considering the normalized partial sums, since
+|Wn+k − Wn|=
+⏐
+⏐
+⏐
+⏐
+⏐
+1
+√
+n
+k∑
+i=n+1
+Yi −
+(√
+n +k
+n − 1
+)
+Wn+k
+⏐
+⏐
+⏐
+⏐
+⏐,
+we have
+P ( max
+0≤k≤nδ
+|Wn+k − Wn| ≥ǫ) ≤ P
+(
+(
+√
+1 +δ − 1)|Wn+k | ≥ǫ/ 2
+)
++P
+(
+max
+0≤k≤nδ
+⏐
+⏐
+⏐
+⏐
+⏐
+n+k∑
+i=n+1
+Yi
+⏐
+⏐
+⏐
+⏐
+⏐ ≥ ǫ√
+n/ 2
+)
+.
+By Chebyshev’s inequality, the ﬁrst term here is at most
+4(
+√
+1 +δ − 1)2σ 2
+Y
+ǫ2 ,
+and by Lemma 20.4 the second term is at most
+4σ 2
+Yδ
+ǫ2 .
+These bounds tend to zero as δ ↓ 0, uniformly in n, and so Wn, n ≥ 1, are
+u.c.i.p.
+Returning to ﬁxed width interval estimation and the coverage probability
+for interval (20.3), by Theorem 20.3,
+
+===== PAGE 6 =====
+
+410 20 Sequential Methods
+√
+N
+(
+TN − µ(θ )
+)
+⇒ N
+(
+0, Varθ (Ti)
+)
+as w ↓0, and by the delta method,
+√
+Nw (ˆλN − λ ) ⇒ N
+(
+0,ν 2(θ )
+)
+.
+Since N → ∞ as w ↓ 0 and ˆθn → θ as n → ∞, both almost surely, ˆθN → θ
+almost surely as w ↓0. It then follows that
+√
+N (ˆλN − λ )
+ν (ˆθN )
+⇒ N (0, 1)
+as w ↓0. So the coverage probability for the conﬁdence interval (20.3),
+Pθ
+[
+λ ∈
+(ˆλN ± zα/2 ν (ˆθN )/
+√
+N
+)]
+=Pθ
+( √
+N |ˆλN − λ |
+ν (ˆθN )
+<zα/2
+)
+,
+converges to 1 − α as w ↓ 0.
+20.2 Stopping Times and Likelihoods
+In Chapter 5 we had some trouble representing data from a sequential exper-
+iment as a random vector, because this kind of experiment’s sample size is
+not a ﬁxed constant. The most elegant and standard way to ameliorate this
+problem is to use σ -ﬁelds to represent information. To understand how this
+is done, consider an experiment in which a coin is tossed two times, so the
+sample space is
+E = {TT,TH,HT,HH }.
+Let F be the σ -ﬁeld of all subsets of E, F = 2
+E , and let the random variable
+X give the number of heads. If we observe X we will know if certain events
+occur. For instance, we will know whether
+{X = 1}= {HT,TH }
+occurs. But other events, such as {HH,HT } (the ﬁrst toss lands heads), will
+remain in doubt. The collection of all events we can resolve,
+σ (X) =
+{
+∅, {TT }, {HT,TH }, {HH }, {TT,HT,TH },
+{TT,HH }, {HT,TH,HH }, {TT,TH,HT,HH }
+}
+,
+is a σ -ﬁeld. A means to learn which events in σ (X) occur would provide
+exactly the same information about the outcome e as the value for X. Thus
+X and σ (X) in a natural sense provide the same information.
+The notions in the coin tossing example generalize easily. If we observe a
+random vector X, then we will know whether {X ∈ B} = X−1(B) occurs.
+
+===== PAGE 7 =====
+
+20.2 Stopping Times and Likelihoods 411
+Here we insist that B is a Borel set to guarantee that {X ∈B} is an event in
+F. We can then deﬁne
+σ (X)
+def
+=
+{
+X−1(B) : B Borel
+}
+,
+and it is easy to show that σ (X) is a σ -ﬁeld.
+Consider now an experiment in which random vectors X1,X 2,... are ob-
+served sequentially. Let
+Fn =σ {X1,...,X n}, (20.4)
+the events we can resolve observing the ﬁrst n variables, and take F0 = {∅, E}.
+These σ -ﬁelds are increasing, F0 ⊂ F 1 ⊂ F 2 ⊂ · · · . In general, any increasing
+sequence of σ -ﬁelds Fn, n ≥ 0, is called a ﬁltration. The ﬁltration given by
+(20.4) would be called the natural ﬁltration for Xi, i ≥ 1. We can also deﬁne
+F∞as the smallest σ -ﬁeld containing all events in ⋃
+n≥1 Fn. For the natural
+ﬁltration, F∞would represent the information available from all the Xi. This
+σ -ﬁeld may not equal the underlying σ -ﬁeld F; it will be strictly smaller if F
+contains events that cannot be determined from the Xi.
+Sample sizes for a sequential experiment cannot depend on the observa-
+tions in an arbitrary fashion. For instance, a design calling for two observations
+if and only if X
+5 > 10 would be absurd. Clairvoyance needs to be prohibited in
+the mathematical formulation. In particular, the decision to stop or continue
+after n observations needs to be based on the information F
+n available from
+those data. Speciﬁcally, the event {N =n} should lie in Fn. These variables
+are called stopping times according to the following deﬁnition.
+Deﬁnition 20.5. A random variable 2 N taking values in {0, 1, 2,..., ∞} is
+called a stopping time with respect to a ﬁltration Fn, n ≥ 0, if
+{N =n} ∈ Fn, for all n ≥ 0.
+Next we would like to ﬁnd a σ -ﬁeld that represents the information avail-
+able when data are observed until a stopping time N . Any event B ∈ F can
+be written as the disjoint union of the sets B ∩ {N =n}, n = 1, 2,..., ∞. If
+we can determine B from the data, it must be the case that that part of B
+where N =n (i.e., B ∩ {N =n}) must lie in Fn, for any n, and we deﬁne
+FN =
+{
+B :B ∩ {N =n} ∈ Fn, ∀n = 0, 1,..., ∞
+}
+.
+It is not hard to show that FN is a σ -ﬁeld, and it represents the information
+available observing the data until stopping time N . We may also want to
+consider what random variables Y are based on the observed data. Because
+the event {Y ∈ B} = Y−1(B) can be resolved by observing Y , this event
+2 Since “+ ∞ ” is an allowed value for N , it may be slightly more proper to call N
+an extended random variable.
+
+===== PAGE 8 =====
+
+412 20 Sequential Methods
+should lie in FN . But this requirement is simply that Y is FN measurable. For
+instance, with the natural ﬁltration, the stopping time N is FN measurable,
+and
+ XN = (X1 + · · · +XN )/N is FN measurable. But XN +1 is not.
+If we use σ -ﬁelds to represent information, we will also be interested in
+conditioning to revise probabilities and expectations in light of the information
+from a σ -ﬁeld. With a random vector X and an integrable random variable
+Y ,E(Y |X) should be a measurable function of X, and smoothing must work
+for YI {X ∈B} with B an arbitrary Borel set:
+EYI {X ∈B}=EI {X ∈B}E(Y |X),
+for all Borel sets B. The requirements for conditioning on a σ -ﬁeld G are
+similar. First, E(Y |G) should be G measurable (based only on information
+available from G); and second, smoothing should work for Y 1
+B with B any
+event in G:
+EY 1B =E1BE(Y |G), B ∈ G.
+The next result, Wald’s fundamental identity, is the basis for likelihood
+calculations. In this result, there are two probability measures P0 andP1. Let
+f0n and f1n denote joint densities for ( X1,...,X n) under P0 and P1, and let
+Ln =Ln(X1,...,X n) denote the likelihood ratio
+Ln(X1,...,X n) = f1n(X1,...,X n)
+f0n(X1,...,X n).
+Theorem 20.6 (Wald’s F undamental Identity). If f1n = 0 whenever
+f0n = 0, and if P0(N <∞) = P1(N <∞) = 1 , then
+P1(B) = E01BLN, ∀B ∈ FN.
+Proof. Because {N =n} ∩B ∈ Fn, by Lemma 12.18,
+P1(N =n,B ) = E0I{N =n}1BLn =E0I{N =n}1BLN.
+Because P0(N <∞) = P1(N <∞) = 1,
+P1(B) = P1(B,N < ∞) =
+∞∑
+n=1
+P1(N =n,B )
+=
+∞∑
+n=1
+E0I{N =n}1BLN =E0I{N <∞} 1BLN =E01BLN. ⊓ ⊔
+If P0 and P1 are restricted and only considered as measures on FN , this
+result asserts that P1 has density LN with respect to P0. Theorem 5.4 follows
+from this. It can be shown that any σ -ﬁnite measure µ is equivalent to, or
+has the same null sets as, a probability measure. So in Theorem 5.4 we can
+
+===== PAGE 9 =====
+
+20.3 Optimal Stopping 413
+assume that the dominating measure µ is a probability measure. If the Xi are
+i.i.d. with density fθ under Pθ , viewed as P1 in Wald’s fundamental identity,
+and they are i.i.d. from µ under P0, then the density for the restriction of Pθ
+to FN is
+LN =
+N∏
+i=1
+f (Xi),
+with respect to the restriction of P0 to FN .
+20.3 Optimal Stopping
+This section provides an introduction to the theory of optimal stopping, used
+to select the best stopping time N for a sequential experiment. The main ideas
+are developed in the context of Bayesian hypothesis testing.
+GivenΘ =θ , let potential observations X
+1,X 2,... be i.i.d. from Qθ , and
+consider testingH0 :Θ ∈Ω0 versusH1 :Θ ∈Ω1. To be speciﬁc in our goals we
+proceed in a decision-theoretic fashion, assigning costs for the consequences of
+our inferential actions, with additional costs to perform the experiment and
+collect data. Inferential actions and stopping times are chosen to minimize
+expected costs.
+After data collection, one of the hypotheses, H
+0 or H1, will be accepted.
+Let variableA specify this action, with A = 0 if we accept H0 andA = 1 if we
+accept H1. This action depends on the observed data FN , so A must be FN
+measurable. Let L(Θ ) denote the loss if we make the wrong decision: A = 0
+when Θ ∈Ω1, or A = 1 when Θ ∈Ω0. The following result characterizes an
+optimal action A.
+Theorem 20.7. The inferential risk associated with action A, given by
+R(A) = EL(Θ )
+[
+I{A = 0,Θ ∈Ω1}+I{A = 1,Θ ∈Ω0}
+]
+,
+will be minimal if
+A = 0 on E
+[
+L(Θ )I{Θ ∈Ω1}
+⏐
+⏐ F
+N
+]
+<E
+[
+L(Θ )I{Θ ∈Ω0}
+⏐
+⏐ F
+N
+]
+and
+A = 1 on E
+[
+L(Θ )I{Θ ∈Ω1}
+⏐
+⏐ F
+N
+]
+>E
+[
+L(Θ )I{Θ ∈Ω0}
+⏐
+⏐ F
+N
+]
+.
+Proof. Because A is FN measurable,
+E
+[
+L(Θ )I{A = 0}I{Θ ∈Ω1}
+⏐
+⏐ F
+N
+]
+=I{A = 0}E
+[
+L(Θ )I{Θ ∈Ω1}
+⏐
+⏐ F
+N
+]
+and
+E
+[
+L(Θ )I{A = 1}I{Θ ∈Ω0}
+⏐
+⏐ F
+N
+]
+=I{A = 1}E
+[
+L(Θ )I{Θ ∈Ω0}
+⏐
+⏐ F
+N
+]
+.
+
+===== PAGE 10 =====
+
+414 20 Sequential Methods
+So by smoothing,
+R(A) = EE
+[
+L(Θ )
+[
+I{A = 0,Θ ∈Ω1}+I{A = 1,Θ ∈Ω0}
+] ⏐
+⏐
+⏐ F
+N
+]
+=E
+[
+I{A = 0}E
+[
+L(Θ )I{Θ ∈Ω1}
+⏐
+⏐ F
+N
+]
++I{A = 1}E
+[
+L(Θ )I{Θ ∈Ω0}
+⏐
+⏐ F
+N
+]]
+≥ E min
+{
+E
+[
+L(Θ )I{Θ ∈Ω1}
+⏐
+⏐ F
+N
+]
+,E
+[
+L(Θ )I{Θ ∈Ω0}
+⏐
+⏐ F
+N
+]}
+.
+This bound is achieved if A has the form indicated in the theorem. ⊓ ⊔
+Using this result, if we deﬁne
+ρN = min
+{
+E
+[
+L(Θ )I{Θ ∈Ω1}
+⏐
+⏐ F
+N
+]
+,E
+[
+L(Θ )I{Θ ∈Ω0}
+⏐
+⏐ F
+N
+]}
+,
+the inferential risk with an optimal action A isEρN , and an optimal stopping
+ruleN should balance this risk against expected costs running the experiment.
+A simple assumption, natural and fairly appropriate in many cases, is that
+each observation costs some ﬁxed amount c > 0. The total cost to run the
+experiment is then cN , and an optimal stopping rule N minimizes
+E[cN +ρ
+N ]. (20.5)
+To illustrate some ideas useful in a broader context, let us now restrict
+attention to a simple example, testing H0 :Θ ≤ 1/ 2 versus H1 :Θ> 1/ 2 with
+Θ the success probability for a sequence of independent Bernoulli trials. We
+develop a recursive method, called backwards induction, to ﬁnd an optimal
+stopping time. For the loss function, let us take
+L(Θ ) = K|Θ − 1/ 2|.
+This function decreases as Θ tends to 1/ 2, which seems natural because incor-
+rect inference when Θ is near 1 / 2 should be less of a concern than incorrect
+inference when Θ lies farther from 1/ 2. Finally, for a prior distribution assume
+Θ ∼ Beta(α,β ).
+To begin, let us consider our inferential risk ρ
+0 if we stop immediately with
+no data collection. Noting that
+L(Θ )I{Θ> 1/ 2}= 1
+2K|Θ − 1/ 2|+ 1
+4K − 1
+2K(1 − Θ )
+and
+L(Θ )I{Θ ≤ 1/ 2}= 1
+2K|Θ − 1/ 2|+ 1
+4K − 1
+2KΘ,
+
+===== PAGE 11 =====
+
+20.3 Optimal Stopping 415
+ρ 0 = 1
+2KE |Θ − 1/ 2|+ 1
+4K − 1
+2K max{α,β }
+α +β .
+In form, ρ 0 is a function of α and β , ρ 0 = H(α,β ), but the speciﬁc repre-
+sentation given is convenient. Calculations to ﬁnd ρN are similar, but involve
+conditional expectations given FN . By Wald’s identity (Theorem 20.6), the
+likelihood function for the data is proportional to
+θSN (1 − θ )N−SN,
+where SN = X1 + · · · +XN . Calculations identical to those in Example 7.3
+show that
+Θ |FN ∼ Beta(αN,β N ),
+where
+αn =α +Sn and βn =β +n − Sn.
+The calculations for ρ 0 involved expectations for functions of Θ , which can
+be viewed as integrals against the Beta( α,β ) distributions. The calcula-
+tions for ρN are identical, except that the expectations are integrals against
+Beta(αN,β N ), the posterior distribution for Θ given FN . Using this observa-
+tion,
+ρN = 1
+2KE
+[
+|Θ − 1/ 2|
+⏐
+⏐ F
+N
+]
++ 1
+4K − 1
+2K max{αN,β N }
+αN +βN
+.
+By smoothing,
+E|Θ − 1/ 2|=EE
+[
+|Θ − 1/ 2|
+⏐
+⏐ F
+N
+]
+,
+so according to criteria (20.5), our stopping time N should be chosen to min-
+imize
+1
+2KE |Θ − 1/ 2|+ 1
+4K − 1
+2KE
+[ max{αN,β N }
+αN +βN
+]
++cEN.
+Equivalently, since the ﬁrst two terms here are independent of N , the stopping
+time N should be chosen to maximize
+1
+2KE
+[ max{αN,β N }
+αN +βN
+]
+− cEN. (20.6)
+This expression has an interesting interpretation as the expected reward in
+a “guess the next observation” game. In this game, c is the cost for each
+observation, and after sampling, the player tries to guess whether X
+N +1 will
+be 0 or 1, winning K/ 2 for a correct guess.
+Recursive algorithms to maximize (20.6) or minimize (20.5) rely on the
+conditional independence of the Xi givenΘ . Since
+P (Xk+1 =x1,...,X k+n =xn|Θ, Fk ) = Θ sn (1 − Θ )n−sn,
+where sn =x1 + · · · +xk , smoothing gives
+P (Xk+1 =x1,...,X k+n =xn|Fk) = E
+[
+Θ sn (1 − Θ )n−sn
+⏐
+⏐ F
+k
+]
+.
+
+===== PAGE 12 =====
+
+416 20 Sequential Methods
+Since the variable of interest here is a function of Θ , this could be computed
+as an integral against Beta( αk,β k), the posterior distribution of Θ given Fk.
+Formally, the answer would be exactly the same as P (X1 =x1,...,X n =xn)
+if the prior distribution were Beta( αk,β k). So the joint distribution of fu-
+ture observations given Fk only depends on the posterior distribution of Θ .
+The observed data X1,...,X k, once they have been used to compute this
+posterior distribution, have no other eﬀect on the distribution of future obser-
+vations. The posterior distributions, characterized by the sequence ( α
+n,β n),
+n ≥ 0, form a Markov chain (see Section 15.3), and given ( αk,β k), the ini-
+tial observations X1,...,X k and the future observations Xk+1,X k+2,... are
+independent.
+To use the Markov structure described, let V (α,β ) denote the supremum
+of (20.6),
+V (α,β ) = sup
+stopping times N
+[ 1
+2KE
+(max{αN,β N }
+αN +βN
+)
+− cEN
+]
+,
+called the value of the game. Suppose the player takes an initial observation
+and proceeds after this observation stopping optimally at some later stage.
+How much should he expect to win? Given X
+1, future observations will evolve
+as if the prior were Beta( α 1,β 1) and we had no data. Since we have to pay c
+for the ﬁrst observation, the expected winnings will be
+EV (α 1,β 1) − c.
+Since α 1 =α +X1, β 1 =β + 1 − X1, and
+P (X1 = 1) = EP (X1 = 1|Θ ) = EΘ = α
+α +β ,
+the expected winnings can be written as
+αV (α + 1,β ) +βV (α,β + 1)
+α +β − c.
+If instead the player stops immediately, he will win
+1
+2K max{α,β }
+α +β .
+The optimal expectation must be the larger of these, so
+V (α,β ) = max
+{ 1
+2K max{α,β }
+α +β , αV (α + 1,β ) +βV (α,β + 1)
+α +β − c
+}
+. (20.7)
+This key equation can be used to calculate V recursively. To get started, if
+the sum αn +βn =α +β +n is extremely large, the value of information from
+a single additional observation cannot oﬀset its cost c, and so V (αn,β n) will
+be
+
+===== PAGE 13 =====
+
+20.4 Sequential Probability Ratio Test 417
+V (αn,β n) = 1
+2K max{αn,β n}
+α +β +n .
+There are n + 1 possible values for ( αn,β n): (α,β +n), (α + 1,β +n − 1),
+... , (α +n,β ) and the values for V on this grid can be saved as a vector or
+array on a computer. Using these values, V can be computed at ( α,β +n − 1),
+... , (α +n − 1,β ), all of the possible values for ( αn−1,β n−1), using (20.7).
+Continuing in this fashion we will eventually ﬁnd V at all of the possible
+values for (αk,β k), k = 0,...,n. This recursive approach to calculating V is
+called backwards induction.
+Once V has been computed, it is easy to characterize an optimal stop-
+ping time N . From the discussion above, it should be clear that stopping
+immediately will be optimal if
+1
+2K max{α,β }
+α +β ≥ αV (α + 1,β ) +βV (α,β + 1)
+α +β − c.
+With the Markov structure, the decision to stop or continue at stage k will
+be the same as the decision to stop or continue initially if the prior were
+Beta(α
+k,β k). Thus it is optimal to stop the ﬁrst time k that
+1
+2K max{αk,β k}
+α +β +k ≥ αkV (αk + 1,β k) +βkV (αk,β k + 1)
+α +β +k − c.
+Given the data, the left-hand side here is what you expect to win if you stop
+at stage k, and the right-hand side is what you can expect to win if you take
+an additional observation and stop optimally at some later time.
+Ifα =β = 1, so the prior distribution for Θ is the uniform distribution on
+(0, 1), and if K = 200 and c = 1, the optimal stopping time continues until
+(α
+n,β n) leaves the set
+{
+(1, 1), (2, 1), (1, 2), (2, 2), (3, 2), (2, 3), (3, 3), (4, 3), (3, 4), (4, 4),
+(5, 4), (4, 5), (5, 5), (6, 5), (5, 6), (6, 6), (7, 6), (6, 7), (7, 7)
+}
+.
+The expected value for this stopping time is 3.12683, the chance of a correct
+guess for X
+N +1 is 0.71447, and the inferential risk is 3.55256. In contrast, the
+best ﬁxed sample design will sample three observations, and the inferential
+risk with this sample size is 5.0. The sequential experiment is more eﬃcient.
+Although the expected sample size is slightly larger, its inferential risk is 29%
+smaller.
+20.4 Sequential Probability Ratio Test
+The sequential probability ratio test is suggested in Wald (1947) for simple
+versus simple testing with i.i.d. observations with optional stopping. Take
+
+===== PAGE 14 =====
+
+418 20 Sequential Methods
+Ω = {0, 1}, let X1, X2, ... be i.i.d. from Qθ with density qθ , and consider
+testing H0 :θ = 0 versus H1 :θ = 1. Deﬁne
+Ln =Ln(X1,...,X n) =
+∏n
+i=1
+q1(Xi)
+∏n
+i=1
+q0(Xi),
+the likelihood ratio for the ﬁrst n observations. By convention, for n = 0 we
+takeL0 = 1. We know from the Neyman–Pearson theory in Section 12.2, that
+with a ﬁxed sample size the best test rejects H0 according to the size of Ln.
+The sequential probability ratio test (SPRT) has a similar feel. At each stage,
+the researcher has three options: stop and accept H
+0, stop and accept H1, or
+continue sampling. For the SPRT these options are resolved by comparing the
+likelihood ratio with two critical values A< 1<B in the following manner;
+if L
+n ∈ (A,B ), take another observation;
+if Ln ≥ B, reject H0;
+if Ln ≤ A, accept H0.
+(20.8)
+Formally, the sample size 3 for this SPRT is then
+N = inf
+{
+n :Ln /∈ (A,B )
+}
+.
+To understand the optimality properties of the SPRT, let us consider this
+testing problem from a Bayesian perspective. Let Θ be a Bernoulli variable
+with success probability π =P (Θ = 1), and given Θ = θ , potential observa-
+tions X1, X2, ... be i.i.d. from, Qθ . Because
+P (Θ =θ |X1,...,X n) ∝θ P (Θ =θ )
+n∏
+i=1
+qθ (Xi),
+it is not hard to show that
+πn
+def= P (Θ = 1|X1,...,X n) = πLn
+1 − π +πLn
+, (20.9)
+an increasing function of Ln. For convenience, let Fn =σ (X1,...,X n). Given
+Θ the data are i.i.d., and so, for any Borel set B ∈ Rk,
+P
+[
+(Xn+1,...,X n+k) ∈B
+⏐
+⏐Θ, F
+n
+]
+=Qk
+Θ
+(B).
+So by smoothing,
+P
+[
+(Xn+1,...,X n+k ) ∈B
+⏐
+⏐ F
+n
+]
+=E
+[
+Qn
+Θ
+(B)|Fn]
+= (1 − πn)Qk
+0
+(B) +πnQk
+1
+(B).
+If data X1,...,X n are observed, the conditional distribution of the remaining
+observations is a function only of πn and does not depend in any other way
+3 Some authors also consider a procedure that stops immediately ( N = 0) a SPRT.
+
+===== PAGE 15 =====
+
+20.4 Sequential Probability Ratio Test 419
+on either n or values for the ﬁrst n observations. This Markov structure is
+essentially the same as that for the testing problem considered in Section 20.3,
+and also holds more generally. See Problem 20.5.
+As in the last section, let L(Θ ) denote the cost for accepting the wrong
+hypothesis. If we stop without collecting any data, our minimal inferential
+risk, taking the smaller of the risks for the two actions, is
+ρ (π ) = min
+{
+πL (1), (1 − π )L(0)
+}
+.
+If we collect data, as in Theorem 7.1 it will be optimal to minimize posterior
+inferential risk. Since optional stopping does not change the likelihood, P (Θ =
+1|F
+N ) = πN , and the minimal posterior inferential risk, again minimizing over
+the two actions, is just ρ (πN ).
+To have a deﬁnite design objective, let us now assume, as in Section 20.3,
+that each observation costs an amount c, so the total sampling costs with a
+stopping rule N will be cN . Then the total risk for a stopping time N and
+(FN measurable) test function ϕ will be
+R(π,N,ϕ ) = E
+[
+cN +L(1)I{Θ = 1}(1 − ϕ ) +L(0)I{Θ = 0}ϕ
+]
+=πcE 1N + (1 − π )cE0N +πL (1)E1(1 − ϕ ) + (1 − π )L(0)E0ϕ,
+where the second equality follows by conditioning on Θ , with E0 and E1
+denoting conditional expectation given Θ = 0 and Θ = 1, respectively. Note
+thatR(π,N,ϕ ) is a linear function of π . By the argument above, if ϕ is chosen
+optimally the posterior inferential risk is ρ (πN ), and so
+R(π,N )
+def
+= inf
+ϕ
+R(π,N,ϕ ) = E
+[
+cN +ρ (πN )
+]
+.
+Let R(π ) be the optimal risk, obtained minimizing over stopping times N :
+R(π ) = inf
+N
+R(π,N ) = inf
+N,ϕ
+R(π,N,ϕ ).
+Note that since R(π ) is the inﬁmum of a collection of linear functions, it must
+be concave.
+Let us next consider whether stopping immediately is optimal. Since there
+are no sampling costs, the risk for the stopping time N = 0 is ρ (π ). The best
+possible risk, taking at least one observation, is
+R1(π ) = inf
+N≥1
+R(π,N ),
+which is concave by the same reasoning as that for R. Comparing these risks,
+stopping immediately is optimal only if
+ρ (π ) ≤ R1(π ).
+The functions ρ and R1 are graphed in Figure 20.1 , and the values π±where
+the two functions agree are indicated on the horizontal axis. As pictured, the
+function R
+1 is continuous, 4 and approaches c as π → 0 or π → 1. In some
+4 Because R1 is concave, continuity is immediate on (0 , 1). The argument for con-
+tinuity at the endpoints 0 and 1 is more delicate.
+
+===== PAGE 16 =====
+
+420 20 Sequential Methods
+π
+R
+c
+π− π + 1
+Fig. 20.1. ρ and R1.
+cases, the function ρ may lie entirely below R1. Barring this possibility, if
+the functions ever cross, the values π−≤ π + are uniquely determined. By
+the Markov structure, the decision to stop or continue at stage n should be
+formed in the same fashion after replacing the prior probability π with the
+posterior probability πn. Thus the rule that stops the ﬁrst time πn /∈ (π−,π +)
+is optimal.
+Theorem 20.8. If R
+1(π ) < ρ(π ), so N = 0 is suboptimal, then the SPRT
+with
+A = 1 − π
+π
+π−
+1 − π−
+and B = 1 − π
+π
+π +
+1 − π +
+is optimal, minimizing R(π,N ) over all stopping times N .
+Proof. This follows from the discussion above and the monotonic relationship
+between πn and Ln in (20.9). With A and B as deﬁned in this theorem,
+straightforward algebra shows that πn ∈ (π−,π +) if and only if Ln ∈ (A,B ).
+⊓ ⊔
+To allow comparisons with procedures that may accept or reject H0 in a
+suboptimal fashion, let N andϕ denote the sample size and test function for
+a sequential procedure. As usual, Eθϕ gives the chance of rejecting H0, so the
+error probabilities for this test are α 0
+def= E0ϕ and α 1
+def= 1 − E1ϕ . The risk
+for this procedure in the Bayesian model is
+R(π,N,ϕ ) = πcE 1N + (1 − π )cE0N +πL (1)α 1 + (1 − π )L(0)α 0,
+a linear combination of α 0, α 1,E0N , and E1N . Because SPRTs are optimal,
+they must minimize the linear combination of the expected sample sizes E0N
+
+===== PAGE 17 =====
+
+20.4 Sequential Probability Ratio Test 421
+and E1N in this risk among all procedures with the same or better error
+probabilities. The following striking result of Wald and Wolfowitz (1948) is
+stronger, asserting that the SPRT simultaneously minimizes both of these
+expected sample sizes.
+Theorem 20.9. Let ˜α
+0, ˜α 1, and ˜N be the error probabilities and sample size
+for a SPRT with 0< ˜A< 1< ˜B <∞. If α 0 andα 1 are error probabilities for
+a competing procedure (N,ϕ ), and if α 0 ≤ ˜α 0 andα 1 ≤ ˜α 1, then E0N ≥ E0 ˜N
+and E1N ≥ E1 ˜N .
+The proof of this result is based on showing that the SPRT ˜N is optimal
+for Bayesian models with diﬀerent values for the prior probability π , which
+may seem plausible because the loss structure for the problem depends on
+several values, c, L(0), and L(1), which can be varied, whereas the SPRT is
+completely speciﬁed by A and B.
+A rescaling of costs just amounts to measuring them in diﬀerent monetary
+units, and has no impact on a procedure’s optimality. So let us assume that
+L(0) +L(1) = 1 and deﬁne ω =L(1), so L(0) = 1 −ω . For notation, we write
+π
+±= π±(c,ω ) and R1(π ) = R1(π,c,ω ) to indicate how these critical values
+and risk depend on ω and c.
+Lemma 20.10. For any values 0< ˆπ−< ˆπ + < 1 there exist values ω ∈ (0, 1)
+and c> 0 such that π−(c,ω ) = ˆπ−and π +(c,ω ) = ˆπ +.
+A careful proof of this lemma takes some work. It is not hard to argue
+thatR1(π,c,ω ) is continuous, strictly increasing in c whenπ andω are ﬁxed,
+and tends to zero as c ↓ 0, again with π and ω ﬁxed. It follows that π±(c,ω )
+are continuous, and that with ω ﬁxed,π +(c,ω ) is an increasing function of c,
+π−(c,ω ) is a decreasing function of c, and π−(c,ω ) → 0 and π +(c,ω ) → 1 as
+c ↓ 0. From this, for ﬁxed ω , ratio A/B for the SPRT,
+π−(c,ω )
+1 − π−(c,ω )
+1 − π +(c,ω )
+π +(c,ω ) ,
+is continuous in c and increases from 0 to 1 as c varies. The proof of the
+lemma is completed showing that if c is chosen to keep this ratio A/B ﬁxed,
+thenπ +(c,ω ) will increase from 0 to 1 as ω varies over (0, 1). Intuitively, this
+occurs because as ω increases, the risk for accepting H0 increases while the
+risk for accepting H0 decreases, leading to an increase in critical value π +(c,ω )
+necessary to accept H1. A careful proof takes some care; details are available
+in Lehmann (1959).
+Proof of Theorem 20.9 . Given any value π ∈ (0, 1), deﬁne 0 < ˆπ
+−<π< ˆπ + <
+1 by
+ˆπ−=
+˜Aπ
+˜Aπ + 1 − π
+and ˆπ + =
+˜Bπ
+˜Bπ + 1 − π
+. (20.10)
+Using Lemma 20.10, choose ω and c so that
+
+===== PAGE 18 =====
+
+422 20 Sequential Methods
+π−(ω,c ) = ˆπ−and π +(ω,c ) = ˆπ +. (20.11)
+By Theorem 20.8, with the loss structure ( c,ω ) and π as the prior probability,
+the optimal sequential procedure will be a SPRT with
+A = 1 − π
+π
+π−(ω,c )
+1 − π−(ω,c ) and B = 1 − π
+π
+π +(ω,c )
+1 − π +(ω,c ).
+But by (20.10) and (20.11), ˜A = A and ˜B = B, and so this SPRT is the
+same as the one with stopping time ˜N in the theorem. Because this SPRT
+minimizes risk,
+πcE 1 ˜N + (1 − π )cE0 ˜N +πL (1)˜α 1 + (1 − π )L(0)˜α 0
+≤ πcE 1N + (1 − π )cE0N +πL (1)α 1 + (1 − π )L(0)α 0,
+which implies
+πcE 1 ˜N + (1 − π )cE0 ˜N ≤ πcE 1N + (1 − π )cE0N.
+But π ∈ (0, 1) is arbitrary, and this bound can hold for all π ∈ (0, 1) only if
+E0N ≥ E0 ˜N and E0N ≥ E0 ˜N . ⊓ ⊔
+20.5 Sequential Design
+In other sections of this chapter, the decision concerning when to stop exper-
+imentation has been the central design issue. Here we move beyond stopping
+problems and consider procedures with other design options. The ﬁrst ex-
+ample, called stochastic approximation , concerns adaptive variable selection
+in regression models. In the other example we consider allocation, or bandit,
+problems.
+Stochastic Approximation
+Let Q
+x, x ∈ R, be the distribution for a response variable Y when an input
+variableX, chosen by the researcher, equals x. The mean of Qx,
+f (x)
+def
+= E[Y |X =x] =
+∫
+ydQx(y),
+is called the regression function. Let σ 2(x) denote the variance of Qx,
+σ 2(x) =
+∫ (
+y − f (x)
+)2
+dQx(y).
+Stochastic approximation, introduced in Robbins and Monro (1951), con-
+siders situations in which the input variables are chosen adaptively. Specif-
+ically, X
+1 is a constant, and for n ≥ 1, Xn+1 is a function of the ﬁrst n
+
+===== PAGE 19 =====
+
+20.5 Sequential Design 423
+observations. So if Fn is the σ -ﬁeld representing information from the ﬁrst n
+observations,
+Fn =σ (X1,Y 1,...,X n,Y n),
+Xn+1 is Fn measurable. Conditional distributions for the Yn are given by
+Yn|Fn−1 ∼ QXn.
+If the mechanism to select independent variables is speciﬁed, these conditional
+distributions determine the joint distribution for the data.
+Let t be a ﬁxed constant representing a target value for the regression
+function, and let θ denote the value for the independent variable that achieves
+this target, so
+f (θ ) = t.
+The design objective in stochastic approximation is to ﬁnd an adaptive strat-
+egy that drives the independent variables X
+n to θ as quickly as possible. It
+should be clear that this will be possible only with a sequential approach.
+Example 20.11. Bioassay experiments are designed to investigate the relation-
+ship between a dose level x and the chance of some response. The median
+5
+eﬀective dose, ED50, is deﬁned as the dose that gives a 50% chance of response.
+If the variable Y is a response indicator and its conditional distribution given
+X = x is a Bernoulli distribution with success probability f (x), then ED50
+will be θ if the target t is 1/ 2.
+If the regression function f is assumed to be increasing, then a natural
+strategy would be to decrease the independent variable X if the response
+were to lie above the target and increase X if the response were to lie below
+the target. A speciﬁc recursion suggested in Robbins and Monro (1951) takes
+X
+n+1 =Xn − an(Yn − t), n ≥ 1, (20.12)
+where an, n ≥ 1, is a sequence of positive constants.
+Theorem 20.12. If f is continuous and strictly increasing, ∑a2
+n
+< ∞,∑an = ∞, and
+sup
+x∈R
+σ (x) + |f (x)|
+1 + |x| < ∞,
+then Xn → θ almost surely as n → ∞ .
+Asymptotic normality for Xn can be established under slightly stronger
+assumptions using results of Fabian (1968). In particular, an =c/n gives the
+best rate of convergence. With this choice and suitable regularity,
+5 The language here, though somewhat natural, is a bit unfortunate because this
+dose is not in any natural sense the median for any list or distribution for doses.
+
+===== PAGE 20 =====
+
+424 20 Sequential Methods
+√
+n(Xn − θ ) ⇒ N
+(
+0, c2σ 2(θ )
+2cf′(θ ) − 1
+)
+,
+provided 2c > 1/f ′(θ ). The asymptotic variance here is minimized taking
+c = 1/f ′(θ ). For more discussion, see the review articles by Ruppert (1991)
+and Lai (2003).
+In practice, procedures seeking the maximum of a regression function
+may have even more practical value. Kiefer and Wolfowitz (1952) suggest
+an approach similar to that of Robbins and Monro. Let b
+n, n ≥ 1 be
+positive constants decreasing to zero. Responses are observed in pairs with
+the independent variable set to X
+n ± bn. Then the conditional mean of
+Zn = (Yn+ − Yn−)/ (2cn) will be approximately f′(Xn), and their recursion
+takes
+Xn+1 =Xn − anZn, n ≥ 1,
+again with an,n ≥ 1, a sequence of constants.
+In industrial applications, the independent variables Xn are often multi-
+variate, and the response surface methodology suggested in Box and Wilson
+(1951) has been popular. Experimentation proceeds in stages. For early stages,
+the independent variables are selected to allow a linear ﬁt to estimate the gra-
+dient of the regression function. At successive stages, this information about
+the gradient is used to shift to a region with higher average response. Then
+at later stages richer designs are used that allow quadratic models to be ﬁt.
+The maximum of the ﬁtted quadratic is then taken as the estimate for the
+maximum of the regression function.
+Bandit Problems
+Bandit or allocation problems have a rich history and literature. We only
+touch on a few ideas here to try to give a feel for the general area. The
+“bandit” language refers to a slot machine for gambling, operated by pulling
+a lever (arm) and called informally a one-armed bandit. Playing the machine
+repeatedly, a gambler will receive a sequence of rewards, until he tires or runs
+out of quarters. If the gaming establishment has several machines, then the
+gambler may choose to switch among them, playing diﬀerent arms over time.
+Our main concern is to ﬁnd an optimal strategy for the gambler, that identiﬁes
+the best arm to play at each stage.
+Mathematically, bandit problems can be formulated in various ways. A
+special case of interest in statistics is discussed here, although extensions are
+mentioned. For more extensive developments, see Berry and Fristedt (1985).
+At each stage n ≥ 0, the researcher chooses among k arms. In a clinical
+setting, “arms” might correspond to giving one of k treatments for some med-
+ical condition. Each time an arm is played, the researcher observes a random
+variable (or vector) X, and the distribution of this variable for arm a is gov-
+erned by an unknown random parameter Θ
+a. These parameters Θ 1,...,Θ k
+are independent with prior marginal distributions Θ a ∼ π 0(a), a = 1,...,k .
+
+===== PAGE 21 =====
+
+20.5 Sequential Design 425
+Let Fn = σ (X0,...,X n−1), the information from the ﬁrst n observations,
+and let An denote the arm played at stage n ≥ 0. Since An must be chosen
+based on past data, An is Fn measurable. Distributions for the observations,
+given the arm played and the value for the parameter of the arm, are denoted
+Q(a,θ
+a). If a strategy to select arms to play has been ﬁxed, then the joint
+distribution for the observations Xn, n ≥ 1, is determined by the conditional
+distributions
+Xn|Fn,Θ ∼ Q(An,Θ An ).
+Every time arm a is played, the researcher receives a reward r(a,Θ a ), but
+the value of this reward if it is acquired at stage n is discounted geometrically
+by the factor βn for some constant β ∈ (0, 1), called the discount factor .
+For regularity, we assume the reward function r(·, ·) is bounded. The total
+discounted reward, if arms are played indeﬁnitely, is
+∞∑
+n=0
+r(An,Θ An )βn,
+and the design objective is to maximize the expected value of this variable.
+Using a conditioning argument the expectation V of this variable can be
+expressed in another way. If π is an arbitrary probability measure, deﬁne
+r(a,π ) =
+∫
+r(a,θ )dπ (θ ),
+and let π
+n(a) denote the conditional distribution for Θ a given Fn. Then
+E
+[
+r(An,Θ An )
+⏐
+⏐ F
+n
+]
+=r
+(
+An,π n(An)
+)
+.
+Using Fubini’s theorem to justify interchanging expectation and summation,
+V =
+∞∑
+n=0
+βnEr(An,Θ An ) =
+∞∑
+n=0
+βnEE
+[
+r(An,Θ An )
+⏐
+⏐ F
+n
+]
+=E
+∞∑
+n=0
+βnr
+(
+An,π n(An)
+)
+. (20.13)
+In this form, the Markov structure of this allocation problem is clearer. When
+arm a is played, the posterior distributions π
+n(a), n ≥ 0, evolve as a time
+homogeneous Markov chain, the same structure noted in Sections 20.3 and
+20.4, and this is really the intrinsic structure needed for Theorem 20.13 below.
+So a Markov formulation for bandit allocation problems, seen in much of the
+literature, is formally more general, and also makes application to scheduling
+problems in operations research more evident.
+An allocation index ν for arm a is a function of π
+n(a) (the current state
+of arm a), determined solely by the reward function r(a, ·) for arm a and by
+the family Q(a, ·) that implicitly determines the stochastic transition kernel
+
+===== PAGE 22 =====
+
+426 20 Sequential Methods
+that dictates how posterior distributions for Θ a evolve when arm a is played.
+An index strategy is an allocation procedure that always selects the arm with
+the largest allocation index.
+A formula for allocation indices can be derived by considering simple two-
+armed bandit problems in which the researcher plays either arm a or an arm
+with a ﬁxed reward λ . It is natural to calibrate indices so that the allocation
+index for the ﬁxed arm is simply λ . These special bandit problems are actually
+stopping problems, for if it is ever correct to play the arm with a ﬁxed reward,
+playing it at the current and all future stages is optimal. So we can restrict
+attention to strategies that play arm a before some stopping time τ , and the
+maximal expected discounted reward is
+H
+(
+a,π
+0(a),λ
+)
+= sup
+τ
+E
+[τ−1∑
+n=0
+βnr
+(
+a,π n(a)
+)
++λ βτ
+1 − β
+]
+.
+If λ is large enough, stopping immediately ( τ = 0) is optimal, and we have
+H
+(
+a,π 0(a),λ
+)
+= λ
+1 − β .
+But for suﬃciently small λ , τ = 0 is suboptimal, and arm a should be played
+at least once. In this case,
+H
+(
+a,π 0(a),λ
+)
+> λ
+1 − β .
+If index strategies are optimal in these problems, since the index for the ﬁxed
+arm is λ , the initial index for arm a will be at most λ in the former case, and
+will exceed λ in the latter. So the index for arm a will be the smallest value λ
+where stopping immediately is optimal, the critical value dividing these two
+regions. Thus
+ν
+(
+a,π
+0(a)
+)
+= inf
+{
+λ : (1 − β )H(
+(
+a,π 0(a),λ
+)
+=λ
+}
+(20.14)
+should be the initial allocation index for arm a. Allocation indices at later
+stages are obtained in the same way, replacing π 0(a) with posterior distribu-
+tionπn(a), in eﬀect treating the posterior distribution as the prior distribution
+in the stopping problems.
+Theorem 20.13 (Gittins). An index strategy, with indices given by (20.14),
+is optimal for the k-armed bandit problem, maximizing the expected discounted
+rewardV in (20.13).
+This beautiful result ﬁrst appears in Gittins and Jones (1974). Whittle
+(1980) gives an elegant proof. Gittins (1979) gives a characterization of allo-
+cation indices using a notion of forwards induction, and Katehakis and Veinott
+(1987) relates the index to the value for a game based on a single arm, with
+the option of “restarting” at any stage.
+
+===== PAGE 23 =====
+
+20.6 Problems 427
+20.6 Problems
+1. Two-stage procedures. Let X1,X 2,... be i.i.d. from N (µ,σ 2). In a two-
+stage sequential procedure, the sample size N1 for the ﬁrst stage is a
+ﬁxed constant, and the sample size N2 for the second stage is based on
+observationsX1,...,X N1 from the ﬁrst stage. Let N = N1 +N2 denote
+the total number of observations, let
+ X1 and
+ X2 denote sample averages
+for the ﬁrst and second stages,
+X1 = X1 + · · · +XN1
+N1
+and
+ X2 = XN1+1 + · · · +XN
+N2
+,
+and let
+ X denote the average of all N observations. For this problem,
+assume that N2 is a function of
+S2
+1 = 1
+N1 − 1
+N1∑
+i=1
+(Xi −
+ X1)2,
+the sample variance for the ﬁrst stage. For convenience, assume N2 ≥ 1
+almost surely.
+a) Use smoothing to ﬁnd the distribution of
+√
+N 2(
+X2 − µ).
+b) Show that
+√
+N 2(
+X2 − µ) and (
+X1,S 1) are independent.
+c) Show that S1 and
+√
+N (
+X − µ) are independent.
+d) Determine the distribution of T =
+√
+N (
+X − µ)/S 1 and give a conﬁ-
+dence interval for µ with coverage probability (exactly) 1 − α .
+e) The second-stage sample size N2 is a function of S1. Suggest a choice
+for this function if the researcher would like a conﬁdence interval for
+µ with width at most some ﬁxed value w.
+2. If N
+1 and N2 are stopping times with respect to the same ﬁltration Fn,
+n ≥ 0, show that N1 ∧N2 and N1 ∨N2 are also stopping times.
+3. Extend Theorem 20.6, giving an identity for P1(B), B ∈ FN , that holds
+if P1(N <∞) = 1 but P0(N = ∞) > 0.
+4. Given Θ 1 = θ 1 and Θ 2 = θ 2, let X1,X 2,... and Y1,Y 2,... be indepen-
+dent with the Xi from a Bernoulli distribution with success probabil-
+ity θ 1 and the Yi from a Bernoulli distribution with success probability
+θ 2. Consider a sequential experiment in which pairs of these variables,
+(X1,Y 1), (X2,Y 2),... , are observed until a stopping time N . Assume that
+Θ 1 andΘ 2 are a priori independent, each uniformly distributed on (0 , 1).
+Consider testing H0 :Θ 1 ≤ Θ 2 versusH1 :Θ 1 >Θ 2 with loss K|Θ 1 −Θ 2|
+if we accept the wrong hypothesis and total sampling costs cN . Derive a
+recursive “backwards induction” algorithm to ﬁnd the optimal stopping
+time N . This algorithm will involve the posterior inferential risk ρ
+n.
+5. Consider a Bayesian model in which Θ ∼ Λ and given Θ =θ , Xi, i ≥ 1,
+are i.i.d. from Qθ . Let Λn denote the posterior distribution for Θ given
+X1,...,X n. Use smoothing to show that
+
+===== PAGE 24 =====
+
+428 20 Sequential Methods
+P
+[
+(Xn + 1,...,X n+k) ∈B
+⏐
+⏐X
+1,...,X n
+]
+=
+∫
+Qn
+θ
+(B)dΛn(θ ).
+This equation shows that the distribution of future observations given
+the past depends on the conditioning variables only through the posterior
+distribution Λ
+n.
+6. Secretary problems. Let X1,...,X n be i.i.d. from a uniform distribution,
+let Bij = {Xi <Xj }, and deﬁne
+Fk =σ (Bij : 1 ≤ i<j ≤ k)
+(F1 = {∅, E}, the trivial σ -ﬁeld), so that Fk provides information about
+the relative ranks of Xi, i ≤ k, but not their values. Also, let
+Gk =σ (X1,...,X k),
+so the ﬁltration G has information about the actual values of the Xi. Let
+p(N ) = P (XN >Xi, 1 ≤ i ≤ n,i ̸=N ),
+the chance XN is maximal.
+a) Take n = 5. Find a stopping time N with respect to F that maximizes
+p(N ).
+b) Take n = 2. Find a stopping time N with respect to G that maximizes
+p(N ).
+7. Wald’s identity . Let X1,X 2,... be i.i.d. with E|Xi|< ∞ and mean µ =
+EXi. Deﬁne Sn =X1 + · · · +Xn and let N be a (positive) stopping time
+with respect to the ﬁltration F generated by these variables,
+Fn =σ (X1,...,X n), n ≥ 1.
+Assume EN <∞. Wald’s identity asserts that
+ESN =µEN.
+a) Use indicator variables and Fubini’s theorem to show that
+EN =
+∞∑
+n=1
+P (N ≥ n).
+b) Prove Wald’s identity if the Xi are nonnegative, Xi ≥ 0. Hint: Show
+that
+SN =
+∞∑
+n=1
+XnI{N ≥ n},
+and use Fubini’s theorem. Independence, related to the condition that
+N is a stopping time, will play an important role.
+
+===== PAGE 25 =====
+
+20.6 Problems 429
+c) Prove Wald’s identity if the stopping time N is bounded, N ≤ k,
+almost surely for some k ≥ 1. An argument like that for part (a)
+should suﬃce.
+d) Prove Wald’s identity in general. Hint: Take
+Nk = min{N,k },
+so that Nk ↑ N as k → ∞ . Using part (b), it should be enough
+to show that E[SN − SNk ] tends to zero. But this expectation is
+E(SN −Sk)I{N >k} (explain why). Use dominated convergence and
+independence to show this expectation tends to zero.
+8. Power one tests and one-sided SPRTs . Power one tests arise in a sequential
+setting if we reject H0 whenever our sample size N is ﬁnite and we stop.
+Since N = ∞ is desirable when H0 is correct, sampling costs in this case
+should be zero. For the simple versus simple model considered for the
+SPRT in Section 20.4, if c represents the cost per observation when Θ = 1
+and L the loss for stopping if Θ = 0, our stopping time N should be
+chosen to minimize
+E
+[
+LI{N <∞,Θ = 0}+cNI {Θ = 1}
+]
+= (1 − π )LP
+0(N <∞) + cπE 1N.
+a) Use a convexity argument to show that an optimal stopping will have
+form
+N = inf {n ≥ 0 : πn >π +},
+for some constant π + ∈ (0, 1).
+b) Deﬁne Yn = log
+[
+q1(Xi)/q 0(Xi)
+]
+and take Sn =Y1 + · · ·+Yn = logLn.
+Introduce ladder times
+T+
+def= inf {n ≥ 1 : Sn > 0}, T−
+def= inf {n ≥ 1 : Sn ≤ 0}.
+Note that if π 0 equals π +, then T+ will be the optimal stopping time
+in part (a). But N = 0 should also be optimal. Use this observation
+and the duality formula
+P0(T+ = ∞) = 1
+E0T−
+to derive an explicit formula relating π +/ (1 −π +) to moments of the
+ladder variables T±.
+9. Consider the mean square performance of the Robbins–Monro recursion
+with t = 0 and an = 1/n , so that
+Xn+1 =Xn − Yn
+n , n ≥ 1.
+Assume that f (x) = x, so θ = 0, and that the variance function is con-
+stant,σ 2(x) = σ 2.
+
+===== PAGE 26 =====
+
+430 20 Sequential Methods
+a) Let µn = EXn. Use a conditioning argument to derive a recursion
+relating µn+1 to µn. Solve this recursion, expressing µn, n ≥ 2, as a
+function of the initial value µ1 =X1.
+b) Deﬁne mn =EX 2
+n, the mean square error at stage n. Use conditioning
+to derive a recursion relating mn+1 to mn. Solve this recursion and
+show that mn → 0 as n → ∞ . Hint: Let wn = (n − 1)2mn,n ≥ 1. The
+recursion for wn should be easy to solve.

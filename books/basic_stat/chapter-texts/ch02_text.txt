@@ -1,0 +1,887 @@
+
+===== PAGE 1 =====
+
+2
+Exponential Families
+Inferential statistics is the science of learning from data. Data are typically
+viewed as random variables or vectors, but in contrast to our discussion of
+probability, distributions for these variables are generally unknown. In ap-
+plications, it is often reasonable to assume that distributions come from a
+suitable class of distributions. In this chapter we introduce classes of distri-
+butions called exponential families . Examples include the binomial, Poisson,
+normal, exponential, geometric, and other distributions in regular use. From
+a theoretical perspective, exponential families are quite regular. In addition,
+moments for these distributions can often be computed easily using the dif-
+ferential identities in Section 2.4.
+2.1 Densities and Parameters
+Letµ be a measure on Rn, let h : Rn → R be a nonnegative function, and let
+T1,...,T s be measurable functions from Rn to R. For η ∈ Rs, deﬁne
+A(η ) = log
+∫
+exp
+[ s∑
+i=1
+ηiTi(x)
+]
+h(x)dµ(x). (2.1)
+WheneverA(η )< ∞, the function pη given by
+pη (x) = exp
+[ s∑
+i=1
+ηiTi(x) − A(η )
+]
+h(x), x ∈ Rn, (2.2)
+integrates to one; that is,
+∫
+pη dµ = 1. So, this construction gives a family of
+probability densities indexed by η . The set
+Ξ = {η :A(η )< ∞}
+is called the natural parameter space, and the family of densities {pη :η ∈Ξ }
+is called an s-parameter exponential family in canonical form.
+R.W. Keener, Theoretical Statistics: Topics for a Core Course, Springer Texts in Statistics, 
+DOI 10.1007/978-0-387-93839-4_2, © Springer Science+Business Media, LLC 2010 
+25
+
+===== PAGE 2 =====
+
+26 2 Exponential Families
+Example 2.1. Suppose µ is Lebesgue measure on R, h = 1 (0,∞), s = 1, and
+T1(x) = x. Then
+A(η ) = log
+∫∞
+0
+eηx dx
+=
+{
+log(− 1/η ), η < 0;
+∞, η ≥ 0.
+Thus,pη (x) = exp[ηx − log(− 1/η )]1(0,∞)(x) is a density for η ∈Ξ = (−∞, 0).
+In form, these are the exponential densities, which are usually parameterized
+by the mean or failure rate instead of the canonical parameter η here.
+To allow other parameterizations for an exponential family of densities,
+let η be a function from some space Ω intoΞ and deﬁne
+p
+θ (x) = exp
+[ s∑
+i=1
+ηi(θ )Ti(x) − B(θ )
+]
+h(x)
+for θ ∈Ω, x ∈ Rn, where B(θ ) = A
+(
+η (θ )
+)
+. Families {pθ :θ ∈Ω} of this form
+are called s-parameter exponential families .
+Example 2.2. The normal distribution N (µ,σ 2) has density
+pθ (x) = 1
+√
+2πσ 2e−(x−µ)2/(2 σ 2 )
+= 1
+√
+2π exp
+[ µ
+σ 2x − 1
+2σ 2x2 −
+(µ2
+2σ 2 + logσ
+)]
+,
+whereθ = (µ,σ 2). This is a two-parameter exponential family with T1(x) = x,
+T2(x) = x2, η 1(θ ) = µ/σ 2, η 2(θ ) = − 1/ (2σ 2), B(θ ) = µ2/ (2σ 2) + logσ , and
+h(x) = 1/
+√
+2π .
+Example 2.3. IfX1,...,X n is a random sample from N (µ,σ 2), then their joint
+density is
+pθ (x1,...,x n) =
+n∏
+i=1
+[ 1
+√
+2πσ 2e−(xi−µ)2/(2 σ 2 )
+]
+= 1
+(2π )n/2 exp
+[
+µ
+σ 2
+n∑
+i=1
+xi − 1
+2σ 2
+n∑
+i=1
+x2
+i
+− n
+(µ2
+2σ 2 + logσ
+)]
+.
+These densities also form a two-parameter exponential family with T1(x) =∑n
+i=1
+xi, T2(x) = ∑n
+i=1
+x2
+i
+, η 1(θ ) = µ/σ 2, η 2(θ ) = − 1/ (2σ 2), B(θ ) =
+n
+[
+µ2/ (2σ 2) + logσ
+]
+, and h(x) = 1/ (2π )n/2 .
+
+===== PAGE 3 =====
+
+2.2 Diﬀerential Identities 27
+The similarity between these two examples is not accidental. If X1,...,X n
+is a random sample with common marginal density
+exp
+[ s∑
+i=1
+ηi(θ )Ti(x) − B(θ )
+]
+h(x),
+then their joint density is
+exp
+
+
+s∑
+i=1
+ηi(θ )
+
+
+n∑
+j=1
+Ti(xj )
+
+ − nB(θ )
+
+
+n∏
+j=1
+h(xj ), (2.3)
+which is ans-parameter exponential family with the same functions η 1,...,η s,
+and with
+˜Ti(x) =
+n∑
+j=1
+Ti(xj ), ˜B(θ ) = nB(θ ), ˜h(x) =
+n∏
+i=1
+h(xi),
+where the tilde is used to indicate that the function is for the family of joint
+densities.
+2.2 Diﬀerential Identities
+In canonical exponential families it is possible to relate moments and cumu-
+lants for the statistics T
+1,...,T s to derivatives of A. The following theorem
+plays a central role.
+Theorem 2.4. LetΞ
+f be the set of values for η ∈ Rs where
+∫
+|f (x)|exp
+[ s∑
+i=1
+ηiTi(x)
+]
+h(x)dµ(x)< ∞.
+Then the function
+g(η ) =
+∫
+f (x) exp
+[ s∑
+i=1
+ηiTi(x)
+]
+h(x)dµ(x)
+is continuous and has continuous partial derivatives of all orders for η ∈
+Ξ◦
+f (the interior of Ξ f ). Furthermore, these derivatives can be computed by
+diﬀerentiation under the integral sign.
+A proof of this result is given in Brown (1986), a monograph on exponential
+families with statistical applications. Although the proof is omitted here, key
+ideas from it are of independent interest and are presented in the next section.
+As an application of this result, if f = 1, then Ξ
+f =Ξ , and, by (2.1),
+
+===== PAGE 4 =====
+
+28 2 Exponential Families
+g(η ) = eA(η ) =
+∫
+exp
+[ s∑
+i=1
+ηiTi(x)
+]
+h(x)dµ(x).
+Diﬀerentiating this expression with respect to ηj , which can be done under
+the integral if η ∈Ξ◦, gives
+eA(η )∂A (η )
+∂η j
+=
+∫ ∂
+∂η j
+exp
+[ s∑
+i=1
+ηiTi(x)
+]
+h(x)dµ(x)
+=
+∫
+Tj (x) exp
+[ s∑
+i=1
+ηiTi(x)
+]
+h(x)dµ(x).
+Using the deﬁnition (2.2) of pη , division by eA(η ) gives
+∂A (η )
+∂η j
+=
+∫
+Tj (x)pη (x)dµ(x).
+This shows that if data X has density pη with respect to µ, then
+Eη Tj (X) = ∂A (η )
+∂η j
+(2.4)
+for any η ∈Ξ◦.
+2.3 Dominated Convergence
+When s = 1, (2.4) is obtained diﬀerentiating the identity
+eA(η ) =
+∫
+eηT (x)h(x)dµ(x),
+passing the derivative inside the integral. To understand why this should work,
+suppose the integral is ﬁnite for η ∈ [− 2ǫ, 2ǫ] and consider taking the derivative
+at η = 0. If the function is diﬀerentiable at zero, the derivative will be the
+following limit:
+lim
+n→∞
+eA(ǫ/n ) − eA(0)
+ǫ/n = lim
+n→∞
+∫ eǫT (x)/n − 1
+ǫ/n h(x)dµ(x)
+= lim
+n→∞
+∫
+fn(x)dµ(x),
+where
+fn(x) = eǫT (x)/n − 1
+ǫ/n h(x). (2.5)
+Asn → ∞ ,fn(x) → f (x)
+def
+= T (x)h(x). So the desired result follows provided
+
+===== PAGE 5 =====
+
+2.3 Dominated Convergence 29
+∫
+fndµ →
+∫
+fdµ
+as n → ∞ . This seems natural, but is not automatic (see Example 2.6). The
+following basic result gives a suﬃcient condition for this sort of convergence.
+Theorem 2.5 (Dominated Convergence). Let f
+n, n ≥ 1 be a sequence
+of functions with |fn| ≤ g (a.e. µ) for all n ≥ 1. If
+∫
+gdµ < ∞ and
+limn→∞fn(x) = f (x) for a.e. x under µ, then
+∫
+fndµ →
+∫
+fdµ
+as n → ∞ .
+Example 2.6. To appreciate the need for a “dominating” function g in this
+theorem, suppose µ is Lebesgue measure on R, deﬁne fn = 1 (n,n+1) , n ≥ 1,
+and take f = 0. Then fn(x) → f (x) as n → ∞ , for all x. But
+∫
+fndµ = 1, for
+all n ≥ 1, and these values do not converge to ∫fdµ = 0.
+To apply dominated convergence in our original example with fn given by
+(2.5), the following bounds are useful:
+|et − 1| ≤ |t|e|t|, t ∈ R,
+and
+|t| ≤e|t|, t ∈ R.
+Using these,
+⏐
+⏐
+⏐
+⏐
+e
+ǫT (x)/n − 1
+ǫ/n
+⏐
+⏐
+⏐
+⏐ ≤ |ǫT (x)/n |
+ǫ/n e|ǫT (x)/n|
+≤ 1
+ǫ |ǫT (x)|e|ǫT (x)|≤ 1
+ǫe|2ǫT (x)|≤ 1
+ǫ
+(
+e2ǫT (x) +e−2ǫT (x)
+)
+.
+The left-hand side of this bound multiplied by h(x) is |fn(x)|, so
+|fn(x)| ≤ 1
+ǫ
+(
+e2ǫT (x) +e−2ǫT (x)
+)
+h(x)
+def
+= g(x).
+The dominating function g has a ﬁnite integral because
+∫
+e±2ǫT (x)h(x)dµ(x) = eA(±2ǫ ) < ∞.
+So, by dominated convergence
+∫
+fndµ →
+∫
+fdµ as n → ∞ , as desired.
+
+===== PAGE 6 =====
+
+30 2 Exponential Families
+2.4 Moments, Cumulants, and Generating F unctions
+LetT = (T1,...,T s)′be a random vector in Rs. Note that the dot product of
+T with a constant u ∈ Rs is u ·T =u′T . The moment generating function of
+T is deﬁned as
+MT (u) = Eeu1T1 +···+usTs =Eeu·T, u ∈ Rs,
+and the cumulant generating function is
+KT (u) = log MT (u).
+According to the following lemma, the moment generating function MX de-
+termines the distribution of X, at least if it is ﬁnite in some open interval.
+Lemma 2.7. If the moment generating functions MX (u) and MY (u) for two
+random vectors X and Y are ﬁnite and agree for u in some set with a
+nonempty interior, then X and Y have the same distribution, PX =PY .
+Expectations of products of powers of T1,...,T s are called moments ofT ,
+denoted
+αr1,...,r s =E[Tr1
+1 × · · · × Trs
+s ].
+The following result shows that these moments can generally be found by dif-
+ferentiatingM
+T at u = 0. The proof is omitted, but is similar to the proof of
+Theorem 2.4. Here, dominated convergence would be used to justify diﬀeren-
+tiation under an expectation.
+Theorem 2.8. If M
+T is ﬁnite in some neighborhood of the origin, then MT
+has continuous derivatives of all orders at the origin, and
+αr1,...,r s = ∂r1
+∂ur1
+1
+· · · ∂rs
+∂urs
+s
+MT (u)
+⏐
+⏐
+⏐
+u=0
+.
+The corresponding derivatives of KT are called cumulants, denoted
+κr1,...,r s = ∂r1
+∂ur1
+1
+· · · ∂rs
+∂urs
+s
+KT (u)
+⏐
+⏐
+⏐
+u=0
+.
+When s = 1, K′
+T = M′
+T/M T and K′′
+T = [MTM′′
+T − (M′
+T )2]/M 2
+T . At u = 0,
+these equations give
+κ 1 =ET and κ 2 =ET 2 − (ET )2 = Var(T ).
+Generating functions can be quite useful in the study of sums of inde-
+pendent random vectors. As a preliminary to this investigation, the following
+lemma shows that in regular situations, the expectation of a product of inde-
+pendent variables is the product of the expectations.
+
+===== PAGE 7 =====
+
+2.4 Moments, Cumulants, and Generating Functions 31
+Lemma 2.9. SupposeX and Y are independent random variables. If X and
+Y are both positive, or if E|X|and E|Y |are both ﬁnite, then
+EXY =EX × EY.
+Proof. Viewing |XY |as a function g of Z =
+(X
+Y
+)
+∼ PX × PY , by Fubini’s
+theorem,
+E|XY |=
+∫
+gd (PX × PY ) =
+∫ (∫
+|x||y|dPX (x)
+)
+dPY (y).
+The inner integral is |y|E|X|, and the outer integral then gives E|X|×E|Y |, so
+E|XY |=E|X| ×E|Y |. This proves the lemma if X andY are both positive,
+because then X = |X|and Y = |Y |. If E|X|< ∞ and E|Y |< ∞, then
+E|XY |< ∞, so the same steps omitting absolute values prove the lemma.
+⊓ ⊔
+By iteration, this lemma extends easily to products of several independent
+variables.
+Suppose T = Y1 + · · · +Yn, where Y1,...,Y n are independent random
+vectors in Rs. Then by Proposition 1.19, the random variables eu·Y1,...,e u·Yn
+are independent, and
+MT (u) = Eeu·T =E[eu·Y1 × · · · × eu·Yn ] = MY1 (u) × · · · × MYn (u).
+Taking logarithms,
+KT (u) = KY1 (u) + · · · +KYn (u).
+Derivatives at the origin give cumulants, and thus cumulants for the sum T
+will equal the sum of the corresponding cumulants of Y1,...,Y n. This is a
+well-known result for the mean and variance.
+If X has density from a canonical exponential family (2.2), and if T =
+T (X), then T has moment generating function
+Eη eu·T (X) =
+∫
+eu·T (x)eη·T (x)−A(η )h(x)dµ(x)
+=eA(u+η )−A(η )
+∫
+e(u+η )·T (x)−A(u+η )h(x)dµ(x),
+providedu +η ∈Ξ . The ﬁnal integrand is pu+η , which integrates to one. So,
+the moment generating function is eA(u+η )−A(η ), and the cumulant generating
+function is
+KT (u) = A(u +η ) − A(η ).
+Taking derivatives, the cumulants for T are
+κr1,...,r s = ∂r1
+∂η r1
+1
+· · · ∂rs
+∂η r1
+s
+A(η ).
+
+===== PAGE 8 =====
+
+32 2 Exponential Families
+Example 2.10. If X has the Poisson distribution with mean λ , then
+P (X =x) = λxe−λ
+x! = 1
+x!ex logλ−λ , x = 0, 1,....
+The mass functions for X form an exponential family, but the family is not in
+canonical form. The canonical parameter here is η = logλ . The mass function
+expressed using η is
+P (X =x) = 1
+x! exp[ηx − eη ], x = 0, 1,...,
+and so A(η ) = eη . Taking derivatives, all of the cumulants of T = X are
+eη =λ .
+Example 2.11. The class of normal densities formed by varying µ withσ 2 ﬁxed
+can be written as
+pµ(x) = exp
+[µx
+σ 2 − µ2
+2σ 2
+] e−x2/(2 σ 2 )
+√
+2πσ 2 .
+These densities form an exponential family with T (x) = x, canonical pa-
+rameter η = µ/σ 2, and A(η ) = σ 2η 2/ 2. The ﬁrst two cumulants are
+κ 1 = A′(η ) = σ 2η = µ and κ 2 = A′′(η ) = σ 2. Because A is quadratic, all
+higher-order cumulants, κ 3,κ 4,... , are zero.
+To calculate moments from cumulants when s = 1, repeatedly diﬀerentiate
+the identity M = eK . This gives M′= K′eK , M′′= (K′′+K′2)eK , M′′′=
+(K′′′+ 3K′K′′+K′3)eK , and M′′′′= (K′′′′+ 3K′′2 + 4K′K′′′+ 6K′2K′′+
+K′4)eK . At zero, these equations give
+ET =κ 1, ET 2 =κ 2 +κ 2
+1
+, ET 3 =κ 3 + 3κ 1κ 2 +κ 3
+1
+,
+and
+ET 4 =κ 4 + 3κ 2
+2
++ 4κ 1κ 3 + 6κ 2
+1
+κ 2 +κ 4
+1
+.
+For instance, ifX ∼ Poisson(λ ),EX =λ ,EX 2 =λ +λ 2,EX 3 =λ +3λ 2 +λ 3,
+and EX 4 =λ + 7λ 2 + 6λ 3 +λ 4, and if X ∼ N (µ,σ 2), EX 3 = 3µσ 2 +µ3 and
+EX 4 = 3σ 4 + 6µ2σ 2 +µ4.
+The expressions above expressing moments as functions of cumulants can
+be solved to express cumulants as functions of moments. The algebra is easier
+if the variables are centered. Note that for c ∈ R
+s,
+MT +c(u) = Eeu·(T +c) =eu·cEeu·T =eu·cMT (u),
+and soKT +c(u) = u·c+KT (u). Taking derivatives, it is clear that the constant
+c only aﬀects ﬁrst-order cumulants. So with s = 1, if j ≥ 2, the jth cumulant
+κj for T will be the same as the jth cumulant for T − ET . The equations
+above then give
+
+===== PAGE 9 =====
+
+2.5 Problems 33
+κ 3 =E(T − ET )3
+and
+E(T − ET )4 =κ 4 + 3κ 2
+2
+,
+and so
+κ 4 =E(T − ET )4 − 3Var2(T ).
+In higher dimensions, the ﬁrst-order cumulants are the means of T1,...,T s,
+and second-order cumulants are covariances between these variables. Formulas
+for mixed cumulants in higher dimensions become quite complicated as the
+order increases.
+2.5 Problems 1
+*1. Consider independent Bernoulli trials with success probability p and let
+X be the number of failures before the ﬁrst success. Then P (X = x) =
+p(1 − p)x, for x = 0, 1,... , and X has the geometric distribution with
+parameter p, introduced in Problem 1.17.
+a) Show that the geometric distributions form an exponential family.
+b) Write the densities for the family in canonical form, identifying the
+canonical parameter η , and the function A(η ).
+c) Find the mean of the geometric distribution using a diﬀerential iden-
+tity.
+d) Suppose X1,...,X n are i.i.d. from a geometric distribution. Show that
+the joint distributions form an exponential family, and ﬁnd the mean
+and variance of T .
+*2. Determine the canonical parameter space Ξ , and ﬁnd densities for the one-
+parameter exponential family with µ Lebesgue measure on R
+2, h(x,y ) =
+exp
+[
+− (x2 +y2)/ 2
+]
+/ (2π ), and T (x,y ) = xy.
+3. Suppose that X1,...,X n are independent random variables and that for
+i = 1 ,...,n, Xi has a Poisson distribution with mean λi = exp(α +
+βti), where t1,...,t n are observed constants and α and β are unknown
+parameters. Show that the joint distributions for X1,...,X n form a two-
+parameter exponential family and identify the statistics T1 and T2.
+*4. Find the natural parameter space Ξ and densities pη for a canonical one-
+parameter exponential family with µ Lebesgue measure on R, T1(x) =
+logx, and h(x) = (1 − x)2,x ∈ (0, 1), and h(x) = 0, x /∈ (0, 1).
+*5. Find the natural parameter space Ξ and densities pη for a canonical one-
+parameter exponential family with µ Lebesgue measure on R,T1(x) = −x,
+andh(x) = e−2√
+x/ √
+x,x> 0, and h(x) = 0, x ≤ 0. (Hint: After a change
+of variables, relevant integrals will look like integrals against a normal
+density. You should be able to express the answer using Φ , the standard
+normal cumulative distribution function.) Also, determine the mean and
+variance for a variable X with this density.
+1 Solutions to the starred problems are given at the back of the book.
+
+===== PAGE 10 =====
+
+34 2 Exponential Families
+*6. Find the natural parameter space Ξ and densities pη for a canonical
+two-parameter exponential family with µ counting measure on {0, 1, 2},
+T1(x) = x, T2(x) = x2, and h(x) = 1 for x ∈ {0, 1, 2}.
+*7. Suppose X1,...,X n are independent geometric variables with pi the suc-
+cess probability for Xi. Suppose these success probabilities are related to a
+sequence of “independent” variablest1,...,t n, viewed as known constants,
+through
+pi = 1 − exp(α +βti), i = 1,...,n.
+Show that the joint densities for X1,...,X n form a two-parameter expo-
+nential family, and identify the statistics T1 and T2.
+*8. Assume that X1,...,X n are independent random variables with Xi ∼
+N (α +βti, 1), where t1,...,t n are observed constants and α and β are
+unknown parameters. Show that the joint distributions for X1,...,X n
+form a two-parameter exponential family, and identify the statistics T1
+and T2.
+*9. Suppose that X1,...,X n are independent Bernoulli variables (a random
+variable is Bernoulli if it only takes on values 0 and 1) with
+P (Xi = 1) = exp(α +βti)
+1 + exp(α +βti).
+Show that the joint distributions for X1,...,X n form a two-parameter
+exponential family, and identify the statistics T1 and T2.
+10. Suppose a researcher is interested in how the variance of a response Y
+depends on an independent variable x. Natural models might be those
+in which Y1,...,Y n are independent mean zero normal variables with the
+variance of Yi some function of a linear function of xi:
+Var(Yi) = g(θ 1 +θ 2xi).
+Suggest a form for the function g such that the joint distributions for the
+Yi, as the parameters θ vary, form a two-parameter exponential family.
+11. Find the natural parameter space Ξ and densities pη for a canonical one-
+parameter exponential family with µ Lebesgue measure on R, T1(x) = x,
+and h(x) = sinx, x ∈ (0,π ), and h(x) = 0, x /∈ (0,π ).
+12. Truncation. Let {pθ : θ ∈ Ω} be an exponential family of densities with
+respect to some measure µ, where
+pθ (x) = h(x) exp
+[ s∑
+i=1
+ηi(θ )Ti(x) − B(θ )
+]
+.
+In some situations, a potential observation X with density pθ can only be
+observed if it happens to lie in some region S. For regularity, assume that
+Λ (θ )
+def
+= Pθ (X ∈S)> 0. In this case, the appropriate distribution for the
+observed variable Y is given by
+
+===== PAGE 11 =====
+
+2.5 Problems 35
+Pθ (Y ∈B) = Pθ (X ∈B|X ∈S), B ∈ B.
+This distribution for Y is called the truncation of the distribution for X
+to the set S.
+a) Show that Y has a density with respect to µ, giving a formula for its
+densityqθ .
+b) Show that the densities qθ ,θ ∈Ω, form an exponential family.
+13. 14. Find densitiespη for a canonical one-parameter exponential family if µ is
+counting measure on X0 = {−1, 0, 1}3, h is identically one, and T (x) is
+the median of x1, x2, and x3.
+*15. For an exponential family in canonical form, ETj =∂A (η )/∂η j . This can
+be written in vector form as ET = ∇A(η ). Derive an analogous diﬀerential
+formula for Eθ T for an s-parameter exponential family that is not in
+canonical form. Assume that Ω has dimension s. Hint: Diﬀerentiation
+under the integral sign should give a system of linear equations. Write
+these equations in matrix form.
+16. Find the natural parameter space Ξ and densities p
+η for a canonical
+one-parameter exponential family with µ counting measure on {1, 2,... },
+h(x) = x2, and T (x) = −x. Also, determine the mean and variance for a
+random variable X with this density. Hint: Consider what Theorem 2.4
+has to say about derivatives of ∑∞
+x=1
+e−ηx .
+*17. Let µ denote counting measure on {1, 2,... }. One common deﬁnition for∑∞
+k=1
+f (k) is limn→∞
+∑n
+k=1
+f (k), and another deﬁnition is
+∫
+fdµ.
+a) Use the dominated convergence theorem to show that the two deﬁni-
+tions give the same answer when
+∫
+|f |dµ <∞. Hint: Find functions
+fn, n = 1, 2, ... , so that ∑n
+k=1
+f (k) =
+∫
+fndµ.
+b) Use the monotone convergence theorem, given in Problem 1.25, to
+show the deﬁnitions agree if f (k) ≥ 0 for all k = 1, 2, ... .
+c) Suppose lim n→∞f (n) = 0 and that ∫f +dµ = ∫f−dµ = ∞ (so that∫
+fdµ is undeﬁned). Let K be an arbitrary constant. Show that the
+listf (1),f (2),... can be rearranged to form a new list g(1),g(2),...
+so that
+lim
+n→∞
+n∑
+k=1
+g(k) = K.
+18. Let λ be Lebesgue measure on (0 , ∞). The “Riemann” deﬁnition of∫∞
+0 f (x)dx for a continuous function f is
+lim
+c→∞
+∫ c
+0
+f (x)dx,
+when the limit exists. Another deﬁnition is
+∫
+fdλ . Use the dominated con-
+vergence theorem to show that these deﬁnitions agree when f is integrable,∫
+|f |dλ< ∞. Hint: Let cn be a sequence of constants with cn → ∞ , and
+ﬁnd functions fn such that ∫fn(x)dx = ∫cn
+0 f (x)dx.
+
+===== PAGE 12 =====
+
+36 2 Exponential Families
+*19. Let pn,n = 1, 2,... , and p be probability densities with respect to a mea-
+sure µ, and let Pn, n = 1, 2,... , and P be the corresponding probability
+measures.
+a) Show that if pn(x) → p(x) as n → ∞, then
+∫
+|pn − p|dµ → 0. Hint:
+First use the fact that
+∫
+(pn −p)dµ = 0 to argue that
+∫
+|pn −p|dµ =
+2 ∫ (p − pn)+ dµ. Then use dominated convergence.
+b) Show that |Pn(A) − P (A)| ≤
+∫
+|pn − p|dµ. Hint: Use indicators and
+the bound |
+∫
+fdµ| ≤
+∫
+|f |dµ.
+Remark: Distributions Pn, n ≥ 1, are said to converge strongly to P
+if supA |Pn(A) − P (A)| → 0. The two parts above show that pointwise
+convergence ofpn top implies strong convergence. This was discovered by
+Scheﬀ´ e.
+20. Let h be a bounded diﬀerentiable function on [0 , ∞), vanishing at zero,
+h(0) = 0.
+a) Show that ∫∞
+0
+|h(1/x 2)|dx< ∞.
+Hint: Because h is diﬀerentiable at 0, h(x)/x → h′(0) as x ↓ 0, and
+|h(x)| ≤cx for x suﬃciently small.
+b) If Z has a standard normal distribution, Z ∼ N (0, 1), ﬁnd
+lim
+n→∞
+nEh
+(
+1/ (n2Z2)
+)
+.
+Hint: Be careful with your argument: the answer should not be zero.
+21. Let µ be counting measure on {1, 2,... }, and let fn =cn1{n},n = 1, 2,... ,
+for some constants c1,c 2,... .
+a) Find f (x) = limn→∞fn(x) for x = 1, 2,... .
+b) Show that these functions fn can be dominated by an integrable func-
+tion; that is, there exists g with
+∫
+gdµ< ∞ and |fn| ≤g,n = 1, 2,... ,
+if and only if
+∞∑
+n=1
+|cn|< ∞.
+c) Find constants c1,c 2,... that provide an example of functions fn that
+cannot be dominated by an integrable function, so the assumption of
+the dominated convergence theorem fails, but
+∫
+f
+ndµ →
+∫
+fdµ.
+*22. Suppose X is absolutely continuous with density
+pθ (x) =
+
+
+
+
+
+e
+−(x−θ )2/2
+√
+2πΦ (θ ) , x> 0;
+0, otherwise.
+Find the moment generating function of X. Compute the mean and vari-
+ance of X.
+
+===== PAGE 13 =====
+
+2.5 Problems 37
+*23. Suppose Z ∼ N (0, 1). Find the ﬁrst four cumulants of Z2. Hint: Consider
+the exponential family N (0,σ 2).
+*24. Find the ﬁrst four cumulants of T =XY whenX andY are independent
+standard normal variates.
+*25. Find the third and fourth cumulants of the geometric distribution.
+*26. Find the third cumulant and third moment of the binomial distribution
+with n trials and success probability p.
+*27. Let T be a random vector in R
+2.
+a) Express κ 2, 1 as a function of the moments of T .
+b) Assume ET1 = ET2 = 0 and give an expression for κ 2, 2 in terms of
+moments of T .
+*28. Suppose X ∼ Γ (α, 1/λ ), with density
+λα xα−1e−λx
+Γ (α ) , x> 0.
+Find the cumulants of T = (X, logX) of order 3 or less. The answer will
+involveψ (α ) = d logΓ (α )/dα =Γ′(α )/Γ (α ).
+29. Let X1,...,X n be independent random variables, and let αi and ti, i =
+1,...,n, be known constants. Suppose Xi ∼ Γ (αi, 1/λ i) with λi = θ 1 +
+θ 2ti,i = 1,... ,n, whereθ 1 andθ 2 are unknown parameters. Show that the
+joint distributions form a two-parameter exponential family. Identify the
+statisticT and give its mean and covariance matrix. (Similar models arise
+in “parameter design” experiments used to study the eﬀects of various
+factors on process variation.)
+30. In independent Bernoulli trials with success probability p, the variable
+X counting the number of failures before the mth success has a negative
+binomial distribution with mass function
+P (X =x) =
+(m +x − 1
+m − 1
+)
+p
+m(1 − p)x, x = 0, 1,....
+Find the moment generating function of X, along with the ﬁrst three
+moments and ﬁrst three cumulants of X.
+31. An estimator ˆθ is called unbiased for a parameter θ if E ˆθ = θ . If
+X1,...,X n are i.i.d., then the sample moment
+ˆαr = 1
+n
+n∑
+i=1
+Xr
+i
+is an unbiased estimator of αr =EXr
+i . Unbiased estimators for cumulants
+are called K-statistics. They are a bit harder to identify than unbiased es-
+timators for moments, because cumulants depend on powers of moments.
+For example, κ
+2 =α 2 − α 2
+1
+.
+a) One natural estimator for α 2
+1
+is
+ X
+2
+= ˆα 2
+1
+. Find the expected value of
+this estimator. When is it biased?
+
+===== PAGE 14 =====
+
+38 2 Exponential Families
+b) Show that (n
+2
+)−1 ∑
+1≤i<j≤n
+XiXj
+is unbiased for α 2
+1
+. Give a formula relating this estimator to sample
+moments ˆα 1 and ˆα 2.
+c) Give an unbiased estimator for κ 2 = Var(Xi) based on sample mo-
+ments ˆα 1 and ˆα 2.
+d) Find the expected value of ˆ α 3
+1
+, showing that it is usually biased for
+α 3
+1
+. Relate the unbiased estimator
+(n
+3
+)−1 ∑
+1≤i<j<k≤n
+XiXjXk
+to sample moments.
+e) Find an unbiased estimator for κ 3 based on the ﬁrst three sample
+moments, ˆα 1, ˆα 2, and ˆα 3.
+32. By Taylor expansion, for θ ∈ (0, 1),
+− log(1 − θ ) =
+∞∑
+x=1
+θx
+x .
+From this, for θ ∈ (0, 1),
+pθ (x) = θx
+−x log(1 − θ ), x = 1, 2,...,
+is the mass function for a probability distribution, called the log series
+distribution. Let X be a discrete random variable with this distribution.
+Find the mean and variance of X.
+33. A discrete random variable X on {0, 1,... }has a power series distribution
+if its mass function has form
+P (X =x) = a(x)θx
+C(θ ) , x = 0, 1, 2,....
+Derive formulas for the mean and variance of this distribution involving
+derivatives of C.

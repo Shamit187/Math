@@ -1,0 +1,470 @@
+
+===== PAGE 1 =====
+
+
+
+===== PAGE 2 =====
+
+For other titles published in this series, go to
+ 
+G. Casella 
+S. Fienberg 
+I. Olkin 
+ 
+www.springer.com/series/417
+Series Editors 
+Springer Texts in Statistics
+
+===== PAGE 3 =====
+
+ 
+ 
+
+===== PAGE 4 =====
+
+Robert W. Keener
+Theoretical Statistics
+Topics for a Core Course
+
+===== PAGE 5 =====
+
+ 
+     
+      
+ 
+  
+ 
+subject to proprietary rights. 
+ 
+Printed on acid-free paper 
+ 
+Springer is part of Springer Science+Business Media (www.springer.com) 
+ISSN 1431-875X
+ISBN 978-0-387-93838-7 
+DOI 10.1007/978-0-387-93839-4 
+Springer New York Dordrecht Heidelberg London 
+Library of Congress Control Number: 2010935925
+© Springer Science+Business Media, LLC 2010
+All rights reserved. This work may not be translated  or copied in whole or in part without the written
+permission of the publisher (Springer Science+Business Media, LLC, 233 Spring Street, New York,
+NY 10013, USA), except for brief excerpts in connection with reviews or scholarly analysis. Use in 
+connection with any form of info rmation storage and retrieval, electronic adaptation, computer 
+software, or by similar or dissimilar methodology now known or hereafter developed is forbidden. 
+The use in this publication of trade names, trademarks, service marks, and similar terms, even if they 
+are not identified as such, is not to be taken as an expression of opinion as to whether or not they are 
+e-ISBN 978-0-387-93839-4
+ Department of Statistics  
+Carnegie Mellon University 
+USA  
+Department of Statistics
+University of Florida
+Gainesville, 
+Stephen Fienberg
+Pittsburgh,  PA 15213-3890  
+Department of Statistics  
+USA  
+Stanford University 
+Stanford,  CA 94305FL 32611-8545
+USA
+Ingram OlkinGeorge Casella
+Series Editors: 
+Robert W. Keener
+Department of Statistics
+University of Michigan
+Ann Arbor, MI 48109-1092
+USA
+
+===== PAGE 6 =====
+
+To Michael, Herman, Carl, and Billy
+
+===== PAGE 7 =====
+
+ 
+
+===== PAGE 8 =====
+
+Preface
+This book evolved from my notes for a three-semester sequence of core courses
+on theoretical statistics for doctoral students at the University of Michigan.
+When I ﬁrst started teaching these courses, I used Theory of Point Estimation
+and Testing Statistical Hypotheses by Lehmann as texts, classic books that
+have certainly inﬂuenced my writings.
+To appreciate this book students will need a background in advanced cal-
+culus, linear algebra, probability, and some analysis. Some of this material is
+reviewed in the appendices. And, although the content on statistics is reason-
+ably self-contained, prior knowledge of theoretical and applied statistics will
+be essential for most readers.
+In teaching core courses, my philosophy has been to try to expose students
+to as many of the central theoretical ideas and topics in the discipline as pos-
+sible. Given the growth of statistics in recent years, such exposition can only
+be achieved in three semesters by sacriﬁcing depth. Although basic material
+presented in early chapters of the book is covered carefully, many of the later
+chapters provide brief introductions to areas that could take a full semester
+to develop in detail.
+The role of measure theory in advanced statistics courses deserves careful
+consideration. Although few students will need great expertise in probabil-
+ity and measure, all should graduate conversant enough with the basics to
+read and understand research papers in major statistics journals, at least in
+their areas of specialization. Many, if not most, of these papers will be written
+using the language of measure theory, if not all of its substance. As a prac-
+tical matter, to prepare for thesis research many students will want to begin
+studying advanced methods as soon as possible, often before they have ﬁn-
+ished a course on measure and probability. In this book I follow an approach
+that makes such study possible. Chapter 1 introduces probability and measure
+theory, stating many of the results used most regularly in statistics. Although
+this material cannot replace an honest graduate course on probability, it gives
+most students the background and tools they need to read and understand
+most theoretical derivations in statistics. As we use this material in the rest
+
+===== PAGE 9 =====
+
+VIII Preface
+of the book, I avoid esoteric mathematical details unless they are central to
+a proper understanding of issues at hand. In addition to the intrinsic value
+of concepts from measure theory, there are several other advantages to this
+approach. First, results in the book can be stated precisely and at their proper
+level of generality, and most of the proofs presented are essentially rigorous.
+1
+In addition, the use of material from probability, measure theory, and analysis
+in a statistical context will help students appreciate its value and will motivate
+some to study and learn probability at a deeper level. Although this approach
+is a challenge for some students, and may make some statistical issues a bit
+harder to understand and appreciate, the advantages outweigh these concerns.
+As a caveat I should mention that some sections and chapters, mainly later
+in the book, are more technical than most and may not be accessible without
+a suﬃcient background in mathematics. This seems unavoidable to me; the
+topics considered cannot be covered properly otherwise.
+Conditioning arguments are used extensively in the book. To keep the
+derivations as intuitive and accessible as possible, the presentation is based on
+(regular) conditional distributions to avoid conditioning on σ -ﬁelds.
+2 As long
+as the conditioning information can be viewed as a random vector, conditional
+distributions exist and this approach entails no loss of generality. Conditional
+distributions are introduced in Chapter 1, with the conditioning variable dis-
+crete, and the law of total probability or smoothing is demonstrated in this
+case. A more general treatment of conditioning is deferred to Chapter 6. But
+I mention in Chapter 1 that smoothing identities are completely general, and
+use these identities in Chapter 6 to motivate the technical deﬁnition of con-
+ditional distributions.
+With advances in technology for sharing and collecting information, large
+data sets are now common. Large sample methods have increasing value in
+statistics and receive signiﬁcant attention in this book. With large amounts
+of data, statisticians will often seek the ﬂexibility of a semi- or nonparametric
+model, models in which some parameters are viewed as smooth functions. At
+a technical and practical level, there is considerable value in viewing functions
+as points in some space. This notion is developed in various ways in this text.
+The discussion of asymptotic normality for the maximum likelihood estimator
+is structured around a weak law of large numbers for random functions, an
+approach easily extended to cover estimating equations and robustness. Weak
+compactness arguments are used to study optimal testing. Finally, there is
+an introduction to Hilbert space theory, used to study a spline approach to
+nonparametric regression. Modern statisticians need some knowledge of func-
+tional analysis. To help students meet the challenge of learning this material,
+the presentation here builds intuition by noting similarities between inﬁnite-
+1 A reader with a good background in probability should have little trouble ﬁlling
+in any missing technical details.
+2 Filtrations and conditioning on σ -ﬁelds are mentioned in Chapter 20 on sequential
+analysis.
+
+===== PAGE 10 =====
+
+Preface IX
+dimensional and ﬁnite-dimensional spaces, and provides motivation by linking
+the mathematical results to signiﬁcant statistical applications.
+If you are a professor using this book as a text, please note that results from
+Chapters 1 through 4 and Sections 6.1 and 6.2 are used extensively in the rest
+of the book, and any unfamiliar material on these pages should be covered with
+care. But much of the rest of the book can be resequenced or omitted to suit
+your preferences. Chapters 7 and 15 on Bayesian methods should be covered
+in order, as should Chapters 12, 13, and 17 on hypothesis testing. Chapter 11
+on empirical Bayes estimation uses results from Chapter 7, and Chapter 14
+on the general linear model uses results on testing from Chapter 12. Results
+on large sample theory from Chapters 8 and (to a lesser extent) 9 are used in
+Chapters 15 through 20. As I mentioned earlier, results in some chapters and
+sections
+3 are more mathematically challenging; depending on the maturity
+of your students you may want to omit or cover this material superﬁcially,
+possibly without proofs or derivations. For these chapters and sections and
+others, title footnotes indicate whether the material is optional and how the
+results will be used later.
+Finally, a few words of appreciation are in order. To Michael Woodroofe,
+Herman Chernoﬀ, and Carl Bender, who have had such an impact on my
+personal development as a mathematician, probabilist, and statistician; to
+friends, family, colleagues, and the Department for support and encourage-
+ment; and to past students, reviewers, and editors for a wealth of useful sug-
+gestions. This manuscript was typeset using L
+ATEXand ﬁgures were produced
+using MATLAB. Finally, a special thanks to future students; the notion that
+this book will help some of you has kept me believing it to be a worthwhile
+project.
+Ann Arbor, Michigan Robert Keener
+June 24, 2010
+3 My list would include Sections 6.4, 9.1, 9.9, 12.5, 12.6, and 12.7; and Chapters 13
+and 16.
+
+===== PAGE 11 =====
+
+ 
+
+===== PAGE 12 =====
+
+Notation
+Absolute Continuity , P ≪ µ: The measure P is absolutely continuous with
+respect to (or P is dominated by) the measure µ. See page 7.
+Convergence in Distribution : Yn ⇒ Y . See page 131.
+Convergence in Probability : Yn
+p
+→ Y . See page 129.
+Cumulants:κr1,...,r s . See page 30.
+Derivatives: If h is a diﬀerentiable function from some subset of Rm into Rm,
+thenDh(x) is a matrix of partial derivatives with [Dh(x)]ij =∂hi(x)/∂x j .
+Floor and Ceiling : Forx ∈ R, the ﬂoor of x, denoted ⌊x⌋, is the is the largest
+integery with y ≤ x. The ceiling ⌈x⌉ of x is the smallest integer y ≥ x.
+Inner Product : ⟨x,y ⟩. See page 374.
+Inverse Functions : If f is a function on D with range R =f (D), then f−1,
+mapping 2R → 2D, is deﬁned by f−1(B) = {x ∈ D : f (x) ∈ B}. If f is
+one-to-one, the inverse function f←is deﬁned so that f←(y) = x when
+y =f (x).
+Maximum and Minimum : x ∧y
+def
+= min {x,y } and x ∨y
+def
+= max {x,y }.
+Norms: Forx ∈ Rp, ∥x∥ is the usual Euclidean norm. For functions, ∥f ∥∞=
+sup |f |, and ∥f ∥2 =
+[∫
+fdµ
+]1/2
+. For points x in an inner product space,
+∥x∥ = ⟨x,x ⟩1/2 .
+Point Mass : δc is a probability measure that all of its mass to the point c,
+so δ ({c}) = 1.
+Scales of Magnitude : O(·), Op(·), o(·), and op(·). See page 141.
+Set Notation : The complement of a set A is denoted Ac. For two sets A
+and B, AB or A ∩B denotes the intersection, A ∪B denotes the union,
+and A − B
+def
+= ABc will denotes the set diﬀerence. Inﬁnite unions and
+intersections of sets A1,A 2,... are denoted
+∞⋃
+i=1
+Ai
+def= {x :x ∈Ai, ∀i}
+and
+
+===== PAGE 13 =====
+
+XII Notation
+∞⋂
+i=1
+Ai
+def
+= {x :x ∈Ai, ∃i}.
+Stochastic Transition Kernel :Q is a stochastic transition kernel if Qx(·) is a
+probability measure for all x andQx(B) is a measurable function of x for
+every Borel set B.
+Topology: For a set S,
+ S is the closure, So the interior, and ∂S =
+S − So is
+the boundary. See page 432.
+Transpose: The transpose of a vector or matrix x is denoted x′.
+
+===== PAGE 14 =====
+
+Contents
+1 Probability and Measure . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1
+1.1 Measures . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1
+1.2 Integration . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 3
+1.3 Events, Probabilities, and Random Variables . . . . . . . . . . . . . . . . 6
+1.4 Null Sets . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+1.5 Densities . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 7
+1.6 Expectation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+1.7 Random Vectors . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+1.8 Covariance Matrices . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12
+1.9 Product Measures and Independence . . . . . . . . . . . . . . . . . . . . . . . 13
+1.10 Conditional Distributions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 15
+1.11 Problems . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 17
+2 Exponential F amilies . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 25
+2.1 Densities and Parameters . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 25
+2.2 Diﬀerential Identities . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 27
+2.3 Dominated Convergence . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 28
+2.4 Moments, Cumulants, and Generating Functions . . . . . . . . . . . . 30
+2.5 Problems . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 33
+3 Risk, Suﬃciency , Completeness, and Ancillarity . . . . . . . . . . . 39
+3.1 Models, Estimators, and Risk Functions . . . . . . . . . . . . . . . . . . . . 39
+3.2 Suﬃcient Statistics . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 42
+3.3 Factorization Theorem . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 45
+3.4 Minimal Suﬃciency . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 46
+3.5 Completeness . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 48
+3.6 Convex Loss and the Rao–Blackwell Theorem . . . . . . . . . . . . . . . 51
+3.7 Problems . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 54
+
+===== PAGE 15 =====
+
+XIV Contents
+4 Unbiased Estimation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 61
+4.1 Minimum Variance Unbiased Estimators . . . . . . . . . . . . . . . . . . . 61
+4.2 Second Thoughts About Bias . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 64
+4.3 Normal One-Sample Problem—Distribution Theory . . . . . . . . . . 66
+4.4 Normal One-Sample Problem—Estimation . . . . . . . . . . . . . . . . . . 70
+4.5 Variance Bounds and Information . . . . . . . . . . . . . . . . . . . . . . . . . 71
+4.6 Variance Bounds in Higher Dimensions . . . . . . . . . . . . . . . . . . . . . 76
+4.7 Problems . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 77
+5 Curved Exponential F amilies . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 85
+5.1 Constrained Families . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 85
+5.2 Sequential Experiments . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 88
+5.3 Multinomial Distribution and Contingency Tables . . . . . . . . . . . 91
+5.4 Problems . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 95
+6 Conditional Distributions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 101
+6.1 Joint and Marginal Densities . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 101
+6.2 Conditional Distributions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 102
+6.3 Building Models . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 105
+6.4 Proof of the Factorization Theorem . . . . . . . . . . . . . . . . . . . . . . . . 106
+6.5 Problems . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 108
+7 Bayesian Estimation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 115
+7.1 Bayesian Models and the Main Result . . . . . . . . . . . . . . . . . . . . . . 115
+7.2 Examples . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 117
+7.3 Utility Theory . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 120
+7.4 Problems . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 124
+8 Large-Sample Theory . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 129
+8.1 Convergence in Probability . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 129
+8.2 Convergence in Distribution . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 131
+8.3 Maximum Likelihood Estimation . . . . . . . . . . . . . . . . . . . . . . . . . . 135
+8.4 Medians and Percentiles . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 137
+8.5 Asymptotic Relative Eﬃciency . . . . . . . . . . . . . . . . . . . . . . . . . . . . 139
+8.6 Scales of Magnitude . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 141
+8.7 Almost Sure Convergence . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 143
+8.8 Problems . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 144
+9 Estimating Equations and Maximum Likelihood . . . . . . . . . . . 151
+9.1 Weak Law for Random Functions . . . . . . . . . . . . . . . . . . . . . . . . . . 151
+9.2 Consistency of the Maximum Likelihood Estimator . . . . . . . . . . 156
+9.3 Limiting Distribution for the MLE . . . . . . . . . . . . . . . . . . . . . . . . . 158
+9.4 Conﬁdence Intervals . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 161
+9.5 Asymptotic Conﬁdence Intervals . . . . . . . . . . . . . . . . . . . . . . . . . . 163
+9.6 EM Algorithm: Estimation from Incomplete Data . . . . . . . . . . . 167
+
+===== PAGE 16 =====
+
+Contents XV
+9.7 Limiting Distributions in Higher Dimensions . . . . . . . . . . . . . . . . 171
+9.8 M -Estimators for a Location Parameter . . . . . . . . . . . . . . . . . . . . 175
+9.9 Models with Dependent Observations . . . . . . . . . . . . . . . . . . . . . . 178
+9.10 Problems . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 185
+10 Equivariant Estimation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 195
+10.1 Group Structure . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 195
+10.2 Estimation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 198
+10.3 Problems . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 201
+11 Empirical Bayes and Shrinkage Estimators . . . . . . . . . . . . . . . . . 205
+11.1 Empirical Bayes Estimation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 205
+11.2 Risk of the James–Stein Estimator . . . . . . . . . . . . . . . . . . . . . . . . . 208
+11.3 Decision Theory . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 211
+11.4 Problems . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 216
+12 Hypothesis T esting . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 219
+12.1 Test Functions, Power, and Signiﬁcance . . . . . . . . . . . . . . . . . . . . 219
+12.2 Simple Versus Simple Testing . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 220
+12.3 Uniformly Most Powerful Tests . . . . . . . . . . . . . . . . . . . . . . . . . . . . 224
+12.4 Duality Between Testing and Interval Estimation . . . . . . . . . . . . 228
+12.5 Generalized Neyman–Pearson Lemma . . . . . . . . . . . . . . . . . . . . . . 232
+12.6 Two-Sided Hypotheses . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 236
+12.7 Unbiased Tests . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 242
+12.8 Problems . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 245
+13 Optimal T ests in Higher Dimensions . . . . . . . . . . . . . . . . . . . . . . . 255
+13.1 Marginal and Conditional Distributions . . . . . . . . . . . . . . . . . . . . 255
+13.2 UMP Unbiased Tests in Higher Dimensions . . . . . . . . . . . . . . . . . 257
+13.3 Examples . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 260
+13.4 Problems . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 265
+14 General Linear Model . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 269
+14.1 Canonical Form . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 271
+14.2 Estimation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 273
+14.3 Gauss–Markov Theorem . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 275
+14.4 Estimating σ
+2 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 277
+14.5 Simple Linear Regression . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 279
+14.6 Noncentral F and Chi-Square Distributions . . . . . . . . . . . . . . . . . 280
+14.7 Testing in the General Linear Model . . . . . . . . . . . . . . . . . . . . . . . 281
+14.8 Simultaneous Conﬁdence Intervals . . . . . . . . . . . . . . . . . . . . . . . . . 286
+14.9 Problems . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 292
+
+===== PAGE 17 =====
+
+XVI Contents
+15 Bayesian Inference: Modeling and Computation . . . . . . . . . . . 301
+15.1 Hierarchical Models . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 301
+15.2 Bayesian Robustness . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 303
+15.3 Markov Chains . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 306
+15.4 Metropolis–Hastings Algorithm . . . . . . . . . . . . . . . . . . . . . . . . . . . . 309
+15.5 Gibbs Sampler . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 311
+15.6 Image Restoration . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 313
+15.7 Problems . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 317
+16 Asymptotic Optimality . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 319
+16.1 Supereﬃciency . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 319
+16.2 Contiguity . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 323
+16.3 Local Asymptotic Normality . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 327
+16.4 Minimax Estimation of a Normal Mean . . . . . . . . . . . . . . . . . . . . 330
+16.5 Posterior Distributions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 335
+16.6 Locally Asymptotically Minimax Estimation . . . . . . . . . . . . . . . . 339
+16.7 Problems . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 341
+17 Large-Sample Theory for Likelihood Ratio T ests . . . . . . . . . . . 343
+17.1 Generalized Likelihood Ratio Tests . . . . . . . . . . . . . . . . . . . . . . . . 343
+17.2 Asymptotic Distribution of 2 log λ . . . . . . . . . . . . . . . . . . . . . . . . . 347
+17.3 Examples . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 353
+17.4 Wald and Score Tests . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 361
+17.5 Problems . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 363
+18 Nonparametric Regression . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 367
+18.1 Kernel Methods . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 368
+18.2 Hilbert Spaces . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 373
+18.3 Splines . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 378
+18.4 Density Estimation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 384
+18.5 Problems . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 388
+19 Bootstrap Methods . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 391
+19.1 Introduction . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 391
+19.2 Bias Reduction . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 394
+19.3 Parametric Bootstrap Conﬁdence Intervals . . . . . . . . . . . . . . . . . . 396
+19.4 Nonparametric Accuracy for Averages . . . . . . . . . . . . . . . . . . . . . . 399
+19.5 Problems . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 402
+20 Sequential Methods . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 405
+20.1 Fixed Width Conﬁdence Intervals . . . . . . . . . . . . . . . . . . . . . . . . . 406
+20.2 Stopping Times and Likelihoods . . . . . . . . . . . . . . . . . . . . . . . . . . . 410
+20.3 Optimal Stopping . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 413
+20.4 Sequential Probability Ratio Test . . . . . . . . . . . . . . . . . . . . . . . . . . 417
+20.5 Sequential Design . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 422
+
+===== PAGE 18 =====
+
+Contents XVII
+20.6 Problems . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 427
+A Appendices . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 431
+A.1 Functions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 431
+A.2 Topology and Continuity in R
+n . . . . . . . . . . . . . . . . . . . . . . . . . . . . 432
+A.3 Vector Spaces and the Geometry of Rn . . . . . . . . . . . . . . . . . . . . . 434
+A.4 Manifolds and Tangent Spaces . . . . . . . . . . . . . . . . . . . . . . . . . . . . 436
+A.5 Taylor Expansion for Functions of Several Variables . . . . . . . . . . 438
+A.6 Inverting a Partitioned Matrix . . . . . . . . . . . . . . . . . . . . . . . . . . . . 440
+A.7 Central Limit Theory . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 441
+A.7.1 Characteristic Functions . . . . . . . . . . . . . . . . . . . . . . . . . . . . 442
+A.7.2 Central Limit Theorem . . . . . . . . . . . . . . . . . . . . . . . . . . . . 444
+A.7.3 Extensions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 447
+B Solutions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 451
+B.1 Problems of Chapter 1 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 451
+B.2 Problems of Chapter 2 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 458
+B.3 Problems of Chapter 3 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 463
+B.4 Problems of Chapter 4 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 466
+B.5 Problems of Chapter 5 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 474
+B.6 Problems of Chapter 6 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 477
+B.7 Problems of Chapter 7 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 481
+B.8 Problems of Chapter 8 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 484
+B.9 Problems of Chapter 9 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 489
+B.10 Problems of Chapter 10 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 496
+B.11 Problems of Chapter 11 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 497
+B.12 Problems of Chapter 12 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 498
+B.13 Problems of Chapter 13 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 507
+B.14 Problems of Chapter 14 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 510
+B.17 Problems of Chapter 17 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 516
+References . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 525
+Index . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 531
+
+===== PAGE 19 =====
+
+ 

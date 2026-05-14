@@ -1,0 +1,988 @@
+
+===== PAGE 1 =====
+
+11
+Empirical Bayes and Shrinkage Estimators
+Many of the classical ideas in statistics become less reliable when there are
+many parameters. Results in this chapter suggest a natural approach in some
+situations and illustrate one way in which classical ideas may fail.
+11.1 Empirical Bayes Estimation
+Suppose several objects are measured using some device and that the mea-
+surement errors are i.i.d. from N (0, 1). (Results here can easily be extended
+to the case where the errors are from N (0,σ
+2) with σ 2 a known constant.) If
+we measure p objects then our data X1,...,X p are independent with
+Xi ∼ N (θi, 1), i = 1,...,p,
+where θ 1,...,θ p are the unknown true values. Let X denote the vector
+(X1,...,X p)′and θ the vector ( θ 1,...,θ p)′. If we estimate θi by δi(X) and
+incur squared error loss, then our total loss, called compound squared error
+loss, is
+L(θ,δ ) =
+p∑
+i=1
+(
+θi − δi(X)
+)2
+.
+Note that the framework here allows the estimator δi(X) of θi to depend on
+Xj for j ̸= i. This is deliberate, and although it may seem unnecessary or
+unnatural, some estimators for θi in this section depend on Xi and to some
+extent the other observations. This may be an interesting enigma to ponder
+as you read this section. Letting δ (X) denote the vector
+(
+δ
+1(X),...,δ p(X)
+)′
+,
+the compound loss L(θ,δ ) equals
+
+δ (X) − θ
+
+
+2
+, and the risk function for δ is
+given by
+R(θ,δ ) = Eθ
+
+δ (X) − θ
+
+
+2
+.
+At this stage, let us consider a Bayesian formulation in which the unknown
+parameter is taken to be a random variable Θ . For a prior distribution, let
+R.W. Keener, Theoretical Statistics: Topics for a Core Course, Springer Texts in Statistics, 
+DOI 10.1007/978-0-387-93839-4_11, © Springer Science+Business Media, LLC 2010 
+205 
+
+===== PAGE 2 =====
+
+206 11 Empirical Bayes and Shrinkage Estimators
+Θ 1,...,Θ p be i.i.d. from N (0,τ 2). Given Θ =θ , X1,...,X p are independent
+with Xi ∼ N (θi, 1), i = 1,...,p . Then the conditional density of X given
+Θ =θ is
+1
+(2π )p/2 exp
+[
+− 1
+2
+p∑
+i=1
+(xi − θi)2
+]
+,
+the marginal density of Θ is
+1
+(2πτ 2)p/2 exp
+[
+− 1
+2τ 2
+p∑
+i=1
+θ 2
+i
+]
+,
+and, multiplying these together, the joint density of X and Θ is
+1
+(2πτ )p exp
+[
+− 1
+2
+p∑
+i=1
+(xi − θi)2 − 1
+2τ 2
+p∑
+i=1
+θ 2
+i
+]
+.
+Completing the square,
+(xi − θi)2 + θ 2
+i
+τ 2 =
+(
+1 + 1
+τ 2
+) (
+θi − xi
+1 + 1/τ 2
+)2
++ x2
+i
+1 +τ 2.
+Integrating against θ , the marginal density of X is
+∫
+· · ·
+∫ exp
+[
+− 1
+2
+(
+1 + 1
+τ 2
+) p∑
+i=1
+(
+θi − xi
+1 + 1/τ 2
+)2
+− 1
+2
+p∑
+i=1
+x2
+i
+1 +τ 2
+]
+(2πτ )p dθ
+= 1
+(
+2π (1 +τ 2)
+)p/2 exp
+[
+− 1
+2
+p∑
+i=1
+x2
+i
+1 +τ 2
+]
+.
+This is a product of densities for N (0, 1+τ 2), and so X1,...,X p are i.i.d. from
+N (0, 1 +τ 2). Dividing the joint density of X andΘ in the Bayesian model by
+the marginal density of X, the conditional density of Θ givenX =x is
+1
+(
+2π τ 2
+1 +τ 2
+)p/2 exp
+
+
+
+
+ − 1
+2
+p∑
+i=1
+(
+θi − xi
+1 + 1/τ 2
+)2
+τ 2/ (1 +τ 2)
+
+
+
+
+ .
+Noting that this factors into a product of normal densities, we see that given
+X =x, Θ
+1,...,Θ p are independent with
+Θ i|X =x ∼ N
+( xi
+1 + 1/τ 2, τ 2
+1 +τ 2
+)
+.
+From this
+
+===== PAGE 3 =====
+
+11.1 Empirical Bayes Estimation 207
+E[Θ i|X] = Xi
+1 + 1/τ 2 and Var(Θ i|X) = τ 2
+1 +τ 2.
+The expected loss under the Bayesian model is
+EL
+(
+Θ,δ (X)
+)
+=E
+p∑
+i=1
+(
+δi(X) − Θ i
+)2
+=EE
+[ p∑
+i=1
+(
+δi(X) − Θ i
+)2
+⏐
+⏐
+⏐
+⏐X
+]
+=E
+p∑
+i=1
+E
+[(
+δi(X) − Θ i
+)2 ⏐
+⏐
+⏐X
+]
+=E
+p∑
+i=1
+[
+Var(Θ i|X) +
+( Xi
+1 + 1/τ 2 − δi(X)
+)2]
+.
+This risk is minimized taking
+δi(X) = Xi
+1 + 1/τ 2 =
+(
+1 − 1
+1 +τ 2
+)
+Xi. (11.1)
+In the Bayesian approach to this problem here, the choice of τ is crucial.
+In an empirical Bayes approach to estimation, the data are used to estimate
+parameters of the prior distribution. To do this in the current setting, recall
+that under the Bayesian model, X
+1,...,X p are i.i.d. from N (0, 1 +τ 2). The
+UMVU estimate of 1 + τ 2 is ∑p
+i=1
+X2
+i /p , and slightly diﬀerent multiples of
+∥X∥2 may be sensible. The James–Stein estimator of θ is based on estimating
+1/ (1 +τ 2) by (p − 2)/ ∥X∥2 in (11.1). The resulting estimator is
+δJS (X) =
+(
+1 − p − 2
+∥X∥2
+)
+X. (11.2)
+The next section considers the risk of this estimator.
+Although the derivation above has a Bayesian feel, the standard deviation
+τ that speciﬁes the marginal prior distributions for the Θ i is not modeled as
+a random variable. This deviation τ might be called a hyperparameter, and a
+fully Bayesian approach to this problem would treat τ as a random variable
+with its own prior distribution. Then given τ , Θ 1,...,Θ p would be condi-
+tionally i.i.d. from N (0,τ 2). This approach, specifying the prior by coupling
+a marginal prior distribution for hyperparameters with conditional distribu-
+tions for the regular parameters, leads to hierarchical Bayes models. With
+modern computing, estimators based on these models can be practical and
+have gained popularity in recent years. Hierarchical models are considered in
+greater detail in Section 15.1.
+
+===== PAGE 4 =====
+
+208 11 Empirical Bayes and Shrinkage Estimators
+11.2 Risk of the James–Stein Estimator 1
+The following integration by parts identity is an important tool in our study of
+the risk of the James–Stein estimator. Fubini’s theorem provides a convenient
+way to establish an appropriate regularity condition for this identity.
+Lemma 11.1 (Stein). Suppose x ∼ N (µ,σ
+2), h : R → R is diﬀerentiable
+(absolutely continuous is also suﬃcient), and
+E|h′(X)|< ∞. (11.3)
+Then
+E(X − µ)h(X) = σ 2Eh′(X).
+Proof. Assume for now that µ = 0 and σ 2 = 1. If the result holds for a
+function h it also holds for h plus a constant, and so we can assume without
+loss of generality that h(0) = 0. By Fubini’s theorem,
+∫∞
+0
+xh(x)e−x2/2 dx =
+∫∞
+0
+x
+[∫ x
+0
+h′(y)dy
+]
+e−x2/2 dx
+=
+∫∞
+0
+∫∞
+0
+I{y<x }xh′(y)e−x2/2 dydx
+=
+∫∞
+0
+h′(y)
+[∫∞
+y
+xe−x2/2 dx
+]
+dy
+=
+∫∞
+0
+h′(y)e−y2/2 dy.
+The regularity necessary in Fubini’s theorem to justify the interchange of the
+order of integration follows from (11.3). A similar calculation shows that
+∫
+0
+−∞
+xh(x)e−x2/2 dx =
+∫ 0
+−∞
+h′(y)e−y2/2 dy.
+Adding these together and dividing by
+√
+2π , EXh (X) = Eh′(X) when X ∼
+N (0, 1).
+For the general case, let Z = (X −µ)/σ ∼ N (0, 1). Then X =µ +σZ and
+E(X − µ)h(X) = σEZh (µ +σZ )
+=σ 2Eh′(µ +σZ )
+=σ 2Eh′(X). ⊓ ⊔
+The next lemma generalizes the previous result to higher dimensions. If
+h : Rp → Rp, let Dh denote the p × p matrix of partial derivatives,
+1 This section covers optional material not used in later chapters.
+
+===== PAGE 5 =====
+
+11.2 Risk of the James–Stein Estimator 209
+[
+Dh(x)
+]
+ij = ∂hi(x)
+∂xj
+.
+Also, let ∥Dh∥ denote the Euclidean norm of this matrix,
+∥Dh(x)∥ =
+
+
+
+∑
+i,j
+[
+Dh(x)
+]2
+ij
+
+
+
+1/2
+.
+Lemma 11.2. LetX1,...,X p be independent withXi ∼ N (θi, 1),i = 1,...,p .
+If
+E∥Dh(X)∥< ∞,
+then
+E(X − θ )′h(X) = Etr
+{
+Dh(X)
+}
+.
+Proof. Using Stein’s lemma (Lemma 11.1) and smoothing,
+E(Xi − θi)hi(X) = EE
+[
+(Xi − θi)hi(X)
+⏐
+⏐X
+1,...,X i−1,X i+1,...,X p
+]
+=EE
+[
+∂hi(X)
+∂Xi
+⏐
+⏐
+⏐
+⏐
+⏐X
+1,...,X i−1,X i+1,...,X p
+]
+=E∂hi(X)
+∂Xi
+=E
+[
+Dh(X)
+]
+ii.
+Summation over i gives the stated result. ⊓ ⊔
+The ﬁnal result provides an unbiased estimator of the risk. Let X1,...,X p
+be independent with Xi ∼ N (θi, 1). Given an estimator δ (X) ofθ , deﬁneh(X)
+as X − δ (X) so that
+δ (X) = X − h(X). (11.4)
+For the James–Stein estimator (11.2),
+h(X) = p − 2
+∥X∥2X.
+Theorem 11.3. SupposeX1,...,X p are independent with Xi ∼ N (θi, 1) and
+thath andδ are related as in (11.4). Assume that h is diﬀerentiable and deﬁne
+ˆR =p +
+
+h(X)
+
+
+2
+− 2tr
+{
+Dh(X)
+}
+.
+Then
+R(θ,δ ) = Eθ
+
+δ (X) − θ
+
+
+2
+=Eθ ˆR,
+providedEθ
+
+Dh(X)
+
+< ∞.
+
+===== PAGE 6 =====
+
+210 11 Empirical Bayes and Shrinkage Estimators
+Proof. Using Lemma 11.2,
+R(θ,δ ) = Eθ
+p∑
+i=1
+(
+Xi − θi − hi(X)
+)2
+=Eθ
+[ p∑
+i=1
+(Xi − θi)2 +
+p∑
+i=1
+h2
+i
+(X) − 2
+p∑
+i=1
+(Xi − θi)hi(X)
+]
+=p +Eθ
+
+h(X)
+
+
+2
+− 2Eθ (X − θ ) ·h(X)
+=p +Eθ
+
+h(X)
+
+
+2
+− 2Eθ tr
+{
+Dh(X)
+}
+. ⊓ ⊔
+For the James–Stein estimator (11.2),
+h(X) = p − 2
+∥X∥2X,
+and so
+hi(x) = (p − 2)xi
+x2
+1
++ · · · +x2
+p
+.
+Since
+∂hi(x)
+∂xi
+= p − 2
+x2
+1
++ · · · +x2
+p
+− (p − 2)xi(2xi)
+(x2
+1
++ · · · +x2
+p
+)2
+= p − 2
+∥x∥2 − 2(p − 2)x2
+i
+∥x∥4 ,
+tr
+{
+Dh(x)
+}
+= p(p − 2)
+∥x∥2 − 2(p − 2) ∑p
+i=1
+x2
+i
+∥x∥4 = (p − 2)2
+∥x∥2 .
+Also,
+
+h(x)
+
+
+2
+=
+p∑
+i=1
+[
+(p − 2)xi
+]2
+∥x∥4 = (p − 2)2
+∥x∥2 .
+Thus, for the James–Stein estimator,
+ˆR =p + (p − 2)2
+∥X∥2 − 2 (p − 2)2
+∥X∥2 =p − (p − 2)2
+∥X∥2 . (11.5)
+By Theorem 11.3,
+R(θ,δ JS ) = Eθ ˆR =Eθ
+[
+p − (p − 2)2
+∥X∥2
+]
+<p =R(θ,X ).
+Hence when p> 2, the James–Stein estimator always has smaller compound
+risk than the estimator X. Because the risk function for δJS is better than
+the risk function for X, in the language of decision theory, developed in the
+next section, X is called inadmissible.
+
+===== PAGE 7 =====
+
+11.3 Decision Theory 211
+When ∥θ ∥ is large, ∥X∥ will be large with high probability. Then the
+James–Stein estimator and X will be very similar and will have similar risk.
+But when ∥θ ∥ is small there can be a substantial decrease in risk using the
+James–Stein estimator instead of X. If θ = 0, then
+∥X∥2 =
+p∑
+i=1
+X2
+i ∼ χ 2
+p
+.
+Integrating against the chi-square density, as in (4.10),
+E0
+1
+∥X∥2 = 1
+p − 2.
+Using this and (11.5),
+R(0,δ ) = E0
+[
+p − (p − 2)
+∥X∥2
+]
+=p − (p − 2)2
+p − 2 = 2.
+Regardless of the dimension of θ andX, at the origin θ = 0, the James–Stein
+estimator has risk equal to two.
+The results in this section can be extended in various ways. James and
+Stein (1961) derived the estimator (11.2) and also consider estimation when
+σ
+2 is unknown. Extensions to ridge regression are reviewed in Draper and
+van Nostrand (1979). Stein’s identity in Lemma 11.1 can be developed for
+other families of distributions, and these identities have been used in various
+interesting ways. Chen (1975) and Stein (1986) use them to obtain Poisson
+limit theorems, and Woodroofe (1989) uses them for interval estimation and
+to approximate posterior distributions.
+11.3 Decision Theory 2
+The calculations in the previous section show that X is inadmissible when
+the dimension p is three or higher, leaving open the natural question of what
+happens in one or two dimensions. In this section, several results from deci-
+sion theory are presented and used to characterize admissible procedures and
+show that for compound estimation X is admissible when p = 1. A similar
+argument shows that X is also admissible when p = 2, although the necessary
+calculations in that case are quite delicate.
+Formal decision theory begins with a parameter space Ω, an action space
+A, a data space X , a model P = {P
+θ :θ ∈Ω}, and a loss function L :Ω ×A →
+[−∞, ∞]. For simplicity and convenience, we assume that X = Rn, that Ω
+and A are Borel subsets of Euclidean spaces, and that the loss function L is
+nonnegative and measurable, with L(θ,a ) lower semicontinuous in a.
+2 This section covers optional material not used in later chapters.
+
+===== PAGE 8 =====
+
+212 11 Empirical Bayes and Shrinkage Estimators
+A measurable function δ : X → A is called a nonrandomized decision rule,
+and its risk function is deﬁned as
+R(θ,δ ) =
+∫
+L
+(
+θ,δ (x)
+)
+dPθ (x) = Eθ L
+(
+θ,δ (X)
+)
+, θ ∈Ω.
+The set of all nonrandomized decision rules is denoted Dn.
+A nonrandomized decision rule associates with each x an action δ (x). In
+contrast, a randomized decision rule associates with each x a probability dis-
+tributionδx, the idea being that if X =x is observed, a random action A will
+be drawn from δx. So A|X = x ∼ δx. Formally, δ is should be a stochastic
+transition kernel, satisfying the regularity condition that δx(A) is a measur-
+able function of x for any Borel set A. By smoothing, the risk function for δ
+can be deﬁned as
+R(θ,δ ) = EθL(θ,A ) = Eθ Eθ
+[
+L(θ,A )|X
+]
+=
+∫ ∫
+L(θ,a )dδx(a)dPθ (x), θ ∈Ω.
+The set of all randomized decision rules is denoted D.
+Example 11.4 (Estimation). For estimating a univariate parameter g(θ ) it is
+natural to take A = R as the action space, and a decision rule δ would be
+called an estimator. Representative loss functions include squared error loss
+with L(θ,a ) = [ a − g(θ )]
+2 and weighted squared error loss with L(θ,a ) =
+w(θ )[a − g(θ )]2.
+Example 11.5 (Testing). In testing problems, the action space is A = {0, 1},
+with action “0” associated with accepting H0 : θ ∈ Ω0 and action “1” asso-
+ciated with accepting H1 :θ ∈Ω1. For each x, δx is a Bernoulli distribution,
+which can be speciﬁed by its “success” probability ϕ (x) = δx
+(
+{1}
+)
+. This pro-
+vides a one-to-one correspondence between test functions ϕ and randomized
+decision rules. A representative loss function now might be zero-one loss in
+which there is unit loss for accepting the wrong hypothesis:
+L(θ,a ) = I{a = 1,θ ∈Ω
+0}+I{a = 0,θ ∈Ω1}.
+If the power function β is deﬁned as
+β (θ ) = Pθ (A = 1) = EθPθ (A = 1|X) = Eθ δX
+(
+{1}
+)
+=Eθ ϕ (X),
+then the risk function with this loss is
+R(θ,δ ) =
+{
+Pθ (A = 1), θ ∈Ω0;
+Pθ (A = 0), θ ∈Ω0,
+=
+{
+β (θ ), θ ∈Ω0;
+1 − β (θ ), θ ∈Ω1.
+
+===== PAGE 9 =====
+
+11.3 Decision Theory 213
+A decision rule δ is called inadmissible if a competing rule δ∗has a better
+risk function, speciﬁcally if R(θ,δ ∗) ≤ R(θ,δ ) for all θ ∈ Ω with R(θ,δ ∗) <
+R(θ,δ ) for some θ ∈ Ω. If this happens we say that δ∗dominates δ . All
+other rules are called admissible. If minimizing risk is the sole concern, no one
+would ever want to use an inadmissible rule, and there has been considerable
+interest in characterizing admissible rules. Our ﬁrst results below show that
+Bayes rules are typically admissible. More surprising perhaps are extensions,
+such as Theorem 11.8 below, showing that the remaining admissible rules are
+almost Bayes in a suitable sense. For notation, for a prior distribution Λ let
+R(Λ,δ ) =
+∫
+R(θ,δ )dΛ (θ ), (11.6)
+the integrated risk of δ under Λ , and let
+R(Λ ) = inf
+δ∈D
+R(Λ,δ ), (11.7)
+the minimal integrated risk. Finally, the decision rule δ is called Bayes for a
+prior Λ if it minimizes the integrated risk, that is, if
+R(Λ,δ ) = R(Λ ). (11.8)
+At this stage it is worth noting that in deﬁnitions (11.6) and (11.7) the prior
+Λ does not really need to be a probability measure; the equations make sense
+as long as Λ is ﬁnite, or even if it is inﬁnite but σ -ﬁnite. The deﬁnition of
+Bayes for Λ also makes sense for these Λ . But if the prior Λ is not speciﬁed, δ
+is called proper Bayes only if (11.8) holds for some probability distribution Λ .
+Of course, if Λ is ﬁnite and δ is Bayes for Λ it is also Bayes for the probability
+distribution Λ (·)/Λ (Ω). Thus we are only disallowing rules that are Bayes
+with respect to an “improper” prior with Λ (Ω) = ∞ in this designation.
+The next two results address the admissibility of Bayes rules.
+Theorem 11.6. If a Bayes rule δ for Λ is essentially unique, then δ is ad-
+missible.
+Proof. Suppose R(θ,δ
+∗) ≤ R(θ,δ ) for all θ ∈Ω. Then, by (11.6), R(Λ,δ ∗) ≤
+R(Λ,δ ), andδ∗must also be Bayes forΛ . But then, by the essential uniqueness,
+δ =δ∗, a.e. P, and so R(θ,δ ) = R(θ,δ ∗) for all θ ∈Ω. ⊓ ⊔
+The next result refers to the support of the prior distribution Λ , deﬁned as
+the smallest closed set B with Λ (B) = 1. Note that if the support of Λ is Ω
+and B is an open set with Λ (B) = 0, then B must be empty, since otherwise
+Bc would be a closed set smaller than Ω with Λ (Bc) = 1.
+Theorem 11.7. If risk functions for all decision rules are continuous in θ , if
+δ is Bayes for Λ and has ﬁnite integrated risk R(Λ,δ )< ∞, and if the support
+of Λ is the whole parameter space Ω, then δ is admissible.
+
+===== PAGE 10 =====
+
+214 11 Empirical Bayes and Shrinkage Estimators
+Proof. Suppose again that R(θ,δ ∗) ≤ R(θ,δ ) for all θ ∈ Ω. Then, as before,
+δ∗is Bayes for Λ andδ andδ∗must have the same integrated risk, R(Λ,δ ) =
+R(Λ,δ ∗. Hence ∫ (
+R(θ,δ ) − R(θ,δ ∗)
+)
+dΛ (θ ) = 0.
+Since the integrand here is nonnegative, by integration fact 2 in Section 1.4
+the set
+{θ :R(θ,δ ) − R(θ,δ
+∗)> 0}
+has Λ measure zero. But since risk functions are continuous, this set is open
+and must then be empty since Λ has support Ω. So the risk functions for δ
+and δ∗must be the same, R(θ,δ ) = R(θ,δ ∗) for all θ ∈Ω. ⊓ ⊔
+A collection of decision rules is called a complete class if all rules outside the
+class are inadmissible. A complete class will then contain all of the admissible
+rules. In various situations suitable limits of Bayes procedures form a complete
+class. Because randomized decision rules are formally stochastic transition
+functions, a proper statement of most of these results involves notions of
+convergence for these objects, akin to our notion of convergence in distribution
+for probability distributions, but complicated by the functional dependence
+on X. An exception arises if the loss function L(θ,a ) is strictly convex in a.
+In this case, admissible rules must be nonrandomized by the Rao–Blackwell
+theorem (Theorem 3.28), and we have the following result, which can be stated
+without reference to complicated notions of convergence. This result appears
+with a careful proof as Theorem 4A.12 of Brown (1986). Let B
+0 denote the
+class of Bayes rules for priors Λ concentrated on ﬁnite subsets of Ω.
+Theorem 11.8. Let P be a dominated family of distributions with pθ as the
+density for Pθ , and assume that pθ (x) > 0 for all x ∈ X and all θ ∈ Ω. If
+L(θ, ·) is nonnegative and strictly convex for all θ ∈ Ω, and if L(θ,a ) → ∞
+as ∥a∥ → ∞ , again for all θ ∈Ω, then the set of pointwise limits of rules in
+B0 forms a complete class.
+This and similar results show that in regular cases any admissible rule will
+be a limit of Bayes rules. Unfortunately, some limits may give inadmissible
+rules, and these results cannot be used to show that a given rule is admissi-
+ble. The ﬁnal theoretical result of this section gives a suﬃcient condition for
+admissibility. For regularity, it assumes that all risk functions are continuous,
+but similar results are available in diﬀerent situations. Let
+Br (x) =
+{
+y : ∥y − x∥ ≤ r
+}
+,
+the closed ball of radius r about x.
+Theorem 11.9. Assume that risk functions for all decision rules are contin-
+uous in θ . Suppose that for any closed ball
+ Br (x) there exist ﬁnite measures
+Λm such that R(Λm,δ )< ∞, m ≥ 1,
+
+===== PAGE 11 =====
+
+11.3 Decision Theory 215
+lim infΛm
+(
+Br(x)
+)
+> 0,
+and
+R(δ,Λ m) − R(Λm) → 0.
+Then δ is admissible.
+Proof. Suppose δ∗dominates δ . Then R(θ 0,δ ∗) < R(θ 0,δ ) for some θ 0 ∈ Ω.
+By continuity
+inf
+θ∈
+Br (θ 0)
+[
+R(θ,δ ) − R(θ,δ ∗)
+]
+→ R(θ 0,δ ) − R(θ 0,δ ∗)> 0
+as r ↓0, and so there exist values ǫ> 0 and r0 > 0 such that
+R(θ,δ ) ≥ R(θ,δ ∗) +ǫ, ∀θ ∈
+Br0 (θ 0).
+Since δ∗dominates δ , this implies
+R(θ,δ ) ≥ R(θ,δ ∗) +ǫI
+{
+θ ∈
+Br0
+}
+.
+Integrating this against Λm,
+R(Λm,δ ) ≥ R(Λm,δ ∗) +ǫΛ m
+(
+Br0
+)
+≥ R(Λm) +ǫΛ m
+(
+Br0
+)
+,
+contradicting the assumptions of the theorem. ⊓ ⊔
+Stein (1955) gives a necessary and suﬃcient condition for admissibility,
+and using this result the condition in this theorem is also necessary. Related
+results are given in Blyth (1951), Le Cam (1955), Farrell (1964, 1968a,b),
+Brown (1971b), and Chapter 8 of Berger (1985).
+Example 11.10. Consider a Bayesian formulation of the one-sample problem
+in which Θ ∼ N (0,τ
+2) and given Θ = θ , X1,...,X n are i.i.d. from N (θ,σ 2)
+withσ 2 a known constant. By the calculation for Problem 6.21, the posterior
+distribution for Θ is
+Θ |X =x ∼ N
+(
+ x
+1 +σ 2/ (nτ 2), σ 2τ 2
+σ 2 +nτ 2
+)
+,
+where
+x = (x1 + · · · +xn)/n . So the Bayes estimator under squared error loss
+is
+X
+1 +σ 2/ (nτ 2)
+with integrated risk
+σ 2τ 2
+σ 2 +nτ 2.
+Since the Bayes estimator converges to
+ X as τ → ∞ , if we are hoping to use
+Theorem 11.9 to show that the sample average δ =
+X = (X1 + · · · +Xn)/n
+
+===== PAGE 12 =====
+
+216 11 Empirical Bayes and Shrinkage Estimators
+is admissible, it may seem natural to take Λm =N (0,m ). But this does not
+quite work; since densities for these distributions tend to zero, with this choice
+Λ
+m
+(
+Br (x)
+)
+tends to zero as m → ∞. The problem can be simply ﬁxed by
+rescaling, takingΛm = √
+mN (0,m ). The density for this measure is φ (θ/ √
+m),
+converging pointwise to φ (0) = 1/
+√
+2π . So by dominated convergence,
+Λm
+(
+Br(x)
+)
+=
+∫ x+r
+x−r
+φ (θ/ √
+m)dθ → 2r
+√
+2π
+.
+Scaling the prior by √
+m scales risks and expectations by the same factor √
+m,
+and so
+R(δ,Λ m) =
+√
+mσ 2
+n and R(Λm) = √
+mσ 2 m
+σ 2 +nm.
+Then
+R(δ,Λ m) − R(Λm) =
+√
+mσ 4
+n(σ 2 +nm) → 0
+as m → ∞ , and by Theorem 11.9
+ X is admissible.
+Stein (1956) shows admissibility of the sample average
+ X inp = 2 dimen-
+sions. The basic approach is similar to that pursued in this example, but the
+priors Λ
+n must be chosen with great care; it is not hard to see that scaled
+conjugate normal distributions will not work.
+For a more complete introduction to decision theory, see Chernoﬀ and
+Moses (1986) or Bickel and Doksum (2007), and for a more substantial treat-
+ment, see Berger (1985), Ferguson (1967), or Miescke and Liese (2008).
+11.4 Problems 3
+*1. Consider estimating the failure rates λ 1,...,λ p for independent exponen-
+tial variables X1,...,X p. So Xi has density λie−λ ix, x> 0.
+a) Following a Bayesian approach, suppose the unknown parameters
+are modeled as random variables Λ 1,...,Λ p. For a prior distribu-
+tion, assume these variables are i.i.d. from a gamma distribution
+with shape parameter α and unit scale parameter, so Λ
+i has den-
+sity λα−1e−λ /Γ (α ), λ > 0. Determine the marginal density of Xi in
+this model.
+b) Find the Bayes estimate of Λi in the Bayesian model with squared
+error loss.
+c) The Bayesian model gives a family of joint distributions for X1,...,X p
+indexed solely by the parameter α (the joint distribution does not
+depend on λ 1,...,λ p). Determine the maximum likelihood estimate
+of α for this family.
+3 Solutions to the starred problems are given at the back of the book.
+
+===== PAGE 13 =====
+
+11.4 Problems 217
+d) Give an empirical Bayes estimator for λi combining the “empirical”
+estimate for α in part (c) with the Bayes estimate for λi when α is
+known in part (b).
+*2. Consider estimation of regression slopes θ 1,...,θ p for p pairs of observa-
+tions, (X1,Y 1), ... , (Xp,Y p), modeled as independent with Xi ∼ N (0, 1)
+and Yi|Xi =x ∼ N (θix, 1).
+a) Following a Bayesian approach, let the unknown parameters Θ 1, ... ,
+Θ p be i.i.d. random variables from N (0,τ 2). Find the Bayes estimate
+of Θ i in this Bayesian model with squared error loss.
+b) Determine EY 2
+i in the Bayesian model. Using this, suggest a simple
+method of moments estimator for τ 2.
+c) Give an empirical Bayes estimator for θi combining the simple “em-
+pirical” estimate for τ in (b) with the Bayes estimate for θi whenτ is
+known in (a).
+*3. Consider estimation of the means θ 1,...,θ p ofp independent Poisson ran-
+dom variables X1,...,X p under compound squared error loss, L(θ,d ) =∑p
+i=1
+(θi − di)2.
+a) Following a Bayesian approach, let the unknown parameters be mod-
+eled as random variables Θ 1,...,Θ p that are i.i.d. with common den-
+sity λe−λx for x> 0, 0 for x ≤ 0. Determine the Bayes estimators of
+Θ 1,...,Θ p.
+b) Determine the marginal density (mass function) of Xi in the Bayesian
+model.
+c) In the Bayesian model, X1,...,X p are i.i.d. with the common density
+in part (b). Viewing this joint distribution as a family of distributions
+parameterized by λ , what is the maximum likelihood estimator of λ .
+d) Suggest empirical Bayes estimators for θ
+1,...,θ p based on the Bayesian
+estimators in part (a) with an empirical estimator of λ from part (c).
+4. Consider estimating success probabilities θ 1,...,θ p for p independent bi-
+nomial variables X1,...,X p, each based on m trials, under compound
+squared error loss, L(θ,d ) = ∑p
+i=1
+(θi − di)2.
+a) Following a Bayesian approach, model the unknown parameters as
+random variables Θ 1,...,Θ p that are i.i.d. from a beta distribu-
+tion with parameters α and β . Determine the Bayes estimators of
+Θ 1,...,Θ p.
+b) In the Bayesian model, X1,...,X p are i.i.d. Determine the ﬁrst two
+moments for their common marginal distribution, EXi andEX 2
+i . Us-
+ing these, suggest simple method of moments estimators for α and
+β .
+c) Give empirical Bayes estimators for θi combining the simple “empiri-
+cal” estimates for α andβ in (b) with the Bayes estimate for θi when
+α and β are known in (a).
+5. Consider estimation of unknown parameters θ 1,...,θ p based on data
+X1,...,X p that are independent with Xi ∼ N (θi, 1) under compound
+squared error loss.
+
+===== PAGE 14 =====
+
+218 11 Empirical Bayes and Shrinkage Estimators
+a) Following a Bayesian approach, model the unknown parameters as
+random variables Θ 1,...,Θ p that are i.i.d. from N (ν,τ 2). Find Bayes
+estimators for the random parameters Θ 1,...,Θ p.
+b) Suggest “empirical” estimates for ν and τ 2 based on
+ X and S2, the
+mean and sample variance of the Xi.
+c) Give empirical Bayes estimators for θ 1,...,θ p based on the Bayesian
+estimators in (a) and the estimates for ν and τ 2 in (b).
+6. Consider estimation of unknown parameters θ 1,...,θ p based on data
+X1,...,X p that are independent with Xi ∼ Unif(0,θ i),i = 1,...,p , under
+compound squared error loss.
+a) Following a Bayesian approach, model the unknown parameters as
+random variablesΘ 1,...,Θ p which are i.i.d. and absolutely continuous
+with common density
+xλ 21(0,∞)(x)e−λx .
+Find Bayes estimators for Θ 1,...,Θ p.
+b) Suggest an empirical estimate for λ based on the sample average
+ X.
+c) Give empirical Bayes estimators for θ 1,...,θ p based on the Bayes
+estimators in (a) and the estimator for λ in (b).

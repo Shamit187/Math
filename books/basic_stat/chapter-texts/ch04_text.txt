@@ -1,0 +1,1553 @@
+
+===== PAGE 1 =====
+
+4
+Unbiased Estimation
+Example 3.1 shows that a clean comparison between two estimators is not
+always possible: if their risk functions cross, one estimator will be preferable
+for θ in some subset of the parameter space Ω, and the other will be prefer-
+able in a diﬀerent subset of Ω. In some cases this problem will not arise if
+both estimators are unbiased. We may then be able to identify a best un-
+biased estimator. These ideas and limitations of the theory are discussed in
+Sections 4.1 and 4.2. Sections 4.3 and 4.4 concern distribution theory and un-
+biased estimation for the normal one-sample problem in which data are i.i.d.
+from a normal distribution. Sections 4.5 and 4.6 introduce Fisher information
+and derive lower bounds for the variance of unbiased estimators.
+4.1 Minimum Variance Unbiased Estimators
+An estimator δ is called unbiased for g(θ ) if
+Eθ δ (X) = g(θ ), ∀θ ∈Ω. (4.1)
+If an unbiased estimator exists, g is called U-estimable.
+Example 4.1. Suppose X has a uniform distribution on (0 ,θ ). Then δ is unbi-
+ased if ∫ θ
+0
+δ (x)θ−1dx =g(θ ), ∀θ >0,
+or if ∫ θ
+0
+δ (x)dx =θg (θ ), ∀θ> 0. (4.2)
+So g cannot be U-estimable unless θg (θ ) → 0 as θ ↓ 0. If g′exists, then
+diﬀerentiating (4.2), by the fundamental theorem of calculus,
+δ (x) = d
+dx
+(
+xg(x)
+)
+=g(x) +xg′(x).
+R.W. Keener, Theoretical Statistics: Topics for a Core Course, Springer Texts in Statistics, 
+DOI 10.1007/978-0-387-93839-4_4, © Springer Science+Business Media, LLC 2010 
+61
+
+===== PAGE 2 =====
+
+62 4 Unbiased Estimation
+For instance, if g(θ ) = θ , δ (X) = 2X.
+Example 4.2. If X has the binomial distribution with n trials and success
+probabilityθ , and if g(θ ) = sinθ , then δ will be unbiased if
+n∑
+k=0
+δ (k)
+(n
+k
+)
+θk (1 − θ )n−k = sinθ, ∀θ ∈ (0, 1).
+The left hand side of this equation is a polynomial in θ with degree at most
+n. The sine function cannot be written as a polynomial, therefore sin θ is not
+U-estimable.
+With squared error loss, L(θ,d ) =
+(
+d − g(θ )
+)2
+, the risk of an unbiased
+estimator δ is
+R(θ,δ ) = Eθ
+(
+δ (X) − g(θ )
+)2
+= Varθ
+(
+δ (X)
+)
+,
+and so the goal is to minimize the variance.
+Deﬁnition 4.3. An unbiased estimator δ is uniformly minimum variance un-
+biased (UMVU) if
+Var
+θ (δ ) ≤ Varθ (δ∗), ∀θ ∈Ω,
+for any competing unbiased estimator δ∗.
+In a general setting there is no reason to suspect that there will be a
+UMVU estimator. However, if the family has a complete suﬃcient statistic, a
+UMVU will exist, at least when g is U-estimable.
+Theorem 4.4. Suppose g is U-estimable and T is complete suﬃcient. Then
+there is an essentially unique unbiased estimator based on T that is UMVU.
+Proof. Let δ =δ (X) be any unbiased estimator and deﬁne
+η (T ) = E[δ |T ],
+as in the Rao–Blackwell theorem (Theorem 3.28). By smoothing,
+g(θ ) = E
+θ δ =Eθ Eθ [δ |T ] = Eθη (T ),
+and thus η (T ) is unbiased. Suppose η∗(T ) is also unbiased. Then
+Eθ
+[
+η (T ) − η∗(T )
+]
+= 0, ∀θ ∈Ω,
+and by completeness, η (T )−η∗(T ) = 0 (a.e. P). This shows that the estimator
+η (T ) is essentially unique; any other unbiased estimator based on T will equal
+η (T ) except on a P-null set. The estimator η (T ) has minimum variance by
+the Rao–Blackwell theorem with squared error loss. Speciﬁcally, if δ∗is any
+unbiased estimator, then η∗(T ) = Eθ (δ∗|T ) is unbiased by the calculation
+above. With squared error loss, the risk of δ∗orη∗(T ) is the variance, and so
+Varθ (δ∗) ≥ Varθ
+(
+η∗(T )
+)
+= Varθ
+(
+η (T )
+)
+, ∀θ ∈Ω.
+Thus,η (T ) is UMVU. ⊓ ⊔
+
+===== PAGE 3 =====
+
+4.1 Minimum Variance Unbiased Estimators 63
+From the uniqueness assertion in this theorem, if T is complete suﬃcient
+andη (T ) is unbiased, η (T ) must be UMVU. Viewing (4.1) as an equation for
+δ , any solution of the form δ =η (T ) will be UMVU. This approach provides
+one strategy to ﬁnd these estimators.
+Example 4.5. LetX
+1,...,X n be i.i.d. from the uniform distribution on (0 ,θ ).
+From Example 3.16, T = max{X1,...,X n} is complete and suﬃcient for the
+family of joint distributions. Suppose η (T ) is unbiased for g(θ ). Then
+∫ θ
+0
+η (t)ntn−1
+θn dt =g(θ ), θ> 0,
+which implies
+n
+∫ θ
+0
+tn−1η (t)dt =θng(θ ), θ> 0.
+Ifg is diﬀerentiable and θng(θ ) → 0 as θ ↓0, then diﬀerentiation with respect
+to θ gives
+nθn−1η (θ ) = d
+dθ
+(
+θng(θ )
+)
+,
+and so
+η (t) = 1
+ntn−1
+d
+dt
+(
+tng(t)
+)
+=g(t) + tg′(t)
+n , t> 0.
+When g is a constant c this argument shows the η (T ) must also equal c, and
+so T is complete.
+When g is the identity function, g(θ ) = θ , η (t) = (n + 1)t/n . Thus, (n +
+1)T/n is the UMVU of θ . Another unbiased estimator is δ = 2
+X. By the
+theory we have developed, η (T ) must have smaller variance than δ . In this
+example the comparison can be done explicitly. Since
+Eθ T 2 =
+∫ θ
+0
+t2ntn−1
+θn dt = n
+n + 2θ 2
+and
+Eθ η 2(T ) =
+(n + 1
+n
+)2
+EθT 2 = (n + 1)2
+n(n + 2)θ 2,
+we have
+Varθ
+(
+η (T )
+)
+=Eθ η 2(T ) −
+(
+Eθη (t)
+)2
+= (n + 1)2
+n(n + 2)θ 2 − θ 2 = θ 2
+n(n + 2).
+When n = 1, T = 2X1, and so this formula implies that Var θ (2Xi) = θ 2/ 3.
+Because δ is an average of these variables,
+Varθ (δ ) = θ 2
+3n.
+The ratio of the variance of η (T ) to the variance of δ is
+
+===== PAGE 4 =====
+
+64 4 Unbiased Estimation
+Varθ
+(
+η (T )
+)
+Varθ (δ ) = 3
+n + 2.
+As n → ∞ this ratio tends to zero, and so η (T ) is much more accurate than
+δ when n is large.
+The proof of Theorem 4.4 also suggests another way to ﬁnd UMVU esti-
+mators. If δ is an arbitrary unbiased estimator, then η (T ) = E[δ |T ] will be
+UMVU. So if any unbiased estimator can be identiﬁed, the UMVU can be
+obtained by computing its conditional expectation.
+Example 4.6. Let X
+1,...,X n be i.i.d. Bernoulli variables with Pθ (Xi = 1) =
+θ = 1 − Pθ (Xi = 0), i = 1,...,n. The marginal mass function can be written
+as θx(1 − θ )1−x,x = 0 or 1, and so the joint mass function is
+n∏
+i=1
+θxi (1 − θ )1−xi =θT (x)(1 − θ )n−T (x),
+where T (x) = x1 + · · · +xn. These joint mass functions form an exponential
+family with
+T =T (X) = X1 + · · · +Xn ∼ Binomial(θ,n )
+as a complete suﬃcient statistic. Consider unbiased estimation of g(θ ) = θ 2.
+One unbiased estimator is δ =X1X2. The UMVU estimator must be η (T ) =
+Eθ [X1X2|T ] = Pθ (X1 =X2 = 1|T ). Because
+Pθ (X1 =X2 = 1,T =t) = Pθ
+(
+X1 =X2 = 1,
+n∑
+i=3
+Xi =t − 2
+)
+=θ 2
+(n − 2
+t − 2
+)
+θt−2(1 − θ )n−t,
+Pθ (X1 =X2 = 1|T =t) = Pθ (X1 =X2 = 1,T =t)
+Pθ (T =t)
+=
+θ 2(n−2
+t−2
+)
+θt−2(1 − θ )n−t
+(n
+t
+)
+θt(1 − θ )n−t = t
+n
+t − 1
+n − 1.
+So T (T − 1)/ (n2 − n) is the UMVU estimator of θ 2.
+4.2 Second Thoughts About Bias
+Although the approach developed in the previous section often provides rea-
+sonable estimators, the premise that one should only consider unbiased esti-
+mators is suspect. Estimators with considerable bias may not be worth con-
+sidering, but estimators with small bias may be quite reasonable.
+
+===== PAGE 5 =====
+
+4.2 Second Thoughts About Bias 65
+Example 4.1, continued . As before, X1,...,X n are i.i.d. from the uniform
+distribution on (0,θ ), and T = max {X1,...,X n} is complete suﬃcient. The
+UMVU estimator ( n + 1)T/n is a multiple of T , but is it the best multiple
+of T ? To address this question, let us calculate the risk of δa = aT under
+squared error loss. From our prior calculations,
+Eθ T = nθ
+n + 1 and EθT 2 = nθ 2
+n + 2.
+So the risk of δa is
+R(θ,δ a) = Eθ (aT − θ )2
+=a2Eθ T 2 − 2aθEθ T +θ 2
+=θ 2
+( n
+n + 2a2 − 2n
+n + 1a + 1
+)
+.
+This is a quadratic function of a minimized whena = (n+2)/ (n+1). With this
+choice for a,R(θ,δ a) = θ 2/ (n + 1)2, slightly smaller than the risk θ 2/ (n2 + 2n)
+for the UMVU estimator. With squared error loss, the risk of an arbitrary
+estimator δ can be written as
+R(θ,δ ) = E
+θ
+(
+δ − g(θ )
+)2
+= Varθ (δ ) +b2(θ,δ ),
+where b(θ,δ ) = Eθ δ − g(θ ) is the bias of δ . In this example, the biased esti-
+mator δa has smaller variance than the UMVU estimator, which more than
+compensates for a small amount of additional risk due to the bias. Possibil-
+ities for this kind of trade-oﬀ between bias and variance arise fairly often in
+statistics. In nonparametric curve estimation these trade-oﬀs often play a key
+role. (See Section 18.1.)
+Example 4.7. Suppose X has mass function
+P
+θ (X =x) = θxe−θ
+x!(1 − e−θ ), x = 1, 2,....
+This is the density for a Poisson distribution truncated to {1, 2,... }. The
+mass functions for X form an exponential family and X is complete suﬃcient.
+Consider estimating g(θ ) = e−θ (the proportion lost through truncation). If
+δ (X) is unbiased, then
+e−θ =
+∞∑
+k=1
+δ (k)θke−θ
+k!(1 − e−θ ), θ> 0,
+and so ∞∑
+k=1
+δ (k)
+k! θk = 1 − e−θ =
+∞∑
+k=1
+(− 1)k+1
+k! θk, θ> 0.
+
+===== PAGE 6 =====
+
+66 4 Unbiased Estimation
+These power series will agree if and only if they have equal coeﬃcients for θk .
+Henceδ (k) must be ( − 1)k+1, and the UMVU estimator is ( − 1)X+1, which is
+1 when X is odd and − 1 when X is even! In this example the only unbiased
+estimator is absurd.
+4.3 Normal One-Sample Problem—Distribution Theory
+In this section distributional results related to sampling from a normal distri-
+bution are derived. To begin, here are a few useful properties about normal
+variables. Let X ∼ N (µ,σ
+2) and take Z = (X − µ)/σ .
+1. The distribution of Z is standard normal, Z ∼ N (0, 1). More generally, if
+a and b are constants, aX +b ∼ N (aµ +b,a 2σ 2).
+Proof. The cumulative distribution function of Z is
+P (Z ≤ z) = P
+(X − µ
+σ ≤ z
+)
+=P (X ≤ µ +zσ )
+=
+∫ µ+zσ
+−∞
+exp
+[
+− (x − µ)2/ (2σ 2)
+]
+√
+2πσ 2 dx =
+∫ z
+−∞
+e−u2/2
+√
+2π du.
+Taking a derivative with respect to z, Z has density e−z2/2 /
+√
+2π and so
+Z ∼ N (0, 1). The second assertion can be established in a similar fashion.
+⊓ ⊔
+2. The moment generating function of Z is MZ (u) = eu2/2 , u ∈ R.
+Proof. Completing the square,
+MZ (u) = EeuZ =
+∫
+euze−z2/2
+√
+2π dz =eu2/2
+∫ e−(z−u)2/2
+√
+2π dz.
+The integrand here is the density for N (u, 1), which integrates to one, and
+the result follows. ⊓ ⊔
+3. The moment generating function of X is
+MX (u) = euµ+u2σ 2/2 , u ∈ R.
+Proof.
+MX (u) = EeuX =Eeu(µ+σZ ) =euµEeuσZ =euµMZ (uσ ) = euµ+u2σ 2/2 .
+⊓ ⊔
+
+===== PAGE 7 =====
+
+4.3 Normal One-Sample Problem—Distribution Theory 67
+4. If X1 ∼ N (µ1,σ 2
+1 ) and X2 ∼ N (µ2,σ 2
+2 ) are independent, then X1 +X2 ∼
+N (µ1 +µ2,σ 2
+1 +σ 2
+2 ).
+Proof.
+MX1 +X2 (u) = MX1 (u)MX2 (u) = euµ1 +u2σ 2
+1/2 euµ2 +u2σ 2
+2/2
+=eu(µ1 +µ2 )+u2(σ 2
+1 +σ 2
+2 )/2 , u ∈ R,
+which is the moment generating function for N (µ,σ 2) with µ = µ1 +µ2
+and σ 2 =σ 2
+1 +σ 2
+2 . So the assertion follows by Lemma 2.7. ⊓ ⊔
+Let X1,...,X n be a random sample from N (µ,σ 2). By Example 2.3, the
+joint densities parameterized by θ = (µ,σ 2) form a two-parameter full rank
+exponential family with complete suﬃcient statisticT =
+(∑n
+i=1
+Xi, ∑n
+i=1
+X2
+i
+)
+.
+It is often more convenient to work with statistics
+X = X1 + · · · +Xn
+n and S2 = 1
+n − 1
+n∑
+i=1
+(Xi −
+X)2,
+called the sample mean and variance. Using the identity ∑n
+i=1
+(Xi −
+ X)2 =∑n
+i=1
+X2
+i − n
+X
+2
+, we have
+X = T1
+n and S2 = T2 − T 2
+1/n
+n − 1 , (4.3)
+or
+T1 =n
+X and T2 = (n − 1)S2 +n
+X
+2
+. (4.4)
+This establishes a one-to-one relationship between T and (
+X,S 2). One-to-one
+relationships preserve suﬃciency and completeness, and so (
+ X,S 2) is also a
+complete suﬃcient statistic.
+Iterating Property 4, X1 + · · · +Xn ∼ N (nµ,nσ 2). Dividing by n, by
+Property 1,
+ X ∼ N (µ,σ 2/n ). We know from Example 3.22 that
+ X and S2
+are independent, but the derivation to ﬁnd the marginal distribution of S2 is
+a bit more involved.
+The gamma distribution, introduced in Problem 1.26, with parameters
+α> 0 and β > 0, denoted Γ (α,β ), has density
+fα,β (x) =
+
+
+
+x
+α−1e−x/β
+βα Γ (α ) , x> 0;
+0, otherwise,
+(4.5)
+where Γ (·) is the gamma function deﬁned as
+Γ (α ) =
+∫∞
+0
+xα−1e−xdx, ℜ(α )> 0.
+Useful properties of the gamma function include
+
+===== PAGE 8 =====
+
+68 4 Unbiased Estimation
+Γ (α + 1) = αΓ (α ), ℜ(α )> 0
+(which follows after integration by parts from the deﬁnition), Γ (n + 1) = n!,
+n = 1, 2,... , and Γ (1/ 2) = √
+π . It is not hard to show that if X ∼ Γ (α, 1),
+then βX ∼ Γ (α,β ). For this reason, β is called a scale parameter, and α is
+called the shape parameter for the distribution.
+If X ∼ Γ (α,β ), then, for u< 1/β ,
+MX (u) = EeuX =
+∫∞
+0
+euxxα−1e−x/β
+βα Γ (α ) dx
+= 1
+(1 − uβ )α
+1
+Γ (α )
+∫∞
+0
+yα−1e−y dy = 1
+(1 − uβ )α ,
+where the change of variables y = (1 −uβ )x/β gives the third equality. From
+this, if X ∼ Γ (αx,β ) and Y ∼ Γ (αy,β ) are independent, then
+MX+Y (u) = MX (u)MY (u) = 1
+(1 − uβ )α x +α y
+.
+This is the moment generating function for Γ (αx +αy,β ), and so
+X +Y ∼ Γ (αx +αy,β ). (4.6)
+The chi-square distributions are special cases of the gamma distribution,
+generally deﬁned as sums of independent squared standard normal variables.
+If Z ∼ N (0, 1), then
+M
+Z2 (u) =
+∫
+euz2 1
+√
+2π e−z2/2 dz = 1
+√
+ 1 − 2u
+∫ 1
+√
+2π e−x2/2 dx = 1
+√
+ 1 − 2u,
+where the change of variables x = z√
+ 1 − 2u gives the second equality. The
+distribution of Z2 is called the chi-square distribution on one degree of free-
+dom, denoted χ 2
+1
+. But the moment generating function for Z2 just computed
+is the moment generating function for Γ (1/ 2, 2). So χ 2
+1
+=Γ (1/ 2, 2).
+Deﬁnition 4.8. The chi-square distribution on p degrees of freedom, χ 2
+p
+, is
+the distribution of the sum Z2
+1 + · · · +Z2
+p when Z1,...,Z p are i.i.d. from
+N (0, 1).
+Repeated use of (4.6) shows that
+χ 2
+p
+=Γ (p/ 2, 2),
+which has moment generating function
+1
+(1 − 2u)p/2 , u< 1/ 2. (4.7)
+
+===== PAGE 9 =====
+
+4.3 Normal One-Sample Problem—Distribution Theory 69
+Returning to sampling from a normal distribution, let X1,...,X n be i.i.d.
+from N (µ,σ 2), and deﬁne Zi = (Xi −µ)/σ , so that Z1,...,Z n are i.i.d. from
+N (0, 1). Then
+Z = 1
+n
+n∑
+i=1
+Xi − µ
+σ =
+∑n
+i=1
+Xi − nµ
+nσ =
+ X − µ
+σ .
+Note that √
+n
+Z ∼ N (0, 1), and so n
+Z
+2
+∼ χ 2
+1
+. Next,
+V
+def
+= (n − 1)S2
+σ 2 =
+n∑
+i=1
+(Xi −
+X
+σ
+)2
+=
+n∑
+i=1
+(Xi − µ
+σ −
+ X − µ
+σ
+)2
+=
+n∑
+i=1
+(Zi −
+Z)2.
+Expanding the square,
+V =
+n∑
+i=1
+(Zi −
+ Z)2 =
+n∑
+i=1
+(Z2
+i − 2Zi
+Z +
+Z) =
+n∑
+i=1
+Z2
+i − n
+Z
+2
+,
+and thus
+V +n
+Z
+2
+=
+n∑
+i=1
+Z2
+i ∼ χ 2
+n
+. (4.8)
+By Basu’s theorem (see Example 3.22),
+ X and S2 are independent. Because
+n
+Z
+2
+is a function of
+ X, and V is a function of S2,V andn
+Z
+2
+are independent.
+Using this independence and formula (4.7) for the moment generating function
+for χ
+2
+n
+, (4.8) implies
+MV (u)Mn
+Z
+2 (u) = 1
+(1 − 2u)n/2 .
+But n
+Z
+2
+∼ χ 2
+1
+with moment generating function 1/ √
+ 1 − 2u, and thus
+MV (u) = 1
+(1 − 2u)(n−1)/2 . (4.9)
+This is the moment generating function for χ 2
+n−1
+, and thus
+V = (n − 1)S2
+σ 2 ∼ χ 2
+n−1
+.
+This along with
+ X ∼ N (µ,σ 2/n ) implicitly determines the joint distribution
+of
+ X and S2, because these two variables are independent.
+
+===== PAGE 10 =====
+
+70 4 Unbiased Estimation
+4.4 Normal One-Sample Problem—Estimation
+Results from the last section lead directly to a variety of UMVU estimates.
+First note that for n +r> 1,
+ES
+r =E
+[ σr
+(n − 1)r/ 2Vr/ 2
+]
+= σr
+(n − 1)r/ 2
+∫∞
+0
+x(r+n−3)/2 e−x/2
+2(n−1)/2 Γ
+[
+(n − 1)/ 2
+]dx
+= σr 2r/ 2Γ
+[
+(r +n − 1)/ 2
+]
+(n − 1)r/ 2Γ
+[
+(n − 1)/ 2
+]. (4.10)
+From this,
+(n − 1)r/ 2Γ
+[
+(n − 1)/ 2
+]
+2r/ 2Γ
+[
+(r +n − 1)/ 2
+] Sr
+is an unbiased estimate of σr . This estimate is UMVU because it is a function
+of the complete suﬃcient statistic (
+ X,S 2). In particular, when r = 2, S2 is
+UMVU for σ 2. Note that the UMVU estimate for σ is not S, although S is a
+common and natural choice in practice. By Stirling’s formula
+(n − 1)r/ 2Γ
+[
+(n − 1)/ 2
+]
+2r/ 2Γ
+[
+(r +n − 1)/ 2
+] = 1 − r(r − 2)
+4n +O(1/n 2),
+as n → ∞ .1 For large n, the bias of Sr as an estimate of σr will be slight.
+BecauseE
+X =µ,
+X is the UMVU estimator of µ. However,
+X
+2
+is a biased
+estimator of µ2 as
+E
+X
+2
+= (E
+X)2 + Var(
+X) = µ2 +σ 2/n.
+The bias can be removed by subtracting an unbiased estimate of σ 2/n . Doing
+this,
+ X
+2
+− S2/n is UMVU for µ2.
+The parameter µ/σ might be interpreted as a signal-to-noise ratio. The
+unbiased estimate of σ−1 given above only depends on S2 and is independent
+of
+ X, the unbiased estimate of µ. Multiplying these estimates together,
+X
+√
+2Γ
+[
+(n − 1)/ 2
+]
+S√
+n − 1Γ
+[
+(n − 2)/ 2
+]
+is UMVU for µ/σ .
+The pth quantile for N (µ,σ 2) is a value x such that P (Xi ≤ x) = p. If Φ
+is the cumulative distribution function for N (0, 1), then as Zi = (Xi −µ)/σ ∼
+N (0, 1),
+1 HereO(1/n 2 ) represents a remainder bounded in magnitude by some multiple of
+1/n 2 . See Section 8.6.
+
+===== PAGE 11 =====
+
+4.5 Variance Bounds and Information 71
+P (Xi ≤ x) = P
+(
+Zi ≤ x − µ
+σ
+)
+=Φ
+(x − µ
+σ
+)
+.
+This equals p if (x − µ)/σ =Φ←(p), and so the pth quantile of N (µ,σ 2) is
+x =µ +σΦ ←(p).
+The UMVU estimate of this quantile is
+X +
+√
+n − 1Γ
+[
+(n − 1)/ 2
+]
+√
+2Γ (n/ 2) SΦ←(p).
+4.5 Variance Bounds and Information
+From (1.10) and (1.11), the covariance between two random variables X and
+Y is
+Cov(X,Y ) = E(X − EX )(Y − EY ) = EXY − (EX )(EY ).
+In particular, if either mean, EX orEY , is zero, Cov(X,Y ) = EXY . Letting
+σX =
+√
+Var(X) and σY =
+√
+Var(Y ), then because
+E [(X − EX )σY ± (Y − EY )σX ]2 = 2σXσY
+(
+σXσY ± Cov(X,Y )
+)
+≥ 0,
+we have the bound
+|Cov(X,Y )| ≤σXσY or Cov 2(X,Y ) ≤ Var(X)Var(Y ), (4.11)
+called the covariance inequality.
+Using the covariance inequality, if δ is an unbiased estimator of g(θ ) and
+Ψ is an arbitrary random variable, then
+Varθ (δ ) ≥ Cov2
+θ
+(δ,ψ )
+Varθ (ψ ) . (4.12)
+The right hand side of this inequality involves δ , so this seems rather useless as
+a bound for the variance of δ . To make headway we need to choose ψ cleverly,
+so that Covθ (δ,ψ ) is the same for all δ that are unbiased for g(θ ).
+Let P = {Pθ :θ ∈Ω} be a dominated family with densities pθ ,θ ∈Ω ⊂ R.
+As a starting point, Eθ +∆δ − Eθ δ gives the same value g(θ +∆) − g(θ ) for
+any unbiased δ . Here ∆ must be chosen so that θ +∆ ∈ Ω. Next, we write
+Eθ +∆δ − Eθ δ as a covariance under Pθ . To do this we ﬁrst express Eθ +∆δ as
+an expectation under Pθ , which is accomplished by introducing a likelihood
+ratio. This step of the argument involves a key assumption that pθ +∆(x) = 0
+whenever pθ (x) = 0. Deﬁne L(x) = pθ +∆(x)/p θ (x) when pθ (x) > 0, and
+L(x) = 1, otherwise. (This function L is called a likelihood ratio.) From the
+assumption,
+
+===== PAGE 12 =====
+
+72 4 Unbiased Estimation
+L(x)pθ (x) = pθ +∆(x)
+pθ (x) pθ (x) = pθ +∆(x), a.e. x,
+and so, for any function h integrable under Pθ +∆,
+Eθ +∆h(X) =
+∫
+hpθ +∆dµ =
+∫
+hLpθ dµ =EθL(X)h(X).
+Takingh = 1, EθL = 1; and taking h =δ , Eθ +∆δ =EθLδ . So if we deﬁne
+ψ (X) = L(X) − 1,
+then Eθ ψ = 0 and
+Eθ +∆δ − Eθδ =EθLδ − Eθ δ =Eθψδ = Covθ (δ,ψ ).
+Thus
+Covθ (δ,ψ ) = g(θ +∆) − g(θ )
+for any unbiased estimator δ . With this choice for ψ , (4.12) gives
+Varθ (δ ) ≥
+[
+g(θ +∆) − g(θ )
+]2
+Varθ (ψ ) =
+[
+g(θ +∆) − g(θ )
+]2
+Eθ
+(pθ +∆(X)
+pθ (X) − 1
+)2, (4.13)
+called the Hammersley–Chapman–Robbins inequality.
+Under suitable regularity, the dominated convergence theorem can be used
+to show that the lower bound in (4.13), which can be written as
+[g(θ +∆) − g(θ )
+∆
+]2
+Eθ
+( [
+pθ +∆(X) − pθ (X)
+]
+/∆
+pθ (X)
+)2,
+converges to [
+g′(θ )
+]2
+Eθ
+(∂pθ (X)/∂θ
+pθ (X)
+)2
+as ∆ → 0. The denominator here is called Fisher information , denoted I(θ ),
+and given by
+I(θ ) = Eθ
+(∂ logpθ (X)
+∂θ
+)2
+. (4.14)
+With enough regularity to interchange integration and diﬀerentiation,
+
+===== PAGE 13 =====
+
+4.5 Variance Bounds and Information 73
+0 = ∂
+∂θ 1 = ∂
+∂θ
+∫
+pθ (x)dµ(x) =
+∫ ∂
+∂θ pθ (x)dµ(x)
+=
+∫ ∂ logpθ (x)
+∂θ pθ (x)dµ(x) = Eθ
+∂ logpθ (X)
+∂θ ,
+and so
+I(θ ) = Varθ
+(∂ logpθ (X)
+∂θ
+)
+. (4.15)
+If we can pass two partial derivatives with respect to θ inside the integral∫
+pθ dµ = 1, then
+∫ ∂ 2pθ (x)
+∂θ 2 dµ(x) = Eθ
+[∂ 2pθ (X)/∂θ 2
+pθ (X)
+]
+= 0.
+From this, inasmuch as
+∂ 2logpθ (X)
+∂θ 2 = ∂ 2pθ (X)/∂θ 2
+pθ (X) −
+(∂ logpθ (X)
+∂θ
+)2
+,
+I(θ ) = −Eθ
+∂ 2logpθ (X)
+∂θ 2 . (4.16)
+For calculations, this formula is often more convenient than (4.14).
+A lower bound based on Fisher information can be derived in much the
+same way as the Hammersley–Chapman–Robbins inequality, but tends to in-
+volve diﬀerentiation under an integral sign. Let δ have mean g(θ ) = E
+θ δ and
+takeψ =∂ logpθ/∂θ . With suﬃcient regularity,
+g′(θ ) = ∂
+∂θ
+∫
+δpθ dµ =
+∫
+δ ∂
+∂θ pθ dµ =
+∫
+δψp θ dµ,
+or
+g′(θ ) = Eθδψ. (4.17)
+In a given application, this might be established using dominated convergence.
+If δ is identically one, then g(θ ) = 1, g
+′(θ ) = 0, and we anticipate Eθψ = 0.
+Then (4.17) shows that Cov θ (δ,ψ ) = g′(θ ). Using this in (4.12) we have the
+following result.
+Theorem 4.9. Let P = {P
+θ : θ ∈ Ω} be a dominated family with Ω an
+open set in R and densities pθ diﬀerentiable with respect to θ . If Eθψ = 0 ,
+Eθ δ 2 < ∞, and (4.17) hold for all θ ∈Ω, then
+Varθ (δ ) ≥
+[
+g′(θ )
+]2
+I(θ ) , θ ∈Ω.
+This result is called the Cram´ er–Rao, or information, bound. The reg-
+ularity condition (4.17) is troublesome. It involves the estimator δ , thus the
+
+===== PAGE 14 =====
+
+74 4 Unbiased Estimation
+theorem leaves open the possibility that some estimators, not satisfying (4.17),
+may have variance below the stated bound. This has been addressed in various
+ways. Under very weak conditions Woodroofe and Simons (1983) show that
+the bound holds for any estimator δ for almost all θ . Other authors impose
+more restrictive conditions on the model P, but show that the bound holds
+for all δ at all θ ∈Ω.
+Suppose P = {P
+θ : θ ∈ Ω} is a dominated family with densities pθ and
+Fisher information I. If h is a one-to-one function from Ξ to Ω, then the
+family P can be reparameterized as ˜P = {Qξ :ξ ∈Ξ } with the identiﬁcation
+Qξ = Ph(ξ ). Then Qξ has density qξ = ph(ξ ). Letting θ = h(ξ ), by the chain
+rule, Fisher information ˜I for the reparameterized family ˜P is given by
+˜I(ξ ) = ˜Eξ
+(∂ logqξ (X)
+∂ξ
+)2
+= ˜Eξ
+(∂ logph(ξ )(X)
+∂ξ
+)2
+=
+[
+h′(ξ )
+]2
+Eθ
+(∂ logpθ (X)
+∂θ
+)2
+=
+[
+h′(ξ )
+]2
+I(θ ). (4.18)
+Example 4.10. Exponential Families . Let P be a one-parameter exponential
+family in canonical form with densities pη given by
+pη (x) = exp
+[
+ηT (x) − A(η )
+]
+h(x).
+Then
+∂ logpη (X)
+∂η =T − A′(η ),
+and so by (4.15),
+I(η ) = Varη
+(
+T − A′(η )
+)
+= Varη (T ) = A′′(η ).
+Because
+∂ 2logpη (X)
+∂η 2 = −A′′(η ),
+this formula for I(η ) also follows immediately from (4.16). If the family is
+parameterized instead by µ =A′(η ) = Eη T , then by (4.18)
+A′′(η ) = I(µ)
+[
+A′′(η )
+]2
+,
+and so, because A′′(η ) = Var(T ),
+I(µ) = 1
+VarµT.
+Note that because T is UMVU for µ, the lower bound Var µ(δ ) ≥ 1/I (µ) for
+an unbiased estimator δ of µ is sharp in this example.
+
+===== PAGE 15 =====
+
+4.5 Variance Bounds and Information 75
+Example 4.11. Location Families . Suppose ǫ is an absolutely continuous ran-
+dom variable with density f . The family of distributions P = {Pθ : θ ∈ R}
+withPθ the distribution of θ +ǫ is called a location family. Using a change of
+variablesx =θ +e,
+∫
+g(x)dPθ (x) = Eθ g(X) = Eg(θ +ǫ)
+=
+∫
+g(θ +e)f (e)de =
+∫
+g(x)f (x − θ )dx,
+and so Pθ has density pθ (x) = f (x − θ ). Fisher information for this family is
+given by
+I(θ ) = Eθ
+(∂ logf (X − θ )
+∂θ
+)2
+=Eθ
+(
+−f′(X − θ )
+f (X − θ )
+)2
+=E
+(f′(ǫ)
+f (ǫ)
+)2
+=
+∫ [
+f′(x)
+]2
+f (x) dx.
+So for location families, I(θ ) is constant and does not vary with θ .
+If two (or more) independent vectors are observed, then the total Fisher
+information is the sum of the Fisher information provided by the individual
+observations. To see this, suppose X andY are independent, and that X has
+densityp
+θ andY has density qθ (dominating measures for the distributions of
+X and Y can be diﬀerent). Then by (4.15), the Fisher information observing
+X is
+IX (θ ) = Varθ
+(∂ logpθ (X)
+∂θ
+)
+,
+and the Fisher information observing Y is
+IY (θ ) = Varθ
+(∂ logqθ (Y )
+∂θ
+)
+.
+As X and Y are independent, their joint density is pθ (x)qθ (y), and Fisher
+information observing both vectors X and Y is
+IX,Y (θ ) = Varθ
+(
+∂ log
+[
+pθ (X)qθ (Y )
+]
+∂θ
+)
+= Varθ
+(∂ logpθ (X)
+∂θ + ∂ logqθ (Y )
+∂θ
+)
+= Varθ
+(∂ logpθ (X)
+∂θ
+)
++ Varθ
+(∂ logqθ (Y )
+∂θ
+)
+=IX (θ ) +IY (θ ).
+Iterating this, the Fisher information for a random sample of n observations
+will be nI(θ ) if I(θ ) denotes the Fisher information for a single observation.
+
+===== PAGE 16 =====
+
+76 4 Unbiased Estimation
+4.6 Variance Bounds in Higher Dimensions
+When the parameter θ takes values in Rs, Fisher information will be a matrix,
+deﬁned in regular cases by
+I(θ )i,j =Eθ
+[∂ logpθ (X)
+∂θ i
+∂ logpθ (X)
+∂θ j
+]
+= Covθ
+(∂ logpθ (X)
+∂θ i
+, ∂ logpθ (X)
+∂θ j
+)
+= −Eθ
+[∂ 2logpθ (X)
+∂θ i∂θ j
+]
+.
+The ﬁrst two lines here are equal because
+Eθ ∇θ logpθ (X) = 0,
+and, as before, the third formula requires extra regularity necessary to pass a
+second derivative inside an integral. Using matrix notation,
+I(θ ) = E
+θ
+(
+∇θ logpθ (X)
+)(
+∇θ logpθ (X)
+)′
+= Covθ
+(
+∇θ logpθ (X)
+)
+= −Eθ ∇ 2
+θ logpθ (X),
+where ∇θ is the gradient with respect to θ , ∇ 2
+θ
+is the Hessian matrix of sec-
+ond order derivatives, and prime denotes transpose. The lower bound for the
+variance of an unbiased estimator δ of g(θ ), where g :Ω → R, is
+Var
+θ (δ ) ≥ ∇ g(θ )′I−1(θ )∇g(θ ).
+Example 4.12. Exponential Families . If P is ans-parameter exponential family
+in canonical form with densities
+pη (x) = exp
+[
+η ·T (x) − A(η )
+]
+h(x),
+then
+∂ 2logpη (X)
+∂η i∂η j
+= −∂ 2A(η )
+∂η i∂η j
+.
+Thus
+I(η )i,j = ∂ 2A(η )
+∂η i∂η j
+.
+This can be written more succinctly as
+I(η ) = ∇ 2A(η ).
+
+===== PAGE 17 =====
+
+4.7 Problems 77
+The ﬁnal formula in this section is a multivariate extension of (4.18). As
+before, let P = {Pθ : θ ∈ Ω} be a dominated family with densities pθ and
+Fisher information I, but now Ω is a subset of Rs. Let h be a diﬀerentiable
+one-to-one function from Ξ to Ω and introduce the family ˜P = {Qξ :ξ ∈Ξ }
+with Qξ =Ph(ξ ). The density for Qξ is qξ =ph(ξ ), and by the chain rule,
+∂ logqξ (X)
+∂ξi
+=
+∑
+j
+∂ logpθ (X)
+∂θ j
+∂hj (ξ )
+∂ξi
+,
+where θ =h(ξ ). If Dh represents the matrix of partial derivatives of h given
+by
+[Dh(ξ )]i,j = ∂hi(ξ )
+∂ξj
+,
+then ∂ logqξ (X)/∂ξ i is the ith entry of
+[
+Dh(ξ )
+]′
+∇θ logpθ (X). So
+∇ξ logqξ (X) =
+[
+Dh(ξ )
+]′
+∇θ logpθ (X)
+and
+˜I(ξ ) = ˜Eξ
+[
+∇ξ logqξ (X)
+][
+∇ξ logqξ (X)
+]′
+=Eθ
+[
+Dh(ξ )
+]′[
+∇θ logpθ (X)
+][
+∇θ logpθ (X)
+]′[
+Dh(ξ )
+]
+=
+[
+Dh(ξ )
+]′
+I(θ )
+[
+Dh(ξ )
+]
+.
+4.7 Problems 2
+*1. Let X1,...,X m and Y1,...,Y n be independent variables with the Xi a
+random sample from an exponential distribution with failure rate λx, and
+theYj a random sample from an exponential distribution with failure rate
+λy .
+a) Determine the UMVU estimator of λx/λ y .
+b) Under squared error loss, ﬁnd the best estimator of λx/λ y of form
+δ =c
+Y/
+ X.
+c) Find the UMVU estimator of e−λ x =P (X1 > 1).
+*2. Let X1,...,X n be a random sample from N (µx,σ 2), and let Y1,...,Y m
+be an independent random sample from N (µy, 2σ 2), with µx, µy , and σ 2
+all unknown parameters.
+a) Find a complete suﬃcient statistic.
+b) Determine the UMVU estimator of σ 2. Hint: Find a linear combination
+L of S2
+x = ∑n
+i=1
+(Xi −
+X)2/ (n − 1) and S2
+y = ∑m
+j=1
+(Yj −
+Y )2/ (m − 1)
+so that (
+X,
+ Y,L ) is complete suﬃcient.
+2 Solutions to the starred problems are given at the back of the book.
+
+===== PAGE 18 =====
+
+78 4 Unbiased Estimation
+c) Find a UMVU estimator of ( µx − µy )2.
+d) Suppose we know the µy = 3µx. What is the UMVU estimator of µx?
+*3. Let X1,...,X n be a random sample from the Poisson distribution with
+meanλ . Find the UMVU for cos λ . (Hint: For Taylor expansion, the iden-
+tity cosλ = (eiλ +e−iλ )/ 2 may be useful.)
+*4. Let X1,...,X n be independent normal variables, each with unit variance,
+and with EXi = αti +βt 2
+i
+, i = 1,...,n, where α and β are unknown
+parameters and t1,...,t n are known constants. Find UMVU estimators
+of α and β .
+*5. Let X1,...,X n be i.i.d. from some distribution Qθ , and let
+ X = (X1 +
+· · · +Xn)/n be the sample average.
+a) Show that S2 = ∑(Xi −
+ X)2/ (n − 1) is unbiased for σ 2 = σ 2(θ ) =
+Varθ (Xi).
+b) If Qθ is the Bernoulli distribution with success probability θ , show
+that S2 from (a) is UMVU.
+c) If Qθ is the exponential distribution with failure rate θ , ﬁnd the
+UMVU estimator of σ 2 = 1/θ 2. Give a formula for Eθ [X2
+i |
+X = c]
+in this case.
+*6. Suppose δ is a UMVU estimator of g(θ ); U is an unbiased estimator of
+zero, EθU = 0, θ ∈Ω; and that δ andU both have ﬁnite variances for all
+θ ∈Ω. Show that U and δ are uncorrelated, Eθ Uδ = 0, θ ∈Ω.
+*7. Suppose δ 1 is a UMVU estimator of g1(θ ),δ 2 is UMVU estimator of g2(θ ),
+and that δ 1 and δ 2 both have ﬁnite variance for all θ . Show that δ 1 +δ 2
+is UMVU for g1(θ ) +g2(θ ). Hint: Use the result in the previous problem.
+*8. Let X1,...,X n be i.i.d. absolutely continuous variables with common den-
+sityfθ ,θ >0, given by
+fθ (x) =
+{
+θ/x 2, x>θ ;
+0, x ≤ θ.
+Find the UMVU estimator for g(θ ) if g(θ )/θ n → 0 as θ → ∞ and g is
+diﬀerentiable.
+9. Let X be a single observation from a Poisson distribution with mean λ .
+Determine the UMVU estimator for
+e−2λ =
+[
+Pλ (X = 0)
+]2
+.
+*10. Suppose X is an exponential variable with density pθ (x) = θe−θx , x> 0;
+pθ (x) = 0, otherwise. Find the UMVU estimator for 1/ (1 +θ ).
+*11. Let X1,...,X 3 be i.i.d. geometric variables with common mass function
+fθ (x) = Pθ (Xi =x) = θ (1 −θ )x, x = 0, 1,... . Find the UMVU estimator
+of θ 2.
+*12. Let X be a single observation, absolutely continuous with density
+
+===== PAGE 19 =====
+
+4.7 Problems 79
+pθ (x) =
+{
+1
+2 (1 +θx ), |x|< 1;
+0, |x| ≥1.
+Here θ ∈ [− 1, 1] is an unknown parameter.
+a) Find a constant a so that aX is unbiased for θ .
+b) Show that b =Eθ |X|is independent of θ .
+c) Let θ 0 be a ﬁxed parameter value in [ − 1, 1]. Determine the constant
+c = cθ 0 that minimizes the variance of the unbiased estimator aX +
+c
+(
+|X| −b
+)
+whenθ =θ 0. Is aX uniformly minimum variance unbiased?
+13. Let X1,...,X m be i.i.d. from a Poisson distribution with parameter λx
+and let Y1,...,Y n be i.i.d. from a Poisson distribution with parameter λy ,
+with all n +m variables independent.
+a) Find the UMVU of ( λx − λy )2.
+b) Give a formula for the chance Xi is odd, and ﬁnd the UMVU estimator
+of this parameter.
+14. Let X1,...,X n be i.i.d. from an arbitrary discrete distribution on {0, 1, 2}.
+Let T1 =X1 + · · · +Xn and T2 =X2
+1 + · · · +X2
+n.
+a) Show that T = (T1,T 2) is complete suﬃcient.
+b) Let µ =EXi. Find the UMVU of µ3.
+15. Let X1,...,X n be i.i.d. absolutely continuous random variables with com-
+mon marginal density fθ given by
+fθ (x) =
+{
+eθ−x, x ≥ θ ;
+0, x<θ.
+Find UMVU estimators for θ and θ 2.
+16. Let X1 and X2 be independent discrete random variables with common
+mass function
+P (Xi =x) = − θx
+x log(1 − θ ), x = 1, 2,...,
+where θ ∈ (0, 1).
+a) Find the mean and variance of X1.
+b) Find the UMVU of θ/ log(1 − θ ).
+17. Let X1,...,X n be i.i.d. absolutely continuous variables with common den-
+sityfθ ,θ ∈ R, given by
+fθ (x) =
+
+
+
+φ (x)
+Φ (θ ), x<θ ;
+0, x ≥ θ.
+(This is the density for the standard normal distribution truncated above
+at θ .)
+a) Derive a formula for the UMVU for g(θ ). (Assume g is diﬀerentiable
+and behaves reasonably as θ → ±∞ .)
+
+===== PAGE 20 =====
+
+80 4 Unbiased Estimation
+b) If n = 3 and the observed data are − 2. 3, − 1. 2, and 0, what is the
+estimate for θ 2?
+18. Let X1 and X2 be i.i.d. discrete variables with common mass function
+fθ (x) = Pθ (Xi =x) = (x + 1)θ 2(1 − θ )x, x = 0, 1,...,
+where θ ∈ (0, 1).
+a) Compute E
+[
+1/ (Xi + 1)
+]
+.
+b) Find the mass function for X1 +X2.
+c) Use conditioning to ﬁnd the UMVU for θ .
+19. Let X have a binomial distribution with n trials and success probability
+θ ∈ (0, 1). If m ≤ n, ﬁnd the UMVU estimator of θm.
+20. Let X1,...,X n be i.i.d. and absolutely continuous with common marginal
+densityfθ given by
+fθ (x) =
+{
+2x/θ 2, 0<x<θ ;
+0, otherwise,
+whereθ >0 is an unknown parameter. Find the UMVU estimator of g(θ )
+if g is diﬀerentiable and θ 2ng(θ ) → 0 as θ ↓ 0.
+21. Let X1,...,X n be i.i.d. from an exponential distribution with density
+fθ (x) =
+{
+θe−θx, x> 0;
+0, otherwise.
+Find UMVU estimators for θ and θ 2.
+22. Suppose X1,...,X n are independent with Xj ∼ N (0,jθ 2), j = 1,...,n.
+Find the UMVU estimator of θ .
+23. For θ> 0, let
+∆θ = {(x,y ) ∈ R2 :x> 0,y> 0,x +y <θ},
+the interior of a triangle. Let ( X1,Y 1), ... , (Xn,Y n) be i.i.d. from the
+uniform distribution on ∆θ , so their common density is 21 ∆θ /θ 2.
+a) Find a complete suﬃcient statistic T .
+b) Find the UMVU estimators of θ and cosθ .
+*24. In the normal one-sample problem, the statistic t = √
+n
+X/S has the
+noncentral t-distribution on n − 1 degrees of freedom and noncentrality
+parameter δ = √
+nµ/σ . Use our results on distribution theory for the
+one-sample problem to ﬁnd the mean and variance of t.
+25. Let X1,...,X n be i.i.d. from N (µ,σ 2), with µ and σ both unknown.
+a) Find the UMVU estimator of µ3.
+b) Find the UMVU estimator of µ2/σ 2.
+26. Let X1,...,X n be independent with
+Xi ∼ N (miµ,m iσ 2), i = 1,...,n,
+
+===== PAGE 21 =====
+
+4.7 Problems 81
+wherem1,...,m n are known constants and µ andσ are unknown param-
+eters. (These sort of data would arise if i.i.d. variables from N (µ,σ 2) were
+divided into groups, with the ith group having mi observations, and the
+observed data are totals for the n groups.)
+a) Find UMVU estimators for µ and σ 2.
+b) Show that the estimators in part (a) are independent.
+27. Let Z1 and Z2 be independent standard normal random variables. Find
+E
+√
+|Z1/Z 2|.
+*28. Let X1,...,X n be i.i.d. from the uniform distribution on (0 ,θ ).
+a) Use the Hammersley–Chapman–Robbins inequality to ﬁnd a lower
+bound for the variance of an unbiased estimator of θ . This bound will
+depend on ∆. Note that ∆ cannot vary freely but must lie in a suitable
+set.
+b) In principle, the best lower bound can be found taking the supre-
+mum over ∆. This calculation cannot be done explicitly, but an ap-
+proximation is possible. Suppose ∆ = −cθ/n . Show that the lower
+bound for the variance can be written as θ 2gn(c)/n 2. Determine
+g(c) = limn→∞gn(c).
+c) Find the value c0 that maximizes g(c) over c ∈ (0, 1) and give an
+approximate lower bound for the variance ofδ . (The valuec0 cannot be
+found explicitly, but you should be able to come up with a numerical
+value.)
+29. Determine the Fisher information I(θ ) for the density f
+θ (x) = (1 +θx )/ 2,
+x ∈ (− 1, 1), fθ (x) = 0, x /∈ (− 1, 1).
+*30. Suppose X1,...,X n are independent withXi ∼ N (α +βti, 1),i = 1,...,n,
+where t1,...,t n are known constants and α , β are unknown parameters.
+a) Find the Fisher information matrix I(α,β ).
+b) Give a lower bound for the variance of an unbiased estimator of α .
+c) Suppose we know the value of β . Give a lower bound for the variance
+of an unbiased estimator of α in this case.
+d) Compare the estimators in parts (b) and (c). When are the bounds
+the same? If the bounds are diﬀerent, which is larger?
+e) Give a lower bound for the variance of an unbiased estimator of the
+product αβ .
+*31. Find the Fisher information for the Cauchy location family with densities
+pθ given by
+pθ (x) = 1
+π
+[
+(x − θ )2 + 1
+].
+Also, what is the Fisher information for θ 3?
+*32. Suppose X has a Poisson distribution with mean θ 2, so the parameter θ
+is the square root of the usual parameter λ =EX . Show that the Fisher
+information I(θ ) is constant.
+
+===== PAGE 22 =====
+
+82 4 Unbiased Estimation
+*33. Consider the exponential distribution with failure rate λ . Find a function
+h deﬁning a new parameter θ = h(λ ) so that Fisher information I(θ ) is
+constant.
+*34. Consider an autoregressive model in which X1 ∼ N
+(
+θ,σ 2/ (1 − ρ 2)
+)
+and
+the conditional distribution of Xj+1 given X1 = x1, ... , Xj = xj , is
+N
+(
+θ +ρ (xj − θ ),σ 2)
+, j = 1,...,n − 1.
+a) Find the Fisher information matrix, I(θ,σ ).
+b) Give a lower bound for the variance of an unbiased estimator of θ .
+c) Show that the sample average
+ X = (X1 + · · · +Xn)/n is an unbiased
+estimator of θ , compute its variance, and compare its variance with
+the lower bound. Hint: Deﬁne ǫj = Xj − θ and ηj+1 = ǫj+1 − ǫj .
+Use smoothing to argue that η 2,...,η n are i.i.d. N (0,σ 2) and are
+independent of ǫ1. Similarly, Xi is independent of ηi+1,η i+2,... . Use
+these facts to ﬁnd ﬁrst Var( X2) = Var(ǫ2), then Var( X3), Var(X4),
+... . Finally, ﬁnd Cov(Xi+1,X i), nCov(Xi+2,X i), and so on.
+35. Consider the binomial distribution with n trials and success probability
+p. Find a function h deﬁning a new parameter θ = h(p) so that Fisher
+information I(θ ) is constant.
+36. Let X1,...,X n be i.i.d. with common density fθ (x) = eθ−x, x > θ,
+fθ (x) = 0, otherwise.
+a) Find lower bounds for the variance of an unbiased estimator of θ
+using the Hammersley–Chapman–Robbins inequality. These bounds
+will depend on the choice of ∆.
+b) What choice of ∆ gives the best (largest) lower bound?
+37. Suppose X has a Poisson distribution with mean λ , and that given X =n,
+Y is Poisson with mean nθ .
+a) Find the Fisher information matrix.
+b) Derive a formula for µ
+Y =EY .
+c) Find a lower bound for the variance of an unbiased estimator of µY .
+d) Compare the bound in part (c) with the variance of Y .
+38. Suppose X has a geometric distribution with parameter θ , so P (X =x) =
+θ (1 −θ )x,x = 0, 1,... , and that given X =n,Y is binomial with x trials
+and success probability p.
+a) Find the Fisher information matrix.
+b) Give a lower bound for the variance of an unbiased estimator of µY =
+EY . Compare the lower bound with Var( Y ).
+39. Let X have a “triangular” shaped density given by
+fθ (x) =
+{
+2(θ − x)/θ 2, x ∈ (0,θ );
+0, otherwise.
+a) Use the Hammersley–Chapman–Robbins inequality to derive lower
+bounds for the variance of an unbiased estimator of θ based on a
+single observation X. These bounds will depend on the choice of ∆.
+
+===== PAGE 23 =====
+
+4.7 Problems 83
+b) What is in fact the smallest possible variance for an unbiased estimator
+δ (X) of θ ? Compare this value with the lower bounds in part (a).
+40. Let X have a geometric distribution with success probability θ , soPθ (X =
+x) = θ (1 −θ )x,x = 0, 1,... . What is the smallest possible variance for an
+unbiased estimator δ (X) of θ ? Compare this variance with the Cram´ er–
+Rao lower bound in Theorem 4.9.
+41. Let X1,...,X n be i.i.d. random variables (angles) from the von Mises
+distribution with Lebesgue density
+pθ (x) =
+
+
+
+exp
+{
+θ
+1 sinx +θ 2 cosx
+}
+2πI 0(∥θ ∥) , x ∈ (0, 2π );
+0, otherwise.
+Here ∥θ ∥ denotes the Euclidean length of θ , ∥θ ∥ = (θ 2
+1 +θ 2
+2 )1/2 , and the
+function I0 is a modiﬁed Bessel function.
+a) Find the Fisher information matrix, expressed using I0 and its deriva-
+tives.
+b) Give a lower bound for the variance of an unbiased estimator of ∥θ ∥.
+42. Let θ = ( α,λ ) and let Pθ denote the gamma distribution with shape
+parameter α and scale 1/λ . So Pθ has density
+pθ (x) =
+
+
+
+λ
+α xα−1e−xλ
+Γ (α ) , x> 0;
+0, otherwise.
+a) Find the Fisher information matrix I(θ ), expressed using the “psi”
+function ψ
+def
+= Γ′/Γ and its derivatives.
+b) What is the Cram´ er–Rao lower bound for the variance of an unbiased
+estimator of α +λ ?
+c) Find the mean µ and variance σ 2 forPθ . Show that there is a one-to-
+one correspondence between θ and (µ,σ 2).
+d) Find the Fisher information matrix if the family of gamma distribu-
+tions is parameterized by ( µ,σ 2), instead of θ .
+
+===== PAGE 24 =====
+

@@ -1,0 +1,840 @@
+
+===== PAGE 1 =====
+
+7
+Bayesian Estimation
+As mentioned in Section 3.1, a comparison of two estimators from their risk
+functions will be inconclusive whenever the graphs of these functions cross.
+This diﬃculty will not arise if the performance of an estimator is measured
+with a single number. In a Bayesian approach to inference the performance of
+an estimatorδ is judged by a weighted average of the risk function, speciﬁcally
+by ∫
+R(θ,δ )dΛ (θ ), (7.1)
+where Λ is a speciﬁed probability measure on the parameter space Ω.
+7.1 Bayesian Models and the Main Result
+The weighted average (7.1) arises as expected loss using δ in a Bayesian
+probability model in which both the unknown parameter and data are viewed
+as random. For notation, Θ is the random parameter with θ a possible value
+for Θ . In the Bayesian model,
+Θ ∼ Λ,
+withΛ called the prior distribution because it represents probabilities before
+data are observed, and Pθ is the conditional distribution of X given Θ = θ ,
+that is,
+X|Θ =θ ∼ Pθ.
+Then
+E
+[
+L
+(
+Θ,δ (X)
+)⏐
+⏐Θ =θ
+]
+=
+∫
+L
+(
+θ,δ (x)
+)
+dP
+θ (x) = R(θ,δ ),
+and by smoothing,
+EL(Θ,δ ) = EE
+[
+L(Θ,δ )
+⏐
+⏐Θ
+]
+=ER(Θ,δ ) =
+∫
+R(θ,δ )dΛ (θ ).
+R.W. Keener, Theoretical Statistics: Topics for a Core Course, Springer Texts in Statistics, 
+DOI 10.1007/978-0-387-93839-4_7, © Springer Science+Business Media, LLC 2010 
+115 
+
+===== PAGE 2 =====
+
+116 7 Bayesian Estimation
+In Bayesian estimation, the choice of the prior distribution Λ is critical. In
+some situationsΘ may be random in the usual frequentist sense with a random
+process producing the current parameter Θ and other random parameters in
+the past and future. Then Λ would be selected from prior experience with the
+random process. For instance, the parameter Θ may be the zip code on a letter
+estimated using pixel data from an automatic scanner. The prior distribution
+here should just reﬂect chances for various zip codes. More commonly, the
+parameterΘ cannot be viewed as random in a frequentist sense. The general
+view in these cases would be that the prior Λ should reﬂect the researchers’
+informed subjective opinion about chances for various values of Θ . Both of
+these ideas regarding selection of Λ may need to be tempered with a bit
+of pragmatism. Calculations necessary to compute estimators may be much
+easier if the prior distribution has a convenient form.
+An estimator that minimizes (7.1) is called Bayes. Lacking information
+from data X, the best estimate is just the constant minimizing EL(Θ,d ) over
+allowed values of d. The following result shows that a Bayes estimator can be
+found in a similar fashion. The key diﬀerence is that one should now minimize
+the conditional expected loss given the data, that is E
+[
+L(Θ,d )
+⏐
+⏐X =x
+]
+. This
+conditional expected loss is called the posterior risk and would be computed
+integrating against the conditional distribution for Θ givenX =x, called the
+posterior distribution of Θ .
+Theorem 7.1. SupposeΘ ∼ Λ , X|Θ =θ ∼ P
+θ , and L(θ,d ) ≥ 0 for all θ ∈Ω
+and all d. If
+a)EL(Θ,δ 0)< ∞ for some δ 0,
+and
+b) for a.e. x there exists a value δ
+Λ (x) minimizing
+E
+[
+L(Θ,d )
+⏐
+⏐X =x
+]
+with respect to d,
+then δ
+Λ is a Bayes estimator.
+Proof. Let δ be an arbitrary estimator. Then for a.e. x,
+E
+[
+L
+(
+Θ,δ (X)
+)⏐
+⏐X =x
+]
+=E
+[
+L
+(
+Θ,δ (x)
+)⏐
+⏐X =x
+]
+≥ E
+[
+L
+(
+Θ,δ
+Λ (x)
+)⏐
+⏐X =x
+]
+=E
+[
+L
+(
+Θ,δ
+Λ (X)
+)⏐
+⏐X =x
+]
+,
+and so
+E
+[
+L
+(
+Θ,δ (X)
+)⏐
+⏐X
+]
+≥ E
+[
+L
+(
+Θ,δ
+Λ (X)
+)⏐
+⏐X
+]
+,
+almost surely. Taking expectations, by smoothing,
+EL
+(
+Θ,δ (X)
+)
+≥ EL
+(
+Θ,δ
+Λ (X)
+)
+.
+ThusδΛ is Bayes. ⊓ ⊔
+
+===== PAGE 3 =====
+
+7.2 Examples 117
+7.2 Examples
+Example 7.2. Weighted Squared Error Loss . Suppose
+L(θ,d ) = w(θ )
+(
+d − g(θ )
+)2
+.
+By Theorem 7.1, δΛ (x) should minimize
+E
+[
+w(Θ )
+(
+d − g(Θ )
+)2 ⏐
+⏐X =x
+]
+=d
+2E
+[
+w(Θ )
+⏐
+⏐X =x
+]
+− 2dE
+[
+w(Θ )g(Θ )
+⏐
+⏐X =x
+]
++E
+[
+w(Θ )g
+2 (Θ )
+⏐
+⏐X =x
+]
+.
+This is a quadratic function of d, minimized when the derivative
+2dE
+[
+w(Θ )
+⏐
+⏐X =x
+]
+− 2E
+[
+w(Θ )g(Θ )
+⏐
+⏐X =x
+]
+equals zero. Thus
+δ
+Λ (x) = E
+[
+w(Θ )g(Θ )
+⏐
+⏐X =x
+]
+E
+[
+w(Θ )
+⏐
+⏐X =x
+] . (7.2)
+If the weight function w is identically one, then
+δ
+Λ (X) = E
+[
+g(Θ )
+⏐
+⏐X
+]
+,
+called the posterior mean of g(Θ ).
+If P is a dominated family with p
+θ the density for Pθ , and if Λ is absolutely
+continuous with Lebesgue density λ , then the joint density of X and Θ is
+pθ (x)λ (θ ).
+By (6.1), the marginal density of X is
+q(x) =
+∫
+pθ (x)λ (θ )dθ,
+and by (6.4), the conditional density of Θ givenX =x is
+λ (θ |x) = pθ (x)λ (θ )
+q(x) .
+Using this, (7.2) becomes
+δΛ (x) =
+∫
+w(θ )g(θ )pθ (x)λ (θ )dθ
+∫
+w(θ )pθ (x)λ (θ )dθ .
+(The factor 1/q (x) common to both the numerator and denominator cancels.)
+
+===== PAGE 4 =====
+
+118 7 Bayesian Estimation
+Example 7.3. Binomial . When Pθ is the binomial distribution with n trials
+and success probability θ , the beta distribution Beta( α,β ) with density
+λ (θ ) = Γ (α +β )
+Γ (α )Γ (β )θα−1(1 − θ )β−1, θ ∈ (0, 1),
+is a common choice for the prior distribution of Θ . (For a derivation of this
+density, see Problem 6.1.) The beta density integrates to one, therefore
+∫ 1
+0
+θα−1(1 − θ )β−1dθ = Γ (α )Γ (β )
+Γ (α +β ). (7.3)
+Using this,
+EΘ = Γ (α +β )
+Γ (α )Γ (β )
+∫ 1
+0
+θ 1+α−1(1 − θ )β−1dθ
+= Γ (α +β )
+Γ (α )Γ (β )
+Γ (α + 1)Γ (β )
+Γ (α +β + 1)
+= α
+α +β .
+The marginal density of X in the Bayesian model is
+q(x) =
+∫
+pθ (x)λ (θ )dθ
+=
+∫ 1
+0
+(n
+x
+)Γ (α +β )
+Γ (α )Γ (β )θx+α−1(1 − θ )n−x+β−1dθ
+=
+(n
+x
+)Γ (α +β )
+Γ (α )Γ (β )
+Γ (x +α )Γ (n − x +β )
+Γ (n +α +β ) .
+This is the mass function for the beta-binomial distribution, sometimes used
+in a non-Bayesian setting to model variables that exhibit more variation than
+would be anticipated from a binomial model. Dividing p
+θ (x)λ (θ ) by this mass
+function q(x),
+λ (θ |x) = Γ (n +α +β )
+Γ (α +x)Γ (β +n − x)θx+α−1(1 − θ )n−x+β−1, θ ∈ (0, 1).
+This shows that
+Θ |X =x ∼ Beta(x +α,n − x +β ).
+The updating necessary to ﬁnd the posterior distribution from the prior and
+the observed data is particularly simple here; just increment α by the number
+of successes observed, and increment β by the number of failures. Prior dis-
+tributions that ensure a posterior distribution from the same class are called
+conjugate. See Problem 7.4 for a class of examples. With squared error loss,
+
+===== PAGE 5 =====
+
+7.2 Examples 119
+δΛ (X) = E[Θ |X] = X +α
+n +α +β .
+Straightforward algebra gives
+δΛ (X) =
+[ n
+n +α +β
+] X
+n +
+[
+1 − n
+n +α +β
+] α
+α +β ,
+which shows that the Bayes estimator here is a weighted average of the UMVU
+estimator X/n and the prior mean EΘ =α/ (α +β ).
+Example 7.4. Negative Binomial . From a sequence of Bernoulli trials with suc-
+cess probability θ , let X be the number of failures before the second success.
+Then
+p
+θ (x) = Pθ (X =x) = (x + 1)θ 2(1 − θ )x, x = 0, 1,....
+Consider estimation of g(Θ ) = 1/Θ for a Bayesian model in which Θ is uni-
+formly distributed on (0 , 1). Then
+λ (θ |x) ∝θ pθ (x)λ (θ ) ∝θ θ 2(1 − θ )x.
+This is proportional to the density for Beta(3 ,x + 1), and so
+Θ |X =x ∼ Beta(3,x + 1).
+The posterior mean is
+δ 0(x) = E[Θ−1|X =x] = Γ (x + 4)
+Γ (3)Γ (x + 1)
+∫ 1
+0
+θ (1 − θ )xdθ
+= Γ (x + 4)Γ (2)Γ (x + 1)
+Γ (3)Γ (x + 1)Γ (x + 3) = x + 3
+2 .
+Recalling from Example 5.3 that the UMVU estimator of 1 /θ for this model
+is
+δ 1(x) = x + 2
+2 ,
+we have the curious result that
+δ 0(X) = δ 1(X) + 1
+2.
+So the estimator δ 0 has constant bias b(θ,δ 0) = Eθδ 0(X) − 1/θ = 1/ 2. With
+squared error loss, the risk of any estimator is its variance plus the square of
+its bias. Because δ
+0 and δ 1 diﬀer by a constant they have the same variance,
+and so
+R(θ,δ 0) = Varθ (δ 0) + 1/ 4 = Varθ (δ 1) + 1/ 4 = R(θ,δ 1) + 1/ 4.
+
+===== PAGE 6 =====
+
+120 7 Bayesian Estimation
+Thus the UMVU estimator δ 1 has uniformly smaller risk than δ 0! An estimator
+is called inadmissible if a competing estimator has a better 1 risk function. And
+an inadmissible estimators is generally not Bayes, because an estimator with
+a better risk function usually has smaller integrated risk. See Theorems 11.6
+and 11.7. Trouble arises in this innocuous example because condition (a) in
+Theorem 7.1 fails. When this happens, any estimator will minimize (7.1), and
+Bayesian calculations may lead to a poor estimator.
+7.3 Utility Theory 2
+In much of this book there is a basic presumption that risk or expected loss
+should be used to compare and judge estimators. This may be reasonably
+intuitive, but there is an important philosophical question regarding why ex-
+pectation should play such a central role. Utility theory provides motivation
+for this approach, showing that if preferences between probability distribu-
+tions obey a few basic axioms, then one distribution will be preferred over
+another if and only if its expected utility is greater. The treatment of utility
+theory here is a bit sketchy. For more details see Chapter 7 of DeGroot (1970).
+LetR be a set of rewards. These rewards could be numerical or monetary,
+but more ethereal settings in which a reward might be some degree of fame
+or happiness could also be envisioned. Let R denote all probability distribu-
+tions on (R, F), where F is some σ -ﬁeld. The distributions P ∈ R are called
+“lotteries.” The idea here is that if you play some lottery P ∈ R you will re-
+ceive a random reward in R according to the distribution P . Let “ ≼” indicate
+preferences among lotteries in R. Formally, ≼ should be a complete ordering
+of R; that is, it should satisfy these conditions:
+1. If P
+1 andP2 are lotteries in R, then either P1 ≺ P2,P2 ≺ P1, or P1 ≃ P2.
+(Here P1 ≃ P2 means that P1 ≼ P2 and P2 ≼ P1; and P1 ≺ P2 means
+that P1 ≼P2, but P1 ̸≃ P2.)
+2. If P1, P2, and P3 are lotteries in R with P1 ≼ P2 and P2 ≼ P3, then
+P1 ≼P3.
+It is also convenient to identify a reward r ∈R with the degenerate probability
+distribution in R that assigns unit mass to {r}. (To ensure this is possible, the
+σ -ﬁeld F must contain all singletons {r}, r ∈R.) We can then deﬁne reward
+intervals
+[r1,r 2] = {r ∈R :r1 ≼r ≼r2}.
+A lottery P ∈ R is called bounded if P ([r1,r 2]) = 1 for some rewards r1 and
+r2 in R. Let RB denote the collection of all bounded lotteries in R.
+1 See Section 11.3 for a formal deﬁnition.
+2 This section covers optional material not used in later chapters.
+
+===== PAGE 7 =====
+
+7.3 Utility Theory 121
+Deﬁnition 7.5. A (measurable) function U :R → R is a utility function for
+≼ if
+P1 ≼P2 if and only if EP1U ≤ EP2U,
+whenever the expectations exist. (Here EPU =
+∫
+UdP .)
+The following example shows that utility functions may or may not exist.
+Example 7.6. Suppose R contains two rewards, a and b, and let P
+θ be the
+lottery that gives reward a with probability θ . Suppose b ≺ a. Then if ≼ has a
+utility function U ,U (a) is larger than U (b). Inasmuch as the expected utility
+of Pθ is
+∫
+U (r)dPθ (r) = θU (a) + (1 − θ )U (b) = θ
+[
+U (a) − U (b)
+]
++U (b),
+the expected utility of Pθ increases as θ increases. Hence Pθ 1 ≼Pθ 2 if and only
+ifθ 1 ≤ θ 2. Similarly, if a ≃ b, then U (a) = U (b) and all lotteries are equivalent
+under ≼. But preferences between lotteries do not have to behave in this
+fashion. For instance, if someone views rewards a and b as comparable, but
+ﬁnds pleasure in the excitement of not knowing the reward they will receive,
+a preference relation in which P
+θ 1 ≼Pθ 2 if and only if |θ 1 − 1/ 2| ≥ |θ 2 − 1/ 2|
+may be appropriate. For this preference relation there is no utility function.
+Under axioms given below, utility functions will exist. The language makes
+extensive use of pairwise mixtures of distributions. If P1 and P2 are lotteries
+andα ∈ (0, 1), then the mixture αP 1 +(1 −α )P2 can be viewed (by smoothing)
+as a lottery that draws from P1 with probability α and draws from P2 with
+probability 1 − α . In particular, because we associate rewards with degener-
+ate lotteries, αr 1 + (1 − α )r2 represents a lottery that gives reward r1 with
+probabilityα and reward r2 with probability 1 − α .
+A1) If P1, P2, and P are bounded lotteries in RB , and if α ∈ (0, 1), then
+P1 ≺ P2 if and only if αP 1 + (1 − α )P ≺ αP 2 + (1 − α )P .
+It is also easy to see that P1 ≼ P2 if and only if αP 1 + (1 − α )P ≼
+αP 2 + (1 − α )P . As a further consequence, if P1 ≼ Q1 and P2 ≼ Q2, all in
+RB , and α ∈ (0, 1), then
+αP 1 + (1 − α )P2 ≼αQ 1 + (1 − α )P2 ≼αQ 1 + (1 − α )Q2.
+If P1 ≃ Q1 and P2 ≃ Q2, again all in RB , the reverse inequalities also hold,
+and
+αP 1 + (1 − α )P2 ≃ αQ 1 + (1 − α )Q2. (7.4)
+As a ﬁnal consequence of this axiom, if r1 ≺ r2 are rewards in R, and if α and
+β are constants in [0 , 1], then
+αr 2 + (1 − α )r1 ≺ βr 2 + (1 − β )r1 if and only if α<β. (7.5)
+
+===== PAGE 8 =====
+
+122 7 Bayesian Estimation
+A2) If P1 ≺ P ≺ P2 are bounded lotteries, then there exist constants α and
+β in (0, 1) such that P ≺ αP 2 + (1 − α )P1 and P ≻ βP 2 + (1 − β )P1.
+The following result follows from this axiom, and is used shortly to con-
+struct a candidate utility function.
+Theorem 7.7. If r
+1 ≼ r ≼ r2 are rewards in R, then there exists a unique
+value ν ∈ [0, 1] such that
+r ≃ νr 2 + (1 − ν )r1.
+Proof. Consider S = {α ∈ [0, 1] : r ≺ αr 2 + (1 − α )r1}, an interval by (7.5),
+and let ν be the lower endpoint of S, ν = inf S. If νr 2 + (1 − ν )r1 ≺ r then
+ν < 1, and by the second axiom
+r ≻ βr 2 + (1 −β )
+(
+νr 2 + (1 −ν )r1
+)
+=
+(
+ν +β (1 −ν )
+)
+r2 +
+(
+1 −ν −β (1 −ν )
+)
+r1
+for some β ∈ (0, 1). This would imply that ν is not the lower endpoint of S.
+But if νr 2 + (1 − ν )r1 ≻ r, then ν > 0, and by the second axiom
+r ≺ αr 1 + (1 − α )
+(
+νr 2 + (1 − ν )r1
+)
+= (1 − α )νr 2 +
+(
+1 − (1 − α )ν
+)
+r1,
+for some α ∈ (0, 1), again contradicting ν = inf S. Thus r ≃ νr 2 + (1 − ν )r1.
+Uniqueness follows from similar considerations. ⊓ ⊔
+Let s0 ≺ s1 be ﬁxed rewards in R. Utility functions, if they exist, are not
+unique, for if U is a utility, and if a and b are constants with b > 0, then
+a +bU is also a utility function. From this, if a utility function exists, there
+will be a utility function with U (s0) = 0 and U (s1) = 1. The construction
+below gives this utility function.
+Suppose r ∈ [s0,s 1]. Then by Theorem 7.7,
+r ≃ νs 1 + (1 − ν )s0,
+for some ν ∈ [0, 1]. If a utility function exists, then the expected utilities for
+the two lotteries in this equation must agree, which means that we must have
+U (r) = ν.
+If instead r ≼s0, then by Theorem 7.7,
+s0 ≃ νs 1 + (1 − ν )r,
+for some ν ∈ (0, 1). Equating expected utilities, 0 = ν + (1 − ν )U (r), and so
+we need
+U (r) = − ν
+1 − ν .
+Finally, if s1 ≺ r, then by Theorem 7.7,
+
+===== PAGE 9 =====
+
+7.3 Utility Theory 123
+s1 ≃ νr + (1 − ν )s0,
+and equating expected utilities we must have
+U (r) = 1
+ν .
+The following technical axiom is needed to ensure that this function U is
+measurable.
+A3) For any r
+1, r2, and r3 in R, and any α and β in [0, 1],
+{r ∈R :αr + (1 − α )r1 ≼βr 2 + (1 − β )r3} ∈ F.
+Let P be a bounded lottery, so that P {[r1,r 2]} = 1 for some r1 and r2 in
+R. The ﬁnal axiom concerns a two-stage lottery in which the ﬁrst stage is P ,
+and the second stage trades in P for an equivalent mixture of r1 and r2. To
+be speciﬁc, deﬁne a function α : [r1,r 2] → [0, 1] using Theorem 7.7 so that
+r ≃ α (r)r2 +
+(
+1 − α (r)
+)
+r1.
+From the construction of U it can be shown that
+α (r) = U (r) − U (r1)
+U (r2) − U (r1). (7.6)
+For instance, if s0 ≼r1 ≼r ≼r2 ≼s1, from the construction of U ,
+r1 ≃ U (r1)s1 +
+(
+1 − U (r1)
+)
+s0, r 2 ≃ U (r2)s1 +
+(
+1 − U (r2)
+)
+s0,
+and, using (7.4),
+αr 2 + (1 − α )r1
+≃ α
+[
+U (r2)s1 +
+(
+1 − U (r2)
+)
+s0
+]
++ (1 − α )
+[
+U (r1)s1 +
+(
+1 − U (r1)
+)
+s0
+]
+=
+[
+αU (r2) + (1 − α )U (r1)]s1 +
+[
+1 − αU (r2) − (1 − α )U (r1)
+]
+s0.
+Because r ≃ U (r)s1 +
+(
+1 − U (r)
+)
+s0, r ≃ αr 2 + (1 − α )r1 when
+U (r) = αU (r2) + (1 − α )U (r1).
+Solving for α we obtain (7.6).
+In the two-stage lottery, if the reward for the ﬁrst stage, sampled from P , is
+r, then the second stage is α (r)r2 +
+(
+1 −α (r)
+)
+r1. Conditioning on the outcome
+of the ﬁrst stage, this two-stage lottery gives reward r2 with probability
+β =
+∫
+α (r)dP (r).
+Otherwise, the two-stage lottery gives reward r1. The ﬁnal axiom asserts that
+under ≼ this two-stage lottery is equivalent to P .
+
+===== PAGE 10 =====
+
+124 7 Bayesian Estimation
+A4) P ≃ βr 2 + (1 − β )r1.
+Based on the stated axioms, the ﬁnal result of this section shows that the
+function U constructed above is a utility function for bounded lotteries.
+Theorem 7.8. If axioms A1 through A4 hold, and P1 and P2 are bounded
+lotteries, then
+P1 ≼P2 if and only if EP1U ≤ EP2U.
+Proof. Choose r1 and r2 so that P1{[r1,r 2]} and P2{[r1,r 2]} both equal one.
+By the fourth axiom and (7.6),
+P1 ≃
+[EP1U − U (r1)
+U (r2) − U (r1)
+]
+r2 +
+[U (r2) − EP1U
+U (r2) − U (r1)
+]
+r1
+and
+P2 ≃
+[EP2U − U (r1)
+U (r2) − U (r1)
+]
+r2 +
+[U (r2) − EP2U
+U (r2) − U (r1)
+]
+r1.
+By (7.5), P1 ≼P2 if and only if
+EP1U − U (r1)
+U (r2) − U (r1) ≤ EP2U − U (r1)
+U (r2) − U (r1),
+which happens if and only if EP1U ≤ EP2U . ⊓ ⊔
+7.4 Problems 3
+*1. Consider a Bayesian model in which the prior distribution for Θ is ex-
+ponential with failure rate η , so that λ (θ ) = ηe−ηθ , θ > 0. Given
+Θ = θ , the data X1,...,X n are i.i.d. from the Poisson distribution
+with mean θ . Determine the Bayes estimator for Θ if the loss function
+is L(θ,d ) = θp(d − θ )2, with p a ﬁxed positive constant.
+*2. Consider a Bayesian model in which the prior distribution for Θ is abso-
+lutely continuous with density λ (θ ) = 1 / (1 +θ )2, θ > 0. Given Θ = θ ,
+our datum is a single variable X uniformly distributed on (0 ,θ ). Give an
+equation to ﬁnd the Bayes estimate δΛ (X) of Θ if the loss function is
+L(θ,d ) = |d − θ |. Determine P (δΛ (X)<Θ |X =x), explicitly.
+*3. In a Bayesian approach to simple linear regression, suppose the intercept
+Θ 1 and slope Θ 2 of the regression line are a priori independent with Θ 1 ∼
+N (0,τ 2
+1 ) and Θ 2 ∼ N (0,τ 2
+2 ). Given Θ 1 =θ 1 andΘ 2 =θ 2, data Y1,...,Y n
+are independent with Yi ∼ N (θ 1 +θ 2xi,σ 2), where the variance σ 2 is
+known, and x1,...,x n are constants summing to zero, x1 + · · · +xn = 0.
+Find the Bayes estimates of Θ 1 and Θ 2 under squared error loss.
+3 Solutions to the starred problems are given at the back of the book.
+
+===== PAGE 11 =====
+
+7.4 Problems 125
+*4. Conjugate prior distributions . Let P = {Pθ,θ ∈ Ω} be a one-parameter
+canonical exponential family with densities pθ given by
+pθ (x) = h(x)eθT (x)−A(θ ).
+Here Ω is an interval. Let Λ = Λα,β be an absolutely continuous prior
+distribution with density
+λ (θ ) =
+{
+exp{αθ − βA (θ ) − B(α,β )}, θ ∈Ω;
+0, otherwise,
+where
+B(α,β ) = log
+∫
+Ω
+exp{αθ − βA (θ )}dθ.
+These densities Λα,β form a canonical two-parameter exponential fam-
+ily. Let Ξ = {(α,β ) : B(α,β ) < ∞} be the canonical parameter space.
+Assume for regularity that λ (θ ) → 0 as θ approaches either end of the
+intervalΩ, regardless the value of ( α,β ) ∈Ξ .
+a) With the stated regularity,
+∫
+Ω λ′(θ )dθ = 0. Use this to give an explicit
+formula for EA′(Θ ) when Θ ∼ Λα,β . (The answer should be a simple
+function of α and β .)
+b) Consider a Bayesian model in which Θ ∼ Λα,β and given Θ = θ ,
+X1,...,X n are i.i.d. with common density Pθ from the exponential
+family P. Determine the Bayes estimate of A′(Θ ) under squared error
+loss. Show that this estimate is a weighted average of EA′(Θ ) and the
+average
+T =
+[
+T (X1) + · · · +T (Xn)
+]
+/n .
+c) Demonstrate the ideas in parts (a) and (b) when Pθ is the exponential
+distribution with failure rate θ and mean 1 /θ : identify the prior dis-
+tributions Λα,β , and give an explicit formula for the Bayes estimator
+of the mean 1 /θ .
+5. Consider an autoregressive model in which X1 ∼ N
+(
+θ,σ 2/ (1 − ρ 2)
+)
+and
+the conditional distribution of Xj+1 given X1 = x1, ... , Xj = xj is
+N
+(
+θ +ρ (xj − θ ),σ 2 )
+, j = 1,...,n − 1. Suppose the values for ρ and σ
+are ﬁxed constants, and consider Bayesian estimation with Θ ∼ N (0,τ 2).
+Find Bayes estimates for Θ and Θ 2 under squared error loss.
+*6. Consider a Bayesian model in which the random parameter Θ has a
+Bernoulli prior distribution with success probability 1 / 2, so P (Θ = 0) =
+P (Θ = 1) = 1/ 2. Given Θ = 0, data X has density f0, and given Θ = 1,
+X has density f1.
+a) Find the Bayes estimate of Θ under squared error loss.
+b) Find the Bayes estimate of Θ if L(θ,d ) = I{θ ̸= d} (called zero-one
+loss).
+*7. Consider Bayesian estimation in which the parameter Θ has a standard ex-
+ponential distribution, so λ (θ ) = e−θ ,θ> 0, and given Θ =θ ,X1,...,X n
+are i.i.d. from an exponential distribution with failure rate θ . Determine
+the Bayes estimator of Θ if the loss function is L(θ,d ) = (d − θ )2/d .
+
+===== PAGE 12 =====
+
+126 7 Bayesian Estimation
+8. Consider a Bayesian model in which the prior distribution for Θ is stan-
+dard exponential and the density for X givenΘ =θ is
+pθ (x) =
+{
+eθ−x, x>θ ;
+0, otherwise.
+a) Find the marginal density for X and EX in the Bayesian model.
+b) Find the Bayes estimator for Θ under squared error loss. (Assume
+X >0.)
+9. Suppose Θ ∼ Λ andX|Θ =θ ∼ Pθ , and letf be a nonnegative measurable
+function. Use smoothing to write Ef (Θ,X ) as an iterated integral. (This
+calculation shows that speciﬁcation of a Bayesian model in this fashion
+determines the joint distribution of X and Θ .)
+10. Suppose we observe two independent observations, ( X
+1,Y 1) and (X2,Y 2)
+from an absolutely continuous bivariate distribution with density
+√
+1 − θ 2
+2π exp
+[
+− 1
+2 (x2 +y2 − 2θxy )
+]
+.
+Find the Bayes estimate for Θ under squared error loss if the prior distri-
+bution is uniform on ( − 1, 1).
+11. Consider a Bayesian model in which the prior distribution for Θ is uniform
+on (0, 1) and given Θ = θ , Xi, i ≥ 1, are i.i.d. Bernoulli with success
+probabilityθ . Find
+P (Xn+1 = 1|X1,...,X n).
+12. Bayesian prediction.
+a) Let X andY be jointly distributed, with X a random variable and Y
+a random vector. Suppose we are interested in predicting X from Y .
+The eﬃcacy of a predictor f (Y ) might be measured using the expected
+squared error, E
+(
+X − f (Y )
+)2
+. Use a smoothing argument to ﬁnd the
+function f minimizing this quantity.
+b) Consider a Bayesian model in which Θ is a random parameter, and
+givenΘ =θ , random variables X1,...,X n+1 are i.i.d. from a distribu-
+tion Pθ with mean µ(θ ). With squared error loss, the best estimator
+of µ(θ ) based on X1,...,X n is
+ˆµ =E
+[
+µ(Θ )
+⏐
+⏐X
+1,...,X n
+]
+.
+Show that ˆµ is also the best predictor for Xn+1 based on Y =
+(X1,...,X n). You can assume that Θ is absolutely continuous, and
+that the family P = {Pθ : θ ∈ Ω} is dominated with densities pθ ,
+θ ∈Ω.
+13. Consider a Bayesian model in which Θ is absolutely continuous with den-
+sity
+
+===== PAGE 13 =====
+
+7.4 Problems 127
+λ (θ ) =
+
+
+
+e
+−1/θ
+θ 2 , θ> 0;
+0, otherwise,
+and given Θ =θ , X1,...,X n are i.i.d. N (0,θ ). Find the Bayes estimator
+for Θ under squared error loss.
+14. Consider a Bayesian model in which given Θ = θ , X1,...,X n are i.i.d.
+from a Bernoulli distribution with mean θ .
+a) Let
+(
+π (1),...,π (n)
+)
+be a permutation of (1 ,...,n). Show that
+(
+Xπ (1),...,X π (n)
+)
+and
+(
+X1,...,X n)
+have the same distribution. When this holds the variables involved are
+said to be exchangeable.
+b) Show that Cov( X
+i,X j ) ≥ 0. When will this covariance be zero?
+15. Consider a Bayesian model in which Θ is absolutely continuous with den-
+sity
+λ (θ ) =
+
+
+
+4θ
+3
+(1 +θ )5, θ > 0;
+0, otherwise,
+and given Θ = θ > 0, data X and Y are absolutely continuous with
+density
+pθ (x,y ) =
+{
+1/θ 3, |x|<θy <θ 2;
+0, otherwise,
+Find the Bayes estimator of Θ under squared error loss.
+*16. (For fun) Let X andY be independent Cauchy variables with location θ .
+a) Show that X and the average A = (X +Y )/ 2 have the same distri-
+bution.
+b) Show that Pθ (|A − θ |< |X − θ |) > 1/ 2, so that A is more likely to
+be closer to θ thatX. (Hint: Graph the region in the plane where the
+event in question occurs.)
+
+===== PAGE 14 =====
+

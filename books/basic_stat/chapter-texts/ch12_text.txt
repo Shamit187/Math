@@ -1,0 +1,2063 @@
+
+===== PAGE 1 =====
+
+12
+Hypothesis Testing
+In hypothesis testing data are used to infer which of two competing hypothe-
+ses, H
+0 or H1, is correct. As before, X ∼ Pθ for some θ ∈ Ω, and the two
+competing hypotheses are that the unknown parameter θ lies in set Ω0 or in
+set Ω1, written
+H0 :θ ∈Ω0 versus H1 :θ ∈Ω1.
+We assume that Ω0 and Ω1 partition Ω, so Ω = Ω0
+⋃Ω1 and Ω0
+⋂Ω1 =
+∅. This chapter derives optimal tests when the parameter θ is univariate.
+Extensions to higher dimensions are given in Chapter 13.
+12.1 Test F unctions, Power, and Signiﬁcance
+A nonrandomized test of H0 versus H1 can be speciﬁed by a critical region
+S with the convention that we accept H1 when X ∈ S and accept H0 when
+X /∈S. The performance of this test is described by its power function β (·),
+which gives the chance of rejecting H0 as a function of θ ∈Ω:
+β (θ ) = Pθ (X ∈S).
+Ideally, we would want β (θ ) = 0 for θ ∈Ω0 and β (θ ) = 1 for θ ∈Ω1, but in
+practice this is generally impossible.
+In the mathematical formulation for hypothesis testing just presented,
+the hypotheses H0 and H1 have a symmetric role. But in applications H0
+generally represents the status quo, or what someone would believe about θ
+without compelling evidence to the contrary. In view of this, attention is often
+focused on tests that have a small chance of error when H
+0 is correct. This
+can be quantiﬁed by the signiﬁcance level α deﬁned as
+α = sup
+θ∈Ω0
+Pθ (X ∈S).
+In words, the level α is the worst chance of falsely rejecting H0.
+R.W. Keener, Theoretical Statistics: Topics for a Core Course, Springer Texts in Statistics, 
+DOI 10.1007/978-0-387-93839-4_12, © Springer Science+Business Media, LLC 2010 
+219
+
+===== PAGE 2 =====
+
+220 12 Hypothesis Testing
+For technical reasons it is convenient to allow external randomization to
+“help” the researcher decide between H0 andH1. Randomized tests are char-
+acterized by a test or critical function ϕ with range a subset of [0 , 1]. Given
+X = x, ϕ (x) is the chance of rejecting H0. The power function β still gives
+the chance of rejecting H0, and by smoothing,
+β (θ ) = Pθ (reject H0) = EθPθ (reject H0|X) = Eθ ϕ (X).
+Note that a nonrandomized test with critical region S can be viewed as a
+randomized test with ϕ = 1S . Conversely, if ϕ (x) is always 0 or 1, then the
+randomized test with critical function ϕ can be considered a nonrandomized
+test with critical region S = {x :ϕ (x) = 1 }.
+The set of all critical functions is convex, for if ϕ 1 and ϕ 2 are critical
+functions and γ ∈ (0, 1), then γϕ 1 + (1 − γ )ϕ 2 is also a critical function.
+Convex combinations of nonrandomized tests are not possible, and this is the
+main advantage of allowing randomization. For randomized tests the level α
+is deﬁned as
+α = sup
+θ∈Ω0
+β (θ ) = sup
+θ∈Ω0
+Eθϕ (X).
+12.2 Simple Versus Simple Testing
+A hypothesis is called simple if it completely speciﬁes the distribution of
+the data, so Hi : θ ∈ Ωi is simple when Ωi contains a single parameter
+valueθi. When both hypotheses, H0 andH1 are simple, the Neyman–Pearson
+lemma (Proposition 12.2 below) provides a complete characterization of all
+reasonable tests. This result makes use of Lagrange multipliers, an important
+idea in optimization theory of independent interest.
+Suppose H
+0 and H1 are both simple, and let p0 and p1 denote densities
+for X under H0 and H1, respectively.1 Since there are only two distributions
+for the data X, the power function for a test ϕ has two values,
+α =E0ϕ =
+∫
+ϕ (x)p0(x)dµ(x)
+and
+E1ϕ =
+∫
+ϕ (x)p1 (x)dµ(x).
+Ideally, the ﬁrst of these values α is near zero, and the other value β is near
+one. These objectives are in conﬂict. To do as well as possible we consider the
+constrained maximization problem of maximizing E
+1ϕ among all test ϕ with
+E0ϕ = α . The following proposition shows that solutions of unconstrained
+optimization problems with Lagrange multipliers ( k) also solve optimization
+problems with constraints.
+1 As a technical note, there is no loss of generality in assuming densities p0 andp1,
+since the two distributions P0 andP1 are both absolutely continuous with respect
+to their sum P0 +P1.
+
+===== PAGE 3 =====
+
+12.2 Simple Versus Simple Testing 221
+Proposition 12.1. Supposek ≥ 0, ϕ∗maximizes
+E1ϕ − kE0ϕ
+among all critical functions, and E0ϕ∗=α . Then ϕ∗maximizes E1ϕ over all
+ϕ with level at most α .
+Proof. Suppose ϕ has level at most α , E0ϕ ≤ α . Then
+E1ϕ ≤ E1ϕ − kE0ϕ +kα
+≤ E1ϕ∗− kE0ϕ∗+kα
+=E1ϕ∗. ⊓ ⊔
+Maximizing E1ϕ − kE0ϕ is fairly easy because
+E1ϕ − kE0ϕ =
+∫ [
+p1(x) − kp0(x)
+]
+ϕ (x)dµ(x)
+=
+∫
+p1 (x)>kp0 (x)
+⏐
+⏐p
+1(x) − kp0(x)
+⏐
+⏐ϕ (x)dµ(x)
+−
+∫
+p1(x)<kp0 (x)
+⏐
+⏐p
+1(x) − kp0(x)
+⏐
+⏐ϕ (x)dµ(x). (12.1)
+Clearly, any test ϕ
+∗maximizing this expression must have
+ϕ∗(x) = 1, when p1(x)>kp 0(x),
+and
+ϕ∗(x) = 0, when p1(x)<kp 0(x).
+When division by zero is not an issue, these tests are based on the likelihood
+ratio L(x) = p1(x)/p 0(x), with ϕ∗(x) = 1 if L(x) > k and ϕ∗(x) = 0 if
+L(x)<k . When L(x) = k, ϕ (x) can take any value in [0 , 1]. Any test of this
+form is called a likelihood ratio test . In addition, the test ϕ = I{p0 = 0 } is
+also considered a likelihood ratio test. (This can be viewed as the test that
+arises when k = ∞.)
+Proposition 12.2 (Neyman–Pearson Lemma). Given any level α ∈ [0, 1],
+there exists a likelihood ratio test ϕ
+α with level α , and any likelihood ratio test
+with level α maximizes E1ϕ among all tests with level at most α .
+The fact that likelihood ratio tests maximize E1ϕ among tests with the
+same or smaller level follows from the discussion above. A formal proof that
+any desired level α ∈ [0, 1] can be achieved with a likelihood ratio test is
+omitted, but similar issues are addressed in the proof of the ﬁrst part of
+Theorem 12.9. Also, Example 12.6 below illustrates the type of adjustments
+that are needed to achieve level α in a typical situation. The next result shows
+that if a test is optimal, it must be a likelihood ratio test.
+
+===== PAGE 4 =====
+
+222 12 Hypothesis Testing
+Proposition 12.3. Fix α ∈ [0, 1], let k be the critical value for a likelihood
+ratio test ϕα described in Proposition 12.2, and deﬁne B =
+{
+x : p1(x) ̸=
+kp0(x)
+}
+. If ϕ∗maximizes E1ϕ among all tests with level at most α , then ϕ∗
+and ϕα must agree on B, 1Bϕ∗= 1Bϕα , a.e. µ.
+Proof. Assume k ∈ (0, ∞) and let B1 = {p1 > kp0} and B2 = {p1 < kp0},
+so that B =B1
+⋃B2. Since ϕ∗and ϕα both maximize E1ϕ , we have E1ϕ∗=
+E1ϕα . And since ϕα maximizesE1ϕ −kE0ϕ ,kE0ϕα =kα ≤ kE0ϕ∗. So E0ϕ∗
+must equalα , and ϕα andϕ∗both have level α . Thus they both give the same
+value in (12.1). Since ϕα is 1 on B1 and 0 on B2, using (12.1),
+∫
+1B1 |p1 − kp0|(1 − ϕ∗)dµ +
+∫
+1B2 |p1 − kp0|ϕ∗dµ = 0.
+Since the arguments of both integrands are nonnegative, both integrands must
+be zero a.e. µ, and since |p
+1 − kp0|is positive on B1 and B2, we must have
+1B1 (1 − ϕ∗) + 1B2ϕ∗= 1B1 |ϕ∗− ϕα |+ 1B2 |ϕ∗− ϕα |= 0
+a.e. µ.
+When k = 0, ϕα = 1 on p1 > 0, and ϕα has power E1ϕα = 1. If ϕ∗has
+power 1, then 0 = E1(ϕα −ϕ∗) =
+∫
+B |ϕ∗−ϕα |p1dµ, so again ϕ∗andϕα agree
+a.e. µ on B.
+For the ﬁnal degenerate case, “ k = ∞,” B should be deﬁned as {p0 > 0}.
+In this case ϕα = 0 on p0 > 0, and so α = 0. If ϕ∗has level α = 0, 0 =
+E0(ϕ∗− ϕα ) =
+∫
+B |ϕ∗− ϕα |p0dµ, and once again ϕ∗and ϕα agree a.e. µ on
+B. ⊓ ⊔
+Corollary 12.4. If P0 ̸= P1 and ϕα is a likelihood ratio test with level α ∈
+(0, 1), then E1ϕα >α .
+Proof. Consider the test ϕ∗which is identically α , regardless of the value of
+x. Since ϕα maximizes E1ϕ among tests with level α , E1ϕα ≥ E1ϕ∗= α .
+Suppose E1ϕα = α . Then ϕ∗also maximizes E1ϕ among tests with level α ,
+and by Proposition 12.3, ϕα andϕ∗must agree a.e. on B. But since α ∈ (0, 1)
+andϕα is 0 or 1 on B, they cannot agree on B. Thus B must be a null set and
+p1 = kp0 a.e. µ. Integrating this against µ, k must equal 1, so the densities
+agree a.e. µ and P0 =P1. ⊓ ⊔
+Example 12.5. Suppose X is absolutely continuous with density
+pθ (x) =
+{
+θe−θx, x> 0;
+0, otherwise,
+and that we would like to test H0 : θ = 1 versus H1 : θ = θ 1, where θ 1 is a
+speciﬁed constant greater than one. A likelihood ratio test ϕ is one if
+
+===== PAGE 5 =====
+
+12.2 Simple Versus Simple Testing 223
+p1(X)
+p0(X) = θ 1e−θ 1X
+e−X >k,
+or equivalently if
+X < log(θ 1/k )
+θ 1 − 1 =k′.
+The test is zero if X >k′. When X =k′the test can take any value in [0 , 1],
+but the choice will not aﬀect any power calculations since Pθ (X = k′) = 0.
+The level of this likelihood ratio test is
+α =P0(X <k′) =
+∫ k′
+0
+e−xdx = 1 − e−k′
+.
+Solving,
+k′= − log(1 − α )
+gives a test with level α . If ϕα is a test with
+ϕα (X) =
+{
+1, X < − log(1 − α );
+0, X > − log(1 − α ),
+then by Proposition 12.1, ϕα maximizes Eθ 1ϕ among all tests with level α .
+Something surprising and remarkable has happened here. This test ϕα , which
+is optimal for testing H0 :θ = 1 versus H1 :θ =θ 1, does not depend on the
+valueθ 1. If ϕ is any competing test with level α , then
+Eθ 1ϕ ≤ Eθ 1ϕα , for all θ 1 > 1.
+Features of this example that give the same optimal test regardless of the
+value of θ
+1 are detailed and exploited in the next section.
+Example 12.6. SupposeX has a binomial distribution with success probability
+θ andn = 2 trials. If we are interested in testing H0 :θ = 1/ 2 versus H1 :θ =
+3/ 4, then
+L(X) = p1(X)
+p0(X) =
+( 2
+X
+)
+(3/ 4)X (1/ 4)2−X
+( 2
+X
+)
+(1/ 2)X (1/ 2)2−X
+= 3X
+4 .
+Under H0,
+L(X) =
+
+
+
+
+
+1/ 4, with probability 1/4;
+3/ 4, with probability 1/2;
+9/ 4, with probability 1/4.
+Suppose the desired signiﬁcance level is α = 5%. If k is less than 9 / 4, then
+L(2) = 9/ 4>k and ϕ (2) = 1. But then E
+0ϕ (X) ≥ ϕ (2)P0(X = 2) = 1 / 4. If
+
+===== PAGE 6 =====
+
+224 12 Hypothesis Testing
+instead k is greater than 9 / 4, ϕ is identically zero. So k must equal 9/ 4, and
+ϕ (0) = ϕ (1) = 0. Then to achieve the desired level we must have
+5% = E0ϕ (X) = 1
+4ϕ (0) + 1
+2ϕ (1) + 1
+4ϕ (2) = 1
+4ϕ (2).
+Solving, ϕ (2) = 1/ 5 gives a test with level α = 5%.
+The assertion in Proposition 12.2 that there exists a likelihood ratio test
+with any desired level α ∈ [0, 1] is established in a similar fashion. First k is
+adjusted so that P0
+(
+L(X) > k
+)
+and P0
+(
+L(X) ≥ k
+)
+bracket α , and then a
+valueγ ∈ [0, 1] is chosen for ϕ (X) when L(X) = k to achieve level α .
+12.3 Uniformly Most Powerful Tests
+A test ϕ∗with level α is called uniformly most powerful if
+Eθ ϕ∗≥ Eθ ϕ, ∀θ ∈Ω1,
+for all ϕ with level at most α . Uniformly most powerful tests for composite
+hypotheses generally only arise when the parameter of interest is univariate,
+θ ∈Ω ⊂ R and the hypotheses are of the form H
+0 :θ ≤ θ 0 versusH1 :θ >θ 0,
+whereθ 0 is a ﬁxed constant. 2 In addition, the family of densities needs to have
+an appropriate structure.
+Deﬁnition 12.7. A family of densities p
+θ (x), θ ∈ Ω ⊂ R has monotone
+likelihood ratios if there exists a statistic T =T (x) such that whenever θ 1 <
+θ 2, the likelihood ratio pθ 2 (x)/p θ 1 (x) is a nondecreasing function of T . Also,
+the distributions should be identiﬁable, Pθ 1 ̸=Pθ 2 whenever θ 1 ̸=θ 2. Natural
+conventions concerning division by zero are used here, with the likelihood ratio
+interpreted as +∞ when p
+θ 2 > 0 and pθ 1 = 0 . On the null set where both
+densities are zero the likelihood ratio is not deﬁned and monotonic dependence
+on T is not required.
+Example 12.8. If the densities p
+θ form an exponential family,
+pθ (x) = exp
+{
+η (θ )T (x) − B(θ )
+}
+h(x),
+with η (·) strictly increasing, then if θ 2 >θ 1,
+pθ 2 (x)
+pθ 1 (x) = exp
+{
+[η (θ 2) − η (θ 1)]T (x) +B(θ 1) − B(θ 2)
+}
+,
+which is increasing in T (x).
+2 Minor variants are possible here: H0 could be θ = θ 0, θ < θ0, θ ≥ θ 0, etc.
+Uniformly most powerful tests are also possible when the null hypothesis H0 is
+two-sided, but this case sees little application.
+
+===== PAGE 7 =====
+
+12.3 Uniformly Most Powerful Tests 225
+Theorem 12.9. Suppose the family of densities has monotone likelihood ra-
+tios. Then
+1. The test ϕ∗given by
+ϕ∗(x) =
+
+
+
+
+
+1, T (x)>c;
+γ, T (x) = c;
+0, T (x)<c,
+is uniformly most powerful testing H
+0 :θ ≤ θ 0 versus H1 :θ>θ 0 and has
+level α =Eθ 0ϕ∗. Also, the constants c ∈ R and γ ∈ [0, 1] can be adjusted
+to achieve any desired signiﬁcance level α ∈ (0, 1).
+2. The power function β (θ ) = Eθϕ∗for this test is nondecreasing and strictly
+increasing whenever β (θ ) ∈ (0, 1).
+3. If θ 1 <θ 0, then this test ϕ∗minimizes Eθ 1ϕ among all tests with Eθ 0ϕ =
+α =Eθ 0ϕ∗.
+Proof. Suppose θ 1 <θ 2 and let
+L(x) = pθ 2 (x)
+pθ 1 (x).
+Since the family has monotone likelihood ratios, L is a nondecreasing function
+of T . If k is the value of L whenT =c, then (see Figure 12.1 )
+ϕ∗(x) =
+{
+1, when L>k ;
+0, when L<k.
+Thusϕ∗is a likelihood ratio test of θ =θ 1 versusθ =θ 2. By Corollary 12.4,
+Eθ 2ϕ∗≥ Eθ 1ϕ∗, with strict inequality unless both expectations are zero or
+one. So the second assertion of the theorem holds, and ϕ∗has levelα =Eθ 0ϕ∗.
+To show thatϕ∗is uniformly most powerful, suppose ˜ϕ has level at most α
+and θ 1 >θ 0. Then Eθ 0 ˜ϕ ≤ α , and since ϕ∗is a likelihood ratio test of θ =θ 0
+versus θ = θ 1 maximizing Eθ 1ϕ among all tests with Eθ 0ϕ ≤ Eθ 0ϕ∗= α ,
+Eθ 1ϕ∗≥ Eθ 1 ˜ϕ . Similarly, ifθ 1 <θ 0, sinceϕ∗is a likelihood ratio test of θ =θ 1
+versus θ = θ 0 with some critical value k, it must maximize Eθ 0ϕ − kEθ 1ϕ .
+Thus if ˜ϕ is a competing test with Eθ 0 ˜ϕ = α = Eθ 0ϕ∗, then Eθ 1 ˜ϕ ≥ Eθ 1ϕ∗,
+proving the third assertion in the theorem.
+To ﬁnish, we must show that c and γ can be adjusted so that Eθ 0ϕ∗=α .
+Let F denote the cumulative distribution function for T whenθ =θ 0. Deﬁne
+c = sup
+{
+x :F (x) ≤ 1 − α
+}
+.
+If x>c, then F (x)> 1 − α . Because F is right continuous,
+F (c) = lim
+x↓c
+F (x) ≥ 1 − α.
+
+===== PAGE 8 =====
+
+226 12 Hypothesis Testing
+L
+k
+c T
+Fig. 12.1. The likelihood ratio L as a function of T .
+But for x<c, F (x) ≤ 1 − α , and so
+F (c− )
+def
+= lim
+x↑c
+F (x) ≤ 1 − α.
+Now let q =F (c) − F (c− ) = Pθ 0 (T =c) (see Problem 1. 16), and deﬁne
+γ = F (c) − (1 − α )
+q .
+(If q = 0, γ can be any value in [0 , 1].) By the bounds for F (c) and F (c− ), γ
+must lie in [0 , 1], and then
+Eθ 0ϕ∗=γPθ 0 (T =c) +Pθ 0 (T >c)
+=F (c) − (1 − α ) +
+(
+1 − F (c)
+)
+=α. ⊓ ⊔
+Example 12.10. Suppose our data X1,...,X n are i.i.d. from the uniform dis-
+tribution on (0,θ ). The joint density pθ (x) is positive if and only if xi ∈ (0,θ ),
+i = 1,...,n, and this happens if and only if M (x) = min {x1,...,x n}> 0 and
+T (x) = max {x1,...,x n}<θ . Thus
+pθ (x) =
+{
+1/θ n, M (x)> 0 and T (x)<θ ;
+0, otherwise.
+Suppose θ 2 >θ 1, M (x)> 0, and T (x)<θ 2. Then
+
+===== PAGE 9 =====
+
+12.3 Uniformly Most Powerful Tests 227
+pθ 2 (x)
+pθ 1 (x) =
+{
+θn
+1/θ n
+2, T (x)<θ 1;
++∞, T (x) ≥ θ 1.
+This shows that the family of joint densities has monotone likelihood ratios.
+(The behavior of the likelihood ratio when both densities are zero does not
+matter; this is why there is no harm assuming M (x) > 0 and T (x)< θ
+2.) If
+we are interested in testing H0 :θ ≤ 1 versus H1 :θ > 1, the test function ϕ
+given by
+ϕ =
+{
+1, T ≥ c;
+0, otherwise.
+is uniformly most powerful. This test has level
+P1(T ≥ c) = 1 − cn,
+and a speciﬁed level α can be achieved taking
+c = (1 − α )1/n .
+The power of this test is
+βϕ (θ ) = Pθ (T ≥ c) =
+
+
+
+0, θ<c ;
+1 − 1 − α
+θn , θ ≥ c.
+In this example, one competing test ˜ϕ is given by
+˜ϕ =
+{
+α, T < 1;
+1, T ≥ 1.
+For θ < 1, Eθ ˜ϕ = α , so this test also has level α . For θ > 1, this test has
+power
+β ˜ϕ (θ ) = Eθ ˜ϕ =αPθ (T <1) +Pθ (T ≥ 1)
+= α
+θn + 1 − 1
+θn
+=βϕ (θ ).
+The power functions βϕ andβ ˜ϕ are plotted in Figure 12.2. Because the power
+functions for ˜ϕ and ϕ are the same under H1, these two tests are both uni-
+formly most powerful. Under H0, the power function for ϕ is smaller than the
+power function for ˜ϕ , so ϕ is certainly the better test. The test ˜ ϕ here is an
+example of an inadmissible3 uniformly most powerful test.
+3 A test ˜ϕ is called inadmissible if a competing test ϕ has a better power function:
+β ˜ϕ (θ ) ≥ β ϕ (θ ) for all θ ∈ Ω0, and β ˜ϕ (θ ) ≤ β ϕ (θ ) for all θ ∈ Ω1, with strict
+inequality in one of these bounds for some θ ∈Ω.
+
+===== PAGE 10 =====
+
+228 12 Hypothesis Testing
+β
+α
+n√
+ 1 − α
+θ
+Fig. 12.2. Power functions β ϕ and β ˜ϕ .
+12.4 Duality Between Testing and Interval Estimation
+Recall that a random set S(X) is a 1 − α conﬁdence region for a parameter
+ξ =ξ (θ ) if
+Pθ
+(
+ξ ∈S(X)
+)
+≥ 1 − α, ∀θ ∈Ω.
+For every ξ0, let A(ξ 0) be the acceptance region for a nonrandomized level α
+test of H0 :ξ (θ ) = ξ 0 versusH1 :ξ (θ ) ̸=ξ 0, so that
+Pθ
+[
+X ∈A
+(
+ξ (θ )
+)]
+≥ 1 − α, ∀θ ∈Ω.
+Deﬁne
+S(x) =
+{
+ξ :x ∈A(ξ )
+}
+.
+Then ξ (θ ) ∈S(X) if and only if X ∈A
+(
+ξ (θ )
+)
+, and so
+Pθ
+(
+ξ (θ ) ∈S(X)
+)
+=Pθ
+(
+X ∈A
+(
+ξ (θ )
+))
+≥ 1 − α.
+This shows that S(X) is a 1 − α conﬁdence region for ξ .
+The construction above can be used to construct conﬁdence regions from
+a family of nonrandomized tests. Conversely, a 1 − α conﬁdence region S(X)
+can be used to construct a family of tests. If we deﬁne
+
+===== PAGE 11 =====
+
+12.4 Duality Between Testing and Interval Estimation 229
+ϕ =
+{
+1, ξ 0 /∈S(X);
+0, otherwise,
+then if ξ (θ ) = ξ 0,
+Eθ ϕ =Pθ
+(
+ξ 0 /∈S(X)
+)
+=Pθ
+(
+ξ (θ ) /∈S(X)
+)
+≤ α.
+This shows that this test has level at most α testing H0 : ξ (θ ) = ξ0 versus
+H1 :ξ (θ ) ̸=ξ 0. If the coverage probability for S(X) is exactly 1 −α ,Pθ
+(
+ξ (θ ) ∈
+S(X)
+)
+= 1 − α , for all θ ∈Ω, then ϕ will have level exactly α .
+Example 12.11. Suppose the densities for a model have monotone likelihood
+ratios. Also, for convenience assume Fθ (t) = Pθ (T ≤ t) is continuous and
+strictly increasing in t, for all θ ∈Ω. For each θ ∈Ω, deﬁne u(θ ) so that
+Pθ
+(
+T <u(θ )
+)
+=Fθ
+(
+u(θ )
+)
+= 1 − α.
+Then
+ϕ =
+{
+1, T ≥ u(θ 0);
+0, otherwise,
+is uniformly most powerful testing H0 : θ = θ 0 versus H1 : θ > θ0 and has
+level
+Eθ 0ϕ =Pθ 0
+(
+T ≥ u(θ 0)
+)
+=α.
+This test has acceptance region
+A(θ 0) =
+{
+x :T (x)<u (θ 0)
+}
+.
+Proposition 12.12. The function u(·) is strictly increasing.
+Proof. Suppose θ >θ 0. By the second part of Theorem 12.9, the power func-
+tion for ϕ is strictly increasing at θ 0, and so
+Eθ ϕ =Pθ
+(
+T ≥ u(θ 0)
+)
+>Eθ 0ϕ =α.
+ThusPθ
+(
+T <u(θ 0)
+)
+< 1 −α . But from the deﬁnition of u(·),Pθ
+(
+T <u(θ )
+)
+=
+1 − α , and so u(θ )>u (θ 0). Since θ >θ 0 are arbitrary parameter values, u is
+strictly increasing. ⊓ ⊔
+The conﬁdence set dual to the family of tests with acceptance regions A(θ ),
+θ ∈Ω, is
+S(X) =
+{
+θ :X ∈A(θ )
+}
+=
+{
+θ :T (X)<u (θ )
+}
+.
+Because u is strictly increasing, this region is the interval (see Figure 12.3)
+S(X) =
+(
+u←(T ), ∞
+)⋂
+Ω.
+Here u←is the inverse function of u.
+
+===== PAGE 12 =====
+
+230 12 Hypothesis Testing
+u(θ )
+T
+u←(T )
+θ
+Fig. 12.3. The increasing function u.
+For a concrete example, suppose X is exponential with mean θ , so
+pθ (x) = 1
+θe−x/θ , x> 0.
+The densities for X form an exponential family with η = − 1/θ , an increasing
+function ofθ . So we have monotone likelihood ratios with T =X. The function
+u is deﬁned so that
+Pθ
+(
+X <u(θ )
+)
+= 1 − α
+or
+Pθ
+(
+X ≥ u(θ )
+)
+=α.
+Because Pθ (X ≥ x) = e−x/θ ,
+e−u(θ )/θ =α.
+Solving,
+u(θ ) = −θ logα.
+Since u←(X) is the value θ solving
+X = −θ logα,
+we have
+
+===== PAGE 13 =====
+
+12.4 Duality Between Testing and Interval Estimation 231
+u←(X) = X
+− logα ,
+and the 1 − α conﬁdence set for θ is
+S(X) =
+( X
+− logα , ∞
+)
+.
+As a check,
+Pθ
+(
+θ ∈S(X)
+)
+=Pθ
+( X
+− logα <θ
+)
+=
+∫−θ logα
+0
+1
+θe−x/θ dx
+= 1 − α.
+Our construction of conﬁdence sets by duality works with any family of
+level α tests. But intuition suggests that better tests should give better con-
+ﬁdence intervals. In the example just considered, tests in the family are uni-
+formly most powerful, and a natural conjecture would be that the dual con-
+ﬁdence interval S(X) should be optimal in some related sense. This is indeed
+the case. To deduce the proper notion of optimality, let S
+∗(X) be a competing
+conﬁdence set, and take
+ϕ∗=
+{
+1, θ 0 /∈S∗(X);
+0, otherwise.
+Thenϕ∗is a test of H0 :θ =θ 0 with level at most α . The corresponding test
+ϕ dual to S(X) is
+ϕ =
+{
+1, θ 0 /∈S(X);
+0, otherwise.
+If the tests dual to S are uniformly most powerful testing H0 :θ =θ 0 versus
+H1 :θ >θ 0, then for any θ >θ 0,
+E
+θ ϕ ≥ Eθϕ∗.
+The left- and right-hand sides of this equation are Pθ
+(
+θ 0 /∈S(X)
+)
+andPθ
+(
+θ 0 /∈
+S∗(X)
+)
+, respectively, and so
+Pθ
+(
+θ 0 ∈S(X)
+)
+≤ Pθ
+(
+θ 0 ∈S∗(X)
+)
+. (12.2)
+This shows that if θ is the true value of the parameter, then S(X) has a
+smaller chance of containing any incorrect value θ 0 <θ .
+In practice, a researcher may be most concerned with the length of a
+conﬁdence interval, and the optimality for S in (12.2) may seem less relevant.
+
+===== PAGE 14 =====
+
+232 12 Hypothesis Testing
+However, using Fubini’s theorem, there is a relation between the expected
+length and the probabilities P
+θ
+(
+θ 0 ∈S(X)
+)
+. Let λ denote Lebesgue measure
+on R, so that λ (A) =
+∫
+A dx is the length of A. Also, assume for convenience
+that Ω is the interval ( ω
+,
+ ω ) (we allow ω
+ = −∞ and/or
+ ω = ∞). Then, by
+Fubini’s theorem,
+Eθ λ
+(
+S(X) ∩ (ω
+ ,θ )
+)
+=Eθ
+∫ θ
+ω
+I
+(
+θ 0 ∈S(X)
+)
+dθ 0
+=
+∫ ∫ θ
+ω
+I
+(
+θ 0 ∈S(x)
+)
+dθ 0dPθ (x)
+=
+∫ θ
+ω
+Pθ
+(
+θ 0 ∈S(X)
+)
+dθ 0.
+Similarly,
+Eθλ
+(
+S∗(X) ∩ (ω
+ ,θ )
+)
+=
+∫ θ
+ω
+Pθ
+(
+θ 0 ∈S(X)
+)
+dθ 0,
+and so, by (12.2),
+Eθ λ
+(
+S(X) ∩ (ω
+ ,θ )
+)
+≤ Eθλ
+(
+S∗(X) ∩ (ω
+ ,θ )
+)
+.
+So the expected length of S(X) below θ is minimal among all 1 −α conﬁdence
+intervals.
+12.5 Generalized Neyman–Pearson Lemma 4
+Treatment of two-sided hypotheses in the next section relies on an extension
+of the Neyman–Pearson lemma in which the test function must satisfy several
+constraints. Let g(x) take values in R
+m, and consider maximizing
+∫
+ϕfdµ
+over all test functions ϕ satisfying
+∫
+ϕgdµ =c, (12.3)
+wherec is a speciﬁed vector in Rm. Introducing a Lagrange multiplier k ∈ Rm,
+consider maximizing ∫
+(f − k ·g)ϕdµ (12.4)
+4 Results in the rest of this chapter and Chapter 13 are more technical and are not
+used in subsequent chapters.
+
+===== PAGE 15 =====
+
+12.5 Generalized Neyman–Pearson Lemma 233
+without constraint. A test function maximizing (12.4) will have form
+ϕ (x) =
+{
+1, f (x)>k ·g(x);
+0, f (x)<k ·g(x), (12.5)
+for a.e.x (µ). As in our discussion of the Neyman–Pearson lemma, if a function
+of this form satisﬁes (12.3), it clearly solves the constrained maximization
+problem.
+Let K denote the the set of all test functions (measurable functions with
+range a subset of [0 , 1]).
+Theorem 12.13. Assume f and g are both integrable with respect to µ and
+that the class C of all test functions ϕ ∈ K satisfying (12.3) is not empty.
+Then
+1. There exists a test function ϕ
+∗maximizing
+∫
+ϕfdµ over C.
+2. If ϕ∗∈ C satisﬁes (12.5) for some k ∈ Rm, then ϕ∗maximizes
+∫
+ϕfdµ
+over ϕ ∈ C .
+3. If ϕ∗∈ C has form (12.5) with k ≥ 0, then ϕ∗maximizes ∫ϕfdµ over all
+ϕ satisfying
+∫
+ϕgdµ ≤ c.
+4. Let Lg be the linear mapping from test functions ϕ ∈ K to vectors in Rm
+given by Lg (ϕ ) =
+∫
+ϕgdµ, and let M denote the range of Lg . Then M is
+closed and convex. If c lies in the interior of M , there exists a Lagrange
+multiplierk ∈ Rm and a test function ϕ∗∈ C maximizing
+∫
+(f −k ·g)ϕdµ
+over ϕ ∈ K . Also, if any ϕ ∈ C maximizes
+∫
+ϕfdµ over C, then (12.5)
+must hold a.e. µ.
+The proof of this result relies on an important and useful result from
+functional analysis, the weak compactness theorem. In functional analysis,
+functions are viewed as points in a vector space, much as vectors are viewed
+as points in R
+n. But notions of convergence for functions are much richer. F or
+instance, functions fn,n ≥ 1, converge pointwise to f if limn→∞fn(x) = f (x)
+for all x. In contrast, uniform convergence would hold if lim n→∞supx |fn(x)−
+f (x)|= 0. Uniform convergence implies pointwise convergence, but not vice
+versa. (For instance, the functions 1 (n,n+1) converge pointwise to the zero
+function, but the convergence is not uniform.) The notion of convergence of
+interest here is called weak convergence.
+Deﬁnition 12.14. A sequence of uniformly bounded measurable functions ϕ
+n,
+n ≥ 1, converge weakly to ϕ , written ϕn
+w
+→ ϕ , if
+∫
+ϕnfdµ →
+∫
+ϕfdµ
+whenever
+∫
+|f |dµ< ∞.
+
+===== PAGE 16 =====
+
+234 12 Hypothesis Testing
+If the functions ϕn converge pointwise toϕ , then weak convergence follows
+from dominated convergence, but pointwise convergence is not necessary for
+weak convergence. With this notion of convergence, the objective function in
+Theorem 12.13,
+L
+f (ϕ ) =
+∫
+ϕfdµ,
+is a continuous function of ϕ ; that is, Lf (ϕn) → L f (ϕ ) wheneverϕn
+w→ ϕ . The
+linear constraint function Lg introduced in Theorem 12.13, is also continuous.
+Theorem 12.15 (Weak Compactness Theorem). The set K is weakly
+compact:5 any sequence of functions ϕn, n ≥ 1, in K has a convergent subse-
+quence,ϕn(j)
+w
+→ ϕ ∈ K as j → ∞ .
+See Appendix A.5 of Lehmann and Romano (2005) for a proof. In the
+proof of Theorem 12.13, we also need the following result, called the sup-
+porting hyperplane theorem. For this and other results in convex analysis, see
+Rockafellar (1970).
+Theorem 12.16 (Supporting Hyperplane Theorem). If x is a point on
+the boundary of a convex set K ⊂ R
+m, then there exists a nonzero vector
+v ∈ Rm such that
+v ·y ≤ v ·x, ∀y ∈K.
+Proof of Theorem 12.13 . The ﬁrst assertion follows by weak compactness of
+K. Take
+KC = sup
+ϕ∈C
+Lf (ϕ ),
+and let ϕn, n ≥ 1, be a sequence of test functions in C such that
+Lf (ϕn) → KC.
+By the weak compactness theorem (Theorem 12.15), there must be a subse-
+quence ϕ
+n(m), m ≥ 1, with
+ϕn(m)
+w
+→ ϕ∗∈ K,
+and since Lf is continuous, Lf (ϕ∗) = KC . If ϕ∗∈ C we are done. But
+this follows by continuity of Lg because Lg (ϕ∗) = lim m→∞Lg (ϕn(m)) and
+Lg (ϕn(m)) = c for all m ≥ 1.
+For the second assertion, if ϕ∗∈ C has form (12.5), then ϕ∗maximizes∫
+ϕ (f − k ·g)dµ = Lf (ϕ ) − k · Lg (ϕ ) over all K, and hence ϕ∗maximizes
+Lf (ϕ )−k ·Lg (ϕ ) overϕ ∈ C . But when ϕ ∈ C , Lf (ϕ )−k ·Lg (ϕ ) = Lf (ϕ )−k ·c,
+and so ϕ∗maximizes Lf (ϕ ) over ϕ ∈ C .
+5 The topology of weak convergence has a countable base, and so compactness and
+sequential compactness (stated in this theorem) are equivalent.
+
+===== PAGE 17 =====
+
+12.5 Generalized Neyman–Pearson Lemma 235
+Suppose ϕ∗∈ C has form (12.5), so it maximizes Lf (ϕ ) − k · Lg (ϕ ) over
+all ϕ ∈ K. Then if k ≥ 0 and Lg (ϕ ) ≤ c,
+Lf (ϕ ) ≤ Lf (ϕ ) − k · Lg (ϕ ) +k ·c
+≤ Lf (ϕ∗) − k · Lg (ϕ∗) +k ·c = Lf (ϕ∗).
+This proves the third assertion.
+The ﬁnal assertion is a bit more involved. First, M is convex, for if x0 =
+Lg (ϕ 0) and x1 = Lg (ϕ 1) are arbitrary points in M , and if γ ∈ [0, 1], using the
+linearity of Lg ,
+γx 0 + (1 − γ )x1 =γ Lg(ϕ 0) + (1 − γ )Lg (ϕ 1)
+= Lg
+(
+γϕ 0 + (1 − γ )ϕ 1
+)
+∈M.
+Closure of M follows by weak compactness and continuity of Lg . Suppose x
+is a limit point of M , so that x = limn→∞Lg (ϕn) for some sequence of test
+functions ϕn, n ≥ 1. Letting ϕn(m), m ≥ 1, be a subsequence converging
+weakly to ϕ ,
+Lg (ϕ ) = lim
+m→∞
+Lg (ϕn(m)) = lim
+m→∞
+xn(m) =x,
+which shows that x ∈M .
+For the ﬁnal part of the theorem, assume that c lies in the interior of
+M . Let ϕ∗∈ C maximize Lf (ϕ ) over ϕ ∈ C , and take KC = Lf (ϕ∗). Deﬁne
+L : K → Rm+1 by
+L(ϕ ) =
+(
+Lf (ϕ )
+Lg (ϕ )
+)
+.
+The arguments showing that M is closed and convex also show that the range
+˜M of L is closed and convex. The point
+x = L(ϕ∗) =
+(
+Lf (ϕ∗)
+Lg (ϕ∗)
+)
+=
+(
+Lf (ϕ∗)
+c
+)
+lies in ˜M . Because ϕ∗maximizes Lf (ϕ∗) over ϕ ∈ C , if ǫ> 0, the point
+(Lf (ϕ∗) +ǫ
+c
+)
+cannot lie in ˜M , and thus x lies on the boundary of ˜M . By the supporting
+hyperplane theorem (Theorem 12.16), there is a nonzero vector v =
+(a
+b
+)
+such
+that
+v ·y ≤ v ·x, ∀y ∈ ˜M,
+or, equivalently, such that
+aLf (ϕ ) +b · Lg (ϕ ) ≤ aLf (ϕ∗) +b · Lg (ϕ∗), ∀ϕ ∈ K.
+
+===== PAGE 18 =====
+
+236 12 Hypothesis Testing
+Here a cannot be zero, for then this bound would assert that b · Lg (ϕ ) ≤ b ·c
+for all ϕ ∈ K , contradicting the assumption that c lies in the interior of M .
+For ϕ ∈ C this bound becomes aLf (ϕ ) ≤ aLf (ϕ∗). Because ϕ∗maximizes
+Lf (ϕ ) over ϕ ∈ C ,a must be positive, unless we are in a degenerate situation
+in which Lf (ϕ ) = Lf (ϕ∗) for all ϕ ∈ C . And if a is positive, we are done, for
+then the bound is
+Lf (ϕ ) + (b/a ) · Lg (ϕ ) ≤ Lf (ϕ∗) + (b/a ) · Lg (ϕ∗), ∀ϕ ∈ K,
+and we can take k = −b/a .
+To handle the degenerate case, suppose Lg (ϕ 1) = Lg (ϕ 2) = ˜c ̸= c. Be-
+cause c is an interior point of M , it can be expressed as a nontrivial convex
+combination of ˜c and some other point Lg (ϕ 3) ̸=c inM ; that is,
+c =γ ˜c + (1 − γ )Lg (ϕ 3),
+for some γ ∈ (0, 1). Since Lg is linear,
+γϕ 1 + (1 − γ )ϕ 3 and γϕ 2 + (1 − γ )ϕ 3
+both lie in C, and so
+Lf
+(
+γϕ 1 + (1 − γ )ϕ 3
+)
+=γ Lf (ϕ 1) + (1 − γ )Lf (ϕ 3)
+= Lf
+(
+γϕ 2 + (1 − γ )ϕ 3
+)
+=γ Lf (ϕ 2) + (1 − γ )Lf (ϕ 3).
+So we must have Lf (ϕ 1) = Lf (ϕ 2). Thus, if
+(ℓ 0
+˜c
+)
+and
+(ℓ 1
+˜c
+)
+both lie in ˜M , then
+ℓ0 = ℓ1. Since ˜M is convex and contains the origin, the only way this can
+happen is if Lf (ϕ ) is a linear function of Lg (ϕ ),
+Lf (ϕ ) = k · Lg (ϕ ), ϕ ∈ K.
+In this case, ϕ∗trivially maximizes Lf (ϕ ) − k · Lg (ϕ ).
+To ﬁnish, if ϕ maximizes Lf over C, then L(ϕ ) = L(ϕ∗) and ϕ also maxi-
+mizes Lf −k · Lg over K. It is then clear that (12.5) must hold a.e. µ; if not,
+a function satisfying (12.5) would give a larger value for Lf − k · Lg . ⊓ ⊔
+12.6 Two-Sided Hypotheses
+This section focuses on testing H0 :θ =θ 0 versusH1 :θ ̸=θ 0 with data from
+a one-parameter exponential family. Generalization to families satisfying a
+condition analogous to the monotone likelihood ratio condition is possible.
+Tests of H
+0 :θ ∈ [θ 1,θ 2] versus H1 : θ < θ1 or θ > θ2 can be developed in a
+similar fashion, but results about the point null hypothesis seem more useful
+in practice. Also, uniformly most powerful tests when H
+0 is two-sided can be
+obtained (see Problem 12.39), but these tests are not used very often.
+
+===== PAGE 19 =====
+
+12.6 Two-Sided Hypotheses 237
+With data from an exponential family there will be a suﬃcient statistic,
+and the next result shows that we can then restrict attention to tests based
+on the suﬃcient statistic.
+Theorem 12.17. Suppose that T is suﬃcient for the model P = {P
+θ : θ ∈
+Ω}. Then for any test ϕ =ϕ (X), the test
+ψ =ψ (T ) = Eθ
+[
+ϕ (X)
+⏐
+⏐T
+]
+has the same power function as ϕ ,
+E
+θ ψ (T ) = Eθ ϕ (X), ∀θ ∈Ω.
+Proof. This follows immediately from smoothing,
+Eθϕ (X) = EθEθ
+[
+ϕ (X)
+⏐
+⏐T
+]
+=E
+θψ (T ). ⊓ ⊔
+The next theorem shows that if the densities for X come from an exponen-
+tial family, then the densities for T will also be from an exponential family.
+This is established using the following fundamental lemma, which shows how
+likelihood ratios can be introduced to write an expectation under one distri-
+bution as an expectation under a diﬀerent distribution. This lemma is quite
+useful in a variety of situations.
+Lemma 12.18. Let P
+0 and P1 be possible distributions for a random vector
+X with densities p0 andp1 with respect to µ. If p1(x) = 0 wheneverp0(x) = 0 ,
+then P1 ≪ P0 and P1 has density
+dP1
+dP0
+(x) = L(x) = p1(x)
+p0(x)
+with respect to P0. (The value for L(x) when p0(x) = 0 does not matter; for
+deﬁniteness, take L(x) = 1 when p0(x) = 0 .) Introducing this likelihood ratio,
+we can write expectations under P1 as expectations underP0 using the formula
+E1h(X) = E0h(X)L(X),
+valid whenever the expectations exist. When h is an indicator function, we
+have
+P1(B) = E01B(X)L(X).
+Proof. First note that N = {x :p0(x) = 0 } is a null set for P0 because
+P0(N ) =
+∫
+N
+p0dµ =
+∫
+1Np0dµ =
+∫
+0dµ = 0.
+Similarly, {x :p1(x) = 0 } is a null set for P1, and since N ⊂ {x :p1(x) = 0 },
+N is also a null set for P1. So 1N c = 1 a.e. P0 and P1, and multiplication by
+
+===== PAGE 20 =====
+
+238 12 Hypothesis Testing
+this function cannot change the value of an integral against either distribution.
+Suppose M is a null set for P
+0. Then
+∫
+1Mp0dµ =
+∫
+1M 1Ncp0dµ =
+∫
+1M∩N cp0dµ,
+which implies that 1M∩N cp0 = 0 a.e. µ (by the second fact about integration
+in Section 1.4). Because p0 > 0 whenever the indicator is 1, M ∩Nc must be
+a null set for µ. But P1 is dominated by µ, and so M ∩Nc is a null set for P1.
+ButM ⊂ N ∪ (M ∩Nc), which is a union of two null sets for P1, showing that
+M must be a null set for P1. To write expectations under P1 as expectations
+under P0,
+E1h(X) =
+∫
+hp1dµ =
+∫
+1N chp1dµ =
+∫
+1N chp1
+p0
+p0dµ
+=
+∫
+1N chLp0dµ =
+∫
+hLp0dµ =E0h(X)L(X). ⊓ ⊔
+Theorem 12.19. If the distribution for X comes from an exponential family
+with densities
+pθ (x) = h(x)eη (θ )·T (x)−B(θ ), θ ∈Ω,
+then the induced distribution for T =T (X) has density
+qθ (t) = eη (θ )·t−B(θ ), θ ∈Ω,
+with respect to some measure ν .
+Proof. Two ideas are used. First, using Lemma 12.18, we can introduce a
+likelihood ratio to write probabilities under Pθ as expectations under Pθ 0 ,
+where θ 0 is a ﬁxed point in Ω. This likelihood ratio is
+L = pθ (X)
+pθ 0 (X) =e[η (θ )−η (θ 0)]·T +B(θ 0 )−B(θ ).
+The second is that expectations of functions of T can be written as integrals
+against the density of X, or as integrals against the marginal distribution of
+T . Let ν∗denote the marginal distribution of T when θ =θ 0. Then
+Pθ (T ∈B) = Eθ 0I
+{
+T ∈B
+}
+e[η (θ )−η (θ 0)]·T +B(θ 0 )−B(θ )
+=
+∫
+I
+{
+t ∈B
+}
+e[η (θ )−η (θ 0 )]·t+B(θ 0)−B(θ )dν∗(t)
+=
+∫
+B
+qθ (t)e−η (θ 0 )·t+B(θ 0 )dν∗(t).
+If we deﬁne ν by
+
+===== PAGE 21 =====
+
+12.6 Two-Sided Hypotheses 239
+ν (A) =
+∫
+A
+e−η (θ 0)·t+B(θ 0)dν∗(t),
+then ν has density e−η (θ 0)·t+B(θ 0 ) with respect to ν∗, and
+Pθ (T ∈B) =
+∫
+B
+qθ (t)dν (t),
+completing the proof. ⊓ ⊔
+Consider testing H0 : θ = θ 0 versus H1 : θ ̸= θ 0 based on data X with
+density
+h(x)eη (θ )T (x)−B(θ ), θ ∈Ω, (12.6)
+where η is strictly increasing and diﬀerentiable. From results in Section 12.3,
+there are level α tests ϕ±with form
+ϕ + =
+
+
+
+
+
+1, T >c
++;
+γ +, T =c+;
+0, T <c +,
+and ϕ−=
+
+
+
+
+
+1, T <c
+−;
+γ−, T =c−;
+0, T >c −.
+These tests are most powerful for one-sided alternatives. If θ−< θ0 < θ+,
+thenϕ + will have maximal power at θ +, and ϕ−will have maximal power at
+θ−. Since these tests are diﬀerent, this shows that there cannot be a uniformly
+most powerful level α test. To achieve uniformity, we must restrict the class
+of tests under consideration. We do this by constraining the derivative of the
+power function at θ
+0. The formula in the following theorem is useful.
+Theorem 12.20. If η is diﬀerentiable at θ and θ lies in the interior of Ω,
+then the derivative of the power function β for a test ϕ is given by
+β′(θ ) = η′(θ )Eθ Tϕ − B′(θ )β (θ ).
+Proof. If diﬀerentiation under the integral sign works, then
+β′(θ ) = ∂
+∂θ
+∫
+ϕ (x)eη (θ )T (x)−B(θ )h(x)dµ(x)
+=
+∫
+ϕ (x) ∂
+∂θ eη (θ )T (x)−B(θ )h(x)dµ(x)
+=
+∫
+ϕ (x)
+[
+η′(θ )T (x) − B′(θ )
+]
+eη (θ )T (x)−B(θ )h(x)dµ(x)
+=η′(θ )Eθ ϕT − B′(θ )Eθ ϕ,
+and the result follows. Diﬀerentiation under the integral sign can be justiﬁed
+using Theorem 2.4 and the chain rule, or by dominated convergence directly.
+⊓ ⊔
+
+===== PAGE 22 =====
+
+240 12 Hypothesis Testing
+Note that because ϕ + has maximal power for θ>θ 0,
+β′
+ϕ (θ 0) = lim
+ǫ↓0
+βϕ (θ 0 +ǫ) − βϕ (θ 0)
+ǫ
+≤ lim
+ǫ↓0
+βϕ + (θ 0 +ǫ) − βϕ + (θ 0)
+ǫ =β′
+ϕ + (θ 0)
+def
+= m+. (12.7)
+Similarly, β′
+ϕ (θ 0) ≥ β′
+ϕ − (θ 0)
+def
+= m−. For m ∈ [m−,m +], let Cm denote the
+class of all level α tests ϕ with β′
+ϕ (θ 0) = m. The next theorem shows that
+whenm ∈ (m−,m +) there is a uniformly most powerful test in Cm. This test
+is two-sided, according to the following deﬁnition.
+Deﬁnition 12.21. A test ϕ is called two-sided if there are ﬁnite constants
+t
+1 ≤ t2 such that
+ϕ =
+{
+1, T <t 1 or T >t2;
+0, T ∈ (t1,t 2).
+In addition, the test should not be one-sided. Speciﬁcally, EϕI {T ≥ t2} and
+EϕI {T ≤ t1} should both be positive.
+Theorem 12.22. If θ 0 lies in the interior of Ω, α ∈ (0, 1), X has density
+(12.6), and η is diﬀerentiable and strictly increasing with 0 < η′(θ 0) < ∞,
+then for any value m ∈ (m−,m +) there is a two-sided test ϕ∗∈ Cm. Any such
+test is uniformly most powerful in class Cm: for any competing test ϕ ∈ Cm,
+Eθ ϕ ≤ Eθϕ∗, ∀θ ∈Ω.
+Proof. Using Theorem 12.20, if ϕ ∈ Cm, then
+β′
+ϕ (θ 0) = η′(θ 0)Eθ 0Tϕ − αB′(θ 0) = m,
+which happens if and only if
+Eθ 0Tϕ =
+∫
+ϕTp θ 0 dµ = m +αB′(θ 0)
+η′(θ 0) .
+If we deﬁne
+g(x) =
+(
+pθ 0 (x)
+T (x)pθ 0 (x)
+)
+and c =
+
+
+α
+m +αB
+′(θ 0)
+η′(θ 0)
+
+ ,
+then a test function ϕ lies in C
+m if and only if Lg (ϕ ) =
+∫
+ϕgdµ =c. Because
+m+ >m andm−<m , the point c lies in the interior of the convex hull of the
+four points Lg (ϕ +), Lg (ϕ−), Lg (α −ǫ), and Lg (α +ǫ). (Here “α ±ǫ” denotes
+a test function that equals α ± ǫ regardless of the value of X.) Thus c lies in
+the interior of the range M of Lg .
+
+===== PAGE 23 =====
+
+12.6 Two-Sided Hypotheses 241
+With this background on the nature of the constraints for test functions ϕ
+in Cm, we can now use the last assertion in Theorem 12.13 to show that there
+exists a two-sided test ϕ∗in Cm. Let ˜θ be some ﬁxed point in Ω diﬀerent from
+θ 0 and consider maximizing
+E˜θ ϕ =
+∫
+ϕp ˜θ dµ
+overϕ in Cm. Using the fourth assertion in Theorem 12.13 there is a Lagrange
+multiplierk ∈ R2 and a test ϕ∗∈ Cm maximizing
+∫
+ϕ (p˜θ −k ·g)dµ with form
+ϕ∗=
+{
+1, p ˜θ > (k1 +k2T )pθ 0 ;
+0, p ˜θ < (k1 +k2T )pθ 0.
+Dividing through by pθ 0 ,
+ϕ∗=
+{
+1, exp
+{(
+η (˜θ ) − η (θ 0)
+)
+T − B(˜θ ) +B(θ 0)
+}
+>k 1 +k2T ;
+0, exp
+{(
+η (˜θ ) − η (θ 0)
+)
+T − B(˜θ ) +B(θ 0)
+}
+<k 1 +k2T.
+The linek1 +k2t must intersect the exponential function exp
+{(
+η (˜θ )−η (θ 0)
+)
+t−
+B(˜θ ) +B(θ 0)
+}
+, for otherwise ϕ∗would be identically one. Because the expo-
+nential function is strictly convex, the line and exponential function intersect
+either once, if the line is tangent to the curve, or twice. Let t
+∗
+1
+< t∗
+2
+denote
+the two points of intersection when the line is not tangent, and let t∗
+1
+= t∗
+2
+be the single point of intersection when the line is tangent to the exponential
+function. Since the exponential function is convex, ϕ
+∗has form
+ϕ∗=
+{
+1, T <t ∗
+1
+or T >t∗
+2
+;
+0, T ∈ (t∗
+1
+,t∗
+2
+).
+To ﬁnish showing that ϕ∗is a two-sided test, we need to verify ϕ∗is not one-
+sided. Suppose EθϕI {T ≤ t1} = 0. By Theorem 12.9 ψ = Eθ (ϕ∗|T ) has the
+same power function as ϕ∗, and this test is uniformly most powerful testing
+θ ≤ θ 0 against θ > θ0 by Theorem 12.9. Because ϕ + is also uniformly most
+powerful, the power functions for ϕ∗and ϕ + must agree for θ ≥ θ 0, and the
+slope of the power function for ϕ∗at θ 0 must be m+. This is a contradiction
+for if ϕ∗lies in Cm this slope must be m<m +. Similarly, EθϕI {T ≥ t2}= 0,
+and so ϕ∗is a two-sided test.
+To conclude, we show that any two-sided test ˜ ϕ ∈ Cm is uniformly most
+powerful. So assume
+˜ϕ =
+{
+1, T < ˜t1 or T >˜t2;
+0, T ∈ (˜t1, ˜t2),
+and let θ be an arbitrary point in Ω not equal to θ 0. Deﬁne κ ∈ R2 so that
+the line κ 1 +κ 2t passes through the points
+
+===== PAGE 24 =====
+
+242 12 Hypothesis Testing
+(
+˜t1,e [η (θ )−η (θ 0)]˜t1−B(θ )+B(θ 0 )
+)
+and (
+˜t2,e [η (θ )−η (θ 0)]˜t2−B(θ )+B(θ 0)
+)
+.
+If ˜t1 = ˜t2, so these points are the same, then the line should also have slope
+(θ −θ 0)e(θ−θ 0)˜t1−A(θ )+A(θ 0) so that it lies tangent to the exponential curve. By
+convexity of the exponential function and algebra similar to that used above,
+˜ϕ has form
+˜ϕ =
+{
+1, p θ > (κ 1 +κ 2T )pθ 0 ;
+0, p θ < (κ 1 +κ 2T )pθ 0.
+From this, ˜ϕ clearly maximizes
+∫
+ϕ (pθ −κ ·g)dµ over all ϕ ∈ K. But for test
+function ϕ ∈ Cm, ∫
+ϕ (pθ − κ ·g)dµ =Eθ ϕ − κ ·c.
+Thus Eθ ˜ϕ ≥ Eθ ϕ for any ϕ ∈ Cm, and, since θ is arbitrary, ˜ϕ is uniformly
+most powerful in Cm. ⊓ ⊔
+Remark 12.23. A similar result can be obtained testing H0 :θ ∈ [θ 1,θ 2] versus
+H1 :θ /∈ [θ 1,θ 2]. Suppose ϕ∗is a two-sided test with Eθ 1ϕ∗=α 1 andEθ 2ϕ∗=
+α 2. Thenϕ∗has levelα = max{α 1,α 2}and is uniformly most powerful among
+all tests ϕ with Eθ 1ϕ =α 1 and Eθ 2ϕ =α 2.
+Remark 12.24. If the slope m for the power function for a test ϕ at θ 0 diﬀers
+from zero, then there will be points θ ̸= θ 0 where the power for the test
+is less than α . If this happens, the test ϕ is called biased. If an unbiased
+test is desired, the slope m should be constrained to equal zero. This idea is
+developed and extended in the next section of this chapter.
+12.7 Unbiased Tests
+In the previous section we encountered a situation in which uniformly most
+powerful tests cannot exist unless we constrain the class of test functions un-
+der consideration. One appealing constraint restricts attention to tests that
+are unbiased according to the following deﬁnition. Theorem 12.26 below ﬁnds
+uniformly most powerful unbiased tests for one-parameter exponential fami-
+lies, and Chapter 13 has extensions to higher dimensions.
+Deﬁnition 12.25. A test ϕ for H
+0 :θ ∈Ω0 versus H1 :θ ∈Ω1 with level α
+is unbiased if its power βϕ (θ ) = Eθ ϕ satisﬁes
+βϕ (θ ) ≤ α, ∀θ ∈Ω0 and βϕ (θ ) ≥ α, ∀θ ∈Ω1.
+
+===== PAGE 25 =====
+
+12.7 Unbiased Tests 243
+If there is a uniformly most powerful test ϕ∗, then it is automatically un-
+biased because βϕ ∗ (θ ) ≥ βϕ (θ ), for all θ ∈Ω1, and the right-hand side of this
+inequality is identically α for the degenerate test, which equals α regardless
+of the observed data.
+Theorem 12.26. If α ∈ (0, 1), θ
+0 lies in the interior of Ω, X has density
+(12.6), and η is diﬀerentiable and strictly increasing with 0 < η′(θ 0) < ∞,
+then there is a two-sided, level α test ϕ∗with β′
+ϕ ∗ (θ 0) = 0 . Any such test is
+uniformly most powerful testing H0 : θ = θ 0 versus H1 : θ ̸= θ 0 among all
+unbiased tests with level α .
+Changing the sign of T and η , this result is also true if η is diﬀerentiable
+and strictly decreasing with −∞ <η′(θ 0)< 0.
+Proof. Since θ 0 lies in the interior of Ω, the power function for any unbiased
+test ϕ must have zero slope at θ 0, and so ϕ ∈ C 0. The theorem is essentially
+a corollary of Theorem 12.22, provided 0 ∈ (m−,m +). This is established in
+the following lemma. ⊓ ⊔
+Lemma 12.27. Under the assumptions of Theorem 12.26,
+m+ =β′
+ϕ + (θ 0)> 0 and m−=β′
+ϕ − (θ 0)< 0.
+Proof. Let us begin showing that Eθ 0Tϕ + >αE θ 0T . The argument is similar
+to the proof of Proposition 12.3. From the form of ϕ +,
+Eθ 0Tϕ + − αEθ 0T =Eθ 0 (T − c+)ϕ + − Eθ 0 (T − c+)α
+=Eθ 0 (T − c+)(ϕ + − α )
+=Eθ 0 |T − c+| |ϕ + − α |.
+Since α ∈ (0, 1), this expression is strictly positive unless Pθ 0 (T = c+) =
+1. But if Pθ 0 (T = c+) = 1, then Pθ (T = c+) = 1 for all θ ∈ Ω and all
+distributions in the family are the same. Thus Eθ 0Tϕ + >αE θ 0T . Using this
+in the formula in Theorem 12.20,
+β′
+ϕ + (θ 0) = η′(θ 0)Eθ 0Tϕ + − αB′(θ 0)>α
+(
+η′(θ 0)Eθ 0T − B′(θ 0)
+)
+.
+The lower bound here is zero because B′(θ ) = η′(θ )Eθ T , which follows from
+Theorem 12.20, with ϕ identically one. ⊓ ⊔
+Remark 12.28. Because B′(θ ) = η′(θ )Eθ T , using Theorem 12.20 the con-
+straintβ′
+ϕ ∗ (θ 0) = 0 in Theorem 12.26 becomes
+0 = η′(θ 0)
+[
+Eθ 0Tϕ∗− αEθ 0T
+]
+=η′(θ 0)Covθ 0 (ϕ∗,T ).
+So any two-sided test ϕ∗with level α that is uncorrelated with T is uniformly
+most powerful unbiased.
+
+===== PAGE 26 =====
+
+244 12 Hypothesis Testing
+Example 12.29. Suppose X has an exponential distribution with failure rate
+θ , so
+pθ (x) =
+{
+θe−θx, x> 0;
+0, otherwise,
+and consider testing H0 :θ = 1 versus H1 :θ ̸= 1. Let
+ϕ =
+{
+0, X ∈ (c1,c 2);
+1, X ≤ c1 or X ≥ c2.
+By Theorem 12.26, ϕ is uniformly most powerful unbiased provided
+E1ϕ = 1 −
+∫ c2
+c1
+e−xdx = 1 − e−c1 +e−c2 =α (12.8)
+and
+E1Xϕ =E1X − E1X(1 − ϕ ) = 1 −
+∫ c2
+c1
+xe−xdx
+= 1 − (1 +c1)e−c1 + (1 +c2)e−c2 =αE 1X =α.
+Using (12.8), this equation simpliﬁes to
+c1e−c1 =c2e−c2. (12.9)
+Isolating c2 in (12.8),
+c2 = − log
+(
+e−c1 − 1 +α
+)
+.
+Using this in (12.9),
+c1e−c1 = −
+(
+e−c1 − 1 +α
+)
+log
+(
+e−c1 − 1 +α
+)
+.
+The solution to this equation must be found numerically. Note that as c1
+varies from 0 to − log(1 − α ) > 0, the left-hand side increases from 0 to
+− (1 − α ) log(1 − α ) > 0, as the right-hand side decreases from −α logα > 0
+to 0, and so, by continuity, a solution must exist. For α = 5%, c1 = 0. 042363
+and c2 = 4. 7652.
+In practice, numerical issues can be eliminated by choosing c1 and c2 so
+that P1(X ≤ c1) = P1(X ≥ c2) = α/ 2, for then c1 = − log(1 − α/ 2) and
+c2 = − log(α/ 2). But the resulting test is biased. For instance, if α = 5%,
+c1 = 0. 025318 and c2 = 3. 6889, quite diﬀerent from the critical values above
+for the best unbiased test.
+
+===== PAGE 27 =====
+
+12.8 Problems 245
+12.8 Problems 6
+*1. Suppose X ∼ Pθ for some θ ∈Ω, and that U is uniformly distributed on
+(0, 1) and is independent of X. Let ϕ (X) be a randomized test based on
+X. Find a nonrandomized test based on X andU , so ψ (X,U ) = 1S (X,U )
+for some critical region S, with the same power function as ϕ ,Eθ ϕ (X) =
+Eθ ψ (X,U ), for all θ ∈Ω.
+*2. Suppose sup |h(x)|=M andEh(Z) = 0, where Z ∼ N (0, 1). Give a sharp
+upper bound for Eh(2Z).
+*3. Determine the density of Z1/Z 2 whenZ1 andZ2 are independent standard
+normal random variables. (This should be useful in the next problem.)
+*4. Let X1 and X2 be independent, and let σ 2
+1 > 0 and σ 2
+2 > 0 be known
+variances. Find the error rate for the best symmetric test of H0 : X1 ∼
+N (0,σ 2
+1 ),X 2 ∼ N (0,σ 2
+2 ) versus H1 : X1 ∼ N (0,σ 2
+2 ),X 2 ∼ N (0,σ 2
+1 ). A
+symmetric test here is a test that takes the opposite action if the two data
+values are switched, so ϕ (x
+1,x 2) = 1 −ϕ (x2,x 1). For a symmetric test the
+error probabilities under H0 and H1 will be equal.
+5. Suppose sup x≥0 |h(x)|= M and Eh(X) = 0, where X has a standard
+exponential distribution. Give a sharp upper bound for Eh(2X).
+*6. Suppose X is uniformly distributed on (0 , 2).
+a) Suppose sup (0, 2) |h(x)| ≤M and Eh(X) = 0. Give an upper bound
+for Eh(X2/ 2), and a function h that achieves the bound.
+b) Suppose instead that |h(x)| ≤ Mx , 0 < x < 2, but we still have
+Eh(X) = 0. Now what is the best upper bound for Eh(X2/ 2)? What
+function achieves the bound?
+*7. Consider a model in which X has density
+pθ (x) = θ
+(1 +θx )2, x> 0.
+a) Show that the derivative of the power function β of a test ϕ is given
+by
+β′(θ ) = Eθ
+[ 1 − θX
+θ (1 +θX )ϕ (X)
+]
+.
+b) Among all tests with β (1) = α , which one maximizes β′(1)?
+8. Let X have a Poisson distribution with mean one. Suppose |h(x)| ≤1,x =
+0, 1, 2,... , and Eh(X) = 0. Find the largest possible value for Eh(2X),
+and the function h that achieves the maximum.
+*9. Suppose data X has density pθ , θ ∈ Ω ⊂ R, and that these densities
+are regular enough that the derivative of the power function of any test
+function ϕ can be evaluated diﬀerentiating under the integral sign,
+β
+′
+ϕ (θ ) =
+∫
+ϕ (x)∂pθ (x)
+∂θ dµ(x).
+6 Solutions to the starred problems are given at the back of the book.
+
+===== PAGE 28 =====
+
+246 12 Hypothesis Testing
+A test ϕ∗is called locally most powerful testing H0 : θ = θ 0 versus H1 :
+θ > θ0 if it maximizes β′
+ϕ (θ 0) among all tests ϕ with level α . Determine
+the form of the locally most powerful test.
+*10. Suppose X = (X1,...,X n) with the Xi i.i.d. with common density fθ .
+The locally most powerful test of H0 : θ = θ 0 versus H1 : θ > θ0 from
+Problem 12.9 should reject H0 if an appropriate statistic T exceeds a
+critical value c. Use the central limit theorem to describe how the critical
+levelc can be chosen when n is large to achieve a level approximately α .
+The answer should involve Fisher information at θ =θ 0.
+11. Laplace’s law of succession gives a distribution for Bernoulli variables
+X1,X 2,... in which P (X1 = 1) = 1/ 2, and
+P (Xj+1 = 1|X1 =x1,...,X j =xj ) = 1 +x1 + · · · +xj
+j + 2 , j ≥ 1.
+Consider testing the hypothesis H1 thatX1,...,X n have this distribution
+against the null hypothesis H0 that the variables are i.i.d. with P (Xi =
+1) = 1 / 2. If n = 10, ﬁnd the best test with size α = 5%. What is the
+power of this test?
+12. An entrepreneur would like to sell a ﬁxed amount M of some product
+through online auctions. Let R(t) ≥ 0 denote his selling rate at time t.
+Assuming all of the merchandise is sold eventually,
+∫∞
+0
+R(t)dt =M.
+The sales rate and price should be related, with the sales rate increasing
+as the price decreases. Assume that price is inversely proportional to
+√
+R,
+so that the rate of return (price times selling rate) at time t is c
+√
+R(t).
+Discounting future proﬁts, the entrepreneur would like to maximize
+∫∞
+0
+c
+√
+R(t)e−δt dt,
+whereδ >0 denotes the discount rate. Use a Lagrange multiplier approach
+to ﬁnd the best rate function R for the entrepreneur.
+13. Consider simple versus simple testing from a Bayesian perspective. Let Θ
+have a Bernoulli distribution with P (Θ = 1) = p and P (Θ = 0) = 1 − p.
+GivenΘ = 0, X will have densityp0, and given Θ = 1, X will have density
+p1.
+a) Show that the chance of accepting the wrong hypothesis in the
+Bayesian model using a test function ϕ is
+R(ϕ ) = E
+[
+I{Θ = 0}ϕ (X) +I{Θ = 1}
+(
+1 − ϕ (X)
+)]
+.
+b) Use smoothing to relate R(ϕ ) to E0ϕ =E
+[
+ϕ (X)
+⏐
+⏐Θ = 0
+]
+andE
+1ϕ =
+E
+[
+ϕ (X)
+⏐
+⏐Θ = 1
+]
+.
+
+===== PAGE 29 =====
+
+12.8 Problems 247
+c) Find the test function ϕ∗minimizing R(ϕ ). Show that ϕ∗is a likeli-
+hood ratio test, identifying the critical value k.
+*14. Let X denote the number of tails before the ﬁrst heads if a coin is tossed
+repeatedly. If successive tosses are independent and p is the chance of
+heads, determine the uniformly most powerful test of H0 :p = 1/ 2 versus
+H1 : p < 1/ 2 with level α = 5%. What is the power of this test if p is
+40%?
+*15. Suppose X andY are jointly distributed from a bivariate normal distribu-
+tion with correlation ρ , means EX = EY = 0, and Var( X) = Var(Y ) =
+1/ (1 − ρ 2). Determine the uniformly most powerful test of H0 : ρ ≤ 0
+versusH1 :ρ> 0 based on ( X,Y ).
+*16. Consider a location family with densities pθ (x) = g(x −θ ). Show that if g
+is twice diﬀerentiable and d2 logg(x)/dx 2 ≤ 0 for all x, then the densities
+have monotone likelihood ratios in x. Give an analogous diﬀerential condi-
+tion suﬃcient to ensure that densities for a scale family pθ (x) = g(x/θ )/θ ,
+x> 0, have monotone likelihood ratios in x.
+*17. p-values. Suppose we have a family of tests ϕα ,α ∈ (0, 1) indexed by level
+(so ϕα has level α ), and that these tests are “nested” in the sense that
+ϕα (x) is nondecreasing as a function of α . We can then deﬁne the “p-value”
+or “attained signiﬁcance” for observed data x as inf {α : ϕα (x) = 1 },
+thought of as the smallest value for α where test ϕα rejects H0. Suppose
+we are testing H0 : θ ≤ θ 0 versus H1 : θ > θ0 and that the densities for
+data X have monotone likelihood ratios in T . Further suppose T has a
+continuous distribution.
+a) Show that the family of uniformly most powerful tests are nested in
+the sense described.
+b) Show that if X =x is observed, the p-value P (x) is
+Pθ 0
+[
+T (X)>t
+]
+,
+where t =T (x) is the observed value of T .
+c) Determine the distribution of the p-value P (X) when θ =θ 0.
+18. Let F be a cumulative distribution function that is continuous and strictly
+increasing on [0 , ∞) with F (0) = 0, and let qα denote the upper α th
+quantile for F , so F (qα ) = 1 −α . Suppose we have a single observation X
+with
+Pθ (X ≤ x) = F (x/θ ), x ∈ R, θ> 0.
+a) Consider testing H0 :θ ≤ θ 0 versusH1 :θ >θ 0. Find the signiﬁcance
+level for the test ϕ = 1 (c,∞). What choice for c will give a speciﬁed
+levelα ?
+b) Let ϕα denote the test with level α in part (a). Show that the tests
+ϕα ,α ∈ (0, 1), are nested in the sense described in Problem 12.17, and
+give a formula to compute the p-value P (X).
+19. Suppose X has a Poisson distribution with parameter λ . Determine the
+uniformly most powerful test of H0 : λ ≤ 1 versus H1 : λ > 1 with level
+α = 5%.
+
+===== PAGE 30 =====
+
+248 12 Hypothesis Testing
+*20. Do the densities pθ (x) = (1 + θx )/ 2, x ∈ (− 1, 1), θ ∈ [− 1, 1], have mono-
+tone likelihood ratios in T (x) = x?
+*21. Let f be a speciﬁed probability density on (0 , 1) and let
+pθ (x) = θ + (1 − θ )f (x), x ∈ (0, 1),
+whereθ ∈ [0, 1] is an unknown parameter. Show that these densities have
+monotone likelihood ratios, identifying the statistic T (x).
+22. Suppose we observe a single observation X from N (θ,θ 2).
+a) Do the densities for X have monotone likelihood ratios?
+b) Let φ∗be the best level α test of H0 :θ = 1 versus H1 :θ = 2. Is φ∗
+also the best level α test of H0 :θ = 1 versus H1 :θ = 4?
+23. Consider tests for H0 : θ = 0 versus H1 : θ ̸= 0 based on a single ob-
+servation X from N (θ, 1). Using the apparent symmetry of this testing
+problem, it seems natural to base a test on Y = |X|.
+a) Find densities qθ for Y and show that the distribution for Y depends
+only on |θ |.
+b) Show that the densities qθ ,θ ≥ 0, have monotone likelihood ratios.
+c) Find the uniformly most powerful level α test of H0 versusH1 based
+on Y .
+d) The uniformly most powerful test ϕ∗(Y ) in part (c) is not most pow-
+erful compared with tests based on X. Find a level α testϕ (X) with
+better power at θ = − 1,
+E−1ϕ (X)>E−1ϕ∗(Y ).
+What is the diﬀerence in power at θ = − 1 if α = 5%?
+24. Let P0 and P1 be two probability distributions, and for ǫ ∈ (0, 1), let Pǫ
+denote the mixture distribution (1 −ǫ)P0 +ǫP1. Let E0,E1, and Eǫ denote
+expectation when X ∼ P0, X ∼ P1, and X ∼ Pǫ , respectively.
+a) Let ϕ be a test function with α =E0ϕ (X) and β =E1ϕ (X). Express
+Eǫϕ (X) as a function of ǫ, α , and β .
+b) Using the result in part (a), argue directly that if ϕ is the most pow-
+erful level α test of H0 :X ∼ P0 versus H1 :X ∼ P1, then it is also
+the most powerful level α test of H0 :X ∼ P0 versusH1 :X ∼ Pǫ .
+c) Suppose P0 andP1 have densitiesp0 andp1, respectively, with respect
+to a measure µ. Find the density for Pǫ .
+d) Using part (c), show that if ϕ is a likelihood ratio test of H0 :X ∼ P0
+versusH1 :X ∼ P1, then it is also a likelihood ratio test of H0 :X ∼
+P0 versusH1 :X ∼ Pǫ .
+*25. Suppose X has a Poisson distribution with mean λ , and that U is uni-
+formly distributed on (0 , 1) and is independent of X.
+a) Show that the joint densities of X and U have monotone likelihood
+ratios in T =X +U .
+b) Describe how to construct level α uniformly most powerful tests of
+H0 : λ = λ 0 versus H1 : λ > λ 0 based on X and U . Specify the
+resulting test explicitly if α = 5% and λ 0 = 2.
+
+===== PAGE 31 =====
+
+12.8 Problems 249
+c) Describe conﬁdence intervals dual to the family of tests in part (b).
+Give the conﬁdence interval if the data are X = 2 and U = 0. 7.
+26. Suppose X has a geometric distribution with success probability θ , so
+Pθ (X =x) = θ (1 − θ )x, x = 0, 1,... ; and that U is uniformly distributed
+on (0, 1) and is independent of X.
+a) Show that the joint densities of X and U have monotone likelihood
+ratios in T = − (X +U ).
+b) Describe how to construct level α uniformly most powerful tests of
+H0 : θ = θ 0 versus H1 : θ > θ0 based on X and U . Specify the
+resulting test explicitly if α = 5% and θ 0 = 1/ 20.
+c) Describe conﬁdence intervals dual to the family of tests in part (b).
+Give the conﬁdence interval if the data are X = 2 and U = 0. 7.
+27. Suppose X1,...,X n are i.i.d. from N (0,σ 2).
+a) Determine the uniformly most powerful test of H0 : σ = σ 0 versus
+H1 :σ>σ 0.
+b) Find a conﬁdence interval for σ using duality from the tests in part (a).
+*28. Let X1,...,X n be i.i.d. observations from a uniform distribution on the
+interval (0,θ ). Find conﬁdence intervals S1 dual to the family of uniformly
+most powerful tests of θ = θ 0 versus θ > θ0 and S2 dual to the family
+of uniformly most powerful tests of θ = θ 0 versus θ < θ0. Then use the
+result from the Problem 9.12 to ﬁnd a 95% conﬁdence interval for θ . This
+interval should have ﬁnite length and exclude zero.
+29. Suppose Y1 andY2 are independent variables, both uniformly distributed
+on (0,θ ), but our observation is X =Y1 +Y2.
+a) Show that the densities for X have monotone likelihood ratios.
+b) Find the UMP level α test of H0 :θ =θ 0 versusH1 :θ >θ 0 based on
+X.
+c) Find a conﬁdence set for θ dual to the tests in part (b).
+30. Let X and Y be independent with X ∼ N (µx, 1) and Y ∼ N (µy, 1).
+Take ∥µ∥2 = µ2
+x
++µ2
+y
+, and consider testing H0 : µx = µy = 0 versus
+H1 : ∥µ∥> 0. For rotational symmetry, a test based on T =X2 +Y 2 may
+seem natural. The density of T is
+f∥µ∥(t) =
+{
+1
+2I0
+(√
+t∥µ∥
+)
+exp
+{
+− 1
+2
+(
+t + ∥µ∥2)}
+, t> 0;
+0, otherwise,
+where I0 is a modiﬁed Bessel function given by
+I0(x) = 1
+π
+∫ π
+0
+ex cosω dω.
+a) Show that I0(x)>I′
+0(x) and that xI′′
+0 (x) +I′
+0(x) = xI0(x).
+b) Show that xI′
+0(x)/I 0(x) is increasing in x. Use this to show that for
+c> 1, I0(cx)/I 0(x) is an increasing function of x. Hint:
+logI0(cx) − logI0(x) =
+∫ c
+1
+∂ logI0(ux)
+∂u du.
+
+===== PAGE 32 =====
+
+250 12 Hypothesis Testing
+c) Show that the densities f∥µ∥ have monotone likelihood ratios.
+d) Find the uniformly most powerful level α test of H0 versusH1 based
+on T .
+e) Find a level α test of H0 versusH1 based on X andY that has power
+as high as possible if µx =µy = 1. Is this the same test as the test in
+part (d)?
+f) Suggest a level α test of ˜H0 :µx =cx, µy =cy , versus ˜H1 :µx ̸=cx
+or µy ̸=cy, based on ˜T = (X − cx)2 + (Y − cy)2.
+g) Find a 1 −α conﬁdence region for ( µx,µ y) dual to the family of tests
+in part (f). What is the shape of your conﬁdence region?
+*31. Suppose X ∼ N (θ, 1), and let ϕ be a test function with power β (θ ) =
+Eθ ϕ (X).
+a) Show that β′(0) = E0Xϕ (X).
+b) What test function ϕ maximizesβ (1) subject to constraints β (0) = α
+and β′(0) = 0?
+*32. Suppose X1 andX2 are independent positive random variables with com-
+mon Lebesgue density pθ (x) = θ/ (1 +θx )2 ,x> 0.
+a) Use dominated convergence to write the derivative β′(θ ) of the power
+function for a test ϕ as an expectation.
+b) Determine the locally most powerful test ϕ of H0 : θ ≤ θ 0 versus
+H1 : θ > θ0 with βϕ (θ 0) = 5%. As in Problem 12.9, a locally most
+powerful test here would maximize β′(θ 0) among all tests with level
+α . Hint: The relevant test statistic can be written as the sum of two
+independent variables. First ﬁnd the Pθ 0 marginal distribution of these
+variables.
+c) Determine a 95% conﬁdence region for θ by duality, inverting the
+family of tests in part (b).
+*33. Suppose we have a single observation from an exponential distribution
+with failure rate λ , and consider testing H0 : λ = 2 versus H1 : λ ̸= 2.
+Find a test ϕ∗with minimal level α among all tests ϕ with 50% power at
+λ = 1 and λ = 3, E1ϕ =E3ϕ = 1/ 2.
+34. Suppose X has a uniform distribution on (0 , 1). Find the test function ϕ
+that maximizes Eϕ (X) subject to constraints
+Eϕ (X2) = Eϕ (1 − X2) = 1/ 2.
+35. Deﬁne ϕ 1 = 1[0, 1],ϕ 2 = 1[0, 1/2] ,ϕ 3 = 1[1/2 , 1],ϕ 4 = 1[0, 1/3] ,ϕ 5 = 1[1/3 , 2/3] ,
+ϕ 6 = 1[2/3 , 1], etc.
+a) If x ∈ [0, 1], what is lim supn→∞ϕn(x)?
+b) What is lim n→∞
+∫ 1
+0 ϕ (x)dx?
+c) Suppose f is bounded and nonnegative. Find
+lim
+n→∞
+∫ 1
+0
+ϕ (x)f (x)dx.
+
+===== PAGE 33 =====
+
+12.8 Problems 251
+d) Suppose f ≥ 0 and
+∫ 1
+0 f (x)dx < ∞. Use dominated convergence to
+show that
+lim
+k→∞
+∫ 1
+0
+(
+f (x) − k
+)+
+dx = 0.
+e) Suppose f ≥ 0 and ∫ 1
+0 f (x)dx< ∞. Show that
+lim
+n→∞
+∫ 1
+0
+f (x)ϕn(x)dx = 0.
+Hint: Note that for any k,
+f (x) = min {f (x),k }+
+(
+f (x) − k
+)+
+.
+Use this to ﬁnd an upper bound for
+lim sup
+n→∞
+∫ 1
+0
+f (x)ϕn(x)dx.
+f) Let ϕ be the “zero” test function, ϕ (x) = 0, for all x. Do the functions
+ϕn converge pointwise to ϕ ?
+36. For n ≥ 1 and x ∈ (0, 1), deﬁne
+φn(x) = I
+(
+⌊2nx2⌋ ∈ {0, 2, 4,... }
+)
+,
+and let µ be Lebesgue measure on (0 , 1). Find the weak limit of these
+functions, that is, a function φ on (0, 1) such that φn
+w
+→ φ .
+*37. Let ϕn be a sequence of test functions converging pointwise to ϕ ,ϕn(x) →
+ϕ (x) for all x.
+a) Does it follow that ϕ 2
+n
+w
+→ ϕ 2? Prove or give a counterexample.
+b) Does it follow that 1 /ϕ n
+w→ 1/ϕ ? Prove or give a counterexample.
+38. Let X have a Cauchy distribution with location θ , so
+pθ (x) = 1
+π
+[
+1 + (x − θ )2], x ∈ R,
+and consider testing H0 :θ = 0 versus H1 :θ ̸= 0. Find a test ϕ with level
+α = 5% that maximizes E1ϕ subject to the constraint E1ϕ = E−1ϕ . Is
+this test uniformly most powerful unbiased?
+39. Suppose X has an exponential distribution with failure rate λ , so pλ (x) =
+λe−λx forx> 0. Determine the most powerful test of H0 :λ = 1 or λ = 4
+versus H1 : λ = 2 with level α = 5%. The test you derive is in fact the
+uniformly most powerful test of H0 :λ ≤ 1 or λ ≥ 4 versus H1 :λ ∈ (1, 4)
+with level α = 5%.
+40. Locally most powerful tests in two-sided situations . Suppose we have a
+single observation X with density
+
+===== PAGE 34 =====
+
+252 12 Hypothesis Testing
+pθ (x) =
+
+
+
+θ
+(1 +θx )2, x> 0;
+0, otherwise,
+where θ > 0. Find a test ϕ∗of H0 : θ = 1 versus H1 : θ ̸= 1 with level
+α = 5% that maximizes β′′
+ϕ (1), subject to the constraint β′
+ϕ (1) = 0.
+*41. Suppose X has a binomial distribution with two trials and success
+probability p. Determine the uniformly most powerful unbiased test of
+H0 :p = 2/ 3 versus H1 :p ̸= 2/ 3. Assume α< 4/ 9.
+*42. Let X1...X 4 be i.i.d. from N (0,σ 2). Determine the uniformly most pow-
+erful unbiased test of H0 : σ = 1 versus H1 : σ ̸= 1 with size α = 5%.
+43. Suppose we observe a single observation X with density
+fθ (x) = c(θ )|x|e−(x−θ )2/2 , x ∈ R.
+a) Give a formula for c(θ ) in terms of the cumulative distribution function
+Φ for the standard normal distribution.
+b) Find the uniformly most powerful unbiased test of H0 :θ = 0 versus
+H1 :θ ̸= 0.
+*44. Consider testing H0 :θ =θ 0 versus H1 :θ ̸= θ 0 based on a single obser-
+vationX with density
+pθ (x) =
+
+
+
+θe
+θx
+2 sinhθ, |x|< 1;
+0, |x| ≥1.
+When θ = 0, pθ should be 1/ 2 if |x|< 1, and zero otherwise.
+a) Specify the form of the uniformly most powerful unbiased test with
+level α , and give equations to determine constants needed to specify
+the test.
+b) Specify the uniformly most powerful unbiased test explicitly when
+θ 0 = 0.
+45. Let X1,...,X n be independent with
+Xi ∼ N (tiθ, 1), i = 1,...,n,
+where t1,...,t n are known constants and θ is an unknown parameter.
+a) Determine the uniformly most powerful unbiased test of H0 :θ =θ 0
+versusH1 :θ ̸=θ 0.
+b) Find a conﬁdence region for θ inverting the family of tests in part (a).
+46. Suppose our data consist of two independent observations, X andY , from
+a Poisson distribution with mean λ . Find the uniformly most powerful
+unbiased test of H0 :λ = 1 versus H1 :λ ̸= 1 with level α = 10%.
+47. A random angle X has density
+
+===== PAGE 35 =====
+
+12.8 Problems 253
+pθ (x) =
+
+
+
+exp
+[
+θ cosx
+]
+2πI 0(θ ) , x ∈ [0, 2π );
+0, otherwise,
+where θ ∈ R and I0 is a modiﬁed Bessel function ( I0(0) = 1). Find the
+uniformly most powerful unbiased test of H0 : θ = 0 versus H1 : θ ̸= 0
+with level α .
+48. Suppose X has density
+pθ (x) = x2 exp
+[
+− 1
+2 (x − θ )2]
+√
+2π (1 +θ 2)
+, x ∈ R.
+Find the uniformly most powerful unbiased test of H0 : θ = 0 versus
+H1 :θ ̸= 0 with level α = 5%.
+49. Because a good test of H0 :θ ∈Ω0 versus H1 :θ ∈Ω1 should have high
+power on Ω1 and small power on Ω0, a test function φ might be chosen
+to minimize
+∫
+Ω0
+βφ (θ )w(θ )dΛ (θ ) +
+∫
+Ω1
+(
+1 − βφ (θ )
+)
+w(θ )dΛ (θ ),
+where Λ is a measure on Ω = Ω0 ∪Ω1 and w ≥ 0 is a weight function.
+(With a natural loss structure, Bayes risks would have this form.)
+a) Describe a test function φ∗that minimizes this criterion. Assume that
+P is a dominated family with densities pθ , θ ∈Ω.
+b) Find the optimal test function φ∗explicitly if w is identically one, Λ is
+Lebesgue measure on (0 , ∞), Pθ is the exponential distribution with
+failure rate θ , Ω0 = (0, 1], and Ω1 = (1, ∞).
+
+===== PAGE 36 =====
+

@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ch 9 — Estimating Equations and Maximum Likelihood · Theoretical Statistics</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/>
+</head>
+<body data-book="basic_stat" data-page="ch09">
+<header class="site-header">
+<a class="brand" href="/books/basic_stat/">Theoretical Statistics <small>a slow reading guide</small></a>
+<nav>
+<a href="/" class="all-books-link">All books</a>
+    <a href="/books/basic_stat/">Contents</a>
+<button aria-label="toggle theme" class="theme-toggle">Dark</button>
+</nav>
+</header>
+<main class="layout">
+<aside class="sidebar">
+<h4>Chapter 9</h4>
+<ol>
+<li><a href="#why">Why this chapter is the keystone</a></li>
+<li><a href="#s9-1">9.1 Weak law for random functions</a></li>
+<li><a href="#s9-2">9.2 Consistency of the MLE</a></li>
+<li><a href="#s9-3">9.3 Limiting distribution for the MLE</a></li>
+<li><a href="#s9-4">9.4 Confidence intervals</a></li>
+<li><a href="#s9-5">9.5 Asymptotic confidence intervals</a></li>
+<li><a href="#s9-6">9.6 EM algorithm</a></li>
+<li><a href="#s9-7">9.7 Multivariate MLE</a></li>
+<li><a href="#s9-8">9.8 M-estimators for location</a></li>
+<li><a href="#s9-9">9.9 Dependent observations</a></li>
+<li><a href="#summary">Summary</a></li>
+</ol>
+</aside>
+<article class="content">
+<section class="hero">
+<div class="kicker">Chapter 9</div>
+<h1>Estimating Equations and Maximum Likelihood</h1>
+<p class="subtitle" data-cid="ch09-010">The longest chapter in the book — and the one that ties together every asymptotic result you have seen so far. Read it slowly; it is worth it.</p>
+<div class="meta">
+<span>Book pages: 151–194</span>
+<span>~90 min reading time</span>
+<span>Prereqs: Chapters 4, 7, 8</span>
+</div>
+</section>
+<h2 data-cid="ch09-020" id="why">Why this chapter is the keystone</h2>
+<p data-cid="ch09-030">
+  Up to now you have met estimators one at a time: the sample mean, the MLE for a Bernoulli proportion,
+  least squares, the method of moments. Each came with its own little asymptotic argument. Chapter 9 reveals
+  that nearly all of them are instances of a single template:
+</p>
+$$\text{the estimator } \hat\theta_n \text{ solves } \sum_{i=1}^{n} \psi(X_i; \hat\theta_n) = 0.$$
+<p data-cid="ch09-040">
+  Different choices of $\psi$ give different estimators. When $\psi = \nabla_\theta \log f_\theta$, the
+  solution is the MLE. When $\psi(x, t) = x - t$, the solution is the sample mean. When
+  $\psi(x, t) = \mathrm{sign}(x - t)$, the solution is the sample median. The method of moments,
+  Huber's robust estimator, the Bayes estimator under regularity — all sit inside this frame.
+</p>
+<div class="box intuition" data-cid="ch09-050">
+<span class="box-label">The big idea in one sentence</span>
+<p data-cid="ch09-060">
+  If $\hat\theta_n$ solves $\sum \psi(X_i; \hat\theta_n) = 0$ and the average $\bar\psi_n(t)$ converges
+  <em>uniformly</em> to its expectation $\lambda(t) = E\psi(X; t)$, then $\hat\theta_n$ is consistent
+  for the root $c$ of $\lambda$, and a single Taylor expansion gives its asymptotic normal distribution.
+</p>
+</div>
+<p data-cid="ch09-070">
+  The chapter follows that idea in nine sections. Section 9.1 builds the technical engine — a law of large
+  numbers that holds <em>uniformly</em> in $t$. Sections 9.2–9.3 apply it to maximum likelihood. Sections
+  9.4–9.5 turn limiting distributions into usable confidence intervals. Section 9.6 introduces the EM
+  algorithm for cases where the MLE has no closed form. Section 9.7 lifts everything into $\mathbb{R}^p$.
+  Section 9.8 generalises beyond the likelihood (Huber's M-estimators). Section 9.9 sketches how the same
+  template survives when the data are no longer i.i.d.
+</p>
+<!-- ===================================================================== -->
+<h2 data-cid="ch09-080" id="s9-1">9.1 Weak law for random functions</h2>
+<h3 data-cid="ch09-090">What is wrong with pointwise convergence?</h3>
+<p data-cid="ch09-100">
+  The ordinary weak law says: for each fixed $t$, the average $\bar W_n(t) = n^{-1}\sum W_i(t)$ converges
+  in probability to $E W(t)$. That looks like enough — but it is not. When we plug a <em>random</em>
+  argument $\hat\theta_n$ into $\bar W_n$, pointwise convergence is too weak to conclude
+  $\bar W_n(\hat\theta_n) \to E W(\hat\theta_n)$. We need convergence that is uniform over $t$.
+</p>
+<div class="box definition" data-cid="ch09-110">
+<span class="box-label">Set-up</span>
+<p data-cid="ch09-120">
+  Let $X_1, X_2, \dots$ be i.i.d., let $K \subset \mathbb{R}^p$ be compact, and let $h(t, x)$ be continuous
+  in $t$ for every $x$. Define the random functions
+  $$W_i(t) = h(t, X_i), \qquad t \in K.$$
+  Each $W_i$ lives in $C(K)$, the space of continuous functions on $K$, equipped with the supremum norm
+  $$\|w\|_\infty = \sup_{t \in K} |w(t)|.$$
+</p>
+</div>
+<div class="box intuition" data-cid="ch09-130">
+<span class="box-label">Why $C(K)$?</span>
+<p data-cid="ch09-140">
+  $C(K)$ is a complete normed linear space — a Banach space. Distances are measured by the worst-case gap
+  between two functions. "Uniformly close" means small in $\|\cdot\|_\infty$. The whole point of working
+  in $C(K)$ is that this norm gives us a single number measuring closeness over the entire compact set $K$
+  at once.
+</p>
+</div>
+<h3 data-cid="ch09-150">The uniform weak law</h3>
+<div class="box definition" data-cid="ch09-160">
+<span class="box-label">Theorem 9.2</span>
+<p data-cid="ch09-170">
+  If $W, W_1, W_2, \dots$ are i.i.d. random functions in $C(K)$ with mean $\mu(t) = E W(t)$ and
+  $E\|W\|_\infty &lt; \infty$, then
+  $$\|\bar W_n - \mu\|_\infty \xrightarrow{p} 0.$$
+</p>
+</div>
+<p data-cid="ch09-180">
+  The strategy of the proof is worth absorbing because the same logic recurs everywhere in Chapter 9.
+  Compactness of $K$ lets us cover it by finitely many small balls. Continuity of each $W_i$ lets us
+  bound the variation of $W_i$ inside each ball. The ordinary weak law handles the finitely many
+  ball-centres. Glue the pieces together and uniform convergence falls out.
+</p>
+<h3 data-cid="ch09-190">Why uniform convergence is the gold standard</h3>
+<div class="box definition" data-cid="ch09-200">
+<span class="box-label">Theorem 9.4 — three consequences</span>
+<p data-cid="ch09-210">Suppose $G_n \in C(K)$, $K$ compact, and $\|G_n - g\|_\infty \xrightarrow{p} 0$ with $g$ deterministic.</p>
+<ol data-cid="ch09-220">
+<li><strong>Plug-in:</strong> if $t_n \xrightarrow{p} t^*$, then $G_n(t_n) \xrightarrow{p} g(t^*)$.</li>
+<li><strong>Argmax:</strong> if $g$ has a <em>unique</em> maximiser $t^*$ and $t_n$ maximises $G_n$, then
+  $t_n \xrightarrow{p} t^*$.</li>
+<li><strong>Root:</strong> if $K \subset \mathbb{R}$ and $g(t) = 0$ has a <em>unique</em> root $t^*$,
+  and $t_n$ solves $G_n(t_n) = 0$, then $t_n \xrightarrow{p} t^*$.</li>
+</ol>
+</div>
+<div class="box intuition" data-cid="ch09-230">
+<span class="box-label">Read these three slowly</span>
+<p data-cid="ch09-240">
+  Assertion (1) says we may substitute random arguments into uniformly convergent functions.
+  Assertion (2) is the consistency theorem for MLE in disguise. Assertion (3) is the consistency
+  theorem for M-estimators. The entire chapter is going to be applications of these three facts.
+</p>
+</div>
+<div class="box warn" data-cid="ch09-250">
+<span class="box-label">Common pitfall</span>
+<p data-cid="ch09-260">
+  Pointwise convergence is not enough. Problem 9.1 in the book constructs $G_n(t) = nZ_n(1-t)t^n - t$
+  where $G_n(t) \xrightarrow{p} -t$ for every fixed $t$, yet the maximiser of $G_n$ does not converge to
+  the maximiser of the limit. The lesson: when you let $t$ depend on $n$, only uniform convergence
+  saves you.
+</p>
+</div>
+<!-- ===================================================================== -->
+<h2 data-cid="ch09-270" id="s9-2">9.2 Consistency of the maximum likelihood estimator</h2>
+<p data-cid="ch09-280">
+  Let $X_1, X_2, \dots$ be i.i.d. with density $f_\theta$, $\theta \in \Omega$. The log-likelihood from
+  the first $n$ observations is
+  $$\ell_n(\omega) = \sum_{i=1}^{n} \log f_\omega(X_i).$$
+  We write $\omega$ for the dummy argument and reserve $\theta$ for the true value. The MLE $\hat\theta_n$
+  maximises $\ell_n$.
+</p>
+<div class="box definition" data-cid="ch09-290">
+<span class="box-label">Definition 9.7 — Kullback–Leibler information</span>
+<p data-cid="ch09-300">
+  $$I(\theta, \omega) = E_\theta \log \!\left[ \frac{f_\theta(X)}{f_\omega(X)} \right].$$
+  It is the expected log-likelihood-ratio between the true model and a candidate $\omega$.
+</p>
+</div>
+<div class="box intuition" data-cid="ch09-310">
+<span class="box-label">Why this quantity matters</span>
+<p data-cid="ch09-320">
+  Jensen's inequality gives $I(\theta, \omega) \geq 0$ with equality iff $P_\theta = P_\omega$. So as a
+  function of $\omega$, $-I(\theta, \omega)$ has a strict maximum at $\omega = \theta$. If we can show
+  the random function $\bar W_n(\omega) = n^{-1}\ell_n(\omega) - n^{-1}\ell_n(\theta)$ converges uniformly
+  to $-I(\theta, \omega)$, then by Theorem 9.4(2) the maximiser of $\bar W_n$ — which is the MLE — must
+  converge to $\theta$.
+</p>
+</div>
+<div class="box definition" data-cid="ch09-330">
+<span class="box-label">Theorem 9.9 — Wald consistency</span>
+<p data-cid="ch09-340">
+  If $\Omega$ is compact, $f_\omega(x)$ is continuous in $\omega$ for a.e. $x$, $P_\omega \neq P_\theta$
+  for $\omega \neq \theta$, and $E_\theta \|W\|_\infty &lt; \infty$ where
+  $W(\omega) = \log[f_\omega(X)/f_\theta(X)]$, then under $P_\theta$, $\hat\theta_n \xrightarrow{p} \theta$.
+</p>
+</div>
+<p data-cid="ch09-350">
+  Theorem 9.11 extends this to $\Omega = \mathbb{R}^p$ provided the density tails off at infinity in a
+  controlled way. The fundamental engine — uniform LLN plus uniqueness of the maximum — is unchanged.
+</p>
+<div class="box warn" data-cid="ch09-360">
+<span class="box-label">Common pitfall — MLE can fail to exist</span>
+<p data-cid="ch09-370">
+  Compactness and continuity hide real-world traps. For the three-parameter lognormal
+  $X = \gamma + e^Z$ with $Z \sim N(\mu, \sigma^2)$, the profile log-likelihood diverges to $+\infty$
+  as $\gamma \uparrow X_{(1)}$ — so the MLE of $\gamma$ does not exist (Problem 9.5). For uniform
+  $(0, \theta)$, the MLE is $X_{(n)}$ and the regularity assumption "support independent of $\theta$"
+  fails. In such non-regular cases the theory of Sections 9.2–9.3 simply does not apply.
+</p>
+</div>
+<!-- ===================================================================== -->
+<h2 data-cid="ch09-380" id="s9-3">9.3 Limiting distribution for the MLE</h2>
+<p data-cid="ch09-390">
+  We now ask the second question: how fast does $\hat\theta_n$ converge, and to what limit law? The
+  answer is the celebrated asymptotic normality theorem.
+</p>
+<div class="box definition" data-cid="ch09-400">
+<span class="box-label">Theorem 9.14 — asymptotic normality of the MLE</span>
+<p data-cid="ch09-410">Under regularity (continuous second derivative of $\log f_\theta$, Fisher information finite and
+  reachable through either $E[(W')^2]$ or $-E[W'']$, integrable local Hessian, and consistency), for any
+  $\theta$ in the interior of $\Omega$,</p>
+$$\sqrt{n}\, (\hat\theta_n - \theta) \;\Rightarrow\; N\!\left(0, \tfrac{1}{I(\theta)}\right).$$
+</div>
+<h3 data-cid="ch09-420">The proof, slowly</h3>
+<p data-cid="ch09-430">
+  Because $\hat\theta_n$ is consistent and interior, with probability tending to one it solves the score
+  equation $\ell_n'(\hat\theta_n) = 0$. Equivalently $\bar W_n'(\hat\theta_n) = 0$, where
+  $\bar W_n = n^{-1}\ell_n$. Taylor-expand $\bar W_n'$ around $\theta$:
+</p>
+$$0 = \bar W_n'(\hat\theta_n) = \bar W_n'(\theta) + \bar W_n''(\tilde\theta_n)(\hat\theta_n - \theta),$$
+<p data-cid="ch09-440">where $\tilde\theta_n$ is between $\theta$ and $\hat\theta_n$. Solving and multiplying by $\sqrt n$,</p>
+$$\sqrt n (\hat\theta_n - \theta) = \frac{\sqrt n\, \bar W_n'(\theta)}{-\bar W_n''(\tilde\theta_n)}. \tag{9.1}$$
+
+<p data-cid="ch09-450">
+  The numerator and denominator have separate fates.
+</p>
+<ul data-cid="ch09-460">
+<li><strong>Numerator.</strong> $\sqrt n \bar W_n'(\theta) = n^{-1/2} \sum_i \partial_\theta \log f_\theta(X_i)$.
+  The summands are i.i.d., mean zero (a consequence of differentiating under the integral), and have
+  variance $I(\theta)$. The CLT gives $\sqrt n \bar W_n'(\theta) \Rightarrow N(0, I(\theta))$.</li>
+<li><strong>Denominator.</strong> $\bar W_n''(\tilde\theta_n)$. The uniform LLN of Section 9.1 gives
+  $\bar W_n'' \to E W''$ uniformly on a neighbourhood of $\theta$. Combine with $\tilde\theta_n \to \theta$
+  via Theorem 9.4(1): $\bar W_n''(\tilde\theta_n) \xrightarrow{p} E W''(\theta) = -I(\theta)$.</li>
+</ul>
+<p data-cid="ch09-470">
+  Slutsky's theorem (Theorem 8.13) then gives the ratio $\Rightarrow N(0, I(\theta))/I(\theta) =
+  N(0, 1/I(\theta))$.
+</p>
+<div class="box pause" data-cid="ch09-480">
+<span class="box-label">Pause — why is the MLE asymptotically efficient?</span>
+<p data-cid="ch09-490">
+  Recall the Cramér–Rao bound from Chapter 4: any unbiased estimator of $\theta$ has variance at least
+  $1/(n I(\theta))$. Theorem 9.14 says the MLE attains exactly that variance asymptotically. That is
+  what "asymptotic efficiency" means: in the limit, the MLE saturates the information bound. No regular
+  estimator can do strictly better.
+</p>
+<p data-cid="ch09-500">
+  The deeper reason: the score function $\ell_n'(\theta)$ has variance $n I(\theta)$ (Fisher's identity),
+  and the MLE is, to first order, the linearisation of the inverse of this score. The Newton step from
+  $\theta$ to $\hat\theta_n$ has length $\propto \ell_n'(\theta)/I(\theta)$, scaling its variance down
+  to $1/(n I(\theta))$.
+</p>
+</div>
+<h3 data-cid="ch09-510">Worked example — Bernoulli</h3>
+<div class="box example" data-cid="ch09-520">
+<span class="box-label">Worked example — MLE for Bernoulli</span>
+<p data-cid="ch09-530">
+  Let $X_1, \dots, X_n \stackrel{\text{iid}}{\sim} \mathrm{Bernoulli}(p)$, $p \in (0,1)$. The log-likelihood
+  is $\ell_n(p) = (\sum X_i)\log p + (n - \sum X_i)\log(1-p)$. Differentiating and setting equal to zero
+  gives $\hat p_n = \bar X_n$. The Fisher information is
+  $$I(p) = \frac{1}{p(1-p)},$$
+  obtained either by $-E[\partial_p^2 \log f_p(X)]$ or directly from $\mathrm{Var}(X)$. Theorem 9.14 then
+  delivers
+  $$\sqrt n (\hat p_n - p) \;\Rightarrow\; N\!\big(0, p(1-p)\big),$$
+  which is also exactly the CLT applied to $\bar X_n$ — a healthy consistency check.
+</p>
+</div>
+<h3 data-cid="ch09-540">Worked example — Normal mean</h3>
+<div class="box example" data-cid="ch09-550">
+<span class="box-label">Worked example — MLE for $N(\mu, \sigma_0^2)$ with known variance</span>
+<p data-cid="ch09-560">
+  $\log f_\mu(x) = -\frac{(x-\mu)^2}{2\sigma_0^2} + \text{const}$. The MLE is $\hat\mu_n = \bar X_n$.
+  The Fisher information is $I(\mu) = 1/\sigma_0^2$, so
+  $\sqrt n(\hat\mu_n - \mu) \Rightarrow N(0, \sigma_0^2)$. Again, the CLT delivers this directly — but the
+  point of Theorem 9.14 is that we did not need to be clever; we just turned the crank.
+</p>
+</div>
+<h3 data-cid="ch09-570">Worked example — Poisson</h3>
+<div class="box example" data-cid="ch09-580">
+<span class="box-label">Worked example — MLE for Poisson$(\theta)$</span>
+<p data-cid="ch09-590">
+  $\ell_n(\theta) = (\sum X_i)\log\theta - n\theta + \text{const}$. The score is
+  $\ell_n'(\theta) = n\bar X_n/\theta - n$, so $\hat\theta_n = \bar X_n$. The Fisher information is
+  $I(\theta) = 1/\theta$ (compute $-E[-X/\theta^2] = 1/\theta$). Therefore
+  $\sqrt n(\bar X_n - \theta) \Rightarrow N(0, \theta)$.
+</p>
+</div>
+<div class="box warn" data-cid="ch09-600">
+<span class="box-label">Common pitfall — uniqueness of the root</span>
+<p data-cid="ch09-610">
+  The score equation $\ell_n'(\theta) = 0$ may have multiple solutions. Theorem 9.4(3) requires a
+  <em>unique</em> root of the limiting function — but for finite $n$ there can be several roots, and the
+  global maximum of $\ell_n$ may not be the one nearest to $\theta$. In practice one solves the score
+  equation numerically and verifies it is the global maximum, not merely a critical point.
+</p>
+</div>
+<!-- ===================================================================== -->
+<h2 data-cid="ch09-620" id="s9-4">9.4 Confidence intervals</h2>
+<p data-cid="ch09-630">
+  A point estimator tells you a guess; a confidence interval tells you how much to trust the guess.
+</p>
+<div class="box definition" data-cid="ch09-640">
+<span class="box-label">Definition 9.17 — confidence interval</span>
+<p data-cid="ch09-650">
+  Statistics $\delta_0, \delta_1$ give a <strong>$1-\alpha$ confidence interval</strong> for $g(\theta)$ if
+  $$P_\theta\big(g(\theta) \in (\delta_0, \delta_1)\big) \geq 1 - \alpha \quad \text{for all } \theta \in \Omega.$$
+  More generally a random set $S(X)$ is a <strong>$1-\alpha$ confidence region</strong> if
+  $P_\theta(g(\theta) \in S) \geq 1 - \alpha$ for all $\theta$.
+</p>
+</div>
+<div class="box intuition" data-cid="ch09-660">
+<span class="box-label">Reading the statement carefully</span>
+<p data-cid="ch09-670">
+  The probability is taken over the data $X$, not over $\theta$. Once you observe $X = x$, the interval
+  $(\delta_0(x), \delta_1(x))$ is a fixed set of real numbers; the parameter $\theta$ is fixed too,
+  though unknown. The "$1 - \alpha$" is a long-run frequency property of the procedure, not a posterior
+  probability for $\theta$.
+</p>
+</div>
+<h3 data-cid="ch09-680">Pivots</h3>
+<p data-cid="ch09-690">
+  A <strong>pivot</strong> is a function of the data and the parameter whose distribution does not depend
+  on the parameter. Pivots are the engine that turns probability statements about random variables into
+  confidence statements about parameters.
+</p>
+<div class="box example" data-cid="ch09-700">
+<span class="box-label">Example 9.19 — $t$-interval for the normal mean</span>
+<p data-cid="ch09-710">
+  Let $X_1, \dots, X_n \stackrel{\text{iid}}{\sim} N(\mu, \sigma^2)$. From Section 4.3,
+  $\bar X \sim N(\mu, \sigma^2/n)$ and $(n-1)S^2/\sigma^2 \sim \chi^2_{n-1}$ are independent. The ratio
+  $$T = \frac{\bar X - \mu}{S/\sqrt n} \sim t_{n-1}$$
+  is a pivot. Inverting $-t_{\alpha/2, n-1} &lt; T &lt; t_{\alpha/2, n-1}$ gives the classical $t$-interval
+  $$\left(\bar X - t_{\alpha/2, n-1}\, \frac{S}{\sqrt n}, \; \bar X + t_{\alpha/2, n-1}\, \frac{S}{\sqrt n}\right),$$
+  which has exact coverage $1 - \alpha$.
+</p>
+</div>
+<p data-cid="ch09-720">
+  Pivots also exist for $\sigma^2$ (using $V = (n-1)S^2/\sigma^2 \sim \chi^2_{n-1}$), for variance ratios
+  $\sigma_x/\sigma_y$ in two-sample problems (using $F$ distributions, Problem 9.8), and for any
+  location/scale family (Problem 9.11). Where exact pivots exist, asymptotics is not needed.
+</p>
+<!-- ===================================================================== -->
+<h2 data-cid="ch09-730" id="s9-5">9.5 Asymptotic confidence intervals</h2>
+<p data-cid="ch09-740">
+  Most parametric problems do not admit an exact pivot. The MLE asymptotic normality of Theorem 9.14
+  gives an <em>approximate</em> pivot
+</p>
+$$\sqrt{n I(\theta)}\,(\hat\theta_n - \theta) \;\Rightarrow\; N(0, 1), \tag{9.3}$$
+<p data-cid="ch09-750">whose limiting distribution is parameter-free. This single fact spawns three different intervals.</p>
+<h3 data-cid="ch09-760">Form 1 — implicit region using $I(\theta)$</h3>
+$$S = \left\{ \theta : \sqrt{n I(\theta)}\, |\hat\theta_n - \theta| &lt; z_{\alpha/2} \right\}. \tag{9.4}$$
+<p data-cid="ch09-770">
+  This set may not even be an interval, and inverting the inequality may be algebraically painful.
+</p>
+<h3 data-cid="ch09-780">Form 2 — plug-in using $I(\hat\theta_n)$</h3>
+<p data-cid="ch09-790">
+  By continuity, $I(\hat\theta_n)/I(\theta) \xrightarrow{p} 1$, so we can substitute the estimate:
+</p>
+$$\left(\hat\theta_n - \frac{z_{\alpha/2}}{\sqrt{n I(\hat\theta_n)}}, \; \hat\theta_n + \frac{z_{\alpha/2}}{\sqrt{n I(\hat\theta_n)}}\right). \tag{9.5}$$
+<p data-cid="ch09-800">This is the textbook "Wald interval". It always is an interval; closed form; easy.</p>
+<h3 data-cid="ch09-810">Form 3 — observed information</h3>
+<p data-cid="ch09-820">
+  Argue that confidence intervals should depend only on the actual shape of the likelihood, not on
+  population averages. Replacing the expected information $I(\hat\theta_n)$ by the curvature at the MLE,
+  $-\ell_n''(\hat\theta_n)$,
+</p>
+$$\left(\hat\theta_n - \frac{z_{\alpha/2}}{\sqrt{-\ell_n''(\hat\theta_n)}}, \; \hat\theta_n + \frac{z_{\alpha/2}}{\sqrt{-\ell_n''(\hat\theta_n)}}\right). \tag{9.7}$$
+<p data-cid="ch09-830">The denominator $-\ell_n''(\hat\theta_n)$ is the <strong>observed Fisher information</strong>.</p>
+<h3 data-cid="ch09-840">Form 4 — profile / likelihood-ratio</h3>
+<p data-cid="ch09-850">
+  By a second Taylor expansion,
+  $2\ell_n(\hat\theta_n) - 2\ell_n(\theta) \approx \big[\sqrt{-\ell_n''(\theta^*_n)}(\theta - \hat\theta_n)\big]^2
+  \Rightarrow \chi^2_1$. Inverting,
+</p>
+$$S = \left\{ \theta : 2\ell_n(\hat\theta_n) - 2\ell_n(\theta) &lt; z_{\alpha/2}^2 \right\}. \tag{9.8}$$
+<p data-cid="ch09-860">
+  This is the <strong>profile likelihood</strong> region. It uses the full curve of $\ell_n$ — not just
+  its peak and second derivative — and tends to give better small-sample coverage in non-quadratic models.
+</p>
+<div class="box example" data-cid="ch09-870">
+<span class="box-label">Worked example 9.20 — Poisson revisited</span>
+<p data-cid="ch09-880">
+  With $X_1, \dots, X_n \stackrel{\text{iid}}{\sim} \mathrm{Poisson}(\theta)$, $\hat\theta = \bar X$,
+  $I(\theta) = 1/\theta$, and $-\ell_n''(\hat\theta) = n\bar X/\hat\theta^2 = n/\bar X = nI(\hat\theta)$.
+  So forms 2 and 3 coincide:
+  $$(\bar X - z_{\alpha/2}\sqrt{\bar X/n}, \; \bar X + z_{\alpha/2}\sqrt{\bar X/n}).$$
+  Note this can go negative when $\bar X$ is small — a famous defect of the Wald interval. The profile
+  form (9.8) stays inside $(0, \infty)$ but its endpoints must be found numerically.
+</p>
+</div>
+<div class="box pause" data-cid="ch09-890">
+<span class="box-label">When do all four agree?</span>
+<p data-cid="ch09-900">
+  For an exponential family in canonical form, the log-likelihood is exactly quadratic in the canonical
+  parameter, so all four intervals coincide. In non-exponential families they diverge, and the profile
+  interval is usually the most accurate at moderate $n$.
+</p>
+</div>
+<!-- ===================================================================== -->
+<h2 data-cid="ch09-910" id="s9-6">9.6 EM algorithm — estimation from incomplete data</h2>
+<p data-cid="ch09-920">
+  The EM algorithm (Dempster, Laird and Rubin, 1977) computes MLEs when the data are incomplete in some
+  way — censored, rounded, missing-at-random, or augmented latent variables. The "full data" $X$ has
+  density $h(x) e^{\eta T(x) - A(\eta)}$ from an exponential family; the observed data are
+  $Y = g(X)$ where $g$ is many-to-one, so $X$ cannot be recovered from $Y$.
+</p>
+<h3 data-cid="ch09-930">The algorithm</h3>
+<p data-cid="ch09-940">
+  Start from a guess $\hat\eta_0$. Iterate two steps until convergence:
+</p>
+<ul data-cid="ch09-950">
+<li><strong>E-step.</strong> Impute the sufficient statistic:
+  $$T_{k+1} = E_{\hat\eta_k}[T(X) \mid Y].$$</li>
+<li><strong>M-step.</strong> Maximise as if $T_{k+1}$ were observed:
+  $$\hat\eta_{k+1} = \psi(T_{k+1}),$$
+  where $\psi$ is the inverse of $A'$.</li>
+</ul>
+<div class="box intuition" data-cid="ch09-960">
+<span class="box-label">Why this works</span>
+<p data-cid="ch09-970">
+  At any fixed point $\tilde\eta = \psi(e(Y, \tilde\eta))$, the derivative of the observed-data log-likelihood
+  $\log f_\eta(Y)$ vanishes: differentiating $f_\eta(Y) = \int_{\mathcal{X}(Y)} h e^{\eta T - A}\, d\mu$ gives
+  $\partial_\eta \log f_\eta(Y) = e(Y, \eta) - A'(\eta)$, which is zero at $\tilde\eta$. So EM fixed points are
+  critical points of the observed log-likelihood. A theorem of Dempster–Laird–Rubin (extended by Wu, 1983)
+  shows each iteration cannot decrease $\log f_\eta(Y)$.
+</p>
+</div>
+<div class="box example" data-cid="ch09-980">
+<span class="box-label">Example 9.23 — rounding</span>
+<p data-cid="ch09-990">
+  $X_1, \dots, X_n \stackrel{\text{iid}}{\sim} \mathrm{Exp}(\eta)$, but we only observe
+  $Y_i = \lfloor X_i \rfloor$. The full-data sufficient statistic is $T = -\sum X_i$, and the conditional
+  expectation works out to
+  $$E_\eta[X_i \mid Y_i = y] = y + \frac{e^\eta - 1 - \eta}{\eta(e^\eta - 1)}.$$
+  The EM recursion becomes
+  $$\hat\eta_{j+1} = -\frac{n}{T_{j+1}}, \qquad T_{j+1} = -n\!\left[\bar Y + \frac{e^{\hat\eta_j} - 1 - \hat\eta_j}{\hat\eta_j (e^{\hat\eta_j} - 1)}\right].$$
+  Here the marginal $Y_i$ is geometric with $p = 1 - e^{-\eta}$, so we can verify the answer in closed form:
+  $\hat\eta = \log(1 + 1/\bar Y)$.
+</p>
+</div>
+<div class="box warn" data-cid="ch09-1000">
+<span class="box-label">Common pitfall — local maxima and slow convergence</span>
+<p data-cid="ch09-1010">
+  EM is monotone in $\log f_\eta(Y)$ but is not guaranteed to find the global maximum. If the likelihood
+  has multiple modes, EM may converge to a local maximum; the standard remedy is to restart from several
+  initial values. Convergence is also typically only linear — the error shrinks by a constant factor each
+  iteration. Newton–Raphson on $\log f_\eta(Y)$ would converge quadratically, but is less stable and
+  needs second derivatives of the observed-data likelihood.
+</p>
+</div>
+<!-- ===================================================================== -->
+<h2 data-cid="ch09-1020" id="s9-7">9.7 Limiting distributions in higher dimensions</h2>
+<p data-cid="ch09-1030">
+  In multivariate problems $\theta \in \mathbb{R}^p$, the Fisher information is a $p \times p$ matrix
+</p>
+$$I(\theta) = \mathrm{Cov}_\theta\!\big(\nabla_\theta \log f_\theta(X)\big) = -E_\theta\, \nabla^2_\theta \log f_\theta(X).$$
+
+<h3 data-cid="ch09-1040">Multivariate normal — the limit distribution</h3>
+<p data-cid="ch09-1050">
+  The multivariate normal $N(\mu, \Sigma)$ has moment generating function
+  $M_X(t) = \exp(t'\mu + t'\Sigma t/2)$. Built as $X = \mu + AZ$ for $Z$ a vector of i.i.d. standard
+  normals and $AA' = \Sigma$, it inherits these properties:
+</p>
+<ul data-cid="ch09-1060">
+<li>$EX = \mu$, $\mathrm{Cov}(X) = \Sigma$.</li>
+<li>Linear images stay normal: $b + AX \sim N(b + A\mu, A\Sigma A')$.</li>
+<li>When $\Sigma$ is positive definite, $X$ has Lebesgue density
+  $(2\pi)^{-p/2}(\det\Sigma)^{-1/2}\exp\!\big(-\tfrac12(x-\mu)'\Sigma^{-1}(x-\mu)\big)$.</li>
+</ul>
+<div class="box definition" data-cid="ch09-1070">
+<span class="box-label">Multivariate CLT (Theorem 9.27)</span>
+<p data-cid="ch09-1080">
+  If $X_1, X_2, \dots$ are i.i.d. random vectors with mean $\mu$ and covariance $\Sigma$, then
+  $\sqrt n(\bar X - \mu) \Rightarrow N(0, \Sigma)$.
+</p>
+</div>
+<h3 data-cid="ch09-1090">Asymptotic normality of the MLE in $\mathbb{R}^p$</h3>
+<p data-cid="ch09-1100">
+  The univariate proof transcribes almost verbatim with vectors and matrices. With $\hat\theta_n$
+  consistent and interior, Taylor expansion of the score gives
+</p>
+$$\sqrt n(\hat\theta_n - \theta) \approx \left[-\tfrac{1}{n}\nabla^2 \ell_n(\theta)\right]^{-1} \tfrac{1}{\sqrt n}\nabla \ell_n(\theta). \tag{9.12}$$
+<p data-cid="ch09-1110">
+  The CLT handles the score $\frac{1}{\sqrt n}\nabla \ell_n(\theta) \Rightarrow N(0, I(\theta))$. The
+  uniform LLN handles the Hessian $-\frac{1}{n}\nabla^2 \ell_n(\theta) \xrightarrow{p} I(\theta)$.
+  Continuity of $A \mapsto A^{-1}$ (for nonsingular matrices) plus Theorem 9.30 give
+</p>
+$$\sqrt n(\hat\theta_n - \theta) \;\Rightarrow\; N\!\big(0, I(\theta)^{-1}\big).$$
+
+<h3 data-cid="ch09-1120">The multivariate delta method</h3>
+<div class="box definition" data-cid="ch09-1130">
+<span class="box-label">Proposition 9.31</span>
+<p data-cid="ch09-1140">
+  If $g: \Omega \to \mathbb{R}$ is differentiable and $\sqrt n(\hat\theta_n - \theta) \Rightarrow
+  N(0, I(\theta)^{-1})$, then
+  $$\sqrt n\big(g(\hat\theta_n) - g(\theta)\big) \;\Rightarrow\; N\!\big(0, \nabla g(\theta)' I(\theta)^{-1} \nabla g(\theta)\big).$$
+  Vector-valued $g$ gives covariance $D g(\theta)\, I(\theta)^{-1}\, Dg(\theta)'$.
+</p>
+</div>
+<p data-cid="ch09-1150">
+  This is how confidence intervals for derived parameters such as $\sigma = \sqrt{\sigma^2}$,
+  $\log(\theta)$, or odds ratios get their asymptotic variances.
+</p>
+<!-- ===================================================================== -->
+<h2 data-cid="ch09-1160" id="s9-8">9.8 M-estimators for a location parameter</h2>
+<p data-cid="ch09-1170">
+  Let $X_1, X_2, \dots$ be i.i.d. from some distribution $Q$, and let $\rho$ be convex with
+  $\rho(x) \to \infty$ as $|x| \to \infty$. The <strong>M-estimator</strong> $T_n$ minimises
+  $$H(t) = \sum_{i=1}^{n} \rho(X_i - t).$$
+  Equivalently, with $\psi = \rho'$, $T_n$ solves the estimating equation
+  $$\bar W_n(t) = \frac{1}{n}\sum_{i=1}^{n} \psi(X_i - t) = 0.$$
+</p>
+<div class="box intuition" data-cid="ch09-1180">
+<span class="box-label">Three familiar estimators are M-estimators</span>
+<ul data-cid="ch09-1190">
+<li>$\rho(x) = x^2$, $\psi(x) = 2x$ gives $T_n = \bar X_n$, the sample mean.</li>
+<li>$\rho(x) = |x|$, $\psi(x) = \mathrm{sign}(x)$ gives $T_n = \mathrm{median}(X_1, \dots, X_n)$.</li>
+<li>If $Q$ has log-concave density $f(x - \theta)$ and $\rho = -\log f$, $T_n$ is the MLE for $\theta$.</li>
+</ul>
+</div>
+<h3 data-cid="ch09-1200">Consistency and asymptotic normality</h3>
+<p data-cid="ch09-1210">
+  Define $\lambda(t) = E\psi(X - t)$. Convexity of $\rho$ makes $\psi$ nondecreasing, so $\lambda$ is
+  nonincreasing; under mild integrability $\lambda$ has a unique root $c$. Theorem 9.4(3) applied to the
+  uniformly convergent average $\bar W_n$ gives $T_n \xrightarrow{p} c$.
+</p>
+<p data-cid="ch09-1220">
+  For asymptotic normality, Taylor-expand $\bar W_n$ around $c$:
+  $0 = \bar W_n(T_n) = \bar W_n(c) + (T_n - c)\bar W_n'(t_n^*)$, so
+</p>
+$$\sqrt n(T_n - c) = -\frac{\sqrt n \bar W_n(c)}{\bar W_n'(t_n^*)}.$$
+<p data-cid="ch09-1230">
+  The numerator is asymptotically $N(0, E\psi(X-c)^2)$ by the CLT; the denominator converges in
+  probability to $E\psi'(X - c) = \lambda'(c)$. Therefore
+</p>
+$$\sqrt n(T_n - c) \;\Rightarrow\; N\!\left(0, \; \frac{E\psi(X - c)^2}{\lambda'(c)^2}\right).$$
+
+<div class="box pause" data-cid="ch09-1240">
+<span class="box-label">Pause — same template, different $\psi$</span>
+<p data-cid="ch09-1250">
+  Notice how the proof is structurally identical to the MLE proof in Section 9.3. Both estimators solve
+  $\bar W_n = 0$ (M-estimators by definition, MLEs because they sit at the peak). Both inherit
+  asymptotic normality from a Taylor expansion plus the uniform LLN. The asymptotic variance is always
+  $E\psi^2 / (\lambda')^2$. The MLE just happens to have $E\psi^2 = \lambda' = I(\theta)$, making both
+  factors equal and producing the efficient variance $1/I(\theta)$.
+</p>
+</div>
+<h3 data-cid="ch09-1260">Huber's M-estimator</h3>
+<p data-cid="ch09-1270">
+  When the model is $N(\theta, 1)$, the sample mean is fully efficient and the median is wasteful. But
+  if the model is contaminated, $X \sim (1 - \epsilon) N(\theta, 1) + \epsilon Q^*$ with $Q^*$ symmetric
+  about $\theta$, then $\mathrm{Var}(X)$ can be enormous and $\bar X_n$ becomes terrible. The sample
+  median is unaffected but throws away information when the contamination is small.
+</p>
+<div class="box example" data-cid="ch09-1280">
+<span class="box-label">Worked example — Huber's saddle-point estimator</span>
+<p data-cid="ch09-1290">
+  Huber (1964) asked: what $\psi$ minimises the <em>worst-case</em> asymptotic variance over the class
+  $\mathcal{C}_\epsilon$ of contaminated distributions? The answer (Theorem 9.34) is the function
+  $$\psi_0(t) = \begin{cases} t, &amp; |t| \leq k, \\ k\, \mathrm{sign}(t), &amp; |t| &gt; k, \end{cases}$$
+  with corresponding convex loss $\rho_0(t) = \tfrac12 t^2$ for $|t|\leq k$ and
+  $\rho_0(t) = k|t| - \tfrac12 k^2$ for $|t| &gt; k$. The constant $k$ solves
+  $$\frac{1}{1 - \epsilon} = P(|Z| &lt; k) + \frac{2\phi(k)}{k}, \qquad Z \sim N(0,1).$$
+  The estimator behaves like the mean for "good" observations and like the median for outliers — the
+  best of both worlds. It is the canonical example of a <strong>robust</strong> estimator.
+</p>
+</div>
+<!-- ===================================================================== -->
+<h2 data-cid="ch09-1300" id="s9-9">9.9 Models with dependent observations</h2>
+<p data-cid="ch09-1310">
+  All of the asymptotic theory so far has rested on the i.i.d. assumption. Real data — time series,
+  Markov chains, spatial fields — are not i.i.d. The good news: the basic argument template survives,
+  provided we upgrade the two main probability tools.
+</p>
+<h3 data-cid="ch09-1320">Stationarity, ergodicity, and the ergodic theorem</h3>
+<div class="box definition" data-cid="ch09-1330">
+<span class="box-label">Definition — strictly stationary process</span>
+<p data-cid="ch09-1340">
+  A process $\{X_n : n \in \mathbb{Z}\}$ is <strong>strictly stationary</strong> if for every $k \geq 1$
+  and every $n$, $(X_1, \dots, X_k) \sim (X_{n+1}, \dots, X_{n+k})$. It is <strong>ergodic</strong> if
+  every shift-invariant event has probability 0 or 1.
+</p>
+</div>
+<div class="box definition" data-cid="ch09-1350">
+<span class="box-label">Theorem 9.38 — ergodic theorem</span>
+<p data-cid="ch09-1360">
+  If $X$ is stationary ergodic and $E|g(X)| &lt; \infty$, then
+  $$\frac{1}{n}\sum_{j=1}^{n} g(T^j X) \xrightarrow{\text{a.s.}} E g(X).$$
+</p>
+</div>
+<p data-cid="ch09-1370">
+  The ergodic theorem replaces the strong law: it is exactly as strong, but covers dependent data.
+  Consistency of the MLE for time-series models follows from arguments structurally identical to those
+  in Section 9.2, with $\ell_n(\theta)/n \to E\big[\log f_\theta(X_0 \mid X_{-1}, X_{-2}, \dots)\big]$ via
+  the ergodic theorem, and this expectation maximised uniquely at the true $\theta$ by the same
+  Kullback–Leibler argument.
+</p>
+<h3 data-cid="ch09-1380">The martingale CLT</h3>
+<p data-cid="ch09-1390">
+  For asymptotic normality we need a CLT for dependent summands. The crucial structural observation: the
+  score function for a sequentially factored likelihood is a martingale. Let
+  $Y_j = \partial_\theta \log f_\theta(X_j \mid X_1, \dots, X_{j-1})$. Then
+  $E_\theta[Y_j \mid X_1, \dots, X_{j-1}] = 0$, so $\ell_n'(\theta) = \sum_{j=1}^n Y_j$ is a mean-zero
+  martingale.
+</p>
+<div class="box definition" data-cid="ch09-1400">
+<span class="box-label">Theorem 9.40 — martingale CLT</span>
+<p data-cid="ch09-1410">
+  If $M_n$ is a mean-zero martingale with conditional variances $s_j^2$ satisfying
+  $\frac{1}{n}\sum_{j=1}^n s_j^2 \xrightarrow{p} \sigma^2$ and a Lindeberg condition, then
+  $M_n/\sqrt n \Rightarrow N(0, \sigma^2)$.
+</p>
+</div>
+<p data-cid="ch09-1420">
+  With this tool, the Section 9.3 proof transcribes to dependent data:
+  $\frac{1}{\sqrt n}\ell_n'(\theta) \Rightarrow N(0, I(\theta))$ by the martingale CLT (where now
+  $I(\theta) = E_\theta[-\partial_\theta^2 \log f_\theta(X_0 \mid X_{-1}, \dots)]$ is the
+  per-observation Fisher information), and $-\frac{1}{n}\ell_n''(\theta) \xrightarrow{p} I(\theta)$ by
+  the ergodic theorem. The final conclusion is unchanged:
+</p>
+$$\sqrt n(\hat\theta_n - \theta) \;\Rightarrow\; N\!\left(0, \tfrac{1}{I(\theta)}\right).$$
+
+<div class="box intuition" data-cid="ch09-1430">
+<span class="box-label">The lesson of Section 9.9</span>
+<p data-cid="ch09-1440">
+  Asymptotic statistics is held up by two probability theorems: the LLN and the CLT. When you change
+  the dependence structure, you swap out these two theorems for stronger versions (ergodic theorem and
+  martingale CLT) — but everything you proved in between is unchanged. The Taylor expansion, the
+  uniform convergence argument, the inversion of the information matrix — all of it survives.
+</p>
+</div>
+<!-- ===================================================================== -->
+<h2 data-cid="ch09-1450" id="summary">Summary — what you learned in Chapter 9</h2>
+<p data-cid="ch09-1460">The longest chapter, in ten bullets:</p>
+<ol data-cid="ch09-1470">
+<li>Many estimators (MLE, method of moments, M-estimators, Huber, Bayes posterior modes) are roots of
+  $\sum \psi(X_i; \hat\theta) = 0$.</li>
+<li>A <strong>uniform weak law of large numbers</strong> (Theorem 9.2) is the technical tool that lets
+  us substitute random arguments into averages — pointwise convergence is not enough.</li>
+<li>The MLE is <strong>consistent</strong> because $-I(\theta, \omega)$, the negative
+  Kullback–Leibler information, has a unique maximum at the true $\theta$ (Wald 1949; Theorems 9.9, 9.11).</li>
+<li>The MLE is <strong>asymptotically normal</strong> with variance $1/I(\theta)$ (Theorem 9.14).
+  The proof is a Taylor expansion of the score around $\theta$, plus the CLT for the numerator and the
+  uniform LLN for the denominator.</li>
+<li>The MLE is therefore <strong>asymptotically efficient</strong> — it saturates the Cramér–Rao bound
+  in the limit.</li>
+<li>Four flavours of confidence interval result: implicit using $I(\theta)$ (9.4), plug-in
+  $I(\hat\theta_n)$ (9.5), observed information $-\ell_n''(\hat\theta_n)$ (9.7), and the
+  likelihood-ratio profile region (9.8).</li>
+<li>When the MLE has no closed form, the <strong>EM algorithm</strong> alternates an E-step (impute
+  sufficient statistics) and an M-step (maximise as if data were complete). Each iteration cannot
+  decrease the observed likelihood, but convergence is only linear and only to a local maximum.</li>
+<li>In <strong>$p$ dimensions</strong>, every result above lifts verbatim with vectors and matrices.
+  The asymptotic variance becomes $I(\theta)^{-1}$, and the multivariate <strong>delta method</strong>
+  propagates it to functions $g(\hat\theta_n)$.</li>
+<li><strong>M-estimators</strong> (Huber 1964) use $\psi$ functions other than the score to trade some
+  efficiency for robustness against contamination.</li>
+<li>For <strong>dependent data</strong>, swap the LLN for the ergodic theorem and the CLT for the
+  martingale CLT. The asymptotic distribution of the MLE is unchanged: $N(0, 1/I(\theta))$.</li>
+</ol>
+<div class="box pause" data-cid="ch09-1480">
+<span class="box-label">Did this land?</span>
+<p data-cid="ch09-1490">Before moving on, check that you can answer:</p>
+<ul data-cid="ch09-1500">
+<li>Why does uniform convergence — not just pointwise — appear in every consistency argument?</li>
+<li>Write down the two ingredients of the asymptotic-normality proof: which one needs the CLT, which
+  needs the uniform LLN?</li>
+<li>Why is the MLE asymptotically efficient? What does the Cramér–Rao bound have to do with it?</li>
+<li>Name a situation where the MLE fails to exist, and one where the score equation has multiple roots.</li>
+<li>What is the structural feature of Huber's $\psi$ that gives it robustness?</li>
+<li>What does the score function become for time-series data, and which theorem replaces the ordinary
+  CLT?</li>
+</ul>
+<p data-cid="ch09-1510">If any of these are shaky, re-read the matching section. The chapter is long for a reason.</p>
+</div>
+<nav class="chapter-nav">
+<a href="ch08.html"><span class="label">← Previous</span><span class="title">8. Large-Sample Theory</span></a>
+<a class="next" href="ch10.html"><span class="label">Next →</span><span class="title">10. Equivariant Estimation</span></a>
+</nav>
+</article>
+</main>
+<script src="/js/main.js"></script><script src="/js/comments.js"></script>
+</body>
+</html>

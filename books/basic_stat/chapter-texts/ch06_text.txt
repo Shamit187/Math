@@ -1,0 +1,743 @@
+
+===== PAGE 1 =====
+
+6
+Conditional Distributions
+Building on Section 1.10, this chapter provides a more thorough and proper
+treatment of conditioning. Section 6.4 gives a proof of the factorization theo-
+rem (Theorem 3.6).
+6.1 Joint and Marginal Densities
+Let X be a random vector in Rm, let Y be a random vector in Rn, and let
+Z = (X,Y ) in Rm+n. SupposePZ has densitypZ with respect to µ×ν whereµ
+andν are measures on Rm and Rn. This density pZ is called the joint density
+of X and Y . Then
+P (Z ∈B) =
+∫ ∫
+1B (x,y )pZ (x,y )dµ(x)dν (y).
+By Fubini’s theorem, the order of integration here can be reversed. To compute
+P (X ∈ A) from this formula, note that X ∈ A if and only if Z ∈ A × R
+n.
+Then because 1A×Rn (x,y ) = 1A(x),
+P (X ∈A) = P (Z ∈A × Rn) =
+∫ ∫
+1A(x)pZ (x,y )dν (y)dµ(x)
+=
+∫
+A
+{∫
+pZ (x,y )dν (y)
+}
+dµ(x).
+From this, X has density
+pX (x) =
+∫
+pZ (x,y )dν (y) (6.1)
+with respect to µ. This density pX is called the marginal density of X. Simi-
+larly,Y has density
+pY (y) =
+∫
+pZ (x,y )dµ(x),
+called the marginal density of Y .
+R.W. Keener, Theoretical Statistics: Topics for a Core Course, Springer Texts in Statistics, 
+DOI 10.1007/978-0-387-93839-4_6, © Springer Science+Business Media, LLC 2010 
+101 
+
+===== PAGE 2 =====
+
+102 6 Conditional Distributions
+Example 6.1. Supposeµ is counting measure on {0, 1,...,k }andν is Lebesgue
+measure on R. Deﬁne
+pZ (x,y ) =
+
+
+
+(k
+x
+)
+y
+x(1 − y)k−x, x = 0, 1,...,k, y ∈ (0, 1);
+0, otherwise.
+By (6.1), X has density
+pX (x) =
+∫ 1
+0
+(k
+x
+)
+yx(1 − y)k−xdy = 1
+k + 1, x = 0, 1,...,k.
+(The identity
+∫ 1
+0 uα−1(1 −u)β−1du =Γ (α )Γ (β )/Γ (α +β ) is used to evaluate
+the integral.) This is the density for the uniform distribution on {0, 1,...,k }.
+To ﬁnd the marginal density of Y we integrate the joint density against µ.
+Fory ∈ (0, 1),
+p
+Y (y) =
+∫
+pZ (x,y )dµ(x) =
+k∑
+x=0
+(k
+x
+)
+yx(1 − y)k−x = 1;
+and if y /∈ (0, 1), pY (y) = 0. Therefore Y is uniformly distributed on (0 , 1).
+6.2 Conditional Distributions
+LetX andY be random vectors. The deﬁnition of the conditional distribution
+Qx of Y given X = x is related to our fundamental smoothing identity.
+Speciﬁcally, if E|f (X,Y )|< ∞, we should have
+Ef (X,Y ) = EE [f (X,Y )|X], (6.2)
+with E[f (X,Y )|X] = H(X) and
+H(x) = E[f (X,Y )|X =x] =
+∫
+f (x,y )dQx(y).
+Written out, (6.2) becomes
+Ef (X,Y ) =
+∫
+H(x)dPX (x) =
+∫ ∫
+f (x,y )dQx(y)dPX (x). (6.3)
+The formal deﬁnition requires that (6.3) holds when f is an indicator of A×B.
+Then (6.2) or (6.3) will hold for general measurable f providedE|f (X,Y )|<
+∞.
+Deﬁnition 6.2. The function Q is a conditional distribution for Y given X,
+written
+Y |X =x ∼ Q
+x,
+if
+
+===== PAGE 3 =====
+
+6.2 Conditional Distributions 103
+1.Qx(·) is a probability measure for all x,
+2.Qx(B) is a measurable function of x for any Borel set B, and
+3. for any Borel sets A and B,
+P (X ∈A,Y ∈B) =
+∫
+A
+Qx(B)dPX (x).
+When X and Y are random vectors, conditional distributions will always
+exist.1 Conditional probabilities can be deﬁned in more general settings, but
+assignments so that Qx(·) is a probability measure may not be possible.
+The stated deﬁnition of conditional distributions is not constructive. In the
+setting of Section 6.1 in which X andY have joint density pZ with respect to
+µ ×ν , conditional distributions can be obtained explicitly using the following
+result.
+Theorem 6.3. Suppose X and Y are random vectors with joint density p
+Z
+with respect to µ × ν . Let pX be the marginal density for X given in (6.1),
+and let E = {x :pX (x)> 0}. For x ∈E, deﬁne
+pY|X (y|x) = pZ (x,y )
+pX (x) , (6.4)
+and let Qx be the probability measure with density pY|X (·|x) with respect to
+ν . When x /∈ E, deﬁne pY|X (y|x) = p0(y), where p0 is the density for an
+arbitrary ﬁxed probability distribution P0, and let Qx = P0. Then Q is a
+conditional distribution for Y given X.
+Proof. Part one of the deﬁnition is apparent, and part two follows from mea-
+surability of pZ . It is convenient to establish (6.3) directly; part three of
+the deﬁnition then follows immediately. First note that P (X ∈ E) = 1,
+and without loss of generality we can assume that pZ (x,y ) = 0 when-
+ever x /∈ E. (If not, just change pZ (x,y ) to pZ (x,y )1E (x)—these functions
+agree for a.e. ( x,y ) (µ × ν ), and either can serve as the joint density.) Then
+pZ (x,y ) = pX (x)pY|X (y|x) for all x and y, and the right-hand side of (6.3)
+equals
+∫ ∫
+f (x,y )pY|X (y|x)dν (y)pX (x)dµ(x)
+=
+∫ ∫
+f (x,y )pZ (x,y )dν (y)dµ(x) = Ef (X,Y ).
+⊓ ⊔
+When X and Y are independent, pZ (x,y ) = pX (x)pY (y), and so
+1 WhenX is a random variable, this is given as Theorem 33.3 of Billingsley (1995).
+See Chapter 5 of Rao (2005) for more general cases.
+
+===== PAGE 4 =====
+
+104 6 Conditional Distributions
+pY|X (y|x) = pX (x)pY (y)
+pX (x) =pY (y),
+for x ∈E. So the conditional and marginal distributions for Y are the same
+(for a.e. x).
+Example 6.1, continued . Because pY (y) = 1, y ∈ (0, 1),
+pX|Y (x|y) = pZ (x,y ) =
+(k
+x
+)
+yx(1 − y)k−x, x = 0, 1,...,k.
+As a function of x with y ﬁxed, this is the mass function for the binomial
+distribution with success probability y and k trials. So
+X|Y =y ∼ Binomial(k,y ). (6.5)
+Similarly, recalling that pX (x) = 1/ (k + 1),
+pY|X (y|x) = pZ (x,y )
+pX (x) = (k + 1)
+(k
+x
+)
+yx(1 − y)k−x
+= Γ (k + 2)
+Γ (x + 1)Γ (k − x + 1)yx+1−1(1 − y)k−x+1−1, y ∈ (0, 1).
+This is the density for the beta distribution, and so
+Y |X =x ∼ Beta(x + 1,k − x + 1).
+To illustrate how smoothing might be used to calculate expectations in
+this example, as the binomial distribution in (6.5) has mean ky,
+E[X|Y ] = kY.
+So, by smoothing,
+EX =EE [X|Y ] = kEY =k
+∫ 1
+0
+ydy = k
+2.
+Summation against the mass function for X gives the same answer:
+EX =
+k∑
+x=0
+x
+k + 1 = k
+2.
+To computeEX 2 using smoothing, because the binomial distribution in (6.5)
+has second moment ky(1 − y) +k2y2,
+EX 2 =EE [X2|Y ] = E
+[
+kY (1 − Y ) +k2Y 2]
+=
+∫ 1
+0
+(
+ky(1 − y) +k2y2)
+dy = k(1 + 2k)
+6 .
+
+===== PAGE 5 =====
+
+6.3 Building Models 105
+Summation against the mass function for X gives
+EX 2 =
+k∑
+x=0
+x2
+k + 1,
+so these calculations show indirectly that
+k∑
+x=0
+x2 = k(k + 1)(2k + 1)
+6 .
+(This can also be proved by induction.)
+6.3 Building Models
+To develop realistic models for two or more random vectors, it is often conve-
+nient to specify a joint density, using (6.4), as
+p
+Z (x,y ) = pX (x)pY|X (y|x).
+The thought process using this equation would involve ﬁrst choosing a
+marginal distribution for X and then combining this marginal distribution
+with a suitable distribution for Y ifX were known. This equation can be ex-
+tended to several vectors. If p(x
+k|x1,...,x k−1) denotes the conditional density
+of Xk givenX1 =x1,...,X k−1 =xk−1, then the joint density of X1,...,X n
+is
+pX1 (x1)p(x2|x1) · · ·p(xn|x1,...,x n−1). (6.6)
+Example 6.4. Models for Time Series . Statistical applications in which vari-
+ables are observed over time are widespread and diverse. Examples include
+prices of stocks, measurements of parts from a production process, or growth
+curve data specifying size or dimension of a person or organism over time. In
+most of these applications it is natural to suspect that the observations will
+be dependent. For instance, if X
+k is the log of a stock price, a model with
+Xk|X1 =x1,...,X k−1 =xk−1 ∼ N (xk−1 +µ,σ 2)
+may be natural. If X1 ∼ N (x0 +µ,σ 2), then by (6.6), X1,...,X n will have
+joint density
+n∏
+k=1
+1
+√
+2πσ 2 exp
+[
+− (xk − xk−1 − µ)2
+2σ 2
+]
+.
+Diﬀerences Xk − Xk−1 here are i.i.d. from N (µ,σ 2), and the model here for
+the joint distribution is called a random walk .
+Another model for variables that behave in a more stationary fashion over
+time might have
+
+===== PAGE 6 =====
+
+106 6 Conditional Distributions
+Xk|X1 =x1,...,X k−1 =xk−1 ∼ N (ρxk−1,σ 2),
+where |ρ |< 1. If X1 ∼ N (ρx 0,σ 2), then by (6.6) the joint density is
+n∏
+k=1
+1
+√
+2πσ 2
+exp
+[
+− (xk − ρxk−1)2
+2σ 2
+]
+.
+This is called an autoregressive model.
+Example 6.5. A Simple Model for Epidemics . For any degree of realism, statis-
+tical models for epidemics must allow substantial dependence over time, and
+conditioning arguments can be quite useful in attempts to incorporate this
+dependence in a natural fashion. To illustrate, let us develop a simple model
+based on suspect assumptions. Improvements with more realistic assumptions
+should give practical and useful models
+Let N denote the size of the population of interest, and let X
+i denote
+the number of infected individuals in the population at stage i. Assume that
+once someone is infected, they stay infected. Also, assume that the chance an
+infected individual infects a noninfected individual during the time interval
+between two stages is p = 1 −q and that all chances for infection are indepen-
+dent. Then the chance a noninfected person stays noninfected during the time
+interval between stages k and k + 1, given X
+k = xk (and other information
+about the past), is qxk , and so the number of people newly infected during
+this time interval, Xk+1 − Xk, will have a binomial distribution. Speciﬁcally
+Xk+1 − Xk|X1 =x1,...,X k =xk ∼ Binomial(N − xk, 1 − qxk ).
+This leads to conditional densities (mass functions)
+p(xk+1 |x1,...,x k) =
+( N − xk
+xk+1 − xk
+)(
+1 − qxk
+)xk+1−xk (
+qxk
+)N−xk+1
+.
+The product of these gives the joint mass function for X1,...,X n.
+6.4 Proof of the F actorization Theorem 2
+To prove the factorization theorem (Theorem 3.6) we need to work directly
+from the deﬁnition of conditional distributions, for in most cases T and X
+will not have a joint density with respect to any product measure. To begin,
+suppose P
+θ , θ ∈Ω, has density
+pθ (x) = gθ
+(
+T (x)
+)
+h(x) (6.7)
+2 This section is optional; the proof is fairly technical.
+
+===== PAGE 7 =====
+
+6.4 Proof of the Factorization Theorem 107
+with respect to µ. Modifying h, we can assume without loss of generality that
+µ is a probability measure equivalent 3 to the family P = {Pθ : θ ∈ Ω}. Let
+E∗and P∗denote expectation and probability when X ∼ µ; let G∗and Gθ
+denote marginal distributions for T (X) when X ∼ µ and X ∼ Pθ ; and let Q
+be the conditional distribution for X givenT when X ∼ µ. To ﬁnd densities
+for T ,
+Eθ f (T ) =
+∫
+f
+(
+T (x)
+)
+gθ
+(
+T (x)
+)
+h(x)dµ(x)
+=E∗f (T )gθ (T )h(X)
+=
+∫ ∫
+f (t)gθ (t)h(x)dQt(x)dG∗(t)
+=
+∫
+f (t)gθ (t)w(t)dG∗(t),
+where
+w(t) =
+∫
+h(x)dQt(x).
+If f is an indicator function, this shows that Gθ has density gθ (t)w(t) with
+respect to G∗. Next, deﬁne ˜Qt to have density h/w (t) with respect to Qt, so
+that
+˜Qt(B) =
+∫
+B
+h(x)
+w(t)dQt(x).
+(On the null set w(t) = 0, ˜Qt can be an arbitrary probability measure.) Then
+Eθ f (X,T ) = E∗f (X,T )gθ (T )h(X)
+=
+∫ ∫
+f (x,t )gθ (t)h(x)dQt(x)dG∗(t)
+=
+∫ ∫
+f (x,t )h(x)
+w(t)dQt(x)gθ (t)w(t)dG∗(t)
+=
+∫ ∫
+f (x,t )d ˜Qt(x)dGθ (t).
+By (6.3) this shows that ˜Q is a conditional distribution for X givenT under
+Pθ . Because ˜Q does not depend on θ , T is suﬃcient.
+Before considering the converse—that ifT is suﬃcient the densitiespθ must
+have form (6.7)—we should discuss mixture distributions. Given a marginal
+probability distribution G
+∗and a conditional distribution Q, we can deﬁne a
+mixture distribution ˆP by
+ˆP (B) =
+∫
+Qt(B)dG∗(t) =
+∫ ∫
+1B(x)dQt(x)dG∗(t).
+3 “Equivalence” here means that µ(N ) = 0 if and only if Pθ (N ), ∀θ ∈ Ω. The
+assertion here is based on a result that any dominated family is equivalent to the
+mixture of some countable subfamily.
+
+===== PAGE 8 =====
+
+108 6 Conditional Distributions
+Then for integrable f ,
+∫
+fd ˆP =
+∫ ∫
+f (x)dQt(x)dG∗(t).
+(By linearity, this must hold for simple functions f , and the general case
+follows taking simple functions converging to f .)
+Suppose now that T is suﬃcient, with Q the conditional distribution for
+X given T . Let gθ be the G∗density of T when X ∼ Pθ . (This density will
+exist, for if G∗(N ) = 0, µ(N0) = 0 where N0 = T−1(N ), and so Gθ (N ) =
+Pθ (T ∈N ) = Pθ (X ∈N0) =
+∫
+N0
+pθ dµ = 0.) Then
+Pθ (X ∈B) = Eθ Pθ (X ∈B|T )
+=Eθ QT (B)
+=
+∫
+Qt(B)gθ (t)dG∗(t)
+=
+∫ ∫
+1B (x)dQt(x)gθ (t)dG∗(t)
+=
+∫ ∫
+1B (x)gθ
+(
+T (x)
+)
+dQt(x)dG∗(t)
+=
+∫
+B
+gθ
+(
+T (x)
+)
+d ˆP (x).
+This shows that Pθ has density gθ
+(
+T (·)
+)
+with respect to ˆP .
+The mixture distribution ˆP is absolutely continuous with respect to µ. To
+see this, suppose µ(N ) = 0. Then Pθ (N ) =
+∫
+Qt(N )dGθ (t) = 0, which implies
+Gθ ( ˜N ) = 0, where ˜N = {t : Qt(N ) > 0}. Because µ is equivalent to P and
+Gθ ( ˜N ) = Pθ (T ∈ ˜N ) = 0, ∀θ ∈Ω,P∗(T ∈ ˜N ) = G∗( ˜N ) = 0. Thus Qt(N ) = 0
+(a.e. G∗) and so ˆP (N ) =
+∫
+Qt(N )dG∗(t) = 0. Taking h = d ˆP/dP ∗, Pθ has
+densitygθ
+(
+T (x)
+)
+h(x) with respect to P∗.
+6.5 Problems 4
+1. The beta distribution .
+a) Let X and Y be independent random variables with X ∼ Γ (α, 1)
+and Y ∼ Γ (β, 1). Deﬁne new random variables U = X + Y and
+V =X/ (X +Y ). Find the joint density of U and V . Hint: If p is the
+joint density of X and Y , then
+P {(U,V ) ∈B}=P
+{(
+X +Y, X
+X +Y
+)
+∈B
+}
+=
+∫
+1B
+(
+x +y, x
+x +y
+)
+p(x,y )dxdy.
+4 Solutions to the starred problems are given at the back of the book.
+
+===== PAGE 9 =====
+
+6.5 Problems 109
+Next, change variables to write this integral as an integral against u =
+x +y andv =x/ (x +y). The change of variables can be accomplished
+either using Jacobians or writing the double integral as an iterated
+integral and using ordinary calculus.
+b) Find the marginal density for V . Use the fact that this density inte-
+grates to one to compute
+∫
+1
+0 xα−1(1 − x)β−1dx. This density for V is
+called the beta density with parameters α and β . The corresponding
+distribution is denoted Beta( α,β ).
+c) Compute the mean and variance of the beta distribution.
+d) Find the marginal density for U .
+*2. Let X and Y be independent random variables with cumulative distribu-
+tion functions FX and FY .
+a) Assuming Y is continuous, use smoothing to derive a formula express-
+ing the cumulative distribution function ofX2Y 2 as the expected value
+of a suitable function of X. Also, if Y is absolutely continuous, give a
+formula for the density.
+b) Suppose X and Y are both exponential with the same failure rate λ .
+Find the density of X − Y .
+*3. Suppose that X and Y are independent and positive. Use a smoothing
+argument to show that if x ∈ (0, 1), then
+P
+( X
+X +Y ≤ x
+)
+=EFX
+( xY
+1 − x
+)
+, (6.8)
+where FX is the cumulative distribution function of X.
+*4. Diﬀerentiating (6.8), if X is absolutely continuous with density pX , then
+V =X/ (X +Y ) is absolutely continuous with density
+pV (x) = E
+[ Y
+(1 − x)2pX
+( xY
+1 − x
+)]
+, x ∈ (0, 1).
+Use this formula to derive the beta distribution introduced in Problem 6.1,
+showing that if X and Y are independent with X ∼ Γ (α, 1) and Y ∼
+Γ (β, 1), then V =X/ (X +Y ) has density
+p
+V (x) = Γ (α +β )
+Γ (α )Γ (β )xα−1(1 − x)β−1
+for x ∈ (0, 1).
+*5. Let X and Y be absolutely continuous with joint density
+p(x,y ) =
+{
+2, 0<x<y < 1;
+0, otherwise.
+a) Find the marginal density of X and the marginal density of Y .
+b) Find the conditional density of Y givenX =x.
+
+===== PAGE 10 =====
+
+110 6 Conditional Distributions
+c) Find E[Y |X].
+d) Find EXY by integration against the joint density of X and Y .
+e) Find EXY by smoothing, using the conditional expectation you found
+in part (c).
+*6. Let µ be Lebesgue measure on R and let ν be counting measure on
+{0, 1,... }2. Suppose the joint density of X andY with respect to µ ×ν is
+given by
+p(x,y 1,y 2) = x2(1 − x)y1 +y2
+for x ∈ (0, 1), y1 = 0, 1, 2,... , and y2 = 0, 1, 2,... .
+a) Find the marginal density of X.
+b) Find the conditional density of X given Y = y (i.e., given Y1 = y1
+and Y2 =y2).
+c) Find E[X|Y ] and E[X2|Y ]. Hint: The formula
+∫ 1
+0
+xα−1(1 − x)β−1dx = Γ (α )Γ (β )
+Γ (α +β )
+may be useful.
+d) Find E
+[
+1/ (4 +Y1 +Y2)
+]
+. Hint: Find EX using the density in part (a)
+and ﬁnd an expression for EX using smoothing and the conditional
+expectation in part (c).
+7. Let X and Y be random variables with joint Lebesgue density
+p(x,y ) =
+{
+2y2e−xy, x> 0, y ∈ (0, 1);
+0, otherwise.
+a) Find the marginal density for Y .
+b) Find the conditional density for X givenY =y.
+c) Find P (X >1|Y =y),E[X|Y =y], and E[X2|Y =y].
+8. Suppose X has the standard exponential distribution with marginal den-
+sitye−x, x> 0, and that
+P (Y =y|X =x) = xye−x
+y! , y = 0, 1,....
+a) Find the joint density for X andY . Identify the dominating measure.
+b) Find the marginal density of Y .
+c) Find the conditional density of X givenY =y.
+d) Find EY using the marginal density in part (b).
+e) As the conditional distribution of Y given X = x is Poisson with
+parameter x, E(Y |X =x) = x. Use this to ﬁnd EY by smoothing.
+9. Suppose that X is uniformly distributed on the interval (0 , 1) and that
+P (Y =y|X =x) = (1 − x)xy, y = 0, 1,....
+a) Find the joint density for X andY . What is the measure for integrals
+against this density?
+
+===== PAGE 11 =====
+
+6.5 Problems 111
+b) Find the marginal density of Y .
+c) Find the conditional density of X givenY =y.
+d) Find E[X|Y =y]. Find P (X <1/ 2|Y = 0) and P (X <1/ 2|Y = 1).
+10. Suppose X and Y are independent, both uniformly distributed on (0 , 1).
+Let M = max{X,Y } and Z = min{X,Y }.
+a) Find the conditional distribution of Z givenM =m.
+b) Suppose instead that X and Y are independent but uniformly dis-
+tributed on the ﬁnite set {1,...,k }. Give the conditional distribution
+of Z givenM =j.
+*11. Suppose X andY are independent, both absolutely continuous with com-
+mon density f . Let M = max{X,Y } andZ = min{X,Y }. Determine the
+conditional distribution for the pair ( X,Y ) given (M,Z ).
+*12. Let X andY be independent exponential variables with failure rate λ , so
+the common marginal density is λe−λx , x >0. Let T = X +Y . Give a
+formula expressing E[f (X,Y )|T =t] as a one-dimensional integral. Hint:
+Review the initial example on suﬃciency in Section 3.2.
+13. Suppose X and Y are absolutely continuous with joint density
+exp
+[
+−x2−2ρxy +y2
+2(1−ρ 2 )
+]
+2π
+√
+1 − ρ 2
+.
+This is a bivariate normal density with
+EX =EY = 0, Var(X) = Var(Y ) = 1,
+and
+Cor(X,Y ) = ρ.
+Determine the conditional distribution of Y givenX. (Naturally, the an-
+swer should depend on the correlation coeﬃcient ρ .) Use smoothing to
+ﬁnd the covariance between X2 and Y 2.
+*14. Let X and Y be absolutely continuous with density p(x,y ) = e−x, if
+0<y <x ; p(x,y ) = 0, otherwise.
+a) Find the marginal densities of X and Y .
+b) Compute EY andEY 2 integrating against the marginal density of Y .
+c) Find the conditional density of Y givenX =x, and use it to compute
+E[Y |X] and E[Y 2|X].
+d) Find the expectations of E[Y |X] and E[Y 2|X] integrating against the
+marginal density of X.
+15. Suppose X has a Poisson distribution with mean λ and that given X =x,
+Y has a binomial distribution with x trials and success probability p. (If
+X = 0, Y = 0.)
+a) Find the marginal distribution of Y .
+b) Find the conditional distribution of X givenY .
+c) Find E[Y 2|X].
+d) Compute EY 2 by smoothing, using the result in part (c).
+
+===== PAGE 12 =====
+
+112 6 Conditional Distributions
+e) Compute EY 2 integrating against the marginal distribution from
+part (a).
+f) Find E[X|Y ] and use this to compute EX by smoothing.
+16. Let X = (X1,X 2) be an absolutely continuous random vector in R2 with
+densityf , and let T =X1 +X2.
+a) Find the joint density for X1 and T .
+b) Give a formula for the density of T .
+c) Give a formula for the conditional density of X1 givenT =t.
+d) Give a formula for E
+[
+g(X)
+⏐
+⏐T =t
+]
+. Hint: View g(X) as a function of
+T and X
+1 and use the conditional density you found in part (c).
+e) Suppose X1 and X2 are i.i.d. standard normal. Then X1 − X2 ∼
+N (0, 2) and T ∼ N (0, 2). Find P
+(
+|X1 − X2|< 1
+⏐
+⏐ T
+)
+using your
+formula from part (d). Integrate this against the density for T to
+show that smoothing gives the correct answer.
+17. Let X
+1,...,X n be jointly distributed Bernoulli variables with mass func-
+tion
+P (X1 =x1,...,X n =xn) = sn!(n − sn)!
+(n + 1)! ,
+where sn =x1 + · · · +xn.
+a) Find the joint mass function for X1,...,X n−1. (Your answer should
+simplify.)
+b) Find the joint mass function for X1,...,X k for any k <n.
+c) Find P (Xk+1 = 1|X1 =x1,...,X k =xk), k <n.
+d) Let Sn =X1 + · · · +Xn. Find
+P (X1 =x1,...,X n =xn|Sn =s).
+e) Let Yk = (1 +Sk )/ (k + 2). For k <n, ﬁnd
+E(Yk+1|X1 =x1,...,X k =xk ),
+expressing your answer as a function of Yk. Use smoothing to relate
+EYk+1 to EYk. Find EYk and ESk.
+18. Suppose X ∼ N (0, 1) and Y |X =x ∼ N (x, 1).
+a) Find the mean and variance of Y .
+b) Find the conditional distribution of X givenY =y.
+19. Let X be absolutely continuous with a positive continuous density f and
+cumulative distribution function F . Take Y =X2.
+a) Find the cumulative distribution function and the density for Y .
+b) For y >0, y ̸=x2, ﬁnd
+lim
+ǫ↓0
+P
+[
+X ≤ x
+⏐
+⏐Y ∈ (y − ǫ,y +ǫ)
+]
+.
+c) The limit in part (b) should agree with the cumulative distribution
+function for a discrete probability measure Q
+y. Find the mass function
+for this discrete distribution.
+
+===== PAGE 13 =====
+
+6.5 Problems 113
+d) Show that Q is a conditional distribution for X givenY . Speciﬁcally,
+show that it satisﬁes the conditions in Deﬁnition 6.2.
+20. Suppose X and Y are conditionally independent given W =w with
+X|W =w ∼ N (aw, 1) and Y |W =w ∼ N (bw, 1).
+Use smoothing to derive formulas relating EX ,EY , Var(X), Var(Y ), and
+Cov(X,Y ) to moments of W and the constants a and b.
+21. Suppose Y ∼ N (ν,τ 2) and that given Y = y, X1,...,X n are i.i.d. from
+N (y,σ 2). Taking
+ x = (x1 + · · · +xn)/n , show that the conditional distri-
+bution of Y givenX1 =x1,...,X n =xn is normal with
+E(Y |X1 =x1,...,X n =xn) = ν/τ 2 +n
+x/σ 2
+1/τ 2 +n/σ 2
+and
+Var(Y |X1 =x1,...,X n =xn) = 1
+1/τ 2 +n/σ 2.
+Remark: If precision is deﬁned as the reciprocal of the variance, these
+formulas state that the precision of the conditional distribution is the
+sum of the precisions of the X
+i and Y , and the mean of the conditional
+distribution is an average of the Xi and ν , weighted by the precisions of
+the variables.
+22. A building has a single elevator. Times between stops on the ﬁrst ﬂoor
+are presumed to follow an exponential distribution with failure rate θ . In
+a time interval of duration t, the number of people who arrive to ride the
+elevator has a Poisson distribution with mean λt.
+a) Suggest a joint density for the time T between elevator stops and the
+number of people X that board when it arrives.
+b) Find the marginal mass function for X.
+c) Find EX 2.
+d) Let λ> 0 and θ> 0 be unknown parameters, and suppose we observe
+data X1,...,X n that are i.i.d. with the marginal mass function of
+X in part (b). Suggest an estimator for the ratio θ/λ based on the
+average
+X. With these data, if n is large will we be able to estimate
+λ accurately?
+
+===== PAGE 14 =====
+

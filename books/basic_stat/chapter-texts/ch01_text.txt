@@ -1,0 +1,1387 @@
+
+===== PAGE 1 =====
+
+1
+Probability and Measure
+Much of the theory of statistical inference can be appreciated without a de-
+tailed understanding of probability or measure theory. This book does not
+treat these topics with rigor. But some basic knowledge of them is quite use-
+ful. Much of the literature in statistics uses measure theory and is inaccessible
+to anyone unfamiliar with the basic notation. Also, the notation of measure
+theory allows one to merge results for discrete and continuous random vari-
+ables. In addition, the notation can handle interesting and important applica-
+tions involving censoring or truncation in which a random variable of interest
+is neither discrete nor continuous. Finally, the language of measure theory is
+necessary for stating many results correctly. In the sequel, measure-theoretic
+details are generally downplayed or ignored in proofs, but the presentation is
+detailed enough that anyone with a good background in probability should be
+able to ﬁll in any missing details.
+In this chapter measure theory and probability are introduced, and several
+of the most useful results are stated without proof.
+1.1 Measures
+A measure µ on a set X assigns a nonnegative value µ(A) to many subsets A
+of X . Here are two examples.
+Example 1.1. If X is countable, let
+µ(A) = #A = number of points in A.
+This µ is called counting measure on X .
+Example 1.2. Let X = Rn and deﬁne
+µ(A) =
+∫
+· · ·
+∫
+A
+dx1 · · ·dxn.
+1 R.W. Keener, Theoretical Statistics: Topics for a Core Course, Springer Texts in Statistics, 
+DOI 10.1007/978-0-387-93839-4_1, © Springer Science+Business Media, LLC 2010 
+
+===== PAGE 2 =====
+
+2 1 Probability and Measure
+With n = 1, 2, or 3, µ(A) is called the length, area, or volume of A, respec-
+tively. In general, this measure µ is called Lebesgue measure on Rn. Actually,
+for some sets A it may not be clear how one should evaluate the integral
+“deﬁning” µ(A), and, as we show, the theory of measure is fundamentally
+linked to basic questions about integration.
+The measures in these examples diﬀer from one another in an interesting
+way. Counting measure assigns mass to individual points, µ({x}) = 1 for
+x ∈ X , but the Lebesgue measure of any isolated point is zero, µ({x}) = 1.
+In general, if µ({x})> 0, then x is called an atom of the measure with mass
+µ({x})> 0.
+It is often impossible to assign measures to all subsets A of X . Instead,
+the domain 1 of a measure µ will be a σ -ﬁeld.
+Deﬁnition 1.3. A collection A of subsets of a set X is a σ -ﬁeld (orσ -algebra)
+if
+1. X ∈ A and ∅ ∈ A.
+2. If A ∈ A, then Ac = X − A ∈ A.
+3. If A1,A 2,... ∈ A, then ⋃∞
+i=1
+Ai ∈ A.
+The following deﬁnition gives the basic properties that must be satisﬁed for
+a set function µ to be called a measure. These properties should be intuitive
+for Examples 1.1 and 1.2.
+Deﬁnition 1.4. A function µ on a σ -ﬁeld A of X is a measure if
+1. For every A ∈ A, 0 ≤ µ(A) ≤ ∞; that is, µ : A → [0, ∞] .
+2. If A
+1,A 2,... are disjoint elements of A (Ai ∩Aj = ∅ for all i ̸=j), then
+µ
+(∞⋃
+i=1
+Ai
+)
+=
+∞∑
+i=1
+µ(Ai).
+One interesting and useful consequence of the second part of this deﬁnition
+is that if measurable sets Bn, n ≥ 1, are increasing ( B1 ⊂ B2 ⊂ · · · ), with
+union B = ⋃∞
+n=1
+Bn, called the limit of the sequence, then
+µ(B) = lim
+n→∞
+µ(Bn). (1.1)
+This can be viewed as a continuity property of measures.
+For notation, if A is a σ -ﬁeld of subsets of X , the pair ( X, A) is called a
+measurable space, and if µ is a measure on A, the triple ( X, A,µ ) is called a
+measure space.
+A measureµ is ﬁnite ifµ(X )< ∞ andσ -ﬁnite if there exist sets A1,A 2,...
+in A with µ(Ai) < ∞ for all i = 1, 2,... and ⋃∞
+i=1
+Ai = X . All measures
+considered in this book are σ -ﬁnite.
+1 See Appendix A.1 for basic information and language about functions.
+
+===== PAGE 3 =====
+
+1.2 Integration 3
+A measure µ is called a probability measure if µ(X ) = 1, and then the
+triple ( X, A,µ ) is called a probability space. For probability (or other ﬁnite)
+measures, something analogous to (1.1) holds for decreasing sets. If measurable
+sets B
+1 ⊃ B2 ⊃ · · · have intersection B = ⋂∞
+n=1
+Bn, then
+µ(B) = lim
+n→∞
+µ(Bn). (1.2)
+Example 1.1, continued . Counting measure given by µ(A) = # A can be
+deﬁned for any subset A ⊂ X , so in this example, the σ -ﬁeld A is the collection
+of all subsets of X . This σ -ﬁeld is called the power set of X , denoted A = 2X .
+Example 1.2, continued . The Lebesgue measure of a set A can be deﬁned,
+at least implicitly, for any set A in a σ -ﬁeld A called the Borel sets of Rn.
+Formally, A is the smallest σ -ﬁeld that contains all “rectangles”
+(a1,b 1) × · · · × (an,b n) = {x ∈ Rn :ai <xi <bi,i = 1,...,n} .
+Although there are many subsets of Rn that are not Borel, none of these sets
+can be written explicitly.
+1.2 Integration
+The goal of this section is to properly deﬁne integrals of “nice” functions f
+against a measure µ. The integral written as
+∫
+fdµ or as
+∫
+f (x)dµ(x) when
+the variable of integration is needed. To motivate later developments, let us
+begin by stating what integration is for counting and Lebesgue measure.
+Example 1.5. If µ is counting measure on X , then the integral of f against µ
+is ∫
+fdµ =
+∑
+x∈X
+f (x).
+Example 1.6. If µ is Lebesgue measure on Rn, then the integral of f against
+µ is ∫
+fdµ =
+∫
+· · ·
+∫
+f (x1,...,x n)dx1...dx n.
+It is convenient to view x as the vector ( x1,...,x n)′and write this integral
+against Lebesgue measure as
+∫
+···
+∫
+f (x)dx or
+∫
+f (x)dx.
+The modern deﬁnition of integration given here is less constructive than
+the deﬁnition oﬀered in most basic calculus courses. The construction is driven
+by basic properties that integrals should satisfy and proceeds arguing that for
+“nice” functions f these properties force a unique value for
+∫
+fdµ. A key
+regularity property for the integrand is that it is “measurable” according to
+the following deﬁnition.
+
+===== PAGE 4 =====
+
+4 1 Probability and Measure
+Deﬁnition 1.7. If (X, A) is a measurable space and f is a real-valued func-
+tion on X , then f is measurable if
+f−1(B)
+def
+= {x ∈ X :f (x) ∈B} ∈ A
+for every Borel set B.
+Although there are many functions that are not measurable, they cannot
+be stated explicitly. Continuous and piecewise continuous functions are mea-
+surable. A more interesting example is the function f : R → R with f (x) = 1
+when x is an irrational number in (0, 1), and f (x) = 0 otherwise. With the
+Riemann notion of integration used in basic calculus courses, for this function
+f , ∫f (x)dx is not deﬁned. The more general methods presented here give the
+natural answer,
+∫
+f (x)dx = 1. In the sequel, functions of interest are generally
+presumed to be measurable.
+The indicator function 1
+A of a set A is deﬁned as
+1A(x) = I{x ∈A} =
+{
+1, x ∈A;
+0, x / ∈A.
+Here are the basic properties for integrals.
+1. For any set A in A,
+∫
+1Adµ =µ(A).
+2. If f andg are nonnegative measurable functions, and if a andb are positive
+constants, ∫
+(af +bg)dµ =a
+∫
+fdµ +b
+∫
+gdµ. (1.3)
+3. If f1 ≤ f2 ≤ · · · are nonnegative measurable functions, and if f (x) =
+limn→∞fn(x), then ∫
+fdµ = lim
+n→∞
+∫
+fndµ.
+The ﬁrst property provides the link between
+∫
+fdµ and the measure µ,
+the second property is linearity, and the third property is useful for taking
+limits of integrals.
+Using the ﬁrst two properties, if a
+1,...,a m are positive constants, and if
+A1,...,A m are sets in A, then
+∫ (m∑
+i=1
+ai1Ai
+)
+dµ =
+m∑
+i=1
+aiµ(Ai).
+Functions of this form are called simple. Figure 1.1 shows the graph of the
+simple function 1 (1/2 ,π ) + 21(1, 2). The following result asserts that nonnegative
+measurable functions can be approximated by simple functions.
+Theorem 1.8. If f is nonnegative and measurable, then there exist nonneg-
+ative simple functions f
+1 ≤ f2 ≤ · · · with f = limn→∞fn.
+
+===== PAGE 5 =====
+
+1.2 Integration 5
+x
+f
+1
+1
+2
+2
+3
+3
+Fig. 1.1. The simple function 1 (1/ 2,π ) + 21(1, 2) .
+This result along with the third basic property for integrals allows us
+to integrate any nonnegative measurable function f , at least in principle.
+The answer is unique; diﬀerent choices for the increasing sequence of simple
+functions give the same answer. To integrate a general measurable function
+f , introduce the positive and negative parts
+f
++(x) = max {f (x), 0} and f−(x) = − min{f (x), 0}.
+Then f + and f−are both nonnegative and measurable, and f = f + − f−.
+The integral of f should generally be the diﬀerence between the integral of f +
+and the integral of f−. This diﬀerence is ambiguous only when the integrals
+of f + and f−are both inﬁnite. So, if either
+∫
+f +dµ <∞ or
+∫
+f−dµ <∞,
+we deﬁne ∫
+fdµ =
+∫
+f +dµ −
+∫
+f−dµ.
+With this deﬁnition the linearity in (1.3) holds unless the right-hand side is
+formally ∞ − ∞ . Note also that because |f |=f
++ +f−, this deﬁnition gives
+a ﬁnite value for
+∫
+fdµ if and only if
+∫
+f +dµ +
+∫
+f−dµ =
+∫
+|f |dµ< ∞.
+When
+∫
+|f |dµ< ∞, f is called integrable.
+
+===== PAGE 6 =====
+
+6 1 Probability and Measure
+1.3 Events, Probabilities, and Random Variables
+Let P be a probability measure on a measurable space ( E, B), so ( E, B,P )
+is a probability space. Sets B ∈ B are called events, points e ∈ E are called
+outcomes, and P (B) is called the probability of B.
+A measurable function X : E → R is called a random variable. The prob-
+ability measure PX deﬁned by
+PX (A) = P
+(
+{e ∈ E :X(e) ∈A}
+)def
+= P (X ∈A)
+for Borel sets A is called the distribution of X. The notation
+X ∼ Q
+is used to indicate that X has distributionQ; that is, PX =Q. The cumulative
+distribution function of X is deﬁned by
+FX (x) = P (X ≤ x) = P
+(
+{e ∈ E :X(e) ≤ x}
+)
+=PX
+(
+(−∞,x ]
+)
+,
+for x ∈ R.
+1.4 Null Sets
+Letµ be a measure on ( X, A). A set N is called null (or null with respect to
+µ) if
+µ(N ) = 0.
+If a statement holds for x ∈ X − N withN null, the statement is said to hold
+almost everywhere (a.e.) or a.e. µ. For instance, f = 0 a.e. µ if and only if
+µ
+(
+{x ∈ X :f (x) ̸= 0}
+)
+= 0.
+There is an alternative language for similar ideas when µ is a probability
+measure. Suppose some statement holds if and only if x ∈B. Then the state-
+ment holds (a.e. µ) if and only if µ(Bc) = 0 if and only if µ(B) = 1. This can
+be expressed by saying “the statement holds with probability one .”
+The values of a function on a null set cannot aﬀect its integral. With this
+in mind, here are a few useful facts about integration that are fairly easy to
+appreciate:
+1. If f = 0 (a.e. µ), then
+∫
+fdµ = 0.
+2. If f ≥ 0 and
+∫
+fdµ = 0, then f = 0 (a.e. µ).
+3. If f =g (a.e.µ), then
+∫
+fdµ =
+∫
+gdµ whenever either one of the integrals
+exists.
+4. If
+∫
+1
+(c,x )fdµ = 0 for all x>c, then f (x) = 0 for a.e. x>c. The constant
+c here can be −∞.
+As a consequence of 2, if f and g are integrable and f >g, then
+∫
+fdµ>∫gdµ (unlessµ is identically zero).
+
+===== PAGE 7 =====
+
+1.5 Densities 7
+1.5 Densities
+Densities play a basic role in statistics. In many situations the most convenient
+way to specify the distribution of a random vector X is to give its density.
+Also, densities give likelihood functions used to compute Bayes estimators or
+maximum likelihood estimators. The density for a measure exists whenever
+it is absolutely continuous with respect to another measure according to the
+following deﬁnition.
+Deﬁnition 1.9. Let P and µ be measures on a σ -ﬁeld A of X . Then P is
+called absolutely continuous with respect to µ, written P ≪ µ, if P (A) = 0
+whenever µ(A) = 0 .
+Theorem 1.10 (Radon–Nikodym). If a ﬁnite measure P is absolutely
+continuous with respect to a σ -ﬁnite measureµ, then there exists a nonnegative
+measurable function f such that
+P (A) =
+∫
+A
+fdµ
+def
+=
+∫
+f 1Adµ.
+The function f in this theorem is called the Radon–Nikodym derivative of
+P with respect to µ, or the density of P with respect to µ, denoted
+f = dP
+dµ.
+By the third fact about integration and null sets in the previous section, the
+densityf may not be unique, but if f
+0 andf1 are both densities, then f0 =f1
+(a.e. µ). If X ∼ PX and PX is absolutely continuous with respect to µ with
+densityp =dPX/dµ, it is convenient to say that X has density p with respect
+to µ.
+Example 1.11. Absolutely Continuous Random Variables . If a random variable
+X has density p with respect to Lebesgue measure on R, then X or its dis-
+tribution PX is called absolutely continuous with density p. Then, from the
+Radon–Nikodym theorem,
+FX (x) = P (X ≤ x) = PX
+(
+(−∞,x ]
+)
+=
+∫ x
+−∞
+p(u)du.
+Using the fundamental theorem of calculus, p can generally be found from the
+cumulative distribution function FX by diﬀerentiation, p(x) = F′
+X (x).
+Example 1.12. Discrete Random Variables . Let X0 be a countable subset of
+R. The measure µ deﬁned by
+µ(B) = #( X0 ∩B)
+
+===== PAGE 8 =====
+
+8 1 Probability and Measure
+for Borel sets B is (also) called counting measure on X0. As in Example 1.5,
+∫
+fdµ =
+∑
+x∈X0
+f (x).
+Suppose X is a random variable and that
+P (X ∈ X0) = PX (X0) = 1.
+Then X is called a discrete random variable . Suppose N is a null set for µ,
+so µ(N ) = 0. From the deﬁnition of µ, #(N ∩ X0) = 0, which means that
+N ∩ X0 = ∅ and so N ⊂ X c
+0 . Then PX (N ) = P (X ∈ N ) ≤ P (X ∈ Xc
+0 ) =
+1 − P (X ∈ X 0) = 0. Thus N must also be a null set for PX , and this shows
+thatPX is absolutely continuous with respect to µ. The density p ofPX with
+respect to µ satisﬁes
+P (X ∈A) = PX (A) =
+∫
+A
+pdµ =
+∑
+x∈X0
+p(x)1A(x).
+In particular, if A = {y} with y ∈ X0, then X ∈A if and only if X =y, and
+so
+P (X =y) =
+∑
+x∈X0
+p(x)1{y}(x) = p(y).
+This density p is called the mass function for X. Note that because Xc
+0 is a
+null set, the density p(y) can be deﬁned arbitrarily when y /∈ X0. The natural
+convention is to take p(y) = 0 for y /∈ X0, for then p(y) = P (Y =y) for all y.
+1.6 Expectation
+IfX is a random variable on a probability space ( E, B,P ), then the expectation
+or expected value of X is deﬁned as
+EX =
+∫
+XdP. (1.4)
+This formula is rarely used. Instead, if X ∼ PX it can be shown that
+EX =
+∫
+xdPX (x).
+Also, if Y =f (X), then
+EY =Ef (X) =
+∫
+fdPX. (1.5)
+
+===== PAGE 9 =====
+
+1.6 Expectation 9
+Integration against PX in these two formulas is often accomplished using
+densities. If PX has density p with respect to µ, then
+∫
+fdPX =
+∫
+fpdµ. (1.6)
+This identity allows formal substitution of pdµ for dPX , which makes the
+derivative notation p =dPX/dµ seem natural. Together these results can all
+be viewed as change of variable results. Proofs of these results are based on
+the methods used to deﬁne integrals. It is easy to show that (1.5) and (1.6)
+hold when f is an indicator function. By linearity they must then hold for
+positive simple functions, and then a limiting argument shows that they hold
+for general measurable f , at least when the integrals exist. Specializing these
+results to absolutely continuous and discrete random variables we have the
+following important examples.
+Example 1.13. IfX is an absolutely continuous random variable with density
+p, then
+EX =
+∫
+xdP
+X (x) =
+∫
+xp(x)dx
+and
+Ef (X) =
+∫
+f (x)p(x)dx. (1.7)
+Example 1.14. If X is discrete with P (X ∈ X0) = 1 for a countable set X0, if
+µ is counting measure on X0, and if p is the mass function given by p(x) =
+P (X =x), then
+EX =
+∫
+xdPX (x) =
+∫
+xp(x)dµ(x) =
+∑
+x∈X0
+xp(x)
+and
+Ef (X) =
+∑
+x∈X0
+f (x)p(x). (1.8)
+Expectation is a linear operation. If X andY are random variables and a
+and b are nonzero constants, then
+E(aX +bY ) = aEX +bEY, (1.9)
+providedEX andEY both exist and the right-hand side is not ∞ − ∞ . This
+follows easily from the deﬁnition of expectation (1.4), because integration is
+linear (1.3). Another important property of expectation is that if X and Y
+have ﬁnite expectations and X < Y (a.e. P ), then EX < EY. Also, using
+linearity and the second fact about integration in Section 1.4, if X ≤ Y (a.e.
+P ) and both have ﬁnite expectations, EX ≤ EY with equality only if X =Y
+(a.e. P ).
+
+===== PAGE 10 =====
+
+10 1 Probability and Measure
+The variance of a random variable X with ﬁnite expectation is deﬁned as
+Var(X) = E(X − EX )2.
+If X is absolutely continuous with density p, by (1.7)
+Var(X) =
+∫
+(x − EX )2p(x)dx,
+and if X is discrete with mass function p, by (1.8)
+Var(X) =
+∑
+x∈X0
+(x − EX )2p(x).
+Using (1.9),
+Var(X) = E
+(
+X2 − 2XEX + (EX )2)
+=EX 2 − (EX )2,
+a result that is often convenient for explicit calculation.
+The covariance between two random variables X andY with ﬁnite expec-
+tations is deﬁned as
+Cov(X,Y ) = E(X − EX )(Y − EY ), (1.10)
+whenever the expectation exists. Note that Cov( X,X ) = Var(X). Using (1.9),
+Cov(X,Y ) = E
+(
+XY − XEY − YEX + (EX )(EY )
+)
+=EXY − (EX )(EY ). (1.11)
+The covariance between two variables might be viewed as a measure of the
+linear association between the two variables. But because covariances are in-
+ﬂuenced by the measurement scale, a more natural measure is the correlation,
+deﬁned using the covariance as
+Cor(X,Y ) = Cov(X,Y )
+[
+Var(X)Var(Y )
+]1/2 .
+Correlations always lie in [− 1, 1], with values ± 1 arising when there is a perfect
+linear relation between the two variables. 2
+1.7 Random Vectors
+IfX1,...,X n are random variables, then the function X : E → Rn deﬁned by
+2 This follows from the covariance inequality (4.11).
+
+===== PAGE 11 =====
+
+1.7 Random Vectors 11
+X(e) =
+
+
+
+X
+1(e)
+.
+.
+.
+X
+n(e)
+
+
+ , e ∈ E,
+is called a random vector .
+3 Much of the notation and many of the results
+presented in this chapter for random variables extend naturally and directly
+to random vectors. For instance, the distribution P
+X of X is deﬁned by
+PX (B) = P (X ∈B)
+def
+= P
+(
+{e ∈ E :X(e) ∈B}
+)
+for Borel sets B ∈ Rn, and notation X ∼ PX means that X has distribution
+PX . The random vector X or its distribution PX is called absolutely contin-
+uous with density p if PX is absolutely continuous with respect to Lebesgue
+measure on Rn. In this case
+P (X ∈B) =
+∫
+· · ·
+∫
+B
+p(x)dx.
+The random vector X is discrete if P (X ∈ X 0) = 1 for some countable set
+X0 ⊂ Rn. If p(x) = P (X =x), then PX has densityp with respect to counting
+measure on X0 and
+P (X ∈B) =
+∑
+x∈X0∩B
+p(x).
+The expectation of a random vector X is the vector of expectations,
+EX =
+
+
+
+EX
+1
+.
+.
+.
+EX
+n
+
+
+ .
+IfT : R
+n → R is a measurable function, then T (X) is a random variable, and,
+as in (1.5),
+ET (X) =
+∫
+TdPX
+whenever the expectation or integral exists. If PX has a density p with respect
+to a dominating measure µ, this integral can be expressed as
+∫
+Tpdµ , which
+becomes ∑
+x∈X0
+T (x)p(x) or
+∫
+· · ·
+∫
+T (x)p(x)dx
+in the discrete and absolutely continuous cases with µ counting or Lebesgue
+measure, respectively.
+3 Equivalently, the vector-valued function X is measurable: X−1(B) ∈ E for every
+Borel set B ∈ Rn.
+
+===== PAGE 12 =====
+
+12 1 Probability and Measure
+1.8 Covariance Matrices
+A matrixW is called a random matrix if the entries Wij are random variables.
+IfW is a random matrix, then EW is the matrix of expectations of the entries,
+(EW )ij =EWij.
+If v is a constant vector, A, B, and C are constant matrices, X is a random
+vector, and W is a random matrix, then
+E[v +AX] = v +AEX (1.12)
+and
+E[A +BWC ] = A +B(EW )C. (1.13)
+These identities follow easily from basic properties of expectation because
+(v +AX)
+i =vi + ∑
+j AijXj and (A +BWC )ij =Aij + ∑
+k
+∑
+lBikWklClj .
+The covariance of a random vector X is the matrix of covariances of the
+variables in X; that is,
+[
+Cov(X)
+]
+ij = Cov(Xi,X j ).
+If µ = EX and (X − µ)′denotes the transpose of X − µ, a (random) row
+vector, then
+Cov(Xi,X j ) = E(Xi − µi)(Xj − µj ) = E
+[
+(X − µ)(X − µ)′]
+ij,
+and so
+Cov(X) = E(X − µ)(X − µ)′. (1.14)
+Similarly, using (1.11) or (1.13),
+Cov(X) = EXX′− µµ′.
+To ﬁnd covariances after an aﬃne transformation, because the transpose of a
+product of two matrices (or vectors) is the product of the transposed matrices
+in reverse order, using (1.14), (1.12), and (1.13), if v is a constant vector, A
+is a constant matrix, and X is a random vector, then
+Cov(v +AX) = E(v +AX − v − Aµ)(v +AX − v − Aµ)
+′
+=EA(X − µ)(X − µ)′A′
+=A
+[
+E(X − µ)(X − µ)′]
+A′
+=ACov(X)A′. (1.15)
+
+===== PAGE 13 =====
+
+1.9 Product Measures and Independence 13
+1.9 Product Measures and Independence
+Let ( X, A,µ ) and ( Y, B,ν ) be measure spaces. Then there exists a unique
+measure µ × ν , called the product measure, on ( X × Y , A ∨ B) such that
+(µ × ν )(A × B) = µ(A)ν (B),
+for all A ∈ A and all B ∈ B . The σ -ﬁeld A ∨ B is deﬁned formally as the
+smallest σ -ﬁeld containing all sets A × B with A ∈ A and B ∈ B .
+Example 1.15. Ifµ andν are Lebesgue measures on Rn and Rm, respectively,
+then µ × ν is Lebesgue measure on Rn+m.
+Example 1.16. Ifµ andν are counting measures on countable sets X0 and Y0,
+then µ × ν is counting measure on X0 × Y 0.
+The following result shows that integration against the product measure
+µ × ν can be accomplished by iterated integration against µ and ν , in either
+order.
+Theorem 1.17 (F ubini). If f ≥ 0, then
+∫
+fd (µ × ν ) =
+∫ [∫
+f (x,y )dν (y)
+]
+dµ(x)
+=
+∫ [∫
+f (x,y )dµ(x)
+]
+dν (y).
+Dropping the restriction f ≥ 0, if ∫ |f |d(µ × ν ) < ∞ then these equations
+hold.
+Takingf = 1
+S , this result gives a way to compute ( µ × ν )(S) when S is
+not the Cartesian product of sets in A and B.
+Deﬁnition 1.18 (Independence). Two random vectors, X ∈ Rn and Y ∈
+Rm are independent if
+P (X ∈A,Y ∈B) = P (X ∈A)P (Y ∈B), (1.16)
+for all Borel sets A and B.
+If Z =
+(X
+Y
+)
+, then Z ∈A × B if and only if X ∈A and Y ∈B, and (1.16)
+can be expressed in terms of the distributions of X,Y , and Z as
+PZ (A × B) = PX (A)PY (B).
+This shows that the distribution of Z is the product measure,
+PZ =PX × PY.
+
+===== PAGE 14 =====
+
+14 1 Probability and Measure
+The density of Z is also given by the product of the densities of X and Y .
+This can be shown using Fubini’s theorem and (1.6) to change variables of
+integration. Speciﬁcally, suppose P
+X has densitypX with respect to µ andPY
+has density pY with respect to ν . Then
+P (Z ∈S) =
+∫
+1S d(PX × PY )
+=
+∫ [∫
+1S (x,y )dPX (x)
+]
+dPY (y)
+=
+∫ [∫
+1S (x,y )pX (x)dµ(x)
+]
+pY (y)dν (y)
+=
+∫
+1S (x,y )pX (x)pY (y)d(µ × ν )(x,y ).
+This shows that PZ has density pX (x)pY (y) with respect to µ ×ν . In applica-
+tions,µ andν will generally be counting or Lebesgue measure. Note that the
+level of generality here covers mixed cases in which one of the random vectors
+is discrete and the other is absolutely continuous.
+WheneverZ =
+(
+X
+Y
+)
+, PZ is called the joint distribution of X and Y , and a
+density for PZ is called the joint density of X and Y . So when X and Y are
+independent with densities pX and pY , their joint density is pX (x)pY (y).
+These ideas extend easily to collections of several random vectors. If Z is
+formed from random vectors X1,...,X n, then a density or distribution for Z
+is called a joint density or joint distribution, respectively, for X1,...,X n. The
+vectorsX1,...,X n are independent if
+P (X1 ∈B1,...,X n ∈Bn) = P (X1 ∈B1) × · · · × P (Xn ∈Bn)
+for any Borel sets B1,...,B n. Then PZ =PX1 × · · ·×PXn , where this product
+is the unique measure µ satisfying
+µ(B1 × · · · × Bn) = PX1 (B1) × · · · × PXn (Bn).
+The following proposition shows that functions of independent variables
+are independent.
+Proposition 1.19. IfX
+1,... ,Xn are independent random vectors, and if f1,
+... , fn are measurable functions, then f1(X1), ... , fn(Xn) are independent.
+If Xi has density pXi with respect to µi, i = 1,...,n, then X1,...,X n
+have joint density p given by
+p(x1,...,x n) = pX1 (x1) × · · · × pXn (xn)
+with respect to µ =µ1 × · · · ×µn. If X1,...,X n are independent, and they all
+have the same distribution, Xi ∼ Q, i = 1,...,n, then X1,...,X n are called
+independent and identically distributed (i.i.d.), and the collection of variables
+is called a random sample from Q.
+
+===== PAGE 15 =====
+
+1.10 Conditional Distributions 15
+1.10 Conditional Distributions
+Suppose X and Y are random vectors. If X is observed and we learn that
+X =x, thenPY should no longer be viewed as giving appropriate probabilities
+for Y . Rather, we should modify PY taking account of the new information
+thatX =x. When X is discrete this can be accomplished using the standard
+formula for conditional probabilities of events: Let pX (x) = P (X = x), the
+mass function for X; take X0 = {x :pX (x)> 0}, the set of possible values for
+X; and deﬁne
+Qx(B) = P (Y ∈B|X =x) = P (Y ∈B,X =x)
+P (X =x) (1.17)
+for Borel sets B and x ∈ X 0. Then for any x ∈ X 0, it is easy to show that
+Qx is a probability measure, called the conditional distribution for Y given
+X =x.
+Formally, conditional probabilities should be stochastic transition kernels .
+These are deﬁned as functions Q : X × B → [0, 1] satisfying two properties.
+First, for x ∈ X ,Qx(·) should be a probability measure on B; and second, for
+anyB ∈ B ,Qx(B) should be a measurable function of x.
+For completeness, we should also deﬁne Qx(B) above when x /∈ X 0. How
+this is done does not really matter; taking Qx to be some ﬁxed probability
+measure for x /∈ X0 would be one simple possibility.
+Conditional distributions also exist when X is not discrete, but the deﬁ-
+nition is technical and is deferred to Chapter 6. However, the most important
+results in this section hold whether X is discrete or not. In particular, if X
+and Y are independent and X is discrete, by (1.17) Q
+x equalsPY , regardless
+of the value of x ∈ X0. This fact remains true in general and is the basis for
+a host of interesting and useful calculations.
+Integration against a conditional distributions gives a conditional expec-
+tation. Speciﬁcally, the conditional expectation of f (X,Y ) given X = x is
+deﬁned as
+E
+[
+f (X,Y )
+⏐
+⏐X =x
+]
+=
+∫
+f (x,y )dQ
+x(y). (1.18)
+SupposeX andY are both discrete with Y taking values in a countable set
+Y0 andX taking values in X0 as deﬁned above. Then Z =
+(X
+Y
+)
+takes values in
+the countable set X0 × Y 0 and is discrete with mass function pZ (z) = P (Z =
+z) = P (X = x,Y = y), where z =
+(x
+y
+)
+. By (1.17), Qx(Y0) = 1 and so Qx is
+discrete with mass function qx given by
+qx(y) = Qx
+(
+{y}
+)
+=P (Y =y|X =x) = P (Y =y,X =x)
+P (X =x) (1.19)
+for x ∈ X0. Then the conditional expectation in (1.18) can be calculated as a
+sum,
+H(x) = E
+[
+f (X,Y )
+⏐
+⏐X =x
+]
+=
+∑
+y∈Y0
+f (x,y )qx(y).
+
+===== PAGE 16 =====
+
+16 1 Probability and Measure
+For regularity, suppose E|f (X,Y )|< ∞. Noting from (1.19) that P (X =
+x,Y =y) = qx(y)pX (x), the expectation of f (X,Y ) can be written as
+Ef (X,Y ) =
+∑
+(
+x
+y
+)∈X0×Y0
+f (x,y )P (X =x,Y =y)
+=
+∑
+x∈X0
+∑
+y∈Y0
+f (x,y )qx(y)pX (x)
+=
+∑
+x∈X0
+H(x)pX (x)
+=EH (X).
+This is a fundamental result in conditioning, called the law of total probability ,
+the tower property , or smoothing. In fact, smoothing identities are so basic
+that they form the basis for general deﬁnitions of conditional probability and
+expectation when X is not discrete. The random variable H(X) obtained
+evaluatingH from (1.18) at X is denoted
+H(X) = E
+[
+f (X,Y )
+⏐
+⏐X
+]
+.
+With this convenient notation the smoothing identity is just
+Ef (X,Y ) = EE
+[
+f (X,Y )
+⏐
+⏐X
+]
+.
+In particular, when f (X,Y ) = Y this becomes
+EY =EE (Y |X).
+When Y = 1
+B, the indicator of an event B, EY = P (B) and this identity
+becomes
+P (B) = EP (B|X),
+whereP (B|X)
+def
+= E(1B |X). Finally, these identities also hold when the initial
+expectation or probability is conditional. Speciﬁcally, 4
+E(Y |X) = E
+[
+E(Y |X,W )
+⏐
+⏐X
+]
+(1.20)
+and
+P (B|X) = E
+[
+P (B|X,Y )
+⏐
+⏐X
+]
+.
+4 See Problem 1.46.
+
+===== PAGE 17 =====
+
+1.11 Problems 17
+1.11 Problems 5
+*1. Prove (1.1). Hint: Deﬁne A1 = B1 and An = Bn − Bn−1 for n ≥ 2.
+Show that the An are disjoint and use the countable additivity property
+of measure. Note: By deﬁnition, ∑∞
+n=1
+cn = limN→∞
+∑N
+n=1
+cn.
+2. For a set B ⊂ N = {1, 2,... }, deﬁne
+µ(B) = lim
+n→∞
+#
+[
+B ∩ {1,...,n}
+]
+n ,
+when the limit exists, and let A denote the collection of all such sets.
+a) Find µ(E), µ(O), and µ(S), where E = {2, 4,... }, all even numbers,
+O = {1, 3,... }, all odd numbers, and S = {1, 4, 9,... ), all perfect
+squares.
+b) If A andB are disjoint sets in A, show that µ(A ∪B) = µ(A) +µ(B).
+c) Is µ a measure? Explain your answer.
+3. Suppose µ is a measure on the Borel sets of (0 , ∞) and that µ
+(
+(x, 2x]
+)
+=√
+x, for all x> 0. Find µ
+(
+(0, 1]
+)
+.
+4. Let X = {1, 2, 3, 4}. Find the smallest σ -ﬁeld A of subsets of X that
+contains the sets {1} and {1, 2, 3}.
+5. Truncation. Let µ be a measure on ( X, A) and let A be a set in A. Deﬁne
+ν on A by
+ν (B) = µ(A ∩B), B ∈ A.
+Show that ν is a measure on ( X, A).
+6. Suppose A and B areσ -ﬁelds on the same sample space X . Show that the
+intersection A ∩ B is also a σ -ﬁeld on X .
+7. Let X denote the rational numbers in (0 , 1), and let A be all subsets of
+X , A = 2X . Let µ be a real-valued function on A satisfying
+µ
+[
+(a,b ) ∩ X
+]
+=b − a, for all a<b , a ∈ X , b ∈ X .
+Show that µ cannot be a measure.
+*8. Prove Boole’s inequality : For any events B1,B 2,... ,
+P
+
+ ⋃
+i≥1
+Bi
+
+ ≤
+∑
+i≥1
+P (Bi).
+Hint: One approach would be to establish the result for ﬁnite collections
+by induction, then it extend to countable collections using (1.1). Another
+idea is to use Fubini’s theorem, noting that if B is the union of the events,
+1
+B ≤ ∑1Bi .
+5 Solutions to starred problems in each chapter are given at the back of the book.
+
+===== PAGE 18 =====
+
+18 1 Probability and Measure
+9. Cantor set . The Cantor set can be deﬁned recursively. Start with the
+closed unit interval [0, 1] and form K1 by removing the open middle third,
+so
+K1 = [0. 1/ 3] ∪ [2/ 3, 1].
+Next, form K2 by removing the two open middle thirds from the intervals
+in K1, so
+K2 = [0, 1/ 9] ∪ [2/ 9, 1/ 3] ∪ [2/ 3, 7/ 9] ∪ [8/ 9, 1].
+Continue removing middle thirds to form K2,K 3,... . The Cantor set K
+is the limit or intersection of these sets,
+K =
+∞⋂
+n=1
+Kn.
+Show that K is a Borel set and ﬁnd its length or Lebesgue measure.
+Remark: K and [0, 1] have the same cardinality.
+*10. Let µ and ν be measures on ( E, B).
+a) Show that the sum η deﬁned byη (B) = µ(B) +ν (B) is also a measure.
+b) If f is a nonnegative measurable function, show that
+∫
+fdη =
+∫
+fdµ +
+∫
+fdν.
+Hint: First show that this result holds for nonnegative simple func-
+tions.
+*11. Suppose f is the simple function 1
+(1/2 ,π ] + 21(1, 2], and let µ be a measure
+on R with µ{(0,a 2]}=a,a> 0. Evaluate
+∫
+fdµ.
+*12. Suppose that µ{(0,a) }=a2 for a> 0 and that f is deﬁned by
+f (x) =
+
+
+
+
+
+
+
+
+
+0, x ≤ 0;
+1, 0<x< 2;
+π, 2 ≤ x< 5;
+0, x ≥ 5.
+Compute
+∫
+fdµ.
+*13. Deﬁne the function f by
+f (x) =
+{
+x, 0 ≤ x ≤ 1;
+0, otherwise.
+Find simple functions f
+1 ≤ f2 ≤ · · · increasing to f (i.e., f (x) =
+limn→∞fn(x) for all x ∈ R). Let µ be Lebesgue measure on R. Using
+our formal deﬁnition of an integral and the fact that µ
+(
+(a,b ]
+)
+= b − a
+whenever b > a(this might be used to formally deﬁne Lebesgue mea-
+sure), show that ∫fdµ = 1/ 2.
+
+===== PAGE 19 =====
+
+1.11 Problems 19
+14. Suppose µ is a measure on R withµ([0,a]) = ea,a ≥ 0. Evaluate
+∫
+(1(0, 2) +
+21[1, 3])dµ.
+15. Suppose µ is a measure on subsets of N = {1, 2,... } and that
+µ
+(
+{n,n + 1,... }
+)
+= n
+2n, n = 1, 2,....
+Evaluate
+∫
+xdµ(x).
+*16. Deﬁne F (a− ) = lim x↑aF (x). Then, if F is nondecreasing, F (a− ) =
+limn→∞F (a − 1/n ). Use (1.1) to show that if a random variable X has
+cumulative distribution function FX ,
+P (X <a) = FX (a− ).
+Also, show that
+P (X =a) = FX (a) − FX (a− ).
+*17. Suppose X is a geometric random variable with mass function
+p(x) = P (X =x) = θ (1 − θ )x, x = 0, 1,...,
+where θ ∈ (0, 1) is a constant. Find the probability that X is even.
+*18. Let X be a function mapping E into R. Recall that if B is a subset of R,
+then X−1(B) = {e ∈ E :X(e) ∈B}. Use this deﬁnition to prove that
+X−1(A ∩B) = X−1(A) ∩X−1(B),
+X−1(A ∪B) = X−1(A) ∪X−1(B),
+and
+X−1
+(∞⋃
+i=0
+Ai
+)
+=
+∞⋃
+i=0
+X−1(Ai).
+*19. Let P be a probability measure on ( E, B), and let X be a random variable.
+Show that the distribution PX of X deﬁned by PX (B) = P (X ∈ B) =
+P
+(
+X−1(B)
+)
+is a measure (on the Borel sets of R).
+20. Suppose X is a Poisson random variable with mass function
+p(x) = P (X =x) = λxe−λ
+x! , x = 0, 1,...,
+where λ> 0 is a constant. Find the probability that X is even.
+*21. Let X have a uniform distribution on (0 , 1); that is, X is absolutely con-
+tinuous with density p deﬁned by
+p(x) =
+{
+1, x ∈ (0, 1);
+0, otherwise.
+LetY1 andY2 denote the ﬁrst two digits ofX whenX is written as a binary
+decimal (so Y1 = 0 if X ∈ (0, 1/ 2) for instance). Find P (Y1 =i,Y 2 =j),
+i = 0 or 1, j = 0 or 1.
+
+===== PAGE 20 =====
+
+20 1 Probability and Measure
+*22. Let E = (0, 1), let B be the Borel subsets of E, and let P (A) be the length
+of A for A ∈ B . (P would be called the uniform probability measure on
+(0, 1).) Deﬁne the random variable X by
+X(e) = min {e, 1/ 2}.
+Let µ be the sum of Lebesgue measure on R and counting measure on
+X0 = {1/ 2}. Show that the distribution PX ofX is absolutely continuous
+with respect to µ and ﬁnd the density of PX .
+*23. The standard normal distribution N (0, 1) has density φ given by
+φ (x) = e−x2/2
+√
+2π , x ∈ R,
+with respect to Lebesgue measure λ on R. The corresponding cumulative
+distribution function is Φ , so
+Φ (x) =
+∫ x
+−∞
+φ (z)dz
+for x ∈ R. Suppose that X ∼ N (0, 1) and that the random variable Y
+equalsX when |X|< 1 and is 0 otherwise. Let PY denote the distribution
+of Y and let µ be counting measure on {0}. Find the density of PY with
+respect to λ +µ.
+*24. Let µ be a σ -ﬁnite measure on a measurable space ( X, B). Show that
+µ is absolutely continuous with respect to some probability measure P .
+Hint: You can use the fact that if µ1,µ 2,... are probability measures
+and c1,c 2,... are nonnegative constants, then ∑ciµi is a measure. (The
+proof for Problem 1.10 extends easily to this case.) The measures µi you
+will want to consider are truncations of µ to sets Ai covering X with
+µ(Ai) < ∞, given by µi(B) = µ(B ∩Ai). With the constants ci chosen
+properly, ∑ciµi will be a probability measure.
+*25. The monotone convergence theorem states that if 0 ≤ f1 ≤ f2 · · · are
+measurable functions and f = limfn, then
+∫
+fdµ = lim
+∫
+fndµ. Use this
+result to prove the following assertions.
+a) Show that if X ∼ PX is a random variable on ( E, B,P ) and f is a
+nonnegative measurable function, then
+∫
+f
+(
+X(e)
+)
+dP (e) =
+∫
+f (x)dPX (x).
+Hint: Try it ﬁrst with f an indicator function. For the general case,
+let fn be a sequence of simple functions increasing to f .
+b) Suppose that PX has density p with respect to µ, and let f be a
+nonnegative measurable function. Show that
+∫
+fdPX =
+∫
+fpdµ.
+
+===== PAGE 21 =====
+
+1.11 Problems 21
+*26. The gamma distribution .
+a) The gamma function is deﬁned for α> 0 by
+Γ (α ) =
+∫∞
+0
+xα−1e−xdx.
+Use integration by parts to show that Γ (x + 1) = xΓ (x). Show that
+Γ (x + 1) = x! for x = 0, 1, ... .
+b) Show that the function
+p(x) =
+{
+1
+Γ (α )β α xα−1e−x/β , x> 0;
+0, otherwise,
+is a (Lebesgue) probability density when α > 0 and β > 0. This
+density is called the gamma density with parameters α and β . The
+corresponding probability distribution is denoted Γ (α,β ).
+c) Show that if X ∼ Γ (α,β ), then EXr = βrΓ (α +r)/Γ (α ). Use this
+formula to ﬁnd the mean and variance of X.
+*27. Suppose X has a uniform distribution on (0 , 1). Find the mean and co-
+variance matrix of the random vector
+(X
+X2
+)
+.
+*28. If X ∼ N (0, 1), ﬁnd the mean and covariance matrix of the random vector( X
+I{X>c}
+)
+.
+29. Let X be a random vector in Rn with EX 2
+i < ∞, i = 1,...,n, and let
+A =EXX′. Show that A is nonnegative deﬁnite: v′Av ≥ 0 for all v ∈ Rn.
+30. Let W be absolutely continuous with density
+p(x) =
+{
+λe−λx , x> 0;
+0, otherwise,
+where λ > 0 (the exponential density with failure rate λ ), and deﬁne
+X = ⌊W ⌋ and Y = W − X. Here ⌊·⌋is the ﬂoor or greatest integer
+function: ⌊x⌋ is the greatest integer less than or equal to x.
+a) Find P (X =k),k ≥ 0, the mass function for X.
+b) Find P (Y ≤ y|X =k),y ∈ (0, 1). What is the cumulative distribution
+function for Y ?
+c) Find EY and Var(Y ).
+d) Compute EW . Use linearity and your answer to (c) to ﬁnd EX .
+e) Find the covariance matrix for the random vector
+(Y
+W
+)
+.
+31. Let X be an absolutely continuous random variable with density
+p(x) =
+{
+2x, x ∈ (0, 1);
+0, otherwise.
+a) Find the mean and variance of X.
+b) Find E sin(X).
+
+===== PAGE 22 =====
+
+22 1 Probability and Measure
+c) Let Y =I{X >1/ 2}. Find Cov(X,Y ).
+*32. Suppose E|X|< ∞ and let
+h(t) = 1 − E cos(tX)
+t2 .
+Use Fubini’s theorem to ﬁnd
+∫∞
+0 h(t)dt. Hint:
+∫∞
+0
+(
+1 − cos(u)
+)
+u−2du = π
+2.
+*33. Suppose X is absolutely continuous with density pX (x) = xe−x, x > 0
+and pX (x) = 0, x ≤ 0. Deﬁne cn =E(1 +X)−n. Use Fubini’s theorem to
+evaluate ∑∞
+n=1
+cn.
+34. Let Z have a standard normal distribution, introduced in Problem 1.23.
+a) For n = 1, 2,... , show that
+EZ 2n = (2n − 1)!!
+def
+= (2n − 1) × (2n − 3) × · · · × 1.
+Hint: Use an inductive argument based on an integration by parts
+identity or formulas for the gamma function.
+b) Use the identity in (a) and Fubini’s theorem to evaluate
+∞∑
+n=1
+(2n − 1)!!
+3nn! .
+35. Prove Proposition 1.19.
+*36. Suppose X andY are independent random variables, and let FX andFY
+denote their cumulative distribution functions.
+a) Use smoothing to show that the cumulative distribution function of
+S =X +Y is
+FS (s) = P (X +Y ≤ s) = EFX (s − Y ). (1.21)
+b) If X and Y are independent and Y is almost surely positive, use
+smoothing to show that the cumulative distribution function of W =
+XY is FW (w) = EFX (w/Y ) for w> 0.
+*37. Diﬀerentiating (1.21) with respect to s one can show that if X is absolutely
+continuous with densitypX , thenS =X +Y is absolutely continuous with
+density
+pS (s) = EpX (s − Y )
+fors ∈ R. Use this formula to show that if X andY are independent with
+X ∼ Γ (α, 1) and Y ∼ Γ (β, 1), then X +Y ∼ Γ (α +β, 1).
+*38. Let Qλ denote the exponential distribution with failure rate λ , given
+in Problem 1.30. Let X be a discrete random variable taking values in
+{1,...,n} with mass function
+
+===== PAGE 23 =====
+
+1.11 Problems 23
+P (X =k) = 2k
+n(n + 1), k = 1,...,n,
+and assume that the conditional distribution of Y given X = x is expo-
+nential with failure rate x,
+Y |X =x ∼ Qx.
+a) Find E[Y |X].
+b) Use smoothing to compute EY .
+*39. Let X be a discrete random variable uniformly distributed on {1,...,n} ,
+so P (X = k) = 1 /n , k = 1 ,...,n, and assume that the conditional
+distribution of Y givenX =x is exponential with failure rate x.
+a) For y >0 ﬁnd P [Y >y |X].
+b) Use smoothing to compute P (Y >y ).
+c) Determine the density of Y .
+40. Let X and Y be independent absolutely continuous random variables, X
+with density pX (x) = e−x, x > 0, pX (x) = 0, x < 0, and Y uniformly
+distributed on (0, 1). Let V =X/ (X +Y ).
+a) Find P (V >c|Y =y) for c ∈ (0, 1).
+b) Use smoothing to compute P (V >c).
+c) What is the density of V ?
+41. Suppose that X has the standard exponential distribution with density
+pX (x) = e−x, x ≥ 0, pX (x) = 0, x <0; that Y has a (discrete) uniform
+distribution on {1,...,n} ; and that X and Y are independent.
+a) Find the joint density of X andY . Use it to compute P (X +Y > 3/ 2).
+b) Find the covariance matrix for Z =
+(X
+X+Y
+)
+.
+c) Find E
+[
+exp
+(
+XY/ (1 +Y )
+)⏐
+⏐X
+]
+.
+d) Use smoothing to compute E exp
+(
+XY/ (1 +Y )
+)
+.
+42. Two measures µ andν on (X, A) are called (mutually) singular ifµ(A) =
+ν (A
+c) = 0 for some A ∈ A. For instance, Lebesgue measure and counting
+measure on some countable subset X0 of R are singular (take A = X0).
+Let µ and ν be singular measures on the Borel sets of R, and let Q0 and
+Q1 be probability measures absolutely continuous with respect to µ and
+ν , respectively, with densities
+q0 = dQ0
+dµ and q1 = dQ1
+dν .
+LetX have a Bernoulli distribution with success probability p, and assume
+that
+Y |X = 0 ∼ Q0 and Y |X = 1 ∼ Q1.
+a) Use the result in Problem 1.10 to show that Q1 has density q11A with
+respect to µ +ν , where µ(A) = ν (Ac) = 0.
+b) Use smoothing to derive a formula for P (Y ∈ B) involving Q0, Q1,
+and p.
+
+===== PAGE 24 =====
+
+24 1 Probability and Measure
+c) Find a density for Y with respect to µ +ν .
+43. Let X and Y be independent random variables with X uniformly dis-
+tributed on (0, 1) and Y uniformly distributed on {1,...,n} . Deﬁne
+W =YeXY .
+a) Find E[W |Y =y].
+b) Use smoothing to compute EW .
+44. The standard exponential distribution is absolutely continuous with den-
+sityp(x) = 1 (0,∞)(x)e−x. Let X andY be independent random variables,
+both from this distribution, and let Z =X/Y .
+a) For z >0, ﬁnd P (Z ≤ z|Y =y).
+b) Use smoothing and the result in part (a) to compute
+P (Z ≤ z), z > 0.
+c) Find the covariance between Y and I{Z ≤ z}.
+45. Show that E[f (X)Y |X] = f (X)E(Y |X).
+46. If E|Y |< ∞ and f is a bounded function, then by smoothing,
+E[f (X)Y ] = E
+[
+f (X)E(Y |X)
+]
+.
+By (1.20) we should then have
+E[f (X)Y ] = E
+[
+f (X)E
+[
+E(Y |X,W )
+⏐
+⏐X
+]]
+.
+Use a smoothing argument to verify that this equation holds, demonstrat-
+ing that (1.20) works in this case.

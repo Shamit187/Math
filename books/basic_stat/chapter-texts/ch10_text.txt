@@ -1,0 +1,509 @@
+
+===== PAGE 1 =====
+
+10
+Equivariant Estimation
+In our study of UMVU estimation, we discovered that, for some models, if
+we restrict attention to the class of unbiased estimators there may be a best
+choice. Equivariant estimation is similar, but now we restrict attention to
+estimators that satisfy symmetry restrictions. At an abstract level, these re-
+strictions are imposed using group theory. The basic ideas are developed here
+only for estimation of a location parameter, but we try to proceed in a fashion
+that illustrates the role of group theory.
+10.1 Group Structure
+For estimation of a location parameter, the group of interest is the real line,
+G = R, with group multiplication, denoted by ∗, taken to be addition. So
+g
+1 ∗g2 = g1 +g2. This group acts, denoted by “ ⋆ ”, on points θ ∈ R (the
+parameter space) by g⋆θ =g +θ , and acts on points x ∈ Rn (the data space)
+by
+g⋆x =
+
+
+
+g +x
+1
+.
+.
+.
+g +x
+n
+
+
+ =g1 +x,
+where 1 ∈ R
+n denotes a column vector of 1s.
+Location models arise when each datum Xi can be thought of as the true
+quantity of interest, θ ∈ R, plus measurement error ǫi. So
+Xi =θ +ǫi, i = 1,...,n.
+Writing
+X =
+
+
+
+X
+1
+.
+.
+.
+X
+n
+
+
+ and ǫ =
+
+
+
+ǫ
+1
+.
+.
+.
+ǫ
+n
+
+
+ ,
+these equations can be written in vector form as
+R.W. Keener, Theoretical Statistics: Topics for a Core Course, Springer Texts in Statistics, 
+DOI 10.1007/978-0-387-93839-4_10, © Springer Science+Business Media, LLC 2010 
+195 
+
+===== PAGE 2 =====
+
+196 10 Equivariant Estimation
+X =θ 1 +ǫ.
+In a location model, the distribution of the error vector ǫ is ﬁxed, ǫ ∼ P0.
+This assumption allows dependence between the ǫi, but they are often taken
+to be i.i.d., in which case P0 =Qn withQ the common marginal distribution,
+ǫi ∼ Q. Letting Pθ denote the distribution of X, so
+X =θ 1 +ǫ ∼ Pθ ,
+the family P = {Pθ,θ ∈ R}is called a location family, andθ is called a location
+parameter.
+The symmetry restriction imposed on estimators, called equivariance, is
+deﬁned as follows.
+Deﬁnition 10.1. An estimator δ for the location θ in a location family is
+called equivariant if
+δ (x
+1 +g,...,x n +g) = δ (x1,...,x n) +g,
+or, using vector notation,
+δ (x +g1) = δ (x) +g,
+for all g ∈ R, x ∈ Rn. Using the actions of g on points in R and Rn, this
+equation can be written succinctly as
+δ (g⋆x ) = g⋆δ (x).
+Examples of equivariant estimators include the sample mean and the me-
+dian. An optimality theory for equivariant estimation requires considerable
+structure. The family of distributions must behave naturally under group ac-
+tions, and the loss function must be invariant, deﬁned below. For location
+families, since θ 1 +g1 +ǫ =g⋆ (θ 1 +ǫ) has distribution P
+g⋆θ ,
+Pg⋆θ (X ∈B) = P (θ 1 +g1 +ǫ ∈B) = P
+(
+g⋆ (θ 1 +ǫ
+)
+∈B) = Pθ (g⋆X ∈B).
+Deﬁnition 10.2. A loss function L for the location θ in a location family is
+called invariant if
+L(g⋆θ,g⋆d ) = L(θ,d ),
+for all g ∈ R, θ ∈ R, d ∈ R. Deﬁning ρ (x) = L(0,x ) and taking g = −θ , L is
+invariant if
+L(θ,d ) = ρ (d − θ )
+for all θ ∈ R, d ∈ R.
+
+===== PAGE 3 =====
+
+10.1 Group Structure 197
+Suppose δ is equivariant and L is invariant. Then the risk of δ is
+R(θ,δ ) = Eθ ρ
+(
+δ (X) − θ
+)
+=Eρ
+(
+δ (θ 1 +ǫ) − θ
+)
+=Eρ
+(
+δ (ǫ)
+)
+.
+With the structure imposed, the risk function is a constant, independent of
+θ . This means that graphs of risk functions for equivariant estimators cannot
+cross, and we anticipate that there will be a best equivariant estimator δ
+∗,
+called the minimum risk equivariant estimator. The technical issue here is
+simply whether the inﬁmum of the risks as δ varies over the class of equivariant
+estimators is achieved.
+As we proceed, it is convenient to add the assumption that P0 is absolutely
+continuous with density f .
+Proposition 10.3. If P0 is absolutely continuous with density f , then Pθ is
+absolutely continuous with density f (x1 − θ,...,x n − θ ) = f (x − θ 1). Con-
+versely, if distributions Pθ are absolutely continuous with densities f (x −θ 1),
+then if ǫ ∼ P0, θ 1 +ǫ ∼ Pθ and P = {Pθ :θ ∈ R} is a location family.
+Proof. Since θ 1 +ǫ ∼ Pθ , the change of variables ei = xi − θ , i = 1,...,n,
+gives
+Pθ (B) = P (θ 1 +ǫ ∈B)
+=E1B (θ 1 +ǫ)
+=
+∫
+· · ·
+∫
+1B (θ +e1,...,θ +en)f (e1,...,e n)de1 · · ·den
+=
+∫
+· · ·
+∫
+1B (x1,...,x n)f (x1 − θ,...,x n − θ )dx1 · · ·dxn
+=
+∫
+· · ·
+∫
+B
+f (x1 − θ,...,x n − θ )dx1 · · ·dxn.
+The converse follows similarly. ⊓ ⊔
+A function h on Rn is called invariant if h(g⋆x ) = h(x) for all x ∈ Rn,
+g ∈ R. One invariant function of particular interest is
+Y =Y (X) =
+
+
+
+X
+1 − Xn
+.
+.
+.
+X
+n−1 − Xn
+
+
+ .
+If h is an arbitrary invariant function, then taking g = −X
+n,
+h(X) = h(X − Xn1)
+=h(X1 − Xn,...,X n−1 − Xn, 0)
+=h(Y1,...,Y n−1, 0).
+
+===== PAGE 4 =====
+
+198 10 Equivariant Estimation
+This shows that any invariant function must be a function of Y . For this reason
+Y is called a maximal invariant . This functional relationship means that Y
+contains at least as much information about X as any other invariant function
+h(X). Supposeδ 0 andδ are equivariant estimators. Then their diﬀerence δ 0 −δ
+is an invariant function because
+δ 0(g⋆x ) − δ (g⋆x ) = [δ 0(x) +g] − [δ (x) +g] = δ 0(x) − δ (x).
+So the diﬀerence must be a function of Y ,
+δ 0(X) − δ (X) = v(Y ).
+Conversely, if δ 0 is equivariant and v is an arbitrary function, then
+δ (X) = δ 0(X) − v(Y )
+is an equivariant estimator, because
+δ (g⋆x ) = δ 0(g⋆x ) − v
+(
+Y (g⋆x )
+)
+=δ 0(x) +g − v
+(
+Y (x)
+)
+=δ (x) +g.
+10.2 Estimation
+The next result shows that optimal estimators are constructed by conditioning
+on the maximal invariant Y introduced in the previous section.
+Theorem 10.4. Consider equivariant estimation of a location parameter with
+an invariant loss function. Suppose there exists an equivariant estimator δ
+0
+with ﬁnite risk, and that for a.e. y ∈ Rn−1 there is a value v∗= v∗(y) that
+minimizes
+E0
+[
+ρ
+(
+δ 0(X) − v
+)⏐
+⏐Y =y
+]
+over v ∈ R. Then there is a minimum risk equivariant estimator given by
+δ
+∗(X) = δ 0(X) − v∗(Y ).
+Proof. From the discussion above, δ∗is equivariant. Let δ (X) = δ 0(X) −v(Y )
+be an arbitrary equivariant estimator. Then by smoothing, using the fact that
+risk functions for equivariant estimators are constant,
+R(θ,δ ) = E
+0ρ
+(
+δ 0(X) − v(Y )
+)
+=E0E0
+[
+ρ
+(
+δ 0(X) − v(Y )
+)⏐
+⏐Y
+]
+≥ E
+0E0
+[
+ρ
+(
+δ 0(X) − v∗(Y )
+)⏐
+⏐Y
+]
+=E
+0ρ
+(
+δ 0(X) − v∗(Y )
+)
+=E0ρ
+(
+δ∗(X)
+)
+=R(θ,δ ∗).
+⊓ ⊔
+
+===== PAGE 5 =====
+
+10.2 Estimation 199
+To calculate the minimum risk equivariant estimator in this theorem ex-
+plicitly, let us assume that the equivariant estimator
+δ 0(X) = Xn
+has ﬁnite risk. To evaluate the conditional expectation in the theorem we need
+the conditional distribution of X
+n given Y (under P0), which we can obtain
+from the joint density. Using a change of variablesyi =xi −xn,i = 1,...,n − 1,
+in the integrals against dxi,
+P0
+[(Y
+Xn
+)
+∈B
+]
+=E01B (Y1,...,Y n−1,X n)
+=E01B (X1 − Xn,...,X n−1 − Xn,X n)
+=
+∫
+· · ·
+∫
+1B (x1 −xn,...,x n)f (x1,...,x n)dx1 · · ·dxn
+=
+∫
+· · ·
+∫
+B
+f (y1 +xn,...,y n−1 +xn,x n)dy1 · · ·dyn−1dxn.
+So the joint density of Y and Xn under P0 is
+f (y1 +xn,...,y n−1 +xn,x n).
+Integration against xn gives the marginal density of Y ,
+fY (y) =
+∫
+f (y1 +t,...,y n−1 +t,t) dt.
+So the conditional density of Xn =δ 0 givenY =y is
+fXn|Y (t|y) = f (y1 +t,...,y n−1 +t,t)
+fY (y) .
+From the theorem, v∗=v∗(y) should be chosen to minimize
+∫ρ (t − v)f (y1 +t,...,y n−1 +t,t) dt
+∫
+f (y1 +t,...,y n−1 +t,t) dt .
+This is simpliﬁed by a change of variables in both integrals taking t =xn −u.
+Here xn is viewed as a constant, and we deﬁne xi by xi − xn = yi, so that
+yi +t =xi − u. Then this expression equals
+∫
+ρ (xn − v − u)f (x1 − u,...,x n − u)du
+∫
+f (x1 − u,...,x n − u)du .
+Since δ∗(x) = xn − v∗(y), it must be the value that minimizes
+∫
+ρ (d − u)f (x1 − u,...,x n − u)du
+∫
+f (x1 − u,...,x n − u)du . (10.1)
+
+===== PAGE 6 =====
+
+200 10 Equivariant Estimation
+Formally, this looks very similar to the calculations to compute a posterior
+risk in a Bayesian model. The likelihood at θ = u is f (x
+1 − u,...,x n − u),
+and ρ is the loss function. If the prior density were taken as one, so the prior
+distribution is Lebesgue measure λ , then formally we would be choosing δ to
+minimize our posterior risk. Of course, as precise mathematics this is suspect
+because Lebesgue measure (or any multiple of Lebesgue measure) is not a
+probability and cannot serve as a proper prior distribution for θ in a Bayesian
+model. But the posterior distribution obtained from formal calculations with
+prior distribution Lebesgue measure will be a probability measure, and the
+minimum risk equivariant estimator can be viewed informally as Bayes with
+Lebesgue measure as a prior.
+If we deﬁne the action of group elements g on Borel sets B by
+g⋆B
+def
+= {g⋆x :x ∈B},
+then Lebesgue measure is invariant, λ (B) = λ (g⋆B ). Measures invariant un-
+der the action of some group are called Haar measures , and in this setting
+multiples of Lebesgue measure are the only invariant measures. The struc-
+ture we have discovered here persists in more general settings. With suitable
+structure, best equivariant estimators are formally Bayes with Haar measure
+as the prior distribution for the unknown parameter. For further discussion,
+see Eaton (1983, 1989).
+With squared error loss, ρ (d − u) = ( d − u)
+2, minimization to ﬁnd the
+minimum risk equivariant estimator can be done explicitly. IfW is an arbitrary
+random variable, then E(W − d)2 =EW 2 − 2dEW +d2, and this quadratic
+function of d is minimized when d =EW . If W has density h, then E(W −
+d)2 =
+∫
+(u − d)2h(u)du and the minimizing value for d is
+∫
+uh(u)du. The
+minimization of (10.1) has this form, with h (the formal posterior density)
+given by
+h(u) = f (x1 − u,...,x n − u)
+∫
+f (x1 − t,...,x n − t)dt.
+So with squared error loss, the minimum risk equivariant estimator is
+δ∗(X) =
+∫uf (X1 − u,...,X n − u)du
+∫
+f (X1 − u,...,X n − u)du . (10.2)
+This estimator δ∗is called the Pitman estimator.
+Example 10.5. Suppose the measurement errors ǫ1,...,ǫ n are i.i.d. standard
+exponential variables. Then the density f (e) of ǫ will be positive when ei > 0,
+i = 1,...,n, i.e., when min {e1,...,e n}> 0, and so this density is
+f (e) =
+{
+e−(e1+···+en ), min{e1,...,e n}> 0;
+0, otherwise.
+LettingM = min{X1,...,X n} and noting that min {X1 −u,...,X n −u}> 0
+if and only if u<M ,
+
+===== PAGE 7 =====
+
+10.3 Problems 201
+f (X1 − u,...,X n − u) =
+{
+enu−(X1 +···+Xn ), u<M ;
+0, otherwise.
+Thus the Pitman estimator (10.2) in this example is
+δ∗=
+∫M
+−∞uenu−(X1 +···+Xn )du
+∫M
+−∞enu−(X1 +···+Xn )du
+=
+∫ 0
+−∞(t +M )entdt
+∫ 0
+−∞entdt
+=M − 1
+n.
+10.3 Problems 1
+*1. Let X1 ∼ N (θ, 1), and suppose that for j = 1,...,n − 1 the conditional
+distribution of Xj+1 given X1 = x1,...,X j = xj is N
+(
+(xj +θ )/ 2, 1
+)
+.
+Show that the joint distributions for X1,...,X n form a location family
+and determine the minimum risk equivariant estimator forθ under squared
+error loss.
+*2. Let X have cumulative distribution function F , and assume that F is
+continuous.
+a) Show that g(c) = E|X − c|is minimized when c is a median of F , so
+F (c) = 1/ 2.
+b) Generalizing part (a), deﬁne
+g(c) = E
+[
+a(X − c)+ +b(c − X)+]
+,
+where a and b are positive constants. Find the quantile of F that
+minimizes g.
+3. Let ǫ1,...,ǫ n be i.i.d. standard exponential variables, and let Xi =θ +ǫi,
+i = 1,...,n. Using the result in Problem 10.2, determine the minimum
+risk equivariant estimator of θ based on X1,...,X n if the loss function is
+L(θ,d ) = |θ − d|.
+*4. Suppose X has density
+1
+2e−|x−θ|.
+Using the result in Problem 10.2, determine the minimum risk equivariant
+estimator of θ when the loss for estimating θ byd is
+L(θ,d ) = a(d − θ )
++ +b(θ − d)+,
+with a and b positive constants.
+5. Suppose X and Y are independent, with X ∼ N (θ, 1) and Y absolutely
+continuous with density eθ−y for y > θ, 0 for y ≤ θ . Determine the
+minimum risk equivariant estimator of θ based on X andY under squared
+error loss.
+1 Solutions to the starred problems are given at the back of the book.
+
+===== PAGE 8 =====
+
+202 10 Equivariant Estimation
+6. Suppose ˆθ is minimum risk equivariant under squared error loss and that
+the risk of ˆθ is ﬁnite. Is ˆθ then unbiased? Prove or give a counterexample.
+7. Suppose X and Y are independent random variables, X with density
+1
+2e−|x−θ|, x ∈ R, and Y with density e−2|y−θ|, y ∈ R. Find the minimum
+risk equivariant estimator of θ under squared error loss based on X and
+Y .
+8. Equivariant estimation for scale parameters . Letǫ1,...,ǫ n be positive ran-
+dom variables with joint distribution P1. If σ > 0 is an unknown param-
+eter, and X ∼ σǫ ∼ Pσ , then {Pσ :σ > 0} is called a scale family, and σ
+is a scale parameter. (Similar developments are possible without the re-
+striction to positive variables.) The transformation group for equivariant
+scale estimation is G = (0, ∞) with g
+1 ∗g2 = g1g2, and group elements
+act on data values x ∈ X = (0, ∞)n and parameters σ by multiplication,
+g⋆x =gx and g⋆σ =gσ .
+a) A loss function L(σ,d ) is invariant if L(g⋆σ,g⋆d ) = L(σ,d ) for all
+g,σ,d in (0, ∞). For instance, L(σ,d ) = ρ (d/σ ) is invariant. Show that
+any invariant loss function L must have this form.
+b) A function h on X is invariant ifh(g⋆x ) = h(x) for all g ∈ G ,x ∈ X .
+The function
+Y (x) =
+
+
+
+x
+1/x n
+.
+.
+.
+x
+n−1/x n
+
+
+
+is invariant. If h is invariant, show that h(x) = ν
+(
+Y (x)
+)
+for some
+function ν .
+c) An estimator δ : X → (0, ∞) is equivariant ifδ (g⋆x ) = g⋆δ (x) = gδ (x)
+for all g > 0, x ∈ (0, ∞)
+n. Show that the risk function R(σ,δ ) for
+an equivariant estimator of scale, with an invariant loss function, is
+constant in σ .
+d) If δ is an arbitrary equivariant estimator and δ
+0 is a ﬁxed equivariant
+estimator, then δ 0/δ is invariant. So δ (X) = δ 0(X)/ν (Y ) for some
+ν . Use this representation to prove a result similar to Theorem 10.4
+identifying the minimum risk equivariant estimator in regular cases.
+e) If the distribution P1 for ǫ is absolutely continuous with density f ,
+ﬁnd the density for X ∼ Pσ .
+9. Let U1, U2, and V be independent variables with U1 and U2 uniformly
+distributed on ( − 1, 1) and P (V = 2) = P (V = − 2) = 1/ 2. Suppose our
+data X1 and X2 are given by
+X1 =θ +U1 +V and X2 =θ +U2,
+with θ ∈ R and unknown location parameter.
+a) Find the minimum risk equivariant estimator δ for θ under squared
+error loss based on X1 and X2.
+
+===== PAGE 9 =====
+
+10.3 Problems 203
+b) The best equivariant estimator if we observe only a single observation
+Xi is that observationXi. Will the estimator δ from both observations
+lie between X1 and X2? Explain your answer.
+
+===== PAGE 10 =====
+

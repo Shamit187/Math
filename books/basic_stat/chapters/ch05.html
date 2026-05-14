@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ch 5 — Curved Exponential Families · Theoretical Statistics</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/>
+</head>
+<body data-book="basic_stat" data-page="ch05">
+<header class="site-header">
+<a class="brand" href="/books/basic_stat/">Theoretical Statistics <small>a slow reading guide</small></a>
+<nav>
+<a href="/" class="all-books-link">All books</a>
+    <a href="/books/basic_stat/">Contents</a>
+<button aria-label="toggle theme" class="theme-toggle">Dark</button>
+</nav>
+</header>
+<main class="layout">
+<aside class="sidebar">
+<h4>Chapter 5</h4>
+<ol>
+<li><a href="#why">Why "curved"?</a></li>
+<li><a href="#s5-1">5.1 Constrained families</a></li>
+<li><a href="#s5-2">5.2 Sequential experiments</a></li>
+<li><a href="#s5-3">5.3 Multinomial &amp; contingency tables</a></li>
+<li><a href="#summary">Summary</a></li>
+</ol>
+</aside>
+<article class="content">
+<section class="hero">
+<div class="kicker">Chapter 5</div>
+<h1>Curved Exponential Families</h1>
+<p class="subtitle" data-cid="ch05-010">What happens when an exponential-family parameter is forced to live on a curve — and why that breaks completeness, but rarely breaks sufficiency.</p>
+<div class="meta">
+<span>Book pages: 85–99</span>
+<span>~35 min reading time</span>
+<span>Prereqs: Chapter 2 (exponential families), Chapter 4 (UMVU)</span>
+</div>
+</section>
+<h2 data-cid="ch05-020" id="why">Why "curved"? A picture before the math</h2>
+<p data-cid="ch05-030">
+  Chapter 2 introduced the canonical exponential family
+  $$p_\eta(x) = \exp\big(\eta \cdot T(x) - A(\eta)\big) \, h(x),$$
+  with natural parameter $\eta \in \Xi \subseteq \mathbb{R}^s$. The whole point of that machinery is that the
+  natural parameter is a <em>free</em> Euclidean variable: you can move $\eta$ in any direction inside $\Xi$
+  and you stay inside the family. That freedom is what made Chapter 4's UMVU theory work — Lehmann–Scheffé
+  needs completeness, and a full rank exponential family gives it for free.
+</p>
+<p data-cid="ch05-040">
+  Now we ask a question the book has been carefully postponing. What if the modeller, for some
+  scientific reason, insists that the parameter must satisfy a constraint? Maybe two variances are
+  known to be equal. Maybe a mean and a standard deviation are linked. Maybe the sample size itself was
+  decided sequentially, so the family quietly picks up an extra parameter relating the stopping time
+  to the data.
+</p>
+<p data-cid="ch05-050">
+  All of these scenarios share one geometric picture: instead of roaming freely over an $s$-dimensional
+  parameter space $\Xi$, the parameter is now pinned to a lower-dimensional subset
+  $\tilde\eta(\Omega) \subseteq \Xi$. There are two qualitatively different things that can happen.
+</p>
+<ul data-cid="ch05-060">
+<li>The subset is an <strong>affine</strong> slice of $\Xi$ — a flat linear constraint. In this case
+  the model collapses cleanly into a smaller, full rank exponential family.</li>
+<li>The subset is a genuinely <strong>curved</strong> submanifold — a curve, a parabola, a sphere
+  inside $\Xi$ that does not lie in any hyperplane. This is the case the chapter is named after:
+  a <strong>curved exponential family</strong>.</li>
+</ul>
+<div class="box intuition" data-cid="ch05-070">
+<span class="box-label">The geometric picture</span>
+<p data-cid="ch05-080">
+  Think of $\Xi$ as a flat $s$-dimensional space. A linear constraint slices off a flat plane. The
+  family stays exponential, just with fewer parameters. A nonlinear constraint slices off a curve or
+  a curved surface — and that curvature is precisely what stops the smaller model from being a full
+  exponential family in its own right.
+</p>
+</div>
+<div class="box warn" data-cid="ch05-090">
+<span class="box-label">Common pitfall</span>
+<p data-cid="ch05-100">
+  "Curved exponential family" does <em>not</em> mean "not an exponential family". A curved
+  exponential family <em>is</em> an exponential family — its densities still factor as
+  $\exp(\eta \cdot T - A) \, h$. What it lacks is full rank. The image $\tilde\eta(\Omega)$ in the
+  natural parameter space is lower-dimensional than $\Xi$, and it bends. So the family is exponential
+  but "constrained", not "broken".
+</p>
+</div>
+<!-- ===================================================================== -->
+<h2 data-cid="ch05-110" id="s5-1">5.1 Constrained families</h2>
+<h3 data-cid="ch05-120">The setup</h3>
+<p data-cid="ch05-130">
+  Start with a full rank $s$-parameter canonical exponential family
+  $$\mathcal{P} = \{P_\eta : \eta \in \Xi\}$$
+  with complete sufficient statistic $T$. (From Chapter 2: full rank means $\Xi$ contains an open set
+  in $\mathbb{R}^s$, and $T$ does not lie in any affine subspace.) Now consider a submodel
+  $\mathcal{P}_0$ parameterized by a new parameter $\theta \in \Omega$:
+  $$\mathcal{P}_0 = \{P_{\tilde\eta(\theta)} : \theta \in \Omega\},$$
+  where $\tilde\eta : \Omega \to \Xi$ is the embedding that says "for each $\theta$, use natural
+  parameter $\tilde\eta(\theta)$".
+</p>
+<p data-cid="ch05-140">
+  Usually $\Omega \subseteq \mathbb{R}^r$ with $r &lt; s$. So we are restricting the natural parameter
+  to live in an $r$-dimensional image $\tilde\eta(\Omega) \subseteq \Xi$.
+</p>
+<div class="box definition" data-cid="ch05-150">
+<span class="box-label">Definition — the two cases</span>
+<p data-cid="ch05-160">Let $\mathcal{P}_0 \subsetneq \mathcal{P}$ as above.</p>
+<ol data-cid="ch05-170">
+<li>If the points of $\tilde\eta(\Omega)$ satisfy a <strong>nontrivial linear constraint</strong> in
+  $\mathbb{R}^s$, then $\mathcal{P}_0$ is itself a $q$-parameter full rank exponential family for some
+  $q &lt; s$. The original $T$ remains sufficient but is no longer minimal.</li>
+<li>If the points of $\tilde\eta(\Omega)$ do <strong>not</strong> satisfy any linear constraint, then
+  $\mathcal{P}_0$ is called a <strong>curved exponential family</strong>. Here $T$ is minimal sufficient
+  but typically <em>not complete</em>.</li>
+</ol>
+</div>
+<h3 data-cid="ch05-180">Why a linear constraint collapses the family</h3>
+<p data-cid="ch05-190">
+  Suppose $\tilde\eta(\Omega)$ sits inside a hyperplane $\{\eta : a \cdot \eta = c\}$ for some
+  $a \in \mathbb{R}^s$ and constant $c$. Then for every $\theta \in \Omega$,
+  $$\eta \cdot T(x) = (\text{component along } a)\,\underbrace{(a \cdot T(x))}_{\text{fixed combo}} +
+  (\text{free components}) \cdot (\text{other combos of } T).$$
+  The constrained combination $a \cdot T$ behaves like a constant in the exponent (up to the fixed
+  multiplier $c$) and can be absorbed into the baseline. What is left is a genuine $q$-parameter
+  exponential family in the remaining free directions. No curvature, no loss of completeness — the
+  framework of Chapter 4 still applies, just with fewer effective parameters.
+</p>
+<h3 data-cid="ch05-200">Why a curved (nonlinear) constraint is different</h3>
+<p data-cid="ch05-210">
+  If $\tilde\eta(\Omega)$ is not contained in any hyperplane, no linear combination $a \cdot T$ is
+  redundant. The statistic $T$ has nowhere to collapse, so it remains minimal sufficient. But
+  curvature manufactures something new: certain functions $g(T)$ end up having zero mean for
+  <em>every</em> $\theta \in \Omega$, even though they are not zero as random variables. By the
+  definition of completeness — "$E_\theta g(T) = 0$ for all $\theta$ implies $g = 0$ a.s." — the
+  existence of such a $g$ is exactly a witness that $T$ is not complete. Curvature creates "extra"
+  identities that the full family did not have.
+</p>
+<div class="box intuition" data-cid="ch05-220">
+<span class="box-label">The intuition in one sentence</span>
+<p data-cid="ch05-230">
+  When the parameter set bends, the moments of $T$ get tied together by relations that hold along
+  the entire curve. Each such relation is a nontrivial function of $T$ with mean zero — and that
+  destroys completeness, even when sufficiency survives.
+</p>
+</div>
+<h3 data-cid="ch05-240">Example 5.1 — the normal family with linked moments</h3>
+<p data-cid="ch05-250">
+  Take $X_1, \dots, X_n \stackrel{\mathrm{iid}}{\sim} N(\mu, \sigma^2)$. Chapter 2 (Example 2.3) gave
+  the canonical natural parameter and complete sufficient statistic
+  $$\eta = \left( \frac{\mu}{\sigma^2}, \, -\frac{1}{2\sigma^2} \right), \qquad
+  T = \left( \sum_{i=1}^n X_i, \, \sum_{i=1}^n X_i^2 \right).$$
+  This is a full rank two-parameter family. Now look at two constrained submodels.
+</p>
+<div class="box example" data-cid="ch05-260">
+<span class="box-label">Worked example — $\mu = \sigma^2 = \theta$ (linear case)</span>
+<p data-cid="ch05-270">
+  Set $\mu = \sigma^2 = \theta$, with $\theta &gt; 0$. Then
+  $$\tilde\eta(\theta) = \left( 1, \, -\frac{1}{2\theta} \right).$$
+  Look at the picture: the first coordinate is locked to $1$, while the second sweeps out a ray. The
+  image is the horizontal line $\eta_1 = 1$ — a <em>linear</em> constraint. By case 1 of the
+  definition, $\mathcal{P}_0$ is a one-parameter exponential family. Indeed, plugging
+  $\tilde\eta$ into the density and absorbing the constant term, the submodel turns out to be a
+  full rank one-parameter exponential family with canonical statistic $\sum_{i=1}^n X_i^2$ alone.
+  The old $T = (\sum X_i, \sum X_i^2)$ is still sufficient but no longer minimal — the first
+  coordinate is just informational redundancy.
+</p>
+</div>
+<div class="box example" data-cid="ch05-280">
+<span class="box-label">Worked example — $\sigma = |\mu|$, i.e. $X_i \sim N(\theta, \theta^2)$ (curved case)</span>
+<p data-cid="ch05-290">
+  Now constrain the variance to be the square of the mean: $\sigma^2 = \theta^2$ with $\theta \in \mathbb{R}$.
+  Then
+  $$\tilde\eta(\theta) = \left( \frac{1}{\theta}, \, -\frac{1}{2\theta^2} \right).$$
+  Eliminating $\theta$ gives the relation $\eta_2 = -\tfrac12 \eta_1^2$. The image is a
+  <strong>parabola</strong> in the natural parameter plane — not a line. This is the textbook
+  example of a curved exponential family.
+</p>
+<p data-cid="ch05-300">
+  Sufficiency survives: $T = (\sum X_i, \sum X_i^2)$ is still minimal sufficient for the submodel
+  (the chapter cites Example 3.12). But completeness fails. To see it, compute the moments of $T$ on
+  the curve, writing $T_1 = \sum X_i$ and $T_2 = \sum X_i^2$:
+</p>
+<p data-cid="ch05-310">
+  $E_\theta T_1 = n\theta$ and $\operatorname{Var}_\theta(T_1) = n\theta^2$, so
+  $$E_\theta T_1^2 = (E_\theta T_1)^2 + \operatorname{Var}_\theta(T_1) = n^2 \theta^2 + n \theta^2.$$
+  Meanwhile $E_\theta T_2 = n E_\theta X_i^2 = n(\theta^2 + \theta^2) = 2 n \theta^2$. Combining,
+  $$E_\theta\!\left( 2 T_1^2 - (n+1) T_2 \right) = 2(n^2 + n)\theta^2 - 2n(n+1)\theta^2 = 0$$
+  for <em>every</em> $\theta$. So the function $g(T) = 2 T_1^2 - (n+1) T_2$ is a nontrivial function
+  of $T$ with mean zero everywhere on $\Omega$. Hence $T$ is not complete (unless $n = 1$, where
+  $g$ happens to vanish).
+</p>
+</div>
+<div class="box pause" data-cid="ch05-320">
+<span class="box-label">Pause — why did this work?</span>
+<p data-cid="ch05-330">
+  The mean and variance of the normal distribution are tied to <em>different</em> coordinates of
+  $T$. In the unrestricted family those two coordinates can be tuned independently, so no
+  polynomial in $T$ can have mean zero across the whole parameter space. The constraint
+  $\sigma^2 = \theta^2$ ties them together algebraically — and a polynomial identity in $\theta$
+  becomes available, manifesting as an identity in moments. Curvature literally creates the zero-mean
+  function.
+</p>
+<p data-cid="ch05-340">
+  The deeper moral: each "extra" algebraic relation between $\tilde\eta$'s coordinates corresponds
+  to an "extra" zero-mean function of $T$ — and each such function obstructs completeness.
+</p>
+</div>
+<h3 data-cid="ch05-350">Example 5.2 — two normal samples, three subfamilies</h3>
+<p data-cid="ch05-360">
+  Let $X_1, \dots, X_m \stackrel{\mathrm{iid}}{\sim} N(\mu_x, \sigma_x^2)$ and
+  $Y_1, \dots, Y_n \stackrel{\mathrm{iid}}{\sim} N(\mu_y, \sigma_y^2)$ be independent samples.
+  The joint distributions form a four-parameter exponential family with
+  $$T = \left( \sum X_i, \, \sum Y_j, \, \sum X_i^2, \, \sum Y_j^2 \right), \qquad
+  \eta = \left( \frac{\mu_x}{\sigma_x^2}, \, \frac{\mu_y}{\sigma_y^2}, \, -\frac{1}{2\sigma_x^2}, \,
+  -\frac{1}{2\sigma_y^2} \right).$$
+  Equivalently we can summarise via $(\bar X, \bar Y, S_x^2, S_y^2)$.
+</p>
+<p data-cid="ch05-370">Three submodels make the linear-vs-curved distinction concrete:</p>
+<ul data-cid="ch05-380">
+<li><strong>Equal variances</strong> $\sigma_x^2 = \sigma_y^2$. The natural-parameter constraint is
+  $\eta_3 = \eta_4$ — a hyperplane. By case 1, the submodel is a full rank
+  three-parameter exponential family with complete sufficient statistic
+  $(T_1, T_2, T_3 + T_4)$, equivalent to $(\bar X, \bar Y, S_p^2)$ where
+  $$S_p^2 = \frac{(m-1) S_x^2 + (n-1) S_y^2}{n + m - 2}$$
+  is the <em>pooled sample variance</em>. UMVU machinery applies.</li>
+<li><strong>Equal means</strong> $\mu_x = \mu_y$. The natural-parameter constraint relates
+  $\eta_1, \eta_2, \eta_3, \eta_4$ <em>nonlinearly</em> (it forces $\eta_1 / \eta_3 = \eta_2 / \eta_4$),
+  so this is a curved exponential family. The full $T$ remains minimal sufficient but is not complete:
+  under the constraint $E_\theta(\bar X - \bar Y) = 0$ for all parameter values, so $\bar X - \bar Y$
+  is a nonzero function of $T$ with mean zero.</li>
+<li><strong>Equal variances <em>and</em> equal means</strong> — a further submodel of the equal-variance
+  one. This is itself a linearly constrained submodel of the previous case and stays full-rank
+  exponential.</li>
+</ul>
+<div class="box intuition" data-cid="ch05-390">
+<span class="box-label">Reading the structure</span>
+<p data-cid="ch05-400">
+  Equal variances is a constraint between the two "$-1/(2\sigma^2)$" coordinates of $\eta$ — both
+  of which sit in the same linear "scale" subspace. The constraint is a hyperplane there.
+  Equal means is a constraint that involves <em>ratios</em> of $\eta$'s coordinates — mixing
+  location and scale — and ratios produce curves, not lines.
+</p>
+</div>
+<!-- ===================================================================== -->
+<h2 data-cid="ch05-410" id="s5-2">5.2 Sequential experiments</h2>
+<h3 data-cid="ch05-420">What changes when sampling is sequential</h3>
+<p data-cid="ch05-430">
+  In a classical experiment the sample size $n$ is fixed before any data arrive. In a
+  <strong>sequential</strong> experiment the decision to keep sampling, stop, or switch populations
+  is made on the fly, using whatever data have come in so far. Two motivations:
+</p>
+<ul data-cid="ch05-440">
+<li><strong>Efficiency</strong>. Stopping early once the answer is clear saves data; collecting more
+  once it isn't shrinks variance. Quantified through decision-theoretic risk, with a sampling cost
+  added to the loss function.</li>
+<li><strong>Feasibility</strong>. Some targets cannot be estimated unbiasedly without a sequential
+  rule, as the next example shows.</li>
+</ul>
+<h3 data-cid="ch05-450">Example 5.3 — estimating a population size</h3>
+<p data-cid="ch05-460">
+  A lake contains $M$ fish; $M$ is the unknown of interest. A capture–recapture protocol tags $k$
+  fish, returns them, and then resamples; each recaptured fish is independently tagged with
+  probability $\theta = k / M$. So estimating $M$ amounts to estimating $1/\theta$.
+</p>
+<p data-cid="ch05-470">
+  Code the recapture results as Bernoulli $X_1, X_2, \ldots$ with success probability $\theta$. With
+  a fixed sample size $N = n$, the joint density is
+  $$\theta^{T(x)} (1 - \theta)^{n - T(x)}, \qquad T(x) = x_1 + \cdots + x_n,$$
+  a one-parameter exponential family with $T \sim \mathrm{Binomial}(n, \theta)$. Then $T/n$ is UMVU
+  for $\theta$ — but the parameter we care about is $1/\theta$, and the following obstruction kills
+  any unbiased estimator.
+</p>
+<div class="box warn" data-cid="ch05-480">
+<span class="box-label">Why no unbiased estimator of $1/\theta$ exists</span>
+<p data-cid="ch05-490">
+  Any candidate $\delta(T)$ depends on $T \in \{0, 1, \dots, n\}$, so it is bounded:
+  $E_\theta \delta(T) \leq \max_k \delta(k)$. But $1/\theta$ is unbounded as $\theta \to 0$. So no
+  fixed-$n$ binomial estimator can be unbiased for $1/\theta$. The deeper symptom: when $\theta$ is
+  much smaller than $1/n$, $T = 0$ with very high probability, and from a string of zeros we cannot
+  tell whether $\theta$ is tiny or merely small.
+</p>
+</div>
+<p data-cid="ch05-500">
+  The fix is <strong>inverse binomial sampling</strong>: keep collecting Bernoulli draws until
+  $m$ ones have appeared. Now $m$ is fixed and $N$ is random, the reverse of the previous setup.
+  Let $Y_i$ be the number of failures between the $(i-1)$st and $i$th success. Then $Y_1, \dots, Y_m$
+  are i.i.d. geometric with mass function
+  $$P_\theta(Y_i = y) = (1 - \theta)^y \theta = \exp\!\left( y \log(1 - \theta) + \log \theta \right),
+  \quad y = 0, 1, 2, \ldots$$
+  This is a one-parameter exponential family with natural parameter $\eta = \log(1 - \theta)$ and
+  $A(\eta) = -\log(1 - e^\eta)$. Sufficient statistic $T = \sum_{i=1}^m Y_i = N - m$ has negative
+  binomial distribution; $E_\theta T = m/\theta - m$, so
+  $$\widehat{1/\theta} = \frac{T + m}{m} = \frac{N}{m}$$
+  is unbiased — and UMVU, since the family is full rank.
+</p>
+<div class="box pause" data-cid="ch05-510">
+<span class="box-label">Pause — why does this work?</span>
+<p data-cid="ch05-520">
+  Fixed-$n$ binomial sampling capped the possible values of the sufficient statistic, and that cap
+  capped any unbiased estimator. Inverse binomial sampling leaves $N$ unbounded above. The parameter
+  we cannot reach with bounded data ($1/\theta$ at small $\theta$) becomes reachable once the
+  sample size itself can grow with the difficulty of the problem.
+</p>
+</div>
+<h3 data-cid="ch05-530">The general result on sequential densities</h3>
+<p data-cid="ch05-540">
+  A <strong>stopping time</strong> $N$ is a random sample size that depends only on past data, never
+  on the future: $\{N = n\} = \{(X_1, \dots, X_n) \in A_n\}$ for some sequence of sets $A_n$. The
+  total observed data are informally written $(N, X_1, \dots, X_N)$, with $P_\theta(N &lt; \infty) = 1$.
+</p>
+<div class="box definition" data-cid="ch05-550">
+<span class="box-label">Theorem 5.4 — densities under a stopping time</span>
+<p data-cid="ch05-560">
+  If $X_1, X_2, \dots$ are i.i.d. with common density $f_\theta$ and $N$ is a stopping time with
+  $P_\theta(N &lt; \infty) = 1$, then the joint density of the observed data is
+  $$\prod_{i=1}^n f_\theta(x_i). \tag{5.1}$$
+  When $f_\theta$ comes from an exponential family
+  $f_\theta(x) = e^{\eta(\theta) \cdot T(x) - B(\theta)} h(x)$, the joint density becomes
+  $$\exp\!\left[ \eta(\theta) \cdot \sum_{i=1}^n T(x_i) - n B(\theta) \right] \prod_{i=1}^n h(x_i),
+  \tag{5.2}$$
+  an exponential family with canonical parameters $\eta_1(\theta), \dots, \eta_s(\theta), -B(\theta)$
+  and sufficient statistic $\big( \sum_{i=1}^N T(X_i), \, N \big)$.
+</p>
+</div>
+<div class="box intuition" data-cid="ch05-570">
+<span class="box-label">The key observation</span>
+<p data-cid="ch05-580">
+  Notice that the sequential likelihood has the <em>same algebraic form</em> as the fixed-$n$
+  likelihood. The price of using a stopping rule is hidden, not in the likelihood, but in the
+  parameter set: equation (5.2) has $s + 1$ natural parameters
+  $\eta_1(\theta), \dots, \eta_s(\theta), -B(\theta)$, all of which are functions of the same
+  $r$-dimensional $\theta$. Generically the image $\tilde\eta(\Omega)$ is an $r$-dimensional curved
+  submanifold of an $(s+1)$-dimensional natural-parameter space.
+</p>
+<p data-cid="ch05-590">
+  In other words: <strong>sequential experiments typically produce curved exponential families</strong>.
+</p>
+</div>
+<div class="box warn" data-cid="ch05-600">
+<span class="box-label">Likelihood vs. sampling distribution</span>
+<p data-cid="ch05-610">
+  The likelihood is unaffected by optional stopping — equation (5.1) doesn't even mention the
+  stopping rule. But the <em>sampling distribution</em> of common estimators is affected. For
+  example, $(X_1 + \cdots + X_N) / N$ is generally a <em>biased</em> estimator of $E_\theta X_1$
+  when $N$ is data-dependent. So Bayesian inference ignores the stopping rule; frequentist
+  bias and variance do not.
+</p>
+</div>
+<p data-cid="ch05-620">
+  The inverse-binomial example above is unusual: there $\sum_{i=1}^N X_i$ was constrained to equal
+  $m$ exactly, which collapsed the extra dimension and left a full rank one-parameter family. In
+  most sequential schemes nothing forces such a cancellation, and the family ends up curved.
+</p>
+<!-- ===================================================================== -->
+<h2 data-cid="ch05-630" id="s5-3">5.3 Multinomial distribution and contingency tables</h2>
+<h3 data-cid="ch05-640">The multinomial as a full rank exponential family</h3>
+<p data-cid="ch05-650">
+  Run $n$ independent trials, each yielding one of $s + 1$ outcomes $a_0, \dots, a_s$ with
+  probabilities $p_0, \dots, p_s$ (where $\sum_j p_j = 1$). Let $X_j$ be the number of trials with
+  outcome $a_j$, and stack them into $X = (X_0, X_1, \dots, X_s)$. Then
+  $$P(X_0 = x_0, \dots, X_s = x_s) = \binom{n}{x_0, \dots, x_s} \prod_{j=0}^s p_j^{x_j}, \qquad
+  \sum_j x_j = n,$$
+  the <strong>multinomial distribution</strong>, written $X \sim \mathrm{Multinomial}(p_0, \dots, p_s; n)$.
+</p>
+<p data-cid="ch05-660">
+  Writing the joint mass function of the underlying trial labels in exponential-family form is the
+  natural starting point. Using the constraint $\sum_j X_j = n$ to eliminate $X_0$,
+  $$P(Y_1 = y_1, \dots, Y_n = y_n) = \exp\!\left[ \sum_{i=1}^s x_i \log(p_i / p_0) + n \log p_0 \right],$$
+  a full rank $s$-parameter exponential family with natural parameters $\eta_i = \log(p_i / p_0)$
+  (log-odds against the baseline outcome $a_0$) and canonical complete sufficient statistic
+  $(X_1, \dots, X_s)$. Marginally each $X_j \sim \mathrm{Binomial}(n, p_j)$, so $X_j / n$ is UMVU for
+  $p_j$.
+</p>
+<div class="box intuition" data-cid="ch05-670">
+<span class="box-label">Why exclude $X_0$?</span>
+<p data-cid="ch05-680">
+  Treating all $s + 1$ probabilities as free parameters would give a family of rank $s$ embedded in
+  a natural-parameter space of dimension $s + 1$ — failing to be full rank because of the constraint
+  $\sum p_j = 1$. Picking a "reference cell" $a_0$ and using log-odds-vs-baseline parameters
+  $\log(p_i / p_0)$ removes the redundancy and makes the family full rank. This is the same logic
+  behind softmax / multinomial-logit parameterizations in modern machine learning.
+</p>
+</div>
+<h3 data-cid="ch05-690">Estimating products of probabilities</h3>
+<p data-cid="ch05-700">
+  Estimating a single $p_j$ is easy. Estimating a product $p_j p_k$ ($j \neq k$) is more delicate
+  because $X_j$ and $X_k$ are dependent (they jointly sum with the others to $n$). Take the
+  indicator $\delta = 1\{Y_1 = a_j, Y_2 = a_k\}$ as a starting unbiased estimator (since
+  $E_\theta \delta = p_j p_k$), then Rao–Blackwellise on the complete sufficient $X$:
+  $$E[\delta \mid X = x] = \frac{x_j x_k}{n(n-1)}.$$
+  Hence the UMVU estimator of $p_j p_k$ is $X_j X_k / (n^2 - n)$. This is a small but instructive
+  computation — it is the kind of pattern you will use repeatedly in contingency-table inference.
+</p>
+<h3 data-cid="ch05-710">Example 5.5 — two-way contingency tables under independence</h3>
+<p data-cid="ch05-720">
+  Suppose each trial records two characteristics: characteristic $A$ with levels $A_1, \dots, A_I$
+  and characteristic $B$ with levels $B_1, \dots, B_J$. Let $N_{ij}$ count trials with combination
+  $A_i B_j$ and $p_{ij}$ be its probability. Marginal counts and probabilities are
+  $$N_{i+} = \sum_j N_{ij}, \quad N_{+j} = \sum_i N_{ij}, \quad
+  p_{i+} = \sum_j p_{ij}, \quad p_{+j} = \sum_i p_{ij}.$$
+</p>
+<p data-cid="ch05-730">
+  The <strong>independence model</strong> assumes $p_{ij} = p_{i+} p_{+j}$ for all $i, j$. Substituting
+  this constraint into the multinomial mass function and collecting terms gives
+  $$\binom{n}{n_{11}, \dots, n_{IJ}} \exp\!\left[ \sum_{i=2}^I n_{i+} \log\!\frac{p_{i+}}{p_{1+}} +
+  \sum_{j=2}^J n_{+j} \log\!\frac{p_{+j}}{p_{+1}} + n \log(p_{1+} p_{+1}) \right].$$
+  This is a full rank $(I + J - 2)$-parameter exponential family with canonical sufficient statistic
+  $(N_{2+}, \dots, N_{I+}, N_{+2}, \dots, N_{+J})$ — equivalently the row and column totals. Under
+  independence, $N_{i+} \sim \mathrm{Binomial}(n, p_{i+})$ and $N_{+j} \sim \mathrm{Binomial}(n, p_{+j})$
+  are independent, so
+  $$\widehat{p_{ij}} = \widehat{p_{i+}} \, \widehat{p_{+j}} = \frac{N_{i+} N_{+j}}{n^2}$$
+  is UMVU for $p_{ij}$ in the independence model.
+</p>
+<div class="box pause" data-cid="ch05-740">
+<span class="box-label">Pause — what just happened geometrically?</span>
+<p data-cid="ch05-750">
+  The unrestricted multinomial on an $I \times J$ table is an $(IJ - 1)$-parameter exponential
+  family. The independence constraint $p_{ij} = p_{i+} p_{+j}$ is <em>nonlinear in the $p$'s</em>,
+  yet the resulting submodel turned out to be a full rank $(I + J - 2)$-parameter exponential family
+  — not curved.
+</p>
+<p data-cid="ch05-760">
+  The reason: reparameterize by natural log-odds. Independence is equivalent to saying
+  $\log p_{ij} = (\text{row term})_i + (\text{column term})_j$, which is <em>additive</em> —
+  i.e. affine in a chosen basis of $\eta$-space. A constraint that looks curved in one
+  parameterization can be linear in another. "Curved" really means "not linear in <em>any</em>
+  parameterization of the natural parameter". Independence is genuinely linear once you switch to
+  log-odds.
+</p>
+</div>
+<h3 data-cid="ch05-770">Example 5.6 — conditional independence</h3>
+<p data-cid="ch05-780">
+  With three characteristics $A$, $B$, $C$ and counts $N_{ijk}$, suppose $A$ and $B$ are
+  <em>conditionally independent given $C$</em>:
+  $$p_{ijk} = p_{++k} \cdot \frac{p_{i+k}}{p_{++k}} \cdot \frac{p_{+jk}}{p_{++k}}.$$
+  A similar log-odds reparameterization shows that this gives a full rank
+  $\big( K(I + J - 1) - 1 \big)$-parameter exponential family with sufficient statistics
+  $\{N_{++k}\}_k$, $\{N_{i+k}\}_{i,k}$, $\{N_{+jk}\}_{j,k}$ — the within-$C$ row and column totals.
+  Again the constraint is multiplicative in $p$ but linear in log-odds, so the model remains
+  full rank.
+</p>
+<div class="box intuition" data-cid="ch05-790">
+<span class="box-label">When is a constraint genuinely curved?</span>
+<p data-cid="ch05-800">
+  In contingency-table models built from independence or conditional independence assumptions, the
+  constraints are always <em>multiplicative</em> in the cell probabilities — equivalently
+  <em>additive</em> in the log-cell-probabilities — which is the right parameterization for the
+  natural parameter. So they collapse to full rank. By contrast, the equal-means two-sample normal
+  problem of Example 5.2 imposed a constraint involving <em>ratios</em> $\mu/\sigma^2$ between
+  location and scale coordinates — and those mix non-trivially in $\eta$-space, producing genuine
+  curvature.
+</p>
+</div>
+<h3 data-cid="ch05-810">When the multinomial does get curved</h3>
+<p data-cid="ch05-820">
+  Not every constraint on cell probabilities is additive in log-odds. Two examples from the chapter's
+  problems hint at where curvature appears:
+</p>
+<ul data-cid="ch05-830">
+<li><strong>Marginal symmetry</strong>: in a square table, requiring $p_{i+} = p_{+i}$ for all $i$.
+  This mixes row and column probabilities in a way that is not log-additive, and generally produces
+  a curved exponential family.</li>
+<li><strong>Dependence parameter linked to a covariate</strong>: in a stack of $2 \times 2$ tables
+  where the cell probabilities depend on $\theta_k$ and $\log\!\big[(1 + \theta_k)/(1 - \theta_k)\big]$
+  is forced to be a linear function of a known covariate $x_k$. The covariate ties cell probabilities
+  across tables in a nonlinear way; the resulting family is exponential but curved.</li>
+</ul>
+<!-- ===================================================================== -->
+<h2 data-cid="ch05-840" id="summary">Summary — what you learned in Chapter 5</h2>
+<p data-cid="ch05-850">One chapter, four take-home messages:</p>
+<ol data-cid="ch05-860">
+<li>A <strong>curved exponential family</strong> is an exponential family whose natural parameter
+  is restricted to a subset of $\Xi$ that bends — does not lie in any hyperplane. It is still an
+  exponential family; it is just not full rank.</li>
+<li>If the constraint on $\eta$ is <em>linear</em>, the submodel collapses to a smaller full-rank
+  exponential family — $T$ is no longer minimal but the Chapter 4 UMVU machinery still applies
+  to the reduced statistic.</li>
+<li>If the constraint is <em>nonlinear</em>, $T$ remains minimal sufficient, but it is generally
+  <em>not complete</em>: the curvature produces nontrivial functions $g(T)$ with mean zero for every
+  $\theta$. Without completeness, Lehmann–Scheffé does not deliver UMVU estimators automatically.</li>
+<li><strong>Sequential experiments</strong> add an extra natural parameter $-B(\theta)$ to the
+  exponent and so almost always yield curved families. <strong>Multinomial</strong> models under
+  independence or conditional independence look multiplicative but are linear in log-odds — full
+  rank, not curved. Other multinomial constraints (marginal symmetry, covariate-linked dependence)
+  can be genuinely curved.</li>
+</ol>
+<div class="box pause" data-cid="ch05-870">
+<span class="box-label">Did this land?</span>
+<p data-cid="ch05-880">Before moving to Chapter 6, you should be able to answer (without looking back):</p>
+<ul data-cid="ch05-890">
+<li>Geometrically, what does "curved" mean for an exponential family — and what does it not mean?</li>
+<li>What property of $T$ is typically lost when the constraint is nonlinear, and which survives?</li>
+<li>In the $N(\theta, \theta^2)$ example, write down a function $g(T)$ with $E_\theta g(T) = 0$
+  for all $\theta$.</li>
+<li>Why does inverse binomial sampling allow unbiased estimation of $1/\theta$, while binomial
+  sampling does not?</li>
+<li>Why is the multinomial independence model full rank rather than curved, even though
+  $p_{ij} = p_{i+} p_{+j}$ looks multiplicative?</li>
+</ul>
+<p data-cid="ch05-900">If any of these feel shaky, re-read the matching section. There's no hurry.</p>
+</div>
+<nav class="chapter-nav">
+<a href="ch04.html"><span class="label">← Previous</span><span class="title">4. Unbiased Estimation</span></a>
+<a class="next" href="ch06.html"><span class="label">Next →</span><span class="title">6. Conditional Distributions</span></a>
+</nav>
+</article>
+</main>
+<script src="/js/main.js"></script><script src="/js/comments.js"></script>
+</body>
+</html>

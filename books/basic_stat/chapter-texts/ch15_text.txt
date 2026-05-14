@@ -1,0 +1,1049 @@
+
+===== PAGE 1 =====
+
+15
+Bayesian Inference: Modeling and
+Computation
+This chapter explores several practical issues for a Bayesian approach to in-
+ference. The ﬁrst section explores an approach used to specify prior distribu-
+tions called hierarchical modeling, based on hyperparameters and condition-
+ing. Section 15.2 discusses the robustness to the choice of prior distribution.
+Sections 15.4 and 15.5 deal with the Metropolis–Hastings algorithm and the
+Gibbs sampler, simulation methods that can be used to approximate poste-
+rior expectations numerically. As background, Section 15.3 provides a brief
+introduction to Markov chains. Finally, Section 15.6 illustrates how Gibbs
+sampling can be used in a Bayesian approach to image processing.
+15.1 Hierarchical Models
+Hierarchical modeling is a mixture approach to setting a prior distribution
+in stages. It arises when there is a natural family of prior distributions {Λ
+τ :
+τ ∈ T} for our unknown parameter Θ . If the value τ characterizing the prior
+distribution is viewed as an unknown parameter, then for a proper Bayesian
+analysisτ should be viewed as a realization of an unknown random variable T .
+With this approach, there are two random parameters, T andΘ . Because the
+distribution for our data X depends only on Θ , T is called a hyperparameter.
+If G is the prior distribution for T , then the Bayesian model is completely
+speciﬁed by
+T ∼ G, Θ |T =τ ∼ Λ
+τ ,
+and
+X|T =τ,Θ =θ ∼ Pθ .
+Note that in this model,
+P (Θ ∈B) = EP (Θ ∈B|T) = EΛT (B) =
+∫
+Λτ (B)dG(τ ),
+R.W. Keener, Theoretical Statistics: Topics for a Core Course, Springer Texts in Statistics, 
+DOI 10.1007/978-0-387-93839-4_15, © Springer Science+Business Media, LLC 2010 
+301
+
+===== PAGE 2 =====
+
+302 15 Bayesian Inference: Modeling and Computation
+which shows that the prior distribution for Θ is now a mixture of distribu-
+tions in the family {Λ τ : τ ∈ T}. Using this mixture, the hyperparameter T
+could be eliminated from the model, although in some situations this may be
+counterproductive.
+Example 15.1 (Compound Estimation). As a ﬁrst example, let us consider the
+compound estimation problem considered from an empirical Bayes perspective
+in Section 11.1. In that section, the parameters Θ
+1, ... , Θ n were i.i.d. from
+N (0,τ 2), with the hyperparameter τ viewed as a constant. For a hierarchical
+Bayesian analysis, a prior distribution G would be speciﬁed for T . Then
+Θ |T =τ =N (0,τ 2I) and X|T =τ,Θ =θ ∼ N (θ,I ).
+In this example, if we eliminated the hyperparameter T then the prior
+distribution for Θ would not be conjugate and we would not be able to take
+advantage of exact formulas based on that structure. If the dimension n is
+large, numerical calculations may be a challenge. Keeping T , smoothing leads
+to some simpliﬁcations. Using (11.1) the Bayes estimator for Θ is
+δ =E[Θ |X] = E
+[
+E[Θ |X, T ]
+⏐
+⏐X
+]
+=XE
+[ T
+2
+1 + T 2
+⏐
+⏐
+⏐
+⏐X
+]
+.
+As noted in Section 11.1, given T =τ ,X
+1,... ,Xn are i.i.d. from N (0, 1 +τ 2),
+so the likelihood for τ has a simple form and compound inference can be
+accomplished using standard conditioning formulas to compute E
+[
+T 2/ (1 +
+T 2)
+⏐
+⏐X
+]
+. Note that all of the integrals involved are one-dimensional; therefore
+a numerical approach is quite feasible.
+Example 15.2 (General Linear Model). The general linear model was intro-
+duced in Chapter 14. Here we consider Bayesian inference with the error
+variance σ
+2 assumed known. This leaves β as the sole unknown parameter,
+viewed as a random vector B, and
+Y |B=β ∼ N (Xβ,σ 2I),
+with X a known n × p matrix. For a prior distribution, proceeding as in the
+last example we might take
+B ∼ N (0,τ 2I).
+If κ is the variance ratio σ 2/τ 2, the posterior distribution is
+B|Y =y ∼ N
+(
+(X′X +κI )−1X′Y,σ 2(X′X +κI )−1)
+.
+As in the previous example, the posterior mean here still shrinks the UMVU
+(X
+′X)−1X′Y towards the origin, although the shrinkage “factor” is now the
+matrix (X′X +κI )−1X′X instead of a constant.
+
+===== PAGE 3 =====
+
+15.2 Bayesian Robustness 303
+The Bayes estimator ( X′X +κI )−1X′Y is also called a ridge regression
+estimator, originally suggested for numerical reasons to help regularize X′X.
+As in the ﬁrst example, the prior distributions N (0,τ 2I) for B here are
+indexed by a hyperparameter τ . A hierarchical approach would model τ as a
+random variable T from some distribution G.
+Example 15.3 (Testing). Another class of examples arises if natural prior
+distributions for θ seem appropriate under competing scientiﬁc hypotheses.
+In these examples the hyperparameter T can be a discrete variable indexing
+the competing theories. As a concrete example, the standard model for one-
+way ANOV A has Y
+ij ∼ N (θi,σ 2), i = 1,...,I , j = 1,...,n i, with all n =
+n1 + · · · +nI observations independent. If there is reason to believe that all
+the θi may be equal, then a prior distribution in which Θ 1 ∼ N (µθ ,σ 2
+θ ) with
+all other Θ i equal to Θ 1 may be reasonable, so
+Θ ∼ N (µθ 1,σ 2
+θ 11′).
+If instead the means diﬀer, the prior
+Θ ∼ N (µθ 1,σ 2
+θ I)
+may be more natural. If T = 1 or 2 indexes these possibilities, then the
+mixture prior for Θ in a hierarchical model would be the convex combination
+Θ ∼ P (T = 1)N (µθ 1,σ 2
+θ 11′) +P (T = 2)N (µθ 1,σ 2
+θ I).
+15.2 Bayesian Robustness
+Ideally, in a Bayesian analysis the prior distribution is chosen to reﬂect a
+researcher’s knowledge and beliefs about the unknown parameter Θ . But in
+practice the choice is often dictated to some degree by convenience. Conjugate
+priors are particularly appealing here due to simple formulas for the posterior
+mean. Unfortunately, the convenience of such priors entails some risk.
+To explore robustness issues related to the choice of the prior distribution
+in a very simple setting, consider a measurement error model with
+X|Θ =θ ∼ N (θ, 1).
+Suppose the true prior distribution Λ is a t-distribution on three degrees of
+freedom with density
+λ (θ ) = 2
+√
+3π (1 +θ 2/ 3)2.
+Calculations with this prior distribution are a challenge, so it is tempting to
+use a conjugate normal distribution instead. The normal distribution Λ
+N =
+
+===== PAGE 4 =====
+
+304 15 Bayesian Inference: Modeling and Computation
+θ
+λ
+− 4 − 2 2 4
+0. 2
+Fig. 15.1. Prior densities λ and λ N .
+N (0, 5/ 4) seems close to Λ . Densities λ and λN for Λ and ΛN , graphed in
+Figure 15.1 , are quite similar; the largest diﬀerence between them is
+sup
+θ
+|λ (θ ) − λN (θ )|= 0. 0333,
+and |Λ (B) − ΛN (B)| ≤7. 1% for any Borel set B.
+With squared error loss, the Bayes estimator with ΛN as the prior is
+δN (X) = 5X
+9 ,
+and its risk function is
+x
+δ − x
+− 10 − 5 5 10
+− 4
+− 2
+2
+4
+Fig. 15.2. Diﬀerences δ (x) − x and δ N (x) − x.
+
+===== PAGE 5 =====
+
+15.2 Bayesian Robustness 305
+− 5 5
+2
+4
+θ
+R
+Fig. 15.3. Risk functions R(θ,δ U ), R(θ,δ N ), and R(θ,δ ).
+R(θ,δ N ) = E
+[(
+δN (X) − θ
+)2 ⏐
+⏐Θ =θ
+]
+= 25 + 16θ
+2
+81 .
+The integrated risk of δN under ΛN is
+∫
+R(θ,δ N )dΛN (θ ) = 45
+81,
+much better than the integrated risk of 1 for the UMVU δU (X) = X. This
+improvement is achieved by the shrinkage towards zero, which improves the
+variance of the estimator and introduces little bias when θ is near zero.
+The true prior Λ has heavier tails, placing more weight on the region where
+δ
+N is more heavily biased and its risk R(θ,δ N ) is large. As one might guess, the
+Bayes estimator works to minimize risk for large θ with less shrinkage when
+|X|is large. This can be seen in Figure 15.2, which graphs the diﬀerencesδ −δU
+andδN −δU . The estimators δ (X) and δN (X) are very similar if |X|< 2, but
+as |X|increases, δ (X) moves closer to X. In fact,
+δ (x) = x − 4/x +o(1/x ) (15.1)
+as x → ±∞. Thus as θ → ±∞, the bias of δ tends to 0 and its risk func-
+tion approaches 1, the risk of δU , instead of increasing without bound as the
+quadratic risk of δN . Figure 15.3 shows risk functions for δU ,δN , and δ .
+With the true prior Λ , the integrated risk for δN is
+
+===== PAGE 6 =====
+
+306 15 Bayesian Inference: Modeling and Computation
+∫
+R(θ,δ N )dΛ (θ ) = 73
+81 = 0. 901,
+almost as high as the risk of X. The best possible integrated risk with the
+true prior, achieved using the Bayes estimator δ , is
+∫
+R(θ,δ )dΛ (θ ) = 0. 482,
+which is 46.5% smaller than the integrated risk for δN .
+15.3 Markov Chains
+Deﬁnition 15.4. A sequence of random vectors X0, X1, X2, ... taking val-
+ues in a state space (X, A) form a (time homogeneous) Markov chain with
+transition kernel 1 Q, if
+P (Xn+1 ∈B|X0 =x0,...,X n =xn) = P (Xn+1 ∈B|Xn =xn) = Qxn (B),
+for all n ≥ 1, all B ∈ A, and almost all x1,...,x n.
+Using smoothing, the joint distribution of the vectors in a Markov chain
+can be found from the initial distribution for X0 and the transition kernel
+Q. The algebra involved can be easily described introducing some convenient
+notation. For a probability measure π on (X, A), deﬁne a probability measure
+πQ by
+πQ (B) =
+∫
+Qx(B)dπ (x). (15.2)
+Note that if πn denotes the distribution for Xn, then by smoothing,
+πn+1(B) = P (Xn+1 ∈B) = EP (Xn+1 ∈B|Xn)
+=EQXn (B) =
+∫
+Qx(B)dπn(x) = πnQ(B),
+and so
+πn+1 =πnQ. (15.3)
+A distribution π is called stationary if π = πQ . Using (15.3), if the initial
+distribution π 0 for X0 is stationary, then π 2 = π 1Q = π 1. Further iteration
+shows that π 1 = π 2 = π 3 = · · · , so in this case the random vectors in the
+chain are identically distributed.
+If Q and ˜Q are transition kernels on X , deﬁne the product kernel Q ˜Q by
+1 The kernel Q should satisfy the usual regularity conditions for stochastic transi-
+tion kernels: Qx should be a probability measure on (X , A) for all x ∈ X , and
+Qx(B) should be a measurable function of x for all B ∈ A .
+
+===== PAGE 7 =====
+
+15.3 Markov Chains 307
+(Q ˜Q)x =Qx ˜Q. (15.4)
+TakingQ2 def
+= QQ, by smoothing,
+P (Xn+2 ∈B|X0 =x0,...,X n =xn)
+=
+∫
+P (Xn+2 ∈B|X0 =x0,...,X n+1 =xn+1)dQxn (xn+1)
+=Q2
+x
+n (B),
+and so Q2 can be viewed as the two-step transition kernel for the Markov
+chain. Similarly, the k-fold product Qk gives chances for k-step transitions:
+Qk
+x
+n (B) = P (Xn+k ∈B|X0 =x0,...,X n =xn).
+Example 15.5. If the state space X is ﬁnite, X = {1,...,m } say, then a dis-
+tribution π on X can be speciﬁed through its mass function given as a row
+vector
+π =
+[
+π
+(
+{1}
+)
+,...,π
+(
+{m}
+)]
+,
+and the transition kernel Q can be speciﬁed by a matrix Q with
+Qij =Qi
+(
+{j}
+)
+=P (Xn+1 =j|Xn =i).
+If we let πn be the row vector for the distribution of Xn, then
+[πn+1]j =P (Xn+1 =j) = EP (Xn+1 =j|Xn) = EQXn ({j})
+=
+∑
+i
+P (Xn =i)Qi({j}) =
+∑
+i
+[πn]iQij = [πnQ]j.
+So
+πn+1 = πnQ.
+Thus, if distributions are represented as row vectors and transition kernels
+are represented as matrices, the “multiplication” in (15.3) becomes ordinary
+matrix multiplication. Similarly, if Q and ˜Q are matrices corresponding to
+transition kernels Q and ˜Q, then
+(Q ˜Q)
+i({j}) =
+∫
+˜Qx({j}dQi(x) =
+∑
+x
+Qix ˜Qxj = [Q ˜Q]ij
+and the matrix representing Q ˜Q is simply the matrix product Q ˜Q.
+For a ﬁnite Markov chain, because the mass function for Qi sums to 1, we
+have ∑
+j
+Qij = [Q1]i = 1,
+and hence
+Q1 = 1.
+
+===== PAGE 8 =====
+
+308 15 Bayesian Inference: Modeling and Computation
+This shows that 1 is a right-eigenvector for Q with unit eigenvalue. SinceπQ is
+given by matrix multiplication, a probability distribution π will be stationary
+if
+π = πQ,
+that is, if π is a left-eigenvector of Q with unit eigenvalue. In general, if λ is
+an eigenvalue for Q, then |λ | ≤1,
+Convergence properties for ﬁnite Markov chains are commonly related to
+the Frobenius theory for positive matrices, covered in Appendix 2 of Karlin
+and Taylor (1975). If A is an n × n matrix with eigenvalues λ
+1,... ,λn, then
+its spectral radius is deﬁned as r = max{|λ 1|,..., |λn|}.
+Theorem 15.6 (Perron–F robenius). LetA be an n ×n matrix with non-
+negative entries and spectral radius r, and assume that Am > 0 for some
+m> 0. Then
+1. The spectral radius r is a simple 2 eigenvalue for A, r> 0, and if λ is any
+other eigenvalue, |λ |<r .
+2. There are left- and right-eigenvectors associated with r with positive en-
+tries. Speciﬁcally, there is a row vector v and a column vector w with
+v >0, w> 0, vA =rv, and Aw =rw.
+3. If v is normalized so that its entries sum to 1 and w is normalized so that
+vw = 1, then
+r−nAn → wv
+as n → ∞ .
+4. The spectral radius r satisﬁes
+min
+i
+∑
+j
+Aij ≤ r ≤ max
+i
+∑
+j
+Aij.
+To characterize eigenvalues and convergence properties for ﬁnite chains in
+regular cases, we need a few deﬁnitions. Let
+Lx(A) = P (Xn ∈A, ∃n ≥ 1|X0 =x),
+the chance the chain ever visits A if it starts at x. States i and j for a ﬁnite
+chain are said to communicate if the chain can move from either of the states
+to the other; that is, if Li({j}) > 0 and Lj ({i}) > 0. If all of the states
+communicate, the chain is called irreducible. The chain is called periodic if X
+can be partitioned into sets X1,..., Xk ,k ≥ 2, and the process cycles between
+these sets: if i ∈ Xj , 1 ≤ j ≤ k − 1,
+Qi(Xj+1 ) = P (X1 ∈ Xj+1 |X0 =i) = 1,
+and if i ∈ Xk ,Qi(X1) = 1.
+2 An eigenvalue is simple if it is a simple root of the characteristic equation. In this
+case, eigenspaces (left or right) will be one-dimensional.
+
+===== PAGE 9 =====
+
+15.4 Metropolis–Hastings Algorithm 309
+For ﬁnite chains, properties needed for simulation arise when the chain
+is irreducible and aperiodic. In this case, it is not hard to argue that Qm >
+0, so Q satisﬁes the conditions of the Perron–Frobenius theorem. Because
+Q1 = 1, the spectral radius r for Q must be r = 1 by the fourth assertion
+of the theorem. Because r is a simple eigenvalue, there will exist a unique
+corresponding left-eigenvector π with entries summing to 1, corresponding to
+a unique stationary distribution π for the chain. The mass function for this
+distribution can be found by solving the linear equations
+π = πQ and π1 = 1.
+By the third assertion in the theorem,
+Qn → 1π
+as n → ∞ . In probabilistic terms, this means that
+Xn ⇒ π
+as n → ∞, regardless of the initial state (or distribution) for the chain. The
+stationary distribution also gives the long run proportion of time the process
+spends in the various states, and the following law of large numbers holds:
+1
+n
+n∑
+i=1
+f (Xi) →
+∫
+fdπ,
+with probability one, regardless of the initial distribution π 0. Using this, the
+value for
+∫
+fdπ can be approximated by simulation, having a computer gen-
+erate the chain numerically and averaging the values for f . For an extended
+discussion of ﬁnite chains, see Kemeny and Snell (1976).
+The theory for Markov chains when X is inﬁnite but denumerable is sim-
+ilar, although irreducible and aperiodic chains without a stationary distri-
+bution are possible; see Karlin and Taylor (1975) or another introduction
+to stochastic processes. When X is not denumerable, the relevant theory,
+presented in Nummelin (1984) or Meyn and Tweedie (1993), is much more
+complicated. For simulation, the most appealing notion of regularity might be
+Harris recurrence. Tierney (1994) gives convergence results for the Metropolis–
+Hastings algorithm and the Gibbs sampler, discussed in the next two sections.
+15.4 Metropolis–Hastings Algorithm
+In a Bayesian model, if Θ has densityλ and the conditional density of X given
+Θ =θ is pθ , then the posterior density of Θ given X =x is proportional (in
+θ ) to
+
+===== PAGE 10 =====
+
+310 15 Bayesian Inference: Modeling and Computation
+λ (θ )pθ (x).
+To compute the posterior density λ (θ |x) we should divide this function by its
+integral, ∫
+λ (θ )pθ (x)dθ.
+In practice, this integral may be diﬃcult to evaluate, explicitly or numeri-
+cally, especially if Θ is multidimensional. The Metropolis–Hastings algorithm
+is a simulation method that allows approximate sampling from this poste-
+rior distribution without computing the normalizing constant. Speciﬁcally,
+the algorithm gives a Markov chain that has the target law as its stationary
+distribution.
+To describe the transition kernel Q for the Markov chain, let π denote
+a target distribution on some state space X with density f with respect to
+a dominating measure µ. The chain runs by accepting or rejecting potential
+states generated using a transition kernel J with densities j
+x =dJx/dµ. The
+chances for accepting or rejecting a new value are based on a function r given
+by
+r(x0,x∗) = f (x∗)/j x0 (x∗)
+f (x0)/j x∗ (x0).
+Note that r can be computed if f is only known up to a proportionality
+constant. Let X0 denote the initial state of the chain. Given X0 = x0, a
+variableX∗is drawn from Jx0 , so
+X∗|X0 =x0 ∼ Jx0.
+The next state for the Markov chain, X1, will be either X0 or X∗, with
+P (X1 =X∗|X0 =x0,X∗=x∗) = min {r(x0,x∗), 1}.
+Thus
+P (X1 ∈A|X0 =x0,X∗=x∗)
+= 1A(x∗) min{r(x0,x∗), 1}+ 1A(x0)
+(
+1 − min{r(x0,x∗), 1}
+)
+.
+Integrating against the conditional distribution for X∗given X0 = x0, by
+smoothing
+Qx0 (A)
+def
+= P (X1 ∈A|X0 =x0)
+= 1A(x0) +
+∫
+A
+min{r(x0,x∗), 1}jx0 (x∗)dµ(x∗)
+− 1A(x0)
+∫
+min{r(x0,x∗), 1}jx0 (x∗)dµ(x∗).
+To check that π is a stationary distribution for the chain with transition
+kernel Q we need to show that if X0 ∼ π , then X1 ∼ π . If X0 ∼ π , then by
+smoothing,
+
+===== PAGE 11 =====
+
+15.5 Gibbs Sampler 311
+P (X1 ∈A) = EP (X1 ∈A|X0) = EQX0 (A) =
+∫
+Qx0 (A)dπ (x0 ).
+Because
+∫
+1A(x0)dπ (x0 ) = π (A), this will hold if
+∫ ∫
+min{r(x0,x∗), 1}1A(x∗)f (x0)jx0 (x∗)dµ(x0 )dµ(x∗)
+=
+∫ ∫
+min{r(x0,x∗), 1}1A(x0)f (x0)jx0 (x∗)dµ(x0)dµ(x∗).
+Using the formula for r, this equation becomes
+∫ ∫
+min{f (x∗)jx∗ (x0),f (x0)jx0 (x∗)}1A(x∗)dµ(x0)dµ(x∗)
+=
+∫ ∫
+min{f (x∗)jx∗ (x0),f (x0)jx0 (x∗)}1A(x0)dµ(x0)dµ(x∗),
+which holds by Fubini’s theorem.
+Convergence of the Metropolis–Hastings algorithm is discussed in Tierney
+(1994). Turning to practical considerations, several things should be consid-
+ered in choosing the jump kernel J. First, it should be easy to sample values
+fromJ
+x, and the formula to compute r should be simple. In addition, J should
+move easily to all relevant areas of the state space and jumps should not be
+rejected too often.
+15.5 Gibbs Sampler
+The Gibbs sampler is based on alternate sampling from the conditional dis-
+tributions for the target distribution π . If (X,Y ) ∼ π , let R denote the condi-
+tional distribution of X givenY , and let ˜R denote the conditional distribution
+ofY givenX. If (X
+0,Y 0) is the initial state for the Markov chain, then we ﬁnd
+(X1,Y 1) by ﬁrst samplingX1 fromR and then drawingY1 from ˜R. Speciﬁcally,
+X1|X0 =x0,Y 0 =y0 ∼ Ry0
+and
+Y1|X0 =x0,Y 0 =y0,X 1 =x1 ∼ ˜Rx1.
+Continuing in this fashion, ( Xi,Y i), i ≥ 0 is a Markov chain.
+The Gibbs sampler can be easily extended to joint distributions for more
+than two variables (or vectors). If we are interested in simulating the joint
+distribution of X, Y , and Z, say, we could generate a new X sampling from
+the conditional distribution for X givenY andZ, then generate a new Y from
+the conditional distribution of Y givenX andZ, then generate a new Z from
+the conditional distribution of Z givenX and Y , and so on.
+
+===== PAGE 12 =====
+
+312 15 Bayesian Inference: Modeling and Computation
+The Gibbs sampler is useful in simulation mainly through dimension re-
+duction. Sampling from a univariate distribution is typically much easier than
+multivariate sampling. If a better approach is not available, univariate simu-
+lation is possible using the probability integral transformation whenever the
+cumulative distribution function is available. Also, note that if the target dis-
+tribution π is absolutely continuous with density f proportional to a known
+functiong, then, in order to compute f fromg, we would normalize g dividing
+by its integral, ∫ ∫
+g(x,y )dxdy.
+In contrast, to ﬁnd conditional densities we would normalize g dividing by
+∫
+g(x,y )dx or
+∫
+g(x,y )dy.
+The normalization for the conditional distributions needed for Gibbs sampling
+involves univariate integration instead of the multiple integration needed to
+ﬁnd the joint density.
+To check that the Gibbs sampler has π as a stationary distribution, let π
+X
+and πY denote the marginal distributions of X and Y when (X,Y ) ∼ π . By
+smoothing,
+P
+[
+(X,Y ) ∈A
+]
+=EE
+[
+1A(X,Y )
+⏐
+⏐Y
+]
+=
+∫ ∫
+1
+A(x,y )dRy (x)dπY (y), (15.5)
+and reversing X and Y ,
+P
+[
+(X,Y ) ∈A
+]
+=
+∫ ∫
+1A(x,y )d ˜Rx(y)dπX (x). (15.6)
+Suppose we start the chain with distribution π , so ( X0,Y 0) ∼ (X,Y ). Then
+by smoothing, since Y0 ∼ πY and the conditional distribution of X1 givenY0
+is R,
+P
+[
+(X1,Y 0) ∈A
+]
+=EE
+[
+1A(X1,Y 0)
+⏐
+⏐Y
+0
+]
+=
+∫ ∫
+1A(x,y )dRy (x)dπY (y).
+Comparing this with (15.5), (X1,Y 0) ∼ π . In particular, X1 ∼ πX . Smoothing
+again, since ˜R is the conditional distribution of Y1 givenX1,
+P
+[
+(X1,Y 1) ∈A
+]
+=EE
+[
+1A(X1,Y 1)
+⏐
+⏐X
+1
+]
+=
+∫ ∫
+1A(x,y )d ˜Rx(y)dπX (x).
+Comparing this with (15.6), ( X1,Y 1) ∼ (X,Y ) ∼ π, which shows that π is
+stationary.
+
+===== PAGE 13 =====
+
+15.6 Image Restoration 313
+15.6 Image Restoration
+Gibbs sampling was introduced in a landmark paper by Geman and Geman
+(1984) on Bayesian image restoration. The example here is based on this work
+with a particularly simple form for the prior distribution. The unknown image
+is represented by unknown greyscale values Θ
+z at nm pixels z = (i,j ) in a
+rectangular grid T :
+z = (i,j ) ∈ T
+def
+= {1,...,m } × {1,...,n} .
+GivenΘ =θ , observed data Xz, z ∈ T , are independent with
+Xz ∼ N (θz,σ 2), z ∈ T , (15.7)
+and σ 2 considered known.
+In real images, greyscale values at nearby pixels are generally highly corre-
+lated, whereas well-separated pixels are nearly uncorrelated. For good perfor-
+mance, correlations for the prior distribution for Θ should have similar form.
+For simplicity we restrict attention here to normal distributions. In one di-
+mension, the autoregressive model in Example 6.4 has these features; it is not
+hard to show that Cor( X
+i,X j ) = ρ|i−j|. The joint density in that example is
+proportional to
+exp
+[
+−a
+2
+n∑
+i=1
+x2
+i
++b
+n−1∑
+i=1
+xixi+1
+]
+,
+where the constants a and b satisfy |b|<a/ 2, which ensures that this expres-
+sion is integrable. To construct a prior density for Θ with a similar form, call
+a set of two pixels {z1,z 2} ∈ T 2 an edge if ∥z1 −z2∥ = 1 and let E denote the
+set of all edges. The priors of interest here have form
+λ (θ ) ∝θ exp
+
+ −a
+2
+∑
+z
+θ 2
+z +b
+∑
+{z1,z 2}∈E
+θz1θz2
+
+ . (15.8)
+For integrability, assume |b|<a/ 4. Neglecting eﬀects that arise near the edge
+of the image,
+σ
+2
+Θ
+def
+= Var(Θ z ) = 2K
+(√
+η
+)
+aπ ,
+whereη = 4b/a andK is the complete elliptic integral of the ﬁrst kind, given 3
+by
+K(x) =
+∫ π/2
+0
+dφ
+√
+1 − x2 sin2(φ )
+= π
+2
+∞∑
+n=0
+(x2
+16
+)n (2n
+n
+)2
+.
+Also, if z1 and z2 are adjacent pixels, then
+3 Diﬀerent sources use slightly diﬀerent deﬁnitions.
+
+===== PAGE 14 =====
+
+314 15 Bayesian Inference: Modeling and Computation
+ρ
+def
+= Cor(Θ z1,Θ z2 ) = 2K
+(√
+η
+)
+− π
+2ηK
+(√
+η
+) .
+Solving,
+2K
+(√
+η
+)
+= π
+1 − ρη .
+As η increases to 1, K
+(√
+η
+)
+increases without bound, and so ρ ↑ 1 as η ↑ 1.
+By results in Cody (1965), K
+(√
+η
+)
+∼ log
+[
+4/ (1 −η )
+]
+asη ↑1. From this, when
+ρ is near 1,
+η ≈ 1 − 4 exp
+[
+− π
+2(1 − ρ )
+]
+,
+and so
+a ≈ 1
+σ 2
+Θ (1 − ρ ) and b ≈ a
+4 − a exp
+[
+− π
+2(1 − ρ )
+]
+, (15.9)
+relating a and b in the prior density to σ 2
+Θ and ρ .
+The prior density in (15.8) has an interesting and useful structure. Suppose
+we let z1,...,z 4 denote the pixels adjacent to some pixel z. If we ﬁx the
+values for θ at these pixels, then λ factors into a function of θz and a function
+of θ s at the remaining nm − 5 pixels. From this, given Θ z1,...,Θ z4 , Θ z is
+conditionally independent of the image values at the remaining pixels. This
+conditional independence might be considered a Markov property, and the
+distribution for Θ here is called a Markov random ﬁeld . Building on this idea,
+let us divide T into “even” and “odd” pixels:
+T
+1 = {(i,j ) ∈ T :i +j odd} and T2 = {(i,j ) ∈ T :i +j even}.
+If we ﬁx the values for θz , z ∈ T 1, then λ (θ ) has form ∏
+z∈T2
+fz(θz ). Thus
+given Θ z , z ∈ T 1, the Θ z , z ∈ T 2, are conditionally independent. Below we
+show that posterior distributions have this same structure.
+Takingτ = 1/σ 2, the “precision” of the Xz , by (15.7) the density for X
+givenΘ =θ is
+pθ (x) ∝θ exp
+[
+−τ
+2
+∑
+z∈T
+θ 2
+z +τ
+∑
+z∈T
+θzxz
+]
+.
+Therefore the conditional density for Θ givenX =x is
+λ (θ |x) = c(x) exp
+
+ −a +τ
+2
+∑
+z∈T
+θ 2
+z +τ
+∑
+z∈T
+θzxz +b
+∑
+{z1,z 2}∈E
+θz1θz2
+
+ , (15.10)
+with c(x) chosen as usual so that
+∫
+···
+∫
+λ (θ |x)dθ = 1. With the quadratic
+structure, this conditional density must be normal. The mean can be found
+solving linear equations to minimize the quadratic function of θ in the expo-
+nent, and the covariance is minus one half the inverse of the matrix deﬁning
+
+===== PAGE 15 =====
+
+15.6 Image Restoration 315
+the quadratic form in θ . With modern computing these calculations may be
+possible, but the nm ×nm matrices involved, although sparse, are very large.
+Thus Gibbs sampling may be an attractive alternative.
+To implement Gibbs sampling, we need to determine the relevant condi-
+tional distributions. Let Nz denote the pixels neighboring z ∈ T ,
+Nz =
+{
+˜z ∈ T : ∥˜z − z∥ = 1
+}
+,
+and deﬁne
+Sz =
+∑
+˜z∈Nz
+θ ˜z,
+the sum of the θ values at pixels neighboring z. Isolating the terms in (15.10)
+that depend on θz ,λ (θ |x) is
+exp
+[
+−a +τ
+2 θ 2
+z +θz
+(
+τxz +bSz)
+]
+(15.11)
+times a term that is functionally independent of θz . As a function of θz ,
+the expression in (15.11) is proportional to a normal density with variance
+1/ (a +τ ) (or precision a +τ ) and mean
+τx
+z +bSz
+a +τ .
+With the product structure, given Θ ˜z = θ ˜z , ˜z ∈ T 1, the Θ z for z ∈ T 2 are
+conditionally independent with
+Θ z |Θ ˜z =θ ˜z, ˜z ∈ T1,X =x ∼ N
+(τxz +bSz
+a +τ , 1
+a +τ
+)
+, z ∈ T2, (15.12)
+with a similar result for the conditional distribution of the image given values
+at pixels in T
+2.
+The conditional distributions just described are exactly what we need
+to implement Gibbs sampling from the posterior distribution of the image.
+Starting with image values at pixels in T
+1, independent values at pixels in
+T2 would be drawn using the conditional marginal distributions in (15.12).
+Reversing the sets T1 and T2, values at pixels in T1 would next be drawn inde-
+pendently from the appropriate normal distributions. Iterating, the posterior
+mean should be close to the average values in the simulation.
+To illustrate how this approach works in practice, let us consider a numer-
+ical example. The true θ is a 99 × 64 image of the letter A, displayed as the
+ﬁrst image in Figure 15.4. The value for θ at “dark” pixels is 0 and the value
+at “light” pixels is 5. The second image in Figure 15.4 shows the raw data X,
+drawn from a normal distribution with mean θ and covariance 9I, so σ = 3.
+By symmetry, the mean for the prior distribution λ in (15.8) is zero. But
+the average greyscale value in the true image θ is 4.1477, which is signiﬁcantly
+diﬀerent. It seems natural, although a bit ad hoc, to center the raw data by
+
+===== PAGE 16 =====
+
+316 15 Bayesian Inference: Modeling and Computation
+Fig. 15.4. Left to right: True image θ , raw data X, undersmoothed, matched co-
+variance, oversmoothed.
+subtracting the overall average
+ X = ∑
+z∈TXz/ (nm) from the greyscale value
+at each pixel, before proceeding with our Bayesian analysis. After processing,
+we can add
+X back to the posterior mean. Results doing this should be similar
+to those obtained using a normal prior with mean
+ X forΘ , or (more properly)
+following a hierarchical approach in which the mean for Θ is an additional
+hyperparameter and this parameter has a reasonably diﬀuse distribution.
+Empirical estimates for σ 2
+Θ and ρ , based on the true θ , are 3 . 5350 and
+0. 8565, respectively. Using (15.9) these values correspond to a = 1. 971 and
+b = 0. 493. With these values, the prior variance and covariance between values
+at adjacent pixels will match the empirical values for the true image, and it
+seems reasonable to hope for excellent restoration using this prior. Of course
+in practice the true image and associated moments are unknown. For com-
+parison, we have also done an analysis with two other priors. In both, we take
+σ
+2
+Θ = 3. 5350, matching the empirical variance for the true θ . But in one of
+the priors we take ρ = 0. 70 and in the other we take ρ = 0. 95. Since higher
+values for ρ give smoother images Θ , we anticipate that the posterior mean
+will undersmooth X when ρ = 0. 70 and oversmooth X when ρ = 0. 95. The
+ﬁnal three images in Figure 15.4 show posterior means for these three prior
+distributions, which can be found by Gibbs sampling. 4
+Evaluating the performance of an image restoration method is perhaps
+a bit subtle. In Figure 15.4 , the three posterior means look more like the
+true image than the raw data, but the raw data X seems visually almost
+as “clear.” One measure of performance might be the average mean square
+error, MSE = ∑
+z (ˆθ − θ )2/ (nm). The raw data X is the UMVU estimator
+here and has MSE = 9 . 0016, very close to the expected MSE which is exactly
+9, the common variance of the Xz. Mean squared errors for the posterior
+means are 0.9786, 1.0182, and 1.5127 for the undersmoothed, matched, and
+oversmoothed priors, respectively. Surprisingly, by this measure the image
+using the undersmoothed prior is a bit better than the image that matches
+the covariance between values at adjacent pixels.
+4 Actually, taking advantage of the normal structure in this particular example,
+means for the Gibbs sampling Markov chain can be found recursively and con-
+verge to the posterior mean. This approach was used to produce the images in
+Figure 15.4 , iterating the recursion numerically. See Problem 15.9.
+
+===== PAGE 17 =====
+
+15.7 Problems 317
+15.7 Problems
+1. Consider Example 15.3 in the balanced case where n1 = · · · =nI . Derive
+a formula for
+P [T = 1|Yij,i = 1,...,I,j = 1,...,n j ].
+2. Verify the relation (15.1).
+3. Find the stationary distribution for a Markov chain on X = R with kernel
+Q given by
+Q
+x =N (cx, 1), x ∈ R,
+where c is a ﬁxed constant with |c|< 1.
+4. Let Q be the transition kernel for a Markov chain on X = {0, 1, 2,... }
+given by
+Qij =
+
+
+
+
+
+
+
+
+
+1, i = 0,j = 1;
+1/ 2, i> 0,j =i + 1;
+1/ 2, i> 0,j = 0;
+0, otherwise,
+where Q
+ij
+def
+= Qi({j}). (Here Q might naturally be viewed as an inﬁnite-
+dimensional transition matrix.) So at each stage, this chain has an equal
+chance of increasing by one or falling back to zero. The Markov chain with
+transition kernel Q has a unique stationary distribution π . Find the mass
+function for π .
+5. Consider using the Metropolis–Hastings algorithm to sample from the
+standard normal distribution. Assume that the jump kernel J is given by
+J
+x =N (x/ 2, 1), x ∈ R.
+Give a formula for r and ﬁnd the chance the chain does not move when
+it is at position x; that is, P (X1 =x|X0 =x).
+6. Consider using the Metropolis–Hastings algorithm to sample from a dis-
+crete distribution on X = {1,..., 5} with mass function
+f (x) = cx, x = 1,..., 5,
+for some constant c. Suppose the transition matrix for the jump kernel J
+is
+J =
+
+
+
+
+
+
+1/ 2 1/ 2 0 0 0
+1/ 2 0 1 / 2 0 0
+0 1 / 2 0 1 / 2 0
+0 0 1 / 2 0 1 / 2
+0 0 0 1 / 2 1/ 2
+
+
+
+
+
+
+.
+Find the transition matrix Q for the Metropolis–Hastings chain. Check
+that the vector π corresponding to the mass function f is a left-eigenvector
+for Q with unit eigenvalue.
+
+===== PAGE 18 =====
+
+318 15 Bayesian Inference: Modeling and Computation
+7. Consider Gibbs sampling with target distribution
+π =N
+((0
+0
+)
+,
+(1 ρ
+ρ 1
+))
+.
+Findπ
+1 andπ 2 ifX0 =x andY0 =y, so that π 0 is a point mass at ( x,y ).
+8. Consider Gibb’s sampling for an absolutely continuous distribution with
+density
+f (x,y ) =
+{
+ce−x−y−xy, x> 0,y> 0;
+0, otherwise,
+for some constant c. Find the joint density of X1 and Y1 if X0 =Y0 = 1.
+9. Consider using Gibbs sampling for the posterior distribution of an image
+in the model considered in Section 15.6. Let Θ (n), n ≥ 0, be images
+generated by Gibbs simulation, and let µ(n) denote the mean of Θ (n).
+Use smoothing and (15.12) to derive an equation expressing µ(n + 1) as
+a function of µ(n). These means µ(n) converge to the true mean of the
+posterior distribution as n → ∞ , so the equation you derive can be used
+to ﬁnd the posterior mean by numerical recursion.
+10. Consider Bayesian image restoration for the model considered in Sec-
+tion 15.6 when the prior density has form
+λ (θ ) ∝θ exp
+
+ −a
+2
+∑
+z
+θ 2
+z +b
+∑
+{z1,z 2}∈E1
+θz1θz2 +c
+∑
+{z1,z 2}∈E2
+θz1θz2
+
+ ,
+where
+E
+1 =
+{
+(z1,z 2) ∈ T 2 : ∥z1 − z2∥ = 1
+}
+and
+E2 =
+{
+(z1,z 2) ∈ T 2 : ∥z1 − z2∥ =
+√
+2
+}
+.
+With this prior, it is natural to partition the pixels T into four sets, T00,
+T01, T10, and T11, given by
+Tab =
+{
+(i,j ) ∈ T :i ≡ a (mod 2), j ≡ b (mod 2)
+}
+,
+for a = 0, 1 and b = 0, 1. Describe how to implement Gibb’s sampling
+from the posterior distribution in this case. As in (16.11), for z ∈ T00 ﬁnd
+the conditional distribution of Θ z givenΘ ˜z =θ ˜z , ˜z ∈ T01 ∪ T10 ∪ T11, and
+X =x.

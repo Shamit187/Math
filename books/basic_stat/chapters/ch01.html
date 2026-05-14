@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ch 1 — Probability and Measure · Theoretical Statistics</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/>
+</head>
+<body data-book="basic_stat" data-page="ch01">
+<header class="site-header">
+<a class="brand" href="/books/basic_stat/">Theoretical Statistics <small>a slow reading guide</small></a>
+<nav>
+<a href="/" class="all-books-link">All books</a>
+    <a href="/books/basic_stat/">Contents</a>
+<button aria-label="toggle theme" class="theme-toggle">Dark</button>
+</nav>
+</header>
+<main class="layout">
+<aside class="sidebar">
+<h4>Chapter 1</h4>
+<ol>
+<li><a href="#why">Why measure theory?</a></li>
+<li><a href="#s1-1">1.1 Measures</a></li>
+<li><a href="#s1-2">1.2 Integration</a></li>
+<li><a href="#s1-3">1.3 Events &amp; random variables</a></li>
+<li><a href="#s1-4">1.4 Null sets</a></li>
+<li><a href="#s1-5">1.5 Densities</a></li>
+<li><a href="#s1-6">1.6 Expectation</a></li>
+<li><a href="#s1-7">1.7 Random vectors</a></li>
+<li><a href="#s1-8">1.8 Covariance matrices</a></li>
+<li><a href="#s1-9">1.9 Product measures &amp; independence</a></li>
+<li><a href="#s1-10">1.10 Conditional distributions</a></li>
+<li><a href="#summary">Summary</a></li>
+</ol>
+</aside>
+<article class="content">
+<section class="hero">
+<div class="kicker">Chapter 1</div>
+<h1>Probability and Measure</h1>
+<p class="subtitle" data-cid="ch01-010">The vocabulary every statistics paper assumes you already know — taught from scratch, with no rushing.</p>
+<div class="meta">
+<span>Book pages: 1–24</span>
+<span>~30 min reading time</span>
+<span>Prereqs: calculus, basic probability</span>
+</div>
+</section>
+<h2 data-cid="ch01-020" id="why">Why does statistics need measure theory at all?</h2>
+<p data-cid="ch01-030">
+      Imagine three different statisticians. Alice flips coins and counts heads. Bob measures the time it takes for a
+      light bulb to fail. Carol studies how many emails arrive each minute, except that her sensor only logs whether
+      "at least one" arrived — not how many.
+    </p>
+<p data-cid="ch01-040">
+      Each of them is doing probability, but the <em>nature of the numbers</em> they record is different:
+    </p>
+<ul data-cid="ch01-050">
+<li>Alice's count is a whole number: $0, 1, 2, \dots$ — call this <strong>discrete</strong>.</li>
+<li>Bob's time is any positive real number — call this <strong>continuous</strong>.</li>
+<li>Carol's data is sometimes discrete (a count) and sometimes truncated (a "yes/no"). It's <strong>mixed</strong>.</li>
+</ul>
+<p data-cid="ch01-060">
+      In an undergraduate course you learn two completely separate sets of formulas: sums for the discrete case,
+      integrals for the continuous case, and the mixed case is just sort of waved away. That works for problem sets,
+      but it stops working the moment you try to write a single theorem that covers all three cases at once.
+    </p>
+<div class="box intuition" data-cid="ch01-070">
+<span class="box-label">The promise of measure theory</span>
+<p data-cid="ch01-080">
+        Measure theory gives us <em>one</em> language — one formula — that handles Alice's sums, Bob's integrals,
+        and Carol's mixed data, all at the same time. It's not about being more rigorous for rigor's sake. It's about
+        not having to write every theorem twice.
+      </p>
+</div>
+<p data-cid="ch01-090">
+      Keener says it more bluntly in the chapter opening: this book does not <em>fully</em> develop measure theory.
+      It just teaches you enough to read the notation in modern statistics. Our pace will be slower than the book's,
+      but the destination is the same.
+    </p>
+<!-- ===================================================================== -->
+<h2 data-cid="ch01-100" id="s1-1">1.1 Measures</h2>
+<h3 data-cid="ch01-110">The one-line idea</h3>
+<p data-cid="ch01-120">A <strong>measure</strong> is a rule that assigns a "size" to subsets of some universal set $\mathcal{X}$.</p>
+<p data-cid="ch01-130">That's it. The whole chapter is built on this one idea. Now we slow down and unpack it.</p>
+<h3 data-cid="ch01-140">The universe $\mathcal{X}$</h3>
+<p data-cid="ch01-150">
+      $\mathcal{X}$ is whatever set we're working with. It could be:
+    </p>
+<ul data-cid="ch01-160">
+<li>$\{H, T\}$ — outcomes of a coin flip.</li>
+<li>$\{0, 1, 2, 3, \dots\}$ — counts of emails.</li>
+<li>$\mathbb{R}$ — the real line, for measurements like temperature or time.</li>
+<li>$\mathbb{R}^n$ — $n$-dimensional space, for vectors of measurements.</li>
+</ul>
+<p data-cid="ch01-170">
+      We give it a fancy name ($\mathcal{X}$, "script-X") just to signal that we're treating it abstractly. Don't let
+      the symbol intimidate you — it's just "a set".
+    </p>
+<h3 data-cid="ch01-180">The "size" function $\mu$</h3>
+<p data-cid="ch01-190">
+      A measure is written as $\mu$ (Greek "mu"). For each subset $A \subseteq \mathcal{X}$, the measure tells us
+      $\mu(A)$ — a non-negative number we call the size of $A$.
+    </p>
+<div class="box example" data-cid="ch01-200">
+<span class="box-label">Example 1.1 — counting measure</span>
+<p data-cid="ch01-210">
+        Let $\mathcal{X} = \{1, 2, 3, \dots\}$ and define
+        $$\mu(A) = \#A = \text{the number of elements in } A.$$
+        So $\mu(\{1, 2, 5\}) = 3$. This is called <strong>counting measure</strong>. The "size" of a set is just how
+        many points are in it.
+      </p>
+</div>
+<div class="box example" data-cid="ch01-220">
+<span class="box-label">Example 1.2 — Lebesgue measure</span>
+<p data-cid="ch01-230">
+        Let $\mathcal{X} = \mathbb{R}^n$ and define
+        $$\mu(A) = \int \!\!\cdots\!\! \int_A dx_1 \cdots dx_n.$$
+        For $n=1$, this is just the length of $A$. For $n=2$, the area. For $n=3$, the volume. This is called
+        <strong>Lebesgue measure</strong>.
+      </p>
+</div>
+<div class="box intuition" data-cid="ch01-240">
+<span class="box-label">Why two examples matter</span>
+<p data-cid="ch01-250">
+        These two measures behave very differently:
+      </p>
+<ul data-cid="ch01-260">
+<li><strong>Counting measure</strong> assigns mass $1$ to every single point: $\mu(\{x\}) = 1$.</li>
+<li><strong>Lebesgue measure</strong> assigns mass $0$ to every single point: $\mu(\{x\}) = 0$.</li>
+</ul>
+<p data-cid="ch01-270">
+        So a point can have "no length" but still "count as one item". The same set $\{0\}$ has two different
+        sizes depending on which measure you use. This is the whole reason measure theory exists — to be explicit
+        about which notion of size we're using.
+      </p>
+</div>
+<p data-cid="ch01-280">
+      When $\mu(\{x\}) &gt; 0$, we call $x$ an <strong>atom</strong> of the measure, with mass $\mu(\{x\})$. Counting
+      measure is "all atoms". Lebesgue measure has "no atoms". Real-world distributions are often somewhere in between.
+    </p>
+<h3 data-cid="ch01-290">The catch: we can't measure every subset</h3>
+<p data-cid="ch01-300">
+      Here is the first place a math book usually loses people. So we go extra slow.
+    </p>
+<p data-cid="ch01-310">
+      You'd think we could just define $\mu(A)$ for <em>every</em> subset $A$ of $\mathcal{X}$. For counting measure
+      we can. But for Lebesgue measure on $\mathbb{R}$, mathematicians proved (Vitali, 1905) that there exist
+      subsets of $\mathbb{R}$ so weirdly shaped that no consistent "length" can be assigned to them.
+    </p>
+<p data-cid="ch01-320">
+      These pathological sets can't even be written down explicitly — their existence relies on the Axiom of Choice.
+      But to keep our theory clean, we agree up front: we'll only ask for the measure of subsets that belong to a
+      specific, well-behaved collection. That collection is called a <strong>$\sigma$-field</strong>.
+    </p>
+<div class="box definition" data-cid="ch01-330">
+<span class="box-label">Definition 1.3 — $\sigma$-field</span>
+<p data-cid="ch01-340">A collection $\mathcal{A}$ of subsets of $\mathcal{X}$ is a <strong>$\sigma$-field</strong> (or
+        <strong>$\sigma$-algebra</strong>) if:</p>
+<ol data-cid="ch01-350">
+<li>$\mathcal{X} \in \mathcal{A}$ and $\emptyset \in \mathcal{A}$.</li>
+<li>If $A \in \mathcal{A}$, then its complement $A^c = \mathcal{X} - A \in \mathcal{A}$.</li>
+<li>If $A_1, A_2, \dots \in \mathcal{A}$, then $\bigcup_{i=1}^{\infty} A_i \in \mathcal{A}$.</li>
+</ol>
+</div>
+<div class="box intuition" data-cid="ch01-360">
+<span class="box-label">What is this saying?</span>
+<p data-cid="ch01-370">
+        It says: "a $\sigma$-field is any collection of sets that is closed under the things you'd want to do to
+        sets — complementing, and taking countable unions". Everything else (intersections, set differences, etc.)
+        follows from these three rules using De Morgan's laws.
+      </p>
+<p data-cid="ch01-380">
+        Read it like a contract: <em>if you start with sets I can measure, and you build new sets out of them
+        using complements and countable unions, I promise I can still measure the result.</em>
+</p>
+</div>
+<div class="box pause" data-cid="ch01-390">
+<span class="box-label">Pause</span>
+<p data-cid="ch01-400">
+        The "$\sigma$" in $\sigma$-field comes from the German word for "sum" — it specifically signals that we
+        allow <strong>countably infinite</strong> unions (not just finite ones). This is the secret weapon: it
+        lets us take limits.
+      </p>
+</div>
+<h3 data-cid="ch01-410">What makes $\mu$ actually a "measure"</h3>
+<div class="box definition" data-cid="ch01-420">
+<span class="box-label">Definition 1.4 — measure</span>
+<p data-cid="ch01-430">A function $\mu$ on a $\sigma$-field $\mathcal{A}$ is a <strong>measure</strong> if:</p>
+<ol data-cid="ch01-440">
+<li>$\mu(A) \in [0, \infty]$ for every $A \in \mathcal{A}$. (Sizes are non-negative; infinity allowed.)</li>
+<li>For disjoint $A_1, A_2, \dots \in \mathcal{A}$,
+          $$\mu\!\left( \bigcup_{i=1}^{\infty} A_i \right) = \sum_{i=1}^{\infty} \mu(A_i).$$
+        </li>
+</ol>
+</div>
+<div class="box intuition" data-cid="ch01-450">
+<span class="box-label">In words</span>
+<p data-cid="ch01-460">
+        Property 2 is called <strong>countable additivity</strong>. It says: if you break a set into a (countable)
+        bunch of non-overlapping pieces, their sizes add up to the size of the whole. This is the entire content
+        of what "size" should mean.
+      </p>
+</div>
+<h3 data-cid="ch01-470">A consequence: continuity of measures</h3>
+<p data-cid="ch01-480">
+      Suppose $B_1 \subset B_2 \subset \cdots$ is an <em>increasing</em> sequence of measurable sets and let
+      $B = \bigcup_{n=1}^{\infty} B_n$ be their union. Then:
+    </p>
+    $$\mu(B) = \lim_{n \to \infty} \mu(B_n). \tag{1.1}$$
+
+    <div class="box intuition" data-cid="ch01-490">
+<span class="box-label">What this is saying</span>
+<p data-cid="ch01-500">
+        If you nibble up to a set in steps that keep getting bigger, the sizes converge to the size of the whole.
+        It's "continuity": you can take limits inside or outside the measure and get the same answer.
+      </p>
+<p data-cid="ch01-510">
+        You'll see this used <em>everywhere</em> in proofs to justify "letting $n \to \infty$". Now you know why
+        it's true.
+      </p>
+</div>
+<h3 data-cid="ch01-520">Three pieces of jargon to memorize</h3>
+<ul data-cid="ch01-530">
+<li>$(\mathcal{X}, \mathcal{A})$ — a <strong>measurable space</strong>. A set plus a $\sigma$-field on it,
+        but no measure chosen yet.</li>
+<li>$(\mathcal{X}, \mathcal{A}, \mu)$ — a <strong>measure space</strong>. Now we've picked a measure.</li>
+<li>If $\mu(\mathcal{X}) = 1$, then $\mu$ is a <strong>probability measure</strong>, often written $P$
+        instead of $\mu$. The triple is a <strong>probability space</strong>.</li>
+</ul>
+<div class="box pause" data-cid="ch01-540">
+<span class="box-label">The big reveal</span>
+<p data-cid="ch01-550">
+        A probability is just a measure with $\mu(\mathcal{X}) = 1$. Everything you learned in undergrad
+        probability is special vocabulary for this one special case. We're going to develop the general theory
+        and then collapse it back to probability when needed.
+      </p>
+</div>
+<h3 data-cid="ch01-560">$\sigma$-finite — a technical box we can tick once and forget</h3>
+<p data-cid="ch01-570">
+      A measure is <strong>finite</strong> if $\mu(\mathcal{X}) &lt; \infty$, and <strong>$\sigma$-finite</strong>
+      if $\mathcal{X}$ can be broken into countably many pieces, each of finite measure. Lebesgue measure on
+      $\mathbb{R}$ has $\mu(\mathbb{R}) = \infty$, but $\mathbb{R} = \bigcup_n [-n, n]$ and each $[-n, n]$ has
+      length $2n &lt; \infty$. So Lebesgue measure is $\sigma$-finite.
+    </p>
+<p data-cid="ch01-580">
+      Keener says <em>all measures in this book are $\sigma$-finite</em>. Translation: don't worry about this.
+      It's a footnote to ensure later theorems apply.
+    </p>
+<h3 data-cid="ch01-590">Borel sets — the $\sigma$-field for $\mathbb{R}^n$</h3>
+<p data-cid="ch01-600">
+      What $\sigma$-field do we use on $\mathbb{R}^n$? Answer: the <strong>Borel sets</strong> — the smallest
+      $\sigma$-field containing all open rectangles $(a_1, b_1) \times \cdots \times (a_n, b_n)$.
+    </p>
+<div class="box intuition" data-cid="ch01-610">
+<span class="box-label">Translation</span>
+<p data-cid="ch01-620">
+        Start with all the "nice" rectangular boxes. Then add in everything you can build from them by taking
+        complements and countable unions. Everything you'd naturally want to measure — intervals, balls, polygons,
+        curved regions — is a Borel set. The non-Borel sets are the pathological ones we can't write down.
+      </p>
+</div>
+<!-- ===================================================================== -->
+<h2 data-cid="ch01-630" id="s1-2">1.2 Integration</h2>
+<h3 data-cid="ch01-640">The point of this section</h3>
+<p data-cid="ch01-650">
+      We need to integrate functions $f$ against a measure $\mu$. The result is written
+      $$\int f \, d\mu \quad \text{or} \quad \int f(x) \, d\mu(x).$$
+    </p>
+<p data-cid="ch01-660">
+      This single notation is supposed to cover both sums (when $\mu$ is counting measure) and ordinary integrals
+      (when $\mu$ is Lebesgue measure). Concretely:
+    </p>
+<div class="box example" data-cid="ch01-670">
+<span class="box-label">Example 1.5 — counting measure</span>
+<p data-cid="ch01-680">If $\mu$ is counting measure on $\mathcal{X}$, then
+        $$\int f \, d\mu = \sum_{x \in \mathcal{X}} f(x).$$
+      </p>
+</div>
+<div class="box example" data-cid="ch01-690">
+<span class="box-label">Example 1.6 — Lebesgue measure</span>
+<p data-cid="ch01-700">If $\mu$ is Lebesgue measure on $\mathbb{R}^n$, then
+        $$\int f \, d\mu = \int \!\cdots\! \int f(x_1, \dots, x_n) \, dx_1 \dots dx_n.$$
+      </p>
+</div>
+<div class="box intuition" data-cid="ch01-710">
+<span class="box-label">The payoff</span>
+<p data-cid="ch01-720">
+        Once we've defined $\int f \, d\mu$ abstractly, we never again need separate theorems for "the discrete
+        case" and "the continuous case". One symbol, one proof.
+      </p>
+</div>
+<h3 data-cid="ch01-730">How is the integral actually defined?</h3>
+<p data-cid="ch01-740">
+      Going slow here, because the construction is the cleverest part of measure theory. It happens in three steps.
+    </p>
+<p data-cid="ch01-750"><strong>Step 1 — indicator functions.</strong> The indicator $1_A$ of a set $A$ is the function</p>
+    $$1_A(x) = \begin{cases} 1 &amp; x \in A \\ 0 &amp; x \notin A \end{cases}.$$
+    <p data-cid="ch01-760">We <em>define</em>
+      $$\int 1_A \, d\mu = \mu(A).$$
+      The integral of an indicator is the measure of the set it indicates. This is the bridge between integration
+      and measure — and it's the only thing we have to define by hand. Everything else follows.
+    </p>
+<p data-cid="ch01-770"><strong>Step 2 — simple functions.</strong> A <strong>simple function</strong> is a finite linear
+      combination of indicators:</p>
+    $$f = \sum_{i=1}^{m} a_i \, 1_{A_i}, \qquad a_i \geq 0, \ A_i \in \mathcal{A}.$$
+    <p data-cid="ch01-780">By linearity, we're forced to define</p>
+    $$\int \left( \sum_{i=1}^{m} a_i \, 1_{A_i} \right) d\mu = \sum_{i=1}^{m} a_i \, \mu(A_i).$$
+    <p data-cid="ch01-790">That is: a simple function takes finitely many values; its integral is a weighted sum of those values, with
+      weights equal to the measures of the level sets.</p>
+<figure data-cid="ch01-800">
+<svg aria-label="simple function plot" role="img" viewbox="0 0 360 160" xmlns="http://www.w3.org/2000/svg">
+<line stroke="currentColor" stroke-width="1" x1="20" x2="350" y1="130" y2="130"></line>
+<line stroke="currentColor" stroke-width="1" x1="40" x2="40" y1="20" y2="140"></line>
+<text fill="currentColor" font-family="sans-serif" font-size="11" x="355" y="135">x</text>
+<text fill="currentColor" font-family="sans-serif" font-size="11" x="30" y="20">f</text>
+<line stroke="currentColor" stroke-dasharray="2 3" stroke-width="0.4" x1="40" x2="350" y1="100" y2="100"></line>
+<line stroke="currentColor" stroke-dasharray="2 3" stroke-width="0.4" x1="40" x2="350" y1="70" y2="70"></line>
+<text fill="currentColor" font-family="sans-serif" font-size="10" x="22" y="105">1</text>
+<text fill="currentColor" font-family="sans-serif" font-size="10" x="22" y="75">2</text>
+<!-- height 1 from x=1/2 to x=pi (scaled) -->
+<line stroke="#8a4a2b" stroke-width="2.5" x1="100" x2="220" y1="100" y2="100"></line>
+<!-- height 2 from x=1 to x=2 (scaled) -->
+<line stroke="#8a4a2b" stroke-width="2.5" x1="140" x2="180" y1="70" y2="70"></line>
+<text fill="currentColor" font-family="sans-serif" font-size="10" x="100" y="148">1/2</text>
+<text fill="currentColor" font-family="sans-serif" font-size="10" x="140" y="148">1</text>
+<text fill="currentColor" font-family="sans-serif" font-size="10" x="178" y="148">2</text>
+<text fill="currentColor" font-family="sans-serif" font-size="10" x="216" y="148">π</text>
+</svg>
+<figcaption>The simple function $1_{(1/2, \pi)} + 2 \cdot 1_{(1, 2)}$ (Keener Figure 1.1).</figcaption>
+</figure>
+<p data-cid="ch01-810"><strong>Step 3 — general non-negative functions.</strong> A theorem (Theorem 1.8 in the book) says: every
+      non-negative measurable function $f$ is the increasing limit of simple functions $f_1 \leq f_2 \leq \cdots$.
+      We define</p>
+    $$\int f \, d\mu = \lim_{n \to \infty} \int f_n \, d\mu.$$
+    <p data-cid="ch01-820">The limit is the same regardless of <em>which</em> increasing sequence we picked.</p>
+<p data-cid="ch01-830"><strong>Step 4 — general functions.</strong> Split $f$ into its positive and negative parts:</p>
+    $$f^+(x) = \max\{f(x), 0\}, \qquad f^-(x) = -\min\{f(x), 0\}.$$
+    <p data-cid="ch01-840">Both $f^+$ and $f^-$ are non-negative, and $f = f^+ - f^-$. So we define</p>
+    $$\int f \, d\mu = \int f^+ \, d\mu - \int f^- \, d\mu.$$
+    <p data-cid="ch01-850">This is well-defined as long as we don't end up with $\infty - \infty$. When $\int |f| \, d\mu &lt; \infty$,
+      we say $f$ is <strong>integrable</strong>.</p>
+<div class="box intuition" data-cid="ch01-860">
+<span class="box-label">Mental picture</span>
+<p data-cid="ch01-870">
+        Riemann integration (calculus class) chops up the $x$-axis. Lebesgue integration chops up the $y$-axis —
+        slicing the function horizontally by its value, then asking "how much $x$ takes this value?". That "how much"
+        is exactly the measure. This re-slicing is what lets the theory absorb counting, integration, and weird
+        in-between cases all at once.
+      </p>
+</div>
+<h3 data-cid="ch01-880">What is "measurable"?</h3>
+<div class="box definition" data-cid="ch01-890">
+<span class="box-label">Definition 1.7</span>
+<p data-cid="ch01-900">
+        A real-valued function $f$ on $(\mathcal{X}, \mathcal{A})$ is <strong>measurable</strong> if for every Borel
+        set $B \subseteq \mathbb{R}$,
+        $$f^{-1}(B) = \{x \in \mathcal{X} : f(x) \in B\} \in \mathcal{A}.$$
+      </p>
+</div>
+<div class="box intuition" data-cid="ch01-910">
+<span class="box-label">Translation</span>
+<p data-cid="ch01-920">
+        "Measurable" means the pre-image of every measurable set is measurable. That sounds circular but it
+        isn't — it means $f$ doesn't tangle the structure of $\mathcal{X}$ so badly that we lose the ability to
+        ask measurement questions about it.
+      </p>
+<p data-cid="ch01-930">
+        Every continuous function is measurable. Every piecewise-continuous function is measurable. Almost every
+        function you can write down is measurable. Non-measurable functions exist but you can't construct one
+        explicitly. <em>In practice, just treat "measurable" as "fine"</em>.
+      </p>
+</div>
+<!-- ===================================================================== -->
+<h2 data-cid="ch01-940" id="s1-3">1.3 Events, probabilities, and random variables</h2>
+<p data-cid="ch01-950">Now we restrict to the case $\mu(\mathcal{X}) = 1$ and rename things.</p>
+<p data-cid="ch01-960">Let $P$ be a probability measure on $(E, \mathcal{B})$. The renaming:</p>
+<ul data-cid="ch01-970">
+<li>Elements $e \in E$ → <strong>outcomes</strong>.</li>
+<li>Sets $B \in \mathcal{B}$ → <strong>events</strong>.</li>
+<li>$P(B)$ → the <strong>probability</strong> of event $B$.</li>
+</ul>
+<p data-cid="ch01-980">A <strong>random variable</strong> $X$ is a measurable function $X : E \to \mathbb{R}$.</p>
+<div class="box pause" data-cid="ch01-990">
+<span class="box-label">Re-read this slowly</span>
+<p data-cid="ch01-1000">
+        A random variable is <em>not</em> a variable. It is <em>not</em> a number. It is a <strong>function</strong>
+        — from the space of outcomes to the real numbers. The "randomness" is hidden in the outcome $e$; $X$ just
+        reads off a number from each outcome.
+      </p>
+</div>
+<p data-cid="ch01-1010">The <strong>distribution</strong> of $X$ is the measure $P_X$ on $\mathbb{R}$ defined by</p>
+    $$P_X(A) = P\big( \{e \in E : X(e) \in A\} \big) = P(X \in A).$$
+
+    <div class="box intuition" data-cid="ch01-1020">
+<span class="box-label">What's happening</span>
+<p data-cid="ch01-1030">
+        $P$ lives on the abstract outcome space $E$ — which we usually can't see directly.
+        $P_X$ pushes that probability forward onto $\mathbb{R}$ — where we <em>can</em> see it. We almost always
+        work with $P_X$ and forget $E$ ever existed.
+      </p>
+</div>
+<p data-cid="ch01-1040">The <strong>cumulative distribution function (CDF)</strong> is</p>
+    $$F_X(x) = P(X \leq x) = P_X\big( (-\infty, x] \big).$$
+    <p data-cid="ch01-1050">We use the notation $X \sim Q$ to mean "$X$ has distribution $Q$", i.e. $P_X = Q$.</p>
+<!-- ===================================================================== -->
+<h2 data-cid="ch01-1060" id="s1-4">1.4 Null sets</h2>
+<p data-cid="ch01-1070">A set $N$ is <strong>null</strong> with respect to $\mu$ if $\mu(N) = 0$.</p>
+<p data-cid="ch01-1080">If a statement holds for all $x$ except possibly in some null set, we say the statement holds
+      <strong>almost everywhere</strong> (abbreviated <strong>a.e.</strong>). When $\mu$ is a probability measure,
+      we instead say <strong>with probability one</strong>.</p>
+<div class="box example" data-cid="ch01-1090">
+<span class="box-label">Example</span>
+<p data-cid="ch01-1100">
+        Under Lebesgue measure on $\mathbb{R}$, the set of rationals $\mathbb{Q}$ has measure zero. So the function
+        $f(x) = 1$ if $x$ is rational, $0$ otherwise, satisfies $f = 0$ <em>almost everywhere</em>. Therefore
+        $\int f \, d\mu = 0$.
+      </p>
+</div>
+<p data-cid="ch01-1110">Four facts to internalize:</p>
+<ol data-cid="ch01-1120">
+<li>If $f = 0$ a.e., then $\int f \, d\mu = 0$.</li>
+<li>If $f \geq 0$ and $\int f \, d\mu = 0$, then $f = 0$ a.e.</li>
+<li>If $f = g$ a.e., then $\int f \, d\mu = \int g \, d\mu$ (when either side exists).</li>
+<li>Changing $f$ on a null set does not change its integral.</li>
+</ol>
+<div class="box intuition" data-cid="ch01-1130">
+<span class="box-label">Why we care</span>
+<p data-cid="ch01-1140">
+        "Almost everywhere" is the integrator's way of saying "for our purposes, identical". Two functions that
+        differ on a null set are interchangeable inside any integral. This is why densities aren't unique — only
+        unique up to a null set.
+      </p>
+</div>
+<!-- ===================================================================== -->
+<h2 data-cid="ch01-1150" id="s1-5">1.5 Densities</h2>
+<h3 data-cid="ch01-1160">The driving question</h3>
+<p data-cid="ch01-1170">
+      Given a distribution $P$, can we represent it as "integration of a function against a simpler measure"?
+      The answer is yes — sometimes — and the function we get is called a density.
+    </p>
+<div class="box definition" data-cid="ch01-1180">
+<span class="box-label">Definition 1.9 — absolute continuity</span>
+<p data-cid="ch01-1190">
+        Let $P$ and $\mu$ be measures on $(\mathcal{X}, \mathcal{A})$. We say $P$ is <strong>absolutely continuous</strong>
+        with respect to $\mu$, written $P \ll \mu$, if
+        $$\mu(A) = 0 \implies P(A) = 0.$$
+      </p>
+</div>
+<div class="box intuition" data-cid="ch01-1200">
+<span class="box-label">Translation</span>
+<p data-cid="ch01-1210">
+        $P \ll \mu$ means "$P$ doesn't put mass anywhere that $\mu$ doesn't see". If $\mu$ thinks a set is
+        negligible, $P$ agrees.
+      </p>
+<p data-cid="ch01-1220">
+        Why does it matter? Because of the next theorem — when $P \ll \mu$, you can write $P$ as integration of a
+        function against $\mu$. That function is the density.
+      </p>
+</div>
+<div class="box definition" data-cid="ch01-1230">
+<span class="box-label">Theorem 1.10 — Radon–Nikodym</span>
+<p data-cid="ch01-1240">
+        If $P$ is a finite measure and $P \ll \mu$ (with $\mu$ $\sigma$-finite), then there exists a non-negative
+        measurable function $f$ such that
+        $$P(A) = \int_A f \, d\mu \quad \text{for every } A \in \mathcal{A}.$$
+      </p>
+</div>
+<p data-cid="ch01-1250">This $f$ is called the <strong>density</strong> of $P$ with respect to $\mu$, or the
+      <strong>Radon–Nikodym derivative</strong>, written
+      $$f = \frac{dP}{d\mu}.$$
+    </p>
+<div class="box pause" data-cid="ch01-1260">
+<span class="box-label">Why the derivative notation?</span>
+<p data-cid="ch01-1270">
+        Compare it to the fundamental theorem of calculus: $\int_a^b f(x) \, dx = F(b) - F(a)$, where $f = F'$.
+        Here, $f = dP/d\mu$ plays the same role: integrating $f$ against $\mu$ reconstructs $P$. So $f$ is the
+        "derivative of $P$ with respect to $\mu$".
+      </p>
+</div>
+<h3 data-cid="ch01-1280">The two special cases that recover everything you know</h3>
+<div class="box example" data-cid="ch01-1290">
+<span class="box-label">Example 1.11 — absolutely continuous random variable</span>
+<p data-cid="ch01-1300">
+        If $X$ has density $p$ with respect to <em>Lebesgue measure</em> on $\mathbb{R}$, then
+        $$F_X(x) = \int_{-\infty}^x p(u) \, du.$$
+        This is the "density" you learned in undergrad. By the fundamental theorem of calculus, $p(x) = F_X'(x)$.
+      </p>
+</div>
+<div class="box example" data-cid="ch01-1310">
+<span class="box-label">Example 1.12 — discrete random variable</span>
+<p data-cid="ch01-1320">
+        If $X$ takes values in a countable set $\mathcal{X}_0$ and $\mu$ is counting measure on $\mathcal{X}_0$,
+        then $X$ has density $p$ with respect to $\mu$, where
+        $$p(x) = P(X = x).$$
+        The "density" in the discrete case is just the mass function you've always used. The integral $\int A \, p \, d\mu$
+        becomes the sum $\sum_{x \in A} p(x)$.
+      </p>
+</div>
+<div class="box intuition" data-cid="ch01-1330">
+<span class="box-label">Big takeaway</span>
+<p data-cid="ch01-1340">
+        "PDF" and "PMF" are not two different objects. They are the <em>same</em> object — a Radon–Nikodym
+        derivative — measured against two different background measures (Lebesgue vs. counting). This is the
+        unification we were promised at the start of the chapter.
+      </p>
+</div>
+<!-- ===================================================================== -->
+<h2 data-cid="ch01-1350" id="s1-6">1.6 Expectation</h2>
+<p data-cid="ch01-1360">The <strong>expectation</strong> of a random variable $X$ is</p>
+    $$E[X] = \int X \, dP. \tag{1.4}$$
+
+    <p data-cid="ch01-1370">That formula is rarely used directly. The usable forms are:</p>
+    $$E[X] = \int x \, dP_X(x), \qquad E[f(X)] = \int f \, dP_X.$$
+
+    <p data-cid="ch01-1380">And if $P_X$ has density $p$ with respect to $\mu$, then</p>
+    $$\int f \, dP_X = \int f \, p \, d\mu.$$
+
+    <div class="box intuition" data-cid="ch01-1390">
+<span class="box-label">Why this works</span>
+<p data-cid="ch01-1400">
+        Substituting $p \, d\mu$ for $dP_X$ is exactly the change-of-variable trick the derivative notation
+        $p = dP_X/d\mu$ suggests. Specializing:
+      </p>
+<ul data-cid="ch01-1410">
+<li>$X$ continuous with density $p$: $\quad E[f(X)] = \int f(x) \, p(x) \, dx.$</li>
+<li>$X$ discrete with mass function $p$: $\quad E[f(X)] = \sum_{x \in \mathcal{X}_0} f(x) \, p(x).$</li>
+</ul>
+<p data-cid="ch01-1420">Both are special cases of the single formula above.</p>
+</div>
+<h3 data-cid="ch01-1430">Linearity and ordering</h3>
+<p data-cid="ch01-1440">For random variables $X, Y$ and constants $a, b$:</p>
+    $$E[aX + bY] = a E[X] + b E[Y].$$
+    <p data-cid="ch01-1450">If $X \leq Y$ almost surely and both have finite expectations, then $E[X] \leq E[Y]$.</p>
+<h3 data-cid="ch01-1460">Variance, covariance, correlation</h3>
+<p data-cid="ch01-1470">
+      Define $\operatorname{Var}(X) = E[(X - E[X])^2]$. A useful computational form:
+      $$\operatorname{Var}(X) = E[X^2] - (E[X])^2.$$
+    </p>
+<p data-cid="ch01-1480">
+      Covariance between $X$ and $Y$:
+      $$\operatorname{Cov}(X, Y) = E[(X - E[X])(Y - E[Y])] = E[XY] - E[X] E[Y].$$
+    </p>
+<p data-cid="ch01-1490">Note $\operatorname{Cov}(X, X) = \operatorname{Var}(X)$.</p>
+<p data-cid="ch01-1500">
+      Correlation (the scale-invariant version):
+      $$\operatorname{Cor}(X, Y) = \frac{\operatorname{Cov}(X, Y)}{\sqrt{\operatorname{Var}(X) \operatorname{Var}(Y)}} \in [-1, 1].$$
+      The endpoints $\pm 1$ are achieved exactly when $Y$ is a perfect linear function of $X$.
+    </p>
+<div class="box warn" data-cid="ch01-1510">
+<span class="box-label">Common pitfall</span>
+<p data-cid="ch01-1520">
+        Zero correlation does <em>not</em> imply independence. It only means there's no <em>linear</em> association.
+        $Y = X^2$ with $X \sim N(0,1)$ has $\operatorname{Cor}(X, Y) = 0$ but they are obviously dependent.
+      </p>
+</div>
+<!-- ===================================================================== -->
+<h2 data-cid="ch01-1530" id="s1-7">1.7 Random vectors</h2>
+<p data-cid="ch01-1540">
+      A <strong>random vector</strong> is a function $X : E \to \mathbb{R}^n$, where each component $X_i$ is a
+      random variable. Everything from the scalar case lifts naturally:
+    </p>
+<ul data-cid="ch01-1550">
+<li>Distribution: $P_X(B) = P(X \in B)$ for Borel $B \subseteq \mathbb{R}^n$.</li>
+<li>Density: $P_X$ may have density $p$ with respect to Lebesgue measure on $\mathbb{R}^n$ (continuous case)
+        or counting measure on a countable set (discrete case).</li>
+<li>Expectation: $E[X]$ is the vector of expectations of the components.</li>
+<li>For a measurable $T : \mathbb{R}^n \to \mathbb{R}$, $E[T(X)] = \int T \, dP_X$.</li>
+</ul>
+<!-- ===================================================================== -->
+<h2 data-cid="ch01-1560" id="s1-8">1.8 Covariance matrices</h2>
+<p data-cid="ch01-1570">
+      A <strong>random matrix</strong> $W$ is a matrix whose entries are random variables. Its expectation $E[W]$
+      is the matrix of entry-wise expectations.
+    </p>
+<p data-cid="ch01-1580">Useful identities (with $v$ constant vector, $A, B, C$ constant matrices):</p>
+    $$E[v + AX] = v + A E[X],$$
+    $$E[A + BWC] = A + B \, E[W] \, C.$$
+
+    <p data-cid="ch01-1590">
+      The <strong>covariance matrix</strong> of a random vector $X$ with mean $\mu = E[X]$ is
+      $$\operatorname{Cov}(X) = E[(X - \mu)(X - \mu)']$$
+      where $'$ denotes transpose. Entry-wise: $[\operatorname{Cov}(X)]_{ij} = \operatorname{Cov}(X_i, X_j)$.
+    </p>
+<p data-cid="ch01-1600">
+      Crucial transformation rule: for constant $v$ and constant matrix $A$,
+      $$\operatorname{Cov}(v + AX) = A \operatorname{Cov}(X) A'. \tag{1.15}$$
+    </p>
+<div class="box intuition" data-cid="ch01-1610">
+<span class="box-label">Why this matters</span>
+<p data-cid="ch01-1620">
+        The covariance matrix is the analogue of variance for vectors. Equation (1.15) is one of the most-used
+        formulas in all of statistics — it tells you how covariance transforms under linear changes of variable.
+        We'll see it again when we study the general linear model in Chapter 14.
+      </p>
+</div>
+<!-- ===================================================================== -->
+<h2 data-cid="ch01-1630" id="s1-9">1.9 Product measures and independence</h2>
+<h3 data-cid="ch01-1640">Product measures</h3>
+<p data-cid="ch01-1650">
+      Given two measure spaces $(\mathcal{X}, \mathcal{A}, \mu)$ and $(\mathcal{Y}, \mathcal{B}, \nu)$, there is
+      a unique measure $\mu \times \nu$ on the product space such that
+      $$(\mu \times \nu)(A \times B) = \mu(A) \, \nu(B).$$
+    </p>
+<div class="box intuition" data-cid="ch01-1660">
+<span class="box-label">In words</span>
+<p data-cid="ch01-1670">
+        Product measure assigns "area" to rectangles as length × height, and extends uniquely to everything else.
+        Lebesgue measure on $\mathbb{R}^2$ <em>is</em> the product of two Lebesgue measures on $\mathbb{R}$.
+      </p>
+</div>
+<div class="box definition" data-cid="ch01-1680">
+<span class="box-label">Theorem 1.17 — Fubini</span>
+<p data-cid="ch01-1690">
+        If $f \geq 0$ (or if $\int |f| \, d(\mu \times \nu) &lt; \infty$), then
+        $$\int f \, d(\mu \times \nu) = \int \!\left[ \int f(x,y) \, d\nu(y) \right] d\mu(x) = \int \!\left[ \int f(x,y) \, d\mu(x) \right] d\nu(y).$$
+      </p>
+</div>
+<p data-cid="ch01-1700">Translation: double integrals can be done as iterated single integrals, in either order. Same theorem as in
+      calculus, now stated for any product measure.</p>
+<h3 data-cid="ch01-1710">Independence</h3>
+<div class="box definition" data-cid="ch01-1720">
+<span class="box-label">Definition 1.18 — independence</span>
+<p data-cid="ch01-1730">Random vectors $X \in \mathbb{R}^n$ and $Y \in \mathbb{R}^m$ are <strong>independent</strong> if
+        $$P(X \in A, Y \in B) = P(X \in A) \, P(Y \in B) \quad \text{for all Borel } A, B.$$
+      </p>
+</div>
+<div class="box intuition" data-cid="ch01-1740">
+<span class="box-label">Equivalent form</span>
+<p data-cid="ch01-1750">
+        Independence is equivalent to: the joint distribution of $(X, Y)$ is the product of the marginals,
+        $$P_{(X,Y)} = P_X \times P_Y.$$
+        And if $X, Y$ have densities $p_X, p_Y$, the joint density is the product:
+        $$p_{(X,Y)}(x, y) = p_X(x) \, p_Y(y).$$
+      </p>
+</div>
+<p data-cid="ch01-1760">
+      The "factor the joint density" rule that you used in undergrad is just this fact dressed in symbols. It
+      works in mixed cases too: $X$ continuous, $Y$ discrete — no problem, just take $\mu \times \nu$ to be
+      Lebesgue × counting.
+    </p>
+<p data-cid="ch01-1770">
+      Functions of independent variables are independent: if $X_1, \dots, X_n$ are independent and $f_1, \dots, f_n$
+      are measurable, then $f_1(X_1), \dots, f_n(X_n)$ are independent. When $X_1, \dots, X_n$ are independent and
+      all share the same distribution $Q$, we call them <strong>i.i.d.</strong> (independent and identically
+      distributed) and refer to the collection as a <strong>random sample</strong> from $Q$.
+    </p>
+<!-- ===================================================================== -->
+<h2 data-cid="ch01-1780" id="s1-10">1.10 Conditional distributions</h2>
+<p data-cid="ch01-1790">
+      Suppose we observe $X = x$. The distribution of $Y$ should change to reflect this new information.
+      The <strong>conditional distribution of $Y$ given $X = x$</strong> is the new probability measure for $Y$.
+    </p>
+<p data-cid="ch01-1800">When $X$ is discrete with mass function $p_X$, the formula is exactly the one from undergrad:</p>
+    $$Q_x(B) = P(Y \in B \mid X = x) = \frac{P(Y \in B, X = x)}{P(X = x)}. \tag{1.17}$$
+
+    <p data-cid="ch01-1810">For each value $x$ with $p_X(x) &gt; 0$, $Q_x$ is a probability measure on Borel sets.</p>
+<div class="box pause" data-cid="ch01-1820">
+<span class="box-label">What if $X$ is continuous?</span>
+<p data-cid="ch01-1830">
+        Then $P(X = x) = 0$ for every $x$, and the formula above is $0/0$. The general definition uses something
+        called a <em>stochastic transition kernel</em> and is technical — Keener defers it to Chapter 6. The good
+        news: the <strong>identities</strong> we're about to write down hold whether $X$ is discrete or not.
+      </p>
+</div>
+<h3 data-cid="ch01-1840">Conditional expectation and the tower property</h3>
+<p data-cid="ch01-1850">The <strong>conditional expectation of $f(X, Y)$ given $X = x$</strong> is</p>
+    $$E[f(X, Y) \mid X = x] = \int f(x, y) \, dQ_x(y).$$
+
+    <p data-cid="ch01-1860">Define $H(x) = E[f(X, Y) \mid X = x]$ and write $H(X) = E[f(X, Y) \mid X]$.</p>
+<div class="box definition" data-cid="ch01-1870">
+<span class="box-label">The tower property (a.k.a. smoothing, a.k.a. law of total expectation)</span>
+<p data-cid="ch01-1880">$$E[f(X, Y)] = E\big[ E[f(X, Y) \mid X] \big].$$</p>
+</div>
+<p data-cid="ch01-1890">Special cases worth memorizing:</p>
+<ul data-cid="ch01-1900">
+<li>$f(X, Y) = Y$: $\quad E[Y] = E[E[Y \mid X]]$.</li>
+<li>$f(X, Y) = 1_B$: $\quad P(B) = E[P(B \mid X)]$ — the <strong>law of total probability</strong>.</li>
+</ul>
+<div class="box intuition" data-cid="ch01-1910">
+<span class="box-label">Why "tower"?</span>
+<p data-cid="ch01-1920">
+        The conditional expectation $E[Y \mid X]$ is itself a random variable. Taking another expectation over
+        $X$ "averages it out" to recover $E[Y]$. Visualize a tower: compute the average within each $X$-level
+        first, then average across levels. Either order — within-then-across, or all-at-once — yields the same answer.
+      </p>
+</div>
+<p data-cid="ch01-1930">The tower property also nests:</p>
+    $$E[Y \mid X] = E\big[\, E[Y \mid X, W] \mid X \,\big]. \tag{1.20}$$
+    <p data-cid="ch01-1940">That is: conditioning on less information equals first conditioning on more and then averaging out the
+      extra. This identity gets used constantly in Bayesian computations and martingale theory.</p>
+<!-- ===================================================================== -->
+<h2 data-cid="ch01-1950" id="summary">Summary — what you learned in Chapter 1</h2>
+<p data-cid="ch01-1960">The whole chapter, in eight bullets:</p>
+<ol data-cid="ch01-1970">
+<li>A <strong>measure</strong> $\mu$ assigns sizes to "nice" subsets of a space $\mathcal{X}$.</li>
+<li>The "nice" subsets form a <strong>$\sigma$-field</strong> — closed under complements and countable unions.</li>
+<li><strong>Probability</strong> is just a measure with total mass $1$.</li>
+<li>A <strong>random variable</strong> is a measurable function from outcomes to numbers; its
+        <strong>distribution</strong> is the pushed-forward measure on $\mathbb{R}$.</li>
+<li>An <strong>integral</strong> $\int f \, d\mu$ unifies sums (counting measure) and ordinary integrals
+        (Lebesgue measure).</li>
+<li>A <strong>density</strong> is a Radon–Nikodym derivative: $f = dP/d\mu$. PDFs and PMFs are both
+        densities, just against different background measures.</li>
+<li><strong>Expectation</strong> is an integral against $P$ or $P_X$; <strong>variance</strong>,
+        <strong>covariance</strong>, and <strong>correlation</strong> are second moments.</li>
+<li><strong>Independence</strong> means the joint distribution factors as a product. <strong>Conditioning</strong>
+        is what you do when independence fails — and the <strong>tower property</strong> $E[Y] = E[E[Y \mid X]]$ is
+        its single most useful consequence.</li>
+</ol>
+<div class="box pause" data-cid="ch01-1980">
+<span class="box-label">Did this land?</span>
+<p data-cid="ch01-1990">
+        Before moving to Chapter 2, you should be able to answer (without looking back):
+      </p>
+<ul data-cid="ch01-2000">
+<li>What is the difference between a $\sigma$-field and a measure?</li>
+<li>Why is a probability density "a derivative"?</li>
+<li>Why can a single notation $\int f \, dP$ cover both discrete sums and continuous integrals?</li>
+<li>State the tower property and one consequence of it.</li>
+</ul>
+<p data-cid="ch01-2010">If any of these feel shaky, re-read the matching section. There's no hurry.</p>
+</div>
+<nav class="chapter-nav">
+<a href="/books/basic_stat/"><span class="label">Up</span><span class="title">Contents</span></a>
+<a class="next" href="ch02.html"><span class="label">Next →</span><span class="title">2. Exponential Families</span></a>
+</nav>
+</article>
+</main>
+<script src="/js/main.js"></script><script src="/js/comments.js"></script>
+</body>
+</html>

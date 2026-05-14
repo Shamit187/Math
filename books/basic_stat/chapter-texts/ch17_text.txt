@@ -1,0 +1,1861 @@
+
+===== PAGE 1 =====
+
+17
+Large-Sample Theory for Likelihood Ratio
+Tests
+The tests in Chapters 12 and 13 have strong optimality properties but re-
+quire conditions on the densities for the data and the form of the hypotheses
+that are rather special and can fail for many natural models. By contrast,
+the generalized likelihood ratio test introduced in this chapter requires little
+structure, but it does not have exact optimality properties. Use of this test
+is justiﬁed by large-sample theory. In Section 17.2 we derive approximations
+for its level and power. Wald tests and score tests are popular alternatives to
+generalized likelihood ratio tests with similar asymptotic performance. They
+are discussed brieﬂy in Section 17.4.
+17.1 Generalized Likelihood Ratio Tests
+Let the data X1, ... , Xn be i.i.d. with common density fθ for θ ∈ Ω. The
+likelihood function is
+L(θ ) = L(θ |X1,...,X n) =
+n∏
+i=1
+fθ (Xi).
+The (generalized) likelihood ratio statistic for testing H0 : θ ∈ Ω0 versus
+H1 :θ ∈Ω1 is deﬁned as
+λ =λ (X1,...,X n) = supΩ1 L(θ )
+supΩ0 L(θ ).
+The likelihood ratio test rejects H0 ifλ>k . WhenH0 andH1 are both simple
+hypotheses, this test is the optimal test described in the Neyman–Pearson
+lemma.
+Typical situations where likelihood ratio tests are used have Ω
+0 a smooth
+manifold of smaller dimension than Ω = Ω0 ∪Ω1. In this case, if L(θ ) is
+continuous,λ can be computed as
+R.W. Keener, Theoretical Statistics: Topics for a Core Course, Springer Texts in Statistics, 
+DOI 10.1007/978-0-387-93839-4_17, © Springer Science+Business Media, LLC 2010 
+343
+
+===== PAGE 2 =====
+
+344 17 Large-Sample Theory for Likelihood Ratio Tests
+λ =λ (X1,...,X n) = supΩ L(θ )
+supΩ0 L(θ ).
+Furthermore, if these supremum are attained, then
+λ = L(ˆθ )
+L(˜θ )
+, (17.1)
+where ˆθ is the maximum likelihood estimate of θ under the full model, and ˜θ
+is the maximum likelihood under H0, with θ varying over Ω0.
+Example 17.1. Suppose X1, ... , Xn are a random sample from N (µ,σ 2) and
+θ = (µ,σ ). The log-likelihood function is
+l(θ ) = log L(θ ) = −n
+2 log(2πσ 2) −
+n∑
+i=1
+(Xi − µ)2
+2σ 2 .
+The partial derivative with respect to µ is
+1
+σ 2
+n∑
+i=1
+(Xi − µ).
+Setting this equal to zero gives
+ˆµ =
+X = 1
+n
+n∑
+i=1
+Xi
+as the value for µ that maximizes l, regardless of the value of σ , so ˆµ is the
+maximum likelihood estimate for µ. We can ﬁnd the maximum likelihood
+estimate ˆσ of σ by maximizing l(ˆµ,σ ) over σ> 0. Setting
+∂
+∂σ l(ˆµ,σ ) = −n
+σ +
+n∑
+i=1
+(Xi −
+X)2
+σ 3
+equal to zero gives
+ˆσ 2 = 1
+n
+n∑
+i=1
+(Xi −
+X)2.
+Using these values in the formula for l, after some simpliﬁcation
+L(ˆµ, ˆσ ) = e−n/2
+(2π ˆσ 2)n/2 . (17.2)
+Suppose we wish to test H0 : µ = 0 against H1 : µ ̸= 0. The maximum
+likelihood estimate for µ under the null hypothesis is ˜µ = 0 (of course). Setting
+
+===== PAGE 3 =====
+
+17.1 Generalized Likelihood Ratio Tests 345
+∂
+∂σ l(0,σ ) = −n
+σ +
+n∑
+i=1
+X2
+i
+σ 3
+equal to zero gives
+˜σ 2 = 1
+n
+n∑
+i=1
+X2
+i
+as the maximum likelihood estimate for σ 2 under H0. After some algebra,
+L(˜µ, ˜σ ) = e−n/2
+(2π ˜σ 2)n/2 . (17.3)
+Using (17.2) and (17.3) in (17.1), the likelihood ratio statistic is
+λ = ˜σn
+ˆσn.
+Using the identity
+n∑
+i=1
+(Xi −
+ X)2 =
+n∑
+i=1
+X2
+i − n
+X
+2
+,
+we have
+λ =
+[ ∑n
+i=1
+X2
+i
+∑n
+i=1
+(Xi −
+ X)2
+]n/2
+=
+[ ∑n
+i=1
+(Xi −
+ X)2 +n
+X
+2
+∑n
+i=1
+(Xi −
+X)2
+]n/2
+=
+[
+1 + n
+X
+2
+∑n
+i=1
+(Xi −
+X)2
+]n/2
+=
+[
+1 + T 2
+n − 1
+]n/2
+,
+whereT = √
+n
+X/S is the t-statistic usually used to test H0 againstH1. Since
+the function relating λ to |T |is strictly increasing, the likelihood ratio test is
+equivalent to the usual t-test, which rejects if |T |exceeds a constant.
+Example 17.2. Let (X1,Y 1),... , (Xn,Y n) be a sample from a bivariate normal
+distribution. The log-likelihood is
+l(µx,µ y,σ x,σ y,ρ) = − 1
+2(1 − ρ 2)
+[ n∑
+i=1
+(Xi − µx
+σx
+)2
++
+n∑
+i=1
+(Yi − µy
+σy
+)2
+− 2ρ
+n∑
+i=1
+(Xi − µx
+σx
+) (Yi − µy
+σy
+)]
+− n log
+(
+2πσ xσy
+√
+1 − ρ 2)
+.
+
+===== PAGE 4 =====
+
+346 17 Large-Sample Theory for Likelihood Ratio Tests
+We derive the likelihood ratio test of H0 : ρ = 0 versus H1 : ρ ̸= 0. When
+ρ = 0, we have independent samples from two normal distributions, and using
+results from the previous example,
+˜µx =
+X, ˜µy =
+Y
+and
+˜σ 2
+x = 1
+n
+n∑
+i=1
+(Xi −
+X)2, ˜σ 2
+y = 1
+n
+n∑
+i=1
+(Yi −
+Y )2.
+The easiest way to ﬁnd the maximum likelihood estimates for the full model is
+to note that the family of distributions is a ﬁve-parameter exponential family,
+so the canonical suﬃcient statistic is the maximum likelihood estimate for its
+mean. This gives
+n∑
+i=1
+Xi =nˆµx,
+n∑
+i=1
+Yi =nˆµy,
+n∑
+i=1
+X2
+i =n(ˆµ2
+x
++ ˆσ 2
+x),
+n∑
+i=1
+Y 2
+i =n(ˆµ2
+y
++ ˆσ 2
+y ),
+and n∑
+i=1
+XiYi =n(ˆµx ˆµy + ˆρ ˆσx ˆσy ).
+Solving these equations gives ˆµx = ˜µx, ˆµy = ˜µy , ˆσx = ˜σx, ˆσy = ˜σy , and
+ˆρ =
+∑n
+i=1
+(Xi −
+X)(Yi −
+ Y )
+√
+∑n
+i=1
+(Xi −
+ X)2
+√
+∑n
+i=1
+(Yi −
+Y )2
+.
+Using (17.1),
+logλ = logL(
+X,
+ Y, ˆσx, ˆσy, ˆρ ) − logL(
+X,
+ Y, ˆσx, ˆσy, 0)
+= −n
+2 log(1 − ˆρ 2).
+Equivalent test statistics are |ˆρ |or |T |, where
+T = ˆρ √
+n − 2
+√
+1 − ˆρ 2.
+Under H0, T has a t-distribution on n − 2 degrees of freedom. In fact, the
+conditional distribution of T given the Yi ist onn − 2 degrees of freedom. To
+see this, let Zi = (Xi −µx)/σ x, and let Vi =Yi −
+Y . SinceXi −
+X =σx(Zi −
+Z),
+we can write
+ˆρ =
+∑n
+i=1
+(Zi −
+ Z)Vi
+√
+∑n
+i=1
+(Zi −
+ Z)2
+√
+∑n
+i=1
+V 2
+i
+.
+
+===== PAGE 5 =====
+
+17.2 Asymptotic Distribution of 2 log λ 347
+Let a = (1,..., 1)′/ √
+n and b =V/ ∥V ∥. Then ∥a∥ = 1, ∥b∥ = 1, and
+a ·b = 1
+√
+n∥V ∥
+n∑
+i=1
+(Yi −
+ Y ) = 0.
+Hence we can ﬁnd an orthogonal matrix O where the ﬁrst two columns are
+a and b. Because O is constructed from Y , Z and O are independent under
+H0. By this independence, if we deﬁne transformed variables ˇZ =O′Z, then
+ˇZ|O ∼ N (0,I ), which implies that ˇZ1, ... , ˇZn are i.i.d. standard normal.
+Note that ˇZ1 =a ·Z = √
+n
+Z and ˇZ2 =b ·Z. Since ∥Z∥ = ∥ ˇZ∥,
+n∑
+i=1
+(Zi −
+ Z)2 =
+n∑
+i=1
+Z2
+i − n
+Z
+2
+= ∥Z∥2 − ˇZ2
+1
+=
+n∑
+i=2
+ˇZ2
+i,
+and hence
+ˆρ = Z ·b
+√
+∑n
+i=2
+ˇZ2
+i
+=
+ˇZ2
+√
+∑n
+i=2
+ˇZ2
+i
+.
+From this, 1 − ˆρ 2 = ∑n
+i=3
+ˇZ2
+i / ∑n
+i=2
+ˇZ2
+i , so
+T =
+ˇZ2
+√
+1
+n−2
+∑n
+i=3
+ˇZ2
+i
+.
+The sum in the denominator has the chi-square distribution on n − 2 degrees
+of freedom, and the numerator and denominator are independent. Therefore
+this agrees with the usual deﬁnition for the t-distribution.
+17.2 Asymptotic Distribution of 2 log λ
+In this section we derive the asymptotic distribution of 2 log λ whenθ ∈Ω0 or
+θ is nearΩ0. A rigorous treatment requires considerable attention to detail and
+deep mathematics, at least if one is concerned with getting the best regularity
+conditions. To keep the presentation here as accessible as possible, we keep
+the treatment somewhat informal and base it on assumptions stronger than
+necessary. Speciﬁcally, we assume that conditions necessary for a multivariate
+version of Theorem 9.14 are in force: the maximum likelihood estimators ˆθ
+n are
+consistent, and the densities fθ (x) are regular enough to allow us to deﬁne the
+Fisher information matrix I(θ ) (positive deﬁnite for all θ ∈Ω and continuous
+as a function of θ ) and use Taylor expansion to show that
+
+===== PAGE 6 =====
+
+348 17 Large-Sample Theory for Likelihood Ratio Tests
+√
+n(ˆθn − θ ) = I−1(θ ) 1
+√
+n ∇ln(θ ) +op(1) ⇒ N
+(
+0,I−1(θ )
+)
+. (17.4)
+The parameter space Ω is an open subset of Rr , and Ω0 is a smooth sub-
+manifold of Ω with dimension q <r. Finally, we assume that ˜θn is consistent
+if θ ∈Ω0.
+To use likelihood ratio tests in applications, we need to know the size,
+so it is natural to want an approximation for the power βn(θ ) of the test
+when θ ∈ Ω0. Also, to design experiments it is useful to approximate the
+power at other points θ /∈Ω0. Now for ﬁxed θ ∈Ω1, if n is large enough any
+reasonable test will likely reject H0 and the power βn(θ ) should tend to one as
+n → ∞ . But a theorem detailing this would not be very useful in practice. For
+a more interesting theory we study the power at points near Ω0. Speciﬁcally,
+we study the distribution of 2 log λn along a sequence of parameter values
+θn =θ 0 +∆/ √
+n, where θ 0 ∈Ω0 and ∆ is a ﬁxed constant, and show that
+Pθ n [2 logλn <t] → F (t)
+as n → ∞, where F is the cumulative distribution function for a noncentral
+chi-square distribution with r − q degrees of freedom. When ∆ = 0, θn =
+θ 0 ∈Ω0 and this result approximates the cumulative distribution function of
+2 logλn under H0. In this case, the noncentrality parameter is zero, so the
+likelihood ratio test, which rejects if 2 log λ exceeds the upper α th quantile of
+the chi-square distribution on r −q degrees of freedom, has size approximately
+α . Other choices for ∆ allow one to approximate the power of this test.
+The assumptions for Theorems 16.10 or 16.14 are weaker than those above,
+so the joint distributions for X1,... ,Xn underθn are contiguous to the joint
+distributions under θ 0, and, by Remark 16.13, under Pθ n
+1
+√
+n ∇ln(θ 0) ⇒ N
+(
+I(θ 0)∆,I (θ 0)
+)
+.
+By Proposition 16.5, a sequence that is op(1) under Pθ 0 will also be op(1)
+under Pθ n . If we deﬁne
+Zn = √
+n(ˆθn − θ 0) = √
+n(ˆθn − θn) +∆,
+then by (17.4), under Pθ n ,
+Zn ⇒ N
+(
+∆,I−1(θ 0)
+)
+. (17.5)
+Equivalently, √
+n(ˆθn − θn) ⇒ N
+(
+0,I−1(θ 0)
+)
+, showing in some sense that the
+usual normal approximation for the distribution of the maximum likelihood
+estimator holds uniformly over contiguous parameter values, which seems nat-
+ural.
+The rest of the argument is based on using Taylor expansion and the
+normal equations to relate 2 log λ
+n to Zn. The op andOp notations for scales
+
+===== PAGE 7 =====
+
+17.2 Asymptotic Distribution of 2 log λ 349
+of magnitude, introduced in Section 8.6, provide a convenient way to keep
+track of the size of errors in these expansions. Note that Z
+n = Op(1) by
+(17.5), and so op(Zn) = op(1). The normal equations for ˆθn are simple, the
+gradient of ln must vanish at ˆθn; that is,
+∇ln(ˆθn) = 0. (17.6)
+The normal equations for ˜θn involve the local geometry of Ω0 and are more
+delicate. For θ ∈ Ω0, let Vθ denote the tangent space 1 at θ , and let P (θ )
+denote the projection matrix onto Vθ . As x ∈Ω0 approachesθ , x − θ should
+almost lie in Vθ . Speciﬁcally,
+x − θ =P (θ )(x − θ ) +o
+(
+∥x − θ ∥
+)
+. (17.7)
+Also, the matrices P (θ ) should vary continuously with θ . When ˜θn lies in the
+interior of Ω, the directional derivatives of ln for vectors in the tangent space
+at ˜θn must vanish; otherwise we could move a little in Ω0 and increase the
+likelihood. So if ˜Pn
+def
+= P (˜θn), then
+˜Pn∇ln(˜θn) = 0. (17.8)
+Also, by continuity, because ˜θn → θ 0, ˜Pn
+p
+→ P0
+def
+= P (θ 0), the projection
+matrix onto the tangent plane of Ω0 at θ 0. Using this,
+P0∇ln(˜θn) = op
+(
+∇ln(˜θn)
+)
+. (17.9)
+Since ˜θn and θ 0 are close to each other and both lie in Ω0, by (17.7) their
+normalized diﬀerence Yn = √
+n(˜θn − θ 0) satisﬁes
+Yn =P0Yn +op(Yn). (17.10)
+Let ∇ 2ln denote the Hessian matrix of second partial derivatives of ln. By the
+weak law of large numbers,
+1
+n ∇ 2ln(θ ) = 1
+n
+n∑
+i=1
+∇ 2
+θ logfθ (Xi)
+p
+→ − I(θ )
+in Pθ -probability as n → ∞ , since
+Eθ ∇ 2
+θ logfθ (X1) = −I(θ ).
+By contiguity, ∇ 2ln(θ 0)/n → − I(θ 0) inPθ n -probability asn → ∞ . Also, using
+Theorem 9.2, our weak law for random functions, convergence in probability
+also holds if the Hessian is evaluated at intermediate values approaching θ
+0.
+Using this observation, one-term Taylor expansions of ∇ln/ √
+n about θ 0 give
+1 See Appendix A.4 for an introduction to manifolds and tangent spaces.
+
+===== PAGE 8 =====
+
+350 17 Large-Sample Theory for Likelihood Ratio Tests
+1
+√
+n ∇ln(ˆθn) − 1
+√
+n ∇ln(θ 0) =
+(
+−I(θ 0) +op(1)
+)√
+n(ˆθn − θ 0) (17.11)
+and
+1
+√
+n ∇ln(˜θn) − 1
+√
+n ∇ln(θ 0) =
+(
+−I(θ 0) +op(1)
+)√
+n(˜θn − θ 0). (17.12)
+With the deﬁnition of Zn and (17.6), the ﬁrst Taylor approximation above
+becomes 1
+√
+n ∇ln(θ 0) = I(θ 0)Zn. +op(1). (17.13)
+Multiplying the second Taylor approximation by P0 and using (17.9),
+P0
+1
+√
+n ∇ln(θ 0) = P0I(θ 0)Yn +op(Yn) +op(1),
+and these last two equations give
+P0I(θ 0)Zn =P0I(θ 0)Yn +op(Yn) +op(1). (17.14)
+We have now obtained three key equations: (17.5), (17.10), and (17.14). We
+also need an equation relating 2 log λ
+n to Yn and Zn. This follows from a
+two-term Taylor expansion, again equating ∇ 2ln at intermediate values with
+−nI(θ 0) +op(n), which gives
+2 logλn = 2ln(ˆθn) − 2ln(˜θn)
+= 2( ˆθn − θ 0)′∇ln(θ 0) − (ˆθn − θ 0)′(
+nI(θ 0) +op(n)
+)
+(ˆθn − θ 0)
+− 2(˜θn − θ 0)′∇ln(θ 0) + ( ˜θn − θ 0)′(
+nI(θ 0) +op(n)
+)
+(˜θn − θ 0)
+= 2Z′
+n
+1
+√
+n ∇ln(θ 0) − Z′
+n
+(
+I(θ 0) +op(1)
+)
+Zn
+− 2Y′
+n
+1
+√
+n ∇ln(θ 0) +Y′
+n
+(
+I(θ 0) +op(1)
+)
+Yn.
+Using (17.13)
+2 logλn = 2Z′
+nI(θ 0)Zn − Z′
+nI(θ 0)Zn +op(1)
+− 2Y′
+nI(θ 0)Zn +Y′
+nI(θ 0)Yn +op
+(
+∥Yn∥2)
+= (Zn − Yn)′I(θ 0)(Zn − Yn) +op
+(
+∥Yn∥2)
++op(1). (17.15)
+The approximation for the Pθ n distributions of 2 log λn, mentioned above,
+follows eventually from (17.5), (17.10), (17.14), and (17.15). The algebra for
+this derivation is easier if we write the quantities involved in a convenient
+basis. Let V =V
+θ 0 denote the tangent space of Ω0 atθ 0, and let V⊥denote its
+orthogonal complement. Then for v ∈V , P0v =v, and for v ∈V⊥, P0v = 0.
+Let e1, ... , eq be an orthonormal basis for V , and let eq+1, ... , er be an
+
+===== PAGE 9 =====
+
+17.2 Asymptotic Distribution of 2 log λ 351
+orthonormal basis for V⊥. Because e1,... ,er is an orthonormal basis for Rr ,
+O = (e1,...,e r) is an orthogonal matrix. Also, P0O = (e1,...,e q, 0,..., 0), so
+O′P0O
+def
+= ˇP =
+(
+Iq 0
+0 0
+)
+,
+whereIq denotes theq ×q identity matrix and the zeros are zero matrices with
+suitable dimensions. In the new basis the key variables are ˇY = O′Yn, ˇZ =
+O′Zn, ˇI = O′I(θ 0)O, and ˇ∆ = O′∆. By (17.5), ˇZ ⇒ Nr
+(
+O′∆,O′I−1(θ 0)O
+)
+,
+and since O′I−1(θ 0)O = ˇI−1, this becomes
+ˇZ ⇒ Nr( ˇ∆, ˇI−1). (17.16)
+Premultiplying (17.10) by O′and inserting O′O at useful places gives
+O′P0OO′Yn =O′Yn +op(Yn),
+or
+ˇP ˇY = ˇY +op( ˇY ). (17.17)
+Similarly, premultiplying (17.14) by O′gives
+O′P0OO′I(θ 0)OO′Yn =O′P0OO′I(θ 0)OO′Zn +op(Yn) +op(1),
+or
+ˇP ˇI ˇY = ˇP ˇI ˇZ +op( ˇY ) +op(1). (17.18)
+Finally, (17.15) gives
+2 logλn = (Zn − Yn)OO′I(θ 0)OO′(Zn − Yn) +op
+(
+∥Yn∥
+)
++op(1),
+which becomes
+2 logλn = ( ˇZ − ˇY )′ˇI( ˇZ − ˇY ) +op
+(
+∥ ˇY ∥
+)
++op(1). (17.19)
+To continue we need to partition ˇZ, ˇY , and ˇI as
+ˇZ =
+( ˇZ1
+ˇZ2
+)
+, ˇY =
+(ˇY1
+ˇY2
+)
+, ˇI =
+(ˇI11 ˇI12
+ˇI21 ˇI22
+)
+,
+where ˇZ1 ∈ Rq , ˇY1 ∈ Rq, and ˇI11 is q × q. Formula (17.17) gives
+ˇY2 =op( ˇY ) = op( ˇY1) +op( ˇY2) or
+(
+1 +op(1)
+)ˇY2 =op( ˇY1),
+which implies
+ˇY2 =op( ˇY1).
+Thusop( ˇY ) = op( ˇY1), and (17.18) gives
+
+===== PAGE 10 =====
+
+352 17 Large-Sample Theory for Likelihood Ratio Tests
+ˇP ˇI ˇZ =
+(ˇI11 ˇZ1 + ˇI12 ˇZ2
+0
+)
+= ˇP ˇI ˇY +op
+(
+∥ ˇY1∥
+)
++op(1)
+=
+(ˇI11 ˇY1
+0
+)
++op
+(
+∥ ˇY1∥
+)
++op(1).
+This can be written as
+(ˇI11 +op(1)
+)ˇY1 = ˇI11 ˇZ1 + ˇI12 ˇZ2 +op(1),
+which implies (since ˇI11 is positive deﬁnite)
+ˇY1 = ˇZ1 + ˇI−1
+11 ˇI12 ˇZ2 +op(1).
+Note that since ˇZ =Op(1), this equation shows that ˇY =Op(1), which allows
+us to express errors more simply in what follows. Because
+ˇZ − ˇY =
+(
+− ˇI−1
+11 ˇI12 ˇZ2
+ˇZ2
+)
++op(1),
+(17.19) gives
+2 logλn = (− ˇZ′
+2 ˇI21I−1
+11 , ˇZ′
+2)
+(ˇI11 ˇI12
+ˇI21 ˇI22
+) (
+− ˇI−1
+11 ˇI12 ˇZ2
+ˇZ2
+)
++op(1)
+= ˇZ′
+2( ˇI22 − ˇI21 ˇI−1
+11 ˇI12) ˇZ2 +op(1).
+Letting Σ = ˇI−1, from the formula for inverting partitioned matrices, 2
+Σ 22 = ( ˇI22 − ˇI21 ˇI−1
+11 ˇI12)−1,
+and so
+2 logλn = ˇZ2Σ−1
+22 ˇZ2 +op(1).
+From (17.16), ˇZ2 ⇒ Nr−q( ˇ∆2,Σ 22). Using Lemma 14.9,
+2 logλn ⇒ χ 2
+r−q
+( ˇ∆′
+2
+Σ−1
+22 ˇ∆2).
+This is the desired result, but for explicit computation it is convenient to
+express the noncentrality parameter in the original basis. Let ˇQ =I − ˇP and
+Q
+0 =I − P0. Then
+( ˇP + ˇQΣ ˇQ)−1 =
+(Iq 0
+0 Σ 22
+)−1
+=
+(Iq 0
+0 Σ−1
+22
+)
+,
+and we can express the noncentrality parameter as
+2 See Appendix A.6.
+
+===== PAGE 11 =====
+
+17.3 Examples 353
+∆′
+2
+Σ−1
+22 ∆2
+= ˇ∆′ˇQ
+(Iq 0
+0 Σ−1
+22
+)
+ˇQ ˇ∆
+= ˇ∆′ˇQ( ˇP + ˇQ ˇI−1 ˇQ)−1 ˇQ ˇ∆
+=∆′OO′Q0O
+(
+O′P0O +O′Q0O
+(
+O′I(θ 0)−1O
+)−1
+O′Q0O
+)−1
+O′Q0OO′∆
+=∆′Q0
+(
+P0 +Q0I(θ 0)−1Q0
+)−1
+Q0∆.
+When this formula is used in practice, it may be more convenient to substitute
+I
+−1(θn) for I−1(θ 0). Since θn converges to θ 0, for large n this has negligible
+impact on power calculations.
+17.3 Examples
+Example 17.3. As a ﬁrst example, suppose that X1, ... , Xn, Y1, ... , Yn,
+Z1, ... , Zn are independent with Xi ∼ Poisson(θ 1), Yi ∼ Poisson(θ 2), and
+Zi ∼ Poisson(θ 3), for i = 1, ... , n. We can view this as a random sample of
+random vectors in R3 with density
+fθ (x,y,z ) = θx
+1θy
+2θz
+3
+x!y!z! e−θ 1−θ 2−θ 3.
+Then
+logfθ (x,y,z ) = x logθ 1 +y logθ 2 +z logθ 3 −θ 1 −θ 2 −θ 3 − log(x!y!z!),
+and
+∇ 2
+θ logfθ (x,y,z ) =
+
+
+−x/θ
+2
+1 0 0
+0 −y/θ 2
+2 0
+0 0 −z/θ 2
+3
+
+ .
+Hence
+I(θ ) = −E
+θ ∇ 2
+θ logfθ (X1,Y 1,Z 1) =
+
+
+1/θ
+1 0 0
+0 1 /θ 2 0
+0 0 1 /θ 3
+
+ .
+Suppose we want to test H
+0 : θ 1 +θ 2 = θ 3 versus H1 : θ 1 +θ 2 ̸= θ 3. The
+log-likelihood is
+l(θ ) = log(θ 1)
+n∑
+i=1
+Xi + log(θ 2)
+n∑
+i=1
+Yi + log(θ 3)
+n∑
+i=1
+Zi
+− nθ 1 − nθ 2 − nθ 3 −
+n∑
+i=1
+log(Xi!Yi!Zi!).
+Maximizing l gives
+
+===== PAGE 12 =====
+
+354 17 Large-Sample Theory for Likelihood Ratio Tests
+ˆθ 1 =
+X, ˆθ 2 =
+Y, ˆθ 3 =
+Z.
+Also, ˜θ 1 and ˜θ 2 must maximize
+l(θ 1,θ 2,θ 1 +θ 2) = log(θ 1)
+n∑
+i=1
+Xi + log(θ 2)
+n∑
+i=1
+Yi + log(θ 1 +θ 2)
+n∑
+i=1
+Zi
+− nθ 1 − nθ 2 − n(θ 1 +θ 2) −
+n∑
+i=1
+log(Xi!Yi!Zi!)
+or (dividing by n and dropping the term that is independent of θ )
+X logθ 1 +
+Y logθ 2 +
+Z log(θ 1 +θ 2) − 2(θ 1 +θ 2).
+Setting partial derivatives with respect to θ 1 and θ 2 equal to zero gives
+X
+˜θ 1
++
+ Z
+˜θ 1 + ˜θ 2
+= 2 and
+ Y
+˜θ 2
++
+ Z
+˜θ 1 + ˜θ 2
+= 2.
+From these equations,
+ X/ ˜θ 1 =
+Y/ ˜θ 2. So
+Z
+˜θ 1 + ˜θ 2
+=
+ Z
+˜θ 2(1 +
+X/
+ Y )
+.
+Using this in the second normal equation,
+2˜θ 2 =
+Y +
+ Z
+1 +
+X/
+ Y =
+Y
+(
+Z +
+X +
+Y
+X +
+Y
+)
+.
+Hence
+˜θ 1 =
+ X
+2
+(
+Z +
+X +
+Y
+X +
+Y
+)
+, ˜θ 2 =
+ Y
+2
+(
+Z +
+X +
+Y
+X +
+Y
+)
+,
+and
+˜θ 3 =
+ Z +
+X +
+Y
+2 .
+Now
+2 logλ = 2
+(
+l(ˆθ ) − l(˜θ )
+)
+= 2n
+[
+X log(ˆθ 1/ ˜θ 1) +
+Y log(ˆθ 2/ ˜θ 2) +
+Z log(ˆθ 3/ ˜θ 3)
++ ˜θ 1 + ˜θ 2 + ˜θ 3 − ˆθ 1 − ˆθ 2 − ˆθ 3
+]
+.
+Since ˜θ 1 + ˜θ 2 + ˜θ 3 = ˆθ 1 + ˆθ 2 + ˆθ 3, this simpliﬁes to
+2 logλ = − 2n
+[
+(
+X +
+Y ) log
+(
+Z +
+X +
+Y
+2
+X + 2
+Y
+)
++
+Z log
+(
+Z +
+X +
+Y
+2
+Z
+)]
+.
+
+===== PAGE 13 =====
+
+17.3 Examples 355
+In this example, r = 3 and q = 2, so under H0, 2 log λ is approximately
+χ 2
+1
+. If c is the 1 −α quantile of χ 2
+1
+, then the test that rejects if 2 log λ>c has
+size approximately α . To approximate the power of this test using the results
+from the last section we need to identify the projection matrices that arise.
+Because Ω
+0 is linear, the tangent space V =Vθ 0 is the same for all θ 0 ∈Ω0.
+The vectors
+v1 = 1
+√
+2
+
+
+− 1
+1
+0
+
+ , v
+2 = 1
+√
+6
+
+
+1
+1
+2
+
+ , and v
+3 = 1
+√
+3
+
+
+1
+1
+− 1
+
+
+form an orthonormal basis for R
+3. Both v1 and v2 lie in the tangent space V ,
+and v3 lies in V⊥. So
+P0 =v1v′
+1 +v2v′
+2 = 1
+3
+
+
+2 − 1 1
+− 1 2 1
+1 1 2
+
+
+and
+Q
+0 =v3v′
+3 = 1
+3
+
+
+1 1 − 1
+1 1 − 1
+− 1 − 1 1
+
+ .
+Suppose θ =θ
+0 +∆/ √
+n, where θ 0 ∈Ω0. Then
+Q0θ =Q0θ 0 +Q0∆/ √
+n,
+which implies
+Q0∆ = √
+nQ0θ = √
+nv3(v′
+3θ ).
+Since
+I−1(θ ) =
+
+
+θ
+1 0 0
+0 θ 2 0
+0 0 θ 3
+
+ ,
+we have
+Q
+0I−1(θ )Q0 =v3
+(
+v′
+3I−1(θ )v3
+)
+v′
+3
+= θ 1 +θ 2 +θ 3
+3 v3v′
+3
+= θ 1 +θ 2 +θ 3
+3 Q0.
+Hence
+(
+P0 +Q0I−1(θ )Q0
+)−1
+=
+(
+P0 + θ 1 +θ 2 +θ 3
+3 Q0
+)−1
+=P0 + 3
+θ 1 +θ 2 +θ 3
+Q0.
+
+===== PAGE 14 =====
+
+356 17 Large-Sample Theory for Likelihood Ratio Tests
+The formula for the noncentrality parameter (substituting I−1(θ ) for I−1(θ 0))
+is
+∆′Q0
+(
+P0 + 3
+θ 1 +θ 2 +θ 3
+Q0
+)
+Q0∆ = 3∆′Q0Q0∆
+θ 1 +θ 2 +θ 3
+= 3∥Q0∆∥2
+θ 1 +θ 2 +θ 3
+= 3n(v′
+3θ )2
+θ 1 +θ 2 +θ 3
+= n(θ 1 +θ 2 − θ 3)2
+θ 1 +θ 2 +θ 3
+.
+To be concrete, suppose a test with size 5% is desired. Then one would take
+c = 1. 962 = 3. 84. Ifθ 1 =θ 2 = 1, θ 3 = 2. 3, andn = 100, then the noncentrality
+parameter comes out δ 2 = 9/ 4. 3 = 2. 09 = 1. 452. If we let Z ∼ N (0, 1), then
+(Z + 1. 45)2 ∼ χ 2
+1
+(2. 09) and the power of the test is approximately
+P (2 logλ> 3. 84) ≈ P {(Z + 1. 45)2 > 1. 962}
+=P (Z >. 51) +P (Z <− 3. 41) = 0. 3053.
+Example 17.4. Our ﬁnal example concerns the classic problem of testing in-
+dependence in two-way contingency tables. The data are
+
+
+
+
+N
+11
+N12
+N21
+N22
+
+
+
+ ∼ Multinomial(n;p
+11,p 12,p 21,p 22).
+Because the pij must sum to one, they lie on the unit simplex in R4. This set
+is not open, so to apply our results directly we take
+θ =
+
+
+p
+11
+p12
+p21
+
+ .
+The maximum likelihood estimates for the p
+ij are
+ˆpij = Nij
+n .
+Here we follow the common convention where a “+” as a subscript indicates
+that terms should be summed; so p
+i+ =pi1 +pi2 and N+j =N1j +N2j , for
+example. The null hypothesis of independence in the table is
+H0 :pij =pi+p+j, for i = 1, 2 and j = 1, 2.
+
+===== PAGE 15 =====
+
+17.3 Examples 357
+Equivalently,
+H0 :p11 =p1+p+1. (17.20)
+(For instance, if (17.20) holds, then p12 = p1+ − p11 = p1+ − p1+p+1 =
+p1+(1 − p+1) = p1+p+2.) The log-likelihood function is
+l =
+∑
+i,j
+Nij logpij + log
+(
+n
+N11,...,N 22
+)
+.
+Under H0,
+l =
+∑
+ij
+Nij log(pi+p+j ) + log
+( n
+N11,...,N 22
+)
+=
+∑
+ij
+Nij log(pi+) +
+∑
+ij
+Nij log(p+j ) + log
+( n
+N11,...,N 22
+)
+=
+∑
+i
+Ni+ log(pi+) +
+∑
+j
+N+j log(p+j ) + log
+( n
+N11,...,N 22
+)
+=N1+ log(p1+) +N2+ log(1 − p1+) +N+1 log(p+1)
++N+2 log(1 − p+1) + log
+( n
+N11,...,N 22
+)
+.
+Setting partial derivatives with respect to p+1 and p1+ to zero gives the fol-
+lowing normal equations for ˜p1+ and ˜p+1:
+N1+
+˜p1+
+− N2+
+1 − ˜p1+
+= 0
+and N1+
+˜p+1
+− N+2
+1 − ˜p+1
+= 0.
+Solving these equations,
+˜p1+ = N1+
+n = ˆp1+
+and
+˜p+1 = N+1
+n = ˆp+1.
+It follows that ˜p+j = ˆp+j for j = 1, 2 and ˜pi+ = ˆpi+ for i = 1, 2. Therefore
+˜pij = ˆpi+ ˆp+j
+for i = 1 , 2 and j = 1 , 2. Plugging in the maximum likelihood estimates
+derived gives
+
+===== PAGE 16 =====
+
+358 17 Large-Sample Theory for Likelihood Ratio Tests
+2 logλ = 2l(ˆθ ) − 2l(˜θ )
+= 2
+∑
+i,j
+Nij log(ˆpij ) − 2
+∑
+i,j
+Nij log(ˆpi+ ˆp+j )
+= 2
+∑
+i,j
+Nij log
+( ˆpij
+ˆpi+ ˆp+j
+)
+.
+Let us now turn our attention to the approximate distribution of the like-
+lihood ratio test statistic. Because Ω0 has dimension q = 2 and Ω is an open
+set in R3, under H0,
+2 logλ
+.
+∼ χ 2
+1
+.
+To approximate the power at contiguous alternatives we need the Fisher in-
+formation. We know that
+√
+n(ˆθ − θ ) ⇒ N3
+(
+0,I−1(θ )
+)
+as n → ∞. Since ˆθ can be viewed as an average of n i.i.d. vectors, by the
+central limit theorem, √
+n(ˆθ − θ ) ⇒ N3
+(
+0,Σ
+)
+as n → ∞ , where Σ is the covariance of ˆθ when n = 1. With n = 1,
+Cov(ˆpij, ˆpkl) = Cov(Nij,N kl)
+=ENijNkl − pijpkl
+=
+{
+−pijpkl, (i,j ) ̸= (k,l );
+pij (1 − pij ), i =k,j =l.
+Letting qij = 1 − pij , we have
+Σ =I−1(θ ) =
+
+
+p
+11q11 −p11p12 −p11p21
+−p11p12 p12q12 −p12p21
+−p11p21 −p12p21 p21q21
+
+ .
+Fix θ
+0 ∈Ω0 and let V0 be the tangent space for Ω0 at θ 0. To identify the
+projection matrices P0 andQ0 ontoV0 andV⊥
+0 , note that parameters θ ∈Ω0
+must satisfy the constraint
+θ 1 − (θ 1 +θ 2)(θ 1 +θ 3)
+def
+= g(θ ) = 0.
+Using results from Appendix A.4, V⊥
+0 is the space spanned by the rows of
+Dg(θ 0), or the columns of Dg(θ 0)′= ∇g(θ 0). Direct calculation gives
+∇g(θ ) =
+
+
+1 − θ
+2 − θ 3 − 2θ 1
+− (θ 1 +θ 3)
+− (θ 1 +θ 2)
+
+ .
+Let
+
+===== PAGE 17 =====
+
+17.3 Examples 359
+v3 = ∇g(θ 0)
+∥∇g(θ 0)∥,
+and choose v1 and v2 so that {v1,v 2,v 3} is an orthonormal basis for R3. As
+in Example 17.3, v1 and v2 span V0,v3 spansV⊥
+0 ,
+P0 =v1v′
+1 +v2v′
+2
+and
+Q0 =v3v′
+3.
+The noncentrality parameter is
+δ 2 =∆′Q0(P0 +Q0I−1(θ 0)Q0)−1Q0∆
+=∆′v3v′
+3(P0 +v3v′
+3I−1(θ 0)v3v′
+3)−1v3v′
+3∆
+= (v′
+3∆)2v′
+3
+(
+P0 + [v′
+3I−1(θ 0)v3]Q0
+)−1
+v3
+= (v′
+3∆)2v′
+3
+(
+P0 + Q0
+v′
+3I−1(θ 0)v3
+)
+v3
+= (v′
+3∆)2
+v′
+3I−1(θ 0)v3
+= n
+(
+∇g(θ 0) · (θn − θ 0)
+)2
+∇g(θ 0)′I−1(θ 0)∇g(θ 0).
+The derivation leading to this formula works whenever r −q = 1 with Ω0 the
+parameters θ ∈Ω satisfying a single diﬀerentiable constraint g(θ ) = 0.
+To illustrate use of the distributional results in a more concrete setting, let
+us consider the following design question. How large should the sample size
+be to achieve a test with (approximate) level α = 5% and power 90% when
+p
+11 = p22 = 0. 3 and p12 = p21 = 0. 2? The parameter value associated with
+these cell probabilities is
+θn =
+
+
+0. 3
+0. 2
+0. 2
+
+ .
+Under H
+0, 2 log λ ∼ Z2, where Z ∼ N (0, 1). Since P
+(
+Z2 > (1. 96)2)
+= 1 −
+P (− 1. 96 < Z <1. 96) = 5% = α , the test should reject if 2 log λ > (1. 96)2.
+Since (Z +δ )2 ∼ χ 2
+1
+(δ 2), under the alternative θn,
+2 logλ
+.
+∼ (Z +δ )2.
+To meet the design objective, we need
+90% ≈ P
+(
+(Z +δ )2 > (1. 96)2)
+=P (Z >1. 96 − δ ) +P (Z <− 1. 96 − δ ).
+The second term here is negligible, so we require
+
+===== PAGE 18 =====
+
+360 17 Large-Sample Theory for Likelihood Ratio Tests
+90% ≈ P (Z >1. 96 − δ ).
+This holds if 1. 96−δ is the 10th percentile of the standard normal distribution.
+This percentile is − 1. 282 which gives δ = 1. 96 + 1. 282 = 3. 242 andδ 2 = 10. 51.
+The marginal cell probabilities under θn are pi+ =p+j = 1/ 2, so the natural
+choice for θ 0 is
+θ 0 =
+
+
+1/ 4
+1/ 4
+1/ 4
+
+ .
+Then
+∇g(θ
+0) =
+
+
+0
+− 1/ 2
+− 1/ 2
+
+
+and
+∇g(θ
+0) · (θn − θ 0) =
+
+
+0
+− 1/ 2
+− 1/ 2
+
+ ·
+
+
+1/ 20
+− 1/ 20
+− 1/ 20
+
+ = 1
+20.
+Also,
+I−1(θ 0) = 1
+4
+
+
+3/ 4 − 1/ 4 − 1/ 4
+− 1/ 4 3 / 4 − 1/ 4
+− 1/ 4 − 1/ 4 3 / 4
+
+ ,
+and so
+∇g(θ
+0)′I−1(θ 0)∇g(θ 0) = 1
+4
+(3
+4 − 1
+4 − 1
+4 + 3
+4
+)
+= 1
+16.
+Hence
+δ 2 = n(1/ 20)2
+(1/ 4)2 = n
+25.
+Setting this equal to 10.51 gives n = 263 as the sample size required for the
+level and power speciﬁed.
+In practice many statisticians test independence in 2 × 2 tables using Pear-
+son’s chi-square test statistic,
+T =
+∑
+i,j
+(Nij − nˆpi+ ˆp+j )2
+nˆpi+ ˆp+j
+.
+For large n,T and 2 logλ are asymptotically equivalent. To demonstrate this
+equivalence (without any serious attempt at mathematical rigor), we write
+2 logλ = 2n
+∑
+i,j
+ˆpij log
+( ˆpij
+ˆpi+ ˆp+j
+)
+.
+We view this as a function of the ˆ pij with the marginal probabilities ˆpi+ and
+ˆp+j considered ﬁxed constants and Taylor expand about ˆpij = ˆpi+ ˆp+j (equality
+
+===== PAGE 19 =====
+
+17.4 Wald and Score Tests 361
+here is approximately correct under both H0 and contiguous alternatives). To
+compute the gradient of the function,
+∂
+∂ ˆpkl
+(2 logλ ) = 2n
+[
+log
+( ˆpkl
+ˆpk+ ˆp+l
+)
++ 1
+]
+. (17.21)
+Then
+∂
+∂ ˆpij
+(2 logλ )
+⏐
+⏐
+⏐
+⏐
+ˆpij = ˆpi+ ˆp+j
+= 2n,
+and the gradient at the point of expansion is
+
+
+
+
+2n
+2n
+2n
+2n
+
+
+
+ .
+Taylor expansion through the gradient term gives
+2 logλ ≈ 2n
+∑
+i,j
+(ˆpij − ˆpi+ ˆp+j ) = 0.
+To get an interesting answer we need to keep an extra term in our Taylor ex-
+pansion. Because (17.21) only depends on ˆp
+ij , the Hessian matrix is diagonal.
+Now
+∂ 2
+∂ ˆp2
+ij
+(2 logλ ) = 2n
+ˆpij
+,
+so
+∂ 2
+∂ ˆp2
+ij
+(2 logλ )
+⏐
+⏐
+⏐
+⏐
+⏐
+ˆpij = ˆpi+ ˆp+j
+= 2n
+ˆpi+ ˆp+j
+.
+Taylor expansion through the Hessian term gives
+2 logλ ≈ 1
+2
+∑
+i,j
+2n
+ˆpi+ ˆp+j
+(ˆpij − ˆpi+ ˆp+j )2 =T.
+17.4 Wald and Score Tests
+The Wald and score (or Lagrange multiplier) tests are alternatives to the
+generalized likelihood ratio tests with similar properties. Assume that the
+null hypothesis can be written as H
+0 :g(θ ) = 0, with the constraint function
+g :Ω → Rr−q continuously diﬀerentiable and Dg(θ ) of full rank for θ ∈Ω0.
+The basic idea behind the Wald test (Wald (1943)) is simply that if H0
+is correct, then g(ˆθn) should be close to zero. By Proposition 9.32, if θ ∈Ω0,
+then
+
+===== PAGE 20 =====
+
+362 17 Large-Sample Theory for Likelihood Ratio Tests
+√
+ng(ˆθn) ⇒ N
+[
+0,Dg (θ )I(θ )−1(
+Dg(θ )
+)′]
+.
+By Lemma 14.9 and results on weak convergence,
+TW
+def
+= n
+(
+g(ˆθn)
+)′[
+Dg(ˆθn)I(ˆθn)−1(
+Dg(ˆθn)
+)′]−1
+g(ˆθn) ⇒ χ 2
+r−q
+when θ ∈Ω0.
+Rao’s score test (Rao (1948)) is based on the notion that if θ ∈Ω0, then
+˜θn should be a good estimate of θ and the gradient of the log-likelihood should
+not be too large at ˜θn. Diﬀerencing (17.12) and (17.11), for θ ∈Ω0
+1
+√
+n ∇ln(˜θn) = I(θ )(Zn − Yn) +op(1)
+as n → ∞ . Using (17.13) it is then not hard to show that
+TS
+def= 1
+n
+(
+∇ln(˜θn)
+)′
+I(˜θn)−1∇ln(˜θn) = 2 logλn +op(1) ⇒ χ 2
+r−q
+.
+The three test statistics, 2 log λ ,TW , and TS , have diﬀerent strengths and
+weaknesses. Although the derivation here only considers the asymptotic null
+distributions of T
+W and TS , with the methods and regularity assumed in
+Section 17.2 it is not hard to argue that all three tests are asymptotically
+equivalent under distributions contiguous to a null distribution; speciﬁcally,
+diﬀerences between any two of the statistics will tend to zero in probabil-
+ity. Furthermore, variants of T
+W and TS in which the Fisher information is
+estimated consistently in a diﬀerent fashion, perhaps using observed Fisher
+information, are also equivalent under distributions contiguous to a null dis-
+tribution.
+The score test only relies on ˜θ
+n. The maximum likelihood estimator ˆθn
+under the full model is not needed. This may be advantageous if the full
+model is diﬃcult to ﬁt. Unfortunately, it also means that although the test
+will have good power at alternatives near a null distribution, the power may
+not be high at more distant alternatives. In fact, there are examples where the
+power of the score test does not tend to one at ﬁxed alternatives as n → ∞ .
+See Freedman (2007).
+In contrast to the score test, the Wald test statistic relies only on the
+maximum likelihood estimator under the full model ˆθ
+n, and there is no need
+to compute ˜θn. This may make TW easier to compute than 2 log λ .
+With a ﬁxed nominal level α , at a ﬁxed alternative θ ∈ Ω1 the pow-
+ers of the generalized likelihood, Wald, and the score test generally tend to
+one quickly. With suﬃcient regularity, the convergence occurs exponentially
+quickly, with the generalized likelihood ratio test having the best possible rate
+of convergence. This rate of convergence is called the Bahadur slope for the
+test, and the generalized likelihood ratio is thus Bahadur eﬃcient . But from
+a practical standpoint, the ability of a test to detect smaller diﬀerences may
+be more important, and in this regard it is harder to say which of these tests
+is best.
+
+===== PAGE 21 =====
+
+17.5 Problems 363
+17.5 Problems 3
+1. Consider three samples: W1, ... , Wk from N (µ1,σ 2
+1 ); X1, ... , Xm from
+N (µ1,σ 2
+2 ); and Y1, ... , Yn from N (µ2,σ 2
+2 ), all independent, where µ1,
+µ2,σ 1, and σ 2 are unknown parameters. Derive the generalized likelihood
+test statistic λ to test H0 : σ 1 = σ 2 versus H1 : σ 1 ̸= σ 2. You should be
+able to reduce the normal equations under the full model to a single cubic
+equation. Explicit solution of this cubic equation is not necessary.
+2. Consider data for a two-way contingency table N
+11,N12,N21,N22 from a
+multinomial distribution with n trials and success probabilities p11, p12,
+p21,p22. Derive the generalized likelihood test statistic λ to test “symme-
+try,”H0 :p12 =p21 versusH1 :p12 ̸=p21.
+*3. Random eﬀects models . One model that is used to analyze a blocked ex-
+periment comparing p treatments has Yij = αi +βj +ǫij , i = 1,...,p ,
+j = 1,...,n, with the αi and βj viewed as unknown constant parameters
+and the ǫij unobserved and i.i.d. from N (0,σ 2). In some circumstances,
+it may be more natural to view the blocking variables βj as random,
+perhaps as i.i.d. from N (0,τ 2) and independent of the ǫij . This gives a
+model in which the vectors Yj = (Y1j,...,Y pj )′, j = 1,...,n, are i.i.d.
+from N (α,σ 2I +τ 211′). Here “ 1” denotes a column of 1s in Rp, and the
+unknown parameters are α ∈ Rp, σ 2 > 0, and τ 2 ≥ 0.
+a) Derive the likelihood ratio test statistic to test H0 : τ 2 = 0 versus
+H1 :τ 2 > 0.
+b) Derive the likelihood ratio test statistic to test H0 :α 1 = · · · =αp.
+*4. Let X and Y be independent exponential variables with failure rates θx
+and θy, respectively.
+a) Find the generalized likelihood ratio test statistic λ , based on X and
+Y , to test H0 :θx = 2θy versusH1 :θx ̸= 2θy .
+b) Suppose the test rejects if λ ≥ c. How should the critical level c be
+adjusted to give level α ?
+5. Let X and Y be independent normal variables, both with variance one
+and means θX =EX and θY =EY .
+a) Derive the generalized likelihood test statistic λ (or logλ ) to test H0 :
+θX = 0 or θY = 0 versus H1 :θX ̸= 0 and θy ̸= 0.
+b) The likelihood test using λ from part (a) rejects H0 if logλ>k . Derive
+a formula for the power of this test when θX = 0.
+c) Find the signiﬁcance level α as a function of k. How shouldk be chosen
+to achieve a desired level α ?
+6. Suppose X ∼ Np(θ,I ) and consider testing H0 : θ ∈ Ω0 versus H1 : θ /∈
+Ω0.
+a) Show that the likelihood ratio test statistic λ is equivalent to the
+distance D betweenX and Ω0, deﬁned as
+D = inf
+{
+∥X − θ ∥ :θ ∈Ω0}.
+3 Solutions to the starred problems are given at the back of the book.
+
+===== PAGE 22 =====
+
+364 17 Large-Sample Theory for Likelihood Ratio Tests
+(Equivalent here means there is a one-to-one increasing relationship
+between the two statistics.)
+b) Using part (a), a generalized likelihood ratio test will reject H
+0 if
+D > c. What is the signiﬁcance level α for this test if p = 2 and
+Ω0 = {θ :θ 1 ≤ 0,θ 2 ≤ 0}?
+7. Show that in the general linear model there is an increasing one-to-one
+relationship between the generalized likelihood ratio statistic λ and the
+test statistic T in (14.24), so that tests based on λ andT are equivalent.
+*8. Let X1, ... , Xn be a random sample from an exponential distribution
+with mean θ 1, and let Y1, ... , Yn be an independent sample from an
+exponential distribution with mean θ 2.
+a) Find the likelihood ratio test statistic for testing H0 : θ 1/θ 2 = c0
+versusH1 :θ 1/θ 2 ̸=c0, where c0 is a constant.
+b) Use the large-sample approximation for the null distribution of 2 log λ
+and the duality between testing and interval estimation to describe a
+conﬁdence set for θ
+1/θ 2 with coverage probability approximately 95%
+(the set is an interval, but you do not have to demonstrate this fact).
+Ifn = 100,
+X = 2, and
+ Y = 1, determine whether the parameter ratio
+2.4 lies in the conﬁdence set.
+c) How large should the sample size n be if we want the likelihood ratio
+test for testing H0 : θ 1 = θ 2 versus H1 : θ 1 ̸= θ 2 at level 5% to have
+power 90% when θ 1 = 0. 9 and θ 2 = 1. 1?
+*9. Let W1,...,W n,X1,...,X n, and Y1,...,Y n be independent random sam-
+ples from N (µw,σ 2
+w ), N (µx,σ 2
+x), and N (µy,σ 2
+y ), respectively.
+a) Find the likelihood ratio test statistic for testing H0 :σw =σx =σy
+versus the alternative that at least two of the standard deviations
+diﬀer.
+b) What is the approximate power of the likelihood ratio test with level
+α = 5% if n = 200, σ
+w = 1. 8, σx = 2. 2 and σy = 2. 0? You can
+express the answer in terms of a noncentral chi-square distribution,
+but identify the appropriate degrees of freedom and the noncentrality
+parameter.
+*10. Suppose X
+1,...,X n are i.i.d. Np(µ,I ).
+a) Derive the likelihood ratio test statistic 2 log λ to test H0 : ∥µ∥ = r
+versusH1 : ∥µ∥ ̸= r, where r is a ﬁxed constant.
+b) Give a formula for the power of the likelihood ratio test that rejects
+H0 when 2 logλ>c in terms of the cumulative distribution function
+for a noncentral chi-square distribution.
+c) If r = 1, what sample size will be necessary for the test with α ≈ 5%
+to have power approximately 90% when ∥µ∥ = 1. 1?
+11. Let W1,...,W n,X1,...,X n, and Y1,...,Y n be independent random sam-
+ples. The Wi have density e−|x−θ 1|/ 2, the Yi have density e−|x−θ 2|/ 2, and
+the Xi have density e−|x−θ 3|/ 2. Derive the approximate power for the
+likelihood ratio test with α = 5% of H0 : θ 1 = θ 2 = θ 3 if n = 200,
+θ 1 = 1. 8, θ 2 = 2. 0, and θ 3 = 2. 2. You can express the answer in terms of
+
+===== PAGE 23 =====
+
+17.5 Problems 365
+a noncentral chi-square distribution, but identify the appropriate degrees
+of freedom and the noncentrality parameter.
+*12. Errors in variables models . Consider a regression model in which
+Y
+i =βXi +ǫi, i = 1,...,n,
+with the Xi a random sample from N (0, 1) and the ǫi an independent
+random sample, also from N (0, 1). In some situations, the independent
+variablesXi may not be observed directly. One possibility is that they are
+measured with error. For a speciﬁc model, let
+Wi =Xi +ηi, i = 1,...,n.
+The ηi are modeled as a random sample from N (0,σ 2), independent of
+the Xi and ǫi. The data are W1,...,W n and Y1,...,Y n, with β and σ
+unknown parameters.
+a) Determine the joint distribution of Wi and Yi.
+b) Describe how to compute the generalized likelihood ratio test statistic
+to test H0 : β = 0 versus H1 : β ̸= 0. An explicit formula for the
+maximum likelihood estimators may not be feasible, but you should
+give equations that can be solved to ﬁnd the maximum likelihood
+estimators.
+c) Show that the least squares estimate for β whenσ = 0 (the estimator
+that one would use when the model ignores measurement error for the
+independent variable) is inconsistent if σ > 0.
+d) Derive an approximation for the power of the generalized likelihood
+ratio test with level α ≈ 5% when β =∆/ √
+n. How does σ eﬀect the
+power of the test?
+*13. Goodness-of-ﬁt test. Let X1,...,X n be a random sample from some con-
+tinuous distribution on (0, ∞), and let Y1 be the number of observations in
+(0, 1),Y2 the number of observations in [1, 2), and Y3 the number of obser-
+vations in [2, ∞). Then Y has a multinomial distribution with n trials and
+success probabilities p1,p 2,p 3. If the distribution of the Xi is exponential
+with failure rate θ , then p1 = 1 − e−θ , p2 =e−θ − e−2θ , and p3 =e−2θ .
+a) Derive a generalized likelihood ratio test of the null hypothesis that
+the Xi come from an exponential distribution. The test should be
+based on data Y1,Y 2,Y 3.
+b) If α ≈ 5% and Y = (36, 24, 40), would the test in part (a) accept
+or reject the null hypothesis? What is the attained signiﬁcance with
+these data (approximately)?
+c) How large should the sample size be if we want the test with level
+α ≈ 5% to have power 90% when p
+1 = 0. 36, p2 = 0. 24, and p3 = 0. 4?
+14. Let X1,...,X n be i.i.d. from a Fisher distribution on the unit sphere in
+R3 with common density
+fθ (x) = ∥θ ∥eθ·x
+4π sinh(∥θ ∥),
+
+===== PAGE 24 =====
+
+366 17 Large-Sample Theory for Likelihood Ratio Tests
+with respect to surface area on the unit sphere. When θ = 0, f0(x) =
+1/ (4π ), so the variables are uniformly distributed. (These distributions
+are often used to model solid angles.)
+a) Describe how you would test H0 : θ 2 = θ 3 = 0 versus H1 :θ 2 ̸= 0 or
+θ 3 ̸= 0, giving the normal equations you would use to solve for ˆθn and
+˜θn. If α = 5%, n = 100, and
+ Xn = (0. 6, 0. 1, 0. 1), would you accept or
+reject H0?
+b) What is the approximate power of the likelihood test if n = 100,
+α = 5%, and θ = (1,. 2, 0)? Express the answer using the noncentral
+chi-square distribution, but identify the degrees of freedom and the
+noncentrality parameter.
+15. Let X
+ij , i = 1 ,...,p , j = 1 ,...,n, be i.i.d. from a standard expo-
+nential distribution, and given X = x, let Yij , i = 1 ,...,p , j =
+1,...,n, be independent Poisson variables with EYij = xijθi. Then
+(X1j,...,X pj,Y 1j,...,Y pj ), j = 1,...,n, are i.i.d. random vectors. Con-
+sider testing H0 :θ 1 = · · · =θp versusH1 :θi ̸=θk for some i ̸=k.
+a) Find the likelihood ratio test statistic to test H0 against H1.
+b) What is the approximate power for the likelihood ratio test if α = 5%,
+n = 100, p = 5, θ 1 = 1. 8, θ 2 = 1. 9, θ 3 = 2. 0, θ 4 = 2. 1, and θ 5 = 2. 2?
+Express your answer using the noncentral chi-square distribution, but
+give the degrees of freedom and the noncentrality parameter.
+c) If p = 2 and α ≈ 5%, how large should the sample size n be if power
+90% is desired when θ
+1 = 1. 9 and θ 2 = 2. 1?
+16. Deﬁne
+Ω0 =
+{
+x ∈ (0, ∞) 3 :x1x2x3 = 10
+}
+,
+a manifold in R3.
+a) What is the dimension of Ω0?
+b) Let V be the tangent space for this manifold at x = (1 , 2, 5).
+Find an orthonormal basis e1,e 2,e 3 with e1,...,e q spanning V and
+eq+1,...,e 3 spanning V⊥.
+c) Find projection matrices P and Q ontoV and V⊥, respectively.
+17. Deﬁne a vector-valued function η : R2 → R3 byη 1(x,y ) = x2, η 2(x,y ) =
+y2, and η 3(x,y ) = (x−y)2, and let Ω0 =η
+(
+(0, ∞) 2)
+. Let V be the tangent
+space for Ω0 at (4, 1, 1). Find orthonormal vectors that span V .
+18. Let ( N11,...,N 22) have a multinomial distribution, as in Example 17.4,
+and consider testing whether the marginal distributions are the same, that
+is, testing H
+0 :p+1 =p1+ versusH1 :p+1 ̸=p1+.
+a) Derive a formula for the generalized likelihood ratio test statistic
+2 logλ .
+b) How large should the number of trials be if we want the test with level
+α ≈ 5% to have power 90% when p11 = 30%, p12 = 15%, p21 = 20%,
+and p22 = 35%?

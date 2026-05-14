@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ch 19 — Bootstrap Methods · Theoretical Statistics</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/>
+</head>
+<body data-book="basic_stat" data-page="ch19">
+<header class="site-header">
+<a class="brand" href="/books/basic_stat/">Theoretical Statistics <small>a slow reading guide</small></a>
+<nav>
+<a href="/" class="all-books-link">All books</a>
+    <a href="/books/basic_stat/">Contents</a>
+<button aria-label="toggle theme" class="theme-toggle">Dark</button>
+</nav>
+</header>
+<main class="layout">
+<aside class="sidebar">
+<h4>Chapter 19</h4>
+<ol>
+<li><a href="#why">Why bootstrap?</a></li>
+<li><a href="#s19-1">19.1 Introduction</a></li>
+<li><a href="#s19-2">19.2 Bias reduction</a></li>
+<li><a href="#s19-3">19.3 Parametric bootstrap intervals</a></li>
+<li><a href="#s19-4">19.4 Accuracy for averages</a></li>
+<li><a href="#s19-5">19.5 Intervals: percentile &amp; BCa</a></li>
+<li><a href="#s19-6">19.6 When bootstrap fails</a></li>
+<li><a href="#summary">Summary</a></li>
+</ol>
+</aside>
+<article class="content">
+<section class="hero">
+<div class="kicker">Chapter 19</div>
+<h1>Bootstrap Methods</h1>
+<p class="subtitle" data-cid="ch19-010">A computer simulation that pretends the data are the population — and the surprising amount of inference you can do with that one trick.</p>
+<div class="meta">
+<span>Book pages: 391–403</span>
+<span>~40 min reading time</span>
+<span>Prereqs: empirical CDF, plug-in estimators, basic CLT</span>
+</div>
+</section>
+<h2 data-cid="ch19-020" id="why">Why does the bootstrap even work?</h2>
+<p data-cid="ch19-030">
+  Here is the problem the bootstrap is trying to solve. You collect a sample $X_1, \dots, X_n$ i.i.d. from some unknown distribution $Q$. You compute an estimator $\hat\theta = \hat\theta(X)$ of some parameter $\theta = \theta(Q)$. You want to know how accurate $\hat\theta$ is — that is, you want the distribution of the error $\hat\theta - \theta$.
+</p>
+<p data-cid="ch19-040">
+  But the error distribution depends on $Q$, which is the very thing you don't know. If you knew $Q$, you wouldn't be doing statistics.
+</p>
+<p data-cid="ch19-050">
+  There are two classical ways around this. First: derive an asymptotic distribution analytically — like the central limit theorem giving $\sqrt{n}(\bar X_n - \mu) \Rightarrow N(0, \sigma^2)$. Second: stick with the few special parametric models where the finite-sample distribution is computable, like $t$ for a normal mean.
+</p>
+<p data-cid="ch19-060">
+  The bootstrap is a third way, due to Efron (1979): use the computer. Take whatever simulation you would have run if you knew $Q$, but run it with $Q$ replaced by the empirical distribution $\hat Q$ — the distribution that puts mass $1/n$ on each observed data point. The bootstrap bets that the answer you get is close to the one you would have gotten with the real $Q$.
+</p>
+<div class="box intuition" data-cid="ch19-070">
+<span class="box-label">The one-line slogan</span>
+<p data-cid="ch19-080">
+<em>The empirical distribution $\hat Q$ is to the true distribution $Q$ as the bootstrap sample $X^*$ is to the observed sample $X$.</em>
+</p>
+<p data-cid="ch19-090">
+  If that analogy holds well enough, then the variability of $\hat\theta^* - \hat\theta$ across bootstrap resamples mimics the variability of $\hat\theta - \theta$ across hypothetical real samples. We can simulate the first; we can never see the second. That swap is the bootstrap.
+</p>
+</div>
+<h2 data-cid="ch19-100" id="s19-1">19.1 Introduction — the empirical distribution and resampling</h2>
+<h3 data-cid="ch19-110">The empirical distribution $\hat Q$</h3>
+<p data-cid="ch19-120">
+  Given i.i.d. data $X_1, \dots, X_n$ from $Q$, the <strong>empirical distribution</strong> is
+</p>
+$$\hat Q = \frac{1}{n} \sum_{i=1}^{n} \delta_{X_i},$$
+<p data-cid="ch19-130">
+  where $\delta_x$ is the point mass at $x$: $\delta_x(\{x\}) = 1$ and $\delta_x(B) = 0$ for any $B$ not containing $x$. So $\hat Q$ is a discrete probability measure that places mass $1/n$ on each observed point. For any set $A$,
+</p>
+$$\hat Q(A) = \frac{1}{n} \#\{i \leq n : X_i \in A\}.$$
+<p data-cid="ch19-140">
+  This is the obvious nonparametric estimate of $Q$. By the strong law of large numbers, $\hat Q(A) \to Q(A)$ almost surely for any fixed set $A$ — even uniformly in $A$ over many classes (this is the Glivenko–Cantelli theorem when $A$ ranges over half-lines). So $\hat Q$ converges to $Q$, and reasonable functionals of $\hat Q$ should converge to the same functionals of $Q$.
+</p>
+<div class="box definition" data-cid="ch19-150">
+<span class="box-label">Definition — bootstrap sample</span>
+<p data-cid="ch19-160">
+  A <strong>bootstrap sample</strong> $X^* = (X^*_1, \dots, X^*_n)$ is drawn conditionally i.i.d. from $\hat Q$ given the original data:
+  $$X^* \mid X \;\sim\; \hat Q^n.$$
+  Since $\hat Q$ puts mass $1/n$ on each $X_i$, drawing from $\hat Q$ is exactly the same as drawing with replacement from $\{X_1, \dots, X_n\}$.
+</p>
+</div>
+<p data-cid="ch19-170">
+  That last sentence is the implementation. A bootstrap sample is just $n$ draws with replacement from your data. Some original observations will appear multiple times in $X^*$; some won't appear at all. That's fine — that's the whole point. The variability between bootstrap samples is supposed to mimic the variability between independent real samples from $Q$.
+</p>
+<h3 data-cid="ch19-180">The plug-in principle</h3>
+<p data-cid="ch19-190">
+  Most of the bootstrap can be understood through a single piece of mathematics called the <strong>plug-in principle</strong>. Suppose $\theta$ is some functional of $Q$ — that is, $\theta = \theta(Q)$ for some rule $\theta(\cdot)$ that takes a distribution and returns a number. The plug-in estimator is
+</p>
+$$\hat\theta = \theta(\hat Q).$$
+<p data-cid="ch19-200">
+  Examples make this concrete:
+</p>
+<ul data-cid="ch19-210">
+<li>The mean: $\theta(Q) = \int x \, dQ(x)$. Plug-in: $\theta(\hat Q) = \bar X_n$.</li>
+<li>The variance: $\theta(Q) = \int (x-\mu)^2 \, dQ$. Plug-in: $\theta(\hat Q) = \frac{1}{n}\sum(X_i - \bar X_n)^2$.</li>
+<li>The median: $\theta(Q) = Q^{-1}(1/2)$. Plug-in: the sample median.</li>
+<li>The bias of $\hat\theta$ at $Q$: $b(Q) = E_Q[\hat\theta - \theta]$. Plug-in: $\hat b = b(\hat Q)$.</li>
+</ul>
+<p data-cid="ch19-220">
+  That last bullet is where the bootstrap really lives. <em>Whatever feature of the sampling distribution you want — bias, variance, a quantile, a coverage probability — write it as a functional of $Q$ and then plug in $\hat Q$.</em>
+</p>
+<div class="box intuition" data-cid="ch19-230">
+<span class="box-label">Why plug-in is the soul of the bootstrap</span>
+<p data-cid="ch19-240">
+  We typically can't write a closed-form expression for $b(\hat Q)$ even after the plug-in. But $b(\hat Q)$ is, by definition, the expected error of $\hat\theta$ <em>when the data come from $\hat Q$</em>. And we can sample from $\hat Q$ — it's just resampling with replacement. So we estimate the unknown $b(\hat Q)$ by Monte Carlo. The bootstrap is the plug-in principle plus simulation as the calculator.
+</p>
+</div>
+<h3 data-cid="ch19-250">Bootstrap estimation in three lines</h3>
+<p data-cid="ch19-260">
+  The general recipe, used by every example in the chapter:
+</p>
+<ol data-cid="ch19-270">
+<li>Pick the quantity of interest about the sampling distribution: $\phi(Q) = $ bias, variance, quantile, etc.</li>
+<li>Plug in: $\hat\phi = \phi(\hat Q)$.</li>
+<li>Approximate $\hat\phi$ by simulation. Draw $B$ bootstrap samples $X^*_1, \dots, X^*_B$; compute $\hat\theta^*_b = \hat\theta(X^*_b)$ for each. Approximate $\hat\phi$ by the corresponding sample summary of the $\hat\theta^*_b$.</li>
+</ol>
+<p data-cid="ch19-280">
+  The number of replications $B$ is a computational choice, not a statistical one. Larger $B$ reduces Monte Carlo noise but doesn't change what you're estimating. Typical values are $B \in [200, 10{,}000]$ depending on the task.
+</p>
+<h3 data-cid="ch19-290">Example: bootstrap estimate of bias</h3>
+<p data-cid="ch19-300">
+  The true bias is $b(Q) = E_Q[\hat\theta] - \theta$. Plug in $\hat Q$:
+</p>
+$$\hat b = b(\hat Q) = E[\hat\theta^* - \hat\theta \mid X].$$
+<p data-cid="ch19-310">
+  In words: pretend $\hat Q$ is the truth, so $\hat\theta$ plays the role of $\theta$ (since $\hat\theta = \theta(\hat Q)$), and $\hat\theta^*$ plays the role of $\hat\theta$ (since it is computed from a sample drawn from $\hat Q$). Approximating by Monte Carlo with $B$ replicates:
+</p>
+$$\hat b \approx \frac{1}{B} \sum_{b=1}^{B} \big(\hat\theta^*_b - \hat\theta\big).$$
+<p data-cid="ch19-320">
+  The bias-corrected estimator is $\hat\theta - \hat b$. This typically has smaller bias than $\hat\theta$, and Section 19.2 makes that "typically" rigorous for one example.
+</p>
+<h3 data-cid="ch19-330">Example: bootstrap standard error</h3>
+<p data-cid="ch19-340">
+  An even more basic application: the standard error of $\hat\theta$ is
+</p>
+$$\operatorname{se}(Q) = \sqrt{\operatorname{Var}_Q(\hat\theta)}.$$
+<p data-cid="ch19-350">
+  Plug in to get the bootstrap standard error,
+</p>
+$$\widehat{\operatorname{se}} = \sqrt{\operatorname{Var}(\hat\theta^* \mid X)} \approx \sqrt{\frac{1}{B-1} \sum_{b=1}^B \big(\hat\theta^*_b - \overline{\hat\theta^*}\big)^2}.$$
+<p data-cid="ch19-360">
+  This is the single most-used bootstrap quantity in practice: a finite-sample standard error for <em>any</em> estimator, however complicated, without doing any calculus.
+</p>
+<div class="box example" data-cid="ch19-370">
+<span class="box-label">Worked example — bootstrap standard error of the median</span>
+<p data-cid="ch19-380">
+  Suppose $X_1, \dots, X_n$ are i.i.d. from some unknown $Q$ and you want to report a sample median $\hat m$ with a standard error. There is no easy closed-form $\operatorname{Var}(\hat m)$ unless you assume a density at the median (and even then it's an asymptotic formula involving the unknown $f(m)$). So you bootstrap.
+</p>
+<p data-cid="ch19-390">Concrete procedure:</p>
+<ol data-cid="ch19-400">
+<li>Compute $\hat m$ from the data, the original sample median.</li>
+<li>For $b = 1, \dots, B$ (say $B = 1000$):
+  <ul data-cid="ch19-410">
+<li>Draw $n$ indices $i_1, \dots, i_n$ uniformly with replacement from $\{1, \dots, n\}$.</li>
+<li>Form the bootstrap sample $X^*_b = (X_{i_1}, \dots, X_{i_n})$.</li>
+<li>Compute the bootstrap median $\hat m^*_b = \operatorname{median}(X^*_b)$.</li>
+</ul>
+</li>
+<li>Report
+  $$\widehat{\operatorname{se}}(\hat m) = \sqrt{\frac{1}{B-1}\sum_{b=1}^{B}\big(\hat m^*_b - \overline{\hat m^*}\big)^2}.$$
+</li>
+</ol>
+<p data-cid="ch19-420">
+  That's it. No assumption about the density. The bootstrap standard error is a usable, defensible number that you can stick next to $\hat m$ in your report.
+</p>
+<p data-cid="ch19-430">
+  A subtlety worth noticing: because $\hat Q$ is discrete with $n$ atoms, the bootstrap median $\hat m^*$ takes only $O(n)$ distinct values (essentially one per order statistic of the original sample). The empirical distribution of $\hat m^*$ is highly discrete. For estimators that depend smoothly on $Q$, this discreteness washes out as $n$ grows; for the median, smoothness of $Q$ near $m$ rescues the approximation. We'll see in Section 19.6 that for non-smooth functionals, the bootstrap can be in real trouble.
+</p>
+</div>
+<div class="box pause" data-cid="ch19-440">
+<span class="box-label">Pause — why is this not circular?</span>
+<p data-cid="ch19-450">
+  It looks like cheating. We are using the data to invent a population, then drawing samples from that invented population, then claiming the variability of those samples tells us something about variability under the real (unknown) population.
+</p>
+<p data-cid="ch19-460">
+  The point is that $\hat Q \to Q$ as $n \to \infty$, and for "nice" functionals $\phi$ — those that are continuous in $Q$ in an appropriate sense — we have $\phi(\hat Q) \to \phi(Q)$. So our plug-in estimate of, say, the standard error of $\hat\theta$ converges to the truth. The bootstrap is not magic; it's the plug-in principle applied to an unusually rich functional (the entire sampling distribution of $\hat\theta$), with simulation handling the calculation.
+</p>
+</div>
+<h3 data-cid="ch19-470">Example: bootstrap confidence intervals (first pass)</h3>
+<p data-cid="ch19-480">
+  If $q = q(Q)$ is the upper $\alpha$-th quantile of the distribution of $|\hat\theta - \theta|$, then
+</p>
+$$P\!\left(\theta \in [\hat\theta - q,\, \hat\theta + q]\right) = 1 - \alpha.$$
+<p data-cid="ch19-490">
+  Plug-in: $\hat q$ is the upper $\alpha$-th quantile of $|\hat\theta^* - \hat\theta|$ given $X$. Approximate $\hat q$ by simulation as the upper-$\alpha$ sample quantile of $|\hat\theta^*_b - \hat\theta|$ across $b = 1, \dots, B$. The resulting interval
+</p>
+$$[\hat\theta - \hat q,\, \hat\theta + \hat q]$$
+<p data-cid="ch19-500">
+  is an approximate $(1-\alpha)$ confidence interval. Two-sided, symmetric. Section 19.5 will refine this with percentile and BCa intervals.
+</p>
+<h3 data-cid="ch19-510">Studentizing — and why it usually helps</h3>
+<p data-cid="ch19-520">
+  In many problems, $(\hat\theta - \theta)/\hat\tau$ is approximately standard normal, where $\hat\tau$ is an estimate of the standard error of $\hat\theta$. If we apply the bootstrap to the studentized error
+</p>
+$$\frac{|\hat\theta - \theta|}{\hat\tau},$$
+<p data-cid="ch19-530">
+  rather than the raw error $|\hat\theta - \theta|$, the quantile we are estimating depends much more weakly on $Q$ (it's nearly $z_{\alpha/2}$ in well-behaved cases). Statistical quantities that depend only weakly on $Q$ are easier to estimate from data than ones that depend strongly. This intuition — "studentize first, then bootstrap" — is borne out theoretically in Section 19.4: studentizing improves the order of accuracy of the bootstrap confidence interval.
+</p>
+<h2 data-cid="ch19-540" id="s19-2">19.2 Bias reduction — a calculation you can carry out by hand</h2>
+<p data-cid="ch19-550">
+  We pause the abstract discussion and do one example explicitly. Let $X_1, \dots, X_n$ be i.i.d. from $Q$ with mean $\mu$, variance $\sigma^2$, and third central moment $\gamma = E(X_i - \mu)^3$. Consider estimating $\theta = \mu^3$ by the plug-in estimator
+</p>
+$$\hat\theta = \bar X_n^3.$$
+<p data-cid="ch19-560">
+  This estimator is biased — averaging a non-linear function of $\bar X_n$ doesn't give $\mu^3$. To find the bias, expand:
+</p>
+$$\bar X^3 = (\mu + (\bar X - \mu))^3 = \mu^3 + 3\mu^2(\bar X - \mu) + 3\mu(\bar X - \mu)^2 + (\bar X - \mu)^3.$$
+<p data-cid="ch19-570">
+  Using $E(\bar X - \mu) = 0$, $E(\bar X - \mu)^2 = \sigma^2/n$, and $E(\bar X - \mu)^3 = \gamma/n^2$ (third cumulant adds across i.i.d. terms),
+</p>
+$$E \bar X^3 = \mu^3 + \frac{3\mu\sigma^2}{n} + \frac{\gamma}{n^2},$$
+<p data-cid="ch19-580">
+  and so the bias is
+</p>
+$$b(Q) = E\hat\theta - \theta = \frac{3\mu\sigma^2}{n} + \frac{\gamma}{n^2}.$$
+<p data-cid="ch19-590">
+  The bootstrap bias estimate substitutes $\hat Q$ everywhere:
+</p>
+$$\hat b = b(\hat Q) = \frac{3\bar X \hat\sigma^2}{n} + \frac{\hat\gamma}{n^2},$$
+<p data-cid="ch19-600">
+  with $\hat\sigma^2 = \frac{1}{n}\sum(X_i - \bar X)^2$ and $\hat\gamma = \frac{1}{n}\sum(X_i - \bar X)^3$. The bias-reduced estimator is then
+</p>
+$$\hat\theta - \hat b = \bar X^3 - \frac{3\bar X \hat\sigma^2}{n} - \frac{\hat\gamma}{n^2}.$$
+<p data-cid="ch19-610">
+  The chapter then performs a somewhat involved bookkeeping calculation to find the mean of $\hat\theta - \hat b$. The key intermediate results, in case you want to verify them:
+</p>
+$$E[\bar X \hat\sigma^2] = \mu\sigma^2 + \frac{1}{n}(\gamma - \mu\sigma^2) - \frac{\gamma}{n^2},$$
+$$E[\hat\gamma] = \gamma\left(1 - \frac{3}{n} + \frac{2}{n^2}\right).$$
+<p data-cid="ch19-620">
+  Plugging in and collecting terms,
+</p>
+$$E[\hat\theta - \hat b] = \mu^3 + \frac{3}{n^2}(\mu\sigma^2 - \gamma) + \frac{6\gamma}{n^3} - \frac{2\gamma}{n^4}.$$
+<p data-cid="ch19-630">
+  Subtract $\theta = \mu^3$ to get the new bias: it is of order $1/n^2$, compared with order $1/n$ for the original $\hat\theta$.
+</p>
+<div class="box intuition" data-cid="ch19-640">
+<span class="box-label">What just happened</span>
+<p data-cid="ch19-650">
+  We did the same calculation twice: once with the truth $Q$, once with $\hat Q$. The bootstrap "knew" everything about the leading $1/n$ bias term because that term depends only on $\mu$ and $\sigma^2$, which $\hat Q$ estimates consistently. The error that remains is at the next order — $1/n^2$. This is the typical story for the bootstrap: <em>it picks off leading-order corrections that ordinary asymptotics leaves uncomputed.</em>
+</p>
+</div>
+<p data-cid="ch19-660">
+  An alternative to bootstrap bias correction is the <strong>jackknife</strong>: compute $\hat\theta_{-i}$ by leaving out observation $i$, then use the pseudo-values $\tilde\theta_i = n\hat\theta - (n-1)\hat\theta_{-i}$ to estimate bias and variance. The jackknife is closely related to the bootstrap and is the subject of Problem 19.2.
+</p>
+<h2 data-cid="ch19-670" id="s19-3">19.3 Parametric bootstrap confidence intervals</h2>
+<p data-cid="ch19-680">
+  Up to here we have used the empirical distribution $\hat Q$, treating $Q$ as completely unknown. This is the <strong>nonparametric bootstrap</strong>. There is a parallel construction for parametric models.
+</p>
+<div class="box definition" data-cid="ch19-690">
+<span class="box-label">Definition — parametric bootstrap</span>
+<p data-cid="ch19-700">
+  Suppose $Q \in \{Q_\lambda : \lambda \in \Lambda\}$ is known to lie in a parametric family, with $\hat\lambda$ the maximum likelihood estimator from the data. Use $\hat Q = Q_{\hat\lambda}$ in place of the empirical distribution. A <strong>parametric bootstrap sample</strong> is drawn i.i.d. from $Q_{\hat\lambda}$:
+  $$X^* \mid X \;\sim\; Q_{\hat\lambda}^{\,n}.$$
+</p>
+</div>
+<p data-cid="ch19-710">
+  Everything else is the same. The bootstrap estimator of a quantile $q = q(\lambda)$ is $\hat q$, the upper $\alpha$-th quantile of $|\hat\theta^* - \hat\theta|$ given $X$ — either computed in closed form when the model permits, or by simulation when it doesn't.
+</p>
+<h3 data-cid="ch19-720">Worked case: the normal mean</h3>
+<p data-cid="ch19-730">
+  Take $X_1, \dots, X_n$ i.i.d. $N(\theta, \sigma^2)$, with both $\theta$ and $\sigma^2$ unknown. The MLE is $\hat\theta = \bar X$ and $\hat\sigma^2 = \frac{1}{n}\sum(X_i - \bar X)^2$. The parametric bootstrap draws $X^*_1, \dots, X^*_n$ i.i.d. from $N(\bar X, \hat\sigma^2)$. Then
+</p>
+$$\hat\theta^* \mid X \,\sim\, N\!\left(\bar X,\, \hat\sigma^2/n\right),$$
+<p data-cid="ch19-740">
+  so the upper $\alpha/2$ quantile of $|\hat\theta^* - \bar X|$ is simply $z_{\alpha/2}\,\hat\sigma/\sqrt n$. The bootstrap confidence interval is
+</p>
+$$\left(\bar X - z_{\alpha/2}\,\hat\sigma/\sqrt n,\; \bar X + z_{\alpha/2}\,\hat\sigma/\sqrt n\right).$$
+<p data-cid="ch19-750">
+  Notice this is <em>not</em> the textbook $t$-interval: it uses $z$ rather than $t$, and uses the MLE $\hat\sigma^2$ rather than $S^2 = n\hat\sigma^2/(n-1)$. The true coverage is $1 - \alpha - z_{\alpha/2}\phi(z_{\alpha/2})/n + o(1/n)$ — close to nominal but not exact.
+</p>
+<p data-cid="ch19-760">
+  Now try the studentized version: bootstrap the distribution of $|\hat\theta - \theta|/\hat\tau$ where $\hat\tau = \hat\sigma/\sqrt n$. Some calculation (see the chapter) shows
+</p>
+$$\tilde q(\lambda) = \frac{\sqrt n\, t_{\alpha/2, n-1}}{\sqrt{n-1}},$$
+<p data-cid="ch19-770">
+  which is independent of $\lambda$ — so the bootstrap estimates it perfectly. The resulting studentized bootstrap interval is
+</p>
+$$\left(\bar X - t_{\alpha/2, n-1}\,S/\sqrt n,\; \bar X + t_{\alpha/2, n-1}\,S/\sqrt n\right),$$
+<p data-cid="ch19-780">
+  the exact $t$-interval with coverage exactly $1 - \alpha$. Studentizing turned a slightly-off bootstrap interval into the exact textbook one.
+</p>
+<div class="box pause" data-cid="ch19-790">
+<span class="box-label">Pause — what made studentizing work?</span>
+<p data-cid="ch19-800">
+  The quantity $|\hat\theta - \theta|/\hat\tau$ is a <em>pivot</em> in this normal model: its distribution doesn't depend on $\lambda$ at all. The bootstrap quantile of a pivot is the true quantile, exactly. In general models, perfect pivots don't exist, but quantities that are <em>approximately</em> pivotal (those whose distribution depends only weakly on the unknown $Q$) are exactly the ones the bootstrap handles best. This is the deeper reason "studentize first" works.
+</p>
+</div>
+<h2 data-cid="ch19-810" id="s19-4">19.4 Nonparametric accuracy for averages — how fast does the bootstrap learn?</h2>
+<p data-cid="ch19-820">
+  Take $\hat\theta = \bar X_n$ estimating $\theta = \mu = EX_i$. We could approximate the error distribution by the CLT:
+</p>
+$$Z_n = \frac{\sqrt n(\hat\theta - \theta)}{\sigma} \Rightarrow N(0,1).$$
+<p data-cid="ch19-830">
+  How accurate is this approximation? The <strong>Edgeworth expansion</strong> answers: for nonlattice $Q$ with $E|X_i|^3 &lt; \infty$,
+</p>
+$$P(Z_n \leq x) = \Phi(x) - \frac{\gamma(x^2 - 1)}{6\sigma^3 \sqrt n}\,\phi(x) + o(1/\sqrt n),$$
+<p data-cid="ch19-840">
+  uniformly in $x$. So the CLT misses by $O(1/\sqrt n)$, and the correction term involves the third moment $\gamma$ — which is exactly the kind of higher moment the bootstrap can pick up.
+</p>
+<p data-cid="ch19-850">
+  Singh (1981) showed:
+</p>
+<div class="box definition" data-cid="ch19-860">
+<span class="box-label">Theorem 19.4 (Singh)</span>
+<p data-cid="ch19-870">
+  Let $Z_n^* = \sqrt n(\hat\theta^* - \hat\theta)/\hat\sigma_n$. Under the same conditions,
+  $$P(Z_n^* \leq x \mid X) = \Phi(x) - \frac{\gamma(x^2 - 1)}{6\sigma^3 \sqrt n}\,\phi(x) + o_p(1/\sqrt n).$$
+</p>
+</div>
+<p data-cid="ch19-880">
+  The first two terms in the bootstrap expansion match the truth exactly — including the $1/\sqrt n$ correction. The remainder is $o_p(1/\sqrt n)$. So the bootstrap matches the truth to higher order than the CLT does.
+</p>
+<div class="box intuition" data-cid="ch19-890">
+<span class="box-label">Why the bootstrap beats normal approximation</span>
+<p data-cid="ch19-900">
+  The bootstrap automatically uses the empirical third moment $\hat\gamma_n$. The CLT throws away that information by replacing everything with a normal. So whenever the underlying distribution is even slightly skewed, the bootstrap quietly tracks the skewness and the CLT doesn't.
+</p>
+</div>
+<p data-cid="ch19-910">
+  Hall (1992) extended this to studentized statistics and confidence intervals. The headline:
+</p>
+<ul data-cid="ch19-920">
+<li>Symmetric two-sided bootstrap CI without studentizing: coverage error $O(1/n)$.</li>
+<li>Symmetric two-sided bootstrap CI with studentizing: coverage error $O(1/n^2)$.</li>
+<li>Asymptotic normal-theory CI: coverage error $O(1/\sqrt n)$.</li>
+</ul>
+<p data-cid="ch19-930">
+  Two orders of magnitude better, just from running a resampling loop. This is one of the strongest justifications for using the bootstrap as a default tool when the analyst can afford the compute.
+</p>
+<p data-cid="ch19-940">
+  The smoothness condition under which this all works is delicate. Bickel and Freedman (1981) studied <strong>von Mises functionals</strong> — those $\theta(\cdot)$ that are Gateaux differentiable with the derivative representable as an integral — and proved the bootstrap is consistent for them. They also gave counterexamples; see Section 19.6.
+</p>
+<h2 data-cid="ch19-950" id="s19-5">19.5 Bootstrap confidence intervals — percentile and BCa</h2>
+<p data-cid="ch19-960">
+  Section 19.1 gave one form of bootstrap confidence interval, based on quantiles of $|\hat\theta^* - \hat\theta|$. There are several other constructions worth knowing.
+</p>
+<h3 data-cid="ch19-970">The basic (or "pivotal") interval</h3>
+<p data-cid="ch19-980">
+  Bootstrap the distribution of $\hat\theta^* - \hat\theta$. Let $\hat q_L$ and $\hat q_U$ be the lower-$\alpha/2$ and upper-$\alpha/2$ quantiles of this bootstrap distribution. The basic bootstrap interval is
+</p>
+$$\big(\hat\theta - \hat q_U,\; \hat\theta - \hat q_L\big).$$
+<p data-cid="ch19-990">
+  The reasoning is straightforward: pretend $\hat\theta^* - \hat\theta$ has the same distribution as $\hat\theta - \theta$, then solve for $\theta$. Note the quantiles flip: the upper bootstrap quantile gives the lower endpoint and vice versa.
+</p>
+<h3 data-cid="ch19-1000">The percentile interval</h3>
+<p data-cid="ch19-1010">
+  Order the bootstrap replicates $\hat\theta^*_{(1)} \leq \cdots \leq \hat\theta^*_{(B)}$. The <strong>percentile interval</strong> simply reads off the $\alpha/2$ and $1-\alpha/2$ sample quantiles:
+</p>
+$$\big(\hat\theta^*_{(\lfloor B\alpha/2 \rfloor)},\; \hat\theta^*_{(\lceil B(1-\alpha/2)\rceil)}\big).$$
+<p data-cid="ch19-1020">
+  This is the easiest interval to explain ("middle 95% of bootstrap replicates") and what most software defaults to. It is range-respecting: if $\theta$ must be positive, the percentile interval is positive too, automatically.
+</p>
+<div class="box warn" data-cid="ch19-1030">
+<span class="box-label">Common pitfall — percentile vs. basic</span>
+<p data-cid="ch19-1040">
+  Percentile and basic intervals are <em>not</em> the same and can disagree noticeably when the bootstrap distribution is skewed. The percentile interval is symmetric in <em>$\hat\theta^*$-space</em>; the basic interval is symmetric in <em>error-space</em>. Many software packages use one or the other without saying which.
+</p>
+<p data-cid="ch19-1050">
+  As a rule of thumb: if the bootstrap distribution is roughly symmetric around $\hat\theta$, they agree. If it's skewed, neither is great, and you should reach for BCa or studentize.
+</p>
+</div>
+<h3 data-cid="ch19-1060">The BCa interval — bias-corrected and accelerated</h3>
+<p data-cid="ch19-1070">
+  Efron's <strong>BCa interval</strong> repairs the percentile interval in the presence of bias and skewness. It uses two scalar adjustments:
+</p>
+<ul data-cid="ch19-1080">
+<li>A <strong>bias correction</strong> $\hat z_0 = \Phi^{-1}\!\left(\#\{b : \hat\theta^*_b \leq \hat\theta\}/B\right)$ — measures how far the bootstrap median sits from $\hat\theta$.</li>
+<li>An <strong>acceleration</strong> $\hat a$ — measures how quickly the standard error of $\hat\theta$ changes with $\theta$, typically computed from jackknife pseudo-values:
+  $$\hat a = \frac{\sum_{i=1}^n (\bar{\hat\theta}_{-\cdot} - \hat\theta_{-i})^3}{6\big[\sum_{i=1}^n (\bar{\hat\theta}_{-\cdot} - \hat\theta_{-i})^2\big]^{3/2}}.$$
+</li>
+</ul>
+<p data-cid="ch19-1090">
+  Given $\hat z_0$ and $\hat a$, define
+</p>
+$$\alpha_1 = \Phi\!\left(\hat z_0 + \frac{\hat z_0 + z_{\alpha/2}}{1 - \hat a(\hat z_0 + z_{\alpha/2})}\right),\qquad \alpha_2 = \Phi\!\left(\hat z_0 + \frac{\hat z_0 + z_{1-\alpha/2}}{1 - \hat a(\hat z_0 + z_{1-\alpha/2})}\right).$$
+<p data-cid="ch19-1100">
+  The BCa interval is $(\hat\theta^*_{(\alpha_1)}, \hat\theta^*_{(\alpha_2)})$ — the same percentile-style read-off but at adjusted percentile levels. The point is: when $\hat z_0 = \hat a = 0$, BCa reduces to the percentile interval. Otherwise the adjustments correct for bias and skewness, and BCa achieves <strong>second-order accuracy</strong>: coverage error $O(1/n)$, an improvement over the percentile and basic intervals which are first-order ($O(1/\sqrt n)$).
+</p>
+<div class="box intuition" data-cid="ch19-1110">
+<span class="box-label">When does BCa matter?</span>
+<p data-cid="ch19-1120">
+  Small samples, skewed estimators, parameters near a boundary — these are the situations where the bootstrap distribution is far from symmetric and where BCa pays off most. For large $n$ with smooth estimators, every reasonable bootstrap interval gives more or less the same answer; BCa earns its keep in the awkward cases.
+</p>
+</div>
+<h3 data-cid="ch19-1130">The studentized (or "bootstrap-$t$") interval</h3>
+<p data-cid="ch19-1140">
+  Compute $T^*_b = (\hat\theta^*_b - \hat\theta)/\hat\tau^*_b$ for each bootstrap replicate, where $\hat\tau^*_b$ is an estimate of the standard error of $\hat\theta$ computed from the $b$-th bootstrap sample. Let $\hat t_{\alpha/2}$ and $\hat t_{1-\alpha/2}$ be the corresponding sample quantiles. The studentized interval is
+</p>
+$$\big(\hat\theta - \hat t_{1-\alpha/2}\,\hat\tau,\; \hat\theta - \hat t_{\alpha/2}\,\hat\tau\big).$$
+<p data-cid="ch19-1150">
+  This requires a standard error estimate at each bootstrap iteration — sometimes that's another inner bootstrap (a "double bootstrap"), which gets computationally heavy. When you have a fast $\hat\tau$ available (a delta-method formula, for example), the studentized interval typically gives the best coverage of any single-resampling-pass bootstrap method.
+</p>
+<h2 data-cid="ch19-1160" id="s19-6">19.6 Where the bootstrap fails</h2>
+<p data-cid="ch19-1170">
+  The bootstrap is not unconditionally consistent. Three classes of failure are worth knowing.
+</p>
+<h3 data-cid="ch19-1180">Non-smooth functionals: maximum of a uniform</h3>
+<p data-cid="ch19-1190">
+  Let $X_1, \dots, X_n$ be i.i.d. $\text{Uniform}(0, \theta)$, and let $\hat\theta = \max_i X_i = X_{(n)}$ be the MLE. The exact distribution of the error is
+</p>
+$$P(n(\theta - \hat\theta)/\theta \leq x) \to 1 - e^{-x} \quad \text{for } x \geq 0.$$
+<p data-cid="ch19-1200">
+  Now consider the nonparametric bootstrap. Conditional on $X$, $\hat\theta^* = \max_i X^*_i$, and the bootstrap sample is drawn with replacement from $\{X_1, \dots, X_n\}$. The bootstrap maximum can never exceed $X_{(n)} = \hat\theta$, so $\hat\theta^* \leq \hat\theta$ always. Moreover,
+</p>
+$$P(\hat\theta^* = \hat\theta \mid X) = 1 - (1 - 1/n)^n \to 1 - 1/e \approx 0.632.$$
+<p data-cid="ch19-1210">
+  So with probability about 63% the bootstrap reports zero error. The bootstrap distribution of $\hat\theta - \hat\theta^*$ does <em>not</em> converge to the true error distribution — it puts a permanent atom at $0$. Bootstrap confidence intervals for $\theta$ undercover badly.
+</p>
+<div class="box warn" data-cid="ch19-1220">
+<span class="box-label">Common pitfall — boundary parameters</span>
+<p data-cid="ch19-1230">
+  The bootstrap fails for the maximum of a uniform because the functional $\theta(Q) = \sup\{x : Q(x) &lt; 1\}$ is not smooth in $Q$ — small perturbations of $Q$ near the upper endpoint cause discontinuous changes in $\theta$. Any estimator that depends critically on the tail of the distribution (extremes, ranges, modes of multi-modal distributions) is suspect. The right fix is either (a) parametric bootstrap if you trust the model, (b) subsampling, or (c) the $m$-out-of-$n$ bootstrap, which draws bootstrap samples of size $m &lt; n$.
+</p>
+</div>
+<h3 data-cid="ch19-1240">Dependent data</h3>
+<p data-cid="ch19-1250">
+  Everything in this chapter has assumed $X_1, \dots, X_n$ are i.i.d. If your data are a time series, a spatial process, or otherwise dependent, naive resampling with replacement destroys the dependence structure. The bootstrap empirical distribution treats the marginals correctly but acts as if observations were independent.
+</p>
+<p data-cid="ch19-1260">
+  The fix is some form of <strong>block bootstrap</strong>: resample <em>blocks</em> of consecutive observations rather than individual observations, so the within-block dependence is preserved. The block length must be chosen — too short and dependence is lost, too long and you don't have enough blocks.
+</p>
+<h3 data-cid="ch19-1270">Small samples</h3>
+<p data-cid="ch19-1280">
+  The bootstrap's appeal is that it doesn't require asymptotic approximations, but it absolutely does require $\hat Q$ to be a reasonable stand-in for $Q$. With $n = 5$, $\hat Q$ supports only $5$ points and can be a very poor representation of a continuous $Q$. In these cases the bootstrap may be no better — and sometimes worse — than a parametric approach with a defensible model.
+</p>
+<div class="box warn" data-cid="ch19-1290">
+<span class="box-label">Common pitfall — "the bootstrap doesn't need assumptions"</span>
+<p data-cid="ch19-1300">
+  This is a slogan, not a theorem. The bootstrap needs i.i.d. data, $\hat\theta$ that is a smooth functional of $Q$, and enough sample size for $\hat Q \approx Q$. When any of these break, the bootstrap can be silently wrong — and the user gets back beautifully formatted output that looks just as authoritative as if it were correct.
+</p>
+</div>
+<h3 data-cid="ch19-1310">Heavy tails and infinite variance</h3>
+<p data-cid="ch19-1320">
+  If $\operatorname{Var}(X_i) = \infty$, then $\sqrt n(\bar X - \mu)$ does <em>not</em> converge to a normal. The CLT-based asymptotics break, and so does the bootstrap. Athreya (1987) showed that the bootstrap distribution of $\bar X$ in the heavy-tailed case does not stabilize at all — it has a random limit that depends on the particular data realization. If you have heavy tails, you need either a different estimator (the median, say) or a different resampling scheme (e.g., $m$-out-of-$n$).
+</p>
+<h2 data-cid="ch19-1330" id="summary">Summary — what you learned in Chapter 19</h2>
+<p data-cid="ch19-1340">The whole chapter, in seven bullets:</p>
+<ol data-cid="ch19-1350">
+<li>The <strong>empirical distribution</strong> $\hat Q = \frac{1}{n}\sum \delta_{X_i}$ is the natural nonparametric estimator of $Q$.</li>
+<li>A <strong>bootstrap sample</strong> $X^*$ is drawn i.i.d. from $\hat Q$ — equivalently, with replacement from the data.</li>
+<li>The <strong>plug-in principle</strong>: to estimate any feature $\phi(Q)$ of the sampling distribution, use $\phi(\hat Q)$. Monte Carlo with $B$ bootstrap resamples handles the calculation when $\phi(\hat Q)$ has no closed form.</li>
+<li>The <strong>parametric bootstrap</strong> uses $\hat Q = Q_{\hat\lambda}$ for a parametric family. The recipe is otherwise identical.</li>
+<li><strong>Confidence intervals</strong>: percentile, basic, BCa, studentized. Studentizing improves the order of accuracy from $O(1/\sqrt n)$ to $O(1/n)$ or better.</li>
+<li>For smooth functionals (von Mises functionals), the bootstrap is consistent and typically matches the truth to higher order than the CLT.</li>
+<li>The bootstrap <strong>fails</strong> for non-smooth functionals (max of a uniform), for dependent data without blocking, for heavy-tailed data, and is unreliable at very small $n$.</li>
+</ol>
+<div class="box pause" data-cid="ch19-1360">
+<span class="box-label">Did this land?</span>
+<p data-cid="ch19-1370">
+  Before moving on to Chapter 20, you should be able to answer (without looking back):
+</p>
+<ul data-cid="ch19-1380">
+<li>Explain the analogy "$\hat Q$ is to $Q$ as $X^*$ is to $X$" in one or two sentences.</li>
+<li>Write down the procedure for computing a bootstrap standard error of any estimator.</li>
+<li>State the plug-in principle and show how the bootstrap is an instance of it.</li>
+<li>Give one reason the bootstrap fails for $\hat\theta = \max_i X_i$ when $X_i \sim \text{Uniform}(0,\theta)$.</li>
+<li>Explain why studentizing typically improves bootstrap confidence intervals.</li>
+</ul>
+<p data-cid="ch19-1390">If any of these feel shaky, re-read the matching section. There's no hurry.</p>
+</div>
+<nav class="chapter-nav">
+<a href="ch18.html"><span class="label">← Previous</span><span class="title">18. Nonparametric Regression</span></a>
+<a class="next" href="ch20.html"><span class="label">Next →</span><span class="title">20. Sequential Methods</span></a>
+</nav>
+</article>
+</main>
+<script src="/js/main.js"></script><script src="/js/comments.js"></script>
+</body>
+</html>

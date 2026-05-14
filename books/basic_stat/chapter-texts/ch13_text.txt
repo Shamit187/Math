@@ -1,0 +1,870 @@
+
+===== PAGE 1 =====
+
+13
+Optimal Tests in Higher Dimensions
+In Section 13.2, uniformly most powerful unbiased tests are considered for
+multiparameter exponential families. The discussion involves marginal and
+conditional distributions described in Section 13.1. The t-test and Fisher’s
+exact test are considered as examples in Section 13.3.
+13.1 Marginal and Conditional Distributions
+The main result of this section uses the following technical lemma about
+conditional and marginal distributions when a joint density factors, but the
+dominating measure is not a product measure.
+Lemma 13.1. LetY be a random vector in R
+n andT a random vector in Rm,
+and let P0 and P1 be two possible joint distributions for Y and T . Introduce
+marginal distributions
+Q0(B) = P0(T ∈B) and Q1(B) = P1(T ∈B),
+and conditional distributions
+R0t(B) = P0(Y ∈B|T =t) and R1t(B) = P1(Y ∈B|T =t).
+Assume P1 ≪ P0 and that the density for P1 has form
+dP1
+dP0
+(t,y ) = a(y)b(t)
+with a(y)> 0 for all y ∈ Rn. Then Q1 ≪ Q0 and R1t ≪ R0t, for a.e. t (Q1)
+with densities given by
+dQ1
+dQ0
+(t) = b(t)E0
+[
+a(Y )|T =t
+]
+=b(t)
+∫
+adR 0t
+and
+dR1t
+dR0t
+(y) = a(y)
+∫
+adR 0t
+.
+R.W. Keener, Theoretical Statistics: Topics for a Core Course, Springer Texts in Statistics, 
+DOI 10.1007/978-0-387-93839-4_13, © Springer Science+Business Media, LLC 2010 
+255 
+
+===== PAGE 2 =====
+
+256 13 Optimal Tests in Higher Dimensions
+Proof. The formula for the marginal density is established by ﬁrst using
+Lemma 12.18 to write P1(T ∈ B) as an expectation under P0 involving the
+likelihood ratio a(Y )b(T ), followed by a smoothing argument to write this
+expectation as an integral against Q0. Thus
+P1(T ∈B) = E0
+[
+I{T ∈B}a(Y )b(T )
+]
+=E0E0
+[
+I{T ∈B}a(Y )b(T )
+⏐
+⏐T
+]
+=E
+0
+[
+I{T ∈B}b(T )E0
+[
+a(Y )
+⏐
+⏐T
+]]
+=
+∫
+B
+b(t)E0
+[
+a(Y )
+⏐
+⏐T =t
+]
+dQ
+0(t).
+Next, if the stated density for R1t is correct,
+R1t(C) =
+∫
+C
+a(y)
+∫
+adR 0t
+dR0t(y),
+and so, according to Deﬁnition 6.2 of conditional distributions, we must show
+that
+P
+1(T ∈B,Y ∈C) =
+∫
+B
+∫
+C
+a(y)
+∫adR 0t
+dR0t(y)dQ1(t).
+Using the formula for the density of Q1 with respect to Q0, the right-hand
+side of this equation equals
+∫
+B
+∫
+I{y ∈C}a(y)dR0t(y)b(t)dQ0(t)
+=E0
+[
+I{T ∈B}b(T )E0
+[
+I{Y ∈C}a(Y )
+⏐
+⏐T
+]]
+=E
+0
+[
+a(Y )b(T )I{T ∈B,Y ∈C}
+]
+=P1(T ∈B,Y ∈C),
+where the last equality follows from Lemma 12.18. ⊓ ⊔
+Suppose the distribution for data X comes from an ( r +s)-parameter
+canonical exponential family with densities
+pθ,η (x) = h(x) exp
+[
+θ ·U (x) +η ·T (x) − A(θ,η )
+]
+, (13.1)
+whereθ is r-dimensional and η is s-dimensional. The following theorem gives
+the form of marginal and conditional distributions for the suﬃcient statistics
+U and T .
+Theorem 13.2. IfX has density p
+θ,η in (13.1), then there exist measures λθ
+and νt such that:
+1. With θ ﬁxed, the marginal distributions of T will form an s-parameter
+exponential family with densities
+exp
+[
+η ·t − A(θ,η )
+]
+with respect to λθ .
+
+===== PAGE 3 =====
+
+13.2 UMP Unbiased Tests in Higher Dimensions 257
+2. The conditional distributions of U givenT =t form an exponential family
+with densities
+exp
+[
+θ ·u − At(θ )
+]
+with respect to νt. These densities are independent of η .
+Proof. Fix some point ( θ 0,η 0) ∈ Ω, and let ν be the joint distribution of T
+andU under Pθ 0,η 0 . Arguing as in the proof of Theorem 12.19, under Pθ,η ,T
+and U have joint density
+exp
+[
+(θ − θ 0) ·u + (η − η 0) ·t +A(θ 0,η 0) − A(θ,η )
+]
+with respect to ν . If R0 denotes the conditional distribution of U given T
+under Pθ 0,η 0 , then by Lemma 13.1 the marginal density of T under Pθ,η is
+eη·t−A(θ,η )
+∫
+exp
+(
+(θ − θ 0) ·u − η 0 ·t +A(θ 0,η 0)
+)
+dR0t(u)
+with respect to Q0, the marginal density of T under Pθ 0,η 0 . This is of the
+correct form provided we choose λθ so that
+dλθ
+dQ0
+(t) =
+∫
+exp
+(
+(θ − θ 0) ·u − η 0 ·t +A(θ 0,η 0)
+)
+dR0t(u).
+By the second formula in Lemma 13.1, under Pθ,η the conditional density of
+U givenT =t with respect to R0t is
+e(θ−θ 0)·u
+∫
+e(θ−θ 0)·v dR0t(v).
+This density has the desired form. ⊓ ⊔
+13.2 UMP Unbiased Tests in Higher Dimensions
+If the power function βϕ for an unbiased test ϕ is continuous, then βϕ (θ ) ≤ α
+for θ in
+ Ω0, the closure of Ω0, and βϕ (θ ) ≥ α for θ ∈
+ Ω1. If we take ω =
+Ω0 ∩
+Ω1, the common boundary of Ω0 and Ω1, then
+βϕ (θ ) = α, ∀θ ∈ω.
+Tests satisfying this equation are called α -similar. Here α need not denote the
+level of the tests, because βϕ may exceed α at points θ in Ω0 − ω .
+Lemma 13.3. Supposeϕ∗is α -similar and has level α , and that power func-
+tionsβϕ for all test functions ϕ are continuous. Ifϕ∗is uniformly most power-
+ful among all α -similar tests, then it is unbiased and uniformly most powerful
+among all unbiased tests.
+
+===== PAGE 4 =====
+
+258 13 Optimal Tests in Higher Dimensions
+Proof. The degenerate test that equals α regardless of the observed data is α -
+similar. Since ϕ∗has better power, βϕ ∗ (θ ) ≥ α , θ ∈Ω1. Because ϕ∗has level
+α ,βϕ ∗ (θ ) ≤ α ,θ ∈Ω0. Thusϕ∗is unbiased. If a competing test ϕ is unbiased,
+then since its power function is continuous it is α -similar. Then βϕ ≤ βϕ ∗ on
+Ω1 because ϕ∗is uniformly most powerful among all α -similar tests. ⊓ ⊔
+The tests we develop use conditioning to reduce to the univariate case.
+Part of why this works is that the tests have the structure in the following
+deﬁnition.
+Deﬁnition 13.4. Suppose T is suﬃcient for the subfamily {P
+θ :θ ∈ω }. An
+α -similar test ϕ has Neyman structure if
+Eθ [ϕ |T =t] = α, for a.e. t, ∀θ ∈ω.
+Theorem 13.5. If T is complete and suﬃcient for {Pθ :θ ∈ ω }, then every
+similar test has Neyman structure.
+Proof. Forθ ∈ω , let h(T ) = E
+θ (ϕ |T ). (Because T is suﬃcient, h is indepen-
+dent of θ ∈ω .) By smoothing,
+Eθ ϕ =Eθ h(T ) = α, ∀θ ∈ω.
+By completeness, h(T ) = Eθ (ϕ |T ) = α , a.e., for all θ ∈ω . ⊓ ⊔
+Suppose data X has density
+pθ,η (x) = h(x) exp
+{
+θU (x) +η ·T (x) − A(θ,η )
+}
+. (13.2)
+Here θ is univariate, but η can be s-dimensional. The tests of interest are
+derived by conditioning on T . By Theorem 13.2, the conditional distributions
+of U given T = t form a one-parameter exponential family with canonical
+parameter θ . Theorem 12.9 gives a uniformly most powerful conditional test
+of H0 :θ ≤ θ 0 versusH1 :θ>θ 0, given by
+ϕ 1 =
+
+
+
+
+
+1, U >c( T );
+γ (T ), U =c(T );
+0, U <c( T ),
+with c(·) and γ (·) adjusted so that
+P
+θ 0,η
+(
+U >c(t)
+⏐
+⏐T =t
+)
++γ (t)P
+θ 0,η
+(
+U =c(t)
+⏐
+⏐T =t
+)
+=α.
+Similarly, Theorem 12.26 gives a uniformly most powerful unbiased condi-
+tional test of H
+0 :θ =θ 0 versusH1 :θ ̸=θ 0, given by
+ϕ 2 =
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1, U <c
+−(T );
+1, U >c +(t);
+γ−(T ), U =c−(T );
+γ +(T ), U =c+(T );
+0, U ∈
+(
+c−(T ),c +(T )
+)
+,
+
+===== PAGE 5 =====
+
+13.2 UMP Unbiased Tests in Higher Dimensions 259
+with c±(·) and γ±(·) adjusted so that
+Eθ 0,η [ϕ 2|T =t] = α
+and
+Eθ 0,η [ϕ 2U |T =t] = αEθ 0,η [U |T =t].
+Theorem 13.6. If the exponential family (13.2) is of full rank and Ω is open,
+then ϕ 1 is a uniformly most powerful unbiased test of H0 : θ ≤ θ 0 versus
+H1 :θ >θ 0, and ϕ 2 is a uniformly most powerful unbiased test of H0 :θ =θ 0
+versus H1 :θ ̸=θ 0.
+Proof. Let us begin proving the assertion about ϕ 1. First note that the con-
+ditions on the exponential family ensure that the densities with θ =θ 0 form
+a full rank exponential family with T as a complete suﬃcient statistic. Also,
+from the construction, Eθ 0,η [ϕ 1|T ] = α , so by smoothing Eθ 0,η ϕ 1 =α andϕ 1
+is α -similar. Suppose ϕ is a competing α -similar test. Then ϕ has Neyman
+structure by Theorem 13.5 and Eθ 0,η [ϕ |T = t] = α . Because ϕ 1 is the most
+powerful conditional test of θ =θ 0 versusθ >θ 0, if θ >θ 0, then
+Eθ,η (ϕ 1|T =t) ≥ Eθ,η (ϕ |T =t),
+and by smoothing, 1
+Eθ,η ϕ 1 =Eθ,η Eθ,η (ϕ 1|T ) ≥ Eθ,η Eθ,η (ϕ |T ) = Eθ,η ϕ.
+This shows that ϕ 1 is uniformly most powerful α -similar. By Theorem 12.9,
+the conditional power function for ϕ 1 is increasing in θ , and so if θ<θ 0,
+Eθ,η ϕ 1 =Eθ,η Eθ,η (ϕ 1|T ) ≤ Eθ 0,η Eθ,η (ϕ 1|T ) = α.
+Thus ϕ 1 has level α . By Theorem 2.4, power functions for all test functions
+are continuous, so by Lemma 13.3 ϕ 1 is uniformly most powerful unbiased.
+The argument for the assertion about ϕ 2 is a bit more involved. Let
+m(θ,η ) = Eθ,η U = ∂A (θ,η )
+∂η ,
+by (2.4). By dominated convergence (as in Theorem 12.20),
+1 There is a presumption here that (θ 0,η ) lies in Ω regardless the choice of (θ,η ) ∈
+Ω. Unfortunately, this does not have to be the case. This issue can be resolved by
+reparameterization. If (θ 0,η 0) ∈Ω and we are concerned with power at (θ 1,η 1) ∈
+Ω, deﬁne new parameters ˜θ = θ and ˜η = η + (η 0 − η 1)(θ − θ 0)/ (θ 1 − θ 0). Then
+the original parameters of interest, ( θ 0,η 0) and (θ 1,η 1) become ( ˜θ 0, ˜η 0) = (θ 0,η 0)
+and ( ˜θ 1, ˜η 1) = (θ 1,η 0). The canonical statistics for the reparameterized family are
+˜T =T and ˜U =U + (η 0 −η 1) ·T/ (θ 1 −θ 0). Since we condition on T , it is easy to
+see that the test ϕ 1 will be the same, regardless of the parameterization.
+
+===== PAGE 6 =====
+
+260 13 Optimal Tests in Higher Dimensions
+∂β ϕ (θ,η )
+∂θ = ∂
+∂θ
+∫
+ϕ (x)pθ,η (x)dµ(x)
+=
+∫
+ϕ (x) ∂
+∂θ pθ,η (x)dµ(x)
+=
+∫
+ϕ (x)
+(
+U (x) − m(θ,η )
+)
+pθ,η (x)dµ(x)
+=Eθ,η ϕ
+(
+U − m(θ,η )
+)
+.
+Suppose ϕ is unbiased. Then this derivative must be zero when θ = θ 0, and
+thus
+Eθ 0,η ϕU − αm (θ 0,η ) = Eθ 0,η [ϕU − αU ] = 0.
+Conditioning on T ,
+0 = Eθ 0,η Eθ 0,η
+[
+ϕU − αU
+⏐
+⏐T
+]
+,
+and sinceT is complete for the family of distributions with θ =θ
+0, this implies
+that
+Eθ 0,η
+[
+ϕU − αU
+⏐
+⏐T
+]
+= 0.
+But ϕ is α -similar and has Neyman structure, implying E
+θ 0,η [ϕ |T ] = α , and
+so
+Eθ 0,η [ϕU |T ] = αEθ 0,η [U |T ].
+By Theorem 12.20, this constraint ensures that the conditional power Eθ,η [ϕ |T ]
+has zero slope at θ =θ 0. By Theorem 12.22, ϕ 2 is the uniformly most powerful
+conditional test satisfying this condition, and so
+Eθ,η [ϕ 2|T ] ≥ Eθ,η [ϕ |T ].
+Taking expectations, by smoothing
+Eθ,η ϕ 2 ≥ Eθ,η ϕ.
+Thusϕ is uniformly most powerful unbiased. (Again, reparameterization can
+be used to treat cases where ( θ,η ) ∈Ω but (θ 0,η ) /∈Ω.) ⊓ ⊔
+13.3 Examples
+Example 13.7 (The t-test). The theory developed in the previous section can
+be used to test the mean of a normal distribution. Suppose X1,...,X n is
+a random sample from N (µ,σ 2), and consider testing H0 : µ ≤ 0 versus
+H1 :µ> 0. The joint density from Example 2.3 is
+1
+(2π )n/2 exp
+[ µ
+σ 2U (x) − 1
+2σ 2T (x) − nµ2
+2σ 2 − n logσ
+]
+,
+
+===== PAGE 7 =====
+
+13.3 Examples 261
+with U (x) = x1 + · · · +xn and T (x) = x2
+1
++ · · · +x2
+n
+. This has form (13.2)
+with θ =µ/σ 2 and η = − 1/ (2σ 2). Note that the hypotheses expressed using
+the canonical parameters are H0 :θ ≤ 0 versus H1 :θ> 0. By Theorem 13.6,
+the uniformly most powerful unbiased test has form
+ϕ =
+{
+1, U >c( T );
+0, otherwise,
+with c(·) chosen so that
+Pµ=0
+[
+U >c(t)
+⏐
+⏐T =t
+]
+=α.
+To proceed we need the conditional distribution of U givenT =t whenµ = 0.
+Note that the family of distributions with µ = 0 is an exponential family with
+complete suﬃcient statistic T . Also, if we deﬁne Z =X/σ , so that Z
+1,...,Z n
+are i.i.d. standard normal, or Z ∼ N (0,I ), then W = X/ ∥X∥ = Z/ ∥Z∥
+is ancillary. By Basu’s theorem (Theorem 3.21), T and W are independent.
+Because ∥X∥ =
+√
+T ,X =W
+√
+T , and using independence between T and W ,
+E
+[
+h(X)
+⏐
+⏐T =t
+]
+=E
+[
+h
+(
+W
+√
+t
+)⏐
+⏐T =t
+]
+=Eh
+(
+W
+√
+t
+)
+.
+This shows that
+X|T =t ∼ W
+√
+t. (13.3)
+The vectorW is said to be uniformly distributed on the unit sphere. Note that
+if O is an arbitrary orthogonal matrix ( OO′= I), then OZ ∼ N (0,OO′) =
+N (0,I ). Also ∥OZ∥2 = (OZ)′(OZ) = Z′O′OZ = Z′Z = ∥Z∥2. Thus Z and
+OZ have the same length and distribution. Then
+OW = OZ
+∥Z∥ = OZ
+∥OZ∥ ∼ Z
+∥Z∥ =W.
+So W and OW have the same distribution, which shows that the uniform
+distribution on the unit sphere is invariant under orthogonal transformations.
+In fact, this is the only probability distribution on the unit sphere that is in-
+variant under orthogonal transformations. Using (13.3), since U = 1
+′X where
+1 denotes a column of 1s,
+Pµ=0
+[
+U >c(t)
+⏐
+⏐T =t
+]
+=P (1
+′W >c(t)/
+√
+t).
+This equals α if we take c(t)/
+√
+t =q, the upper α th quantile for 1′W . Thus
+the uniformly most powerful unbiased test rejects H0 if
+U
+√
+T
+≥ q.
+Although it may not be apparent, this is equivalent to the usual test based
+on the t-statistic
+
+===== PAGE 8 =====
+
+262 13 Optimal Tests in Higher Dimensions
+t =
+ X
+S/ √
+n.
+To see this, note that
+X =U/n
+and
+S2 = 1
+n − 1
+n∑
+i=1
+(Xi −
+X)2
+= 1
+n − 1
+n∑
+i=1
+X2
+i − n
+n − 1
+X
+2
+= T
+n − 1 − U 2
+n(n − 1),
+and so
+t = U/ √
+n
+√
+(T − U 2/n )/ (n − 1)
+=
+√
+n − 1 Sign(U )
+√
+nT/U 2 − 1
+=g(U/
+√
+T ).
+The function g(·) here is strictly increasing, and so U/
+√
+T > qif and only if
+t > g(q). When µ = 0, t has the t-distribution on n − 1 degrees of freedom,
+and so level α is achieved taking g(q) = tα,n −1, the upper α th quantile of this
+distribution. So our test then rejects H0 when
+t>t α,n −1.
+Details for the two-sided case, testing H0 : µ = 0 versus H1 : µ ̸= 0,
+are similar. The uniformly most powerful level α test rejects H0 when |t|>
+tα/2 ,n−1.
+Example 13.8 (Fisher’s Exact Test). A second example of unbiased testing
+concerns dependence in a two-way contingency table. Consider two questions
+on a survey, A and B, and suppose each of these questions has two answers.
+Responses to these questions might be coded with variables X
+1,...,X n and
+Y1,...,Y n takingXk = 1 if respondent k gives the ﬁrst answer to question A,
+Xk = 2 if respondent k gives the second answer to question A; and Yk = 1
+if respondent k gives the ﬁrst answer to question B, Yk = 2 if respondent k
+gives the second answer to question B. If the pairs ( Xk,Y k),k = 1,...,n, are
+i.i.d., and if
+pij =P (Xk =i,Y k =j), i = 1, 2, j = 1, 2,
+then the joint density is
+P (X1 =x1,...,X n =xn,Y 1 =y1,...,Y n =yn) =
+2∏
+i=1
+2∏
+j=1
+pnij
+ij , (13.4)
+where nij = #{k :xk =i,y k =j}. So if we take
+
+===== PAGE 9 =====
+
+13.3 Examples 263
+Nij = #{k :Xk =i,Y k =j}, i = 1, 2, j = 1, 2,
+thenN = (N11,N 12,N 21,N 22) is a suﬃcient statistic. Based on these data, we
+may want to test whether there is positive dependence between the two ques-
+tions. But ﬁrst we need to resolve what we mean by “positive dependence.”
+There seem to be various possibilities.
+Let (X,Y ) be a generic variable distributed as (X
+k,Y k). Perhaps we should
+deﬁne positive dependence between the questions to mean that the correlation
+betweenX and Y is positive. Because
+E(X − 1) = P (X = 2) = p
+21 +p22
+def= p2+
+and
+E(Y − 1) = P (Y = 2) = p12 +p22
+def= p+2,
+Cov(X,Y ) = Cov(X − 1,Y − 1) = E(X − 1)(Y − 1) − p2+p+2
+=P (X = 2,Y = 2) − p2+p+2 =p22 − p2+p+2 =p22p11 − p12p21.
+So the covariance between X and Y is positive if and only if
+p22p11 >p 12p21.
+Another notion of positive dependence might be that the chance X equals
+the larger value 2 increases if we learn that Y equals its larger value, that is,
+if
+P (X = 2|Y = 2) >P (X = 2).
+Equivalently, p22
+p12 +p22
+>p 21 +p22.
+Cross-multiplication and a bit of algebra show that this happens if and only
+if p
+22p11 > p12p21, so this notion of positive dependence is the same as the
+notion based on correlation.
+The distribution of N is multinomial,
+P (N11 =n11,...,N 22 =n22) =
+( n
+n11,...,n 22
+)
+pn11
+11 pn12
+12 pn21
+21 pn22
+22 .
+It is convenient to introduce new variables U = N11, T1 = N11 +N12, and
+T2 =N11 +N21. If N is given in a two-way table as in Example 5.5, then T1
+and T2 determine the marginal sums. Given U and T , we can solve for N ,
+speciﬁcally,
+N11 =U, N 12 =T1 − U, N 21 =T2 − U,
+and
+N22 =n +U − T1 − T2.
+
+===== PAGE 10 =====
+
+264 13 Optimal Tests in Higher Dimensions
+Thus there is a one-to-one relation between N and variables T and U , and
+P (T =t,U =u)
+=P
+(
+N11 =u,N 12 =t1 − u,N 21 =t2 − u,N 22 =n +u − t1 − t2
+)
+=h(u,t) pu
+11
+pt1−u
+12 pt2−u
+21 pn+u−t1−t2
+22
+=h(u,t)
+(p11p22
+p12p21
+)u (p12
+p22
+)t1 (p21
+p22
+)t2
+pn
+22
+=h(u,t) exp
+{
+θu +η ·t − A(θ,η )
+}
+, (13.5)
+where
+θ = log
+(p11p22
+p12p21
+)
+, η =
+(
+log(p12/p 22)
+log(p21/p 22)
+)
+,
+h(u,t) =
+( n
+u,t 1 − u,t 2 − u,n +u − t1 − t2
+)
+,
+and
+A(θ,η ) = −n logp22.
+Using Theorem 13.6, a uniformly most powerful unbiased test is given by
+ϕ =
+
+
+
+
+
+1, U >c( T );
+γ (T ), U =c(T );
+0, U <c( T ),
+with c(·) and γ (·) adjusted so that
+α =P
+θ =0
+(
+U >c(t)|T =t) +γ (t)Pθ =0
+(
+U =c(t)|T =t).
+To describe the test in a more explicit fashion, we need the conditional
+distribution ofU givenT =t whenθ = 0. This distribution does not depend on
+η . It is convenient to assume that p11 =p12 =p21 =p22 = 1/ 4 and to denote
+probability in this case by P0. Then P0(Xk = 1) = P0(Xk = 2) = P0(Yk =
+1) = P0(Yk = 2) = 1 / 2, so the joint density in (13.4) equals the product of
+the marginal densities and under P0 the variables Xk , k = 1,...,n, and Yk ,
+k = 1,...,n, are all independent. Since T1 depends on Xk, k = 1,...,n, and
+T2 depends on Yk, k = 1,...,n, T1 and T2 are independent under P0, each
+from a binomial distribution with n trials and success probability 1 / 2. Thus
+P0(T =t) = P0(T1 =t1)P0(T2 =t2) =
+(n
+t1
+)(n
+t2
+) 1
+4n.
+Using (13.5),
+P0(U =u,T =t) =
+( n
+u,t 1 − u,t 2 − u,n +u − t1 − t2
+) 1
+4n.
+
+===== PAGE 11 =====
+
+13.4 Problems 265
+Dividing these expressions, after a bit of algebra,
+P0(U =u|T =t) = P0(U =u,T =t)
+P0(T =t) =
+(t1
+u
+)(n − t1
+t2 − u
+)
+(n
+t2
+) .
+This is the hypergeometric distribution, which arises in sampling theory. Con-
+sider drawingt
+2 times without replacement from an urn containing t1 red balls
+and n − t1 white balls, and let U denote the number of red balls in the sam-
+ple. Then there are
+(n
+t2
+)
+samples, and the number of samples for which U =u
+is
+(t1
+u
+)(n−t1
+t2−u
+)
+. If the chances for all possible samples are the same, then the
+chanceU =u is given by the formula above.
+The two-sided case can be handled in a similar fashion. Direct calculation
+shows that θ = 0 if and only if X and Y are independent, and so testing
+H0 : θ = 0 versus H1 : θ ̸= 0 amounts to testing whether answers for the
+two questions are independent. Again the best test conditions on the margins
+T , and probability calculations are based on the hypergeometric distribution.
+Calculations to set the constants c
+±and γ±are messy and need to be done
+numerically. These tests for two-way contingency tables were introduced by
+Fisher and are called Fisher’s exact tests .
+13.4 Problems 2
+*1. Consider a two-parameter exponential family with Lebesgue density
+pθ,φ (x,y ) = (x +y)eθx +φy−A(θ,φ ), x ∈ (0, 1), y ∈ (0, 1).
+a) Find A(θ,φ ).
+b) Find the marginal density of X. Check that the form of this distribu-
+tion agrees with Theorem 13.2.
+c) Find the conditional density of X givenY =y. Again, check that this
+agrees with Theorem 13.2.
+d) Determine the uniformly most powerful unbiased test of H0 : θ ≤ 0
+versusH1 :θ> 0.
+e) Determine the uniformly most powerful unbiased test of H0 : θ = 0
+versusH1 :θ ̸= 0.
+2. Suppose X and Y are absolutely continuous with joint density
+pθ,η (x,y ) =
+{
+η (θ +η )eθx +ηy , 0<x<y ;
+0, otherwise,
+where η < 0 and η +θ <0.
+2 Solutions to the starred problems are given at the back of the book.
+
+===== PAGE 12 =====
+
+266 13 Optimal Tests in Higher Dimensions
+a) Determine the marginal density of Y . Show that for ﬁxed θ these
+densities form an exponential family with parameter η .
+b) Determine the conditional density of X given Y = y. Show that for
+ﬁxed y, these densities form an exponential family with parameter θ .
+*3. Let X and Y be independent variables, both with gamma distributions.
+The parameters for the distribution of X are αx and λx; the parameters
+for Y are αy and λy ; and both shape parameters, αx and αy , are known
+constants.
+a) Determine the uniformly most powerful unbiased test of H0 :λx ≤ λy
+versus H1 : λx > λy . Hint: You should be able to relate the critical
+value for the conditional test to a quantile for the beta distribution.
+b) If X1,... ,Xn is a random sample from N (0,σ 2
+x) and Y1,... ,Ym is a
+random sample from N (0,σ 2
+y ), then one common test of H0 :σ 2
+x ≤ σ 2
+y
+versus H1 : σ 2
+x > σ 2
+y rejects H0 if and only if F = s2
+x
+/s 2
+y
+exceeds
+the upper α th quantile of the F -distribution on n and m degrees of
+freedom, where s2
+x
+= ∑n
+i=1
+X2
+i /n and s2
+y
+= ∑m
+j=1
+Y 2
+j /m . Show that
+this test is the same as the test in part (a). Give a formula relating
+quantiles for the F -distribution to quantiles for the beta distribution.
+4. Consider a regression model in which data Y
+1,...,Y n are independent
+withYi ∼ N (α +βxi, 1),i = 1,...,n. Here α and β are unknown param-
+eters, and x1,...,x n are known constants. Determine the uniformly most
+powerful unbiased test of H0 :β = 0 versus H1 :β ̸= 0.
+*5. Consider a regression model in which data Y1,...,Y n are independent with
+Yi ∼ N (βxi +γwi, 1), i = 1,...,n. Here β and γ are unknown parame-
+ters, and x1,...,x n and w1,...,w n are known constants. Determine the
+uniformly most powerful unbiased test of H0 :β ≤ γ versusH1 :β >γ .
+*6. Let X1,...,X m be a random sample from the Poisson distribution with
+mean λx, and let Y1,...,Y n be an independent random sample from the
+Poisson distribution with mean λy .
+a) Describe the uniformly most powerful unbiased test of H0 : λx ≤ λy
+versusH1 :λx >λ y .
+b) Suppose α = 5% and the observed data are X1 = 3, X2 = 5, and
+Y1 = 1. What is the chance the uniformly most powerful test will
+reject H0?
+c) Give an approximate version of the test, valid if m and n are large.
+7. Consider a two-parameter exponential family with density
+pθ,η (x,y ) =
+
+
+
+θ
+2η 2(x +y)
+θ +η e−θx−ηy , x> 0 and y >0;
+0, otherwise.
+Determine the level α uniformly most powerful unbiased test of H0 :θ ≤ η
+versusH1 :θ>η .
+8. Suppose X and Y are absolutely continuous with joint density
+
+===== PAGE 13 =====
+
+13.4 Problems 267
+pθ (x,y ) =
+{
+(x +y)e−θ 1x2−θ 2y2−A(θ ), x> 0,y> 0;
+0, otherwise.
+a) Find A(θ ).
+b) Find the uniformly most powerful unbiased test of H0 :θ 1 ≤ θ 2 versus
+H1 :θ 1 >θ 2.
+9. Let X have a normal distribution with mean µ and variance σ 2.
+a) For x> 0, ﬁnd
+p(x) = lim
+ǫ↓0
+P
+(
+x<X <x +ǫ
+⏐
+⏐x
+2 <X 2 < (x +ǫ)2)
+.
+In part (b) you can assume that the conditional distribution of X
+givenX2 is given by P (X =x|X2 =x2) = p(x) and P (X = −x|X2 =
+x2) = 1 − p(x), x> 0.
+b) Find the uniformly most powerful unbiased level α testϕ ofH0 :µ ≤ 0
+versusH1 :µ> 0 based on the single observation X.
+10. Let X1,...,X n be i.i.d. from N (µ,σ 2). Determine the uniformly most
+powerful unbiased test of H0 :σ 2 ≤ 1 versus H1 :σ 2 > 1.
+
+===== PAGE 14 =====
+

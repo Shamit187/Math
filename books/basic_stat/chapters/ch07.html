@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ch 7 — Bayesian Estimation · Theoretical Statistics</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/>
+</head>
+<body data-book="basic_stat" data-page="ch07">
+<header class="site-header">
+<a class="brand" href="/books/basic_stat/">Theoretical Statistics <small>a slow reading guide</small></a>
+<nav>
+<a href="/" class="all-books-link">All books</a>
+    <a href="/books/basic_stat/">Contents</a>
+<button aria-label="toggle theme" class="theme-toggle">Dark</button>
+</nav>
+</header>
+<main class="layout">
+<aside class="sidebar">
+<h4>Chapter 7</h4>
+<ol>
+<li><a href="#why">Why average the risk?</a></li>
+<li><a href="#s7-1">7.1 Bayesian models &amp; the main result</a></li>
+<li><a href="#s7-2">7.2 Examples</a></li>
+<li><a href="#s7-3">7.3 Utility theory</a></li>
+<li><a href="#summary">Summary</a></li>
+</ol>
+</aside>
+<article class="content">
+<section class="hero">
+<div class="kicker">Chapter 7</div>
+<h1>Bayesian Estimation</h1>
+<p class="subtitle" data-cid="ch07-010">Turning the prior into the posterior, and learning to pick the estimator that minimises expected loss given what you saw.</p>
+<div class="meta">
+<span>Book pages: 115–127</span>
+<span>~40 min reading time</span>
+<span>Prereqs: Ch 3 (risk), Ch 6 (conditioning)</span>
+</div>
+</section>
+<h2 data-cid="ch07-020" id="why">Why does anyone average the risk?</h2>
+<p data-cid="ch07-030">
+  Back in Chapter 3 we measured an estimator $\delta$ by its <strong>risk function</strong>
+  $R(\theta, \delta) = E_\theta L(\theta, \delta(X))$, a number for every possible $\theta$. Two estimators
+  are easy to compare when one curve sits below the other for all $\theta$. But the moment the graphs cross —
+  one estimator is better for small $\theta$, the other for large $\theta$ — there is nothing in the
+  frequentist framework that breaks the tie.
+</p>
+<p data-cid="ch07-040">
+  Bayesians break the tie by collapsing the whole risk function down to a single number:
+</p>
+$$\int R(\theta, \delta) \, d\Lambda(\theta), \tag{7.1}$$
+<p data-cid="ch07-050">
+  where $\Lambda$ is a probability measure on the parameter space $\Omega$. Now every estimator gets one
+  score, and "smaller is better" makes unambiguous sense. The estimator that minimises this average is
+  called <strong>Bayes</strong>.
+</p>
+<div class="box intuition" data-cid="ch07-060">
+<span class="box-label">The shift in worldview</span>
+<p data-cid="ch07-070">
+  In the frequentist view, $\theta$ is a fixed unknown number and only the data $X$ is random. In the
+  Bayesian view, both $\theta$ and $X$ are random. The integrator (7.1) is just the expected loss in this
+  enlarged probability model. Everything else — priors, posteriors, the famous Bayes-rule update — falls
+  out of taking that one extra step seriously.
+</p>
+</div>
+<!-- ===================================================================== -->
+<h2 data-cid="ch07-080" id="s7-1">7.1 Bayesian models and the main result</h2>
+<h3 data-cid="ch07-090">Setting up the joint distribution</h3>
+<p data-cid="ch07-100">
+  We write the random parameter as a capital $\Theta$, with a lowercase $\theta$ for a value it might take.
+  The Bayesian model consists of two pieces:
+</p>
+<ul data-cid="ch07-110">
+<li>A <strong>prior distribution</strong> $\Theta \sim \Lambda$. This says what we believe about $\Theta$
+  before seeing any data.</li>
+<li>A <strong>sampling model</strong> $X \mid \Theta = \theta \sim P_\theta$. This is the same family of
+  distributions we've used all along — only now it's a <em>conditional</em> distribution.</li>
+</ul>
+<p data-cid="ch07-120">
+  Together these specify the joint distribution of $(\Theta, X)$. By the smoothing identity (Chapter 1,
+  Section 1.10),
+</p>
+$$E\!\big[L(\Theta, \delta(X)) \mid \Theta = \theta\big] = \int L(\theta, \delta(x)) \, dP_\theta(x) = R(\theta, \delta),$$
+<p data-cid="ch07-130">
+  and taking another expectation over $\Theta$,
+</p>
+$$E\, L(\Theta, \delta) \;=\; E\,R(\Theta, \delta) \;=\; \int R(\theta, \delta) \, d\Lambda(\theta).$$
+<p data-cid="ch07-140">
+  So expression (7.1) really is "expected loss" in the Bayesian probability model. It is not a different
+  philosophy bolted onto an existing formula; it is the same expectation computed two ways.
+</p>
+<div class="box intuition" data-cid="ch07-150">
+<span class="box-label">Two readings of the same integral</span>
+<p data-cid="ch07-160">
+  Read $\int R(\theta, \delta)\, d\Lambda(\theta)$ left-to-right and you see a frequentist averaging the
+  risk against a weighting. Read it right-to-left as $E\, L(\Theta, \delta(X))$ and you see a Bayesian
+  computing one number — the expected loss — in the joint probability model. Same integral, two languages.
+</p>
+</div>
+<h3 data-cid="ch07-170">Where does $\Lambda$ come from?</h3>
+<p data-cid="ch07-180">
+  Honest answer: it depends. Keener lists three flavours of justification, and a good statistician keeps
+  all three in mind.
+</p>
+<ul data-cid="ch07-190">
+<li><strong>Empirical / frequentist.</strong> Sometimes $\Theta$ really is random in a frequentist sense.
+  Keener's vivid example is a postal scanner: $\Theta$ is the zip code on an envelope, $X$ is pixel data,
+  and $\Lambda$ is just the empirical distribution of zip codes seen in the mail stream. Here $\Lambda$
+  is calibrated by data, not by belief.</li>
+<li><strong>Subjective.</strong> More often, $\Theta$ is a fixed quantity of nature (a population mean,
+  a survival probability) that has no frequentist distribution. Then $\Lambda$ expresses the researcher's
+  informed subjective opinion about plausible values.</li>
+<li><strong>Pragmatic.</strong> Both ideas are tempered by computation. A prior that admits a clean
+  posterior is often chosen because the math is tractable, not because we believe it literally.</li>
+</ul>
+<h3 data-cid="ch07-200">The main theorem</h3>
+<p data-cid="ch07-210">
+  We now ask: given a Bayesian model, which $\delta$ actually minimises (7.1)? The answer is the cleanest
+  result in the chapter, and it is a direct application of conditioning.
+</p>
+<p data-cid="ch07-220">
+  If we had no data at all, the best constant guess $d$ would minimise $E\, L(\Theta, d)$ — a pure prior
+  optimisation. With data $X = x$ in hand, we should instead minimise the <em>conditional</em> expected
+  loss:
+</p>
+$$E\!\big[ L(\Theta, d) \mid X = x \big].$$
+<p data-cid="ch07-230">
+  This is called the <strong>posterior risk</strong> at $d$. The conditional distribution of $\Theta$ given
+  $X = x$ is the <strong>posterior distribution</strong>, often written $\Lambda(\cdot \mid x)$ with density
+  $\lambda(\theta \mid x)$.
+</p>
+<div class="box definition" data-cid="ch07-240">
+<span class="box-label">Theorem 7.1 — the Bayes estimator minimises posterior expected loss</span>
+<p data-cid="ch07-250">Suppose $\Theta \sim \Lambda$, $X \mid \Theta = \theta \sim P_\theta$, and $L(\theta, d) \geq 0$.
+  Assume</p>
+<ol data-cid="ch07-260">
+<li>$E\, L(\Theta, \delta_0) &lt; \infty$ for some estimator $\delta_0$, and</li>
+<li>for almost every $x$ there is a value $\delta_\Lambda(x)$ that minimises $E[L(\Theta, d) \mid X = x]$
+  over $d$.</li>
+</ol>
+<p data-cid="ch07-270">Then $\delta_\Lambda$ is a Bayes estimator.</p>
+</div>
+<h3 data-cid="ch07-280">Why the proof is just smoothing</h3>
+<p data-cid="ch07-290">
+  Let $\delta$ be any other estimator. By the definition of $\delta_\Lambda(x)$,
+</p>
+$$E\!\big[L(\Theta, \delta(X)) \mid X = x\big] \;\geq\; E\!\big[L(\Theta, \delta_\Lambda(X)) \mid X = x\big]$$
+<p data-cid="ch07-300">
+  for almost every $x$. Now take expectations on both sides (smoothing recovers the unconditional
+  expectation):
+</p>
+$$E\, L(\Theta, \delta(X)) \;\geq\; E\, L(\Theta, \delta_\Lambda(X)).$$
+<p data-cid="ch07-310">
+  That is the entire proof. The trick is to push the optimisation inside the conditional expectation,
+  where it becomes a pointwise problem in $d$.
+</p>
+<div class="box intuition" data-cid="ch07-320">
+<span class="box-label">Restating the punch line</span>
+<p data-cid="ch07-330">
+  To find the Bayes estimator, do not minimise over functions $\delta$. For each observed $x$, just pick
+  the value $d$ that minimises a single number — the posterior expected loss. Stitch those pointwise
+  minimisers together and you have $\delta_\Lambda$. Optimisation over a function space has collapsed
+  into a pile of one-dimensional minimisations, one per value of $x$.
+</p>
+</div>
+<div class="box pause" data-cid="ch07-340">
+<span class="box-label">Pause — the posterior is the prior of the next experiment</span>
+<p data-cid="ch07-350">
+  Suppose you observe $X_1, X_2, \dots$ in sequence. After $X_1 = x_1$, the posterior $\Lambda(\cdot \mid x_1)$
+  encodes everything you now believe about $\Theta$. If a second measurement $X_2$ arrives, you can treat
+  $\Lambda(\cdot \mid x_1)$ as the new prior and Bayes-update again. The "posterior becomes the next
+  prior" is not a slogan — it is a literal consequence of how conditioning composes. Information
+  accumulates one observation at a time, with no special bookkeeping required.
+</p>
+</div>
+<h3 data-cid="ch07-360">Computing the posterior in the dominated case</h3>
+<p data-cid="ch07-370">
+  In nearly every concrete example, the family $\{P_\theta\}$ has densities $p_\theta(x)$ (against some
+  measure $\mu$ on $\mathcal{X}$) and the prior $\Lambda$ has a Lebesgue density $\lambda(\theta)$. Then
+  the joint density of $(\Theta, X)$ is
+</p>
+$$p_\theta(x) \, \lambda(\theta).$$
+<p data-cid="ch07-380">The marginal density of $X$ is</p>
+$$q(x) = \int p_\theta(x) \, \lambda(\theta) \, d\theta,$$
+<p data-cid="ch07-390">and the posterior density of $\Theta$ given $X = x$ is</p>
+$$\lambda(\theta \mid x) = \frac{p_\theta(x) \, \lambda(\theta)}{q(x)}.$$
+<p data-cid="ch07-400">
+  This is the famous Bayes-rule formula. Notice that $q(x)$ does not depend on $\theta$ — it is just a
+  normalising constant. In practice this lets us write
+</p>
+$$\lambda(\theta \mid x) \;\propto\; p_\theta(x) \, \lambda(\theta),$$
+<p data-cid="ch07-410">
+  identify the right-hand side as a recognisable distribution in $\theta$, and read off the normalising
+  constant for free.
+</p>
+<!-- ===================================================================== -->
+<h2 data-cid="ch07-420" id="s7-2">7.2 Examples</h2>
+<h3 data-cid="ch07-430">Squared-error loss: the posterior mean</h3>
+<p data-cid="ch07-440">
+  Consider weighted squared-error loss $L(\theta, d) = w(\theta)(d - g(\theta))^2$ for some weight
+  $w \geq 0$ and quantity of interest $g(\theta)$. The posterior expected loss, expanded as a quadratic in $d$, is
+</p>
+$$d^2\, E[w(\Theta) \mid X = x] \;-\; 2d\, E[w(\Theta) g(\Theta) \mid X = x] \;+\; E[w(\Theta) g(\Theta)^2 \mid X = x].$$
+<p data-cid="ch07-450">
+  Differentiate in $d$, set to zero, and you get
+</p>
+$$\delta_\Lambda(x) \;=\; \frac{E[w(\Theta) g(\Theta) \mid X = x]}{E[w(\Theta) \mid X = x]}. \tag{7.2}$$
+<p data-cid="ch07-460">
+  In the special case $w \equiv 1$ this collapses to
+</p>
+$$\delta_\Lambda(X) = E[g(\Theta) \mid X],$$
+<p data-cid="ch07-470">
+  the <strong>posterior mean of $g(\Theta)$</strong>. Memorise this: under squared-error loss, the Bayes
+  estimator is the posterior mean. Most of the examples below just ask you to compute that one quantity.
+</p>
+<div class="box example" data-cid="ch07-480">
+<span class="box-label">Worked example 7.3 — Beta–Binomial</span>
+<p data-cid="ch07-490">
+  Let $X \mid \Theta = \theta \sim \text{Binomial}(n, \theta)$ and place a $\text{Beta}(\alpha, \beta)$
+  prior on $\Theta$:
+</p>
+$$\lambda(\theta) = \frac{\Gamma(\alpha + \beta)}{\Gamma(\alpha)\Gamma(\beta)} \, \theta^{\alpha - 1}(1 - \theta)^{\beta - 1}, \qquad \theta \in (0,1).$$
+<p data-cid="ch07-500">
+  The joint density of $X$ and $\Theta$ is proportional to
+  $\theta^{x + \alpha - 1}(1 - \theta)^{n - x + \beta - 1}$, which is the kernel of a
+  $\text{Beta}(x + \alpha, n - x + \beta)$ density. Hence
+</p>
+$$\Theta \mid X = x \;\sim\; \text{Beta}(x + \alpha, \; n - x + \beta).$$
+<p data-cid="ch07-510">
+  The update rule is irresistibly clean: add the number of successes $x$ to $\alpha$, and add the number
+  of failures $n - x$ to $\beta$. Under squared-error loss,
+</p>
+$$\delta_\Lambda(X) = E[\Theta \mid X] = \frac{X + \alpha}{n + \alpha + \beta},$$
+<p data-cid="ch07-520">
+  which rearranges into a weighted average of the maximum-likelihood estimator $X/n$ and the prior mean
+  $\alpha/(\alpha + \beta)$:
+</p>
+$$\delta_\Lambda(X) = \frac{n}{n + \alpha + \beta} \cdot \frac{X}{n} \;+\; \frac{\alpha + \beta}{n + \alpha + \beta} \cdot \frac{\alpha}{\alpha + \beta}.$$
+<p data-cid="ch07-530">
+  As $n \to \infty$ the data swamps the prior; as $n \to 0$ we fall back to prior beliefs. The prior
+  parameters $\alpha, \beta$ act like "pseudo-counts" of imagined prior successes and failures.
+</p>
+</div>
+<div class="box intuition" data-cid="ch07-540">
+<span class="box-label">What just happened</span>
+<p data-cid="ch07-550">
+  We started with a Beta prior, multiplied by a Binomial likelihood, and recovered a Beta posterior.
+  Whenever the prior and posterior live in the same parametric family, we call the prior
+  <strong>conjugate</strong> for the sampling model. Conjugacy is a computational windfall: you never
+  have to evaluate the normalising integral $q(x)$ — you just read off the new parameters.
+</p>
+</div>
+<h3 data-cid="ch07-560">The normal–normal model with known variance</h3>
+<p data-cid="ch07-570">
+  This is the second canonical example. Suppose $X \mid \Theta = \theta \sim N(\theta, \sigma^2)$ with
+  $\sigma^2$ known, and place a $N(\mu_0, \tau^2)$ prior on $\Theta$. The joint density is proportional to
+</p>
+$$\exp\!\left(-\frac{(x - \theta)^2}{2\sigma^2}\right) \exp\!\left(-\frac{(\theta - \mu_0)^2}{2\tau^2}\right).$$
+<p data-cid="ch07-580">
+  Collecting terms in $\theta$ inside the exponent gives a quadratic in $\theta$, so the posterior is
+  again normal. Completing the square shows
+</p>
+$$\Theta \mid X = x \;\sim\; N\!\left( \frac{\tau^2 x + \sigma^2 \mu_0}{\sigma^2 + \tau^2}, \; \frac{\sigma^2 \tau^2}{\sigma^2 + \tau^2} \right).$$
+<p data-cid="ch07-590">
+  The posterior mean — and hence the Bayes estimator under squared-error loss — is a
+  precision-weighted average of the data and the prior mean. The posterior <em>precision</em> (inverse
+  variance) is the sum of the data precision $1/\sigma^2$ and the prior precision $1/\tau^2$. Precisions
+  add: a beautifully clean rule that generalises to $n$ i.i.d. observations by replacing $\sigma^2$
+  with $\sigma^2/n$.
+</p>
+<div class="box example" data-cid="ch07-600">
+<span class="box-label">Worked example 7.4 — Negative Binomial, and a warning</span>
+<p data-cid="ch07-610">
+  Now we run the machinery on a setup where it misbehaves. Let $X$ be the number of failures before the
+  second success in Bernoulli$(\theta)$ trials, so
+</p>
+$$p_\theta(x) = (x + 1)\, \theta^2 (1 - \theta)^x, \qquad x = 0, 1, 2, \dots.$$
+<p data-cid="ch07-620">
+  Take $\Theta \sim \text{Uniform}(0,1)$, and try to estimate $g(\Theta) = 1/\Theta$ under squared-error
+  loss. The posterior is
+</p>
+$$\Theta \mid X = x \;\sim\; \text{Beta}(3, x + 1).$$
+<p data-cid="ch07-630">
+  The posterior mean of $1/\Theta$ works out to $\delta_0(x) = (x + 3)/2$. But the UMVU estimator from
+  Chapter 5 is $\delta_1(x) = (x + 2)/2$, which differs from $\delta_0$ by a constant. So they have the
+  <em>same variance</em>, but $\delta_0$ has constant bias $1/2$, hence
+</p>
+$$R(\theta, \delta_0) = R(\theta, \delta_1) + 1/4.$$
+<p data-cid="ch07-640">
+  The "Bayes" estimator is uniformly dominated by another estimator! What went wrong is that
+  condition (a) of Theorem 7.1 fails: $E\, L(\Theta, \delta) = \infty$ for every $\delta$, because
+  $1/\Theta$ has infinite prior expectation under Uniform$(0,1)$. When the Bayes risk is everywhere
+  infinite, every estimator achieves "the minimum" (which is $\infty$), and the formal Bayes calculation
+  no longer picks out a good one.
+</p>
+</div>
+<div class="box warn" data-cid="ch07-650">
+<span class="box-label">Common pitfall — improper or heavy-tailed priors</span>
+<p data-cid="ch07-660">
+  An <strong>improper prior</strong> is one whose total mass is infinite (for instance, the "flat prior"
+  $\lambda(\theta) \equiv 1$ on $\mathbb{R}$). These are tempting because they look noncommittal, but
+  they invalidate the hypotheses of Theorem 7.1. The posterior may still exist as a probability
+  distribution — which lulls you into thinking everything is fine — but the resulting estimator can be
+  inadmissible (a different estimator beats it for every $\theta$). Always check that condition (a) of
+  Theorem 7.1 holds before declaring a "Bayes" estimator is good.
+</p>
+</div>
+<div class="box pause" data-cid="ch07-670">
+<span class="box-label">Pause — sequential updating in action</span>
+<p data-cid="ch07-680">
+  Take the Beta–Binomial. Start with $\text{Beta}(\alpha, \beta)$, observe $x_1$ successes in $n_1$
+  trials, update to $\text{Beta}(\alpha + x_1, \beta + n_1 - x_1)$. Now treat <em>that</em> as your new
+  prior and observe $x_2$ in $n_2$ more trials: you reach $\text{Beta}(\alpha + x_1 + x_2, \beta + n_1 + n_2 - x_1 - x_2)$.
+  Compare this with observing $x_1 + x_2$ successes in $n_1 + n_2$ trials in one shot: same answer.
+  Bayesian updating is order-invariant and chunk-invariant. This is the formal content of "the posterior
+  is the prior of the next experiment".
+</p>
+</div>
+<h3 data-cid="ch07-690">Conjugate priors for exponential families</h3>
+<p data-cid="ch07-700">
+  The Beta–Binomial and Normal–Normal patterns are not isolated. For a one-parameter canonical
+  exponential family
+</p>
+$$p_\theta(x) = h(x) \, \exp\!\big(\theta T(x) - A(\theta)\big),$$
+<p data-cid="ch07-710">
+  the family of priors
+</p>
+$$\lambda_{\alpha, \beta}(\theta) \;\propto\; \exp\!\big(\alpha \theta - \beta A(\theta)\big), \qquad \theta \in \Omega,$$
+<p data-cid="ch07-720">
+  is conjugate: the posterior after observing $X_1, \dots, X_n$ has parameters
+  $(\alpha + \sum T(X_i),\, \beta + n)$. Bayes estimation in any exponential family thus reduces to
+  bookkeeping on two parameters. Under squared-error loss the Bayes estimate of $A'(\Theta)$ — which by
+  Chapter 2 equals the mean of $T(X)$ under $P_\theta$ — works out to a weighted average of the prior
+  mean and the sample mean $\bar T = (T(X_1) + \cdots + T(X_n))/n$. The "weighted average of data and
+  prior" pattern is universal.
+</p>
+<div class="box intuition" data-cid="ch07-730">
+<span class="box-label">Sensitivity, in one paragraph</span>
+<p data-cid="ch07-740">
+  How much should you worry about prior choice? In conjugate models with enough data, the data
+  eventually dominates and reasonable priors converge to similar answers. But if $n$ is small, if the
+  prior is heavy-tailed, or if you care about tail-probability questions ("what's the chance $\Theta$
+  exceeds the regulatory threshold?"), the prior matters and you should do a
+  <em>sensitivity analysis</em>: rerun the inference under several plausible priors and see whether the
+  conclusions move. If they do, that's a finding, not a bug.
+</p>
+</div>
+<!-- ===================================================================== -->
+<h2 data-cid="ch07-750" id="s7-3">7.3 Utility theory (optional)</h2>
+<p data-cid="ch07-760">
+  We have been quietly assuming that "expected loss" is the right yardstick for comparing estimators.
+  But why expectation? Why not, say, the median loss, or the worst-case loss? This optional section
+  gives the philosophical answer: <strong>utility theory</strong>, which derives expected-value
+  reasoning from a short list of axioms about preferences.
+</p>
+<h3 data-cid="ch07-770">Lotteries and preferences</h3>
+<p data-cid="ch07-780">
+  Let $\mathcal{R}$ be a set of possible rewards (money, fame, "no headache today" — anything you might
+  care about). A <strong>lottery</strong> is a probability distribution on $\mathcal{R}$: gamble $P$
+  pays out a random reward drawn from $P$.
+</p>
+<p data-cid="ch07-790">
+  We compare lotteries with a relation $\preceq$, where $P_1 \preceq P_2$ means "I weakly prefer $P_2$
+  to $P_1$". For this to be a coherent preference, $\preceq$ should at minimum be a
+  <strong>complete ordering</strong>:
+</p>
+<ul data-cid="ch07-800">
+<li>Any two lotteries are comparable.</li>
+<li>If $P_1 \preceq P_2$ and $P_2 \preceq P_3$, then $P_1 \preceq P_3$.</li>
+</ul>
+<div class="box definition" data-cid="ch07-810">
+<span class="box-label">Definition 7.5 — utility function</span>
+<p data-cid="ch07-820">
+  A measurable function $U : \mathcal{R} \to \mathbb{R}$ is a <strong>utility function</strong> for $\preceq$ if
+</p>
+$$P_1 \preceq P_2 \quad \text{if and only if} \quad E_{P_1} U \leq E_{P_2} U,$$
+<p data-cid="ch07-830">
+  whenever the expectations exist.
+</p>
+</div>
+<p data-cid="ch07-840">
+  In words: $U$ converts preferences into numbers in a way that makes expected utility the right summary.
+  Two natural questions follow. First, does such a $U$ always exist? Second, is it unique?
+</p>
+<h3 data-cid="ch07-850">When utility functions don't exist</h3>
+<p data-cid="ch07-860">
+  Not every preference has a utility function. Keener's amusing example: suppose $\mathcal{R}$ contains
+  two rewards $a$ and $b$, and let $P_\theta$ be the lottery that pays $a$ with probability $\theta$
+  and $b$ otherwise. A gambler who loves suspense might rank $P_\theta$ by <em>how close $\theta$ is to
+  $1/2$</em>, preferring the maximally uncertain lottery. There is no utility function compatible with
+  this preference — expected utility is linear in $\theta$ and cannot peak in the middle.
+</p>
+<h3 data-cid="ch07-870">The axioms that force expected utility</h3>
+<p data-cid="ch07-880">
+  Roughly speaking, Keener's axioms A1–A4 say:
+</p>
+<ul data-cid="ch07-890">
+<li><strong>A1 (substitution).</strong> Mixing $P_1$ and $P_2$ with a common third lottery $P$ preserves
+  strict preferences. If you preferred $P_2$ to $P_1$, you still prefer the mixture
+  $\alpha P_2 + (1-\alpha) P$ to $\alpha P_1 + (1-\alpha) P$.</li>
+<li><strong>A2 (continuity).</strong> If $P_1 \prec P \prec P_2$, you can squeeze $P$ between
+  $\alpha P_2 + (1-\alpha) P_1$ for some $\alpha \in (0,1)$, and similarly from above.</li>
+<li><strong>A3 (measurability).</strong> A technical condition ensuring the constructed $U$ is
+  measurable.</li>
+<li><strong>A4 (reduction of compound lotteries).</strong> A two-stage lottery is equivalent to its
+  collapsed one-stage version. There is no intrinsic preference for or against "extra randomisation
+  steps".</li>
+</ul>
+<div class="box definition" data-cid="ch07-900">
+<span class="box-label">Theorem 7.8 — existence of utility</span>
+<p data-cid="ch07-910">
+  Under axioms A1–A4, there exists a utility function $U$ such that for all bounded lotteries
+  $P_1, P_2$,
+</p>
+$$P_1 \preceq P_2 \quad \text{if and only if} \quad E_{P_1} U \leq E_{P_2} U.$$
+<p data-cid="ch07-920">$U$ is unique up to positive affine transformations $U \mapsto a + bU$ with $b &gt; 0$.</p>
+</div>
+<div class="box intuition" data-cid="ch07-930">
+<span class="box-label">The construction in one sentence</span>
+<p data-cid="ch07-940">
+  Fix two reference rewards $s_0 \prec s_1$, set $U(s_0) = 0$ and $U(s_1) = 1$. For any other reward $r$,
+  find the unique $\nu \in [0,1]$ for which the gamble $\nu s_1 + (1-\nu) s_0$ is equivalent to receiving
+  $r$ for sure; define $U(r) = \nu$. Axiom A2 says this $\nu$ exists, A4 says the construction extends
+  consistently to lotteries, and the rest is checking that $\preceq$ now equals expected-utility
+  ordering.
+</p>
+</div>
+<h3 data-cid="ch07-950">Why we use loss instead of utility</h3>
+<p data-cid="ch07-960">
+  Loss functions $L(\theta, d)$ are just negative utilities — minimising expected loss is maximising
+  expected utility. The utility-theoretic justification means our reliance on $E\, L(\Theta, \delta)$
+  in (7.1) is not an arbitrary convention. Anyone whose preferences satisfy A1–A4 has no choice but to
+  rank estimators by expected loss for <em>some</em> loss function $L$. The Bayesian framework is then a
+  way of solving for the loss-minimising decision rule once $L$ is named.
+</p>
+<div class="box warn" data-cid="ch07-970">
+<span class="box-label">Common pitfall — different priors, different answers</span>
+<p data-cid="ch07-980">
+  Two reasonable analysts can produce different Bayes estimators from the same data simply by choosing
+  different priors. This is not a flaw — it is the framework being honest that subjective inputs matter.
+  But it does mean a Bayesian analysis is incomplete without naming the prior. If a paper reports a
+  "Bayesian estimate" without telling you the prior, treat the number with caution.
+</p>
+</div>
+<!-- ===================================================================== -->
+<h2 data-cid="ch07-990" id="summary">Summary — what you learned in Chapter 7</h2>
+<p data-cid="ch07-1000">The whole chapter, in seven bullets:</p>
+<ol data-cid="ch07-1010">
+<li>A <strong>Bayesian model</strong> couples a prior $\Theta \sim \Lambda$ with a sampling model
+  $X \mid \Theta \sim P_\theta$. The joint and marginal distributions are determined by these two pieces.</li>
+<li>The <strong>posterior distribution</strong> $\Lambda(\cdot \mid x)$ is the conditional distribution
+  of $\Theta$ given $X = x$. In the dominated case it has density
+  $\lambda(\theta \mid x) \propto p_\theta(x) \lambda(\theta)$.</li>
+<li><strong>Theorem 7.1 (the main result).</strong> The Bayes estimator $\delta_\Lambda(x)$ is whatever
+  value of $d$ minimises the <strong>posterior expected loss</strong> $E[L(\Theta, d) \mid X = x]$.</li>
+<li>Under <strong>squared-error loss</strong>, the Bayes estimator is the <strong>posterior mean</strong>
+  of $g(\Theta)$.</li>
+<li><strong>Conjugate priors</strong> keep the posterior in the same family as the prior. Beta is
+  conjugate for Binomial; Normal is conjugate for Normal with known variance; every exponential family
+  has a conjugate two-parameter prior family.</li>
+<li>The Bayes estimator is typically a <strong>weighted average</strong> of the data summary and the
+  prior mean, with weights set by sample size and prior precision.</li>
+<li><strong>Utility theory</strong> justifies expected-loss reasoning from preference axioms. The Bayes
+  framework is the right framework when you accept those axioms.</li>
+</ol>
+<div class="box pause" data-cid="ch07-1020">
+<span class="box-label">Did this land?</span>
+<p data-cid="ch07-1030">Before moving to Chapter 8, you should be able to answer (without looking back):</p>
+<ul data-cid="ch07-1040">
+<li>State Theorem 7.1 in one sentence. What are the two hypotheses?</li>
+<li>Why is the posterior mean the Bayes estimator under squared-error loss?</li>
+<li>Compute the Beta–Binomial posterior from scratch — prior, likelihood, posterior, posterior mean.</li>
+<li>Give one example where condition (a) of Theorem 7.1 fails, and explain what goes wrong.</li>
+<li>What would a utility-theoretic person say to a frequentist who refuses to specify a prior?</li>
+</ul>
+<p data-cid="ch07-1050">If any of these feel shaky, re-read the matching section. The framework is small but unforgiving.</p>
+</div>
+<nav class="chapter-nav">
+<a href="ch06.html"><span class="label">← Previous</span><span class="title">6. Conditional Distributions</span></a>
+<a class="next" href="ch08.html"><span class="label">Next →</span><span class="title">8. Large-Sample Theory</span></a>
+</nav>
+</article>
+</main>
+<script src="/js/main.js"></script><script src="/js/comments.js"></script>
+</body>
+</html>

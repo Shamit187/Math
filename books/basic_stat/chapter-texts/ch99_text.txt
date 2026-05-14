@@ -1,0 +1,9413 @@
+
+===== PAGE 1 =====
+
+A
+Appendices
+A.1 F unctions
+Informally, a function f can be viewed as a rule that associates with every
+pointx in some domain D an image value f (x). More formally, a function can
+be deﬁned as a collection of ordered pairs with the property that if ( x,y 1) and
+(x,y 2) are both in the collection, then y1 and y2 must be equal. The domain
+of the function can then be deﬁned as D = {x : (x,y ) ∈f }, and the range of
+the function is R = {y : (x,y ) ∈f }. Forx ∈D,f (x) denotes the unique value
+y ∈R with (x,y ) ∈f , and we say f maps x to this value f (x).
+A function f with domain D and range R is said to be into a set S if
+R ⊂ S, and onto S if R = S. The notation f : D → S means that f has
+domain D and maps this domain into S.
+A function is one-to-one if every value y in the range R is the image of a
+unique valuex in the domain D. In this case the collection formed reversing
+all of the ordered pairs, {(y,x ) : (x,y ) ∈f }, is also a function, with domain R
+and range D, called the inverse function , denoted f←. Then f←(y) for y ∈R
+is the unique value x withf (x) = y. Functions also have an inverse that maps
+sets to sets, denoted f−1, given by
+f−1(S) = {x ∈D :f (x) ∈S}.
+This inverse always exists, even if f is not one-to-one.
+Example A.1. IfD = {HH,HT,TH,TT }, perhaps viewed as all possible out-
+comes of tossing a coin twice, then
+f = {(HH, 2), (HT, 1), (TH, 1), (TT, 0)}
+is the function mapping the outcome to the number of heads. The range of
+this function is R = {0, 1, 2}. The function is not one-to-one because the
+value 1 ∈ R is the image of HT and TH , f (HT ) = f (TH ). So the inverse
+function f
+←does not exist. The other inverse, f−1, does exist. For instance,
+f−1(1, 2) = {HT,TH,HH } and f−1(4) = ∅.
+
+===== PAGE 2 =====
+
+432 A Appendices
+The deﬁnitions given above are quite general, covering situations where D
+and R are very complicated sets. For instance, a measure is a function with
+domainD aσ -ﬁeld of subsets of some sample space. The domain for a function
+could even be itself a collection of functions. For instance, if C[0, 1] is the set
+of all continuous functions on [0, 1], then
+h ⇝f (h) =
+∫ 1
+0
+h(x)dx
+describes a functionf with domainD =C[0, 1] and rangeR = R,f :C[0, 1] →
+R. A function is called real-valued if R ⊂ R and real-valued vector-valued if
+R ⊂ Rn for some n.
+A.2 Topology and Continuity in Rn
+Forx ∈ Rn and ǫ> 0, let Bǫ (x) = {y : ∥y − x∥<ǫ }, the open ball around x
+with radius ǫ. A set O ⊂ Rn is called open if it has the property that for every
+pointx inO there is some open ball Bǫ (x) that is contained in O (Bǫ (x) ⊂ O).
+The collection T of all open sets is called a topology. A set C is closed if its
+complement is open.
+Topologies can be used to characterize convergence and continuity in gen-
+eral settings. Note that the topology T for Rn is closed under ﬁnite intersec-
+tions and arbitrary unions. Also, Rn itself and the empty set ∅ are both open
+sets in T . In general, a topology is any collection of sets with these properties.
+One example arises when we are only concerned with points in a subset S of
+Rn. In this case, we use the relative topology in which all sets of the form O ∩S
+with O ∈ T are open. For instance, in the relative topology with S = [0, 2],
+[0, 1) is an open set, even though this set is not open in R. Sets in the relative
+topology are called open relative to S.
+A set N is called a neighborhood of x if N contains an open set O with
+x ∈O. A sequence of vectors xn,n ≥ 1, in Rn converges to x ∈ Rn if for any
+neighborhood N ofx,xn lies in N for all suﬃciently large n. This deﬁnition is
+equivalent to the usual deﬁnition in calculus courses. But because it is based
+only on the topology T , this deﬁnition of convergence can be used to deﬁne
+convergence on any space with a topology of open sets, even if there is no
+notion of distance between elements in the space.
+A point x lies in the boundary ∂S of a set S ⊂ R
+n if for any ǫ> 0, Bǫ (x)
+contains at least one point in S and at least one point in Sc. The closure
+ S
+of a set S is the union of S with its boundary ∂S ,
+ S =S ∪∂S . This closure
+S is the smallest closed set that contains S. The interior S◦of S is S − ∂S .
+The interior is the largest open set contained in S.
+A function f : D → R is continuous at a point x ∈ D if f (xn) → f (x)
+whenever xn, n ≥ 1, is a sequence in D converging to x. The function f is
+called continuous if it is continuous at every point x in D. Continuity can
+
+===== PAGE 3 =====
+
+A.2 Topology and Continuity in Rn 433
+also be characterized using open sets. A function f :D → R is continuous if
+f−1(O) is open relative to D for any O ∈ T .
+A collection {Oα :α ∈A} of open sets is called an open cover of K if K
+is a subset of the union,
+K ⊂
+⋃
+α∈A
+Oα .
+A set K in Rn (or any other topological space) is compact if any open cover
+{Oα :α ∈A} ⊂ T has a ﬁnite subcover, {Oα 1,...,O α m } withK ⊂ ⋃m
+i=1
+Oα i .
+The following result provides a useful characterization of compact sets in Rn.
+Theorem A.2 (Heine–Borel). A set K ⊂ Rn is compact if and only if it
+is closed and bounded, supx∈K ∥x∥< ∞.
+If xn, n ≥ 1, is a sequence of points in some space, and if n1 < n2 < · · ·
+are positive integers, then xnm , m ≥ 1, is called a subsequence. A set K is
+called sequentially compact if any subsequence xn, n ≥ 1, has a convergent
+subsequence,xnm → x withx ∈K. In general, compactness implies sequential
+compactness, but in Rn (or any metric space), compactness and sequential
+compactness are the same. Let C(K) denote the collection of continuous real-
+valued functions on K. The next result shows that functions in C(K) achieve
+their supremum if K is compact.
+Proposition A.3. Suppose K is compact and f ∈ C(K), and let M =
+supx∈K f (x). Then f (x) = M for some x ∈K.
+Proof. There must be values in the range of f arbitrarily close to M . Thus
+for any n ≥ 1 there exists xn with f (xn) > M − 1/n . Since the points xn,
+n ≥ 1, lie in K, by compactness there is a subsequence xnm → x ∈K. Since
+f is continuous, f (xnm ) → f (x). But because M − 1/n m < f(xnm ) ≤ M ,
+f (xnm ) → M . Thus f (x) = M . ⊓ ⊔
+If f : D → R is continuous, then for any x ∈ D and any ǫ > 0, there
+existsδ >0 such that |f (x) −f (y)|<ǫ whenever ∥x −y∥<δ . In general, the
+value for δ will need to depend on both ǫ and x. If the choice can be made
+independently of x, then f is called uniformly continuous . Equivalently, f is
+uniformly continuous if
+sup
+∥x−y∥<ǫ
+|f (x) − f (y)| → 0
+as ǫ ↓0.
+Proposition A.4. If K is compact and f ∈C(K), then f is uniformly con-
+tinuous.
+Proof. Fix ǫ > 0 and for every x ∈ D choose δ
+x so that |f (x) − f (y)|< ǫ/ 2
+whenever y ∈Bδ x (x). Since x ∈Bδ x/2 (x), these balls Bδ x/2 (x), x ∈D, form
+
+===== PAGE 4 =====
+
+434 A Appendices
+an open cover of K. Because K is compact, there must be a ﬁnite subcover
+Bδ xi/2 (xi), i = 1,...,m . Deﬁne δ = mini=1,...,m δxi/ 2. Suppose ∥x − y∥< δ.
+Sincex is in one of the sets in the ﬁnite open cover, ∥x −xi∥<δ xi/ 2 for some
+i. By the triangle inequality,
+∥y − xi∥ ≤ ∥y − x∥ + ∥x − xi∥< 1
+2δ + 1
+2δxi ≤ δxi.
+From the deﬁnition of δx,
+|f (x) − f (xi)|< ǫ
+2 and |f (y) − f (xi)|< ǫ
+2,
+and so, by the triangle inequality,
+|f (x) − f (y)| ≤ |f (x) − f (xi)|+ |f (xi) − f (y)|<ǫ. ⊓ ⊔
+Functions inC(K),K compact, achieve their supremum and are uniformly
+continuous. A ﬁnal useful property of C(K) is that monotone sequences con-
+verge uniformly.
+Theorem A.5 (Dini). If f
+1 ≥ f2 ≥ · · · are positive functions in C(K), K
+compact, and if fn(x) → 0 asn → ∞ for every x ∈K, then supx∈Dfn(x) → 0
+as n → ∞ .
+Proof. Fix ǫ> 0 and deﬁne
+On =f−1
+n [(−∞,ǫ )] = {x ∈K :fn(x)<ǫ }.
+Since f is continuous these sets On, n ≥ 1, are open relative to K, and
+since the functions are decreasing, O1 ⊂ O2 ⊂ · · · . Because fn(x) → 0, the
+point x will be in On once n is large enough, and so these sets cover K. By
+compactness, there is a ﬁnite subcover, On1,...,O nm . If N = max ni, then
+the union of these sets is ON , and thus ON =K. So fN (x)<ǫ for all x ∈K,
+and since the functions are decreasing, fn(x)<ǫ for all x ∈K and all n ≥ N .
+So
+lim sup
+n→∞
+sup
+x∈K
+fn(x) ≤ ǫ,
+and since ǫ> 0 is arbitrary, supx∈K fn(x) → 0. ⊓ ⊔
+A.3 Vector Spaces and the Geometry of Rn
+Deﬁnition A.6. A set V is a vector space over the real numbers 1 R if ele-
+ments of V can be added, with the sum again an element of V , and multiplied
+by a constant, with the product an element of V , so that:
+1 Vector spaces can be deﬁned analogously over complex numbers or any other
+ﬁeld.
+
+===== PAGE 5 =====
+
+A.3 Vector Spaces and the Geometry of Rn 435
+1. (Commutative and associative laws for addition) If u ∈ V , v ∈ V , and
+w ∈V ,
+u +v =v +u and (u +v) +w =u + (v +w).
+2. There is a zero element in V , denoted O, such that O +u = u, for all
+u ∈V .
+3. Given any u ∈V there exists an element −u ∈V such that u + (−u) = O.
+4. (Associative law for multiplication) If v ∈ V , a ∈ R, and b ∈ R, then
+(ab)v =a(bv).
+5. (Distributive laws) If u ∈V , v ∈V , a ∈ R, and b ∈ R, then
+(a +b)v =av +bv and a(u +v) = au +av.
+6. If v ∈V , 1v =v.
+A subset W ⊂ V is called a subspace if W is closed under addition (if
+u ∈W and v ∈W , then u +v ∈W ) and multiplication (if c ∈ R and v ∈W ,
+then cv ∈W ). If these hold, then W must also be a vector space.
+Most of the vector spaces in this book are Rn or subspaces of Rn. Other
+examples of interest include the set of all n ×p matrices with real entries. Col-
+lections of functions can also form vector spaces. For instance, the collection
+of all functions f with form f (x) = a sinx +b cosx is a vector space. And the
+set C[0, 1] of all continuous real-valued functions on [0 , 1] is a vector space.
+A vector u is a linear combination of vectors v
+1,...,v n if u = c1v1 +
+· · · + cnvn for some constants ci ∈ R, i = 1 ,...,n. The set of all linear
+combinations of vectors from a set S is called the linear span of S, and the
+linear span of any set is then a vector space. For instance, R2 is the linear span
+ofS = {(1, 0), (0, 1)}because an arbitrary vector (x,y ) ∈ R2 can be expressed
+asx(1, 0) +y(0, 1). The dimension of a vector space V is the smallest number
+of vectors needed to span V . If V is not the span of any ﬁnite set, then V is
+called inﬁnite-dimensional. By convention, the dimension of the trivial vector
+space {O} is zero.
+Vectorsv
+1,...,v p are linearly independent if the linear combination c1v1 +
+· · · +cpvp = O only if c1 = · · · = cp = 0. In this case, the linear span W of
+S = {v1,...,v p} has dimension p. If these vectors are points in Rn, and
+if X = (v1,...,v p), an n × p matrix with columns v1,...,v p, then Xβ =
+β 1v1 + · · · +βpvp for β ∈ Rp. Since this is an arbitrary linear combination of
+the vectors in S,
+W = span(S) = {Xβ :β ∈ Rp}.
+
+===== PAGE 6 =====
+
+436 A Appendices
+The rank2 of X is the dimension of W . Because X has p columns, its rank is
+at most p. If the columns of X are linearly independent, then the rank of X
+is p and X is called full rank .3
+The dot or inner product of two vectors u andv in Rn isu·v =u1v1 +· · ·+
+unvn, and these vectors are called orthogonal, denoted u ⊥ v, if u ·v = 0. If W
+is a subspace of Rn, the set of vectors orthogonal to all points in W is called
+the orthogonal complement of W , denoted W⊥. The sum of the dimensions
+of W and W⊥is n.
+The (Euclidean) length ∥u∥ of a vector u ∈ Rn is
+∥u∥ = √
+u ·u =
+√
+u2
+1
++ · +u2
+n
+,
+andu is called a unit vector if ∥u∥ = 1. If a subspace W of Rn has dimension
+p, then there exist p unit vectors e1,...,e p that are mutually orthogonal,
+ei · ej = 0, i ̸= j, and span W . This collection {e1,...,e p} is called an
+orthonormal basis forW , and any vector v ∈W can be expressed uniquely as
+v = c1e1 + · · · +cpep. Then if ep+1,...,e n is an orthonormal basis for W⊥,
+e1,...,e n forms an orthonormal basis for Rn. Writing w ∈ Rn uniquely as
+c1e1 + · · · +cnen, we see that w = u +v with u = c1e1 + · · · +cpep ∈ W
+and v = cp+1ep+1 + · · · + cnen ∈ W⊥. These vectors u and v are called
+the (orthogonal) projections of w ontoW and W⊥. The projection u can be
+characterized as the vector in W closest to w. We can show this using the
+Pythagorean formula that if u ⊥ v,
+∥u +v∥2 = ∥u∥2 + ∥v∥2.
+If x is an arbitrary point in W , then
+∥w − x∥2 = ∥(u − x) + (w − u)∥2 = ∥u − x∥2 + ∥w − u∥2 ≤ ∥w − u∥2,
+because w − x ∈W and w − u =v ∈W⊥are orthogonal.
+A.4 Manifolds and Tangent Spaces
+Manifolds are sets in Rr that look locally like Rq for some q called the di-
+mension of the manifold . For instance, the unit circle in R2 is a manifold with
+dimension one. A precise deﬁnition involves reparameterizing the manifold
+locally by a diﬀerentiable function. If U is an open subset of R
+q , let C1(U )
+2 This might also be called the column rank of X since it is the dimension of the
+linear span of the columns of X. But the row rank of X can be deﬁned similarly,
+and these two ranks must agree.
+3 Since the row and column ranks agree, the rank of X is also at most n. So it is
+also natural to call X full rank if n<p and the rank of X is n. This happens if
+the rows of X are linearly independent.
+
+===== PAGE 7 =====
+
+A.4 Manifolds and Tangent Spaces 437
+be the collection of all functions h : U → Rr with continuous ﬁrst partial
+derivatives. Forh ∈ C1(U ), let Dh be the matrix of partial derivatives,
+[Dh(x)]i,j = ∂hi(x)
+∂xj
+.
+When U is not open, a function h : U → Rr is in C1(U ) if there exists an
+open set V ⊃ U and a function H ∈ C 1(V ) that coincides with h on U ; that
+is, h(x) = H(x) for x ∈ U . A set Ω0 ⊂ Rr is a manifold of dimension q < r
+if for every θ 0 ∈Ω0 there exists an open neighborhood N0 of θ 0, an open set
+M0 ⊂ Rq and a one-to-one function h :M0 → N0 ∩Ω0 with h ∈ C1(M0) and
+h−1 ∈ C 1(N0 ∩Ω0). Using the inverse function theorem, the condition that
+h−1 is diﬀerentiable can be replaced with the condition that Dh(x) has full
+rank for all x ∈M0. The deﬁnition of a manifold is sometimes given in terms
+of constraints: Ω0 ⊂ Rr is a manifold of dimension q <r if for every θ 0 ∈Ω0
+there exists an open neighborhood N0 of θ 0 and a function g :N0 → Rr−q in
+C1(N0) such that Dg(x) has full rank for all x ∈N0 and
+Ω0 ∩N0 = {x ∈N0 :g(x) = 0 }.
+Because g maps onto Rr−q, the last assertion means that in some neighbor-
+hood of θ 0, the points in Ω0 are those that satisfy r −q nonlinear constraints.
+The assumption on the rank of Dg is needed so that the constraints are not
+redundant.
+Tangent spaces of a manifold Ω0 are deﬁned so that if points θ 0 and θ 1
+inΩ0 are close to each other, their diﬀerence should lie approximately in the
+tangent space at θ 0. To be speciﬁc, let θ 0 be an arbitrary point of the manifold
+Ω0 and let h be the local reparameterization given in our ﬁrst deﬁnition of a
+manifold. Assume that h(y) = θ 0. First-order Taylor expansion of hi about y
+gives
+hi(x) ≈ hi(y) +
+q∑
+j=1
+∂
+∂yj
+hi(y)(xj − yj ),
+or, in matrix notation,
+h(x) ≈ θ 0 +Dh(y)(x − y).
+The tangent space at θ 0 is deﬁned as
+Vθ 0 = {Dh(y)x :x ∈ Rq }.
+Equivalently,Vθ 0 is the linear span of the columns of Dh(y). It is worth noting
+that Vθ 0 is a vector space that passes through the origin, but typically does
+not pass through θ 0. Sinceh(x) lies in Ω0 forx neary, by the Taylor expansion
+above
+h(x) − θ 0 ≈ Dh(y)(x − y) ∈Vθ 0,
+
+===== PAGE 8 =====
+
+438 A Appendices
+so if θ 1 ∈Ω0 is close to θ 0, then θ 1 −θ 0 is “almost” in Vθ 0 . The tangent space
+Vθ 0 can also be identiﬁed from a local constraint function g. By ﬁrst-order
+Taylor expansion, if θ ∈Ω0 is close to θ 0, then
+0 = g(θ ) − g(θ 0) ≈ Dg(θ 0)(θ − θ 0).
+Henceθ −θ 0 (which should lie almost in Vθ 0 ) is approximately orthogonal to
+each of the rows of Dg(θ 0). A careful argument along these lines shows that
+V⊥
+θ 0 is the vector space spanned by the rows of Dg(θ 0).
+Example A.7. Let Ω0 be the unit circle in R2. Then Ω0 is a manifold with
+dimension q = 1. Let
+θ 0 =
+(
+1/
+√
+2
+1/
+√
+2
+)
+∈Θ 0.
+The tangent space at θ 0 is just the line Vθ 0 = {x ∈ R2 : x1 +x2 = 0 }. The
+graph to the left in Figure A.1 shows the circle Ω0 with the tangent line, and
+the graph to the right shows the tangent space Vθ 0 .
+Fig. A.1. Tangent lines and spaces.
+A.5 Taylor Expansion for F unctions of Several Variables
+Let f : R → R have a continuous derivative f′. Taylor’s theorem with La-
+grange’s form for the remainder asserts that
+f (x) = f (x0) + (x − x0)f′(x∗), (A.1)
+wherex∗is an intermediate point between x andx0. If f′′is continuous, then
+
+===== PAGE 9 =====
+
+A.5 Taylor Expansion for Functions of Several Variables 439
+f (x) = f (x0) + (x − x0)f′(x0) + 1
+2 (x − x0)2f′′(x∗∗), (A.2)
+wherex∗∗is an intermediate value between x andx0. The goal of this section
+is to derive analogous results when f : Rn → R. Deﬁne the function ∇if by
+∇if (x) = ∂
+∂xi
+f (x),
+and let
+∇f (x) =
+
+
+
+∇
+1f (x)
+.
+.
+.
+∇
+nf (x)
+
+
+ .
+The ﬁrst step is deriving a chain rule formula for computing ∂f (hx)/∂h . We
+assume that ∇f is continuous. Using the deﬁnition of derivatives,
+∂
+∂h f (hx) = lim
+ǫ→0
+f
+(
+(h +ǫ)x1,..., (h +ǫ)xn
+)
+− f
+(
+hx1,...,hx n
+)
+ǫ
+= lim
+ǫ→0
+f
+(
+(h+ǫ)x1,..., (h+ǫ)xn
+)
+−f
+(
+hx1, (h+ǫ)x2,..., (h+ǫ)xn
+)
+ǫ
++ lim
+ǫ→0
+f
+(
+hx1, (h +ǫ)x2,..., (h +ǫ)xn
+)
+− f
+(
+hx1,...,hx n
+)
+ǫ ,
+provided both limits exist. By (A.1), the argument of the ﬁrst limit equals
+(
+(h +ǫ)x1 − hx1
+)
+∇ 1f
+(
+z∗, (h +ǫ)x2,..., (h +ǫ)xn
+)
+ǫ
+=x1∇ 1f
+(
+z∗, (h +ǫ)x2,..., (h +ǫ)xn
+)
+,
+where z∗lies between ( h +ǫ)x1 and hx1. Since ∇f is continuous, this term
+approachesx1∇ 1f (hx) as ǫ → 0. The other limit is like the original derivative
+except that ǫ does not appear in the ﬁrst argument. Repeating the argument
+we can remove ǫ from the second argument, but an additional term arises:
+x2∇ 2f (hx). Iteration n times gives
+∂
+∂h f (hx) =
+n∑
+i=1
+xi∇if (hx) = x′∇f (hx).
+Also,
+∂ 2
+∂h 2f (hx) =
+n∑
+i=1
+xi
+∂
+∂h ∇if (hx)
+=
+n∑
+i=1
+xi
+n∑
+j=1
+xj ∇j ∇if (hx)
+=x′∇ 2f (hx)x,
+
+===== PAGE 10 =====
+
+440 A Appendices
+where ∇ 2f is the Hessian matrix of partial derivatives of f :
+∇ 2f =
+
+
+
+∇
+1∇ 1f ∇ 1∇ 2f ...
+∇ 2∇ 1f ∇ 2∇ 2f ...
+.
+.
+. .
+.
+. . . .
+
+
+ .
+Viewing f (hx) as a function of h with x a ﬁxed constant, we can use (A.1)
+and (A.2) to express the value of the function at h = 1 by an expansion about
+h = 0. This gives
+f (x) = f (0) +x
+′∇f (x∗)
+and
+f (x) = f (0) +x′∇f (0) + 1
+2x′∇ 2f (x∗∗)x,
+wherex∗=h∗x,x∗∗=h∗∗x, and h∗andh∗∗are intermediate points between
+0 and 1; so x∗andx∗∗lie on the chord between 0 and x. As x → 0, ∇f (x∗) →
+∇f (0) and ∇ 2f (x∗∗) → ∇ 2f (0), which justiﬁes the approximations
+f (x) ≈ f (0) +x′∇f (0)
+and
+f (x) ≈ f (0) +x′∇f (0) + 1
+2x′∇ 2f (0)x.
+The corresponding Taylor approximations expanding about a point x0 ̸= 0
+are
+f (x) ≈ f (x0) + (x − x0)′∇f (x0)
+and
+f (x) ≈ f (x0) + (x − x0)′∇f (x0) + 1
+2 (x − x0)′∇ 2f (x0)(x − x0).
+Both of these approximations hold with equality if the argument of the highest
+derivative is changed to an intermediate point on the chord between x and
+x
+0.
+A.6 Inverting a Partitioned Matrix
+Let A be a nonsingular matrix partitioned into blocks,
+A =
+(A11 A12
+A21 A22
+)
+,
+and let B =A−1, also partitioned into blocks,
+B =
+(B11 B12
+B21 B22
+)
+,
+
+===== PAGE 11 =====
+
+A.7 Central Limit Theory 441
+Then
+AB =
+(A11B11 +A12B21 A11B12 +A12B22
+A21B11 +A22B21 A21B12 +A22B22
+)
+=
+(I 0
+0I
+)
+.
+This leads to the following two equations:
+A11B12 +A12B22 = 0 (A.3)
+and
+A21B12 +A22B22 =I. (A.4)
+Using (A.3),
+B12 = −A−1
+11 A12B22.
+Using this to eliminate B12 in (A.4),
+−A21A−1
+11 A12B22 +A22B22 =I
+and hence
+B22 = (A22 − A21A−1
+11 A12)−1.
+Using this in the equation for B12,
+B12 = −A−1
+11 A12(A22 − A21A−1
+11 A12)−1.
+Similar calculations show that
+B11 = (A11 − A12A−1
+22 A21)−1
+and
+B21 = −A−1
+22 A21B11 = −A−1
+22 A21(A11 − A12A−1
+22 A21)−1.
+So A−1 equals
+( (A11 − A12A−1
+22 A21)−1 −A−1
+11 A12(A22 − A21A−1
+11 A12)−1
+−A−1
+22 A21(A11 − A12A−1
+22 A21)−1 (A22 − A21A−1
+11 A12)−1
+)
+.
+A.7 Central Limit Theory
+This appendix derives the central limit theorem and a few of the extensions
+used in the main body of this text. The approach is based on an inversion
+formula for characteristic functions and smoothing.
+
+===== PAGE 12 =====
+
+442 A Appendices
+A.7.1 Characteristic F unctions
+IfU andV are random variables, then the function X =U +iV , mapping the
+sample space to the complex numbers C, is called a complex random variable .
+The mean of X is deﬁned as
+EX
+def
+= EU +iEV.
+As with ordinary random variables,
+|EX | ≤E|X|, (A.5)
+which follows from Jensen’s inequality. The integral of a complex function
+u +iv against a measure µ is deﬁned similarly as
+∫
+(u +iv)dµ =
+∫
+udµ +i
+∫
+vdµ.
+The characteristic function of a random variable X ∼ F is
+f(t) = Ee
+itX =
+∫
+eitxdF (x), t ∈ R.
+Formally, the characteristic function is just the moment generating function
+forX evaluated at the imaginary argument it, so it is natural that derivatives
+of f are related to moments for X. By dominated convergence, if E|Y |
+k < ∞,
+dk
+dtk f(t) = E ∂k
+∂tkeitY =E(iY )keitY .
+In particular, the kth derivative at zero is ikEXk, and Taylor expansion gives
+f(t) = 1 + itEY − 1
+2t2EY 2 + · · · + 1
+k! (it)kEYk +o(tk ) (A.6)
+as t → 0.
+Suppose X ∼ F andY ∼ G are independent with characteristic functions
+f and g. Then
+e−ityf(y) =
+∫
+eiy(x−t)dF (x).
+Integrating this against G,
+∫
+e−ityf(y)dG(y) =
+∫
+g(x − t)dF (x),
+an important identity called Parseval’s relation.
+
+===== PAGE 13 =====
+
+A.7 Central Limit Theory 443
+Example A.8. If Z ∼ N (0, 1), then
+EeitZ =
+∫ exp(itz − z2/ 2)
+√
+2π dz
+=e−t2/2
+∫ exp
+[
+− 1
+2 (z − it)2]
+√
+2π dz
+=e−t2/2 .
+From this, if X ∼ N (µ,σ 2), then
+EeitX =Eeit(µ+σZ ) =eitµEeitσZ =eiµt−t2σ 2/2 .
+Suppose Y =Z/a in Parseval’s relation. Then
+g(t) = EeitZ/a = exp
+[
+− 1
+2 (t/a )2]
+.
+The density of Y is aφ (ay), and so
+∫
+e−ityf(y)aφ (ay)dy =
+∫
+exp
+[
+− 1
+2
+(x − t
+a
+)2]
+dF (x),
+or
+1
+2π
+∫
+f(y)e−ity−a2y2/2 dy =
+∫ 1
+aφ
+(x − t
+a
+)
+dF (x). (A.7)
+The right-hand side of this equation is the density of X +aZ, and by this
+formula, if f is known the density for X +aZ can be computed for any a> 0.
+Because X +aZ ⇒ X as a ↓0, we have the following result.
+Theorem A.9. Distinct probability distributions on R have distinct charac-
+teristic functions.
+The next result is a bit more constructive. It gives an inversion formula
+for the density when the characteristic function is integrable.
+Theorem A.10. Suppose ∫ |f(t)|dt < ∞. Then F is absolutely continuous
+with a bounded density given by
+f (x) = 1
+2π
+∫
+e−itxf(t)dt.
+Proof. Letfa be the density of X +aZ in (A.7). Then fa(x) → f (x) as a ↓ 0
+for every x ∈ R by dominated convergence. Also,
+fa(x) ≤ 1
+2π
+∫
+|f(t)|dt, ∀x ∈ R, a> 0.
+Because X +aZ ⇒ X, by the portmanteau theorem (Theorem 9.25) and
+dominated convergence, for any b<c ,
+
+===== PAGE 14 =====
+
+444 A Appendices
+P
+[
+X ∈ (b,c )
+]
+≤ lim inf
+a↓0
+P
+[
+X +aZ ∈ (b,c )
+]
+= lim inf
+a↓0
+∫ c
+b
+fa(x)dx =
+∫ c
+b
+f (x)dx,
+and
+P
+[
+X ∈ [b,c ]
+]
+≥ lim sup
+a↓0
+∫ c
+b
+fa(x)dx =
+∫ c
+b
+f (x)dx.
+So P
+[
+X ∈ (b,c )
+]
+=
+∫c
+b f (x)dx, and X has density f . ⊓ ⊔
+Remark A.11. When F is absolutely continuous with density f , the charac-
+teristic function f is also called the Fourier transform of f . Because f(t) =∫
+eitxf (x)dx, Fourier transforms can be deﬁned for measurable functions f
+that are not densities, provided f is integrable,
+∫
+|f (x)|dx < ∞. When f is
+integrable, the inversion formula in this theorem remains valid and gives a
+constructive way to compute f from f.
+Remark A.12. The inversion formula for the standard normal distribution
+gives
+φ (x) = 1
+2π
+∫
+e−itx−t2/2 dt. (A.8)
+Dominated convergence and repeated diﬀerentiation then give
+1
+2π
+∫
+(−it)ke−itx−t2/2 dt =φ (k) (x). (A.9)
+A.7.2 Central Limit Theorem
+Let X,X
+1,X 2,... be i.i.d. with common mean µ and ﬁnite variance σ 2, and
+deﬁne
+Zn =
+√
+n(
+Xn − µ)
+σ .
+Let f denote the characteristic function of Y = (X − µ)/σ
+f(t) = EeitY,
+and let fn denote the characteristic function of Zn. Noting that
+eitZn =
+n∏
+i=1
+exp
+[ it
+√
+n
+Xi − µ
+σ
+]
+,
+a product of independent variables, we have
+fn(t) = fn(t/ √
+n).
+
+===== PAGE 15 =====
+
+A.7 Central Limit Theory 445
+Since EY = 0 and EY 2 = 1, by Taylor expansion as in (A.6),
+f(t/ √
+n) = 1 − t2
+2n +o(1/n )
+as n → ∞ with t ﬁxed. It follows that
+log fn(t) = n log f(t/ √
+n) → − t2/ 2,
+and so
+fn(t) → e−t2/2 ,
+the characteristic function for the standard normal distribution. Convergence
+of these characteristic functions certainly suggests that the corresponding dis-
+tributions should converge, but a careful argument using our inversion formula
+is a bit delicate, mainly because f
+n need not be integrable. To circumvent this
+problem, we use a smoothing approach due to Berry. Let h be a density with
+support [ − 1, 1] and bounded derivatives of all orders. One concrete possibility
+is
+h(x) = c exp
+[
+− 1/ (1 − x2)
+]
+1(−1, 1)(x).
+Let h be the corresponding characteristic function, and let W be a random
+variable with densityh independent ofZn. Repeated integration by parts gives
+h(t) =
+∫
+h(x)eitxdx = i
+t
+∫
+h′(x)eitxdx = · · · =
+(i
+t
+)j ∫
+h(j)(x)eitxdx.
+So h(t) = O
+(
+|t|−j )
+as t → ±∞ , for any j = 1, 2,... .
+Instead of approximating the distribution of Zn directly, we consider the
+distribution of
+˜Zn =Zn +ǫnW,
+withǫn,n ≥ 1, a sequence of constants tending to zero. By the independence,
+˜Zn has characteristic function
+˜fn(t) = fn(t)h(ǫnt),
+and since h is integrable, ˜Zn has a bounded density ˜fn given by the inversion
+formula in Theorem A.10. Because |W | ≤1, we have the bounds
+P ( ˜Zn ≤ x − ǫn) ≤ P (Zn ≤ x) ≤ P ( ˜Zn ≤ x +ǫn),
+or
+˜Fn(x − ǫn) ≤ Fn(x) ≤ ˜Fn(x +ǫn),
+where Fn and ˜Fn denote the cumulative distribution functions for Zn and
+˜Zn. Since diﬀerences |˜Fn(x ±ǫn) − ˜Fn(x)|are at most ǫn∥ ˜fn∥∞, these bounds
+imply
+∥Fn − ˜Fn∥∞≤ ǫn∥ ˜fn∥∞. (A.10)
+With this bound, the central limit theorem follows easily from the following
+proposition.
+
+===== PAGE 16 =====
+
+446 A Appendices
+Proposition A.13. Takingǫn = 1/n 1/4 , as n → ∞ ,
+˜fn(x) → φ (x).
+Proof. The desired result essentially follows by dominated convergence from
+the inversion formula
+˜fn(x) = 1
+2π
+∫
+e−itxfn(t)h(ǫnt)dx. (A.11)
+To be speciﬁc, since log f(t) ∼ −t2/ 2 as t → 0, then in some neighborhood of
+zero, ( −δ,δ ) say, we have
+ℜ
+[
+log f(t)
+]
+≤ − t2
+4,
+which implies
+|f(t)| ≤e−t2/4 , |t|<δ,
+and
+|fn(t)| ≤e−t2/4 , |t|<δ √
+n.
+Then
+˜fn(x) = 1
+2π
+∫
+|t|<δ√
+n
+e−itxfn(t)h(ǫnt)dt + 1
+2π
+∫
+|t|≥δ√
+n
+e−itxfn(t)h
+(
+ǫnt
+)
+dt.
+If we take ǫn = 1/n 1/4 , it is easy to see that the second term here tends to
+zero, since |fn| ≤ 1 and h(t) = O
+(
+|t|−j )
+as t → ∞ for any j. The integrand
+in the ﬁrst term is dominated by e−t2/4 / (2π ), an integrable function. So by
+dominated convergence the ﬁrst term tends to
+1
+2π
+∫
+e−t2/2 −itxdt.
+This integral equals φ (x) by (A.8), proving the proposition. ⊓ ⊔
+By Proposition A.13, the densities for ˜Zn converge pointwise to φ . So by
+Scheﬀ´ e’s theorem, given in Problem 2.19,
+˜Zn ⇒ N (0, 1).
+Because Zn = ˜Zn − ǫnW and ǫnW
+p
+→ 0, it follows that
+Zn ⇒ N (0, 1),
+proving the central limit theorem (Theorem 8.12).
+
+===== PAGE 17 =====
+
+A.7 Central Limit Theory 447
+A.7.3 Extensions
+The central limit theorem in the last subsection was proved using the inversion
+formula, smoothing, and Taylor expansion to approximate f
+n. The Taylor
+approximation for fn can be improved keeping an extra term in the expansion.
+By (A.6), if E|X|3 < ∞,
+f
+(
+t/ √
+n
+)
+= 1 − t2
+2n − iγt 3
+6σ 3n√
+n +o
+(
+n−3/2 )
+,
+as n → ∞ , where γ =E(X − µ)3. Because log(1 + ǫ) = ǫ +O(ǫ2),
+log fn(t) = n log f(t/ √
+n) = − 1
+2t2 − iγt 3
+6σ 3√
+n +o
+(
+1/ √
+n
+)
+.
+Finally, since eǫ = 1 +ǫ +O(ǫ2) as ǫ → 0,
+fn(t) = e−t2/2
+(
+1 − iγt 3
+6σ 3√
+n
+)
++o
+(
+1/ √
+n
+)
+. (A.12)
+By Fourier inversion, if we deﬁne
+gn(x) = 1
+2π
+∫
+e−itxe−t2/2
+(
+1 − iγt 3
+6σ 3√
+n
+)
+dt
+=φ (x) − γφ′′′(x)
+6σ 3√
+n,
+with the integral in this expression evaluated using (A.9), then the Fourier
+transform of g
+n is the approximation for fn in (A.12). Integrating gn, the
+function Gn, deﬁned as
+Gn(x) =
+∫ x
+−∞
+gn(u)du =Φ (x) − γφ′′(x)
+6σ 3√
+n =Φ (x) − γ (x2 − 1)φ (x)
+6σ 3√
+n ,
+is the natural candidate to approximate Fn. There is one technical issue worth
+noting. Because gn/φ is a cubic polynomial, gn(x) will be negative for some
+x (unless γ = 0), and so Gn may not be nondecreasing. We call a function,
+such as Gn, that tends to zero at −∞ and one at + ∞ a pseudo-cdf, and if a
+pseudo-cdf is diﬀerentiable, we deﬁne its characteristic function as the Fourier
+transform of its derivative.
+To use (A.12) to argue that G
+n is a good approximation for Fn we need
+the following technical lemma. Although there are technical diﬀerences, the
+approach used to prove this result is similar to that used above to prove the
+central limit theorem. For details, see Section 16.3 of Feller (1971).
+Lemma A.14. Let F be the cumulative distribution function for a distribu-
+tion with mean zero and characteristic function f, and let G be a diﬀeren-
+tiable pseudo-cdf with density g =G
+′and characteristic function g satisfying
+g′(0) = 0 . Then for any T >0,
+
+===== PAGE 18 =====
+
+448 A Appendices
+∥F − G∥∞≤ 1
+π
+∫ T
+−T
+⏐
+⏐
+⏐
+⏐
+f(t) − g(t)
+t
+⏐
+⏐
+⏐
+⏐ dt + 24∥g∥
+∞
+πT .
+Proof of Theorem 19.3 . Let us ﬁrst show that the nonlattice assumption im-
+plies |f(t)|< 1 for t ̸= 0. To see this, ﬁrst note that by (A.5),
+|f(t)|=
+⏐
+⏐Ee
+itX ⏐
+⏐ ≤ E
+⏐
+⏐e
+itX ⏐
+⏐ = 1,
+and we only need to rule out |f(t)|= 1, that is, that f(t) = e
+iω for some ω ∈ R.
+But in this case
+1 = ℜ
+(
+f(t)e−iω )
+= ℜ
+(
+EeitX−iω )
+=E cos(tX − ω ),
+and since the cosine function is at most one, this implies
+P
+(
+cos(tX − ω ) = 1
+)
+=P
+(
+X =ω + 2πk/t, ∃k ∈ Z
+)
+= 1,
+and Q is a lattice distribution.
+Next, ﬁx ǫ> 0 and take
+c = 24 sup
+n≥1
+∥gn∥∞
+πǫ .
+By Lemma A.14 with T =c√
+n,
+∥Fn − Gn∥∞≤ 1
+π
+∫ c√
+n
+−c√
+n
+⏐
+⏐
+⏐
+⏐
+f
+n(t) − gn(t)
+t
+⏐
+⏐
+⏐
+⏐ dt + ǫ
+√
+n. (A.13)
+Becauseǫ> 0 is arbitrary, the theorem will follow if the integral in this formula
+is o
+(
+1/ √
+n
+)
+. For some δ >0, the contribution integrating over |t|<δ √
+n will
+be o
+(
+1/ √
+n
+)
+by dominated convergence and the expansion (A.12). If instead,
+|t| ∈
+[
+δ √
+n,c √
+n
+]
+, ⏐
+⏐f
+n(t)
+⏐
+⏐=
+⏐
+⏐f
+n(t/ √
+n)
+⏐
+⏐ ≤ M
+n
+with
+M = sup
+|t|∈[δ,c ]
+|f(t)|.
+Since f is continuous and
+⏐
+⏐f(t)
+⏐
+⏐ < 1 for t ̸= 0, M < 1, and f
+n is exponen-
+tially small for δ √
+n ≤ |t| ≤c√
+n. Because gn is also exponentially small over
+this region, the contribution to the integral in (A.13) over |t| ≥δ √
+n is also
+o
+(
+1/ √
+n
+)
+, and the theorem follows. ⊓ ⊔
+The approximation in Theorem 19.3 is called an Edgeworth expansion for
+Fn. The same method can be used to obtain higher-order expansions. For
+regularity, higher-order moments of X must be ﬁnite to improve the Tay-
+lor approximation for fn. In addition, the nonlattice assumption needs to be
+strengthened. This occurs because T in Lemma A.14 will need to grow at a
+
+===== PAGE 19 =====
+
+A.7 Central Limit Theory 449
+rate faster than √
+n, and exponential decay for fn over this region can fail. A
+suitable replacement, due to Cram´ er, is that
+lim sup
+|t|→∞
+⏐
+⏐f(t)
+⏐
+⏐< 1. (A.14)
+This assumption fails if Q is discrete, but holds when Q is absolutely con-
+tinuous.
+4 Similar expansions are possible if Q is a lattice distribution. For
+these results and a derivation of the Berry–Ess´ een theorem (equation (8.2))
+based on Taylor expansion and Lemma A.14, see Feller (1971). For Edgeworth
+expansions in higher dimensions, see Bhattacharya and Rao (1976).
+4 The Riemann–Lebesgue lemma asserts that f(t) → 0 as |t| → ∞ when Q is
+absolutely continuous.
+
+===== PAGE 20 =====
+
+
+
+===== PAGE 21 =====
+
+B
+Solutions
+B.1 Problems of Chapter 1
+1. If j < k, then Bj ⊆ Bk−1, which implies Bc
+k−1 ⊆ Bc
+j . Since Aj ⊂ Bk and
+Ak ⊂ Bc
+k−1 ⊆ Bc
+k , Aj and Ak are disjoint. By induction, Bn = ⋃n
+j=1
+Aj .
+Also, ⋃∞
+j=1
+Aj =B, for if x ∈B, x ∈Bn for some n, and then x ∈Aj for
+somej ≤ n. Conversely, if x ∈ ⋃∞
+j=1
+Aj ,x ∈An ⊂ Bn ⊂ B for some n. By
+countable additivity,
+µ(B) =
+∞∑
+j=1
+µ(Aj ) = lim
+n→∞
+n∑
+j=1
+µ(Aj ) = lim
+n→∞
+µ(Bn).
+8. If B is the union of the Bi, then 1B ≤ ∑1Bi , and by Fubini’s theorem,
+viewing summation as integration against counting measure,
+µ(B) =
+∫
+1B dµ ≤
+∫ ∑
+i
+1Bi dµ =
+∑
+i
+∫
+1Bi dµ =
+∑
+i
+µ(Bi).
+10. a) Let B be an arbitrary set in B. Since µ(B) ≥ 0 and ν (B) ≥ 0, η (B) =
+µ(B) +ν (B) ≥ 0. Thus µ : B → [0, ∞]. Next, if B1, B2, ... are disjoint
+sets in B, then
+η
+(∞⋃
+i=1
+Bi
+)
+=µ
+(∞⋃
+i=1
+Bi
+)
++ν
+(∞⋃
+i=1
+Bi
+)
+=
+∞∑
+i=1
+µ(Bi) +
+∞∑
+i=1
+ν (Bi) =
+∞∑
+i=1
+[
+µ(Bi) +ν (Bi)
+]
+=
+∞∑
+i=1
+η (Bi).
+Thusη is a measure.
+b) To establish the integration identity, suppose f is a simple function:
+f = ∑n
+i=1
+ci1Ai . Then
+
+===== PAGE 22 =====
+
+452 B Solutions
+∫
+fdη =
+n∑
+i=1
+ciη (Ai) =
+n∑
+i=1
+ci
+[
+µ(Ai) +ν (Ai)
+]
+=
+n∑
+i=1
+ciµ(Ai) +
+n∑
+i=1
+ciν (Ai) =
+∫
+fdµ +
+∫
+fdν.
+So the identity holds for simple functions. For the general case, let fn be
+simple functions increasing to f . Then from our deﬁnition of the integral,
+∫
+fdη = lim
+n→∞
+∫
+fndη = lim
+n→∞
+{∫
+fndµ +
+∫
+fndν
+}
+= lim
+n→∞
+∫
+fndµ + lim
+n→∞
+∫
+fndν =
+∫
+fdµ +
+∫
+fdν.
+11. By ﬁnite additivity,
+µ
+(
+(0, 1/ 2]
+)
++µ
+(
+(1/ 2,π ]
+)
+=µ
+(
+(0,π ]
+)
+.
+Sinceµ
+(
+(0, 1/ 2]
+)
+= 1/
+√
+2 and µ
+(
+(0,π ]
+)
+= √
+π ,
+µ
+(
+(1/ 2,π ]
+)
+= √
+π − 1
+√
+2.
+Similarly µ
+(
+(1, 2]
+)
+=
+√
+2 − 1. Then
+∫
+fdµ =µ
+(
+(1/ 2,π ]
+)
++ 2µ
+(
+(1, 2]
+)
+= √
+π + 2
+√
+2 − 2 − 1
+√
+2.
+12. The integral is
+∫
+fdµ = 4 + 21π .
+13. Forx ∈ (0, 1], let fn(x) = ⌊2nx⌋/ 2n, where ⌊y⌋ is y rounded down to the
+nearest integer. If x /∈ (0, 1], let fn(x) = 0. So, for instance, f1(x) is 1 / 2
+for x ∈ [1/ 2, 1), f1(1) = 1, and f1(x) = 0, x /∈ [1/ 2, 1]. (Draw a picture of
+f2.) Then
+∫
+fndµ = 1 + 2 + · · · + (2n − 1)
+4n = 2n(2n − 1)
+2 × 4n → 1
+2.
+16. Deﬁne Bn = {X ≤ a − 1/n }. Then B1 ⊂ B2 ⊂ · · · . Also, {X < a} =⋃∞
+n=1
+Bn, for if X(e) < a,e ∈ {X ≤ a − 1/n } for some n, and if e ∈⋃∞
+n=1
+Bn, e ∈ {X ≤ a − 1/n } for some n, which implies e ∈ {X < a}.
+Then by Problem 1.1,
+P (X <a) = lim
+n→∞
+P (X ≤ a − 1/n ) = lim
+n→∞
+F (a − 1/n ) = F (a− ).
+For the second part, {X <a} and {X =a} are disjoint with union {X ≤
+a}, and so P (X <a) +P (X =a) = P (X ≤ a); that is, FX (a− ) +P (X =
+a) = FX (a).
+
+===== PAGE 23 =====
+
+B.1 Problems of Chapter 1 453
+17. By countable additivity, the chance X is even is
+P (X = 0) +P (X = 2) + · · · =θ +θ (1 − θ )2 + · · · = 1
+2 − θ.
+18. For the ﬁrst assertion, an outcome e lies in X−1(A ∩B) if and only if
+X(e) ∈ A ∩B if and only if X(e) ∈ A and X(e) ∈ B if and only if
+e ∈ X−1(A) and e ∈ X−1(B) if and only if e ∈ X−1(A) ∩X−1(B).
+For the third assertion, an outcome e lies in X−1(⋃∞
+i=1
+Ai
+)
+if and only
+if X(e) ∈ ⋃∞
+i=1
+Ai if and only if X(e) ∈ Ai, for some i, if and only if
+e ∈ X−1(Ai), for some i, if and only if e ∈ ⋃∞
+i=1
+X−1(Ai). The second
+assertion follows in the same way.
+19. Since PX (B) = P
+(
+X−1(B)
+)
+≥ 0, we only need to establish countable
+additivity. Let us ﬁrst show that X−1(⋃
+iBi
+)
+= ⋃
+iX−1(Bi). Suppose
+e ∈ X−1(⋃
+i Bi
+)
+. Then X(e) ∈ ⋃
+iBi, which implies X(e) ∈ Bj for some
+j. But then e ∈ X−1(Bj ), and so e ∈ ⋃
+i X−1(Bi). Conversely, if e ∈⋃
+iX−1(Bi), then e ∈X−1(Bj ) for some j, which implies X(e) ∈Bj , and
+so X(e) ∈ ⋃
+iBi. Thus e ∈ X−1(⋃
+iBi
+)
+. Next, suppose Bi and Bj are
+disjoint. Then X−1(Bi) and X−1(Bj ) are disjoint, for if e lies in both of
+these sets, X(e) lies in Bi and Bj . Finally, if B1,B 2,... are disjoint Borel
+sets with union B = ⋃
+iBi, then X−1(B1),X−1(B2),... are disjoint sets
+with union X−1(B), and so
+∑
+i
+PX (Bi) =
+∑
+i
+P
+(
+X−1(Bi)
+)
+=P
+(
+X−1(B)
+)
+=PX (B).
+21. The probabilities are all the same, P (Y1 = 0,Y 2 = 0) = P (Y1 = 0,Y 2 =
+1) = P (Y1 = 1 ,Y 2 = 0) = P (Y1 = 1 ,Y 2 = 1) = 1 / 4. For instance,
+P (Y1 = 0,Y 2 = 1) = P (1/ 4 ≤ X <1/ 2) = 1/ 4.
+22. First note that
+{X ∈B} = {y ∈ (0, 1) : X(y) ∈B}
+=
+{
+B ∩ (0, 1/ 2), 1/ 2 /∈B;
+[B ∩ (0, 1/ 2)] ∪ [1/ 2, 1), 1/ 2 ∈B.
+Letλ be Lebesgue measure, and let ν be counting measure on {1/ 2}. Then
+µ(B) = 0 if and only if λ (B) = 0 and 1 / 2 /∈B. But then PX (B) = P (X ∈
+B) = P
+(
+B ∩ (0, 1/ 2)
+)
+=λ
+(
+B ∩ (0, 1/ 2)
+)
+= 0, and hence PX is absolutely
+continuous w.r.t. λ +ν . From the equation above,
+P (X ∈B) = λ
+(
+B ∩ (0, 1/ 2)
+)
++ 1
+2 1B(1/ 2).
+Iff is the density, this should equal
+∫
+B fd (λ +ν ), andf = 1(0, 1/2) + 1
+2 1{1/2 }
+works because
+
+===== PAGE 24 =====
+
+454 B Solutions
+∫
+f 1Bd(λ +ν ) =
+∫ (
+1B∩(0, 1/2) + 1
+2 1{1/2 }∩B
+)
+d(λ +ν )
+=λ
+(
+B ∩ (0, 1/ 2)
+)
++ν
+(
+B ∩ (0, 1/ 2)
+)
++ 1
+2λ
+(
+{1/ 2} ∩B
+)
++ 1
+2ν
+(
+{1/ 2} ∩B
+)
+=λ
+(
+B ∩ (0, 1/ 2)
+)
++ 1
+2 1B (1/ 2).
+23. Deﬁne g(x) = x1(−1, 1)(x), so that Y = g(X). Integrating against the
+density of X,
+Ef (Y ) = Ef
+(
+g(X)
+)
+=
+∫
+f
+(
+g(x)
+)
+φ (x)dx =
+∫ 1
+−1
+f (x)φ (x)dx +cf (0),
+where c = ∫
+|x|>1φ (x)dx = 2Φ (− 1). But integrating against the density p
+of Y ,
+Ef (Y ) =
+∫
+fpd (λ +ν ) =
+∫
+fpdλ +
+∫
+fpdµ
+=
+∫
+f (x)p(x)dx +f (0)p(0).
+These expressions must agree for any integrable function f . If f = 1{0},
+this gives p(0) = 2Φ (− 1). And if f (0) = 0, we must have
+∫
+f (x)p(x)dx =∫
+f (x)φ (x)1(−1, 1)(x)dx. This will hold if p(x) = φ (x) when 0 < |x|< 1.
+So the density is p(x) = 2Φ (− 1)1{0}(x) +φ (x)1(0, 1)
+(
+|x|
+)
+.
+24. The problem is trivial if µ is ﬁnite (just divide µ byµ(X)). If µ is inﬁnite
+but σ -ﬁnite, there exist sets A1,A 2,... in B with ⋃
+iAi = X and 0 <
+µ(Ai)< ∞. Deﬁne truncated measures µi, as suggested, by µi(B) = µ(B ∩
+Ai). (Routine calculations show that µi is indeed a measure.) Note that
+µi(X) = µ(Ai), so each µi is a ﬁnite measure. Let bi = 1/ 2i (or any other
+sequence of positive constants summing to one) and deﬁne ci =bi/µ (Ai).
+Then P = ∑
+iciµi is a probability measure since P (X) = ∑
+iciµi(X) =∑
+i[bi/µ (Ai)]µ(Ai) = 1. Suppose P (N ) = ∑
+iciµi(N ) = 0. Then µi(N ) =
+µ(N ∩Ai) = 0 for all i. By Boole’s inequality (Problem 1.8), µ(N ) =
+µ
+(⋃
+i[N ∩Ai]
+)
+≤ ∑
+i µ(N ∩Ai) = 0. This shows that any null set for P is
+a null set for µ, and µ is thus absolutely continuous with respect to P .
+25. a) Suppose f = 1A. Then f
+(
+X(e)
+)
+= 1 if and only if X(e) ∈ A, so
+f ◦X = 1B , where B = {e : X(e) ∈ A}. Note that the deﬁnition of PX
+has PX (A) = P (B). Now
+∫
+f
+(
+X(e)
+)
+dP (e) =
+∫
+1B (e)dP (e) = P (B),
+and ∫
+f (x)dPX (x) =
+∫
+1A(x)dPX (x) = PX (A).
+
+===== PAGE 25 =====
+
+B.1 Problems of Chapter 1 455
+So the equation holds for indicator functions. Next, suppose that f is a
+simple function: f = ∑n
+i=1
+ci1Ai . Because integration is linear,
+∫
+f
+(
+X(e)
+)
+dP (e) =
+∫ n∑
+i=1
+ci1Ai
+(
+X(e)
+)
+dP (e)
+=
+n∑
+i=1
+ci
+∫
+1Ai
+(
+X(e)
+)
+dP (e) =
+n∑
+i=1
+ci
+∫
+1Ai (x)dPX (x)
+=
+∫ n∑
+i=1
+ci1Ai (x)dPX (x) =
+∫
+f (x)dPX (x).
+Finally, let f be an arbitrary nonnegative measurable function, and let fn
+be nonnegative simple functions increasing to f . Then fn ◦X increase to
+f ◦X, and using the monotone convergence theorem twice,
+∫
+f
+(
+X(e)
+)
+dP (e) = lim
+n→∞
+∫
+fn
+(
+X(e)
+)
+dP (e)
+= lim
+n→∞
+∫
+fn(x)dPX (x)
+=
+∫
+f (x)dPX (x).
+b) Using the same general approach, since PX has density p with respect
+to µ, ∫
+1AdPX =PX (A) =
+∫
+A
+pdµ =
+∫
+1Apdµ,
+and the equation holds for indicator functions. Next, if f is a simple func-
+tion,f = ∑n
+i=1
+ci1Ai , linearity gives
+∫
+fdPX =
+∫ n∑
+i=1
+ci1Ai dPX
+=
+n∑
+i=1
+ci
+∫
+1Ai dPX
+=
+n∑
+i=1
+ci
+∫
+1Aipdµ
+=
+∫ n∑
+i=1
+ci1Aipdµ
+=
+∫
+fpdµ.
+For the general case, let fn be nonnegative simple functions increasing to
+f . Then fnp increase to fp , and using the monotone convergence theorem
+twice,
+
+===== PAGE 26 =====
+
+456 B Solutions
+∫
+fdPX = lim
+n→∞
+∫
+fndPX = lim
+n→∞
+∫
+fnpdµ =
+∫
+fpdµ.
+26. a) Integrating e−x and diﬀerentiating xα , integration by parts gives
+Γ (α + 1) =
+∫∞
+0
+xα e−xdx
+= −xα e−x⏐
+⏐
+∞
+0
++
+∫∞
+0
+αxα−1e−xdx
+=αΓ (α ).
+Using this repeatedly, Γ (x + 1) = xΓ (x) = x(x − 1)Γ (x − 1) = · · ·x(x −
+1) · · ·1Γ (1). ButΓ (1) =
+∫∞
+1 e−xdx = 1, and so Γ (x+1) = x!,x = 0, 1,... .
+b) The change of variables u =x/β (so dx =βdu ) gives
+∫
+p(x)dx =
+∫∞
+0
+βp (βu )du =
+∫∞
+0
+1
+Γ (α )uα−1e−udu = Γ (α )
+Γ (α ) = 1.
+c) The same change of variables gives
+EXr =
+∫
+xrp(x)dx =
+∫∞
+0
+βr+1urp(βu )du
+= βr
+Γ (α )
+∫∞
+0
+uα +re−udu = βrΓ (α +r)
+Γ (α ) .
+Using this, EX = βΓ (α + 1)/Γ (α ) = βα , EX 2 = β 2Γ (α + 2)/Γ (α ) =
+β (α + 1)α , and Var(X) = EX 2 − (EX )2 =αβ 2.
+27. Integrating against the density, EXp =
+∫ 1
+0 xp dx = 1/ (p + 1). So EX =
+1/ 2, EX 2 = 1 / 3, Var(X) = EX 2 − (EX )2 = 1 / 3 − 1/ 4 = 1 / 12,
+Var(X2) = EX 4 − (EX 2)2 = 1 / 5 − 1/ 9 = 4 / 45 and Cov( X,X 2) =
+EX 3 − (EX )(EX 2) = 1 / 4 − 1/ 6 = 1 / 12. So the mean and covariance
+are
+E
+(
+X
+X2
+)
+=
+(
+1/ 2
+1/ 3
+)
+and Cov
+(
+X
+X2
+)
+=
+(
+1/ 12 1 / 12
+1/ 12 4 / 45
+)
+.
+28. The mean and covariance are
+E
+( X
+I{X >c}
+)
+=
+( 0
+1 − Φ (c)
+)
+and
+Cov
+( X
+I{X >c}
+)
+=
+( 1 φ (c)
+φ (c)Φ (c)
+(
+1 − Φ (c)
+)
+)
+.
+32. By Fubini’s theorem,
+
+===== PAGE 27 =====
+
+B.1 Problems of Chapter 1 457
+∫∞
+0
+h(t)dt =
+∫∞
+0
+E 1 − cos(tX)
+t2 dt
+=
+∫∞
+0
+∫ 1 − cos(tx)
+t2 dPX (x)dt
+=
+∫ ∫∞
+0
+1 − cos(tx)
+t2 dtdPX (x)
+=
+∫ ∫∞
+0
+|x|1 − cosu
+u2 dudPX (x)
+=
+∫ π
+2 |x|dPX (x)
+= π
+2E|X|.
+33. The sum is ∑∞
+n=1
+cn = 1.
+36. a) By independence of X andY ,P (X +Y ≤ s|Y =y) = P (X ≤ s −y) =
+FX (s − y), and so, P (X +Y ≤ s|Y ) = FX (s − Y ). Then
+FS (s) = P (X +Y ≤ s) = EP (X +Y ≤ s|Y ) = EFX (s − Y ).
+b) Using the independence, for y >0,
+P (XY ≤ w|Y =y) = P (X ≤ w/y |Y =y) = FX (w/y ).
+So, P (XY ≤ w|Y ) = FX (w/Y ) almost surely, and
+FW (w) = P (XY ≤ w) = EP (XY ≤ w|Y ) = EFX (w/Y ).
+37. Note that pX (x −Y ) = 0 if Y ≥ x. The change of variables u =y/x gives
+pS (x) = E (x − Y )α−1e−(x−Y )
+Γ (α ) 1(0,x )(Y ) =
+∫ x
+0
+(x − y)α−1yβ−1e−x
+Γ (α )Γ (β ) dy
+=
+∫ 1
+0
+xα +β−1e−xuβ−1(1 − u)α−1
+Γ (α )Γ (β ) du = xα +β−1e−x
+Γ (α +β ) ,
+for x> 0. So X +Y ∼ Γ (α +β, 1).
+38. a) The mean of the exponential distribution Qλ is
+∫
+xdQλ (x) =
+∫
+xqλ (x)dx =
+∫∞
+0
+xλe−λx dx = 1
+λ .
+So E[Y |X =x] = 1/x and E[Y |X] = 1/X .
+b) By smoothing,
+EY =EE [Y |X] = E(1/X ) =
+n∑
+x=1
+1
+x
+2x
+n(n + 1) = 2
+n + 1.
+
+===== PAGE 28 =====
+
+458 B Solutions
+39. a) P [Y > y|X = k] = Qk
+(
+(y, ∞)
+)
+=
+∫∞
+y ke−ku du = e−ky . So P (Y >
+y|X) = e−Xy .
+b) By smoothing,
+P (Y >y ) = EP (Y >y |X) = Ee−Xy =
+n∑
+k=1
+e−ky
+n = 1 − e−ny
+n(ey − 1).
+(The sum here is geometric.)
+c) The density is
+F
+′
+Y (y) = d
+dy
+(
+1 − P (Y >y )
+)
+= ey(1 − e−ny)
+n(ey − 1)2 − e−ny
+ey − 1.
+B.2 Problems of Chapter 2
+1. a) The mass functions can be written as exp
+[
+log(1 − p)x + log(p)
+]
+, which
+has exponential family form.
+b) The canonical parameter is η = log(1 − p). Solving, p = 1 − e
+η , and
+so the mass function in canonical form is exp
+[
+ηx + log(1 − eη )
+]
+, with
+A(η ) = − log(1 − eη ).
+c) Since T =X, by (2.4), EX =A′(η ) = eη / (1 − eη ) = (1 − p)/p .
+d) The joint mass functions are
+n∏
+i+1
+[
+p(1 − p)x
+i
+]
+=pn(1 − p)T (x),
+whereT (x) = ∑
+i xi. With the same deﬁnition for η , this can be rewritten
+as
+exp
+[
+log(1 − p)T (x) +n log(p)
+]
+= exp
+[
+ηT (x) +n log(1 − eη )
+]
+.
+NowA(η ) = −n log(1 − eη ), and so
+ET =A′(η ) = neη
+1 − eη = n(1 − p)
+p ,
+and
+Var(T ) = A′′(η ) = neη
+(1 − eη )2 = n(1 − p)
+p2 .
+2. From the deﬁnition,
+eA(η ) =
+∫ ∫
+h(x,y )eηxy dxdy = 1
+√
+2π
+∫
+exp
+[
+− 1
+2 (1 − η 2)y2
+]
+dy.
+This integral is ﬁnite if and only if |η |< 1, and so Ξ = ( − 1, 1). Doing
+the integral, eA(η ) = 1/
+√
+1 − η 2 and the densities are exp
+[
+ηxy + log(1 −
+η 2)/ 2
+]
+h(x,y ).
+
+===== PAGE 29 =====
+
+B.2 Problems of Chapter 2 459
+4. The parameter space is Ξ = (− 1, ∞), and the densities are
+pη (x) = 1
+2 (η + 1)(η + 2)(η + 3)xη (1 − x)2, x ∈ (0, 1).
+5. The integral (below) deﬁning A(η ) is ﬁnite if and only if η ≥ 0, and so
+Ξ = [0, ∞). To evaluate the integral, let y = √
+x. Then
+eA(η ) =
+∫∞
+0
+e−ηx−2√
+x dx
+√
+x = 2
+∫∞
+0
+e−ηy 2−2ydy
+= 2√
+πe 1/η
+√
+η
+∫∞
+0
+exp
+[
+− (y+1/η )2
+2[1/(2 η )]
+]
+√
+2π [1/ (2η )]
+dy.
+IfY ∼ N
+(
+− 1/η, 1/ (2η )
+)
+, then the integral here is P (Y > 0) = Φ (−
+√
+2/η ).
+So
+A(η ) = log
+√
+4π + 1/η − log √
+η + logΦ (−
+√
+2/η ),
+and pη (x) = exp
+[
+− 2√
+x − ηx − A(η )
+]
+/ √
+x, x> 0. Then
+Eη X = −Eη T = −A′(η ) = 1
+η 2 + 1
+2η − φ (
+√
+2/η )
+Φ (−
+√
+2/η )
+√
+2η 3
+.
+6. The parameter space is Ξ = R2, and the densities are
+pη (x) = eη 1x+η 2x2
+1 +eη 1 +η 2 +e2η 1 +4η 2
+, x = 0, 1, 2.
+7. The joint densities are
+n∏
+i=1
+[
+1−eα +βt i
+][
+eα +βt i
+]xi
+= exp
+[
+α
+n∑
+i=1
+xi +β
+n∑
+i=1
+xiti +
+n∑
+i=1
+log
+[
+1−eα +βt i
+]
+]
+,
+forming an exponential family with T1 = ∑n
+i=1
+Xi and T2 = ∑n
+i=1
+tiXi.
+8. The joint densities are
+n∏
+i=1
+1
+√
+2π
+exp
+[
+− 1
+2 (xi − α − βti)2
+]
+= 1
+√
+2π
+n exp
+[
+α
+n∑
+i=1
+xi +β
+n∑
+i=1
+tixi − 1
+2
+n∑
+i=1
+x2
+i
+− 1
+2
+n∑
+i=1
+(α +βti)2
+]
+,
+which is a two-parameter exponential family with T1 = ∑n
+i=1
+Xi andT2 =∑n
+i=1
+tiXi.
+9. Since P (Xi =xi) = exp(αxi +βtixi)/
+(
+1+exp(α +βti)
+)
+, the joint densities
+are
+
+===== PAGE 30 =====
+
+460 B Solutions
+n∏
+i=1
+exp(αxi +βtixi)
+1 + exp(α +βti) = exp
+[
+α ∑n
+i=1
+xi +β ∑n
+i=1
+tixi
+]
+∏n
+i=1
+(
+1 + exp(α +βti)
+) ,
+which form a two-parameter exponential family with T1 = ∑n
+i=1
+Xi and
+T2 = ∑n
+i=1
+tiXi.
+15. Diﬀerentiating the identity
+eB(θ ) =
+∫
+exp{η (θ ) ·T (x)}h(x)dµ(x)
+with respect to θi under the integral sign, gives
+eB(θ )∂B (θ )
+∂θ i
+=
+∫ s∑
+j=1
+∂η j (θ )
+∂θ i
+Tj (x) exp{η (θ ) ·T (x)}h(x)dµ(x).
+Division by eB(θ ) then gives
+∂B (θ )
+∂θ i
+=
+s∑
+j=1
+∂η (θ )j
+∂θ i
+EθTj, i = 1,...,s.
+(This also follows from the chain rule because B(θ ) = A
+(
+η (θ )
+)
+andETj =
+∂A (η )/∂η j .) These equations can be written as ∇B(θ ) = Dη (θ )′EθT ,
+whereDη (θ ) denotes an s ×s matrix with (i,j )th entry ∂η i(θ )/∂θ j . Solv-
+ing, Eθ T = [Dη (θ )′]−1∇B(θ ).
+17. a) Let fn(k) = f (k) for k ≤ n, and fn(k) = 0 for k > n. Then
+fn → f pointwise, and |fn| ≤ |f |. Note that fn is a simple function
+and that
+∫
+fndµ = ∑n
+k=1
+f (k). The dominated convergence theorem gives∫
+fndµ →
+∫
+fdµ, which is the desired result.
+b) Deﬁne fn as in part (a). Then fn ↑f , and so ∑n
+k=1
+f (k) =
+∫
+fndµ →∫
+fdµ by the monotone convergence theorem.
+c) Begin the g-sequence taking positive terms from the f -sequence until
+the sum exceeds K. Then, take negative terms from the f sequence until
+the sum is below K. Then take positive terms again, and so on. Because
+the summands tend to zero, the partial sums will have limit K.
+19. a) Since
+∫
+(p −pn)dµ =
+∫
+(p −pn)+dµ −
+∫
+(p −pn)−dµ = 0, we have
+∫
+(p −
+pn)+dµ =
+∫
+(p −pn)−dµ. Using |pn −p|= |p −pn|= (p −pn)+ + (p −pn)−,
+∫
+|pn − p|dµ =
+∫
+(p − pn)+dµ +
+∫
+(p − pn)−dµ
+= 2
+∫
+(p − pn)+dµ.
+But |(p−pn)+| ≤p, which is an integrable function, and
+(
+p(x)−pn(x)
+)+
+→
+0. So by dominated convergence
+∫
+|pn − p|dµ = 2
+∫
+(p − pn)+dµ → 0.
+
+===== PAGE 31 =====
+
+B.2 Problems of Chapter 2 461
+b) Since Pn(A) =
+∫
+1Apndµ and P (A) =
+∫
+1Apdµ ,
+|Pn(A) − P (A)|=
+⏐
+⏐
+⏐
+⏐
+∫
+1
+A(pn − p)dµ
+⏐
+⏐
+⏐
+⏐
+≤
+∫
+1
+A|pn − p|dµ ≤
+∫
+|pn − p|dµ.
+22. Because pθ (x) = φ (x) exp
+[
+θx − logΦ (θ ) − θ 2/ 2
+]
+, we have a canonical ex-
+ponential family with A(θ ) = log Φ (θ ) +θ 2/ 2. So MX (u) = exp
+[
+A(θ +u) −
+A(θ )
+]
+=Φ (θ +u) exp(uθ +u2/ 2)/Φ (θ ). Also, EθX =A′(θ ) = θ +φ (θ )/Φ (θ )
+and Varθ (X) = A′′(θ ) = 1 − θφ (θ )/Φ (θ ) − φ 2(θ )/Φ 2(θ ).
+23. The exponential family N (0,σ 2) has densities
+1
+√
+2πσ 2 exp
+[
+− x2
+2σ 2
+]
+= 1
+√
+2π exp
+[
+ηx 2 + 1
+2 log(− 2η )
+]
+,
+whereη = − 1/ (2σ 2). SoA(η ) = − 1
+2 log(− 2η ) andKT (u) = − 1
+2 log
+[
+− 2(η +
+u)
+]
++ 1
+2 log(− 2η ), which simpliﬁes to − 1
+2 log(1 − 2u) when η = − 1/ 2 (or
+σ 2 = 1). Then
+K′
+T (u) = 1
+1 − 2u, K ′′
+T (u) = 2
+(1 − 2u)2,
+K′′′
+T (u) = 8(1 − 2u)3, K ′′′′
+T (u) = 48
+(1 − 2u)4,
+and so the ﬁrst four cumulants of T ∼ Z2 are 1, 2, 8, and 48.
+24. The ﬁrst four cumulants of T =XY are 0, 1, 0, and 4.
+25. From the last part of Problem 2.1 with n = 1, the ﬁrst two cumulants
+are κ 1 = A′(η ) = (1 − p)/p and κ 2 = A′′(η ) = (1 − p)/p 2. Because
+p =p(η ) = 1 − eη , p′= −eη =p − 1. Using this,
+κ 3 =A′′′(η ) = − 2p′
+p3 + p′
+p2 = 2
+p3 − 3
+p2 + 1
+p,
+and
+κ 4 =A′′′′(η ) = 6p′
+p4 − 6p′
+p3 + p′
+p2 = 6
+p4 − 12
+p3 + 7
+p2 − 1
+p.
+26. The third cumulant is
+κ 3 =np(1 − p)(1 − 2p),
+and the third moment is
+EX 3 =np(1 − p)(1 − 2p) + 3n2p2(1 − p) +n3p3.
+
+===== PAGE 32 =====
+
+462 B Solutions
+27. a) For notation, let fij (u) = ∂i+jf (u)/ (∂ui
+1
+∂uj
+2
+), and let M andK be the
+moment generating function and cumulant generating function for T , so
+thatK = logM . Taking derivatives,
+K10 = M10
+M , K 11 = M11M − M10M01
+M 2 ,
+and
+K21 = M21M 2 − M20M01M − 2M11M10M + 2M 2
+10M01
+M 3 .
+At zero we get
+κ 2, 1 =ET 2
+1T2 − (ET 2
+1 )(ET2) − 2(ET1T2)(ET1) + 2(ET1)2(ET2).
+b) Taking one more derivative,
+K22 =
+M22M 3 − 2M21M01M 2 − 2M12M10M 2
+−M20M02M 2 + 2M20M 2
+01M + 2M02M 2
+10M
+− 2M11M11M 2 + 8M11M10M01M − 6M 2
+10M 2
+01
+M 4 .
+SinceM10(0) = ET1 = 0 and M01(0) = ET2 = 0, at zero we get
+κ 22 =ET 2
+1T 2
+2 − (ET 2
+1 )(ET 2
+2 ) − 2(ET1T2)2.
+28. Takingη = (−λ,α ), X has density
+exp
+[
+η 1T1(X) +η 2T2(x) − logΓ (η 2) +η 2 log(−η 1)
+]
+x , x> 0.
+These densities form a two-parameter exponential family with cumulant
+generating function A(η ) = log Γ (η
+2) − η 2 log(−η 1). The cumulants of T
+are derivatives of A:
+
+===== PAGE 33 =====
+
+B.3 Problems of Chapter 3 463
+κ 10 = ∂A (η )
+∂η 1
+= −η 2
+η 1
+= α
+λ ,
+κ 01 = ∂A (η )
+∂η 2
+=ψ (η 2) − log(−η 1) = ψ (α ) − logλ,
+κ 20 = ∂ 2A(η )
+∂η 2
+1
+= η 2
+η 2
+1
+= α
+λ 2,
+κ 11 = ∂ 2A(η )
+∂η 1∂η 2
+= − 1
+η 1
+= 1
+λ ,
+κ 02 = ∂ 2A(η )
+∂η 2
+2
+=ψ′(η 2) = ψ′(α ),
+κ 30 = ∂ 3A(η )
+∂η 3
+1
+= − 2η 2
+η 3
+1
+= 2α
+λ 3,
+κ 21 = ∂ 3A(η )
+∂η 2
+1∂η 2
+= 1
+η 2
+1
+= 1
+λ 2,
+κ 12 = ∂ 3A(η )
+∂η 1∂η 2
+2
+= 0,
+κ 03 = ∂ 3A(η )
+∂η 2
+=ψ′′(η 2) = ψ′′(α ).
+B.3 Problems of Chapter 3
+2. The marginal density of Xi is tiθxtiθ /x , x ∈ (0, 1). Multiplying these
+together, the joint density is
+θn
+( n∏
+i=1
+ti
+xi
+) (n∏
+i=1
+xti
+i
+)θ
+.
+By the factorization theorem, T = ∏n
+i=1
+Xti
+i is suﬃcient. An equivalent
+suﬃcient statistic is ∑n
+i=1
+ti logXi.
+3. The joint densities are
+exp
+[
+µ
+n∑
+i=1
+xi
+σ 2
+i
+−
+n∑
+i=1
+x2
+i
++µ2
+2σ 2
+i
+−
+n∑
+i=1
+logσi − n log
+√
+2π
+]
+,
+and T = ∑n
+i=1
+Xi/σ 2
+i is suﬃcient by the factorization theorem. The
+weighted average T/ ∑n
+i=1
+σ−2
+i is a natural estimator for θ .
+4. By independence, the joint mass functions are
+P (X1 =x1,...,X n =xn) = pn1 (x)
+1 pn2 (x)
+2 pn3(x)
+3 ,
+
+===== PAGE 34 =====
+
+464 B Solutions
+where pi = P ({i}), i = 1 , 2, 3, and ni(x) = # {j : xj = i}. Since
+n1(x) + n2(x) + n3(x) = n, we can write the joint mass functions as
+pn1(x)
+1 pn2 (x)
+2 pn−n1 (x)−n2(x)
+3 , and T = (n1,n 2) is suﬃcient by the factor-
+ization theorem.
+6. a) The joint densities are
+exp
+[
+(α − 1)
+n∑
+i=1
+logxi + (β − 1)
+n∑
+i=1
+log(1 − xi) +n log Γ (α +β )
+Γ (α )Γ (β )
+]
+,
+a full rank exponential family with
+T =
+( n∑
+i=1
+logXi,
+n∑
+i=1
+log(1 − Xi)
+)
+a minimal suﬃcient statistic.
+b) Now the joint densities are
+exp
+[
+(β − 1)
+n∑
+i=1
+log
+[
+x2
+i
+(1 − xi)
+]
++
+n∑
+i=1
+logxi +n log Γ (3β )
+Γ (2β )Γ (β )
+]
+,
+a full rank exponential family with minimal suﬃcient statistic
+n∑
+i=1
+log
+[
+x2
+i
+(1 − xi)
+]
+= 2T1 +T2.
+c) The densities, parameterized by β , are
+pβ (x) = exp
+[
+(β 2 − 1)T1(x) + (β − 1)T2(x) +n log Γ (β +β 2)
+Γ (β )Γ (β 2)
+]
+.
+Suppose pβ (x) ∝β pβ (y). Then
+p2(x)
+p1(x) = p2(y)
+p1(y) and p3(x)
+p1(x) = p3(y)
+p1(y).
+Taking the logarithm of these and using the formula for pβ ,
+3T1(x) +T2(x) +n log 20 = 3T1(y) +T2(y) +n log 20,
+and
+8T1(x) + 2T2(x) +n log 495 = 8T1(y) + 2T2(y) +n log 495.
+These equations imply T (x) = T (y), and T is minimal suﬃcient by Theo-
+rem 3.11.
+7. The statistic T =
+(∑n
+i=1
+Xi, ∑n
+i=1
+tiXi
+)
+, is minimal suﬃcient.
+
+===== PAGE 35 =====
+
+B.3 Problems of Chapter 3 465
+8. a) The statistic ( N11,N 12,N 21) is minimal suﬃcient. (The statistic ( N11,
+N12,N21, N22) is also minimal suﬃcient.)
+b) With the constraint, ( N11 +N12,N 11 +N21) is minimal suﬃcient.
+9. a) The joint density is zero unless xi > θ, i = 1,...,n, that is, unless
+M (x) = min {x1,...,x n}>θ . Using this, the joint density can be written
+as
+pθ (x) = cn(θ )I{M (x)>θ }
+n∏
+i=1
+f (xi),
+and M (X) is suﬃcient by the factorization theorem.
+b) If pθ (x) ∝θ pθ (y), then the region where the two functions are zero
+must agree, and M (x) must equal M (y). So M is minimal suﬃcient by
+Theorem 3.11.
+10. The joint densities are pθ (x) = 2−n ∏(1 +θxi) = 2−n ∏(1 +θx (i)), where
+x(1) ≤ · · · ≤ x(n) are the ordered values. Note that pθ is a polynomial
+in θ with degree n, with roots − 1/x (i). Suppose pθ (x) ∝θ pθ (y). Then
+these polynomials must have the same roots, and we must have x(i) =y(i),
+i = 1,...,n. So the order statistics are minimal suﬃcient by Theorem 3.11.
+16. a) Let T (x) = max {x1,...,x n}, and M (x) = min {x1,...,x n}. Then the
+joint density will be positive if and only if M (x) > 0 and T (x) < θ. In-
+troducing suitable indicator functions, the joint density can be written
+∏
+n
+1
+(2xi)I{M (x) > 0}I{T (x)< θ}/θ 2n. So T = T (X) is suﬃcient by the
+factorization theorem.
+b) For t ∈ (0,θ ), P (X
+i ≤ t) =
+∫t
+0 2xdx/θ 2 = t2/θ 2. So P (T ≤ t) =
+P (X1 ≤ t,...,X n ≤ t) = P (X1 ≤ t) × · · · × P (Xn ≤ t) = t2n/θ 2n. Tak-
+ing the derivative of this with respect to t, T has density 2 nt2n−1/θ 2n,
+t ∈ (0,θ ).
+c) Suppose Eθf (T ) = c, for all θ > 0. Then
+∫θ
+0 f (t)2nt2n−1dt/θ 2n = c,
+which implies
+∫θ
+0 t2n−1f (t)dt =cθ 2n/ (2n), for all θ > 0. Taking a deriva-
+tive with respect to θ , θ 2n−1f (θ ) = cθ 2n−1, for a.e. θ , and hence f (t) = c,
+for a.e. t.
+17. a) If y > 0, then P (Y ≤ y) = P (λX ≤ y) =
+∫y/λ
+0 λe−λx dx = 1 − e−y .
+So Y has density d(1 − e−y )/dy = e−y, y > 0, the standard exponential
+density.
+b) The joint densities are λ
+n exp{−nλ
+x}, a full rank exponential family
+with T =
+X a complete suﬃcient statistic. Let Yi =λXi, so that regard-
+less of the value of λ , Y1,...,Y n are i.i.d. from the standard exponential
+distribution. Then (X2
+1 + · · · +X2
+n)/
+ X
+2
+= (Y 2
+1 + · · · +Y 2
+n )/
+ Y
+2
+is ancillary,
+and independence follows by Basu’s theorem.
+29.f (x) = 1/ (1 +x) is bounded and convex on (0, ∞).
+30. Because η 0 <η <η 1,η =γη 0 + (1 −γ )η 1 for some γ ∈ (0, 1), and because
+the exponential function is convex,
+eηT (x) <γe η 0T (x) + (1 − γ )eη 1T (x).
+Multiplying by h(x) and integrating against µ,
+
+===== PAGE 36 =====
+
+466 B Solutions
+∫
+eηT (x)h(x)dµ(x)<γ
+∫
+eη 0T (x)h(x)dµ(x) + (1−γ )
+∫
+eη 1T (x)h(x)dµ(x).
+From the deﬁnition of Ξ , the upper bound here is ﬁnite, and η must then
+also lie in Ξ .
+31. Suppose X is absolutely continuous with density f , and deﬁne Y =
+g(X)/f (X). Then
+EY =
+∫ g(x)
+f (x)f (x)dx =
+∫
+g(x)dx = 1.
+The function h(y) = − logy = log(1/y ) is strictly convex on (0 , ∞) (its
+second derivative is 1/y 2). So by Jensen’s inequality,
+Eh(Y ) = E log
+[f (X)
+g(X)
+]
+=
+∫
+log
+[f (x)
+g(x)
+]
+f (x)dx ≥ h(EY ) = − log 1 = 0.
+The inequality is strict unless Y is constant a.e. If Y is constant a.e., then
+Y =EY = 1 and f (x) = g(x) a.e.
+B.4 Problems of Chapter 4
+1. a) The joint densities form a two-parameter exponential family with T =
+(Tx,T y) = ( ∑m
+i=1
+Xi, ∑n
+j=1
+Yj ) as a complete suﬃcient statistic. Since Tx
+has a gamma distribution,
+ET−1
+x = λm
+x
+Γ (m)
+∫∞
+0
+tm−2e−λ xtdt = λx
+m − 1.
+Also, ETy = n/λ y . So ( m − 1)Ty/ (nTx) is unbiased for λx/λ y and must
+be UMVU since it is a function of T .
+b) Integrating against the gamma density,
+ET−2
+x = λm
+x
+Γ (m)
+∫∞
+0
+tm−3e−λ xtdt = λ 2
+x
+(m − 1)(m − 2).
+Also, ET 2
+y = (ETy )2 + Var(Ty ) = n(n + 1)/λ 2
+x
+. So
+E
+(
+dTy
+Tx
+− λx
+λy
+)2
+=d2ET 2
+y
+T 2x
+− 2dλx
+λy
+ETy
+Tx
++ λ 2
+x
+λ 2
+y
+=
+(
+d2 n(n + 1)
+(m − 1)(m − 2) − 2d n
+m − 1 + 1
+)λ 2
+x
+λ 2
+y
+,
+which is minimized taking d = (m − 2)/ (n + 1). So the best multiple of
+Y/
+ X is (m − 2)Ty/
+[
+(n + 1)Tx
+]
+= n(m−2)
+(n+1)m
+Y/
+ X.
+c) Since δ =I{X1 > 1} is evidently unbiased, the UMVU estimator must
+
+===== PAGE 37 =====
+
+B.4 Problems of Chapter 4 467
+be E[δ |T ], and by independence this must be P (X1 > 1|Tx]. The joint
+density of X1 andS =X2 + · · ·+Xm isg(x,s ) = λm
+x
+sm−2e−λ x (s+x)/ (m −
+2)!,s> 0 and x> 0. From this, the joint density of X1 andTx isf (x,t ) =
+λm
+x
+(t −x)m−2e−λ xt/ (m − 2)!, 0 <x<t . Dividing by the marginal density
+ofTx,λm
+x
+tm−1e−λ xt/ (m − 1)!, the conditional density of X givenT =t is
+f (x|t) = ( m − 1)(1 − x/t )m−2/t, 0 < x < t. Integrating this conditional
+density,P (X1 > 1|Tx] = I{Tx ≥ 1}(1 − 1/T x)m−1.
+2. a) The joint densities are
+exp
+[
+µx
+∑n
+i=1
+xi
+σ 2 +
+µy
+∑m
+j=1
+yj
+2σ 2 −
+2 ∑n
+i=1
+x2
+i
++ ∑m
+j=1
+y2
+j
+4σ 2 − 2n +m
+4σ 2
+]
+(2πσ 2)n/2 (4πσ 2)m/2 ,
+a full rank exponential family with complete suﬃcient statistic T =
+(∑n
+i=1
+Xi, ∑m
+j=1
+Yj, 2 ∑n
+i=1
+X2
+i + ∑m
+j=1
+Y 2
+j ).
+b) Expanding the squares and simplifying, 2( n − 1)S2
+x + (m − 1)S2
+y =
+2 ∑n
+i=1
+X2
+i + ∑m
+j=1
+Y 2
+j − 2n
+X
+2
+− m
+Y
+2
+is a function of T with mean
+2(n +m − 2)σ 2. So S2
+p =
+[
+2(n − 1)S2
+x + (m − 1)S2
+y
+]
+/ (2n + 2m − 4) is
+UMVU for σ 2.
+c) Because E(
+X −
+Y )2 = (µx −µy )2 +σ 2/n + 2σ 2/m , (
+X −
+Y )2 − (1/n +
+2/m )S2
+p is UMVU for ( µx − µy )2.
+d) With the additional constraint, (2 ∑n
+i=1
+Xi + 3 ∑m
+j=1
+Yj, 2 ∑n
+i=1
+X2
+i +∑m
+j=1
+Y 2
+j ) is complete suﬃcient. The ﬁrst statistic here has mean (2 n +
+9m)µx, so (2 ∑n
+i=1
+Xi + 3 ∑m
+j=1
+Yj )/ (2n + 9m) is the UMVU estimator of
+µx.
+3. The joint mass functions are
+λx1+···+xne−nλ
+x1! × · · · × xn!.
+These densities form a full rank exponential family with T =X1 +· · ·+Xn
+as a complete suﬃcient statistic. Since T has a Poisson distribution with
+mean nλ , δ (T ) will be an unbiased estimator of cos λ if
+∞∑
+t=0
+δ (t)(nλ )te−nλ
+t! = cosλ
+or if
+∞∑
+t=0
+δ (t)nt
+t! λt =enλ cosλ = e(n+i)λ +e(n−i)λ
+2
+=
+∞∑
+t=0
+(n +i)t + (n − i)t
+2t! λt.
+
+===== PAGE 38 =====
+
+468 B Solutions
+Equating coeﬃcients of λt in these expansions,
+δ (t) = 1
+2
+[ (
+1 + i
+n
+)t
++
+(
+1 − i
+n
+)t]
+=
+(
+1 + 1
+n2
+)t/ 2
+cos(tω ),
+where ω = arctan(1/n ).
+4. The joint densities are
+1
+(2π )n/2 exp
+[
+α
+n∑
+i=1
+tixi +β
+n∑
+i=1
+t2
+i
+xi − 1
+2
+n∑
+i=1
+x2
+i
+− 1
+2
+n∑
+i=1
+(αti +βt 2
+i
+)2
+]
+.
+These densities form a full rank exponential family with
+T =
+( n∑
+i=1
+tiXi,
+n∑
+i=1
+t2
+i
+Xi
+)
+a complete suﬃcient statistic. Now
+ET1 =α
+n∑
+i=1
+t2
+i
++β
+n∑
+i=1
+t3
+i
+and ET2 =α
+n∑
+i=1
+t3
+i
++β
+n∑
+i=1
+t4
+i
+.
+Using these,
+T1
+∑n
+i=1
+t4
+i
+− T2
+∑n
+i=1
+t3
+i
+∑n
+i=1
+t2
+i
+∑n
+i=1
+t4
+i
+− (∑n
+i=1
+t3
+i
+)
+2 and T2
+∑n
+i=1
+t2
+i
+− T1
+∑n
+i=1
+t3
+i
+∑n
+i=1
+t2
+i
+∑n
+i=1
+t4
+i
+− (∑n
+i=1
+t3
+i
+)
+2
+are unbiased estimators for α and β . Since they are functions of the com-
+plete suﬃcient statistic T , they are UMVU.
+5. a) Expanding the quadratic, S2 =
+(∑n
+i=1
+X2
+i − n
+X
+2
+)/ (n − 1). If we let
+µ(θ ) = EθXi, then EθX2
+i = µ2(θ ) +σ 2(θ ), and Eθ
+X = µ2(θ ) +σ 2(θ )/n .
+So
+Eθ S2 = 1
+n − 1
+( n∑
+i=1
+[
+µ2(θ ) +σ 2(θ )
+]
+− n
+[
+µ2(θ ) + 1
+nσ 2(θ )
+])
+=σ 2(θ ).
+b) If Xi is Bernoulli, then Xi =X2
+i and
+S2 =
+∑n
+i=1
+Xi − n
+X
+2
+n − 1 = n
+X(1 −
+X)
+n − 1 .
+The joint mass functions form a full rank exponential family with
+ X as a
+complete suﬃcient statistic. Since δ is unbiased and is a function of
+ X, δ
+is UMVU.
+c) Again we have a full rank exponential family with
+X as a complete
+suﬃcient statistic. Because EXi = 1/θ and Var(Xi) = 1/θ 2,E
+X
+2
+=θ−2 +
+
+===== PAGE 39 =====
+
+B.4 Problems of Chapter 4 469
+θ−2/n , and n
+X
+2
+/ (n + 1) is an unbiased estimator of σ 2. This estimator is
+UMVU because it is a function of the complete suﬃcient statistic. Next,
+by symmetry E
+θ [X2
+1 |
+X =c] = · · · =Eθ [X2
+n|
+X =c]. The UMVU estimator
+must equal Eθ [δ |
+X], and therefore
+nc2
+n + 1 =Eθ
+[ ∑n
+i=1
+X2
+i − n
+X
+2
+n − 1
+⏐
+⏐
+⏐
+⏐
+X =c
+]
+= nEθ [X2
+i |
+X =c] − nc2
+n − 1 .
+From this,
+Eθ [X2
+i |
+X =c] = 2nc2
+n + 1.
+6. Because δ +cU is unbiased and δ is UMVU, for any θ ,
+Varθ (δ +cU ) = Varθ (δ ) + 2c Covθ (δ,U ) +c2Varθ (U ) ≥ Varθ (δ ).
+Soh(c) = c2Varθ (U ) + 2c Covθ (δ,U ) ≥ 0. Since h(0) = 0, this will hold for
+all c only if h′(0) = 2 Covθ (δ,U ) = 0.
+7. Suppose δ is unbiased for g1(θ ) +g2(θ ), and that Varθ (δ )< ∞. Then U =
+δ −δ 1 −δ 2 is an unbiased estimator of zero. By Problem 4.6, Cov θ (U,δ 1 +
+δ 2) = Covθ (U,δ 1)+Covθ (U,δ 2) = 0. Since these variables are uncorrelated,
+Varθ (δ ) = Varθ (U +δ 1 +δ 2)
+= Varθ (U ) + Varθ (δ 1 +δ 2) ≥ Varθ (δ 1 +δ 2).
+8. If M (x) = minxi, then the joint densities are
+pθ (x) = θn
+∏n
+i=1
+x2
+i
+I{M (x)>θ },
+and M is suﬃcient by the factorization theorem. Next, for x>θ ,
+Pθ (M >x) = Pθ (X1 >x,...,X n >x )
+=Pθ (X1 >x ) × · · · × Pθ (Xn >x ) = (θ/x )n.
+SoM has cumulative distribution function 1 − (θ/x )n,x>θ , and density
+nθn/x n+1, x>θ . If δ (M ) is an unbiased estimator of g(θ ), then
+∫∞
+θ
+δ (x) nθn
+xn+1 dx =g(θ )
+or ∫∞
+θ
+nδ (x)
+xn+1 dx = g(θ )
+θn .
+Taking a derivative with respect to θ ,
+nδ (x)
+xn+1 = ng(x)
+xn+1 − g′(x)
+xn .
+
+===== PAGE 40 =====
+
+470 B Solutions
+In particular, if g(θ ) = c for all θ >0, this calculation shows that δ (x) = c,
+and soM is complete. In general, δ (M ) = g(M )−Mg′(M )/n is the UMVU
+estimator of g(θ ).
+10. If we assume δ is unbiased and can be written as a power series δ (x) =
+c0 +c1x + · · · , then by Fubini’s theorem we anticipate
+Eθδ (X) =
+∫∞
+0
+(∞∑
+n=0
+cnxn
+)
+θe−θx dx
+=
+∞∑
+n=0
+∫∞
+0
+cnxnθe−θx dx =
+∞∑
+n=0
+n!cn
+θn .
+The form here is a power series in 1 /θ . Writing
+1
+1 +θ = 1/θ
+1 + 1/θ = −
+∞∑
+n=1
+(− 1)nθ−n,
+by matching coeﬃcients for powers of 1 /θ , c0 = 0 and cn = ( − 1)n+1/n !,
+n = 1, 2,... . This gives δ = 1 − e−X . The steps in this derivation only
+work if θ > 1, but it is easy to show directly that δ is unbiased. Because
+the densities form a full rank exponential family, X is complete, and δ is
+UMVU.
+11. The joint mass functions form a full rank exponential family with T =
+X1 + · · · +X3 complete suﬃcient. The estimator δ =I{X1 =X2 = 0 } is
+unbiased. By Theorem 4.4, η (t) = E[δ (X)|T =t] = P (X1 =X2 = 0 |T =
+t) is UMVU. To calculate η we need Pθ (T = t). This event occurs if and
+only if trial t + 3 is a success, and there are exactly two successes in the
+ﬁrst t + 2 trials. Thus
+Pθ (T =t) =
+(t + 2
+2
+)
+θ 3(1 − θ )t.
+SincePθ (X1 =X2 = 0,T =t) = P (X1 =X2 = 0,X 3 =t) = θ 3(1 − θ )t,
+η (t) = Pθ (X1 =X2 = 0,T =t)
+Pθ (T =t) = 2
+(t + 1)(t + 2).
+12. a) Since
+Eθ X =
+∫ 1
+−1
+1
+2 (x +θx 2)dx = θ
+3,
+3X is unbiased for θ .
+b) Integrating against the density,
+b =Eθ |X|=
+∫ 1
+−1
+1
+2 (1 +θx )|x|dx = 1
+2,
+
+===== PAGE 41 =====
+
+B.4 Problems of Chapter 4 471
+for all θ ∈ [− 1, 1].
+c) Since
+EθX2 =
+∫ 1
+−1
+1
+2 (x2 +θx 3)dx = 1
+3,
+Varθ (3X) = 3 − θ 2. Also, Varθ (|X|) = 1/ 3 − 1/ 4 = 1/ 12. Finally,
+Eθ 3X|X|=
+∫ 1
+−1
+3
+2 (x +θx 2)|x|dx = 3θ
+4 ,
+and so Covθ (3X, |X|) = 3θ/ 4 − θ/ 2 = θ/ 4. So
+Varθ 0 (3X +c|X|) = Varθ 0 (3X) + 2cCovθ 0 (3X, |X|) +c2Varθ 0 (|X|)
+= (3 − θ 2
+0 ) + cθ 0
+2 + c2
+12,
+minimized when c = − 3θ 0. Since the variance of this estimator is smaller
+than the variance of 3 X whenθ =θ 0, 3X cannot be UMVU.
+24. Since
+ X and S2 are independent, using (4.10),
+Et =E
+√
+n
+X
+S = √
+n
+(
+E
+X
+)(
+ES−1)
+=δ
+√
+n − 1Γ
+(
+(n − 2)/ 2
+)
+√
+2Γ
+(
+(n − 1)/ 2
+) ,
+Et2 =n
+(
+E
+X
+2)(
+ES−2)
+= (1 +δ 2)n − 1
+n − 3,
+and
+Var(t) = n − 1
+n − 3 +δ 2
+(
+n − 1
+n − 3 − (n − 1)Γ 2(
+(n − 2)/ 2
+)
+2Γ 2(
+(n − 1)/ 2
+)
+)
+.
+28. a) Since g(θ ) = θ , g(θ +∆) − g(θ ) = ∆, so the lower bound is
+∆2
+Eθ
+(
+pθ +∆ (X)
+pθ (X) − 1
+)2.
+Because we need pθ +∆ = 0 whenever pθ = 0, ∆ must be negative. Also,
+θ +∆ must be positive, so ∆ ∈ (−θ, 0). To evaluate the expectation, note
+that pθ +∆(X)/p θ (X) will be θn/ (θ +∆)n if M = max {X1,...,X n}<
+θ +∆, which happens with probability ( θ +∆)n/θ n underPθ . Otherwise,
+pθ +∆(X)/p θ (X) will be zero. After a bit of algebra, the lower bound is
+found to be
+∆2
+[
+θn/ (θ +∆)n]
+− 1 = c2θ 2/n 2
+(1 − c/n )−n − 1
+b) gn(c) = c2/
+[
+(1 − c/n )−n − 1
+]
+→ c2/ (ec − 1) = g(c).
+c) Setting derivatives to zero, the value c0 maximizingg overc ∈ (0, ∞) is
+the unique positive solution of the equation e−c = 1 −c/ 2. This gives c0 =
+1. 59362, and an approximate lower bound of g(c0)θ 2/n 2 = 0. 64761θ 2/n 2.
+
+===== PAGE 42 =====
+
+472 B Solutions
+30. a) We have log pθ (X) = − ∑n
+i=1
+(Xi − α − βti)2/ 2 − n log
+√
+2π , and so
+I(α,β ) = −E∇ 2 logpθ (X) =
+(
+n ∑n
+i=1
+ti∑n
+i=1
+ti
+∑n
+i=1
+t2
+i
+)
+.
+b) If g(θ ) = α , then ∇g(θ ) =
+(1
+0
+)
+and the lower bound is
+(1, 0)I−1(α,β )
+(1
+0
+)
+=
+(1, 0)
+( ∑
+n
+i=1
+t2
+i
+− ∑n
+i=1
+ti
+− ∑n
+i=1
+ti n
+) (1
+0
+)
+n ∑n
+i=1
+t2
+i
+−
+(∑n
+i=1
+ti
+)2
+=
+∑n
+i=1
+t2
+i
+n ∑n
+i=1
+t2
+i
+−
+(∑n
+i=1
+ti
+)2
+= 1/n
+1 −
+(∑n
+i=1
+ti/n
+)2
+/
+(∑n
+i=1
+t2
+i
+/n
+).
+c) Now I(α ) = n, and so the lower bound for the variance is 1 /n .
+d) The bound in (b) is larger. This is clear from the ﬁnal expression, with
+equality only if ∑
+n
+i=1
+ti = 0.
+e) If g(θ ) = αβ , then ∇g(θ ) =
+(β
+α
+)
+and the lower bound is
+(β,α )
+( ∑n
+i=1
+t2
+i
+− ∑n
+i=1
+ti
+− ∑n
+i=1
+ti n
+) (β
+α
+)
+n ∑n
+i=1
+t2
+i
+−
+(∑n
+i=1
+ti
+)2 = β 2 ∑n
+i=1
+t2
+i
+− 2αβ ∑n
+i=1
+ti +nα 2
+n ∑n
+i=1
+t2
+i
+−
+(∑n
+i=1
+ti
+)2 .
+31. This is a location model, and so
+I(θ ) =
+∫ [
+f′(x)
+]2
+f (x) dx =
+∫ 4x2
+π (1 +x2)3 dx = 1
+2.
+If ξ =θ 3, θ =ξ 1/3 =h(ξ ), and the information for ξ is I∗(ξ ) = I
+[
+h(ξ )
+]
+×[
+h′(ξ )
+]2
+= 1/ (18ξ 4/3 ).
+32. Since pθ (x) = θ 2xe−θ 2
+/x !,
+I(θ ) = Varθ
+(∂ logpθ (X)
+∂θ
+)
+= Varθ
+(2X
+θ − 2θ
+)
+= 4.
+33. Since the exponential distributions form a canonical exponential family
+withA(λ ) = − logλ , the Fisher information for λ is ˜I(λ ) = A′′(λ ) = 1/λ 2.
+Using (4.18),
+I(θ ) =
+˜I(λ )
+[
+h′(λ )
+]2 = 1
+[
+λh′(λ )
+]2.
+From this, I(θ ) will be constant if h(λ ) = log λ .
+
+===== PAGE 43 =====
+
+B.4 Problems of Chapter 4 473
+34. a) Multiplying the conditional densities,
+logpθ,σ (X) = − (1 − ρ 2)(X1 − θ )2
+2σ 2 − 1
+2σ 2
+n−1∑
+j=1
+(
+Xj+1 − ρXj − (1 − ρ )θ
+)2
+− n
+2 log(2π ) − n logσ + log
+√
+1 − ρ 2.
+Taking derivatives,
+− ∂ 2
+∂θ 2 logpθ,σ (X) = 1 − ρ 2
+σ 2 + (n − 1)(1 − ρ )2
+σ 2 ,
+− ∂ 2
+∂θ∂σ logpθ,σ (X) = 2(1 − ρ 2)ǫ1
+σ 3 + 2(1 − ρ )
+σ 3
+n−1∑
+j=1
+ηj+1,
+and
+− ∂ 2
+∂σ 2 logpθ,σ (X) = 3(1 − ρ 2)(X1 − θ )2
+σ 4 + 3
+σ 4
+n−1∑
+j=1
+η 2
+j+1 − n
+σ 2,
+where ǫj =Xj − θ and ηj+1 =ǫj+1 − ρǫj . The conditional distribution of
+ηj+1 givenX1 =x1,...,X j =xj , or equivalently, givenǫ1 andη 2,...,η j , is
+N (0,σ 2). From this, η 2,...,η n are i.i.d. from N (0,σ 2), and these variables
+are independent of ǫ1 ∼ N
+(
+0,σ 2/ (1 − ρ 2)
+)
+. Using this, it is easy to take
+expectations of these logarithmic derivatives, giving
+I(θ,σ ) =
+
+
+
+1 − ρ
+2 + (n − 1)(1 − ρ )2
+σ 2 0
+0 2n
+σ 2
+
+
+ .
+b) The lower bound is σ
+2/
+[
+1 − ρ 2 + (n − 1)(1 − ρ )2]
+.
+c) Since ǫ2 =ρǫ 1 +η 2, Var(ǫ2) = ρ 2σ 2/ (1 −ρ 2) +σ 2 =σ 2/ (1 −ρ 2). Further
+iteration gives Var(Xi) = Var(ǫi) = σ 2/ (1 − ρ 2). If i>j , then
+Xi =ρXi−1 +ηi = · · · =ρi−jXj +ρi−j+1ηj+1 + · · · +ρηi−1 +ηi,
+and from this it is easy to see that
+Cov(Xi,X j ) = ρ|i−j|σ 2
+1 − ρ 2 .
+Noting that ∑n−1
+j=1 ρj = (ρ − ρn)/ (1 − ρ ) and
+n−1∑
+i=1
+jρj =ρ d
+dρ
+n−1∑
+j=1
+ρj = ρ − ρn+1
+(1 − ρ )2 − nρn
+1 − ρ,
+
+===== PAGE 44 =====
+
+474 B Solutions
+Var(
+X) = σ 2
+n2(1 − ρ 2)
+n∑
+i=1
+n∑
+j=1
+ρ|i−j|
+= σ 2
+n2(1 − ρ 2)
+
+ n + 2
+n−1∑
+j=1
+(n − j)ρj
+
+
+= σ
+2
+n(1 − ρ )2 − 2ρσ 2(1 − ρn)
+n2(1 − ρ )3(1 +ρ ).
+B.5 Problems of Chapter 5
+1. a) The joint mass functions are
+(m
+x
+)(n
+y
+)
+exp
+[
+x log θ
+1 − θ +y log θ 2
+1 − θ 2 +n logθ + 2m logθ
+]
+.
+These mass functions form a curved exponential family with minimal suf-
+ﬁcient statistic (X,Y ).
+b)E
+θ [X2 +X] = m(m − 1)θ 2, and Eθ Y =nθ 2. So Eθ [nX2 +nX −m(m −
+1)Y ] = 0 for all θ ∈ (0, 1).
+2. a) The joint densities are
+ph(p) exp
+[
+x log
+( p
+1 − p
+)
++y log
+( h(p)
+1 − h(p)
+)]
+.
+These form a curved exponential family unless the canonical parameters
+are linearly related, that is, unless
+log
+( h(p)
+1 − h(p)
+)
+=a +b log
+( p
+1 − p
+)
+for some constantsa andb. Solving forh(p), this is the same as the equation
+stated in the problem.
+b) If h(p) = p/ 2, we have a curved family with ( X,Y ) minimal suﬃcient,
+but not complete, because E
+p(X − 2Y ) = 0 for all p ∈ (0, 1). For an
+example where (X,Y ) is complete, note that Epg(X,Y ) = ph(p)g(1, 1) +
+p
+(
+1 −h(p)
+)
+g(1, 0) + (1 −p)h(p)g(0, 1) + (1 −p)
+(
+1 −h(p)
+)
+g(0, 0). We need
+to ﬁnd a function h with ph(p), p
+(
+1 − h(p)
+)
+, and (1 − p)h(p) linearly
+independent. One choice that works is h(p) = p2. Then
+Epg(X,Y ) = p3[
+g(1, 1) − g(1, 0) − g(0, 1) +g(0, 0)
+]
++p2[
+g(0, 1) − g(0, 0)
+]
++p
+[
+g(1, 0) − g(0, 0)
+]
++g(0, 0).
+If this is zero for all p ∈ (0, 1), then the coeﬃcients of the various powers of
+p must vanish, and it is easy to see that this can only happen if g(0, 0) =
+g(1, 0) = g(0, 1) = g(1, 1) = 0. Thus g(X,Y ) = 0 and ( X,Y ) is complete.
+
+===== PAGE 45 =====
+
+B.5 Problems of Chapter 5 475
+6. a) Consider the event X = 4 and Y = y. This happens if and only if A
+wins exactly 3 of the ﬁrst 3 + y games and then wins the next game. The
+chance of 3 wins in 3 + y trials is
+(3+y
+3
+)
+θ 3(1 −θ )y. The outcome of the next
+game is independent of this event, and so
+P (X = 4,Y =y) =
+(3 +y
+3
+)
+θ 4(1 − θ )y, y = 0,..., 3.
+Similarly,
+P (X =x,Y = 4) =
+(3 +x
+3
+)
+θx(1 − θ )4, x = 0,..., 3.
+The joint mass functions have form h(x,y ) exp
+[
+x logθ +y log(1 −θ )
+]
+. Be-
+cause the relationship between the canonical parameters logθ and log(1−θ )
+is nonlinear, this exponential family is curved.
+b) Let f be an arbitrary function, and suppose
+h(θ ) = E
+θf (X,Y )
+=
+3∑
+x=0
+f (x, 4)
+(3 +x
+3
+)
+θx(1 − θ )4 +
+3∑
+y=0
+f (4,y )
+(3 +y
+3
+)
+θ 4(1 − θ )y
+= 0,
+for all θ ∈ (0, 1). This function h is a polynomial in θ . Letting θ tend to
+zero, the constant term in this polynomial is f (0, 4), and so f (0, 4) must be
+zero. Iff (0, 4) is zero, then the linear term (dividing by θ and lettingθ tend
+to zero) is 4f (1, 4), so f (1, 4) must be zero. Similarly f (2, 4) = f (3, 4) = 0.
+Then
+h(θ )
+θ 4 =
+3∑
+y=0
+f (4,y )
+(3 +y
+3
+)
+(1 − θ )y = 0.
+Because this is a polynomial in 1 − θ , the coeﬃcients of powers of 1 − θ
+must vanish, giving f (4, 0) = · · · =f (4, 3) = 0. Thus f (X,Y ) = 0 almost
+surely, demonstrating that T is complete.
+c) Letδ be an indicator that team A wins the ﬁrst game. Then δ is unbiased
+for θ , and the UMVU estimator must be E(δ |X,Y ) = P (δ = 1 |X,Y ).
+Arguments similar to those used deriving the joint mass function give
+P (δ = 1|X = 4,Y =y) = P (δ = 1,X = 4,Y =y)
+P (X = 4,Y =y)
+=
+θ 2
+(2 +y
+2
+)
+θ 2(1 − θ )y
+(3 +y
+3
+)
+θ 4(1 − θ )y
+= 3
+3 +y,
+
+===== PAGE 46 =====
+
+476 B Solutions
+and
+P (δ = 1|X =x,Y = 4) =
+θ (1 − θ )
+(x + 2
+x − 1
+)
+θx−1(1 − θ )3
+(3 +x
+3
+)
+θx(1 − θ )4
+= x
+3 +x.
+The UMVU is ( X − I{Y = 4})/ (X +Y − 1).
+7. a) P (T = 0) = P (X = 0) = e−λ , and for k = 0, 1,... ,
+P (T =k + 1) = P (X +Y =k,X > 0)
+=P (X +Y =k) − P (X +Y =k,X = 0)
+= (2λ )ke−2λ
+k! − λke−2λ
+k! .
+c) Let N denote the sample size, so N = 1 if X = 0 and N = 2 if X >0,
+and let W = 0 if X = 0 and W = X +Y if X > 0. Using Theorem 5.4,
+the joint densities form an exponential family with canonical parameter
+η = (logλ, −λ ) and suﬃcient statistic (W,N ). Because η does not satisfy a
+linear constraint, the exponential family is curved, and ( W,N ) is minimal
+suﬃcient.
+b) There is a one-to-one relationship between T and (W,N ), so T is min-
+imal suﬃcient. (This can also be shown directly.)
+d) Suppose E
+λ g(T ) = 0 for all λ> 0. Then
+e2λ Eλ g(T ) = eλ g(0) +
+∞∑
+k=0
+g(k + 1)(2k − 1)
+k! λk = 0.
+The constant term in this power series is g(0), so g(0) = 0. Setting the
+coeﬃcient of λk to zero, g(k + 1) = 0 for k = 1, 2,... . Since T is never 1,
+g(T ) must be zero. Thus T is complete.
+13. a) Solving, N22 = (n +D − R − C)/ 2, N11 = (R +C +D − n)/ 2, N12 =
+(R − C − D +n)/ 2 and N21 = (C − R − D +n)/ 2. So the joint mass
+function can be written as
+( n
+n11,...,n 22
+)
+exp
+[
+r log
+√
+p11p12
+p21p22
++c log
+√
+p11p21
+p12p22
++d log
+√
+p11p22
+p12p21
++n log
+√
+p12p21p22
+p11
+]
+,
+where r =R(n11,...,n 22) = n11 +n12, and c and d are deﬁned similarly.
+These densities form a full rank exponential family: ( R,C,D ) cannot sat-
+isfy a linear constraint because there is a one-to-one linear association
+between it and (N
+11,N 12,N 21), and the three canonical parameters ηr ,ηc,
+and ηd can vary freely over R3.
+
+===== PAGE 47 =====
+
+B.6 Problems of Chapter 6 477
+b) They are related by ηd = log √
+α .
+c) Multiplying the marginal mass functions, the joint mass function has
+form
+h(x) exp
+[
+m∑
+i=1
+riηr,i +
+m∑
+i=1
+ciηc,i + log √
+α
+m∑
+i=1
+di −
+m∑
+i=1
+Ai(ηi)
+]
+.
+These mass functions form a full rank (2 m + 1)-parameter exponential
+family with complete suﬃcient statistic
+T =
+(
+R1,...,R m,C 1,...,C m,
+m∑
+i=1
+Di
+)
+.
+16. a) Since Ni+ and N+j are independent with
+Ni+ ∼ Binomial(n,p i+) and N+j ∼ Binomial(n,p +j ),
+E(ˆpi+ ˆp+j )2 = 1
+n4EN 2
+i+EN 2
++j
+= 1
+n2
+[
+np2
+i+
++pi+(1 − pi+)
+][
+np2
++j
++p+j (1 − p+j )
+]
+.
+Subtracting p2
+i+
+p2
++j
+,
+Var(ˆpi+ ˆp+j ) = pi+(1 − pi+)p2
++j
++p+j (1 − p+j )p2
+i+
+n
++ pi+(1 − pi+)p+j (1 − p+j )
+n2 .
+b) Unbiased estimates of pi+(1 − pi+), p+j (1 − p+j ), p2
+i+
+, and p2
++j
+are
+Ni+(n −Ni+)/ (n2 −n),N+j (n −N+j )/ (n2 −n),Ni+(Ni+ − 1)/ (n2 −n),
+andN+j (N+j − 1)/ (n2 −n), respectively. From these, the UMVU estimator
+for the variance above is
+Ni+(n − Ni+)N+j (N+j − 1) +N+j (n − N+j )Ni+(Ni+ − 1)
+n3(n − 1)2
++ Ni+(n − Ni+)N+j (n − N+j )
+n4(n − 1)2 .
+B.6 Problems of Chapter 6
+2. a) Conditioning on X, for z ≥ 0,
+P (X2Y 2 ≤ z) = EP (X2Y 2 ≤ z|X) = E
+[
+FY (
+√
+z/X 2) − FY (−
+√
+z/X 2)
+]
+.
+
+===== PAGE 48 =====
+
+478 B Solutions
+Taking a derivative with respect to z, the density is
+EfY (
+√
+z/X 2) +fY (−
+√
+z/X 2)
+2
+√
+zX 2 , z ≥ 0.
+b) Diﬀerentiating (1.21), since −Y has density λeλx I{x< 0}, the density
+is
+Eλeλ (z−X)I{X >z}=
+∫∞
+z∨0
+λ 2eλ (z−2x)dx = λ
+2e−λ|z|.
+3. Since X and Y are positive and x ∈ (0, 1), X/ (X +Y ) ≤ x if and only if
+X ≤ xY/ (1 − x). So
+P
+( X
+X +Y ≤ x
+⏐
+⏐
+⏐
+⏐Y =y
+)
+=E
+(
+I
+{
+X ≤ xY
+1 − x
+} ⏐
+⏐
+⏐
+⏐Y =y
+)
+=F
+X
+( xy
+1 − x
+)
+.
+ThusP
+(
+X/ (X +Y ) ≤ x
+⏐
+⏐Y
+)
+=F
+X
+(
+xY/ (1 −x)
+)
+, and the desired identity
+follows by smoothing.
+4. The change of variables u =y/ (1 − x) in the integral against the density
+of Y gives,
+pV (x) = 1
+Γ (α )Γ (β )
+∫∞
+0
+y
+(1 − x)2
+( xy
+1 − x
+)α−1
+yβ−1e−y/(1−x)dy
+= xα−1(1 − x)β−1
+Γ (α )Γ (β )
+∫∞
+0
+uα +β−1e−udu
+= Γ (α +β )
+Γ (α )Γ (β )xα−1(1 − x)β−1.
+5. a) For x ∈ (0, 1),
+pX (x) =
+∫
+p(x,y )dy =
+∫ 1
+x
+2dy = 2(1 − x).
+Similarly, for y ∈ (0, 1),
+pY (y) =
+∫
+p(x,y )dx =
+∫ y
+0
+2dx = 2y.
+b) For y ∈ (x, 1),
+pY|X (y|x) = p(x,y )
+pX (x) = 2
+2(1 − x) = 1
+1 − x.
+c) Because
+
+===== PAGE 49 =====
+
+B.6 Problems of Chapter 6 479
+E[Y |X =x] =
+∫ 1
+x
+y
+1 − xdy = 1 +x
+2 ,
+E[Y |X] = (1 + X)/ 2.
+d) Integrating against the joint density,
+EXY =
+∫ ∫
+xyp(x,y )dxdy =
+∫ 1
+0
+∫ y
+0
+2xydxdy =
+∫ 1
+0
+y3dy = 1
+4.
+e) By smoothing,
+EXY =EE [XY |X] = E
+{
+XE [Y |X]
+}
+=E
+[
+X 1
+2 (1 +X)
+]
+=
+∫ 1
+0
+2(1 − x) 1
+2x(1 +x)dx =
+∫ 1
+0
+[x − x3]dx = 1
+4.
+6. a) For x ∈ (0, 1),
+pX (x) =
+∞∑
+y1=0
+∞∑
+y2=0
+x2(1 − x)y1 +y2 = 1.
+b) Integrating the joint density,
+pY (y1,y 2) =
+∫ 1
+0
+x2(1 − x)y1 +y2 dx
+= Γ (3)Γ (y1 +y2 + 1)
+Γ (y1 +y2 + 4) = 2(y1 +y2)!
+(y1 +y2 + 3)!,
+and so
+pX|Y (x|y) = p(x,y 1,y 2)
+pY (y1,y 2) = (y1 +y2 + 3)!
+2(y1 +y2)! x2(1 − x)y1 +y2.
+c) Using the formula in the hint,
+E(X|Y =y) =
+∫ 1
+0
+(y1 +y2 + 3)!
+2(y1 +y2)! x3(1 − x)y1 +y2 dx = 3
+y1 +y2 + 4
+and
+E(X2|Y =y) =
+∫ 1
+0
+(y1 +y2 + 3)!
+2(y1 +y2)! x4(1 − x)y1 +y2 dx
+= 12
+(y1 +y2 + 4)(y1 +y2 + 5).
+So,
+
+===== PAGE 50 =====
+
+480 B Solutions
+E(X|Y ) = 3
+Y1 +Y2 + 4,
+and
+E(X2|Y ) = 12
+(Y1 +Y2 + 4)(Y1 +Y2 + 5).
+d) Since
+EX = 1
+2 =EE (X|Y ) = E
+[ 3
+Y1 +Y2 + 4
+]
+,
+E
+[ 1
+Y1 +Y2 + 4
+]
+= 1
+6.
+11. Given M = m and Z = z, the conditional distribution for ( X,Y ) must
+concentrate on the two points ( m,z ) and (z,m ). By symmetry, a natural
+guess is
+1
+2 =P (X =m,Y =z|M =m,Z =z)
+=P (X =z,Y =m|M =m,Z =z).
+To see that this is correct we need to check that smoothing works. Let h
+be an arbitrary function and deﬁne g(x,y ) = h(x,y,x ∨y,x ∧y) so that
+h(X,Y,M,Z ) = g(X,Y ). Then
+E
+[
+h(X,Y,M,Z )
+⏐
+⏐M,Z
+]
+=E
+[
+g(X,Y )
+⏐
+⏐M,Z
+]
+= 1
+2g(M,Z ) + 1
+2g(Z,M ).
+So smoothing works if Eg(X,Y ) = E
+[1
+2g(M,Z ) + 1
+2g(Z,M )
+]
+, that is, if
+∫ ∫
+g(x,y )f (x)f (y)dxdy
+=
+∫ ∫ 1
+2
+[
+g(x ∨y,x ∧y) +g(x ∧y,x ∨y)
+]
+f (x)f (y)dxdy
+=
+∫ ∫ 1
+2
+[
+g(x,y ) +g(y,x )
+]
+f (x)f (y)dxdy.
+This holds because
+∫∫
+g(x,y )dxdy =
+∫∫
+g(y,x )dxdy , and the stated con-
+ditional distribution is correct.
+12. From the example of Section 3.2, T andU =X/ (X +Y ) are independent
+with U ∼ Unif(0, 1). Then
+E
+[
+f (X,Y )
+⏐
+⏐T =t
+]
+=E
+[
+f
+(
+TU,T (1 − U )
+)⏐
+⏐T =t
+]
+=
+∫
+1
+0
+f
+(
+tu,t(1 − u)
+)
+du.
+(It is easy to check that smoothing works by viewing all expectations as
+integrals against the joint density of T and U .)
+
+===== PAGE 51 =====
+
+B.7 Problems of Chapter 7 481
+14. a) Integrating against y,
+pX (x) =
+∫
+p(x,y )dy =
+∫ x
+0
+e−xdy =xe−x, x> 0,
+and integrating against x,
+pY (y) =
+∫
+p(x,y )dx =
+∫∞
+y
+e−xdx =e−y, y > 0.
+b) Integration against the marginal density gives
+EY =
+∫∞
+0
+ye−y dy = 1 and EY 2 =
+∫∞
+0
+y2e−y dy = 2.
+c) Dividing the joint density by the marginal density,
+pY|X (y|x) = p(x,y )/p X (x) = 1
+x, y ∈ (0,x ).
+Integrating against this conditional density
+E[Y |X =x] =
+∫ x
+0
+y
+xdy = x
+2
+and
+E[Y 2|X =x] =
+∫ x
+0
+y2
+x dy = x2
+3 .
+So E[Y |X] = X/ 2, and E[Y 2|X] = X2/ 3.
+d) Integrating against the marginal density of X,
+EE [Y |X] = 1
+2EX = 1
+2
+∫∞
+0
+x2e−xdx = 1,
+and
+EE [Y 2|X] = 1
+3EX 2 = 1
+3
+∫∞
+0
+x3e−xdx = 2.
+B.7 Problems of Chapter 7
+1. The likelihood is pθ (x) = θT (x)e−nθ/ ∏n
+1
+xi!, where T (x) = ∑n
+i=1
+xi. So
+the Bayes estimator is
+δ (x) =
+∫∞
+0 θp+1pθ (x)λ (θ )dθ
+∫∞
+0 θppθ (x)λ (θ )dθ
+=
+∫∞
+0 θT (x)+p+1e−(n+η )θ dθ
+∫∞
+0 θT (x)+pe−(n+η )θ dθ = T (x) +p + 1
+n +η .
+
+===== PAGE 52 =====
+
+482 B Solutions
+2. The marginal density of X is
+q(x) =
+∫
+pθ (x)λ (θ )dθ
+=
+∫∞
+x
+1
+θ (1 +θ )2 dθ
+=
+∫∞
+x
+[ 1
+θ − 1
+1 +θ − 1
+(1 +θ )2
+]
+dθ
+= log
+(1 +x
+x
+)
+− 1
+1 +x.
+So p(θ |x) = 1/
+[
+θ (1 +θ )2q(x)
+]
+, θ>x , and
+E
+[
+|Θ − d|
+⏐
+⏐X =x
+]
+=
+∫
+∞
+x
+|θ − d|
+θ (1 +θ )2q(x)dθ
+=
+∫ d
+x
+d − θ
+θ (1 +θ )2q(x)dθ +
+∫∞
+d
+θ − d
+θ (1 +θ )2q(x)dθ.
+Note that these integrals are like the integral for q when d is in the nu-
+merator and are easy to integrate when θ is in the numerator. After a bit
+of algebra,
+E
+[
+|Θ − d|
+⏐
+⏐X =x
+]
+=d − 2dq(d)
+q(x) − 1
+(1 +x)q(x) + 2
+(1 +d)q(x).
+Since q′(d) = − 1/
+[
+d(1 + d)2]
+, the derivative of this expression is 1 −
+2q(d)/q (x). This function is strictly increasing from − 1 to 1 as d varies
+from x to inﬁnity. So it will have a unique zero, and this zero determines
+the Bayes estimator: q
+(
+δΛ (X)
+)
+=q(X)/ 2. From this equation,
+P [δΛ (X)<Θ |X =x] =
+∫∞
+δ Λ (x)
+1
+θ (1 +θ )2q(x)dθ = q
+(
+δΛ (x)
+)
+q(x) = 1
+2.
+3. Completing squares, the conditional density is proportional to
+λ (θ )pθ (y)
+∝θ exp
+[
+− θ 2
+1
+2τ 2
+1
+− θ 2
+2
+2τ 2
+2
+− nθ 2
+1
+2σ 2 − θ 2
+2
+2σ 2
+n∑
+i=1
+x2
+i
++ θ 1
+σ 2
+n∑
+i=1
+yi + θ 2
+σ 2
+n∑
+i=1
+xiyi
+]
+∝θ exp
+
+
+
+
+ −
+[
+θ
+1 −
+∑n
+i=1
+yi
+n +σ 2/τ 2
+1
+]2
+2
+(
+n/σ 2 + 1/τ 2
+1
+)−1 −
+[
+θ 2 −
+∑n
+i=1
+xiyi
+∑n
+i=1
+x2
+i
++σ 2/τ 2
+2
+]2
+2
+(∑n
+i=1
+x2
+i
+/σ 2 + 1/τ 2
+2
+)−1
+
+
+
+
+ .
+So given the data, Θ
+1 andΘ 2 are independent normal variables. The Bayes
+estimates are the posterior means,
+
+===== PAGE 53 =====
+
+B.7 Problems of Chapter 7 483
+E[Θ 1|X,Y ] =
+∑n
+i=1
+Yi
+n +σ 2/τ 2
+1
+and E[Θ 2|X,Y ] =
+∑n
+i=1
+xiYi
+∑n
+i=1
+x2
+i
++σ 2/τ 2
+2
+.
+4. a) Since λ′(θ ) =
+[
+α − βA′(θ )
+]
+λ (θ ),
+0 =
+∫
+Ω
+λ′(θ )dθ =E
+[
+α − βA′(Θ )
+]
+.
+So EA′(Θ ) = α/β .
+b) The joint density (or likelihood) is proportional to eθn
+T−nA(θ ). Multi-
+plying by λα,β , the conditional density of Θ given X =x is proportional
+to
+e(α +n
+T )θ−(β +n)A(θ ) ∝θ λα +n
+T,β +n.
+So Θ |X = x ∼ Λα +n
+T,β +n. Using the result from part (a), the Bayes
+estimator of A′(Θ ) is
+E
+[
+A′(Θ )|X
+]
+= α +n
+T
+β +n = β
+β +n
+α
+β + n
+β +n
+T,
+where the last equality expresses this estimator as a weighted average of
+EA
+′(Θ ) = α/β and
+ T .
+c) Since pθ (x) = θe−θx , x > 0, we should take T (x) = −x, and A(θ ) =
+− logθ . Then
+λα,β (θ ) ∝θ eαθ +β logθ =θβ eαβ , θ> 0.
+For convergence, α should be negative. This density is proportional to a
+gamma density, and so Λα,β is the gamma distribution with shape param-
+eter β + 1 and failure rate −α . Since 1/θ = −A′(θ ), the Bayes estimator,
+using results from part (b), is
+−E
+[
+A′(Θ )|X
+]
+= −α +n
+T
+β +n = |α |+n
+X
+β +n .
+6. a) The joint density is λ (θ )pθ (x) = fθ (x)/ 2. Integrating (summing) out θ ,
+the marginal density of X is q(x) = [f0(x) +f1(x)]/ 2. So the conditional
+density of Θ givenX is
+λ (θ |x) = λ (θ )pθ (x)
+q(x) = fθ (x)
+f0(x) +f1(x), θ = 0, 1.
+This is the mass function for a Bernoulli distribution with success probabil-
+ityp =p(x) = f
+1(x)/
+(
+f0(x) +f1(x)
+)
+. The Bayes estimator under squared
+error loss is the mean of this conditional distribution,
+E(Θ |X) = f1(X)
+f0(X) +f1(X).
+
+===== PAGE 54 =====
+
+484 B Solutions
+b) From Theorem 7.1, the Bayes estimator should minimize the posterior
+risk. For zero-one loss the estimator should be one if p(X)> 1/ 2, and zero
+if p(X)< 1/ 2. If p(X) = 1/ 2, either is optimal. Equivalently, δ should be
+one if f
+1(X)>f 0(X), and should be zero if f1(X)<f 0(X).
+7. Using Theorem 7.1, the Bayes estimator δ (x) should be the value d mini-
+mizing
+E
+[ (d − Θ )2
+d
+⏐
+⏐
+⏐
+⏐X =x
+]
+=d − 2E[Θ |X =x] + E[Θ
+2|X =x]
+d .
+Setting the derivative to zero, δ =
+√
+E[Θ 2|X]. If T (x) = x1 + · · · +xn,
+then since λ (θ |x) ∝ λ (θ )pθ (x) ∝ θne−[1+T (x)]θ ,
+E[Θ 2|X] =
+∫∞
+0 θn+2e−(1+T )θ dθ
+∫∞
+0 θne−(1+T )θ dθ = (n + 1)(n + 2)
+(1 +T )2 .
+So the Bayes estimator is
+√
+n2 + 3n + 2/ (1 +T ).
+16. a) Let f and F be the density and cumulative distribution functions for
+the standard Cauchy distribution, so the respective density and cumulative
+distribution functions ofX (orY ) aref (x−θ ) andF (x−θ ). By smoothing,
+P (A ≤ x) = EP (X ≤ 2x − Y |Y ) = EF (2x − Y − θ ).
+Takingd/dx , A has density
+2Ef (2x − Y − θ ) =
+∫ 2dy
+π 2[
+(2x − y − θ )2 + 1
+][
+y2 + 1
+]
+= 1
+π
+[
+(x − θ )2 + 1
+].
+So A and X have the same density.
+b) We have |A −θ |= |X −θ |along two lines: Y −θ =X −θ andY −θ =
+− 3(X −θ ). These lines divide the (X,Y ) plane into four regions: two where
+|A − θ |< |X − θ |(boundaries for these two regions form obtuse angles),
+and two where |A − θ |> |X − θ |. Similarly, the lines Y − θ =X − θ and
+Y −θ = − (X −θ ) divide the plane into four regions. But these regions are
+symmetric, and so the chance ( X,Y ) lies any of them is 1 / 4. The region
+where |A − θ |< |X − θ |contains two of the symmetric regions, and so
+P (|A − θ |< |X − θ |)> 1/ 2.
+B.8 Problems of Chapter 8
+1. By the covariance inequality (equation (4.11))
+⏐
+⏐Cov(X
+i,X j )
+⏐
+⏐ ≤ σ
+2. Of
+course, by the independence, this covariance must be zero if |i − j| ≥m.
+So for any i, ∑n
+j=1
+Cov(Xi,X j ) ≤ (2m − 1)σ 2. Thus
+
+===== PAGE 55 =====
+
+B.8 Problems of Chapter 8 485
+E(
+Xn − ξ )2 = 1
+n2 Var
+( n∑
+i=1
+Xi
+)
+= 1
+n2
+n∑
+i=1
+n∑
+j=1
+Cov(Xi,X j )
+≤ 1
+n2
+n∑
+i=1
+(2m − 1)σ 2 = (2m − 1)σ 2
+n → 0.
+2. Since log(1 − u)/u → − 1 as u → 0 and
+P (Mn ≤ x) = P (Xi ≤ x,i = 1,...,n) = (1 − e−λx )n,
+if ǫ> 0,
+logP
+(logn
+Mn
+≥ λ +ǫ
+)
+=nǫ/( λ +ǫ ) log
+[
+1 − e−λ log(n)/( λ +ǫ )]
+e−λ log(n)/( λ +ǫ ) → −∞ .
+So P (logn/M n ≥ λ +ǫ) → 0. Similarly, if ǫ ∈ (0,λ ),
+logP
+(logn
+Mn
+>λ − ǫ
+)
+=n−ǫ/( λ−ǫ ) log
+[
+1 − e−λ log(n)/( λ−ǫ )]
+e−λ log(n)/( λ−ǫ ) → 0.
+So P (logn/M n > λ − ǫ) → 1, and P (logn/M n ≤ λ − ǫ) → 0. Hence
+log(n)/M n is consistent.
+3. Because Mn lies between 0 and θ , n(ˆθ − θ ) lies between −nθ and θ . So
+Pθ
+(
+n(ˆθ − θ ) ≤ y
+)
+is one if y ≥ θ . If y ≤ θ , then for n suﬃciently large,
+Pθ
+(
+n(ˆθ − θ ) ≤ y
+)
+=Pθ
+(
+Mn ≤ θ − θ − y
+n + 1
+)
+=
+(
+1 − 1 − y/θ
+n + 1
+)n
+→ ey/θ −1.
+So Yn → Y where Y has cumulative distribution function Hθ given by
+Hθ (y) = min {1,e y/θ −1}.
+4. a) By the central limit theorem, √
+n(ˆp − p) ⇒ N
+[
+0,p (1 − p)
+]
+, and so
+by the delta method, Proposition 8.14, with f (x) = x2, √
+n(ˆp2
+n
+− p2) ⇒
+N
+[
+0, 4p3(1 − p)
+]
+.
+b) Tn = X1 + · · · +Xn is complete suﬃcient and 4 X1X2X3(1 − X4) is
+unbiased. The UMVU estimator is δn(T ) = E[4X1X2X3(1 −X4)|T ], given
+explicitly by
+δn(t) = 4P (X1 =X2 =X3 = 1,X 4 = 0,X 5 + · · · +Xn =t − 3)
+P (T =t)
+= 4t(t − 1)(t − 2)(n − t)
+n(n − 1)(n − 2)(n − 3).
+c) The diﬀerence nδn − nˆσ 2
+n is
+
+===== PAGE 56 =====
+
+486 B Solutions
+4T (T − 1)(T − 2)(n − T )
+(n − 1)(n − 2)(n − 3) − 4T 3(n − T )
+n3
+= 4T (n − T )
+[
+T 2(6n2 − 11n + 6) − 3Tn 3 + 2n3]
+n3(n − 1)(n − 2)(n − 3)
+= 4n3 ˆpn(1 − ˆpn)
+(n − 1)(n − 2)(n − 3)
+(
+ˆp2
+n
+6n2 − 11n + 6
+n2 − 3ˆpn + 2
+n
+)
+,
+which converges in probability to 4 p(1 − p)(6p2 − 3p) = 27 / 32. By the
+central limit theorem, √
+n(ˆpn −p) ⇒ Z ∼ N (0, 3/ 16). Now ˆσ 2 =f (ˆpn) with
+f (p) = 4p3(1−p), and since f′(3/ 4) = 0, a two-term Taylor approximation
+is necessary to derive the limiting distribution using the delta method.
+With a suitable intermediate value p
+n, lying between p and ˆpn,
+n(ˆσ 2 − σ 2) = n
+(
+f (ˆpn) − f (p)
+)
+= 1
+2
+[√
+n(ˆpn − p)
+]2
+f′′(pn).
+Because pn
+p
+→ p and f′′is continuous, f′′(pn)
+p
+→ f′′(p) = − 9. Using
+Theorem 8.13, n(ˆσ 2 − σ 2) ⇒ − 9Z2/ 2 and n(δn − σ 2) ⇒ 27/ 32 − 9Z2/ 2.
+5. If ǫ> 0,
+P (Xi ≥ θ +ǫ) =
+∫∞
+θ +ǫ
+(x − θ )eθ−xdx = (1 +ǫ)e−ǫ < 1,
+and so
+P (Mn ≥ θ +ǫ) = P (Xi ≥ θ +ǫ,i = 1,...,n) =
+[
+(1 +ǫ)e−ǫ ]n
+→ 0.
+SinceMn ≥ θ , Mn is consistent. Next, for x> 0,
+P
+(√
+n(Mn − θ )>x
+)
+=
+[(
+1 + x
+√
+n
+)
+e−x/ √
+n
+]n
+.
+To evaluate the limit, we use the facts that ifcn → c, then (1+cn/n )n → ec,
+and that
+[
+(1+u)e−u − 1
+]
+/u 2 → − 1/ 2, which follows from Taylor expansion
+or l’Hˆ opital’s rule. Since
+n
+[(
+1 + x
+√
+n
+)
+e−x/ √
+n − 1
+]
+=x2 (1 +x/ √
+n)e−x/ √
+n − 1
+(x/ √
+n)2 → − x2/ 2,
+P
+(√
+n(Mn − θ )>x
+)
+→ e−x2/2 . So, √
+n(Mn − θ )>x
+)
+⇒ Y , where Y has
+cumulative distribution function P (Y ≤ y) = 1 −e−y2/2 ,y >0 (a Weibull
+distribution).
+6. Let F denote the cumulative distribution function of Y , and let y >0 be
+a continuity point of F . If y +ǫ is also a continuity point of F , then since
+{AnYn ≤ y} ⊂ {Yn ≤ y +ǫ} ∪
+{
+An ≤ y/ (y +ǫ)
+}
+,
+
+===== PAGE 57 =====
+
+B.8 Problems of Chapter 8 487
+we have
+P (AnYn ≤ y) ≤ P (Yn ≤ y +ǫ) +P
+(
+An ≤ y/ (y +ǫ)
+)
+→ F (y +ǫ).
+From this, lim supP (AnYn ≤ y) ≤ F (y +ǫ). Because F is continuous at y
+andǫ can be arbitrarily small ( F can have at most a countable number of
+discontinuities), lim supP (AnYn ≤ y) ≤ F (y). Similarly, if y −ǫ is positive
+and a continuity point of F , then
+P (AnYn ≤ y) ≥ P (Yn ≤ y −ǫ)−P
+(
+An < 0 or An ≥ y/ (y −ǫ)
+)
+→ F (y −ǫ).
+From this, lim inf P (AnYn ≤ y) ≥ F (y − ǫ), and since ǫ can be arbitrarily
+small, lim inf P (AnYn ≤ y) ≥ F (y). Thus
+limP (AnYn ≤ y) = F (y).
+Similar arguments show that
+limP (AnYn ≤ y) = F (y)
+wheny is negative or zero with F continuous at y.
+16. The log-likelihood l(α,β,σ 2) is
+− 1
+2σ 2
+n∑
+i=1
+Y 2
+i + α
+σ 2
+n∑
+i=1
+Yi + β
+σ 2
+n∑
+i=1
+xiYi − nα 2
+2σ 2
+− β 2
+2σ 2
+n∑
+i=1
+x2
+i
+− αβ
+σ 2
+n∑
+i=1
+xi − n log
+√
+2πσ 2.
+With any ﬁxed value for σ 2 this is a quadratic function of α and β ,
+maximized when both partial derivatives are zero. From the form, the
+answer is the same regardless of the value for σ
+2. This gives the fol-
+lowing equations for ˆα and ˆβ : − 2 ∑n
+i=1
+Yi + 2nˆα + 2 ˆβ ∑n
+i=1
+xi = 0 and
+− 2 ∑n
+i=1
+xiYi + 2 ˆβ ∑n
+i=1
+x2
+i
++ 2 ˆα ∑n
+i=1
+xi = 0. Solving, ˆβ =
+(∑n
+i=1
+xiYi −
+n
+x
+Y
+)
+/
+(∑n
+i=1
+x2
+i
+− n
+x2)
+and ˆα =
+ Y − ˆβ
+x. Next, ˆσ 2 must maximize
+l(ˆα, ˆβ,σ 2) = − ∑n
+i=1
+e2
+i
+/ (2σ 2)−n log
+√
+2πσ 2, whereei =Yi− ˆα − ˆβxi (called
+theith residual). The derivative here with respect to σ 2 is ∑n
+i=1
+e2
+i
+/ (2σ 4)−
+n/ (2σ 2) which has a unique zero when σ 2 is ˆσ 2 = ∑n
+i=1
+e2
+i
+/n . Note that
+the function goes to −∞ as σ 2 ↓ 0 or as σ 2 → ∞ . So this value must give
+the maximum, and ˆσ 2 is thus the maximum likelihood estimator of σ 2.
+17. The likelihood is
+1
+√
+2π
+n exp
+[
+−X2
+1
+2 − 1
+2
+n−1∑
+i=1
+(Xi+1 − ρXi)2
+]
+∝ exp
+[
+ρ
+n−1∑
+i=1
+XiXi+1 − ρ 2
+2
+n−1∑
+i=1
+X2
+i
+]
+.
+
+===== PAGE 58 =====
+
+488 B Solutions
+Maximizing the quadratic function in the exponential, the maximum like-
+lihood estimator is
+ˆρ =
+n−1∑
+i=1
+XiXi+1
+/ n−1∑
+i=1
+X2
+i .
+19. By the central limit theorem, √
+n(
+Xn − 1/θ ) ⇒ N (0, 1/θ 2). Using the delta
+method with f (x) = 1/x , √
+n(1/
+ Xn −θ ) ⇒ N (0,θ 2). Next, by the central
+limit theorem, √
+n(ˆpn − e−θ ) ⇒ N
+[
+0,e−θ (1 − e−θ )
+]
+, and so by the delta
+method with f (x) = − logx, √
+n(− log ˆpn − θ ) ⇒ N (0,e θ − 1). So the
+asymptotic relative eﬃciency is θ 2/ (eθ − 1).
+20. By the central limit theorem, √
+n(
+Xn −θ ) ⇒ N (0,θ ), and so by the delta
+method with f (x) = x(x + 1), √
+n
+[
+Xn(
+Xn + 1) − θ (θ + 1)
+]
+⇒ N (0, 4θ 3 +
+4θ 2 +θ ). Next, let Z = (X1 −θ )/
+√
+θ ∼ N (0, 1). Then Var(X2
+1 ) = Var(θZ 2 +
+2θ 3/2 Z +θ 2) = Var(θZ 2)+Var(2θ 3/2 Z)+2 Cov(θZ 2, 2θ 3/2 Z) = 2θ 2 +4θ 3 +
+0, and by the central limit theorem, √
+n
+(
+δn −θ (θ + 1)
+)
+⇒ N (0, 4θ 3 + 2θ 2).
+So the asymptotic relative eﬃciency of
+ Xn(
+Xn + 1) with respect to δn is
+(4θ 3 + 2θ 2)/ (4θ 3 + 4θ 2 +θ ).
+21. Since Var(X2
+i ) = 2 σ 4 and ˆσ 2 = ∑n
+i=1
+X2
+i /n , by the central limit theo-
+rem, √
+n(ˆσ 2 − σ 2) ⇒ N (0, 2σ 4). By the delta method with f the square
+root function, √
+n(ˆσ −σ ) ⇒ N (0,σ 2/ 2). By Theorem 8.18, √
+n(Qn −cσ ) ⇒
+N
+[
+0, 3σ 2/
+(
+16φ 2(c)
+)]
+. So √
+n(˜σ −σ ) ⇒ N
+[
+0, 3σ 2/
+(
+16c2φ 2(c)
+)]
+. The asymp-
+totic relative eﬃciency of ˜ σ with respect to ˆ σ is 8c2φ 2(c)/ 3 = 0 . 1225
+(c = 0. 6745).
+24. a) For x >0, P (|Xi| ≤x) = Φ (x/σ ) − Φ (−x/σ ) = 2Φ (x/σ ) − 1. So |Xi|
+has density 2 φ (x/σ )/σ , x >0, and median Φ←(3/ 4)σ = 0. 6745σ . Hence
+˜σ =cM
+p
+→ 0. 6745cσ . This estimator will be consistent if c = 1/ 0. 6745 =
+1. 4826.
+b) By (8.5),
+√
+n(M − 0. 6745σ ) ⇒ N
+[
+0,σ 2/
+(
+(16φ 2(0. 6745)
+)]
+=N (0, 0. 6189σ 2),
+and so √
+n(˜σ − σ ) ⇒ N (0, 1. 3604σ 2).
+c) The log-likelihood is
+ln(σ ) = − 1
+2σ 2
+n∑
+i=1
+X2
+i − n log(
+√
+2πσ ).
+Settingl′
+n(σ ) to zero, the maximum likelihood estimator is ˆσ = ∑n
+i=1
+X2
+i /n .
+The summands in ˆσ 2 have common variance 2σ 4, and by the central limit
+theorem, √
+n(ˆσ 2 − σ 2) ⇒ N (0, 2σ 4).
+Using the delta method,
+
+===== PAGE 59 =====
+
+B.9 Problems of Chapter 9 489
+√
+n(ˆσ − σ ) ⇒ N (0,σ 2/ 2).
+d) Dividing the variances, the asymptotic relative eﬃciency is
+σ 2/ 2
+1. 3604σ 2 = 0. 3675.
+B.9 Problems of Chapter 9
+8. Deﬁne S2
+x = ∑m
+i=1
+(Xi −
+ X)2/ (m − 1) and S2
+y = ∑n
+j=1
+(Yi −
+ Y )2/ (n − 1).
+Then (m − 1)S2
+x/σ 2
+x ∼ χ 2
+m−1
+and (n − 1)S2
+y/σ 2
+y ∼ χ 2
+n−1
+are independent,
+andF =σ 2
+yS2
+x/ (σ 2
+xS2
+y ) has anF distribution withm− 1 andn− 1 degrees of
+freedom. The distribution of F does not depend on unknown parameters.
+Therefore it is a pivot. If c1 andc2 are the (α/ 2)th and (1−α/ 2)th quantiles
+for this F distribution, then P (c1 < F < c2) = 1 − α . This event, c1 <
+F <c2, occurs if and only if
+σx
+σy
+∈
+(√
+S2x
+c2S2y
+,
+√
+S2x
+c1S2y
+)
+,
+and this is the desired 1 − α conﬁdence interval.
+9. a) The likelihood function is θ−nI{X(n) ≤ θ }, maximized at ˆθ =X(n).
+b) Forx ∈ (0, 1),P (ˆθ/θ ≤ x) = P (X(n) ≤ xθ ) = xn, and so ˆθ/θ is a pivot.
+The (α/ 2)th and (1 − α/ 2)th quantiles for this distribution are ( α/ 2)1/n
+and (1 − α/ 2)1/n . So
+1 − α =P
+[
+(α/ 2)1/n < ˆθ/θ< (1 − α/ 2)1/n ]
+=P
+[
+θ ∈
+(ˆθ/ (1 − α/ 2)1/n , ˆθ/ (α/ 2)1/n )]
+.
+Hence
+(ˆθ/ (1−α/ 2)1/n , ˆθ/ (α/ 2)1/n )
+is the desired 1 −α conﬁdence interval.
+10. Fort> 0,
+P (θXi ≤ t) = P (Xi ≤ t/θ ) =
+∫ t/θ
+0
+θe−θx = 1 − e−t,
+and so θXi has a standard exponential distribution. So θT has a gamma
+distribution with density xn−1e−x/Γ (n),x> 0. If γα/2 andγ 1−α/2 are the
+upper and lower ( α/ 2)th quantiles for this distribution, then
+P (γ 1−α/2 <θT <γ α/2 ) = P
+(
+θ ∈ (γ 1−α/2 /T,γ α/2 /T )
+)
+= 1 − α,
+which shows that ( γ 1−α/2 /T,γ α/2 /T ) is a 1 − α conﬁdence interval for θ .
+
+===== PAGE 60 =====
+
+490 B Solutions
+11. a) The cumulative distribution function of Y = (X − θ )/σ is
+FY (y) = P
+(X − θ
+σ ≤ y
+)
+=P (X ≤ θ +σy )
+=
+∫ θ +σy
+−∞
+g
+(x − θ
+σ
+)dx
+σ =
+∫ y
+−∞
+g(u)du.
+From this, Y has density g.
+b) Let Yi = (Xi − θ )/σ , i = 1, 2. Then Xi = θ +σYi, and using this,
+W = (Y1 +Y2)/ |Y1 − Y2|. Since Y1 and Y2 are independent, ( Y1,Y 2) has
+joint density g(y1)g(y2), which does not depend on θ or σ . Because W is
+a function of Y1 and Y2, its distribution does not depend on θ or σ .
+c) Let qα/2 and q1−α/2 denote the upper and lower ( α/ 2)th quantiles for
+the distribution of W . Then
+1 − α =P
+(
+q1−α/2 < X1 +X2 − 2θ
+|X1 − X2| <qα/2
+)
+=P
+[
+θ ∈
+(
+X − 1
+2 |X1 − X2|qα/2 ,
+ X + 1
+2 |X1 − X2|q1−α/2
+)]
+,
+and the interval in this expression is a 1 − α conﬁdence interval for θ .
+d) The variable V = |X1 −X2|/σ = |Y1 −Y2|is a pivot. If qα/2 andq1−α/2
+are the upper and lower ( α/ 2)th quantiles for the distribution of V , then
+1 − α =P
+(
+q1−α/2 < |X1 − X2|
+σ <qα/2
+)
+=P
+[
+σ ∈
+(|X1 − X2|
+qα/2
+, |X1 − X2|
+q1−α/2
+)]
+,
+and the interval in this expression is a 1 − α conﬁdence interval for σ .
+12. By the addition law,
+Pθ
+(
+g(θ ) ∈S1 ∩S2
+)
+=Pθ
+(
+g(θ ) ∈S1
+)
++Pθ
+(
+g(θ ) ∈S2
+)
+− Pθ
+(
+g(θ ) ∈S1 ∪S2
+)
+≥ Pθ
+(
+g(θ ) ∈S1
+)
++Pθ
+(
+g(θ ) ∈S2
+)
+− 1
+≥ 1 − 2α.
+13. a) Multiplying the marginal density of Xi times the conditional density of
+Yi givenXi, the joint density of (Xi,Y i) is exp {−x2/ 2 − (y −xθ )2/ 2}/ (2π ).
+So the joint density for the entire sample is ∏n
+i=1
+[
+exp{−x2
+i
+/ 2 − (yi −
+xiθ )2/ 2}/ (2π )
+]
+, and the log-likelihood function is
+ln(θ ) = − 1
+2
+n∑
+i=1
+X2
+i − 1
+2
+n∑
+i=1
+(Yi − Xiθ )2 − n log(2π ).
+This is a quadratic function of θ , maximized when
+
+===== PAGE 61 =====
+
+B.9 Problems of Chapter 9 491
+l′
+n(θ ) = − 2
+n∑
+i=1
+Xi(Yi − Xiθ ) = 0.
+This gives ˆθ = ∑n
+i=1
+XiYi/ ∑n
+i=1
+X2
+i .
+b) Fisher information is
+I(θ ) = −Eθ
+∂ 2 logfθ (X,Y )
+∂θ 2 =Eθ X2 = 1.
+c) As n → ∞ , √
+n(ˆθ − θ ) ⇒ N (0, 1).
+d) ( ˆθ ± zα/2 / √
+n).
+e) The observed Fisher information is −l′′
+n(ˆθ ) = ∑n
+i=1
+X2
+i , and the associ-
+ated conﬁdence interval is
+(ˆθ ± zα/2 /
+[∑n
+i=1
+X2
+i
+]1/2 )
+. The main diﬀerence
+is that now the width of the interval varies according to the observed in-
+formation.
+f) Given X
+1 = x1,...,X n = xn, the variables Y1,...,Y n are condi-
+tionally independent with N (xiθ, 1) as the marginal distribution for Yi.
+So, given X1 = x1,...,X n = xn, ∑n
+i=1
+XiYi ∼ N (θ ∑n
+i=1
+x2
+i
+, ∑n
+i=1
+x2
+i
+).
+From this, the conditional distribution of
+[∑n
+i=1
+X2
+i
+]1/2
+(ˆθ − θ ) given
+X1 =x1,...,X n =xn is N (0, 1). By smoothing,
+P
+[( n∑
+i=1
+X2
+i
+)1/2
+(ˆθ − θ ) ≤ x
+]
+=EP
+[( n∑
+i=1
+X2
+i
+)1/2
+(ˆθ − θ ) ≤ x
+⏐
+⏐
+⏐
+⏐X
+1,...,X n
+]
+=EΦ (x) = Φ (x).
+So
+[∑n
+i=1
+X2
+i
+]1/2
+(ˆθ − θ ) ∼ N (0, 1), and using this it is easy to show that
+the coverage probability for the interval in part (e) is exactly 1 − α .
+15. Since the Fisher information for a single Bernoulli observation is I(p) =
+1/ [p(1 − p)], the ﬁrst two conﬁdence regions/intervals are
+CI1 =
+{
+p :
+√
+n|ˆp − p|
+√
+p(1 − p)
+<zα/2
+}
+=
+
+ ˆp +z
+2
+α/2 / (2n)
+1 +z2
+α/2 /n ±
+zα/2
+√
+ˆp(1 − ˆp) +z2
+α/2 / (4n)
+√
+n(1 +z2
+α/2 /n )
+
+ ,
+and
+CI
+2 =
+(
+ˆp ± zα/2
+√
+ˆp(1 − ˆp)
+n
+)
+.
+Since ln(p) = log
+(n
+X
+)
++nˆp logp +n(1 − ˆp) log(1 − p), the observed Fisher
+information is −l′′
+n(ˆp) = n/ [ˆp(1− ˆp)]. Using this, CI 3, based on the observed
+
+===== PAGE 62 =====
+
+492 B Solutions
+Fisher information, is the same as CI 2. Finally, the proﬁle conﬁdence region
+is
+CR4 =
+{
+p : ˆp log[ˆp/p ] + (1 − ˆp) log[(1 − ˆp)/ (1 − p)]<z 2
+α/2 / (2n)
+}
+.
+This region is an interval, but it can only be found numerically. With the
+stated data, the conﬁdence intervals are
+CI
+1 = (0. 2189, 0. 3959),
+CI2 = CI3 = (0. 2102, 0. 3898),
+and
+CI4 = (0. 2160, 0. 3941).
+20. a) The joint densities are px1 (1 − p)p2x2 (1 − p2), an exponential family
+with suﬃcient statistic T =X1 + 2X2. The maximum likelihood estimator
+solves
+l′(p) = − (3 +T )p2 +p − T
+p(1 − p2) = 0,
+which gives
+ˆp = ˆp(T ) = − 1 +
+√
+1 + 4T (3 +T )
+6 + 2T .
+b) Since
+P (Y =y) =
+y∑
+x=0
+P (X1 =y − x,X 2 =x)
+=py (1 − p)(1 − p2)(1 +p + · · · +py )
+=py (1 − p2)(1 − p1+y ),
+we have
+P (X2 =x|Y =y) = P (X1 =y − x,X 2 =x)
+P (Y =y) = px(1 − p)
+1 − p1+y
+and
+e(y,p ) = E(T |Y =y) = y +E(X2|Y =y)
+=y + 1 − p
+1 − p1+y
+y∑
+x=0
+xpx =y + p(1 − py) − p(1 − p)ypy
+(1 − p)(1 − p1+y) .
+The algorithm then evolves with ˆpj = ˆp(Tj ) and Tj+1 =e(y, ˆpj ).
+c) The iterates are T1 = 124/ 21 = 5. 9048, ˆp1 = 0. 76009, T2 = 6. 7348, and
+ˆp2 = 0. 78198.
+
+===== PAGE 63 =====
+
+B.9 Problems of Chapter 9 493
+21. a) The joint densities are exp
+[
+θT (x) − n log[(2 sinhθ )/θ ]
+]
+, where T (x) =
+x1 + · · · +xn. This is an exponential family, and the maximum likelihood
+estimator ˆθx is the unique solution of the equation
+T
+n = A′(θ )
+n = cothθ − 1
+θ.
+b) Data Y1,...,Y n are i.i.d. Bernoulli variables with success probability
+p =P (Xi > 0) = (eθ − 1)/ (eθ −e−θ ). Noting that 1 −p = (1 −e−θ )/ (eθ −
+e−θ ) = p/e θ ,θ = log[p/ (1−p)], and the relation between θ andp is one-to-
+one. Naturally, the maximum likelihood estimator of p based on Y1,...,Y n
+is ˆp = (Y1 + · · · +Yn)/n , and so ˆθy = log[ˆp/ (1 − ˆp)].
+c) From the independence, E[Xj |Y =y] = E[Xj |Yj =yj ], which is
+∫ 1
+0 θxeθx dx
+∫ 1
+0 θeθx dx
+= 1 − 1
+θ + 1
+eθ − 1, if yj = 1,
+∫ 0
+−1θxeθx dx
+∫ 0
+−1θeθx dx
+= − 1
+θ + 1
+eθ − 1, if yj = 0.
+So E[T |Y ] = ∑n
+i=1
+Yi − n/θ +n/ (eθ − 1).
+d) Because
+n∑
+i=1
+Yi =nˆp = n(eˆθ y − 1)
+eˆθ y − e−ˆθ y
+,
+if we start the algorithm at ˆθy , then
+T1
+n = eˆθ y − 1
+eˆθ y − e−ˆθ y
+− 1
+ˆθy
++ 1
+eˆθ y − 1
+= coth( ˆθy ) − 1
+ˆθy
+.
+From the equation in part (a), the next estimate, ˆθ 1, will also be ˆθy .
+e) The iterates are T1 = 1/ 2, ˆθ 1 = 0 . 30182, T2 = 0. 62557, and ˆθ 2 =
+0. 37892.
+27. a) Since √
+n(ˆθn −θ ) ⇒ Y ∼ N (0,I−1(θ )) and √
+n(ˆηn −η ) =
+(1
+0
+)
+·√
+n(ˆθn −θ ),
+we have √
+n(ˆηn − η ) ⇒
+(1
+0
+)
+·Y ∼ N (0,τ 2) with
+τ 2 = (1, 0)I−1(θ )
+(1
+0
+)
+= [I−1(θ )]11 = I22
+I11I22 − I2
+12
+.
+b) The limiting variance is ν 2 = 1/E [∂ logfθ (X)/∂η ]2 = 1/I 11. So ν 2 ≥ τ 2
+if and only if I11I22/ (I11I22 − I2
+12) ≤ 1, which always holds, and ν 2 = τ 2
+if and only if I12 = 0.
+c) If I(·) is continuous, then
+ˆτ 2 = I22(ˆθ )
+I11(ˆθ )I22(ˆθ ) − I12(ˆθ )2
+
+===== PAGE 64 =====
+
+494 B Solutions
+is a consistent estimator of τ 2. Then √
+n(ˆηn − η )/ ˆτ ⇒ N (0, 1), and using
+this asymptotic pivot, (ˆηn ±zα/2 ˆτ/ √
+n) is an asymptotic 1 −α conﬁdence
+interval for η .
+d) The observed Fisher information divided by n, ˜I = −∇ 2l(ˆθn)/n , is a
+consistent estimator of I(θ ), and so
+˜τ 2 =
+˜I22
+˜I11 ˜I22 − ˜I12
+is a consistent estimator of τ 2. Continuing as in part (c), (ˆηn ±zα/2 ˜τ/ √
+n)
+is an asymptotic 1 − α conﬁdence interval for η .
+29. a) The joint density of W,X,Y is
+fα,β (w,x,y ) = q(w,x ) exp
+[
+− 1
+2 (y − αw − βx )2]
+√
+2π
+,
+and so the Fisher information I(α,β ) is
+−E∇ 2 logfα,β (W,X,Y ) = E
+(W 2 WX
+WX X 2
+)
+=
+(EW 2 EWX
+EWX EX 2
+)
+.
+The gradient of the log-likelihood is
+∇l(α,β ) =
+(∑n
+i=1
+Wi(Yi − αWi − βXi)∑n
+i=1
+Xi(Yi − αWi − βXi)
+)
+.
+Setting this equal to zero, the maximum likelihood estimators are
+ˆα =
+(∑n
+i=1
+X2
+i
+)(∑n
+i=1
+WiYi
+)
+−
+(∑n
+i=1
+WiXi
+)(∑n
+i=1
+XiYi
+)
+(∑n
+i=1
+X2
+i
+)(∑n
+i=1
+W 2
+i
+)
+−
+(∑n
+i=1
+WiXi
+)2
+and
+ˆβ =
+(∑n
+i=1
+W 2
+i
+)(∑n
+i=1
+XiYi
+)
+−
+(∑n
+i=1
+WiXi
+)(∑n
+i=1
+WiYi
+)
+(∑n
+i=1
+X2
+i
+)(∑n
+i=1
+W 2
+i
+)
+−
+(∑n
+i=1
+WiXi
+)2 .
+Since √
+n(ˆθ − θ ) ⇒ N (0,I−1), √
+n(ˆα − α ) ⇒ N
+(
+0, [I(α,β )−1]1, 1
+)
+with
+[I(α,β )−1]1, 1 =EX 2/
+(
+EX 2EW 2 − (EXW )2)
+.
+b) If β is known, then ˜α solves l′(α ) = ∑n
+i=1
+Wi(Yi − αWi − βXi) =
+0, which gives ˜α =
+(∑n
+i=1
+WiYi − β ∑n
+i=1
+WiXi
+)
+)/ ∑n
+i=1
+W 2
+i . The Fisher
+information is just EW 2 in this case, and so √
+n(˜α −α ) ⇒ N (0, 1/EW 2).
+This is the same as the limiting distribution in part (a) when EXW = 0.
+Otherwise the distribution in part (a) has larger variance.
+30. By Taylor expansion about θ ,
+g(ˆθn) = g(θ ) + ∇g(˜θn) · (ˆθn − θ ),
+
+===== PAGE 65 =====
+
+B.9 Problems of Chapter 9 495
+where ˜θn is an intermediate value on the line segment between ˆθn and θ .
+Since ˆθn is consistent, ˜θn
+Pθ
+→ θ , and so ∇g(˜θn)
+Pθ
+→ ∇ g(θ ). Because √
+n(ˆθn −
+θ ) ⇒ Z ∼ N
+(
+0,I (θ )−1)
+, using Theorem 9.30,
+√
+n
+(
+g(ˆθn) − g(θ )
+)
+= ∇g(˜θn) · √
+n(ˆθn − θ ) ⇒ ∇ g(θ ) ·Z ∼ N
+(
+0,ν (θ )
+)
+,
+where ν (θ ) = ∇g(θ )′I(θ )−1∇g(θ ). This proves Proposition 9.31. To show
+that (9.13) is a 1 − α asymptotic conﬁdence interval, if ˆν
+Pθ
+→ ν (θ ), then
+1/
+√
+ˆν
+Pθ
+→ 1/
+√
+ν (θ ) by Proposition 8.5. If Y ∼ N
+(
+0,ν (θ )
+)
+, then using The-
+orem 8.13,
+1
+√
+ˆν
+√
+n
+(
+g(ˆθn) − g(θ )
+)
+⇒ 1
+√
+ν (θ )
+Y ∼ N (0, 1).
+One natural estimate for ν is ˆν 1 = ν (ˆθn). Another estimator, based on
+observed Fisher information, is
+ˆν 2 = −n∇g(ˆθn)′(
+∇ 2l(ˆθn)
+)−1
+∇g(ˆθn).
+The asymptotic conﬁdence intervals are
+(
+g(ˆθ ) ± zα/2
+√
+ˆνi/n
+)
+, i = 1 or 2.
+31. The likelihood is
+L(θ ) =
+( n
+N11,...,N 22
+)
+θN+1
+1 (1 − θ 1)N+2θN1+
+2 (1 − θ 2)N2+,
+and maximum likelihood estimators for θ 1 and θ 2 are ˆθ 1 = N+1/n and
+ˆθ 2 =N1+/n . The observed Fisher information matrix is
+−∇ 2l(ˆθ ) =
+
+
+
+
+N
++1
+ˆθ 2
+1
++ N+2
+(1 − ˆθ 1)2
+0
+0 N1+
+ˆθ 2
+2
++ N2+
+(1 − ˆθ 2)2
+
+
+
+
+=
+
+
+
+n
+ˆθ 1(1 − ˆθ 1)
+0
+0 n
+ˆθ 2(1 − ˆθ 2)
+
+
+ .
+Since −∇
+2l(ˆθ )/n
+Pθ
+→ I(θ ),
+I(θ ) =
+
+
+
+1
+θ 1(1 − θ 1) 0
+0 1
+θ 2(1 − θ 2)
+
+
+ .
+In this example, g(θ ) = θ
+1θ 2 and the two estimates of ν (θ ) are the same:
+
+===== PAGE 66 =====
+
+496 B Solutions
+(ˆθ 2, ˆθ 1)
+(ˆθ 1(1 − ˆθ 1) 0
+0 ˆθ 2(1 − ˆθ 2)
+) (ˆθ 2
+ˆθ 1
+)
+= ˆθ 1 ˆθ 2(ˆθ 1 + ˆθ 2 − 2ˆθ 1 ˆθ 2).
+The conﬁdence intervals are both
+
+ ˆθ
+1 ˆθ 2 ± zα/2
+√
+ˆθ 1 ˆθ 2(ˆθ 1 + ˆθ 2 − 2ˆθ 1 ˆθ 2)
+n
+
+ .
+B.10 Problems of Chapter 10
+1. The joint density can be written as
+exp
+[
+− 1
+2 (x1 − θ )2 − 1
+2
+∑n−1
+j=1
+(
+xj+1 − θ − 1
+2 (xj − θ )
+)2]
+√
+2π
+n ,
+so we have a location family. Ignoring terms that do not depend on θ , the
+likelihood is proportional to
+exp
+
+ X
+1θ − 1
+2θ 2 + 1
+2
+n−1∑
+j=1
+(Xj+1 − 1
+2Xj )θ − 1
+8 (n − 1)θ 2
+
+
+= exp
+[ 1
+4Tθ − 1
+8 (n + 3)θ 2
+]
+∝ exp
+[
+−n + 3
+8
+(
+θ − T
+n + 3
+)2]
+,
+whereT = (3X1 +X2 + · · ·+Xn−1 + 2Xn). This likelihood is proportional
+to a normal density with mean T/ (n + 3). Because the minimum risk
+equivariant estimator is the mean of the normalized likelihood, it must be
+T/ (n + 3).
+2. a) By dominated convergence, if c is a continuity point of F ,
+g
+′(c) = E ∂
+∂c |X − c|= −E Sign(X − c) = P (X <c) − P (X >c),
+which is zero if c is the median.
+b) Dominated convergence (when c is a continuity point of F ) gives
+g′(c) = E
+[
+−aI{X >c}+bI{X <c}
+]
+=bP (X <c) − aP (X >c),
+which equals zero if P (X < c) = a/ (a +b). So g is minimized if c is the(
+a/ (a +b)
+)
+th quantile of F .
+4. An equivariant estimator must have form X − c, with minimal risk if c is
+chosen to minimize
+
+===== PAGE 67 =====
+
+B.11 Problems of Chapter 11 497
+EθL(θ,X − c) = E0
+[
+a(X − c)+ +b(c − X)
+]
+.
+From Problem 10.2, c should be the
+(
+a/ (a +b)
+)
+th quantile of the P0-
+cumulative distribution of X, given by F (t) = 1
+2
+∫t
+−∞e−|x|dx. Solving
+F (t) = a/ (a +b), c = log[2a/ (a +b)] if a ≤ b, and c = − log[2b/ (a +b)] if
+a ≥ b.
+B.11 Problems of Chapter 11
+1. a) The joint density of Λi with Xi is λα e−λ (1+x)/Γ (α ). So the marginal
+density of Xi is
+∫∞
+0
+λα e−λ (1+x)
+Γ (α ) dλ = α
+(1 +x)1+α , x> 0.
+b) Dividing the joint density by the marginal density of Xi, the conditional
+density of Λi givenXi =x is
+(1 +x)1+α λα e−λ (1+x)
+Γ (1 +α ) ,
+a gamma density with shape parameter 1 + α and scale 1 / (1 + x). The
+Bayes estimator is
+E(Λi|Xi) = 1 +α
+1 +Xi
+.
+c) From part (a), the joint density is
+p∏
+i=1
+α
+(1 +xi)1+α = exp
+[
+− (1 +α )
+p∑
+i=1
+log(1 +xi) +p logα
+]
+.
+So the log-likelihood is l(α ) = − (1 +α ) ∑p
+i=1
+log(1 +Xi) +p logα . Then
+l′(α ) = − ∑p
+i=1
+log(1 +Xi) +p/α which is zero when α isp/ ∑p
+i=1
+log(1 +
+Xi). This is the maximum likelihood estimator.
+d) The empirical Bayes estimator for Λi is
+1 +p/ ∑p
+j=1
+log(1 +Xj )
+1 +Xi
+.
+2. a) Direct calculation shows that
+Θ i|X =xi,Y =yi ∼ N
+( xiyiτ 2
+1 +x2
+i
+τ 2, τ 2
+1 +x2
+i
+τ 2
+)
+.
+The Bayes estimate is XiYiτ 2/ (1 +X2
+i τ 2).
+
+===== PAGE 68 =====
+
+498 B Solutions
+b) By smoothing, EY 2
+i =EE [Y 2
+i |Xi,Θ i] = E[X2
+i θ 2
+i +1] = 1+ τ 2. A simple
+estimator of τ 2 is
+ˆτ 2 = 1
+p
+p∑
+i=1
+Y 2
+i − 1.
+c) The empirical Bayes estimator is
+ˆθi = XiYi ˆτ 2
+1 +X2
+i ˆτ 2.
+3. a) and b) The joint density of Θ i withXi isλθ xe−(1+λ )θ/x !, the marginal
+density of Xi is
+∫∞
+0
+λθ xe−(1+λ )θ
+x! dθ = λ
+(1 +λ )x+1,
+the conditional density of Θ i givenXi =x is
+(1 +λ )x+1θxe−(1+λ )θ
+x! ,
+and
+E[Θ i|Xi =x] =
+∫∞
+0
+(1 +λ )x+1θx+1e−(1+λ )θ
+x! dθ = x + 1
+1 +λ .
+By independence, E[Θ i|X] = E[Θ i|Xi] = (Xi + 1)/ (1 +λ ), which is the
+Bayes estimate of Θ i under compound squared error loss.
+c) The joint density of X1,...,X p in the Bayesian model is
+p∏
+i=1
+λ
+(1 +λ )xi +1 = exp
+[
+−T (x) log(1 +λ ) +p log
+( λ
+1 +λ
+)]
+,
+where T (x) = x1 + · · · +xp. The maximum likelihood estimator ˆλ of λ
+solves
+0 = − T
+1 +λ + p
+λ − p
+1 +λ = −λT +p
+λ (1 +λ ),
+giving ˆλ =p/T = 1/
+ X.
+d) The empirical Bayes estimator for θi is (Xi + 1)/ (1 + 1/
+ X).
+B.12 Problems of Chapter 12
+1. By smoothing, Eθ ψ =Pθ
+(
+(X,U ) ∈S
+)
+=Eθ Pθ
+(
+(X,U ) ∈S
+⏐
+⏐X
+)
+. This will
+equalE
+θ ϕ (X) if we can choose S so that Pθ
+(
+(X,U ) ∈S
+⏐
+⏐X =x
+)
+=ϕ (x).
+One solution is S =
+{
+(x,u ) : u<ϕ (x)
+}
+.
+
+===== PAGE 69 =====
+
+B.12 Problems of Chapter 12 499
+2. This is like the Neyman–Pearson lemma. If f0 and f1 are densities
+for N (0, 1) and N (0, 4), then we want to maximize
+∫
+h(x)f1(x)dx with∫
+h(x)f0(x)dx = 0. Adding a Lagrange multiplier, let us try to maximize∫
+h(x)[f1(x) −kf0(x)]dx. Here there is a bit of a diﬀerence. Because h has
+range [ −M,M ] instead of [0 , 1], an optimal function h∗will satisfy
+h∗(x) = M, if f1(x)
+f0(x) >k, and h∗(x) = −M, if f1(x)
+f0(x) <k.
+The likelihood ratio is 1
+2e3x2/8 , so equivalently,
+h∗(x) = M, if |x|>k′, and h∗(x) = −M, if |x|<k′.
+To satisfy the constraint, k′= Φ−1(3/ 4) = 0 . 67449. Then Eh∗(2Z) =
+0. 47186M . (You can also solve this problem applying the Neyman–Pearson
+lemma to the test function ϕ = (h +M )/ (2M ).)
+3. By smoothing,
+P (Z1/Z 2 ≤ x) = EP (Z1/Z 2 ≤ x|Z2) = EΦ (x|Z2|).
+(By symmetry, this is true regardless of the sign of Z2.) Taking d/dx , the
+density of Z1/Z 2 is
+E|Z2|φ (x|Z2|) = 1
+2π
+∫
+|z|e−(z2+x2z2 )/2 dz
+= 1
+π
+∫∞
+0
+ze−(1+x2)z2/2 dz = −e−(1+x2)z2/2
+π (1 +x2)
+⏐
+⏐
+⏐
+⏐
+∞
+0
+= 1
+π (1 +x2).
+4. The likelihood ratio is
+L = exp
+[
+(X2
+1 − X2
+2 )
+( 1
+2σ 2
+1
+− 1
+2σ 2
+2
+)]
+.
+If we assume σ 2
+1 < σ2
+2 , then Neyman–Pearson likelihood ratio tests will
+reject H0 if X2
+1 − X2
+2 ≥ k, and for a symmetric test, k should be zero.
+TakingZ1 =X1/σ 1 and Z2 =X2/σ 2, the error probability under H0 is
+P (X2
+1 − X2
+2 ≥ 0) = P (σ 2
+1Z2
+1 ≥ σ 2
+2Z2
+2 )
+=P
+(
+|Z2/Z 1| ≤σ 1/σ 2
+)
+= 2
+π tan−1(σ 1/σ 2).
+If σ 2
+1 >σ 2
+2 , the error rate is 2 tan −1(σ 2/σ 1)/π .
+6. a) By a change of variables,
+Eh(X2/ 2) = 1
+2
+∫ 2
+0
+h(x2/ 2)dx =
+∫ 2
+0
+h(y)
+2√
+ 2ydy,
+and we want to maximize this integral with the constraint
+∫ 2
+0 h(y)dy = 0.
+Introducing a Lagrange multiplier, consider maximizing
+
+===== PAGE 70 =====
+
+500 B Solutions
+∫ 2
+0
+[ 1
+2√
+ 2y − k
+]
+h(y)dy
+without constraint. An optimal solution will have h∗(y) = M when y <
+1/ (8k2) and h∗(y) = −M wheny >1/ (8k2). This solution will satisfy the
+constraint if k = 1/
+√
+8. This gives an upper bound of (
+√
+2 − 1)M , and
+h∗(y) = M Sign(1 − y) as a function achieving the bound.
+b) Introducing a Lagrange multiplier and proceeding in the same fashion,
+consider maximizing
+∫
+2
+0
+[ 1
+2√
+ 2y − k
+]
+h(y)dy
+without constraint. Now an optimal solution will be h∗(y) = My Sign(c−y)
+with c = 1/ (8k2). Then Eh∗(X) = M (c2 − 2)/ 2 so h∗will satisfy the
+constraint if c =
+√
+2, giving an upper bound of
+Eh∗(X2/ 2) =
+∫ 23/ 4
+0
+Mx 2
+4 dx −
+∫ 2
+23/ 4
+Mx 2
+4 dx = 2
+3 (21/4 − 1)M.
+7. a) If we can interchange diﬀerentiation and integration, then
+β′(θ ) = d
+dθ
+∫∞
+0
+ϕ (x)pθ (x)dx =
+∫∞
+0
+ϕ (x) ∂
+∂θ pθ (x)dx
+=
+∫∞
+0
+1 − θx
+θ (1 +θxϕ (x)pθ (x)dx =Eθ
+[ 1 − θX
+θ (1 +θX )ϕ (X)
+]
+.
+Dominated convergence can be used to justify the interchange. Note that
+∂p
+θ (x)/∂θ = (1 −θx )/ (1 +θx )3. Let h =hn be a sequence of positive con-
+stants all less than θ converging to zero, and let ξ =ξn(x) be intermediate
+values in [θ, 2θ ] chosen so that
+ϕ (x)
+(
+pθ +h(x) − pθ (x)
+)
+h = ϕ (x)(1 − ξx )
+(1 +ξx )3 .
+These functions converge pointwise to ϕ (x)∂pθ (x)/∂θ and are uniformly
+bounded in magnitude by (1 + 2 θx )/ (1 +θx )3, an integrable function.
+b) Introducing a Lagrange multiplier k, consider unconstrained maximiza-
+tion of
+β′
+ϕ (1) − kβϕ (1) = E1
+(1 − X
+1 +X − k
+)
+ϕ.
+An optimal test function ϕ ∗ should equal one when (1 −X)/ (1 +X)>k
+and zero, otherwise. Because (1 − X)/ (1 +X) is a decreasing function of
+X, this gives ϕ∗=I{X <c}, where k = (1 −c)/ (1 +c). This test has level
+P1(X <c) = c/ (1 +c). If c =α/ (1 −α ), or, equivalently, k = 1 − 2α , then
+ϕ∗has level α , satisfying the constraint and maximizing β′
+ϕ (1) among all
+tests with βϕ (1) = α .
+
+===== PAGE 71 =====
+
+B.12 Problems of Chapter 12 501
+9. Let vθ (x) = ∂ logpθ (x)/∂θ . Then the test ϕ∗should maximize
+∫
+ϕvθ 0pθ 0 dµ
+subject to the constraint
+∫
+ϕpθ 0 dµ =α . Introducing a Lagrange multiplier
+and arguing as in the Neyman–Pearson lemma, ϕ∗should have form
+ϕ∗(x) =
+{
+1, v θ 0 (x)>k ;
+0, v θ 0 (x)<k.
+10. Since log pθ (x) = ∑n
+i=1
+logfθ (xi), vθ (x) = ∑n
+i=1
+sθ (xi), where sθ (xi) =
+∂ logfθ (xi)/∂θ . Note that sθ (X1),...,s θ (Xn) are i.i.d., Eθsθ (Xi) = 0, and
+Varθ
+[
+sθ (Xi)
+]
+=I(θ ), the Fisher information from a single observation. By
+the central limit theorem, under Pθ , vθ (X)/ √
+n ⇒ N
+(
+0,I (θ )
+)
+as n → ∞ .
+So the level of the test ϕ∗in Problem 12.9 is approximately
+Pθ 0 (vθ 0 (X)/ √
+n>k/ √
+n) ≈ 1 − Φ
+(
+k/
+√
+nI(θ 0)
+)
+,
+which is α if k =zα
+√
+nI(θ 0).
+14. The mass function for X is p(1 − p)x, x ≥ 0, which is an exponential
+family with canonical parameter η = log(1 − p). The two hypotheses can
+be expressed in terms of η asH0 :η ≤ − log 2 andH1 :η > − log 2. Withη
+as the parameter the densities have monotone likelihood ratios in T =X,
+and so there will be a uniformly most powerful test with form ϕ = 0 if
+X < k, ϕ = 1 if X > k, and ϕ = γ if X = k. For a fair coin ( p = 1/ 2),
+P (X ≤ 3) = 93. 75% and P (X = 4) = 3 . 125%. If k = 4 and γ = 3/ 5 the
+test will have level α = 5%. The power if p = 40% is 10.8864%.
+15. The joint density for the data is
+√
+1 − ρ 2
+2π exp
+[
+ρxy − (x2 +y2)/ 2
+]
+,
+which is an exponential family with T = XY . So, the uniformly most
+powerful test will reject H0 if XY > k. Adjusting k to achieve a given
+level α is a bit tricky. The null density of T = XY is K0(|t|/ 2)/ (2π ),
+where K0 is a Bessel function. Numerical calculations using this density
+show that α = 5% when k = 3. 19.
+16. a) Let h = logg. The family will have monotone likelihood ratios in x if
+log
+(pθ 2 (x)
+pθ 1 (x)
+)
+=h(x − θ 2) − h(x − θ 1)
+is nondecreasing in x whenever θ 2 > θ1. A suﬃcient condition for this is
+thath′(x −θ 2) −h′(x −θ 1) ≥ 0. Since x −θ 2 ≤ x −θ 1, this will hold if h′
+is nonincreasing, which follows if h′′(x) = d2 logg(x)/dx 2 ≤ 0.
+b) As in part (a), a suﬃcient condition will be that the derivative of
+log
+(
+p
+θ 2 (x)/p θ 1 (x)
+)
+is at least zero whenever θ 2 >θ 1, and this derivative is
+1
+x
+(g′(x/θ 2)x/θ 2
+g(x/θ 2) − g′(x/θ 1)x/θ 1
+g(x/θ 1)
+)
+.
+
+===== PAGE 72 =====
+
+502 B Solutions
+Sincex/θ 2 <x/θ 1, this will hold if the function xg′(x)/g (x) is nonincreas-
+ing, and a suﬃcient condition for this is
+d
+dx
+(xg′(x)
+g(x)
+)
+= g(x)g′(x) +xg(x)g′′(x) − x
+[
+g′(x)
+]2
+g2(x) ≤ 0, x> 0.
+17. a) Deﬁne F (t) = Pθ 0 (T ≤ t). The uniformly most powerful level α test
+is ϕα (x) = I{T (x) > k(α )} with k(α ) chosen so that F
+(
+k(α )
+)
+= 1 − α .
+Suppose α 0 < α1. Then since F is nondecreasing, k(α 0) > k(α 1). So if
+T (x) > k(α 0), T (x) also exceeds k(α 1), and hence ϕα 1 (x) = 1 whenever
+ϕα 0 (x) = 1. Thus ϕα 1 (x) ≥ ϕα 0 (x) for all x, and since α 0 and α 1 are
+arbitrary,ϕα (x) is nondecreasing in α .
+b) Because F is nondecreasing and continuous, if t > k(α ) then F (t) ≥
+F
+(
+k(α )
+)
+= 1 −α , and so P = inf {α :t>k (α )} ≥ inf{α :F (t) ≥ 1 −α } =
+1 − F (t). But in addition, if F (t)>F
+(
+k(α )
+)
+= 1 − α , then t>k (α ), and
+soP = inf {α :t>k (α )} ≤ inf{α :F (t)> 1 −α }, which is again 1 −F (t).
+So the p-value must be 1 − F (t) = Pθ 0 (T >t).
+c) Let F←denote the largest inverse function of F : F←(c) = sup {t :
+F (t) = c}, c ∈ (0, 1). Then F (T ) ≤ x if and only if T ≤ F←(x) and
+Pθ 0
+(
+F (T ) ≤ x
+)
+= Pθ 0
+(
+T ≤ F←(x)
+)
+= F
+(
+F←(x)
+)
+= x. So F (T ) and the
+p-value 1 − F (T ) are both uniformly distributed on (0 , 1) under Pθ 0 .
+20. Suppose θ 2 >θ 1. Then the log-likelihood ratio is
+l(x) = log L(x,θ 1,θ 2) = log pθ 2 (x)
+pθ 1 (x) = log
+(1 +θ 2x
+1 +θ 1x
+)
+and
+l′(x) = θ 2 − θ 1
+(1 +θ 2x)(1 +θ 1x).
+This is positive for x ∈ (− 1, 1). So l(x) and L(x,θ 1,θ 2) are increasing
+functions of x, and the family has monotone likelihood ratios in x.
+21. Fix 0 <θ 1 <θ 2 < 1. The likelihood ratio
+pθ 2 (x)
+pθ 1 (x) = θ 2 + (1 − θ 2)f (x)
+θ 1 + (1 − θ 1)f (x) = 1 − θ 2
+1 − θ 1
++ (θ 2 − θ 1)/ (1 − θ 1)
+θ 1 + (1 − θ 1)f (x)
+is monotone decreasing in f (x), so we can take T (X) = −f (X).
+25. a) The joint densities are fλ (x,u ) = λxe−λ /x !, u ∈ (0, 1), x = 0, 1,... . If
+⌊t⌋denotes the greatest integer less than or equal to t, then with T (x,u ) =
+x +u, these densities can also be written as λ⌊T (x,u )⌋e−λ /x !. (From this,
+we see that T is suﬃcient, but not minimal suﬃcient, because X is also
+suﬃcient, and T is not a function of X.) If λ 1 > λ0, then the likelihood
+ratio fλ 1 (x,u )/f λ 0 (x,u ) = (λ 1/λ 0)⌊T (x,u )⌋eλ 0−λ 1 is an increasing function
+of T , so the joint densities have monotone likelihood ratios in T .
+b) Let Fλ (t) = Pλ (T ≤ t). For n = 0, 1, 2,... , Fλ (n) = Pλ (X ≤ n − 1),
+which can be found summing the Poisson mass function. For nonintegral
+
+===== PAGE 73 =====
+
+B.12 Problems of Chapter 12 503
+values t, Fλ (t) is the linear interpolation of the value of Fλ at the two
+adjacent integers. So, Fλ is strictly increasing and continuous on (0 , ∞).
+The UMP test has form ϕ = 1 if T ≥ k,ϕ = 0 if T <k. (Randomization on
+the boundary is unnecessary because T is continuous.) The constant k is
+chosen (uniquely) so that Fλ 0 (k) = 1 −α . For the particular case, F2(5) =
+0. 947347 and F2(6) = 0. 9834364. By linear interpolation, F2(5. 073519) =
+95%, and we should reject H0 if T ≥ 5. 073519.
+c) From part (b), if T = t, we accept the null hypothesis that the true
+value of the parameter is λ if and only if Fλ (t)< 1 −α . For ﬁxed t,Fλ (t)
+is continuous and strictly decreasing on [0 , ∞), and so there is a unique
+valueλt such that Fλ t (t) = 1 − α . The conﬁdence interval is ( λt, ∞). For
+data X = 2 and U = 0. 7, the observed value of T is 2.7. As in part (a),
+Fλ (2. 7) = (1 + λ + 7λ 2/ 20)e−λ , which is 95% at λ 2. 7 = 0. 583407.
+28. As in Example 12.10, the uniformly most powerful test of θ = θ 0 versus
+θ>θ 0 will reject if T = max{X1,...,X n}>c, with c chosen so that
+Pθ 0 (T >c) = 1 − (c/θ 0)n =α.
+Solving, c =θ 0(1 − α )1/n , and the acceptance region for this test is
+A(θ 0) =
+{
+x :T (x)<θ 0(1 − α )1/n }
+.
+The conﬁdence interval S1 dual to these tests is
+S1 =
+{
+θ :X ∈A(θ )
+}
+=
+{
+θ :T <θ (1 − α )1/n }
+=
+(
+T (1 − α )−1/n , ∞
+)
+.
+Similarly, the uniformly most powerful test of θ = θ 0 versus θ < θ0 will
+reject if T = max{X1,...,X n}<c, with c chosen so that
+Pθ 0 (T <c) = (c/θ 0)n =α.
+This gives c =θ 0α 1/n , A(θ 0) =
+{
+x :T (x)>θ 0α 1/n }
+, and
+S2 = {θ :T >θα 1/n } = (0,Tα −1/n ).
+By the result in Problem 9.12,
+S =S1 ∩S2 =
+(
+T (1 − α )−1/n ,Tα −1/n )
+should have coverage probability at least 1 − 2α , which is 95% if we take
+α = 2. 5%. (In fact, it is easy to see that the coverage probability is exactly
+95%.)
+31. a) By dominated convergence,
+β′(θ ) = d
+dθ
+∫
+ϕ (x) 1
+√
+2π
+e−(x−θ )2/2 dx
+=
+∫
+ϕ (x) 1
+√
+2π
+∂
+∂θ e−(x−θ )2/2 dx
+=
+∫
+ϕ (x) 1
+√
+2π (x − θ )e−(x−θ )2/2 dx
+=Eθ
+[
+(X − θ )ϕ (X)
+]
+.
+
+===== PAGE 74 =====
+
+504 B Solutions
+The desired result follows setting θ = 0.
+b) Using part (a) and writing expectations as integrals, we wish to maxi-
+mize ∫
+ϕ (x)f
+2(x)dx
+with constraints
+∫
+ϕ (x)f0 (x)dx =α and
+∫
+ϕ (x)f1(x)dx = 0,
+where
+f2(x) = e−(x−1)2/2
+√
+2π , f 0(x) = e−x2/2
+√
+2π ,
+and
+f1(x) = xe−x2/2
+√
+2π .
+By the generalization of the Neyman–Pearson lemma, there are constants
+k
+0 and k1 such that the optimal test function ϕ has form
+ϕ (x) =
+{
+1, f 2(x) ≥ k0f0(x) +k1f1(x);
+0, otherwise.
+Dividing by f0,
+ϕ (x) =
+{
+1, e x−1/2 ≥ k0 +k1x;
+0, otherwise.
+Because ex−1/2 is convex, ϕ (x) = 0 if and only if x ∈ [c1,c 2]. To satisfy
+the second constraint, c2 must be −c1, and then the ﬁrst constraint gives
+c =Φ−1(1 −α/ 2) as the common magnitude. So the optimal test function
+is ϕ (x) = I
+{
+|x| ≥c
+}
+.
+32. a) By dominated convergence, we should have
+β′(θ ) =
+∫
+ϕ ∂pθ
+∂θ dµ =
+∫
+ϕ ∂ logpθ
+∂θ pθ dµ =Eθ ϕl′(θ ),
+where l(θ ) is the log-likelihood. Here
+l′(θ ) =
+2∑
+i=1
+[ 1
+θ − 2Xi
+1 +θXi
+]
+.
+b) Reasoning as in the Neyman–Pearson lemma, the locally most powerful
+test will reject H
+0 if l′(θ 0) exceeds some critical value, that is, if
+2∑
+i=1
+[ 1
+θ 0
+− 2Xi
+1 +θ 0Xi
+]
+≥ k(θ 0).
+
+===== PAGE 75 =====
+
+B.12 Problems of Chapter 12 505
+To ﬁnd k(θ 0) we need the Pθ 0 -distribution of the sum here. Solving the
+inequality, for |x|< 1/θ 0,
+Pθ 0
+( 1
+θ 0
+− 2Xi
+1 +θ 0Xi
+<x
+)
+=Pθ 0
+(
+Xi > 1 − θ 0x
+θ 0(1 +θ 0x)
+)
+.
+Since Pθ (Xi > c) =
+∫∞
+c
+[
+θ/ (1 + θx )2]
+dx = 1/ (1 + θc ), this expression
+equals (
+1 + 1 − θ 0x
+1 +θ 0x
+)−1
+= 1 +θ 0x
+2 ,
+which is the cumulative distribution for the uniform distribution on
+(− 1/θ
+0, 1/θ 0). The density of this distribution is f (x) = θ 0/ 2 for |x|<
+1/θ 0. The density for the sum of two independent variables with this den-
+sity is “triangular” in shape: g(s) =
+∫
+f (x)f (s − x)dx =
+[1
+2θ 0 − 1
+4 |s|θ 2
+0
+]+
+.
+If k ∈ (0, 2/θ 0),
+∫ 2/θ 0
+k g(s)ds = (kθ 0 − 2)2/ 8 Setting this to α , k(θ 0) =(
+2 −
+√
+8α
+)
+/θ 0 (providedα< 1/ 2), which is 1 . 6/θ 0 when α = 5%.
+c) The conﬁdence interval is
+{
+θ : 2
+θ − 2X1
+1 +θX 1
+− 2X2
+1 +θX 2
+< 1. 6
+θ
+}
+=
+(
+− 0. 8(X1 +X2) +
+√
+0. 64(X1 +X2)2 + 0. 8X1X2
+2X1X2
+, ∞
+)
+.
+33. We want to minimize
+∫∞
+0 ϕ (x)2e−2xdx with
+∫∞
+0
+ϕ (x)e−x dx =
+∫∞
+0
+ϕ (x)3e−3xdx = 1/ 2.
+By the generalized Neyman–Pearson lemma, there should be Lagrange
+multipliersk
+1 andk2 so that an optimal test ϕ∗is one if − 2e−2x >k 1e−x +
+3k2e−3x, and zero if the opposite inequality holds. Equivalently, with c1 =
+−k1/ 2 and c2 = − 3k2/ 2,
+ϕ∗(x) =
+{
+1, c 1ex +c2e−x > 1;
+0, c 1ex +c2e−x < 1.
+Ifc1 andc2 have opposite signs, or one of them equals zero, then the left-
+hand side of these inequalities will be a monotone function of x, and ϕ∗
+will be a one-sided test. But then its power function will be monotone,
+and we cannot satisfy the constraints for the power function. So c
+1 and
+c2 must both be positive. Then c1ex +c2e−x is convex, and ϕ∗will be a
+two-sided test1 with form ϕ∗(x) = 1 − 1(b1,b 2)(x), with b1 and b2 adjusted
+so that
+1 Reversing the null and alternative hypotheses, an extended argument using simi-
+lar ideas can show that the test 1 −ϕ
+∗is a uniformly most powerful level α = 1/ 2
+
+===== PAGE 76 =====
+
+506 B Solutions
+P1
+(
+X ∈ (b1,b 2)
+)
+=e−b1 − e−b2 = 1/ 2
+and
+P3
+(
+X ∈ (b1,b 2)
+)
+=e−3b1 − e−3b2 = 1/ 2.
+Solving,
+b1 = log
+( 4
+√
+5 + 1
+)
+= 0. 2119 and b2 = log
+( 4
+√
+5 − 1
+)
+= 1. 1744.
+37. a) Suppose f is integrable,
+∫
+|f |dµ< ∞. Since |ϕ 2
+n
+f | ≤ |f |and ϕ 2
+n
+f con-
+verges pointwise to ϕ 2f , by dominated convergence
+∫
+ϕ 2
+n
+fdµ →
+∫
+ϕ 2fdµ.
+Because f is an arbitrary integrable function, ϕ 2
+n
+w
+→ ϕ 2.
+b) A dominated convergence argument now fails because 1/ϕ n can be ar-
+bitrarily large. Because of this, it need not be the case that 1 /ϕ n
+w→ 1/ϕ .
+For instance, suppose µ is Lebesgue measure on (0 , 1), and ϕn(x) is 1 /n
+if x ∈ (0, 1/n ) and is one otherwise. Then ϕn converges pointwise to the
+test function ϕ that is identically one. But if f is one,
+∫
+(1/ϕ n)fdµ =
+2 − 1/n → 2, instead of
+∫
+(1/ϕ )fdµ = 1.
+41. The equation Eθ 0ϕ =α givesϕ (0) + 4ϕ (1) + 4ϕ (2) = 9α , and the equation
+Eθ 0Xϕ = αEθ 0X gives ϕ (1) + 2ϕ (2) = 3α . If ϕ (1) = 0, then these equa-
+tions give ϕ (0) = 3 α and ϕ (2) = 3 α/ 2. This is the solution if α ≤ 1/ 3.
+Whenα> 1/ 3, then ϕ (0) = 1, ϕ (1) = (3α − 1)/ 2, and ϕ (2) = (1 + 3α )/ 4.
+42. The joint densities are exp {−T (x)/ (2σ 2)}/ (4π 2σ 4), where T (x) = x2
+1
++
+· · · +x2
+4
+, an exponential family. The UMP unbiased test will reject if and
+only if T ≤ c1 or T ≥ c2 with c1 and c2 adjusted so that P1(T ≤ c1) +
+P1(T ≥ c2) = 5% and E1Tϕ = 20%. The density of T when σ = 1 is
+te−t/ 2/ 4, and after a bit of calculus these equations become
+1 − (1 +c1/ 2)e−c1/2 + (1 +c2/ 2)e−c2/2 = 5%
+and
+4 − (4 + 2c1 +c2
+1
+/ 2)e−c1/2 + (4 + 2c2 +c2
+2
+/ 2)e−c2/2 = 20%.
+Numerical solution of these equations gives c1 = 0. 607 and c2 = 12. 802.
+44. a) The densities form an exponential family with T = X, and by Theo-
+rem 12.26 the uniformly most powerful unbiased test will be two-sided
+with the proper level and uncorrelated with X if θ = θ
+0. Since X is
+continuous, we do not need to worry about randomization, and can take
+ϕ
+∗=I{X /∈ (c1,c 2)}. The constants c1 and c2 are determined by
+test of H0 :θ ≤ 1 or θ ≥ 3 versus H1 :θ ∈ (1, 3). In general, if θ 1 <θ 2,α ∈ (0, 1),
+and the data come from a one-parameter exponential family with η (·) a monotone
+function, then there will be a two-sided test ϕ∗with β ϕ ∗ (θ 1) = β ϕ ∗ (θ 1) = 1 − α ,
+and 1 −ϕ∗will be a uniformly most powerful level α test of H0 :θ ≤ θ 1 orθ ≥ θ 2
+versusH1 :θ ∈ (θ 1,θ 2).
+
+===== PAGE 77 =====
+
+B.13 Problems of Chapter 13 507
+1 − α =Pθ 0
+(
+X ∈ (c1,c 2)
+)
+= eθ 0c2 − eθ 0c1
+2 sinh(θ 0) ,
+and Covθ 0 (X,ϕ ∗) = − Covθ 0 (X, 1 − ϕ∗) = 0, which becomes
+∫ c2
+c1
+xθ 0eθ 0x
+2 sinh(θ 0)dx = (1 − α )Eθ 0X,
+or
+c2eθ 0c2 − c1eθ 0c1
+2 sinh(θ 0) − 1 − α
+θ 0
+= (1 − α )
+[
+coth(θ 0) − 1
+θ 0
+]
+.
+b) When θ 0 = 0, pθ 0 (x) = 1 / 2, x ∈ (− 1, 1), the uniform density. The
+equations for c1 and c2 are
+1 − α =P0
+(
+X ∈ (c1,c 2)
+)
+= c2 − c1
+2
+and ∫ c2
+c1
+1
+2xdx = 1
+4 (c2
+2
+− c2
+1
+) = 0.
+Solving, c2 = 1 − α and c1 = − (1 − α ).
+B.13 Problems of Chapter 13
+1. a) Since densities must integrate to one, if θ ̸= 0 and φ ̸= 0,
+A(θ,φ ) = log
+∫ 1
+0
+∫ 1
+0
+(x +y)eθx +φy dxdy
+= log
+[θ (eθ − 1)(φeφ + 1 − eφ ) +φ (eφ − 1)(θeθ + 1 − eθ )
+θ 2φ 2
+]
+.
+b) The marginal density of X is
+∫ 1
+0
+pθ,φ (x,y )dy = xφ (eφ − 1) +φeφ + 1 − eφ
+φ 2 eθx−A(θ,φ ).
+This has the form in Theorem 13.2, with the dominating measure λφ hav-
+ing density
+[
+xφ (eφ − 1)+φeφ +1 −eφ ]
+/φ 2 with respect to Lebesgue measure
+on (0, 1).
+c) The conditional density is
+pθ,φ (x,y )
+∫ 1
+0 pθ,φ (u,y )du
+= θ 2(x +y)eθx
+θeθ + 1 − eθ +yθ (eθ − 1).
+Again, this has the form from Theorem 13.2, now with a dominating mea-
+sureν
+y that has density x +y with respect to Lebesgue measure on (0 , 1).
+
+===== PAGE 78 =====
+
+508 B Solutions
+d) The UMP unbiased test will reject H0 if and only if X ≥ c(Y ) with c(·)
+chosen so that Pθ =0
+(
+X ≥ c(y)
+⏐
+⏐Y =y
+)
+=α . When θ = 0, the conditional
+density of X givenY =y is 2(x +y)/ (1 + 2y). So
+P
+θ =0
+(
+X ≥ c(y)
+⏐
+⏐Y =y
+)
+=
+∫
+1
+c(y)
+2(x +y)
+1 + 2y dx
+= 1 − c2(y) + 2y − 2yc(y)
+1 + 2y .
+Solving, this will be α if c(y) =
+√
+y2 + (1 + 2y)(1 − α ) − y.
+e) Now the UMP unbiased test will reject H0 if and only if X ≤ c1(Y ) or
+X ≥ c2(Y ), with c1(·) and c2(·) adjusted so that
+∫ c1 (y)
+0
+2(x +y)
+1 + 2y dx +
+∫ 1
+c2(y)
+2(x +y)
+1 + 2y dx
+= c2
+1
+(y) + 2yc1(y) + 1 − c2
+2
+(y) + 2y − 2yc2(y)
+1 + 2y =α,
+and
+∫ c1(y)
+0
+2x(x +y)
+1 + 2y dx +
+∫ 1
+c2(y)
+2x(x +y)
+1 + 2y dx =α
+∫ 1
+0
+2x(x +y)
+1 + 2y dx,
+or
+2c3
+1
+(y) + 3yc2
+1
+(y) + 2 − 2c3
+2
+(y) + 3y − 3yc2
+2
+(y)
+3 + 6y =α 2 + 3y
+3 + 6y.
+Explicit solution of these equations for c1(y) and c2(y) does not seem
+possible.
+3. a) Letting θ 1 =λx − λy and θ 2 = −λx, the joint densities are
+λα x
+x xα x−1λα y
+y yα y−1
+xyΓ (αx)Γ (αy ) e−λ xx−λ yy = |θ 2|α xxα x |θ 1 +θ 2|α yyα y
+xyΓ (αx)Γ (αy ) eθ 1y+θ 2 (x+y),
+which is a canonical exponential family with suﬃcient statistics T1 = Y
+and T2 =X +Y . With this parameterization, we are testing H0 :θ 1 ≤ 0
+versusH1 :θ 1 > 0, and the UMP unbiased test will reject H0 if and only
+if T1 > z(T2), with z(·) chosen so that P(0,θ 2 )
+[
+T1 > z(t2)
+⏐
+⏐ T
+2 = t2
+]
+= α .
+To compute this conditional probability, ﬁrst note that the joint density
+of T
+1 and T2 is (the Jacobian for the transformation is one)
+|θ 2|α x (t2 − t1)α x−1|θ 1 +θ 2|α ytα y−1
+1
+Γ (αx)Γ (αy ) eθ 1t1+θ 2t2, 0<t 1 <t 2.
+The conditional density when θ 1 = 0 is
+
+===== PAGE 79 =====
+
+B.13 Problems of Chapter 13 509
+(t2 − t1)α x−1tα y−1
+1
+∫t2
+0 (t2 − τ )α x−1τα y−1dτ
+= (t2 − t1)α x−1tα y−1
+1
+tα x +α y−1
+2
+∫ 1
+0 (1 − u)α x−1uα y−1du
+= Γ (αx)Γ (αy )(t2 − t1)α x−1tα y−1
+1
+Γ (αx +αy )tα x+α y−1
+2
+.
+Here the ﬁrst equality arises from the change of variables u = τ/t 2. The
+change of variables u =t1/t 2 now gives
+P(0,θ 2)
+[
+T1 >a
+⏐
+⏐T
+2 =t2
+]
+=
+∫ t2
+a
+Γ (αx)Γ (αy )(t2 − t1)α x−1tα y−1
+1
+Γ (αx +αy )tα x +α y−1
+2
+dt1
+=
+∫ 1
+a/t 2
+Γ (αx)Γ (αy )
+Γ (αx +αy )uα y−1(1 − u)α x−1du
+= 1 − F (a/t 2),
+where F is the cumulative distribution function for the beta distribution
+with parameters αy and αx. If q is the upper α th quantile for this distri-
+bution, so F (q) = 1 − α , then the probability will be α if a = qt2. Thus
+the UMP unbiased test rejects H0 if and only if T1 >qT 2.
+b) From the deﬁnition, ∑n
+i=1
+(Xi/σ x)2 ∼ χ 2
+n
+=Γ (n/ 2, 1/ 2), and since the
+reciprocal of the “failure rate” is a scale parameter, ns2
+x
+∼ Γ
+(
+n/ 2, 1/ (2σ 2
+x)
+)
+.
+Similarly, ms2
+y
+∼ Γ
+(
+m/ 2, 1/ (2σ 2
+y)
+)
+. From part (a), the UMP unbiased
+test will reject H0 if and only if ns2
+x
+/ (ns2
+x
++ms2
+y
+) > q, if and only if
+F > mq/
+(
+n(1 − q)
+)
+, where q is the upper α th quantile for β (m/ 2,n/ 2).
+This is the usual F -test, and this derivation shows that the upper α th
+quantile of Fn,m is mq/
+(
+n(1 − q)
+)
+.
+5. The joint densities are
+(2π )−n/2 exp
+[
+βx′y +γw′y − 1
+2 ∥y∥2 − 1
+2 ∥βx +γw ∥2
+]
+.
+Introducing new parameters θ = β − γ and η = γ , the joint densities
+become
+(2π )−n/2 exp
+[
+θx′y +η (w +x)′y − 1
+2 ∥y∥2 − 1
+2 ∥θx +ηx +ηw ∥2
+]
+,
+and we would like to test H0 : θ ≤ 0 versus H1 : θ > 0. These densities
+form an exponential family with canonical suﬃcient statistics U =x′Y and
+T = (x+w)′Y . By Theorem 13.6, a uniformly most powerful unbiased test
+will reject H0 if U >c(T ) with c(·) chosen so that
+Pθ =0
+(
+U >c(t)
+⏐
+⏐T =t
+)
+=α.
+When θ = 0, U and T have a bivariate normal distribution with EU =
+ηx
+′(x +w), ET = η ∥x +w∥2, Var(U ) = ∥x∥2, Var(T ) = ∥x +w∥2, and
+Cov(U,T ) = x′(x +w). So, when θ = 0,
+
+===== PAGE 80 =====
+
+510 B Solutions
+U |T =t ∼ N
+(x′(x +w)t
+∥x +w∥2 , ∥x∥2∥w∥2 − (x′w)2
+∥x +w∥2
+)
+,
+and the uniformly most powerful unbiased test will reject H0 if
+U − x′(x +w)T
+∥x +w∥2 >zα
+√
+∥x∥2∥w∥2 − (x′w)2
+∥x +w∥2 .
+6. a) Taking θ 1 = logλx − logλy and θ 2 = logλy , the likelihood is
+exp
+[
+θ 1T1 +θ 2T2 − meθ 1+θ 2 − neθ 2
+]
+∏m
+i=1
+Xi! ∏n
+j=1
+Yj ! ,
+where T1 = ∑m
+i=1
+Xi and T2 = ∑m
+i=1
+Xi + ∑n
+j=1
+Yj . The UMP unbiased
+test has form
+ϕ =
+
+
+
+
+
+1, T
+1 >z (T2);
+γ (T2), T 1 =z(T2);
+0, T 1 <z (T2),
+with z, γ chosen so that P
+(
+T1 > z(t2)
+⏐
+⏐ T
+2 = t2
+)
++γ (t2)P
+(
+T1 = z(t2)
+⏐
+⏐
+T
+2 =t2
+)
+=α when λx =λy . Note that if λx =λy
+P (T1 =t1|T2 =t2) =
+P
+(∑m
+i=1
+Xi =t1, ∑n
+j=1
+Yj =t2 − t1
+)
+P
+(∑m
+i=1
+Xi + ∑n
+j=1
+Yj =t2
+)
+= (mλ )t1 (nλ )t2−t1e−(m+n)λ /
+[
+t1!(t2 − t1)!
+]
+(
+(m +n)λ
+)t2
+e−(m+n)λ /t 2!
+=
+(t2
+t1
+) ( m
+m +n
+)t1 ( n
+m +n
+)t2−t1
+,
+and so, when λx =λy , T1|T2 =t2 ∼ Binomial
+(
+t2,m/ (m +n)
+)
+.
+b) If λx = λy , P (T1 = 9 |T2 = 9) = (2 / 3)9 = 2. 6% and P (T1 = 8 |T2 =
+9) = 3(2/ 3)8 = 11. 7%, so in this case z(9) = 8 and γ (9) = 20. 5%. So the
+chance of rejection is 20 . 5%.
+c) Using normal approximation for the binomial distribution, the approx-
+imate test will reject H
+0 if
+T1 > mT2 +zα
+√
+mnT2
+m +n .
+B.14 Problems of Chapter 14
+1. a) The matrix X should be
+
+===== PAGE 81 =====
+
+B.14 Problems of Chapter 14 511
+
+
+
+1 w
+1 x1
+.
+.
+.
+.
+.
+.
+.
+.
+.
+1w
+n xn
+
+
+ .
+b) Because w
+1 + · · ·+wn =x1 + · · ·+xn = 0, w andx are both orthogonal
+to a column of 1s, and X will be of full rank unless w andx are collinear.
+Algebraically, this would occur if D =SxxSww − S2
+xw is zero.
+c) Using the formula ˆβ = (X′X)−1X′Y , since
+X′X =
+
+
+n 0 0
+0 S
+ww Swx
+0 Swx Sxx
+
+ , X
+′Y =
+
+
+n
+Y
+SwY
+SxY
+
+ ,
+and
+(X
+′X)−1 =
+
+
+1/n 0 0
+0 S
+xx/D −Swx/D
+0 −Swx/D S ww/D
+
+ ,
+we have
+ˆβ
+1 =
+Y, ˆβ 2 = SxxSwY − SwxSxY
+SxxSww − S2xw
+, and ˆβ 3 = SwwSxY − SwxSwY
+SxxSww − S2xw
+.
+d) The covariance of ˆβ is Cov( ˆβ ) = ( X′X)−1σ 2, with ( X′X)−1 given
+above.
+e) The UMVU estimator of σ
+2 is
+S2 = 1
+n − 3
+n∑
+i=1
+(Yi − ˆβ 1 − wi ˆβ 2 − xi ˆβ 3)2.
+f) The variance of ˆβ 1 isσ 2/n , estimated byS2/n . So the conﬁdence interval
+for β 1 is (
+ˆβ 1 ± S
+√
+ntα/2 ,n−3
+)
+.
+Since ˆβ 3 − ˆβ 2 =
+(0 − 1 1 )ˆβ ,
+Var(ˆβ 3 − ˆβ 2) =
+(0 − 1 1 )
+Cov( ˆβ )
+
+
+0
+− 1
+1
+
+
+=
+(0 − 1 1 )
+(X
+′X)−1
+
+
+0
+− 1
+1
+
+ σ
+2
+= Sxx +Sww + 2Sxw
+SxxSww − S2xw
+σ 2
+=
+∑n
+i=1
+(xi +wi)2
+SxxSww − S2xw
+σ 2.
+
+===== PAGE 82 =====
+
+512 B Solutions
+Plugging in S2 to estimate σ 2, the conﬁdence interval for β 3 − β 2 is
+(
+ˆβ 3 − ˆβ 2 ± s
+√
+∑n
+i=1
+(xi +wi)2
+SxxSww − S2xw
+tα/2 ,n−3
+)
+.
+4. a) The dimension r is 2m − 1 because the rows of the design matrix corre-
+sponding to (i,j ) pairs (1, 1),... , (1,m ) and (2, 1),... , (m, 1) are linearly
+independent.
+b) The least squares estimators ˆα
+i and ˆγj are not unique in this problem
+(sincer<p ), but they still minimize
+L =
+m∑
+i=1
+m∑
+j=1
+(Yij − αi − γj )2,
+and must satisfy normal equations, obtained setting ∂L/∂α i,i = 1,...,m
+and ∂L/∂γ j , j = 1,...,m to zero. This gives
+ˆαi + ˆ
+γ =
+Yi·, i = 1,...,m,
+and
+ˆγj + ˆ
+α =
+Y·j, j = 1,...,m,
+where
+ˆ
+α = 1
+m
+m∑
+i=1
+ˆαi, ˆ
+γ = 1
+m
+m∑
+j=1
+ˆγj,
+Yi· = 1
+m
+m∑
+j=1
+Yij, i = 1,...,m,
+and
+Y·j = 1
+m
+m∑
+i=1
+Yij, j = 1,...,m.
+Averaging these equations over i orj,
+ˆ
+α + ˆ
+γ =
+Y = 1
+m2
+m∑
+i=1
+m∑
+j=1
+Yij.
+So the least squares estimator for ξij is
+ˆξij = ˆαi + ˆγj =
+Yi· +
+Y·j −
+ Y,
+i = 1,...,m , j = 1,...,m .
+c) Since eij =Yij − ˆξij , the estimator of σ 2 is
+S2 = 1
+(m − 1)2
+m∑
+i=1
+m∑
+j=1
+(Yij −
+ Yi· −
+ Y·j +
+Y )2.
+
+===== PAGE 83 =====
+
+B.14 Problems of Chapter 14 513
+d) Because
+ξi· = 1
+m
+m∑
+j=1
+ξij =αi +
+γ, i = 1,...,m,
+we have αi − αj =
+ξi· −
+ ξj·, expressing this diﬀerence as a linear function
+of ξ . The least squares estimator of αi − αj is ˆαi − ˆαj =
+Yi· −
+Yj·.
+e) Let Zi = m1/2 (
+Yi· − αi −
+ γ )/σ ∼ N (0, 1). These variables depend
+on diﬀerent subsets of the Yij , and hence they are independent. Also,
+averaging ˆξij =
+ Yi· +
+Y·j −
+ Y over j gives
+ Yi· = ˆ
+ξi·, so the variables
+Zi, i = 1 ,...,m , are functions of ˆξ and are independent of S2. Since
+(m − 1)2S2/σ 2 ∼ χ 2
+(m−1)
+2 , by Deﬁnition 14.14,
+maxZi − minZi
+S/σ = max(
+Yi· − αi) − min(
+Yi· − αi)
+S/ √
+m
+has the studentized range distribution with parameters m and (m− 1)2. Ifq
+is the upper α th quantile of this distribution, and Iij = (ˆαi − ˆαj ±qS/ √
+m),
+then, proceeding as in the text,
+P (αi − αj ∈Iij, ∀i ̸=j) = P
+(max(
+Yi· − αi) − min(
+Yi· − αi)
+S/ √
+m <q
+)
+= 1 − α.
+So Iij , i ̸= j, are simultaneous conﬁdence intervals for the diﬀerences
+αi − αj .
+f) Under H0, the data are distributed as they are in one-way analysis of
+variance, so q =m, and the least squares estimator for the mean of Yij is
+Y·j . Then
+∥ ˆξ − ˆξ0∥2 =
+m∑
+i=1
+m∑
+j=1
+(
+Yi· −
+Y )2 =m
+m∑
+i=1
+(
+Yi· −
+Y )2,
+T = m ∑m
+i=1
+(
+Yi· −
+ Y )2
+(m − 1)S2 ,
+and we should reject H0 if T >Fα,m −1, (m−1)2 .
+g) The test statistic has a noncentral F distribution with noncentrality
+parameter
+δ 2 = ∥ξ − P0ξ ∥2
+σ 2 = m ∑m
+i=1
+(αi −
+α )2
+σ 2
+(found easily from the prior results, since ξ −P0ξ equals ˆξ − ˆξ 0 whenǫ = 0)
+and degrees of freedom m − 1 and (m − 1)2. The power is the probability
+this distribution assigns to the interval ( Fα,m −1, (m−1)2, ∞).
+
+===== PAGE 84 =====
+
+514 B Solutions
+h) Taking ψ = (α 1 − αm,...,α m−1 − αm)′, we can write any contrast∑m
+i=1
+aiαi as ∑m−1
+i=1 aiψi. From part (d), the least squares estimator of
+this contrast is
+m−1∑
+i=1
+ai(
+Yi· −
+ Ym·) =
+m∑
+i=1
+ai
+Yi·.
+The variance of this estimator is ∑m
+i=1
+a2
+i
+σ 2/m = ∥a∥2σ 2/m , estimated by
+∥a∥2S2/m . So the desired simultaneous conﬁdence intervals are
+(m∑
+i=1
+ai
+Yi· ± ∥a∥S
+√
+m−1
+m Fα,m −1, (m−1)2
+)
+.
+13. a) Letω 0 = {v ∈ω :Av = 0}, with dimensionr−q becauseA has full rank.
+Chooseξ 0 ∈ω so that Aξ 0 =ψ 0, and introduce Y∗=Y −ξ 0 ∼ N (ξ∗,σ 2I),
+with ξ∗= ξ − ξ0 ∈ ω . Since ψ = ψ 0 if and only if Aξ = Aξ0 if and only
+if Aξ∗= 0, the null hypothesis is H0 : ξ∗∈ ω 0, tested using the usual
+statistic
+T = (n − r)∥PY∗− P0Y∗∥2
+q∥Y∗− PY∗∥2 ,
+where P is the projection onto ω and P0 is the projection onto ω 0. The
+levelα test rejects H0 if T ≥ Fα,q,n −r .
+b) Because ξ0 ∈ ω , Pξ 0 = ξ 0 and ∥Y∗− PY∗∥2 = ∥Y − PY ∥2. So
+T = ∥PY∗− P0Y∗∥2/ (qS2), where S2 = ∥Y − PY ∥2/ (n − r) is the usual
+estimator of σ 2. Next, note that P − P0 is the projection onto ω ∩ω⊥
+0 ,
+for if v = v0 +v1 +v2 with v0 ∈ ω 0, v1 ∈ ω ∩ω⊥
+0 , and v2 ∈ ω⊥, then
+(P −P0)v = (v0 +v1) −v0 =v1. Because A =AP , the rows of A all lie in
+ω , and so they must span ω ∩ω⊥
+0 . Consequently, P − P0 =A′(AA′)−1A,
+as in the derivation for (14.14). So
+∥(P − P0)Y∗∥2 = (Y − ξ 0)′(P − P0)(Y − ξ 0)
+= (Y − ξ0)′A′(AA′)−1A(Y − ξ 0)
+= ( ˆψ − ψ 0)′(AA′)−1( ˆψ − ψ 0),
+and
+T = ( ˆψ − ψ 0)′(AA′)−1( ˆψ − ψ 0)
+qS2 .
+The conﬁdence set consists of all values ψ 0 where we would accept the
+null hypothesis ψ = ψ 0, that is,
+{
+ψ 0 : T (ψ 0) < Fα,q,n −r
+}
+. Using the last
+formula for T , this region is the ellipse given in the problem.
+14. a) Because ∑c
+l=1
+xkl = 0, the columns of the design matrix X are orthog-
+onal, and X′X is diagonal. The (0 , 0) entry will be ∑p
+k=1
+∑c
+l=1
+x2
+kl
+, and
+the other diagonal entries will all equal c. Also, the zeroth entry of X′Y
+will be ∑p
+k=1
+∑c
+l=1
+xklYkl, and the kth entry will be ∑c
+l=1
+Ykl, 1 ≤ k ≤ p.
+Since ˆβ = (X′X)−1X′Y ,
+
+===== PAGE 85 =====
+
+B.14 Problems of Chapter 14 515
+ˆβk = 1
+c
+c∑
+l=1
+Ykl, k = 1,...,p,
+are the least squares estimators for β 1,...,β p, and
+ˆβ 0 =
+∑p
+k=1
+∑c
+l=1
+xklYkl
+∑p
+k=1
+∑c
+l=1
+x2
+kl
+is the least squares estimator for β 0. If Zk = √
+p( ˆβk −βk)/σ ,k = 1,...,p ,
+then Z1,...,Z c are i.i.d. N (0, 1) independent of
+S2 = 1
+pc − p − 1
+p∑
+k=1
+c∑
+l=1
+(Ykl − ˆβk − ˆβ 0xkl)2.
+Because (pc − p − 1)S2/σ 2 ∼ χ 2
+pc−p−1
+,
+M = max |Zk|
+S/σ = max |ˆβk − βk|
+S/ √
+c
+has the studentized maximum modulus distribution with parameters p and
+pc − p − 1. If q is the upper α th quantile for this distribution, then
+P
+[
+βk ∈ ( ˆβk ± Sq/ √
+c),k = 1,...,p
+]
+=P (M <q) = 1 − α,
+and ( ˆβk ±sq/ √
+c),k = 1,...,p , are simultaneous 1 −α conﬁdence intervals
+for β 1,...,β p.
+b) Let
+ x = ∑c
+l=1
+xkl/c, and write
+Ykl =βk +β 0
+x +β 0(xkl −
+x) +ǫkl =β∗
+k +β∗
+0 (xkl −
+ x) +ǫkl,
+where β∗
+k = βk + β 0
+x and β∗
+0 = β 0. Then the design matrix X∗has
+orthogonal columns, and proceeding as in part (a), ˆβ∗
+k =
+Yk = ∑c
+l=1
+Ykl/c,
+k = 1,...,p , and
+ˆβ∗
+0 =
+∑p
+k=1
+∑c
+l=1
+Ykl (xkl −
+ x)
+∑p
+k=1
+∑c
+l=1
+(xkl −
+x)2
+are the least squares estimators of β∗
+k , k = 1,...,p , and β∗
+0 . Since Zk =√
+c(
+Yk − β∗
+k )/σ , k = 1,...,p , are i.i.d. N (0, 1), independent of
+S2 = 1
+pc − p − 1
+p∑
+k=1
+c∑
+l=1
+(Ykl − ˆβ∗
+k − ˆβ∗
+0xkl )2,
+and since (pc − p − 1)S2/σ 2 ∼ χ 2
+pc−p−1
+,
+R = maxZk − minZk
+S/σ = maxj,k |βk − βj −
+Yk +
+Yj |
+S/ √
+c
+
+===== PAGE 86 =====
+
+516 B Solutions
+has the studentized maximum range distribution with parameters p and
+pc − p − 1. If q is the upper α th quantile of this distribution,
+P
+[
+βk − βj ∈ (
+Yk −
+ Yj ± qS/ √
+c), ∀k,j
+]
+=P (R<q ) = 1 − α.
+So (
+Yk −
+Yj ±qS/ √
+c), 1 ≤ j <k ≤ p, are simultaneous conﬁdence intervals
+for the diﬀerences βk − βj , 1 ≤ j <k ≤ p.
+15. a) Since ˆβi = ∑ni
+j=1Yij/n i, the (i,j )th entry of PY is ˆβi. The (i,j )th entry
+of P0Y is
+Y = ∑p
+i=1
+∑ni
+j=1 Yij/n , where n = ∑p
+i=1
+ni. So
+∥PY − P0Y ∥2 =
+p∑
+i=1
+ni∑
+j=1
+( ˆβi −
+Y )2 =
+p∑
+i=1
+ni( ˆβi −
+ Y )2
+and
+S2 = ∥Y − PY ∥2
+n − p = 1
+n − p
+p∑
+i=1
+ni∑
+j=1
+(Yij − ˆβi)2.
+The F -statistic for the test is
+T =
+∑p
+i=1
+ni( ˆβi −
+Y )2
+(p − 1)S2 ,
+and we reject H0 if and only if T ≥ Fp−1,n−p(1 − α ).
+b) The estimate a1 ˆβ 1 + · · · +ap ˆβp has variance σ 2 ∑p
+i=1
+a2
+i
+/n i, estimated
+byS2 ∑p
+i=1
+a2
+i
+/n i. So the simultaneous conﬁdence intervals are
+p∑
+i=1
+aiβi ∈
+
+
+p∑
+i=1
+ai ˆβi ± S
+
+
+
+√
+(p − 1)Fp−1,n−p(1 − α )
+p∑
+i=1
+a2
+i
+ni
+
+ .
+B.17 Problems of Chapter 17
+3. a) As usual, let
+Yi· = 1
+n
+n∑
+j=1
+Yij, i = 1,...,p,
+and
+Y·j = 1
+p
+p∑
+i=1
+Yij, j = 1,...,n.
+Introduce
+
+===== PAGE 87 =====
+
+B.17 Problems of Chapter 17 517
+SSe =
+p∑
+i=1
+n∑
+j=1
+(Yij −
+Yi· −
+Y·j +
+Y··)2
+=
+n∑
+j=1
+∥Yj −
+Y ∥2 − 1
+p
+n∑
+j=1
+[1′(Yj −
+Y )]2
+and
+SSβ =p
+n∑
+j=1
+(
+Y·j −
+ Y··)2 = 1
+p
+n∑
+j=1
+[1′(Yj −
+Y )]2,
+sums of squares that would arise testing null hypotheses if the βj were
+viewed as ﬁxed constants. Let P = 11′/p , the projection onto the linear
+span of 1, and let Q =I − P . The covariance of Yj is Σ =σ 2I +τ 211′=
+σ 2Q + (σ 2 +pτ 2)P , with determinant σ 2(p−1)(σ 2 +pτ 2) (the eigenvector
+1 has eigenvalue σ 2 + pτ 2, and the other eigenvalues are all σ 2), and
+Σ−1 =σ−2Q + (σ 2 +pτ 2)−1P . The log-likelihood is
+l(α,σ,τ ) = − 1
+2
+n∑
+j=1
+(Yj − α )′Σ−1(Yj − α ) − np log
+√
+2π − n
+2 log |Σ |
+= − 1
+2
+n∑
+j=1
+(Yj −
+ Y )′Σ−1(Yj −
+Y ) − n
+2 (
+Y − α )′Σ−1(
+Y − α )
+− np log
+√
+2π − n(p − 1)
+2 logσ 2 − n
+2 log(σ 2 +pτ 2).
+(The cross-product term drops out because ∑n
+j=1
+(Yj −
+ Y ) = 0.) This is
+maximized overα by ˆα =
+Y , regardless of the value of σ orτ . To maximize
+overσ and τ , introduce η 2 =σ 2 +pτ 2 and note that
+(Yj −
+Y )′Σ−1(Yj −
+ Y ) = ∥Q(Yj −
+ Y )∥2
+σ 2 + ∥P (Yj −
+ Y )∥2
+η 2
+= ∥Yj −
+ Y ∥2 − [1′(Yj −
+ Y )]2/p
+σ 2 + [1′(Yj −
+ Y )]2
+pη 2 .
+So
+l(ˆα,σ,τ ) = −
+∑n
+1
+∥Yj −
+Y ∥2 − ∑n
+1
+[1′(Yj −
+ Y )]2/p
+2σ 2 −
+∑n
+1
+[1′(Yj −
+Y )]2
+2pη 2
+− n(p − 1) logσ − n logη
+= −SSe
+2σ 2 − SSβ
+2η 2 − n(p − 1) logσ − n logη.
+Setting derivatives to zero suggests that the maximum likelihood estima-
+tors should be
+ˆη
+2 = 1
+nSSβ and ˆσ 2 = SSe
+np − n.
+
+===== PAGE 88 =====
+
+518 B Solutions
+But there is a bit of a problem here because we need ˆ η 2 ≥ ˆσ 2. If these
+formulas give ˆη 2 < ˆσ 2, then the likelihood is maximized with ˆ η = ˆσ . The
+common value will maximize l(ˆα,σ,σ ) = ∑n
+j=1
+∥Yj −
+ Y ∥2/σ 2 − np logσ .
+Setting the derivative to zero, the common value is ˜ σ 2 = ∑n
+j=1
+∥Yj −
+Y ∥2/ (np), and this is also the maximum likelihood estimator for σ 2 under
+H0. Plugging these estimates into the likelihood,
+2 logλ = 2l(ˆα, ˆσ, ˆτ ) − 2l(ˆα, ˜σ, 0) = 2n(p − 1) log(˜σ/ ˆσ ) + 2n log(˜σ/ ˆη ).
+Remark:H0 would not be rejected when ˆη 2 = ˆσ 2, and when ˆη 2 > ˆσ 2 there
+is a monotonic relationship between λ and the F -statistic that would be
+used to test H0 ifβj were viewed as constants. So the F -test and likelihood
+ratio test here would be the same in practice.
+b) Under H
+0,α =α 01 and
+(
+Y − α )′Σ−1(
+Y − α ) =
+ Y
+′
+Q
+Y
+σ 2 + (1′
+Y − pα 0)2
+p(σ 2 +pτ 2) ,
+which is minimized when α 0 is 1′
+Y/p . So
+(
+Y − ˜α )′Σ−1(
+Y − ˜α ) = SSα
+nσ 2
+and
+l(˜α,σ,τ ) = −SSe +SSα
+2σ 2 − SSβ
+2η 2 − n(p − 1) logσ − n logη,
+where SSα = ∑p
+i=1
+∑n
+j=1
+(
+Yi· −
+ Y··)2. Setting derivatives to zero, and
+keeping in mind that we must have ˜η ≥ ˜σ ,
+˜σ 2 = SSe +SSα
+n(p − 1) and ˜η 2 = SSβ
+n ,
+when (p − 1)SSβ ≥ SSe +SSα , and ˜σ 2 = ˜η 2 = (SSe +SSα +SSβ )/ (np)
+when (p− 1)SSβ <SSe +SSα . Plugging these values into the log-likelihood
+function, 2 logλ =n(p − 1) log(˜σ/ ˆσ ) +n log(˜σ/ ˆη ). The estimators ˜σ and ˜η
+depend on SSβ ; thus the F -statistic and the likelihood ratio statistic are
+not equivalent.
+4. a) The likelihood function is L(θx,θ y) = θxθy exp[−θxX − θyY ]. Setting
+derivatives to zero, the maximum likelihood estimators are ˆθx = 1 /X
+and θy = 1/Y , and so sup Ω L(θ ) = L(ˆθx, ˆθy ) = e−2/ (XY ). The max-
+imum likelihood estimator ˜θy for θy under H0 maximizes L(2θy,θ y ) =
+2θ 2
+y exp
+[
+− (2X +Y )θy
+]
+. A bit of calculus gives ˜θy = 2/ (2X +Y ), and then
+supΩ0 L(θ ) = L(˜θx, ˜θy) = 8e−2/ (2X +Y )2. The likelihood ratio test statis-
+tic is λ = (2X +Y )2/ (8XY ).
+
+===== PAGE 89 =====
+
+B.17 Problems of Chapter 17 519
+b) Deﬁne U =θxX and V =θyY , so U and V are independent standard
+exponential variables. Under H0, λ can be expressed in terms of these
+variables as λ = (U +V )2/ (4UV ). The signiﬁcance level of the test is
+α =PH0 (λ ≥ c) = P
+[
+(U +V )2 ≥ 4cUV
+]
+=P (U ≥ mV ) +P (V ≥ mU ),
+where m = 2c − 1 + 2
+√
+c2 − c. By smoothing, P (U ≥ mV ) = EP (U ≥
+mV |V ) = Ee−mV =
+∫∞
+0 e−(m+1)v dv = 1/ (m + 1). So α = 2/ (m + 1),
+and to achieve a speciﬁed level α , m should be 2 /α − 1. From this, c =
+(m + 1)2/ (4m) = 1/
+[
+α (2 − α )
+]
+.
+8. a) The log-likelihood is l(θ 1,θ 2) = −n
+X/θ 1 − n
+Y/θ 2 − n logθ 1 − n logθ 2.
+Setting derivatives to zero, the maximum likelihood estimators are ˆθ 1 =
+X and ˆθ 2 =
+ Y . The maximum likelihood estimator ˜θ 1 for θ 1 under H0
+maximizes l(θ 1,θ 1/c 0). Setting the derivative to zero, ˜θ 1 = (
+X +c0
+Y )/ 2.
+Then
+logλ =l(ˆθ 1, ˆθ 2) − l(˜θ 1, ˜θ 1/c 0)
+=n log
+(
+X +c0
+Y
+2
+X
+)
++n log
+(
+X +c0
+Y
+2c0
+Y
+)
+.
+b) The conﬁdence intervals would contain all values c0 for which 2 log λ<
+3. 84. (Here 3.84 is the 95th percentile of χ 2
+1
+.) For the data and sample size
+given, if c0 is 2.4, 2 log λ = 1. 66. This value is less than 3.84, and so 2.4 is
+in the conﬁdence interval.
+c) The Fisher information matrix is
+I(θ ) =
+(θ
+−2
+1 0
+0 θ−2
+2
+)
+.
+It seems natural to take θ 0 =
+(1
+1
+)
+, and then ∆ =
+(1
+−1
+)√
+n/ 10. Deﬁne an
+orthonormal basis v1 =
+(1
+1
+)
+/
+√
+2 and v2 =
+(1
+−1
+)
+/
+√
+2. Since Ω0 is linear, the
+tangent spaces Vθ =V at diﬀerent θ ∈Ω are all the same, each being the
+linear span of v1. So P0 =v1v′
+1 andQ0 =v2v′
+2 are the projection matrices
+ontoV andV⊥. Since ∆ lies in V⊥,Q0∆ =∆. Since I(θ 0) is the identity,
+P0 +Q0I(θ 0)−1Q0 = P0 +Q0 =
+(1 0
+0 1
+)
+. So the noncentrality parameter is
+δ 2 = ∆′Q0
+[
+P0 +Q0I(θ 0)−1Q0
+]−1
+Q0∆ = ∆′∆ = n/ 50. The asymptotic
+distribution of 2 logλ isχ 2
+1
+(δ 2). If Z ∼ N (0, 1), then (Z +δ )2 ∼ χ 2
+1
+(δ 2) has
+this distribution, and so the power is approximately P
+[
+(Z +δ )2 > 3. 84
+]
+=
+P (Z +δ > 1. 96) +P (Z +δ < − 1. 96) = Φ (δ − 1. 96) +Φ (−δ − 1. 96). The
+second term here will be negligible, and since Φ (1. 28) = 0. 9 we will need
+δ − 1. 96 = 1. 28, which gives n = 525 as the necessary sample size.
+9. a) The likelihood L is
+exp
+[
+− 1
+2σ 2w
+∑n
+1
+(Wi − µw )2 − 1
+2σ 2x
+∑n
+1
+(Xi − µx)2 − 1
+2σ 2y
+∑n
+1
+(Yi − µy )2
+]
+√
+2π
+3n
+σnwσnxσny
+,
+
+===== PAGE 90 =====
+
+520 B Solutions
+and the Fisher information matrix is
+I(µw,µ x,µ y,σ w,σ x,σ y ) = diag
+( 1
+σ 2w
+, 1
+σ 2x
+, 1
+σ 2y
+, 2
+σ 2w
+, 2
+σ 2x
+, 2
+σ 2y
+)
+.
+Maximum likelihood estimators under the full model and under H0 are
+given by
+ˆµw = ˜µw =
+W, ˆµx = ˜µx =
+X, ˆµy = ˜µy =
+Y,
+ˆσ 2
+w = 1
+n
+n∑
+i=1
+(Wi −
+ W )2, ˆσ 2
+x = 1
+n
+n∑
+i=1
+(Xi −
+ X)2, ˆσ 2
+y = 1
+n
+n∑
+i=1
+(Yi −
+ Y )2,
+and
+˜σ 2 = ˆσ 2
+w + ˆσ 2
+x + ˆσ 2
+y
+3 .
+Plugging these in,
+λ = L(ˆθ )
+L(˜θ )
+=
+[ ˜σ 3
+ˆσw ˆσx ˆσy
+]n
+.
+b) The natural choice for θ 0 is (µw,µ x,µ y, 2, 2, 2)′, and then
+I(θ 0) = diag
+(1
+4, 1
+4, 1
+4, 1
+2, 1
+2, 1
+2
+)
+.
+Introduce the orthonormal basis
+v1 =
+
+
+
+
+
+
+
+
+1
+0
+0
+0
+0
+0
+
+
+
+
+
+
+
+
+, v
+2 =
+
+
+
+
+
+
+
+
+0
+1
+0
+0
+0
+0
+
+
+
+
+
+
+
+
+, v
+3 =
+
+
+
+
+
+
+
+
+0
+0
+1
+0
+0
+0
+
+
+
+
+
+
+
+
+,
+v
+4 = 1
+√
+3
+
+
+
+
+
+
+
+
+0
+0
+0
+1
+1
+1
+
+
+
+
+
+
+
+
+, v
+5 = 1
+√
+2
+
+
+
+
+
+
+
+
+0
+0
+0
+1
+− 1
+0
+
+
+
+
+
+
+
+
+, v
+6 = 1
+√
+6
+
+
+
+
+
+
+
+
+0
+0
+0
+1
+2
+− 2
+
+
+
+
+
+
+
+
+.
+As in Example 17.3, all of the tangent spaces V =V
+θ are the same. Here
+V is the linear span of v1, v2, v3, and v4, and Q0 = v5v′
+5 +v6v′
+6 is the
+orthogonal projection onto V⊥. Noting that Q0I(θ 0)−1Q0 = 2Q0, that
+∆ = (θ − θ 0)√
+n = (0, 0, 0, −
+√
+8,
+√
+8, 0)′, and that Q0∆ =∆, the noncen-
+trality parameter is
+δ 2 =∆′Q0
+[
+P0 +Q0I(θ 0)−1Q0
+]−1
+Q0∆ =∆′∆/ 2 = 8.
+
+===== PAGE 91 =====
+
+B.17 Problems of Chapter 17 521
+The likelihood ratio test with α ≈ 5% rejects H0 if 2 log λ ≥ 5. 99 (the
+95th percentile of χ 2
+2
+). The power of this test is thus P (2 logλ ≥ 5. 99).
+The distribution of 2 log λ should be approximately χ 2
+2
+(δ 2 = 8). If F is
+the cumulative distribution function for this distribution, the power is
+approximately 1 − F (5. 99) = 71. 77%.
+10. a) The log-likelihood is
+l(µ) = − 1
+2
+n∑
+i=1
+∥Xi − µ∥2 − np log
+√
+2π
+= −n
+2 ∥
+X − µ∥2 − 1
+2
+n∑
+i=1
+∥Xi −
+X∥2 − np log
+√
+2π.
+By inspection, ˆµ =
+X is the maximum likelihood estimator under the full
+model, and the maximum likelihood estimator under H0 minimizes ∥
+X−µ∥
+overµ with ∥µ∥ =r. The natural guess is ˜µ =r
+X/ ∥
+X∥. That this is indeed
+correct can be seen using the triangle inequality. Suppose ∥µ∥ =r. Then if
+∥
+X∥>r , ∥
+X−µ∥+∥µ∥ ≥ ∥
+X∥ = ∥˜µ∥+∥
+X− ˜µ∥, and so ∥
+X−µ∥ ≥ ∥
+X− ˜µ∥;
+and if ∥
+X∥<r , ∥
+X∥ + ∥µ −
+ X∥ ≥ ∥µ∥ = 1 = ∥
+X∥ + ∥
+X − ˜µ∥, and again
+∥
+X −µ∥ ≥ ∥
+X − ˜µ∥. So 2 logλ = 2l(ˆµ)− 2l(˜µ) = n∥˜µ−
+X∥2 =n
+(
+∥
+X∥−r
+)2
+.
+b) By Lemma 14.8, because √
+n
+X ∼ N (√
+nµ,I ),
+n∥
+X∥2 ∼ χ 2
+p
+(n∥µ∥2).
+IfF is the cumulative distribution function for this distribution, then the
+power of the test, assuming nr2 >c, is
+P
+[
+n
+(
+∥
+X∥ − r
+)2
+>c
+]
+=P
+(√
+n∥
+X∥< √
+nr − √
+c
+)
++P
+(√
+n∥
+X∥> √
+nr + √
+c
+)
+=F
+(
+(√
+nr − √
+c)2)
++ 1 − F
+(
+(√
+nr + √
+c)2)
+.
+c) Since the Fisher information is the identity, the formula for the noncen-
+trality parameter δ
+2 is just ∥Q0∆∥2, where Q0 is the projection onto the
+orthogonal complement of the tangent space at µ0 and ∆ = √
+n(µ − µ0).
+Now µ0 should be near µ and in the null parameter space, and the most
+natural choice is just µ0 =µ/ ∥µ∥. Then µ − µ0 is in the orthogonal com-
+plement of the tangent space at µ0, and the noncentrality parameter is
+δ 2 = ∥∆∥2 = n∥µ − µ0∥2 = n/ 100. Arguing as in the Example 17.4,
+δ 2 = 10. 51 will give power 90%, and 1051 observations will be necessary.
+12. a) Because Yi and Wi are linear functions of Xi, ǫi, and ηi, they should
+have a bivariate normal distribution with mean zero and covariances given
+by
+Var(Y
+i) = 1 + β 2, Var(Wi) = 1 + σ 2,
+and
+
+===== PAGE 92 =====
+
+522 B Solutions
+Cov(Yi,W i) = Cov(βXi +ǫi,X i +ηi) = β.
+b) The log-likelihood is
+l(β,σ 2) = −n
+2 log(2π ) − n
+2 log(1 +σ 2 +σ 2β 2)
+− n (1 +σ 2)T1 − 2βT 2 + (1 +β 2)T3
+2(1 +σ 2 +σ 2β 2) ,
+with
+T1 = 1
+n
+n∑
+i=1
+Y 2
+i , T 2 = 1
+n
+n∑
+i=1
+WiY1, and T3 = 1
+n
+n∑
+i=1
+W 2
+i .
+Maximum likelihood estimators for ˆβ and ˆσ 2 can be obtained solving the
+following equations, obtained setting partial derivatives of l to zero:
+1 +β 2 +T1 = [(1 +σ 2)T1 − 2βT 2 + (1 +β 2)T3](1 +β 2)
+1 +σ 2 +σ 2β 2 ,
+2βσ 2 − 2T2 + 2βT 3 = [(1 +σ 2)T1 − 2βT 2 + (1 +β 2)T3](2βσ 2)
+1 +σ 2 +σ 2β 2 .
+Explicit formulas do not seem possible. Under H0 :β = 0, the maximum
+likelihood estimator for σ 2 is ˜σ 2 =T3/n − 1, obtained setting ∂l (0,σ 2)/∂σ 2
+to zero.
+c) When σ = 0, then the least squares estimator for β is T
+2/T 1. By the
+law of large numbers, T2
+p
+→ EY1W1 = β and T1
+p
+→ EW 2
+1 = 1 + σ 2. So
+the least squares estimator converges in probability to β/ (1 +σ 2) and is
+inconsistent unless σ 2 = 0 or β = 0.
+d) Let θ = (β,σ 2 )′. The Fisher information is
+I(θ ) = 1
+D2
+(
+2 + 2σ 2 + 6β 2σ 4 β + 2β 2 +βσ 2 +β 3σ 2
+β + 2β 2 +βσ 2 +β 3σ 2 (1 +β 2)2/ 2
+)
+,
+where D = 1 + σ 2 +β 2σ 2. Under H0, β = 0 and I(θ ) is diagonal with
+inverse
+I(θ )−1 =
+(1
+2 (1 +σ 2) 0
+0 2(1 + σ 2)2
+)
+.
+If e1 =
+(1
+0
+)
+and e2 =
+(0
+1
+)
+, the standard basis vectors, then the projection
+matrices in the formula for the noncentrality parameter δ 2 are P0 =e2e′
+2
+and Q0 =e1e′
+1
+. Taking θ 0 =
+(0
+σ 2
+)
+, ∆ = √
+n
+(β
+0
+)
+and
+δ 2 =nβ 2e′
+1
+[P0 +Q0I(θ 0)−1Q0]−1e1
+=nβ 2e′
+1
+(
+P0 + Q0
+e′
+1
+I(θ 0)−1e1
+)
+e1
+= 2nβ 2
+1 +σ 2.
+
+===== PAGE 93 =====
+
+B.17 Problems of Chapter 17 523
+The power of the test is approximately P
+(
+(Z +δ )2 > 1. 962)
+with Z ∼
+N (0, 1). It decreases as σ 2 increases.
+13. a) Viewing (p1,p 2) as the parameter with p3 determined as 1 −p1 −p2, the
+parameter space Ω is the triangular-shaped region where p1 > 0, p2 > 0,
+and p1 +p2 < 1, an open set in R2, and the likelihood function is
+L(p) =
+( n
+Y1,Y 2,Y 3
+)
+pY1
+1 pY2
+2 pY3
+3 .
+Maximum likelihood estimators under the full model are ˆ pi =Yi/n ,i = 1,
+2, 3. The parameter space under H0 is
+Ω0 = {(1 − e−θ,e−θ − e−2θ ) : θ> 0}.
+The maximum likelihood estimator ˜θ for θ under H0 maximizes
+logL(1 − e−θ,e−θ − e−2θ ).
+Setting the θ -derivative to zero, ˜θ = − log[(Y2 + 2Y3)/ (2n −Y1)]. Plugging
+in the estimators, 2 log λ is
+2
+[ 3∑
+i=1
+Yi logYi
+n − (Y1 +Y2) log Y1 +Y2
+Y1 + 2Y2 + 2Y3
+− (Y2 + 2Y3) log Y2 + 2Y3
+Y1 + 2Y2 + 2Y3
+]
+.
+b) With Y = (36, 24, 40), 2 logλ = 0. 0378 and we accept H0. The p-value
+is P (χ 2(1)> 0. 0378) = 84. 6%.
+c) Take θ 0 = (0. 4, 0. 24), a convenient point in Ω0 close to θ = (0. 36, 0. 24)
+(any other reasonable choice should give a similar answer). Inverse Fisher
+information at θ is
+I(θ
+0)−1 =
+( 0. 240 − 0. 0960
+− 0. 096 0 . 1824
+)
+,
+and points θ in Ω0 satisfy the constraint g(θ ) = θ 2
+1 +θ 2 − θ 1 = 0. If V0 is
+the tangent space at θ 0, then V⊥
+0 is the linear span of
+v = ∇g(θ 0) =
+(2θ 1 − 1
+1
+)
+θ =θ 0
+=
+(− 0. 2
+1
+)
+,
+and Q0 =vv′/ ∥v∥2. Also, ∆ = √
+n(θ − θ 0) = √
+n
+(−0. 04
+0
+)
+. So
+δ 2 =∆′Q0
+(
+P0 +Q0I(θ 0)−1Q0
+)−1
+Q0∆
+= (∆ ·v)2
+v′I(θ 0)−1v = n(0. 008)2
+0. 2304 = n
+3600.
+For 90% power, δ 2 needs to be 10.51 which leads to n = 37, 836 as the
+requisite sample size.
+
+===== PAGE 94 =====
+
+
+
+===== PAGE 95 =====
+
+References
+Anderson, T. W. (1955). The integral of a symmetric unimodal function over a
+symmetric convex set and some probability inequalities. Proc. Amer. Math.
+Soc. 6, 170–176.
+Anscombe, F. J. (1952). Large sample theory of sequential estimation. Proc. Cam-
+bridge Philos. Soc. 48 , 600–607.
+Bahadur, R. R. (1954). Suﬃciency and statistical decision functions. Ann. Math.
+Statist. 25 , 423–462.
+Basu, D. (1955). On statistics independent of a complete suﬃcient statistic. Sankhy¯ a
+15, 377–380.
+Basu, D. (1958). On statistics independent of a complete suﬃcient statistic. Sankhy¯ a
+20, 223–226.
+Berger, J. (1985). Statistical Decision Theory and Bayesian Analysis (Second ed.).
+New York: Springer.
+Berry, D. A. and B. Fristedt (1985). Bandit Problems: Sequential Allocation of
+Experiments. London: Chapman and Hall.
+Bhattacharya, R. N. and R. R. Rao (1976). Normal Approximation and Asymptotic
+Expansions. New York: Wiley.
+Bickel, P. J. and K. A. Doksum (2007). Mathematical Statistics: Basic Ideas and
+Selected Topics (Second ed.). Upper Saddle River, NJ: Prentice Hall.
+Bickel, P. J. and D. A. Freedman (1981). Some asymptotic theory for the bootstrap.
+Ann. Statist. 9 , 1196–1217.
+Billingsley, P. (1961). Statistical Inference for Markov Processes , Volume 2 of Sta-
+tistical Research Monographs. Chicago: University of Chicago.
+Billingsley, P. (1995). Probability and Measure (Third ed.). New York: Wiley.
+Blackwell, D. A. (1951). Comparison of experiments. In Proceedings of the Sec-
+ond Berkeley Symposium on Mathematical Statistics and Probability , pp. 93–102.
+Berkeley: University of California Press.
+Blyth, C. R. (1951). On minimax statistical decision procedures and their admissi-
+bility. Ann. Math. Statist. 22 , 22–42.
+Box, G. E. P. and K. B. Wilson (1951). On the experimental attainment of optimum
+conditions. J. Roy. Statist. Soc. Ser. B 13 , 1–45. With discussion.
+Brouwer, L. (1912). Zur invarianz des n-dimensionalen gebiets. Mathematische
+Annalen 72 , 55–56.
+
+===== PAGE 96 =====
+
+526 References
+Brown, B. M. (1971a). Martingale central limit theorems. Ann. Math. Statist. 42 ,
+59–66.
+Brown, L. D. (1971b). Admissible estimators, recurrent diﬀusions, and insoluble
+boundary-value problems. Ann. Math. Statist. 42 , 855–903.
+Brown, L. D. (1986). Fundamentals of Statistical Exponential Families with Appli-
+cations in Statistical Decision Theory . Hayward, CA: Institute of Mathematical
+Statistics.
+Chen, L. (1975). Poisson approximation for dependent trials. Ann. Prob. 3, 534–545.
+Chernoﬀ, H. and L. E. Moses (1986). Elementary Decision Theory . New York:
+Dover.
+Clark, R. M. (1977). Non-parametric estimation of a smooth regression function. J.
+Roy. Statist. Soc. Ser. B 39 , 107–113.
+Cody, W. J. (1965). Chebyshev approximations for the complete elliptic integrals
+K and E. Math. of Comput. 19 , 105–112.
+DasGupta, A. (2008). Asymptotic Theory of Statistics and Probability (First ed.).
+New York: Springer.
+De Boor, C. (2001). A Practical Guide to Splines . New York: Springer.
+DeGroot, M. H. (1970). Optimal Statistical Decisions . New York: McGraw-Hill.
+Dempster, A. P., N. M. Laird, and D. B. Rubin (1977). Maximum likelihood from
+incomplete data via the em algorithm. J. Roy. Statist. Soc. Ser. B 39 , 1–22.
+Draper, N. R. and R. C. van Nostrand (1979). Ridge regression and James–Stein
+estimation: Review and comments. Technometrics 21, 451–466.
+Eaton, M. L. (1983). Multivariate Statistics: A Vector Space Approach . New York:
+Wiley.
+Eaton, M. L. (1989). Group Invariance Applications in Statistics , Volume 1 of
+CBMS-NSF Regional Conference Series in Probability and Statistics . Hayward,
+CA and Alexandria, V A: IMS and ASA.
+Fabian, V. (1968). On asymptotic normality in stochastic approximation. Ann.
+Math. Statist. 39 , 1327–1332.
+Farrell, R. H. (1964). Estimation of the location parameter in the absolutely con-
+tinuous case. Ann. Math. Statist. 35 , 949–998.
+Farrell, R. H. (1968a). On a necessary and suﬃcient condition for admissibility of
+estimators when strictly convex loss is used. Ann. Math. Statist. 39 , 23–28.
+Farrell, R. H. (1968b). Towards a theory of generalized Bayes tests. Ann. Math.
+Statist. 39 , 1–22.
+Feller, W. (1971). An Introduction to Probability Theory and Its Applications , Vol-
+ume 2. New York: Wiley.
+Ferguson, T. (1967). Mathematical Statistics: A Decision Theoretic Approach . New
+York: Academic Press.
+Fieller, E. C. (1954). Some problems in interval estimation. J. Roy. Statist. Soc.
+Ser. B 16 , 175–183.
+Freedman, D. (2007). How can the score test be inconsistent? Amer. Statist. 61 ,
+291–295.
+Geman, S. and D. Geman (1984). Stochastic relaxation, Gibbs distributions, and
+the Bayesian restoration of images. IEEE Trans. Patt. Anal. Mach. Intell. 6 ,
+721–741.
+Gittins, J. C. (1979). Bandit processes and dynamic allocation indices. J. Roy.
+Statist. Soc. Ser. B 41 , 148–177. With discussion.
+
+===== PAGE 97 =====
+
+References 527
+Gittins, J. C. and D. Jones (1974). A dynamic allocation index for the sequential
+design of experiments. In J. Gani, K. Sarkadi, and I. Vincze (Eds.), Progress in
+Statistics, pp. 241–266. Amsterdam: North-Holland.
+H´ ajek, J. (1972). Local asymptotic minimax and admissibility in estimation. In
+Proc. Sixth Berkeley Symp. on Math. Statist. and Prob. , Volume 1, pp. 175–194.
+Berkeley: University of California Press.
+Hall, P. (1992). The Bootstrap and Edgeworth Expansion . New York: Springer-
+Verlag.
+Hall, P. and C. C. Heyde (1980). Martingale Limit Theory and Its Application. New
+York: Academic.
+Hill, B. M. (1963). The three-parameter lognormal distribution and Bayesian anal-
+ysis of a point-source epidemic. J. Amer. Statist. Assoc. 58 , 72–84.
+Huber, P. (1964). Robust estimation of a location parameter. Ann. Math. Statist.
+35, 73–101.
+James, W. and C. Stein (1961). Estimation with quadratic loss. In Proc. Fourth
+Berkeley Symp. on Math. Statist. and Prob. , Volume 1, pp. 361–379. Berkeley:
+University of Caliﬁfornia Press.
+Karlin, S. and H. M. Taylor (1975). A First Course in Stochastic Processes (Second
+ed.). New York: Academic Press.
+Katehakis, M. N. and A. F. Veinott, Jr. (1987). The multi-armed bandit problem:
+Decomposition and composition. Math. Oper. Res. 12 , 262–268.
+Kemeny, J. B. and J. L. Snell (1976). Finite Markov Chains . New York: Springer.
+Kiefer, J. and J. Wolfowitz (1952). Stochastic estimation of the maximum of a
+regression function. Ann. Math. Statist. 23 , 452–466.
+Lai, T. L. (2003). Stochastic approximation. Ann. Statist. 31 , 391–406.
+Landers, D. and L. Rogge (1972). Minimal suﬃcient σ -ﬁelds and minimal suﬃcient
+statistics. Two counterexamples. Ann. Math. Statist. 43 , 2045–2049.
+Lange, K. (2004). Optimization. New York: Springer.
+Le Cam, L. M. (1955). An extension of Wald’s theory of statistical decision functions.
+Ann. Math. Statist. 26 , 69–81.
+Le Cam, L. M. (1986). Asymptotic Methods in Statistical Decision Theory . New
+York: Springer-Verlag.
+Le Cam, L. M. and G. L. Yang (2000). Asymptotics in Statistics: Some Basic
+Concepts (Second ed.). New York: Springer-Verlag.
+Lehmann, E. L. (1959). Testing Statistical Hypotheses (First ed.). New York: Wiley.
+Lehmann, E. L. (1981). Interpretation of completeness and Basu’s theorem. J.
+Amer. Statist. Assoc. 76 , 335–340.
+Lehmann, E. L. and J. P. Romano (2005). Testing Statistical Hypotheses (Third
+ed.). New York: Springer.
+McLachlan, G. J. and T. Krishnan (2008). The EM Algorithm and Extensions
+(Second ed.). Hoboken, NJ: Wiley.
+Meyn, S. P. and R. L. Tweedie (1993). Markov Chains and Stochastic Stability. New
+York: Springer.
+Miescke, K.-J. and F. Liese (2008). Statistical Decision Theory: Estimation, Testing,
+Selection. New York: Springer.
+Nummelin, E. (1984). General Irreducible Markov Chains and Non-Negative Oper-
+ators. Cambridge, UK: Cambridge University Press.
+
+===== PAGE 98 =====
+
+528 References
+Rao, C. R. (1948). Large sample tests of statistical hypotheses concerning several
+parameters with applications to problems of estimation. Proc. Camb. Phil. Soc.
+44, 50–57.
+Rao, M. M. (2005). Conditional Measures and Applications (Second ed.). Boca
+Raton, FL: CRC Press.
+Robbins, H. and S. Monro (1951). A stochastic approximation method. Ann. Math.
+Statist. 22 , 400–407.
+Rockafellar, R. T. (1970). Convex Analysis . Princeton, NJ: Princeton University
+Press.
+Roussas, G. G. (1972). Contiguity of Probability Measures: Some Applications in
+Statistics, Volume 63 of Cambridge Tracts in Mathematics and Mathematical
+Physics. Cambridge, UK: Cambridge University Press.
+Ruppert, D. (1991). Stochastic approximation. In B. K. Ghosh and P. K. Sen (Eds.),
+Handbook of Sequential Analysis , pp. 503–529. New York: Dekker.
+Silverman, B. W. (1982). On the estimation of a probability density function by the
+maximum penalized likelihood method. Ann. Statist. 10 , 795–810.
+Singh, K. (1981). On the asymptotic accuracy of Efron’s bootstrap. Ann. Statist.
+9, 1187–1195.
+Stein, C. (1955). A necessary and suﬃcient condition for admissibility. Ann. Math.
+Statist. 26 , 518–522.
+Stein, C. (1956). Inadmissibility of the usual estimator for the mean of a multivariate
+normal distribution. In Proc. Third Berkeley Symp. on Math. Statist. and Prob. ,
+Volume 1, pp. 197–206. Berkeley: University of California Press.
+Stein, C. (1986). Approximate Computation of Expectations , Volume 7 of Lecture
+Notes—Monograph Series. Hayward, CA: Institute of Mathematical Statistics.
+Tierney, L. (1994). Markov chains for exploring posterior distributions. Ann. Statist.
+22, 1701–1762. With discussion.
+van der Vaart, A. W. (1998). Asymptotic Statistics . Cambridge, UK: Cambridge
+University Press.
+Wahba, G. (1990). Spline Models for Observational Data . Number 59 in CBMS-
+NSF Regional Conference Series in Applied Mathematics. Philadelphia: Society
+for Industrial and Applied Mathematics.
+Wald, A. (1943). Tests of statistical hypotheses concerning several parameters when
+the number of observations is large. Trans. Am. Math. Soc. 54 , 426–482.
+Wald, A. (1947). Sequential Analysis. New York: John Wiley and Sons.
+Wald, A. (1949). Note on the consistency of the maximum likelihood estimate. Ann.
+Math. Statist. 20 , 595–601.
+Wald, A. and J. Wolfowitz (1948). Optimum character of the sequential probability
+ratio test. Ann. Math. Statist. 19 , 326–339.
+Wand, M. P. and M. C. Jones (1995). Kernel Smoothing . London: Chapman and
+Hall.
+Whittle, P. (1980). Multi-armed bandits and the Gittins index. J. Roy. Statist. Soc.
+Ser. B 42 , 143–149.
+Woodroofe, M. (1989). Very weak expansions for sequentially designed experiments:
+Linear models. Ann. Statist. 17 , 1087–1102.
+Woodroofe, M. and G. Simons (1983). The Cramer–Rao inequality holds almost ev-
+erywhere. In Recent Advances in Statistics: Papers in Honor of Herman Chernoﬀ
+on his Sixtieth Birthday , pp. 69–92. New York: Academic Press.
+
+===== PAGE 99 =====
+
+References 529
+Wu, C. F. J. (1983). On the convergence properties of the EM algorithm. Ann.
+Statist. 11 , 95–103.
+
+===== PAGE 100 =====
+
+
+
+===== PAGE 101 =====
+
+Index
+absolutely continuous, 7
+absolutely continuous function, 379
+admissible decision rules, 213
+suﬃcient conditions, 214–215
+almost everywhere, 6
+for a family, 46
+almost sure convergence, 143–144
+analysis of covariance, 297
+analysis of variance
+Bayesian inference, 303, 317
+contrasts, 291–292
+one-way, 270
+one-way, unbalanced, 297, 516
+simultaneous conﬁdence intervals,
+286–288
+two-way, 294, 512–514
+ancillary statistics, 50
+Anderson’s lemma, 331, 334
+Anscombe’s theorem, 408
+asymptotic relative eﬃciency, 139–141
+asymptotic suﬃciency, 341
+autoregressive models, 82, 106, 472–474
+Bayesian estimation, 125
+maximum likelihood estimation, 146,
+487–488
+backwards induction, 416–417
+Bahadur eﬃciency, 362
+bandwidth selection, 372–373
+Basu’s theorem, 50
+Bayesian estimation, 115–120
+conjugate prior distributions, 118,
+124–125, 483
+posterior distributions, 116
+posterior risk, 116
+prior distributions, 115
+Bayesian inference
+admissibility, 213–214
+compound estimation, 302
+hierarchical models, 301–303
+hyperparameters, 301
+image restoration, 313–316, 318
+prediction, 126
+robustness, 303–306
+testing, 246–247, 253
+Bayesian models, 115
+bias, 130
+Boole’s inequality, 17, 451
+bootstrap methods, 391–403
+accuracy for averages, 399–402
+bias reduction, 392–396, 402
+for exponential families, 403
+nonparametric conﬁdence intervals,
+393–394
+parametric conﬁdence intervals,
+396–398, 402–403
+bounded linear operator, 389
+bowl-shaped functions, 331
+Brunn–Minkowski inequality, 331–333
+Cantor set, 17–18
+capture recapture experiments, 88–90
+Cauchy sequence, 375
+Cauchy–Schwarz inequality, 374–375
+ceiling, 139
+central limit theorem, 132
+Edgeworth expansions, 447–449
+
+===== PAGE 102 =====
+
+532 Index
+for martingales, 182
+for medians and percentiles, 137–139
+multivariate, 173
+proof, 444–446
+characteristic functions, 442–444
+inversion formula, 443–444
+Parseval’s relation, 442
+Chebyshev’s inequality, 129
+complete class theorem, 214
+complete ordering, 120
+completeness, 48–51
+and minimal suﬃciency, 49
+compound loss functions, 205
+conﬁdence intervals, 161–163
+asymptotic, 163–167
+exact, 161
+multivariate, 193
+simultaneous, 192–193
+simultaneous Bonferroni, 299
+conﬁdence regions, 161
+asymptotic, 163
+proﬁle, 164
+consistent estimation, 130
+contiguity, 323–327, 348
+deﬁnition, 323
+contingency tables
+conditional independence, 94–95
+cross-product ratios, 97–98, 476–477
+Fisher’s exact test, 262–265
+Pearson’s chi-square test statistic,
+360
+Poisson model, 98–99
+positive dependence, 263
+symmetric, 98
+testing independence, 356–361
+testing symmetry, 363
+two-way, 93–94, 189, 192, 495–496
+with missing data, 189–190
+continuity, 374
+convergence
+in L
+2, 325–326
+in distribution, 131–134, 171–175
+in distribution, deﬁnition, 131, 171
+in probability, 129–131
+strong, 35–36
+convex functions, 51
+convolutions, 390
+Cornish–Fisher expansions, 401, 403
+correlation, 10
+covariance, 10
+covariance inequality, 71
+covariance matrices, 12
+Cram´ er–Rao bound, 73–74
+cross-sections, 168
+cross-validation, 372–373
+cumulant generating function, 30
+cumulants, 30
+decision theory, 40, 211–216
+delta method, 133–134, 175
+dense subsets, 152
+densities, 7–8
+conditional, 103
+joint, 101
+marginal, 101
+density estimation, 384–388
+kernel method, 385–386
+using splines, 386–388
+diﬀerentiable in quadratic mean, 326
+Dini’s theorem, 434
+discount factor, 425
+distributions
+F , 186
+t, 161
+beta, 55, 108–109, 464
+binomial, 40
+asymptotic conﬁdence intervals, 187
+Bayesian estimation, 117–119
+empirical Bayes estimation, 217
+UMVU estimation, 62, 64
+uniformly most powerful unbiased
+tests, 252, 506
+bivariate normal, 191
+testing independence, 345–347
+Cauchy
+uniformly most powerful tests, 251
+chi-square, 68–69
+conditional, 15–16, 102–105
+deﬁnition, 102
+given a σ -ﬁeld, 412
+exponential, 21, 57, 465
+Bayesian estimation, 125, 484
+conﬁdence intervals, 187, 244
+empirical Bayes estimation,
+216–217, 497
+equivariant estimation, 200–201
+UMVU estimation, 78, 470
+
+===== PAGE 103 =====
+
+Index 533
+uniformly most powerful tests,
+250–251, 505–506
+Fisher
+generalized likelihood ratio test,
+365–366
+gamma, 21, 67–68, 456
+cumulants, 37, 462–463
+geometric, 19, 33, 37, 90, 452, 458,
+461
+asymptotic conﬁdence intervals, 187
+conﬁdence intervals, 249
+UMVU estimation, 78, 470
+joint, 14, 101–102
+log normal, 296
+log series, 38
+marginal, 101–102
+mixture, 107
+multinomial, 55–56, 91–93, 464–465
+multivariate normal, 171–173
+negative binomial, 90
+Bayesian estimation, 119–120
+UMVU estimation, 90
+noncentralF , 281
+noncentralt, 80, 471
+noncentral chi-square, 280–281
+mean and variance, 297
+uniformly most powerful tests,
+249–250
+normal, 26
+conﬁdence intervals, 249
+empirical Bayes estimation, 217–218
+properties, 66–67
+uniformly most powerful unbiased
+tests, 252, 267, 506
+of a product, 22
+of a sum, 22, 42
+Poisson, 19, 32
+asymptotic conﬁdence intervals,
+165–166
+Bayesian estimation, 124, 481
+conﬁdence intervals, 248–249,
+502–503
+empirical Bayes estimation, 217,
+498
+generalized likelihood ratio tests,
+353–356
+UMVU estimation, 78, 467–468
+uniformly most powerful tests, 247
+uniformly most powerful unbiased
+tests, 252, 266, 510
+power series, 38
+standard normal, 20
+studentized maximum modulus, 287
+studentized range, 288
+support, 213
+truncated, 34–35
+truncated Poisson, 65
+uniform, 19, 453
+Bayesian estimation, 124, 481–482
+completeness, 49
+conﬁdence intervals, 186–187, 249,
+503
+contiguity, 342
+empirical Bayes estimation, 218
+maximum likelihood estimation,
+186–187
+UMVU estimation, 61, 63–65
+von Mises, 83
+uniformly most powerful unbiased
+tests, 252–253
+Weibull, 486
+dominated convergence theorem, 29
+dominated family, 45
+duality between testing and interval
+estimation, 228–232
+Edgeworth expansions, 399–401, 403
+empirical Bayes estimation, 205–207
+empirical cumulative distribution
+function, 156
+empirical distribution, 384, 391
+epidemic models, 106
+equivariant estimation, 195–201
+of a scale parameter, 202
+equivariant estimators, 196
+ergodic theorem, 180
+errors in variables models, 365, 521–523
+events, 6
+exchangeable distributions, 127
+expectation, 8–10
+of a random function, 152
+of a random matrix, 12
+of a random vector, 11
+expected value, see expectation
+exponential families, 25–27
+completeness, 50
+curved, 85–88
+
+===== PAGE 104 =====
+
+534 Index
+diﬀerential identities, 27–28
+generating functions, 31
+induced density for T , 238–239
+marginal and conditional densities,
+256–257
+minimal suﬃciency, 47
+natural parameter space, 25
+of full rank, 49
+factorial designs, 297–299
+factorization theorem, 45–46
+proof, 106–108
+ﬁltrations, 411
+Fisher information, 72–73
+additive property, 75
+for reparameterized families, 74, 77
+general deﬁnition, 326
+in exponential families, 74, 76–77
+in higher dimensions, 76–77
+in location families, 74–75
+observed, 164
+ﬂoor, 139
+Fourier transform, 444
+Fubini’s theorem, 13
+function spaces
+C(K), 151
+L
+2(µ), 325
+Banach, 152
+complete, 152
+Hilbert, see Hilbert spaces
+linear, 152
+separable, 152
+Sobolev, 379
+functions, 431–432
+domain, 431
+into and onto, 431
+inversef
+←, 431
+inversef−1, 3, 19, 431, 453
+one-to-one, 431
+range, 431
+real-valued, 432
+vector-valued, 432
+gamma function, 21, 456
+general linear model, 269–292
+Bayesian estimation, 302–303
+best linear unbiased estimators,
+275–276
+canonical form, 271–272
+conﬁdence intervals, 277–278
+estimating β and ξ , 273–275
+estimating σ
+2, 277–278
+Gauss–Markov theorem, 275–277
+generalized likelihood ratio tests, 364
+least squares estimator, 274
+nonidentiﬁable models, 295–296
+residuals, 273
+simultaneous conﬁdence intervals,
+286–292
+testing, 281–285
+Gibbs sampler, 311–312
+Glivenko–Cantelli theorem, 156
+goodness-of-ﬁt tests, 365, 523
+group action, 195, 200
+Haar measures, 200
+Hammersley–Chapman–Robbins
+inequality, 72
+harmonic mean, 146
+hidden Markov model, 190
+Hilbert spaces, 373–378
+deﬁnition, 375
+orthonormal basis, 377–378
+projections, 376–377
+reproducing kernels, 379–380
+hyperparameters, 207
+hypothesis testing, 219–244
+critical regions, 219
+likelihood ratio tests, 221
+locally most powerful tests, 245–246,
+251–252, 500–501
+nonrandomized tests, 219
+p-values, 247, 502
+power functions, 219
+signiﬁcance level, 219
+similar tests, 257–258
+simple hypotheses, 220
+simple versus simple testing, 220–224
+test function, 220
+two-sided tests, 240
+unbiased tests, 242–243
+uniformly most powerful tests,
+224–227
+two-sided hypotheses, 236–242
+unbiased, 242–244, 258–260
+idempotent matrices, 274
+identiﬁable models, 224
+
+===== PAGE 105 =====
+
+Index 535
+inadmissible decision rules, 213
+inadmissible estimators, 54–55, 210
+Bayesian, 120
+inadmissible uniformly most powerful
+tests, 226–227
+indicator functions, 4
+inner product, 374
+integrated mean square error, 371–372
+integration, 3–5
+basic properties, 4
+null sets, 6
+invariant functions, 197
+invariant loss functions, 196
+inverse binomial sampling, 89
+inverse linear regression, 296–297
+inverting a partitioned matrix, 440–441
+jackknife, 402
+James–Stein estimator, 207
+risk, 208–211
+Jensen’s inequality, 52
+K-statistics, 37–38
+Kullback–Leibler information, 59, 156,
+466
+L
+2-norm, 325
+Lagrange multipliers, 220–221
+Laplace’s law of succession, 246
+large-sample theory, 129–141
+likelihood function, 46, 135
+likelihood ratio tests
+asymptotic distribution of 2 log λ ,
+347–353
+generalized, 343–347
+likelihood ratios, 221, 237–238
+Lindeberg condition, 182, 194
+linear estimators, 275
+linear span, 377
+local asymptotic normality, 327–330
+locally asymptotically minimax,
+339–341
+location family, see location models
+location models, 74, 195–196
+loss function, 40
+m-dependent processes, 144–145,
+484–485
+M -estimation, 175–178
+asymptotic conﬁdence intervals, 194
+manifolds and tangent spaces, 436–438
+Markov chains, 306–309
+aperiodic, 308
+irreducible, 308
+with a ﬁnite state space, 307–309
+Markov random ﬁelds, 314
+Markov’s inequality, 148
+maximal inequality, 408
+maximal invariant, 198
+maximum likelihood estimation,
+135–137
+central limit theorem, 158–160
+consistency, 156–158
+EM algorithm, 167–170
+in exponential families, 135
+measurable functions, 4, 152
+measures, 1–3
+atoms, 2
+counting, 1, 3, 8
+Lebesgue , 1
+probability, 3
+product, 13–14
+regular, 333
+sigma-ﬁnite, 2
+singular, 23–24
+sums of, 18, 451–452
+truncated, 17
+medians, 137
+limiting distribution, 139
+method of moments estimation, 185
+Metropolis–Hastings algorithm, 309–311
+minimax estimation, 330
+normal mean, 330–331, 334–335
+minimum risk equivariant estimators,
+198–199
+models, 39
+moment generating function, 30
+moments, 30
+monotone convergence theorem, 20–21
+monotone likelihood ratios, 224
+in location families, 247, 501–502
+multinomial coeﬃcient, 92
+Neyman structure, 258
+Neyman–Pearson lemma, 221
+converse, 221–222
+generalized, 232–236
+nonparametric regression
+
+===== PAGE 106 =====
+
+536 Index
+estimating σ 2, 388
+kernel method, 368–373
+bandwidth, 368
+locally weighted, 388–389
+norm, 373
+normal one-sample problem
+t-test, 260–262, 344–345
+admissibility of the sample average,
+215–216
+common mean and standard
+deviation, 86–87, 187
+common mean and variance, 85–86
+conﬁdence intervals, 161–163
+distribution theory, 66–69
+estimation, 70–71
+independence of
+X and S2, 50
+UMVU estimation, 80
+normal two-sample problem, 87–88
+F test, known variance, 266, 508–509
+UMVU estimation, 96
+null family, 387
+null sets, 6
+O, O
+p , o, and op notation, see scales of
+magnitude
+order statistics, 48, 137
+parallelogram law, 375
+Parseval’s relation, 442
+Perron–Frobenius theorem, 308
+Pitman estimator, 200
+pivotal statistics, 161
+approximate, 163
+pooled sample variance, 87
+portmanteau theorem, 171
+posterior distributions
+normal approximation, 337–339
+power function
+derivatives, 239–240
+powers of symmetric nonnegative
+deﬁnite matrices, 172
+precision, 113, 314
+probit analysis, 190–191
+projection matrices, 274
+Pythagorean relation, 375
+quantiles
+for the normal distribution, 70
+Radon–Nikodym derivative, 7
+Radon–Nikodym theorem, 7
+random eﬀects models, 363, 516–518
+random functions, 152
+random matrices, 12
+random variables, 6
+absolutely continuous, 7
+complex, 442
+cumulative distribution functions, 6,
+19, 452
+discrete, 7
+distributions, 6, 19, 453
+mass function, 8
+mixed, 19–20, 453–454
+random vectors, 10–11
+absolutely continuous, 11
+cumulative distribution functions,
+171
+discrete, 11
+independence, 13
+random walk, 105
+randomized estimators, 44, 54
+Rao–Blackwell theorem, 53
+regression, 57
+Bayesian estimation, 124, 482–483
+conﬁdence bands, 290–291
+logistic, 34, 55, 459–460, 464
+maximum likelihood estimation, 146,
+487
+quadratic, 269–270
+ridge estimators, 303
+simple linear, 34, 78, 279–280, 459,
+468
+time series, 294–295
+two-sample models, 296
+uniformly most powerful unbiased
+tests, 252, 266, 509–510
+risk function, 40, 212
+robust estimation, 177–178
+sample correlation, 280, 346
+scale parameter, 68
+scales of magnitude, 141–143, 148
+Scheﬀ´ e method for simultaneous
+conﬁdence intervals, 288–292
+Scheﬀ´ e’s theorem, 35–36, 460–461
+score tests, 361–362
+semiparametric models, 390
+sequential methods, 88–91, 405–426
+bandit problems, 424–426
+
+===== PAGE 107 =====
+
+Index 537
+allocation indices, 425
+forwards induction, 426
+index strategy, 426
+Bayesian testing, 413–417
+bias, 97
+ﬁxed width conﬁdence intervals,
+406–410
+Gittins’ theorem, 426
+likelihood, 90, 412–413
+optimal stopping, 413–417
+power one tests, 429
+sampling to a foregone conclusion,
+405–406
+secretary problems, 428
+sequential probability ratio test,
+417–422
+stochastic approximation, 422–424,
+429–430
+two-stage procedures, 427
+shift invariant sets, 180
+σ -ﬁeld, 2
+Borel, 3
+simple functions, 4
+smoothing, 16
+spectral radius, 308
+splines, 378–384
+B-spline bases, 383–384
+deﬁnition, 381
+natural, 381
+smoothing parameter, 379
+squared error loss, 41, 117
+weighted, 117
+stationary distributions, 306
+stationary process
+deﬁnition, 179
+maximum likelihood estimation,
+178–185
+Stein’s identity, 208
+stochastic process, 179
+ergodic, 180
+linear, 179
+stochastic transition kernel, 15, 44, 212,
+306, 425
+stopping times, 411–412
+strong convergence, 336
+strong law of large numbers, 144
+suﬃcient experiments or models, 44
+suﬃcient statistics, 42–44
+in testing, 237
+minimal, 46–48
+supereﬃciency, 319–322
+supporting hyperplane theorem, 51, 234
+supremum norm, 152
+Taylor expansion, 438–440
+tightness, 142
+time series models, 105–106
+topology in R
+n, 432–434
+closed sets, 432
+closure, 432
+compact sets, 433
+continuity, 432
+convergence, 432
+Heine–Borel theorem, 433
+interior, 432
+neighborhoods, 432
+open cover, 433
+open sets, 432
+sequentially compact, 433
+uniform continuity, 433
+total variation norm, 335–336
+U-estimable, 61
+UMVU estimation, 62–66
+by direct solution, 63–64
+from conditioning, 64
+of a sum of parameters, 78, 469
+unbiased estimation, 37–38, 61
+of the variance, 78, 468–469
+second thoughts, 64–66
+unbiased estimator of the risk, 209–210
+uniform integrability, 134, 145
+uniformly continuous in probability, 407
+unit simplex, 56
+utility theory, 120–124
+counterexample, 121
+value of a game, 416
+variance, 9
+variance stabilizing transformations,
+187–188
+vector spaces, 434–436
+dimension, 435
+Euclidean length, 436
+inner product, 436
+linear independence, 435–436
+linear span, 435
+orthogonal projections, 436
+
+===== PAGE 108 =====
+
+538 Index
+orthogonal vectors, 436
+orthonormal basis, 436
+subspaces, 435
+unit vectors, 436
+von Mises functionals, 402
+Wald tests, 361–362
+Wald’s fundamental identity, 412, 427
+Wald’s identity, 428–429
+Wald–Wolfowitz theorem, 421–422
+weak compactness theorem, 234
+weak convergence, 233–234
+weak law of large numbers, 130
+for random functions, 151–156
+weighted averages, 55, 463
+with probability one, 6
+zero-one loss, 125

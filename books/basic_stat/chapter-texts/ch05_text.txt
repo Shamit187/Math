@@ -1,0 +1,996 @@
+
+===== PAGE 1 =====
+
+5
+Curved Exponential Families
+Curved exponential families may arise when the parameters of an exponential
+family satisfy constraints. For these families the minimal suﬃcient statistic
+may not be complete, and UMVU estimation may not be possible. Curved
+exponential families arise naturally with data from sequential experiments,
+considered in Section 5.2, and Section 5.3 considers applications to contin-
+gency table analysis.
+5.1 Constrained F amilies
+Let P = {Pη :η ∈Ξ }be a full rank s-parameter canonical exponential family
+with complete suﬃcient statistic T . Consider a submodel P0 parameterized
+byθ ∈Ω with ˜η (θ ) the value for the canonical parameter associated with θ .
+So
+P0 = {P˜η (θ ) :θ ∈Ω}.
+Often ˜η :Ω → Ξ is one-to-one and onto. In this case P0 = P and the choice of
+parameter, θ or η , is dictated primarily by convenience. Curved exponential
+families may arise when P0 is a strict subset of P, generally with Ω ⊂ Rr and
+r<s. Here are two possibilities.
+1. Points η in the range of ˜η , ˜η (Ω) = {˜η (θ ) : θ ∈Ω}, satisfy a nontrivial linear
+constraint. In this case, P0 will be a q-parameter exponential family for
+someq <s. The statistic T will still be suﬃcient, but will not be minimal
+suﬃcient.
+2. The points η in ˜η (Ω) do not satisfy a linear constraint. In this case, P0 is
+called a curved exponential family . Here T will be minimal suﬃcient (see
+Example 3.12), but may not be complete.
+Example 5.1. Joint distributions for a sample from N (µ,σ 2) form a two-
+parameter exponential family with canonical parameter
+R.W. Keener, Theoretical Statistics: Topics for a Core Course, Springer Texts in Statistics, 
+DOI 10.1007/978-0-387-93839-4_5, © Springer Science+Business Media, LLC 2010 
+85 
+
+===== PAGE 2 =====
+
+86 5 Curved Exponential Families
+η =
+(µ
+σ 2, − 1
+2σ 2
+)
+and complete suﬃcient statistic
+T =
+( n∑
+i=1
+Xi,
+n∑
+i=1
+X2
+i
+)
+.
+(See Example 2.3.) If µ and σ 2 are equal and we let θ denote the common
+value, then our subfamily will consist of joint distributions for a sample from
+N (θ,θ ), θ> 0. Then
+˜η (θ ) =
+(
+1, − 1
+2θ
+)
+,
+and the range of ˜η is the half-line indicated in Figure 5.1. Because points η in
+˜η (Ω) satisfy the linear constraint η 1 = 1, the subfamily should be exponential
+with less than two parameters. This is easy to check; the joint densities form
+a full rank one-parameter exponential family with ∑
+n
+i=1
+X2
+i as the canonical
+complete suﬃcient statistic.
+η 1
+η 2
+1− 1
+Fig. 5.1. Range of ˜η (θ ) =
+`
+1, − 1/ (2θ )
+´
+.
+Suppose instead σ = |µ|, so the subfamily will be joint distributions for a
+sample from N (θ,θ 2), θ ∈ R. In this case
+˜η (θ ) =
+(1
+θ, − 1
+2θ 2
+)
+.
+Now the range space ˜η (Ω) is the parabola in Figure 5.2. Points in this range
+space do not satisfy a linear constraint, so in this case we have a curved
+exponential family and T is minimal suﬃcient. Because
+E
+θ T 2
+1 = (EθT1)2 + Varθ (T1) = n2θ 2 +nθ 2,
+
+===== PAGE 3 =====
+
+5.1 Constrained Families 87
+and
+EθT2 =nEθX2
+i =n
+(
+(Eθ Xi)2 + Varθ (Xi)
+)
+= 2nθ 2,
+we have
+Eθ
+(
+2T 2
+1 − (n + 1)T2
+)
+= 0, θ ∈ R.
+Thusg(T ) = 2T 2
+1 − (n+1)T2 has zero mean regardless the value of θ . Inasmuch
+as g(T ) is not zero (unless n = 1), T is not complete.
+η 1
+η 2
+1− 1
+Fig. 5.2. Range of ˜η (θ ) =
+`
+1/θ, − 1/ (2θ 2)
+´
+.
+Example 5.2. If our data consist of two independent random samples, X1,... ,
+Xm fromN (µx,σ 2
+x) andY1,...,Y n fromN (µy,σ 2
+y ), then the joint distributions
+form a four-parameter exponential family indexed by θ = (µx,µ y,σ 2
+x,σ 2
+y ). A
+canonical suﬃcient statistic for the family is
+T =
+
+
+m∑
+i=1
+Xi,
+n∑
+j=1
+Yj,
+m∑
+i=1
+X2
+i ,
+n∑
+j=1
+Y 2
+j
+
+ ,
+and the canonical parameter is
+η =
+(µ
+x
+σ 2x
+, µy
+σ 2y
+, − 1
+2σ 2x
+, − 1
+2σ 2y
+)
+.
+By (4.3) and (4.4), an equivalent statistic would be (
+ X,
+ Y,S 2
+x,S 2
+y ), where
+S2
+x = ∑m
+i=1
+(Xi −
+X)2/ (m − 1) and S2
+y = ∑n
+i=1
+(Yi −
+Y )2/ (n − 1). Results from
+Section 4.3 provide UMVU estimates for µx,µy , σr
+x, σr
+y , etc.
+If the variances for the two samples agree, σ 2
+x =σ 2
+y =σ 2, then η satisﬁes
+the linear constraint η 3 =η 4. In this case the joint distributions form a three-
+parameter exponential family with complete suﬃcient statistic ( T1,T 2,T 3 +
+T4). An equivalent suﬃcient statistic here is (
+ X,
+ Y,S 2
+p ), where
+
+===== PAGE 4 =====
+
+88 5 Curved Exponential Families
+S2
+p =
+∑m
+i=1
+(Xi −
+X)2 + ∑n
+i=1
+(Yi −
+Y )2
+n +m − 2 = (m − 1)S2
+x + (n − 1)S2
+y
+n +m − 2 ,
+called the pooled sample variance . Again the equivalence follows easily from
+(4.3) and (4.4). Also, because S2
+x andS2
+y are independent, from the deﬁnition
+of the chi-square distribution and (4.9),
+(n +m − 2)S2
+p
+σ 2 ∼ χ 2
+n+m−2
+.
+Again, results from Section 4.3 provide UMVU estimates for various param-
+eters of interest.
+Another subfamily arises if the means for the two samples are the same,
+µ
+x =µy. In this case the joint distributions form a curved exponential family,
+andT or (
+X,
+ Y,S 2
+x,S 2
+y ) are minimal suﬃcient. In this case these statistics are
+not complete because E(
+X −
+Y ) = 0 for all distributions in the subfamily.
+5.2 Sequential Experiments
+The protocol for an experiment is sequential if the data are observed as they
+are collected, and the information from the observations inﬂuences how the
+experiment is performed. For instance, the decision whether to terminate a
+study at some stage or continue collecting more data might be based on prior
+observations. Or, in allocation problems sampling from two or more popula-
+tions, the choice of population sampled at a given stage could depend on prior
+data.
+There are two major reasons why a sequential experiment might be pre-
+ferred over a classical experiment. A sequential experiment may be more ef-
+ﬁcient. Here eﬃciency gains might be quantiﬁed as a reduction in decision
+theoretic risk, with costs for running the experiment added to the usual loss
+function. There are also situations in which certain objectives can only be met
+with a sequential experiment. Here is one example.
+Example 5.3. Estimating a Population Size . Consider a lake (or some other
+population) with M ﬁsh. Here M is considered an unknown parameter, and
+the goal of the experiment is to estimate M . Data to estimate M are obtained
+from a “capture–recapture” experiment. This experiment has two phases.
+First, k ﬁsh are sampled from the lake and tagged so they can be identi-
+ﬁed. These ﬁsh are then returned to the lake. At the second stage, ﬁsh are
+sampled at random from the lake. Note that during this phase a sampled ﬁsh
+is tagged with probability θ = k/M . (Actually, there is an assumption here
+that at the second stage tagged and untagged ﬁsh are equally likely to be
+captured; this premise seems suspect for real ﬁsh.) In terms of θ ,
+M =k/θ,
+
+===== PAGE 5 =====
+
+5.2 Sequential Experiments 89
+and so the inferential goal is basically to estimate 1 /θ . Information from
+the second stage of this experiment can be coded using Bernoulli variables
+X
+1,...,X N , where N denotes the sample size, and Xi is one if the ith ﬁsh is
+tagged or zero if the ith ﬁsh is not tagged.
+In mathematical terms we have a situation in which potential data
+X1,X 2,... are i.i.d. Bernoulli variables with success probability θ . If the sam-
+ple size is ﬁxed, N =n, then our data have joint density
+n∏
+i=1
+θxi (1 − θ )1−xi =θT (x)(1 − θ )n−T (x),
+whereT (x) = x1 + · · · +xn. These densities form an exponential family with
+T as a suﬃcient statistic. Because T has a binomial distribution with mean
+nθ , T/n is unbiased for θ and hence UMVU. But there can be no unbiased
+estimate of 1/θ because
+Eθδ (T ) ≤ max
+0≤k≤n
+δ (k),
+which is less than 1/θ onceθ is suﬃciently small. Note that if θ is much smaller
+than 1/n , then T will be zero with probability close to one. The real problem
+here is that when T = 0 we cannot infer much about the relative size of θ
+from our data.
+Inverse binomial sampling avoids the problem just noted by continued
+sampling until m of the Xi equal one. The number of observations N is now
+a random variable. Also, this is a sequential experiment because the decision
+to stop sampling is based on observed data.
+Intuitively, data from inverse binomial sampling would be the list
+X = (X
+1,...,X N ).
+There is a bit of a technical problem here: this list is not a random vector
+because the number of entries N is random. The most natural way around this
+trouble involves a more advanced notion of “data” in which the information
+from an experiment is viewed as the σ -ﬁeld of events that can be resolved from
+the experiment. Here this σ -ﬁeld would include events such as {T = k} or
+{N = 7}, but would preclude events such as {X
+N +2 = 0}. See Chapter 20 for
+a discussion of this approach. Fortunately, in this example we can avoid these
+technical issues in the following fashion. Let Y
+1 be the number of zeros in the
+listX before the ﬁrst one, and let Yi be the number of zeros between the ( i −
+1)st andith one,i = 2,...,m . Note that the list X can be recovered from Y =
+(Y1,...,Y m). If, for instance, Y = (2, 0, 1), thenX must be (0, 0, 1, 1, 0, 1). The
+variablesY1,...,Y m are i.i.d. with
+Pθ (Yi =y) = P (X1 = 0,...,X y = 0,X y+1 = 1)
+= (1 − θ )yθ
+= exp
+(
+y log(1 − θ ) + logθ
+)
+, y = 0, 1,....
+
+===== PAGE 6 =====
+
+90 5 Curved Exponential Families
+This is the mass function for the geometric distribution. It is a one-parameter
+exponential family with canonical parameter η = log(1 − θ ) and
+A(η ) = − logθ = − log(1 − e
+η ).
+Thus
+EθYi =A′(η ) = eη
+1 − eη = 1 − θ
+θ .
+The family of joint distributions of Y1,...,Y m has T = ∑m
+i=1
+Yi =N − m as
+a complete suﬃcient statistic. The statistic T counts the number of failures
+before the mth success and has the negative binomial distribution with mass
+function
+P (T =t) =
+(m +t − 1
+m − 1
+)
+θm(1 − θ )t, t = 0, 1,....
+Inasmuch as
+Eθ T =mEθYi = m
+θ − m,
+T +m
+m = N
+m
+is UMVU for 1 /θ .
+The following result gives densities for a sequential experiment in which
+data X1,X 2,... are observed until a stopping time N . This stopping time is
+allowed to depend on the data, but clairvoyance is prohibited. Formally, this
+is accomplished by insisting that
+{N =n} =
+{
+(X
+1,...,X n) ∈An
+}
+, n = 1, 2,...,
+for some sequence of sets A1,A 2,... .
+Theorem 5.4. Suppose X1,X 2,... are i.i.d. with common marginal density
+fθ , θ ∈ Ω. If Pθ (N < ∞) = 1 for all θ ∈ Ω, then the total data, viewed
+informally1 as (N,X 1,...,X N ), have joint density
+n∏
+i=1
+fθ (xi). (5.1)
+When fθ comes from an exponential family, so that
+fθ (x) = eη (θ )·T (x)−B(θ )h(x),
+1 One way to be more precise is to view the information from the observed data as
+a σ -ﬁeld. This approach is developed in Section 20.2, and Theorem 20.6 (Wald’s
+fundamental identity) from this section is the mathematical basis for the theorem
+here.
+
+===== PAGE 7 =====
+
+5.3 Multinomial Distribution and Contingency Tables 91
+then the joint density is
+exp
+[
+η (θ ) ·
+n∑
+i=1
+T (xi) − nB(θ )
+] n∏
+i=1
+h(xi). (5.2)
+These densities form an exponential family with canonical parameters η 1(θ ),
+... , ηs(θ ), and −B(θ ), and suﬃcient statistic
+(∑N
+i=1
+T (Xi),N
+)
+.
+By (5.1), the likelihood for the sequential experiment is the same as the
+likelihood that would be used ignoring the optional stopping and treating N as
+a ﬁxed constant. In contrast, distributional properties of standard estimators
+are generally inﬂuenced by optional stopping. For instance, the sample average
+(X
+1 +· · ·+XN )/N is generally a biased estimator of Eθ X1. (See Problems 5.10
+and 5.12 for examples.)
+The exponential family (5.2) has an extra canonical parameter −B(θ ),
+therefore sequential experiments usually lead to curved exponential families.
+The inverse binomial example is unusual in this regard, basically because the
+experiment is conducted so that ∑
+N
+i=1
+Xi must be the ﬁxed constant m.
+5.3 Multinomial Distribution and Contingency Tables
+The multinomial distribution is a generalization of the binomial distribution
+arising from n independent trials with outcomes in a ﬁnite set, {a
+0,...,a s}
+say. Deﬁne vectors
+e0 =
+
+
+
+
+
+
+
+
+
+1
+0
+0
+.
+.
+.
+0
+0
+
+
+
+
+
+
+
+
+
+, e
+1 =
+
+
+
+
+
+
+
+
+
+0
+1
+0
+.
+.
+.
+0
+0
+
+
+
+
+
+
+
+
+
+,..., e
+s =
+
+
+
+
+
+
+
+
+
+0
+0
+0
+.
+.
+.
+0
+1
+
+
+
+
+
+
+
+
+
+in R
+s+1, and take Yi =ej if trial i has outcome aj , i = 1,...,n, j = 0,...,s .
+ThenY1,...,Y n are i.i.d. If pj ,j = 0,...,s , is the chance of outcome aj , then
+P (Yi =ej ) = pj . If we deﬁne
+X =
+
+
+
+
+
+X
+0
+X1
+.
+.
+.
+X
+s
+
+
+
+
+ =
+n∑
+i=1
+Yi,
+thenXj counts the number of trials with aj as the outcome. By independence,
+the joint mass function of Y1,...,Y n will be an n-fold product of success
+
+===== PAGE 8 =====
+
+92 5 Curved Exponential Families
+probabilities p0,...,p s. The number of times that pj arises in this product
+will be the number of trials with outcome aj , and so
+P (Y1 =y1,...,Y n =yn) =
+s∏
+j=0
+pxj
+j = exp
+
+
+s∑
+j=0
+xj logpj
+
+ ,
+wherex =x(y) = y
+1 + · · ·+yn. Thus the joint distribution for Y1,...,Y n form
+an (s + 1)-parameter exponential family with canonical suﬃcient statistic X.
+But this family is not of full rank because X0 +· · ·+Xs =n. Taking advantage
+of this constraint
+P (Y1 =y1,...,Y n =yn) = exp
+[ s∑
+i=1
+xi log(pi/p 0) +n logp0
+]
+,
+which is a full rank s-parameter exponential family with complete suﬃcient
+statistic ( X1,...,X s). There is a one-to-one correspondence between this
+statistic and X, therefore X is also complete suﬃcient.
+The distribution of X can be obtained from the distribution of Y as
+P (X =x) =
+∑
+(y1,...,y n ):Pn
+i=1
+yi =x
+P (Y =y). (5.3)
+The probabilities in this sum all equal ∏s
+j=1
+pxj
+j , and so this common value
+must be multiplied by the number of ways the yj can sum to x. This is equal
+to the number of ways of partitioning the set of trials {1,...,n} into s + 1
+sets, the ﬁrst with x0 elements, the next with x1 elements, and so on. This
+count is a multinomial coeﬃcient given by
+( n
+x0,...,x s
+)
+= n!
+x0! × · · · × xs!.
+This formula can be derived recursively. There are
+(n
+x0
+)
+ways to choose the
+ﬁrst set, then
+(n−x0
+x1
+)
+ways to choose the second set, and so on. The product of
+these binomial coeﬃcients simpliﬁes to the stated result. Using a multinomial
+coeﬃcient to evaluate the sum in (5.3),
+P (X
+0 =x0,...,X s =xs) =
+( n
+x0,...,x s
+)
+px0
+0 × · · · × pxs
+s ,
+providedx0,...,x s are nonnegative integers summing to n. This is the mass
+function for the multinomial distribution , and we write
+X ∼ Multinomial(p0,...,p s;n).
+The marginal distribution of Xj , because Xj counts the number of trials
+with aj as an outcome, is binomial with success probability pj . Because X is
+
+===== PAGE 9 =====
+
+5.3 Multinomial Distribution and Contingency Tables 93
+complete suﬃcient,Xj/n is UMVU for pj . Unbiased estimation of the product
+pjpk of two diﬀerent success probabilities is more interesting as Xj and Xk
+are dependent. One unbiased estimator δ is the indicator that Y1 is aj and
+Y2 is ak. The chance that X =x givenδ = 1 is a multinomial probability for
+n − 2 trials with outcome aj occurringxj − 1 times and outcome ak occurring
+xk − 1 times. Therefore
+P (δ = 1|X =x) = P (δ = 1)P (X =x|δ = 1)
+P (X =x)
+=
+pjpk
+( n−2
+x0,...,x j−1,...,x k−1,...,x s
+)
+px0
+0 × · · · × pxs
+s / (pjpk)
+( n
+x0,...,x s
+)
+px0
+0 × · · · × pxs
+s
+= xjxk
+n(n − 1).
+ThusXjXk/ (n2 − n) is UMVU for pjpk, j ̸=k.
+In applications, the success probabilities p0,...,p s often satisfy additional
+constraints. In some cases this will lead to a full rank exponential family with
+fewer parameters, and in other cases it will lead to a curved exponential family.
+Here are two examples of the former possibility.
+Example 5.5. Two-Way Contingency Tables. Consider a situation with n in-
+dependent trials, but now for each trial two characteristics are observed: Char-
+acteristicA with possibilities A
+1,...,A I , and Characteristic B with possibili-
+tiesB1,...,B J . Let Nij denote the number of trials in which the combination
+AiBj is observed, and let pij denote the chance of AiBj on any given trial.
+Then
+N = (N11,N 12,...,N IJ ) ∼ Multinomial(p11,p 12,...,p IJ ;n).
+These data and the sums
+Ni+ =
+J∑
+j=1
+Nij, i = 1,...,I,
+and
+N+j =
+I∑
+i=1
+Nij, j = 1,...,J,
+are often presented in a contingency table with the following form:
+B1 · · · BJ
+ Total
+A1
+ N11 · · · N1J
+ N1+
+.
+.
+.
+.
+.
+. .
+.
+.
+.
+.
+.
+A
+I
+ NI1 · · · NIJ
+ NI+
+Total
+N+1 · · · N+J
+ n
+
+===== PAGE 10 =====
+
+94 5 Curved Exponential Families
+If characteristics A and B are independent, then
+pij =pi+p+j, i = 1,...,I, j = 1,...,J,
+where pi+ = ∑J
+j=1
+pij is the chance of Ai, and p+j = ∑I
+i=1
+pij is the chance
+of Bj . With independence, the mass function of N can be written as
+( n
+n11,...,n IJ
+) I∏
+i=1
+J∏
+j=1
+(pi+p+j )nij.
+Letting ni+ = ∑J
+j=1
+nij ,i = 1,...,I , and n+j = ∑I
+i=1
+nij , j = 1,...,J ,
+I∏
+i=1
+J∏
+j=1
+pnij
+i+ =
+I∏
+i=1
+pni+
+i+ and
+I∏
+i=1
+J∏
+j=1
+pnij
++j =
+J∏
+j=1
+pn+j
++j .
+So the mass function of N can be written
+( n
+n11,...,n IJ
+) I∏
+i=1
+pni+
+i+
+J∏
+j=1
+pn+j
++j .
+Using the constraints ∑I
+i=1
+ni+ = ∑J
+j=1
+n+j =n and ∑I
+i=1
+pi+ = ∑J
+j=1
+p+j =
+1, this mass function equals
+( n
+n11,...,n IJ
+)
+exp
+[ I∑
+i=2
+ni+ log
+(pi+
+p1+
+)
++
+J∑
+j=2
+n+j log
+(p+j
+p+1
+)
++n log(p1+p+1)
+]
+.
+These mass functions form a full rank ( I +J − 2)-parameter exponential family
+with canonical suﬃcient statistic
+(N2+,...,N I+,N +2,...,N +J ).
+The equivalent statistic
+(N1+,...,N I+,N +1,...,N +J )
+is also complete suﬃcient. In this model, Ni+ ∼ Binomial(n,p i+) and N+j ∼
+Binomial(n,p +j ) are independent. So ˆ pi+ = Ni+/n and ˆp+j = N+j/n are
+UMVU estimates of pi+ andp+j , respectively, and ˆpi+ ˆp+j is the UMVU esti-
+mate of pij =pi+p+j .
+
+===== PAGE 11 =====
+
+5.4 Problems 95
+Example 5.6. Tables with Conditional Independence . Suppose now that three
+characteristics,A, B, and C, are observed for each trial, with Nijk the num-
+ber of trials that result in combination AiBjCk , and pijk the chance of this
+combination. Situations frequently arise in which it seems that characteristics
+A andB should be unrelated, but they are not independent because both are
+inﬂuenced by the third characteristic C. An appropriate model may be that
+A and B are conditionally independent given C. This leads naturally to the
+following constraints on the cell probabilities:
+p
+ijk =p++k
+pi+k
+p++k
+p+jk
+p++k
+, i = 1,...,I, j = 1,...,J, k = 1,...,K,
+where a “+” as a subscript indicates that the values for that subscript should
+be summed. Calculations similar to those for the previous example show that
+the mass functions with these constraints form a full rank
+(
+K(I +J − 1) − 1
+)
+-
+parameter exponential family with suﬃcient statistics N
+++k, k = 1,...,K ,
+Ni+k, i = 1,...,I , k = 1,...,K , and N+jk , j = 1,...,J ,k = 1,...,K .
+5.4 Problems 2
+*1. Suppose X has a binomial distribution with m trials and success probabil-
+ityθ , Y has a binomial distribution with n trials and success probability
+θ 2, and X and Y are independent.
+a) Find a minimal suﬃcient statistic T .
+b) Show that T is not complete, providing a nontrivial function f with
+Eθf (T ) = 0.
+*2. Let X and Y be independent Bernoulli variables with P (X = 1) = p and
+P (Y = 1) = h(p) for some known function h.
+a) Show that the family of joint distributions is a curved exponential
+family unless
+h(p) = 1
+1 + exp
+{
+a +b log p
+1−p
+}
+for some constants a and b.
+b) Give two functions h, one where ( X,Y ) is minimal but not complete,
+and one where ( X,Y ) is minimal and complete.
+3. Let X and Y be independent Poisson variables.
+a) Suppose X has mean λ , and Y has mean λ 2. Do the joint mass func-
+tions form a curved two-parameter exponential family or a full rank
+one-parameter exponential family?
+b) Suppose instead X has mean λ , and Y has mean 2 λ . Do the joint
+mass functions form a curved two-parameter exponential family, or a
+full rank one-parameter exponential family?
+2 Solutions to the starred problems are given at the back of the book.
+
+===== PAGE 12 =====
+
+96 5 Curved Exponential Families
+4. Consider the two-sample problem with X1,...,X m i.i.d. from N (µx,σ 2
+x)
+and Y1,...,Y n i.i.d. from N (µy,σ 2
+y ), and all n +m variables mutually
+independent.
+a) Find the UMVU estimator for the ratio of variances, σ 2
+x/σ 2
+y .
+b) If the two variances are equal, σ 2
+x =σ 2
+y =σ , ﬁnd the UMVU estimator
+of the normalized diﬀerence in means ( µx − µy)/σ .
+5. Consider the two-sample problem with X1,...,X m i.i.d. from N (µx,σ 2)
+and Y1,...,Y n i.i.d. from N (µy,σ 2), and all n +m variables mutually
+independent. Fix α ∈ (0, 1) and deﬁne a parameter q so that P (Xi >
+Yi +q) = α . Find the UMVU of q.
+*6. Two teams A and B play a series of games, stopping as soon as one of
+the teams has 4 wins. Assume that game outcomes are independent and
+that on any given game team A has a ﬁxed chance θ of winning. Let X
+and Y denote the number of games won by the ﬁrst and second team,
+respectively.
+a) Find the joint mass function for X andY . Show that as θ varies these
+mass functions form a curved exponential family.
+b) Show that T = (X,Y ) is complete.
+c) Find a UMVU estimator of θ .
+*7. Consider a sequential experiment in which observations are i.i.d. from a
+Poisson distribution with mean λ . If the ﬁrst observation X is zero, the
+experiment stops, and if X >0, a second observation Y is observed. Let
+T = 0 if X = 0, and let T = 1 + X +Y if X >0.
+a) Find the mass function for T .
+b) Show that T is minimal suﬃcient.
+c) Does this experiment give a curved two-parameter exponential family
+or full rank one-parameter exponential family?
+d) Is T a complete suﬃcient statistic? Hint: Write e
+λ Eλ g(T ) as a power
+series in λ and derive equations for g setting coeﬃcients for λx to zero.
+8. Potential observations ( X1,Y 1), (X2,Y 2),... in a sequential experiment
+are i.i.d. The marginal distribution of Xi is Poisson with parameter λ , the
+marginal distribution of Yi is Bernoulli with success probability 1 / 2, and
+Xi and Yi are independent. Suppose we continue observation, stopping
+the ﬁrst time that Yi = 1, so that the sample size is
+N = inf {i :Yi = 1}.
+a) Show that the joint densities form an exponential family, and identify
+a minimal suﬃcient statistic. Is the family curved?
+b) Find two diﬀerent unbiased estimators of λ , both functions of the min-
+imal suﬃcient statistic. Is the minimal suﬃcient statistic complete?
+9. Consider an experiment observing independent Bernoulli trials with un-
+known success probability θ ∈ (0, 1). Suppose we observe trial outcomes
+until there are two successes in a row.
+a) Find a minimal suﬃcient statistic.
+
+===== PAGE 13 =====
+
+5.4 Problems 97
+b) Give a formula for the mass function of the minimal suﬃcient statistic.
+c) Is the minimal suﬃcient statistic complete? If it is, explain why, and
+if it is not, ﬁnd a nontrivial function with constant expectation.
+10. Consider a sequential experiment in which X1 and X2 are independent
+exponential variables with failure rate λ . If X1 < 1, sampling stops after
+the ﬁrst observation; if not, the second variable X2 is also sampled. So
+N = 1 if X1 < 1 and N = 2 if X1 ≥ 1.
+a) Do the densities for this experiment form a curved two-parameter
+exponential family or a one-parameter exponential family?
+b) Find E
+X, and compare this expectation with the mean 1/λ of the
+exponential distribution.
+11. Suppose independent Bernoulli trials are performed until the number of
+successes and number of failures diﬀer by 2. Let X denote the number of
+successes,Y the number of failures (so |X −Y |= 2), and θ the chance of
+success.
+a) Find the joint mass function for X and Y . Show that these mass
+functions form a curved exponential family with T = (X,Y ).
+b) Show that T is complete.
+c) Find the UMVU estimator for θ .
+d) Find P (X >Y ).
+12. Consider a sequential experiment in which the potential observations
+X1,X 2,... are i.i.d. from a geometric distribution with success probability
+θ ∈ (0, 1), so
+P (Xi =x) = θ (1 − θ )x, x = 0, 1,....
+The sampling rule calls for a single observation ( N = 1) if X1 = 0, and
+two observations (N = 2) if X1 ≥ 1. Deﬁne
+T =
+N∑
+i=1
+Xi.
+a) Do the densities for this experiment form a curved two-parameter
+exponential family or a one-parameter exponential family?
+b) Show that T is minimal suﬃcient.
+c) Find the mass function for T .
+d) Is T complete? Explain why or ﬁnd a function g such that g(T ) has
+constant expectation.
+e) Find E
+X. Is
+ X an unbiased estimator of EX1?
+f) Find the UMVU estimator of EX1.
+*13. Consider a single two-way contingency table and deﬁne R =N11+N12 (the
+ﬁrst row sum), C =N11 +N21 (the ﬁrst column sum), and D =N11 +N22
+(the sum of the diagonal entries).
+a) Show that the joint mass function can be written as a full rank three-
+parameter exponential family with T = (R,C,D ) as the canonical
+suﬃcient statistic.
+
+===== PAGE 14 =====
+
+98 5 Curved Exponential Families
+b) Relate the canonical parameter associated with D to the “cross-
+product ratio” α deﬁned as α =p11p22/ (p12p21).
+c) Suppose we observe m independent two-by-two contingency tables.
+Let ni, i = 1,...,m , denote the trials for table i. Assume that cell
+probabilities for the tables may diﬀer, but that the cross-product ratios
+for all m tables are all the same. Show that the joint mass functions
+form a full rank exponential family. Express the suﬃcient statistic as
+a function of the variables R
+1,...,R m, C1,...,C m, and D1,...,D m.
+14. Consider a two-way contingency table with a multinomial distribution
+for the counts Nij and with I = J. If the probabilities are symmetric,
+pij = pji , do the mass functions form a curved exponential family, or
+a full rank exponential family? With this constraint, identify a minimal
+suﬃcient statistic. Also, if possible, give UMVU estimators for the p
+ij .
+15. Let ( N11k,N 12k,N 21k,N 22k), k = 1 ,...,n, be independent two-by-two
+contingency tables. The kth table has a multinomial distribution with m
+trials and success probabilities
+(1 +θk
+4 , 1 − θk
+4 , 1 − θk
+4 , 1 +θk
+4
+)
+.
+Note that θk can be viewed as a measure of dependence in table k. (If
+θk = 0 there is independence in table k.) Consider a model in which
+log
+[ 1 +θk
+1 − θk
+]
+=α +βxk, k = 1,...,m,
+where α and β are unknown parameters, and x1,...,x n are known con-
+stants. Show that the joint densities form an exponential family and iden-
+tify a minimal suﬃcient statistic. Is this statistic complete?
+*16. For an I ×J contingency table with independence, the UMVU estimator
+of p
+ij is ˆpi+ ˆp+j =Ni+N+j/n 2.
+a) Determine the variance of this estimator, Var(ˆ pi+ ˆp+j ).
+b) Find the UMVU estimator of the variance in (a).
+17. In some applications the total count in a contingency table would most
+naturally be viewed as a random variable. In these cases, a Poisson model
+might be more natural than the multinomial model in the text.
+a) Let X
+1,...,X p be independent Poisson variables, and let λi denote the
+mean of Xi. Show that T =X1 + · · · +Xp has a Poisson distribution,
+and ﬁnd
+P (X1 =x1,...,X p =xp|T =n),
+the conditional mass function for X givenT =n.
+b) Consider a model for a two-by-two contingency table in which entries
+N11,...,N 22 are independent Poisson variables, and let λij denote the
+mean of Nij . With the constraint λ 11λ 22 =λ 12λ 21, do the joint mass
+functions for these counts form a curved four-parameter exponential
+family or a three-parameter exponential family?
+
+===== PAGE 15 =====
+
+5.4 Problems 99
+18. Consider a two-way contingency table with a multinomial distribution for
+the counts Nij with I = J. Assume that the cell probabilities pij are
+constrained to have the same marginal values,
+pi+ =p+i, i = 1,...,I.
+a) If I = 2, ﬁnd a minimal suﬃcient statistic T . Is T complete?
+b) Find a minimal suﬃcient statistic T when I = 3. Is this statistic
+complete?
+c) Suppose we add an additional constraint that the characteristics are
+independent, so
+pij =pi+p+j, i = 1,...,I, j = 1,...,I.
+Give a minimal suﬃcient statistic when I = 2, and determine whether
+it is complete.
+
+===== PAGE 16 =====
+

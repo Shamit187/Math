@@ -1,0 +1,167 @@
+{
+  "chapters": [
+    {
+      "num": 1,
+      "title": "Probability and Measure",
+      "start": 19,
+      "end": 43
+    },
+    {
+      "num": 2,
+      "title": "Exponential Families",
+      "start": 43,
+      "end": 57
+    },
+    {
+      "num": 3,
+      "title": "Risk, Sufficiency, Completeness, and Ancillarity",
+      "start": 57,
+      "end": 79
+    },
+    {
+      "num": 4,
+      "title": "Unbiased Estimation",
+      "start": 79,
+      "end": 103
+    },
+    {
+      "num": 5,
+      "title": "Curved Exponential Families",
+      "start": 103,
+      "end": 119
+    },
+    {
+      "num": 6,
+      "title": "Conditional Distributions",
+      "start": 119,
+      "end": 133
+    },
+    {
+      "num": 7,
+      "title": "Bayesian Estimation",
+      "start": 133,
+      "end": 147
+    },
+    {
+      "num": 8,
+      "title": "Large-Sample Theory",
+      "start": 147,
+      "end": 169
+    },
+    {
+      "num": 9,
+      "title": "Estimating Equations and Maximum Likelihood",
+      "start": 169,
+      "end": 213
+    },
+    {
+      "num": 10,
+      "title": "Equivariant Estimation",
+      "start": 213,
+      "end": 223
+    },
+    {
+      "num": 11,
+      "title": "Empirical Bayes and Shrinkage Estimators",
+      "start": 223,
+      "end": 237
+    },
+    {
+      "num": 12,
+      "title": "Hypothesis Testing",
+      "start": 237,
+      "end": 273
+    },
+    {
+      "num": 13,
+      "title": "Optimal Tests in Higher Dimensions",
+      "start": 273,
+      "end": 287
+    },
+    {
+      "num": 14,
+      "title": "General Linear Model",
+      "start": 287,
+      "end": 319
+    },
+    {
+      "num": 15,
+      "title": "Bayesian Inference: Modeling and Computation",
+      "start": 319,
+      "end": 337
+    },
+    {
+      "num": 16,
+      "title": "Asymptotic Optimality",
+      "start": 337,
+      "end": 361
+    },
+    {
+      "num": 17,
+      "title": "Large-Sample Theory for Likelihood Ratio Tests",
+      "start": 361,
+      "end": 385
+    },
+    {
+      "num": 18,
+      "title": "Nonparametric Regression",
+      "start": 385,
+      "end": 409
+    },
+    {
+      "num": 19,
+      "title": "Bootstrap Methods",
+      "start": 409,
+      "end": 423
+    },
+    {
+      "num": 20,
+      "title": "Sequential Methods",
+      "start": 423,
+      "end": 449
+    }
+  ],
+  "front_back": [
+    {
+      "title": "Cover",
+      "start": 0
+    },
+    {
+      "title": "Theoretical Statistics: Topics for a Core Course",
+      "start": 3
+    },
+    {
+      "title": "Copyright",
+      "start": 4
+    },
+    {
+      "title": "Preface",
+      "start": 7
+    },
+    {
+      "title": "Notation",
+      "start": 11
+    },
+    {
+      "title": "Contents",
+      "start": 13
+    },
+    {
+      "title": "A Appendices",
+      "start": 449
+    },
+    {
+      "title": "B Solutions",
+      "start": 469
+    },
+    {
+      "title": "References",
+      "start": 543
+    },
+    {
+      "title": "Index",
+      "start": 549
+    }
+  ],
+  "total_pages": 557
+}

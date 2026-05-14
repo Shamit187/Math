@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ch 15 — Bayesian Inference: Modeling and Computation · Theoretical Statistics</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/>
+</head>
+<body data-book="basic_stat" data-page="ch15">
+<header class="site-header">
+<a class="brand" href="/books/basic_stat/">Theoretical Statistics <small>a slow reading guide</small></a>
+<nav>
+<a href="/" class="all-books-link">All books</a>
+    <a href="/books/basic_stat/">Contents</a>
+<button aria-label="toggle theme" class="theme-toggle">Dark</button>
+</nav>
+</header>
+<main class="layout">
+<aside class="sidebar"><h4>Chapter 15</h4>
+<ol>
+<li><a href="#why">Why a second Bayesian chapter?</a></li>
+<li><a href="#s15-1">15.1 Hierarchical models</a></li>
+<li><a href="#s15-2">15.2 Bayesian robustness</a></li>
+<li><a href="#s15-3">15.3 Markov chains</a></li>
+<li><a href="#s15-4">15.4 Metropolis–Hastings</a></li>
+<li><a href="#s15-5">15.5 Gibbs sampler</a></li>
+<li><a href="#s15-6">15.6 Image restoration</a></li>
+<li><a href="#diagnostics">Posterior diagnostics &amp; pitfalls</a></li>
+<li><a href="#summary">Summary</a></li>
+</ol>
+</aside>
+<article class="content">
+<section class="hero">
+<div class="kicker">Chapter 15</div>
+<h1>Bayesian Inference: Modeling and Computation</h1>
+<p class="subtitle" data-cid="ch15-010">Chapter 7 told us what a posterior <em>is</em>. This chapter is about how to actually build one, and — when the integrals refuse to close — how to simulate it.</p>
+<div class="meta">
+<span>Book pages: 301–318</span>
+<span>~55 min reading time</span>
+<span>Prereqs: Ch 7 (Bayes basics), Ch 11 (empirical Bayes)</span>
+</div>
+</section>
+<h2 data-cid="ch15-020" id="why">Why a second Bayesian chapter?</h2>
+<p data-cid="ch15-030">
+      Chapter 7 introduced the Bayesian setup: a prior $\lambda(\theta)$, a model $p_\theta(x)$, and a posterior
+      $\lambda(\theta \mid x) \propto \lambda(\theta) p_\theta(x)$. In that chapter we always managed to evaluate
+      the posterior in closed form — by choosing conjugate priors that made the algebra clean.
+    </p>
+<p data-cid="ch15-040">
+      Real research is not so cooperative. Two new problems force themselves on us as soon as we leave the
+      textbook examples:
+    </p>
+<ul data-cid="ch15-050">
+<li><strong>The prior is hard to pin down.</strong> A single $\lambda$ rarely captures everything we know.
+      Often it is more honest to say "the prior depends on a tuning parameter $\tau$, and $\tau$ itself is uncertain."
+      That leads us to <em>hierarchical models</em>.</li>
+<li><strong>The posterior is hard to evaluate.</strong> Once the prior gets richer or the parameter space gets
+      bigger, the normalizing integral $\int \lambda(\theta) p_\theta(x)\, d\theta$ is generally
+      analytically intractable and numerically expensive. That forces us to <em>simulate</em> the posterior
+      using Markov chains.</li>
+</ul>
+<div class="box intuition" data-cid="ch15-060">
+<span class="box-label">The big shift from Chapter 7</span>
+<p data-cid="ch15-070">
+        Chapter 7 was about <em>algebra</em>: the posterior was a formula you could write down. Chapter 15 is about
+        <em>computation</em>: the posterior is a distribution you can only sample from. Everything new in this
+        chapter — Metropolis–Hastings, Gibbs, mixing, convergence diagnostics — exists because we can no longer
+        compute. We can only approximate.
+      </p>
+</div>
+<p data-cid="ch15-080">
+      Keener is sober about what this means: we trade one set of worries (does my prior really reflect my belief?)
+      for another (has my sampler actually converged?). Both are real. The whole chapter is the trade-off in slow motion.
+    </p>
+<!-- ===================================================================== -->
+<h2 data-cid="ch15-090" id="s15-1">15.1 Hierarchical models</h2>
+<h3 data-cid="ch15-100">The one-line idea</h3>
+<p data-cid="ch15-110">
+      A <strong>hierarchical model</strong> writes the prior in stages: instead of one prior $\lambda$, we use a
+      <em>family</em> $\{\Lambda_\tau : \tau \in \mathcal{T}\}$ indexed by a parameter $\tau$, and put a prior on
+      $\tau$ itself.
+    </p>
+<div class="box definition" data-cid="ch15-120">
+<span class="box-label">Definition — hierarchical Bayesian model</span>
+<p data-cid="ch15-130">
+        Let $\{\Lambda_\tau : \tau \in \mathcal{T}\}$ be a family of prior distributions for an unknown parameter
+        $\Theta$. Treat the index $\tau$ as a realization of a random variable $T$ with its own distribution $G$.
+        The model is then
+        $$T \sim G, \qquad \Theta \mid T = \tau \sim \Lambda_\tau, \qquad X \mid T = \tau, \Theta = \theta \sim P_\theta.$$
+        $T$ is called a <strong>hyperparameter</strong>, and $G$ is the <strong>hyperprior</strong>.
+      </p>
+</div>
+<p data-cid="ch15-140">
+      Why bother with two layers? Because the marginal prior for $\Theta$ — found by integrating $T$ out —
+      $$P(\Theta \in B) = \int \Lambda_\tau(B) \, dG(\tau)$$
+      is a <em>mixture</em> of the $\Lambda_\tau$. Mixtures are far more flexible than any single family, and they
+      let us express uncertainty about the prior itself.
+    </p>
+<h3 data-cid="ch15-150">Prior elicitation: three flavors</h3>
+<p data-cid="ch15-160">Before we go further, a vocabulary check. Priors come in three rough flavors:</p>
+<ul data-cid="ch15-170">
+<li><strong>Informative priors</strong> encode substantive knowledge — e.g., "we know from previous experiments
+        that the rate $\theta$ is around $0.3$." Hierarchical priors are usually informative-but-cautious: the
+        hyperprior on $\tau$ admits we don't know <em>exactly</em> how informative to be.</li>
+<li><strong>Non-informative priors</strong> try to express ignorance. The flat prior $\lambda(\theta) \propto 1$
+        is the naive choice, but flat priors are not invariant under reparameterization, which is awkward.</li>
+<li><strong>Jeffreys priors</strong> fix the invariance problem. Jeffreys's rule is
+        $\lambda(\theta) \propto \sqrt{\det I(\theta)}$, where $I$ is the Fisher information. By construction
+        this is invariant under smooth reparameterizations, so it is the same prior whether you parameterize a
+        binomial by $p$ or by $\log[p/(1-p)]$.</li>
+</ul>
+<div class="box intuition" data-cid="ch15-180">
+<span class="box-label">Why Jeffreys's rule is "non-informative"</span>
+<p data-cid="ch15-190">
+        Fisher information measures how sharply the likelihood discriminates between nearby values of $\theta$.
+        Jeffreys's prior weights $\theta$-values <em>in proportion to how distinguishable they are</em> — which is
+        the closest thing we have to "uniform on the natural geometry of the model." For $N(\theta, 1)$ it gives a
+        flat prior on $\theta$. For $\mathrm{Binomial}(n, p)$ it gives the $\mathrm{Beta}(1/2, 1/2)$ prior on $p$,
+        not flat.
+      </p>
+</div>
+<div class="box warn" data-cid="ch15-200">
+<span class="box-label">Common pitfall — improper priors</span>
+<p data-cid="ch15-210">
+        Many non-informative priors (including most Jeffreys priors on unbounded parameters) are <em>improper</em>:
+        $\int \lambda(\theta) \, d\theta = \infty$. That is fine <em>if</em> the posterior is still proper —
+        $\int \lambda(\theta) p_\theta(x)\, d\theta &lt; \infty$. But it is easy to construct hierarchical models
+        where the prior is improper <em>and</em> the posterior is also improper, and MCMC will happily sample from
+        the nonsense and look perfectly well-behaved. Always check that the posterior integrates.
+      </p>
+</div>
+<h3 data-cid="ch15-220">Example 15.1 — compound estimation, hierarchically</h3>
+<div class="box example" data-cid="ch15-230">
+<span class="box-label">Worked example — Normal means with unknown shrinkage</span>
+<p data-cid="ch15-240">
+        Recall the compound-estimation problem from Chapter 11: we have $n$ parameters $\Theta_1, \dots, \Theta_n$
+        and observe $X_i = \Theta_i + \varepsilon_i$ with $\varepsilon_i \sim N(0, 1)$ independent. The empirical
+        Bayes story put $\Theta_i \stackrel{iid}{\sim} N(0, \tau^2)$ and estimated $\tau$ from the data.
+      </p>
+<p data-cid="ch15-250">
+        The hierarchical Bayesian version is honest about $\tau$ being unknown. We write
+        $$T \sim G, \qquad \Theta \mid T = \tau \sim N(0, \tau^2 I_n), \qquad X \mid \Theta = \theta \sim N(\theta, I_n).$$
+        Conditional on $T = \tau$, the $X_i$ are i.i.d. $N(0, 1 + \tau^2)$. So the marginal likelihood for $\tau$
+        is one-dimensional and easy. The Bayes estimator for $\Theta$ collapses, via the tower property, to
+        $$\delta(X) = E[\Theta \mid X] = X \cdot E\!\left[\frac{T^2}{1+T^2} \,\Big|\, X\right].$$
+        The shrinkage factor $T^2/(1+T^2)$ is itself averaged over the posterior of $T$ — automatically accounting
+        for our uncertainty about how much to shrink.
+      </p>
+</div>
+<p data-cid="ch15-260">
+      Compare this to the plug-in empirical Bayes estimator, which uses a point estimate $\hat\tau$. The
+      hierarchical Bayes estimator integrates over the whole posterior of $T$ instead. When $n$ is small, this
+      difference matters: empirical Bayes understates uncertainty.
+    </p>
+<h3 data-cid="ch15-270">Example 15.2 — ridge regression as a hierarchical model</h3>
+<div class="box example" data-cid="ch15-280">
+<span class="box-label">Worked example — Bayesian ridge</span>
+<p data-cid="ch15-290">
+        In the linear model $Y \mid B = \beta \sim N(X\beta, \sigma^2 I)$ with $\sigma^2$ known, put a prior
+        $B \sim N(0, \tau^2 I)$. The posterior is
+        $$B \mid Y = y \sim N\!\left((X'X + \kappa I)^{-1} X'Y, \; \sigma^2 (X'X + \kappa I)^{-1}\right),$$
+        where $\kappa = \sigma^2 / \tau^2$. The posterior mean $(X'X + \kappa I)^{-1} X'Y$ is the ridge regression
+        estimator! Ridge — originally introduced for numerical stability — is exactly Bayesian inference under a
+        Gaussian prior. A hierarchical extension promotes $\tau$ to a random variable with its own hyperprior $G$.
+      </p>
+</div>
+<h3 data-cid="ch15-300">The 8-schools model — the prototypical multilevel example</h3>
+<p data-cid="ch15-310">
+      No introduction to hierarchical Bayes is complete without the 8-schools example (Rubin, 1981). Eight schools
+      ran a coaching program for the SAT. School $i$ reports an estimated effect $y_i$ with known standard error
+      $\sigma_i$. We model
+      $$y_i \mid \theta_i \sim N(\theta_i, \sigma_i^2), \qquad \theta_i \mid \mu, \tau \sim N(\mu, \tau^2),
+        \qquad \mu \sim \text{flat}, \quad \tau \sim \text{half-Cauchy}(0, 5).$$
+      The hyperparameter $\tau$ controls how much the schools' true effects can vary. If $\tau = 0$, all schools
+      share the same effect $\mu$ (complete pooling). If $\tau \to \infty$, each school is on its own (no pooling).
+      The posterior on $\tau$ tells us how much partial pooling is supported by the data.
+    </p>
+<div class="box intuition" data-cid="ch15-320">
+<span class="box-label">Why this example is famous</span>
+<p data-cid="ch15-330">
+        The 8-schools dataset cleanly demonstrates <em>shrinkage</em>: estimates with large standard errors get
+        pulled toward the global mean $\mu$, while precise estimates are left alone. The strength of pooling is
+        learned from the data via $\tau$. The example is so canonical because the posterior of $\tau$ is
+        notoriously bimodal-prone and tricky — it forces every MCMC method to prove itself.
+      </p>
+</div>
+<h3 data-cid="ch15-340">The hierarchical beta-binomial</h3>
+<div class="box example" data-cid="ch15-350">
+<span class="box-label">Worked example — rats and tumors</span>
+<p data-cid="ch15-360">
+        $K$ groups, group $k$ has $n_k$ trials and $y_k$ successes. We model
+        $$y_k \mid p_k \sim \mathrm{Binomial}(n_k, p_k), \qquad
+          p_k \mid \alpha, \beta \sim \mathrm{Beta}(\alpha, \beta),$$
+        and put a vague hyperprior on $(\alpha, \beta)$, e.g. $(\alpha + \beta)^{-5/2}$ on
+        $\log(\alpha/\beta), \log(\alpha + \beta)$. Conditional on $\alpha, \beta$, each $p_k$ has a
+        $\mathrm{Beta}(\alpha + y_k, \beta + n_k - y_k)$ posterior. The hyperposterior on $(\alpha, \beta)$ adjusts
+        how strongly we pool $p_1, \dots, p_K$ toward a common mean $\alpha/(\alpha+\beta)$.
+      </p>
+</div>
+<!-- ===================================================================== -->
+<h2 data-cid="ch15-370" id="s15-2">15.2 Bayesian robustness</h2>
+<p data-cid="ch15-380">
+      Conjugate priors give clean formulas. But what if the conjugate prior is <em>wrong</em> — only a convenient
+      approximation? Keener walks through a sobering example.
+    </p>
+<p data-cid="ch15-390">
+      Take $X \mid \Theta = \theta \sim N(\theta, 1)$. Suppose the <em>true</em> prior $\Lambda$ is a $t$ with 3
+      degrees of freedom:
+      $$\lambda(\theta) = \frac{2}{\sqrt{3}\pi \left(1 + \theta^2/3\right)^2}.$$
+      The conjugate alternative $\Lambda_N = N(0, 5/4)$ has densities visually almost identical to $\lambda$;
+      the sup-norm distance is just $\|\lambda - \lambda_N\|_\infty = 0.0333$. By total-variation distance,
+      $|\Lambda(B) - \Lambda_N(B)| \leq 7.1\%$ for every Borel $B$.
+    </p>
+<p data-cid="ch15-400">
+      Yet the Bayes estimators behave very differently in the tails. Under $\Lambda_N$, the Bayes rule is
+      $\delta_N(x) = 5x/9$ — a linear shrinkage. Its risk grows quadratically in $\theta$:
+      $$R(\theta, \delta_N) = \frac{25 + 16\theta^2}{81}.$$
+      Under the true $t$-prior, the Bayes rule $\delta$ satisfies $\delta(x) = x - 4/x + o(1/x)$ as
+      $|x| \to \infty$. So $\delta$ <em>stops shrinking</em> in the tails (its risk approaches $1$, the UMVU risk),
+      while $\delta_N$ keeps shrinking and pays a quadratic price.
+    </p>
+<p data-cid="ch15-410">
+      The integrated risk under the true $\Lambda$ is $0.482$ for $\delta$ and $0.901$ for $\delta_N$ — nearly
+      twice as bad. A prior that looked correct to within $3\%$ in density produced an estimator that was
+      <em>nearly $90\%$ worse</em>.
+    </p>
+<div class="box warn" data-cid="ch15-420">
+<span class="box-label">Common pitfall — light-tailed conjugate priors</span>
+<p data-cid="ch15-430">
+        Gaussian priors have light tails. If the truth has heavier tails, the Gaussian prior is overconfident
+        about how small $\theta$ is. The estimator will shrink large signals too aggressively. A robust workaround
+        is to use a heavy-tailed prior like a $t$ on a few degrees of freedom, accepting that closed-form posteriors
+        are lost and that you will need MCMC.
+      </p>
+</div>
+<div class="box pause" data-cid="ch15-440">
+<span class="box-label">Pause</span>
+<p data-cid="ch15-450">
+        The lesson is not "Bayesian inference is fragile." The lesson is that <em>tail behavior of the prior
+        matters far more than tail behavior of the data</em>. Two priors can agree to $3\%$ everywhere and yet
+        produce estimators that diverge as $|x| \to \infty$. Re-read Figure 15.3 in the book if this still feels
+        surprising.
+      </p>
+</div>
+<!-- ===================================================================== -->
+<h2 data-cid="ch15-460" id="s15-3">15.3 Markov chains</h2>
+<p data-cid="ch15-470">
+      Both Metropolis–Hastings and Gibbs sampling work by constructing a Markov chain whose stationary
+      distribution is the posterior. We need just enough Markov chain theory to know what "stationary"
+      and "converges" mean.
+    </p>
+<div class="box definition" data-cid="ch15-480">
+<span class="box-label">Definition 15.4 — Markov chain</span>
+<p data-cid="ch15-490">
+        A sequence $X_0, X_1, X_2, \dots$ on a state space $(\mathcal{X}, \mathcal{A})$ is a (time homogeneous)
+        <strong>Markov chain</strong> with transition kernel $Q$ if for every $n \geq 1$, $B \in \mathcal{A}$,
+        and almost every history $x_0, \dots, x_n$,
+        $$P(X_{n+1} \in B \mid X_0 = x_0, \dots, X_n = x_n) = P(X_{n+1} \in B \mid X_n = x_n) = Q_{x_n}(B).$$
+      </p>
+</div>
+<p data-cid="ch15-500">
+      The chain has no memory beyond its current state. Given the present, the past tells you nothing about the
+      future. The whole dynamics are encoded in $Q$ — for each state $x$, $Q_x$ is a probability distribution over
+      "where you go next."
+    </p>
+<h3 data-cid="ch15-510">Pushing distributions forward</h3>
+<p data-cid="ch15-520">
+      If $\pi_n$ is the distribution of $X_n$, then the distribution of $X_{n+1}$ is
+      $$\pi_{n+1}(B) = \int Q_x(B) \, d\pi_n(x) \;\overset{\text{def}}{=}\; (\pi_n Q)(B).$$
+      That is, $\pi_{n+1} = \pi_n Q$. Iterating, $\pi_n = \pi_0 Q^n$.
+    </p>
+<div class="box definition" data-cid="ch15-530">
+<span class="box-label">Definition — stationary distribution</span>
+<p data-cid="ch15-540">
+        A distribution $\pi$ is <strong>stationary</strong> for $Q$ if $\pi = \pi Q$. If the chain starts at
+        $\pi$, it stays at $\pi$ forever.
+      </p>
+</div>
+<p data-cid="ch15-550">
+      The whole strategy of MCMC is: design $Q$ so that the posterior is stationary, then run the chain. Under
+      mild conditions (irreducibility and aperiodicity, plus some recurrence) the chain forgets its initial
+      distribution and the marginal $\pi_n$ converges to the stationary $\pi$. Concretely, for any nice $f$,
+      $$\frac{1}{n} \sum_{i=1}^n f(X_i) \xrightarrow{\text{a.s.}} \int f \, d\pi.$$
+      This is the ergodic theorem — the Markov-chain version of the law of large numbers. It is what makes
+      simulated chains usable for estimating posterior expectations.
+    </p>
+<h3 data-cid="ch15-560">The finite case as intuition</h3>
+<p data-cid="ch15-570">
+      When $\mathcal{X} = \{1, \dots, m\}$ is finite, the kernel is a transition matrix $Q$ with row sums one.
+      Distributions are row vectors and $\pi_{n+1} = \pi_n Q$ becomes ordinary matrix multiplication.
+      Perron–Frobenius theory then gives: if $Q$ is irreducible and aperiodic, there is a unique left
+      eigenvector $\pi$ with eigenvalue $1$, all other eigenvalues are strictly inside the unit disk, and
+      $Q^n \to \mathbf{1} \pi$ exponentially fast. The rate is controlled by the second-largest eigenvalue
+      modulus — the closer it is to $1$, the slower the convergence. This is the finite-state version of
+      "<em>mixing</em>."
+    </p>
+<div class="box pause" data-cid="ch15-580">
+<span class="box-label">Pause — MCMC converges to the posterior, but how long do we wait?</span>
+<p data-cid="ch15-590">
+        The theory promises convergence in the limit. In practice we run a chain for some finite $N$ iterations
+        and hope it has reached stationarity. Two questions immediately appear:
+      </p>
+<ul data-cid="ch15-600">
+<li><em>Burn-in.</em> The first samples reflect the initial state, not the posterior. We discard a prefix.
+          How long? No general answer — usually 10–50% of the chain.</li>
+<li><em>Mixing.</em> Even after burn-in, consecutive samples are correlated. We need enough samples that
+          the <em>effective sample size</em> $N_{\text{eff}} = N / (1 + 2 \sum_k \rho_k)$ is large, where
+          $\rho_k$ is the lag-$k$ autocorrelation.</li>
+</ul>
+<p data-cid="ch15-610">
+        A chain with autocorrelation $0.99$ at lag 1 needs roughly $200{,}000$ iterations to give the same
+        information as $1{,}000$ independent draws. We are always running on borrowed time.
+      </p>
+</div>
+<!-- ===================================================================== -->
+<h2 data-cid="ch15-620" id="s15-4">15.4 Metropolis–Hastings algorithm</h2>
+<h3 data-cid="ch15-630">The setup</h3>
+<p data-cid="ch15-640">
+      We have a target density $f$ (the posterior) on a state space $\mathcal{X}$, known up to a normalizing
+      constant. We want a Markov chain whose stationary distribution has density $f$.
+    </p>
+<p data-cid="ch15-650">
+      Pick a <strong>jump kernel</strong> $J$ — for each $x_0$, $J_{x_0}$ is a proposal distribution with density
+      $j_{x_0}$. You are free to choose $J$ however you like, as long as it is easy to sample from and connects
+      every relevant region of the space.
+    </p>
+<h3 data-cid="ch15-660">The algorithm</h3>
+<div class="box definition" data-cid="ch15-670">
+<span class="box-label">Metropolis–Hastings step</span>
+<p data-cid="ch15-680">
+        Given current state $X_n = x_0$:
+      </p>
+<ol data-cid="ch15-690">
+<li>Propose $X^* \sim J_{x_0}$.</li>
+<li>Compute the acceptance ratio
+            $$r(x_0, x^*) = \frac{f(x^*) / j_{x_0}(x^*)}{f(x_0) / j_{x^*}(x_0)}.$$
+          </li>
+<li>Accept the proposal with probability $\min\{r(x_0, x^*), 1\}$. If accepted, $X_{n+1} = x^*$; otherwise
+            $X_{n+1} = x_0$ (stay in place).</li>
+</ol>
+</div>
+<div class="box intuition" data-cid="ch15-700">
+<span class="box-label">Why the formula has that shape</span>
+<p data-cid="ch15-710">
+        The ratio $r$ is constructed so the chain satisfies <em>detailed balance</em> with $f$:
+        $$f(x_0) \, q(x_0, x^*) = f(x^*) \, q(x^*, x_0),$$
+        where $q(x, y)$ is the actual transition density (proposal times acceptance). Detailed balance implies
+        stationarity: integrate both sides against any test set, and you get $\pi Q = \pi$.
+      </p>
+<p data-cid="ch15-720">
+        Crucially, $r$ depends on $f$ only through ratios $f(x^*)/f(x_0)$. The normalizing constant cancels.
+        This is what makes the algorithm useful: we never need to know
+        $\int \lambda(\theta) p_\theta(x)\, d\theta$.
+      </p>
+</div>
+<h3 data-cid="ch15-730">Why $\pi$ is stationary (the slow proof)</h3>
+<p data-cid="ch15-740">
+      Let $\pi$ be the target with density $f$. We want to show that if $X_0 \sim \pi$, then $X_1 \sim \pi$.
+      By the tower property,
+      $$P(X_1 \in A) = \int Q_{x_0}(A) \, d\pi(x_0),$$
+      where, expanding the algorithm step,
+      $$Q_{x_0}(A) = \mathbf{1}_A(x_0) + \int_A \min\{r(x_0, x^*), 1\}\, j_{x_0}(x^*)\, d\mu(x^*)
+        - \mathbf{1}_A(x_0) \int \min\{r(x_0, x^*), 1\}\, j_{x_0}(x^*)\, d\mu(x^*).$$
+      Plugging in and simplifying, the key step is showing
+      $$\int\!\!\int \min\{r(x_0, x^*), 1\} \, \mathbf{1}_A(x^*) f(x_0) j_{x_0}(x^*)\, d\mu(x_0) d\mu(x^*)
+        = \int\!\!\int \min\{r(x_0, x^*), 1\} \, \mathbf{1}_A(x_0) f(x_0) j_{x_0}(x^*)\, d\mu(x_0) d\mu(x^*).$$
+      Using the explicit formula for $r$, the integrand on both sides becomes
+      $\min\{f(x^*) j_{x^*}(x_0), \, f(x_0) j_{x_0}(x^*)\}$ — symmetric in $(x_0, x^*)$. By Fubini, the two
+      sides are equal, so $\pi$ is stationary.
+    </p>
+<h3 data-cid="ch15-750">Tuning the proposal</h3>
+<p data-cid="ch15-760">
+      A "random walk" Metropolis uses $J_x = N(x, \tau^2 I)$ for a step size $\tau$. The art is choosing $\tau$:
+    </p>
+<ul data-cid="ch15-770">
+<li>$\tau$ too small: the chain accepts almost every move, but each move is tiny. It explores slowly.</li>
+<li>$\tau$ too large: most proposals land in low-density regions and are rejected. The chain sits still.</li>
+<li>Just right: the acceptance rate sits near $0.234$ for high-dimensional Gaussian targets (a famous
+        result of Roberts, Gelman, and Gilks). For one-dimensional targets, around $0.44$ is the sweet spot.</li>
+</ul>
+<div class="box warn" data-cid="ch15-780">
+<span class="box-label">Common pitfall — poor mixing</span>
+<p data-cid="ch15-790">
+        If you see a trace plot where the chain wanders in one region for thousands of iterations before
+        suddenly jumping to a different region, your proposal is too narrow for the target's geometry. The
+        chain will look "stationary" within each region but fail to explore the rest of the posterior. This is
+        the classic failure mode: an MCMC run that converges to the <em>wrong</em> distribution because it has
+        not yet discovered the rest.
+      </p>
+</div>
+<!-- ===================================================================== -->
+<h2 data-cid="ch15-800" id="s15-5">15.5 Gibbs sampler</h2>
+<h3 data-cid="ch15-810">The idea</h3>
+<p data-cid="ch15-820">
+      The <strong>Gibbs sampler</strong> is a special case of Metropolis–Hastings where the proposal is always
+      accepted. It works when the target distribution's <em>conditional</em> distributions are easier to sample
+      from than the joint.
+    </p>
+<div class="box definition" data-cid="ch15-830">
+<span class="box-label">Gibbs sampler (two-variable case)</span>
+<p data-cid="ch15-840">
+        Let $(X, Y) \sim \pi$. Let $R_y$ be the conditional distribution of $X$ given $Y = y$, and
+        $\tilde R_x$ the conditional of $Y$ given $X = x$. Starting from $(X_0, Y_0) = (x_0, y_0)$:
+      </p>
+<ol data-cid="ch15-850">
+<li>Draw $X_1 \sim R_{y_0}$ (sample $X$ given the current $Y$).</li>
+<li>Draw $Y_1 \sim \tilde R_{x_1}$ (sample $Y$ given the new $X$).</li>
+<li>Repeat.</li>
+</ol>
+<p data-cid="ch15-860">
+        The chain $(X_i, Y_i)$ has $\pi$ as its stationary distribution.
+      </p>
+</div>
+<p data-cid="ch15-870">
+      For more than two blocks, just cycle through them: update each variable in turn, conditioning on the
+      current values of all the others. The order can be fixed or random.
+    </p>
+<h3 data-cid="ch15-880">Why Gibbs is so useful</h3>
+<p data-cid="ch15-890">
+      The big payoff is <strong>dimension reduction</strong>. To find the joint density from an unnormalized
+      $g$, you would have to compute
+      $$\int\!\!\int g(x, y) \, dx \, dy$$
+      — a high-dimensional integral. For the Gibbs sampler you only need
+      $$\int g(x, y) \, dx \quad \text{and} \quad \int g(x, y) \, dy$$
+      to normalize the one-dimensional conditionals. Univariate integrals are dramatically easier.
+    </p>
+<h3 data-cid="ch15-900">Stationarity of Gibbs</h3>
+<p data-cid="ch15-910">
+      Let $\pi_X, \pi_Y$ denote the marginals. By the tower property,
+      $$P((X, Y) \in A) = \int\!\!\int \mathbf{1}_A(x, y)\, dR_y(x)\, d\pi_Y(y). \tag{15.5}$$
+      Reversing the roles,
+      $$P((X, Y) \in A) = \int\!\!\int \mathbf{1}_A(x, y) \, d\tilde R_x(y)\, d\pi_X(x). \tag{15.6}$$
+      Now start the chain at $\pi$. Since $Y_0 \sim \pi_Y$ and $X_1 \mid Y_0 \sim R_{Y_0}$,
+      $$P((X_1, Y_0) \in A) = \int\!\!\int \mathbf{1}_A(x, y)\, dR_y(x)\, d\pi_Y(y),$$
+      which matches (15.5), so $(X_1, Y_0) \sim \pi$ and therefore $X_1 \sim \pi_X$. Then
+      $Y_1 \mid X_1 \sim \tilde R_{X_1}$ and the analogous computation against (15.6) gives
+      $(X_1, Y_1) \sim \pi$. Stationary.
+    </p>
+<h3 data-cid="ch15-920">Worked example — Gibbs for a hierarchical normal model</h3>
+<div class="box example" data-cid="ch15-930">
+<span class="box-label">Worked example — Gibbs for the 8-schools model</span>
+<p data-cid="ch15-940">
+        Recall the model:
+        $$y_i \mid \theta_i \sim N(\theta_i, \sigma_i^2), \quad
+          \theta_i \mid \mu, \tau \sim N(\mu, \tau^2), \quad
+          \mu \sim N(0, 10^4), \quad \tau^2 \sim \text{Inv-Gamma}(a, b).$$
+        We want the joint posterior of $(\theta_1, \dots, \theta_8, \mu, \tau^2)$. Each full conditional is
+        a known distribution:
+      </p>
+<ol data-cid="ch15-950">
+<li>$\theta_i \mid \text{rest} \sim N\!\left(
+            \dfrac{y_i / \sigma_i^2 + \mu / \tau^2}{1/\sigma_i^2 + 1/\tau^2},\;
+            \dfrac{1}{1/\sigma_i^2 + 1/\tau^2}\right)$ — a precision-weighted average of the data and the
+            group mean.</li>
+<li>$\mu \mid \text{rest} \sim N\!\left(\dfrac{\sum \theta_i / \tau^2}{8/\tau^2 + 1/10^4}, \;
+            \dfrac{1}{8/\tau^2 + 1/10^4}\right)$.</li>
+<li>$\tau^2 \mid \text{rest} \sim \text{Inv-Gamma}\!\left(a + 4, \; b + \tfrac{1}{2}\sum (\theta_i - \mu)^2\right)$.</li>
+</ol>
+<p data-cid="ch15-960">
+        Each step is a closed-form draw. We cycle through (1), (2), (3) repeatedly. After burn-in, the samples
+        approximate the joint posterior. From them we can estimate $E[\theta_i \mid y]$, posterior intervals,
+        and the distribution of $\tau$ — which tells us how much pooling the data supports.
+      </p>
+</div>
+<div class="box intuition" data-cid="ch15-970">
+<span class="box-label">Gibbs as "MH that always accepts"</span>
+<p data-cid="ch15-980">
+        If you compute the Metropolis–Hastings acceptance ratio when the proposal is the full conditional,
+        $r = 1$ identically. So Gibbs is Metropolis–Hastings with a free lunch — no rejected moves. The price is
+        that you must be able to <em>sample from</em> each full conditional. When conditionals are not standard,
+        you fall back to within-Gibbs Metropolis or specialized samplers (HMC, slice sampling).
+      </p>
+</div>
+<!-- ===================================================================== -->
+<h2 data-cid="ch15-990" id="s15-6">15.6 Image restoration — Gibbs on a Markov random field</h2>
+<p data-cid="ch15-1000">
+      Gibbs sampling was introduced to statistics by Geman and Geman (1984) for Bayesian image restoration.
+      The setup is striking: every pixel is a parameter, every parameter has a prior, the prior connects
+      neighboring pixels, and Gibbs cycles through all of them.
+    </p>
+<h3 data-cid="ch15-1010">The model</h3>
+<p data-cid="ch15-1020">
+      Pixels live on a rectangular grid $\mathcal{T} = \{1, \dots, m\} \times \{1, \dots, n\}$. The unknown
+      greyscale image is $\Theta = (\Theta_z)_{z \in \mathcal{T}}$. The observed data is
+      $$X_z \mid \Theta = \theta \;\stackrel{\text{ind}}{\sim}\; N(\theta_z, \sigma^2), \quad z \in \mathcal{T}.$$
+      The prior should encode that nearby pixels are correlated. Define an <em>edge</em> as a pair of pixels
+      $\{z_1, z_2\}$ with $\|z_1 - z_2\| = 1$, and let $\mathcal{E}$ be the edge set. The prior is
+      $$\lambda(\theta) \propto \exp\!\left[-\frac{a}{2} \sum_z \theta_z^2
+        + b \sum_{\{z_1, z_2\} \in \mathcal{E}} \theta_{z_1} \theta_{z_2}\right], \tag{15.8}$$
+      with $|b| &lt; a/4$ for integrability. This is a Gaussian Markov random field.
+    </p>
+<div class="box intuition" data-cid="ch15-1030">
+<span class="box-label">The Markov random field property</span>
+<p data-cid="ch15-1040">
+        Fix the values of $\theta$ at the four neighbors of pixel $z$. The prior density, viewed as a function
+        of $\theta_z$ alone, factors away from everything outside the neighborhood. So $\Theta_z$ is
+        conditionally independent of all non-neighbors given its neighbors. This is the spatial analog of the
+        Markov property in time. Image-processing folks call the prior a "Gibbs distribution," which is where
+        the sampler got its name.
+      </p>
+</div>
+<h3 data-cid="ch15-1050">The trick — checkerboard updates</h3>
+<p data-cid="ch15-1060">
+      Partition the grid into "odd" and "even" pixels:
+      $$\mathcal{T}_1 = \{(i,j) : i+j \text{ odd}\}, \qquad \mathcal{T}_2 = \{(i,j) : i+j \text{ even}\}.$$
+      Every neighbor of a pixel in $\mathcal{T}_1$ lives in $\mathcal{T}_2$, and vice versa. Conditional on
+      $\mathcal{T}_1$, the values on $\mathcal{T}_2$ are <em>mutually independent</em>. So you can update all of
+      $\mathcal{T}_2$ in parallel, then all of $\mathcal{T}_1$, alternating.
+    </p>
+<p data-cid="ch15-1070">
+      With $\tau = 1/\sigma^2$, the posterior conditional for $\theta_z$ given the rest is normal:
+      $$\Theta_z \mid \text{neighbors}, X = x \sim
+        N\!\left(\frac{\tau x_z + b S_z}{a + \tau}, \; \frac{1}{a + \tau}\right), \tag{15.12}$$
+      where $S_z = \sum_{\tilde z \in N_z} \theta_{\tilde z}$ is the sum of neighboring pixel values. Each pixel
+      gets a precision-weighted average of its data $x_z$ and the average of its neighbors. Smoother priors
+      (larger $b$, $\rho$ closer to $1$) shift more weight onto the neighbors.
+    </p>
+<div class="box pause" data-cid="ch15-1080">
+<span class="box-label">Pause — over- and under-smoothing</span>
+<p data-cid="ch15-1090">
+        In Keener's numerical example (Figure 15.4), three priors are compared on a noisy image of the letter A:
+        $\rho = 0.70$ (under-smoothed), $\rho = 0.8565$ (matched to the empirical correlation), and
+        $\rho = 0.95$ (over-smoothed). The under-smoothed prior actually gives the lowest MSE — a useful lesson
+        that "match the prior to the truth" is not always optimal under squared-error loss. The matched prior
+        produces visually nice results; the over-smoothed prior blurs the letter.
+      </p>
+</div>
+<!-- ===================================================================== -->
+<h2 data-cid="ch15-1100" id="diagnostics">Posterior diagnostics &amp; model comparison</h2>
+<p data-cid="ch15-1110">
+      Keener's text concentrates on the algorithms. In practice, no MCMC run is complete without diagnostics.
+      A short field guide:
+    </p>
+<h3 data-cid="ch15-1120">Trace plots</h3>
+<p data-cid="ch15-1130">
+      Plot each parameter against iteration. A healthy trace plot looks like a hairy caterpillar: rapidly
+      oscillating around a stable mean with no trend. Slow drift, sudden jumps between regions, or sticky
+      flat patches all indicate trouble.
+    </p>
+<h3 data-cid="ch15-1140">Running multiple chains</h3>
+<p data-cid="ch15-1150">
+      Start several chains from over-dispersed initial values. Run them all to (apparent) stationarity. If they
+      end up exploring different distributions, you have not converged. The <strong>Gelman–Rubin</strong>
+      $\hat R$ statistic compares between-chain to within-chain variance:
+      $$\hat R = \sqrt{\frac{\hat V}{W}}, \qquad \hat V = \frac{n-1}{n} W + \frac{1}{n} B,$$
+      where $W$ is mean within-chain variance and $B$ is between-chain variance. We want $\hat R &lt; 1.01$.
+    </p>
+<h3 data-cid="ch15-1160">Effective sample size</h3>
+<p data-cid="ch15-1170">
+      $N_{\text{eff}} = N / (1 + 2 \sum_{k=1}^\infty \rho_k)$, with $\rho_k$ the lag-$k$ autocorrelation.
+      Always report $N_{\text{eff}}$ alongside the raw $N$. A chain with $N = 10^5$ and $N_{\text{eff}} = 80$
+      is barely better than 80 independent draws.
+    </p>
+<h3 data-cid="ch15-1180">Model comparison</h3>
+<p data-cid="ch15-1190">
+      Bayes factors compare two models $M_1, M_2$ by the ratio of their marginal likelihoods
+      $\int p(y \mid \theta_i, M_i) \lambda(\theta_i \mid M_i)\, d\theta_i$. Computing marginal likelihoods is
+      <em>much</em> harder than computing posteriors — MCMC samples from $p(\theta \mid y)$ do not directly give
+      $p(y)$. Workarounds include bridge sampling, nested sampling, and posterior predictive checks. For
+      out-of-sample prediction, modern practice often prefers <strong>WAIC</strong> or <strong>LOO-CV</strong>,
+      which estimate expected log predictive density from a single MCMC run.
+    </p>
+<div class="box warn" data-cid="ch15-1200">
+<span class="box-label">Common pitfall — Bayes factors hate improper priors</span>
+<p data-cid="ch15-1210">
+        Bayes factors involve the normalizing constants of the priors. If your prior is improper, those constants
+        are undefined and the Bayes factor is meaningless — even when the individual posteriors are perfectly
+        well-defined. This is a serious sticking point for "objective Bayesian" model comparison and one reason
+        WAIC/LOO have become more popular.
+      </p>
+</div>
+<!-- ===================================================================== -->
+<h2 data-cid="ch15-1220" id="summary">Summary — what you learned in Chapter 15</h2>
+<p data-cid="ch15-1230">The chapter in nine bullets:</p>
+<ol data-cid="ch15-1240">
+<li>A <strong>hierarchical model</strong> writes the prior in stages: $T \sim G$, $\Theta \mid T \sim \Lambda_T$.
+        The marginal prior is then the mixture $\int \Lambda_\tau \, dG(\tau)$.</li>
+<li><strong>Informative</strong>, <strong>non-informative</strong>, and <strong>Jeffreys</strong> priors
+        encode different stances toward prior knowledge. Jeffreys's prior $\propto \sqrt{\det I(\theta)}$
+        is reparameterization-invariant.</li>
+<li><strong>Bayesian robustness</strong>: tail behavior of the prior matters far more than its bulk.
+        Two priors agreeing to $3\%$ in density can disagree by a factor of $2$ in integrated risk.</li>
+<li>A <strong>Markov chain</strong> $X_0, X_1, \dots$ has a transition kernel $Q$; distributions evolve by
+        $\pi_{n+1} = \pi_n Q$. A distribution $\pi$ is <strong>stationary</strong> if $\pi = \pi Q$.</li>
+<li>For irreducible aperiodic chains, $\pi_n \to \pi$ and the ergodic theorem replaces the law of large
+        numbers: time averages converge to space averages.</li>
+<li><strong>Metropolis–Hastings</strong> turns any proposal $J$ into a chain with target $f$ by accepting
+        moves with probability $\min\{r(x_0, x^*), 1\}$, where $r$ uses only ratios of $f$ — so normalizing
+        constants cancel.</li>
+<li>The <strong>Gibbs sampler</strong> cycles through full conditionals, accepting every proposal.
+        It exchanges multi-dimensional integration for repeated one-dimensional sampling.</li>
+<li>Posterior <strong>diagnostics</strong> — trace plots, $\hat R$, effective sample size — are not
+        optional. The chain promises only asymptotic convergence; we must check the finite-sample reality.</li>
+<li>Failure modes to watch for: <strong>poor mixing</strong>, <strong>multimodality</strong> the chain
+        cannot cross, <strong>improper posteriors</strong> from improper priors, and Bayes factors that
+        depend on prior normalizing constants you forgot to specify.</li>
+</ol>
+<div class="box pause" data-cid="ch15-1250">
+<span class="box-label">Did this land?</span>
+<p data-cid="ch15-1260">
+        Before moving to Chapter 16, you should be able to answer (without looking back):
+      </p>
+<ul data-cid="ch15-1270">
+<li>Write the three-stage hierarchical model and explain what is gained by treating $\tau$ as random
+          rather than estimating it (empirical Bayes).</li>
+<li>Why does the Metropolis–Hastings acceptance ratio not require the posterior's normalizing constant?</li>
+<li>State the stationarity argument for the two-block Gibbs sampler in one paragraph.</li>
+<li>Name two ways an MCMC run can look convergent while actually being wrong.</li>
+<li>Why is Jeffreys's prior invariant under reparameterization?</li>
+</ul>
+<p data-cid="ch15-1280">If any of these feel shaky, re-read the matching section. Computation is slow; understanding it should be slower.</p>
+</div>
+<nav class="chapter-nav">
+<a href="ch14.html"><span class="label">← Previous</span><span class="title">14. General Linear Model</span></a>
+<a class="next" href="ch16.html"><span class="label">Next →</span><span class="title">16. Asymptotic Optimality</span></a>
+</nav>
+</article>
+</main>
+<script src="/js/main.js"></script><script src="/js/comments.js"></script>
+</body>
+</html>

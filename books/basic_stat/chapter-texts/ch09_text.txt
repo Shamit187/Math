@@ -1,0 +1,3095 @@
+
+===== PAGE 1 =====
+
+9
+Estimating Equations and Maximum
+Likelihood
+Many estimators in statistics are speciﬁed implicitly as solutions to equations
+or as values maximizing some function. In this chapter we study why these
+methods work and learn ways to approximate distributions. Although we focus
+on methods for i.i.d. observations, many of the ideas can be extended. Results
+for stationary time series are sketched in Section 9.9.
+A ﬁrst example, introduced in Section 8.3, concerns maximum likelihood
+estimation. The maximum likelihood estimator ˆθ maximizes the likelihood
+function L(·) or log-likelihood l(·) = log L(·). And if l is diﬀerentiable and
+the maximum occurs in the interior of the parameter space, then ˆθ solves
+∇l(θ ) = 0. Method of moments estimators, considered in Problem 9.2, provide
+a second example. If X
+1,...,X n are i.i.d. observations with average
+ X, and
+ifµ(θ ) = Eθ Xi, then the method of moments estimator of θ solvesµ(θ ) =
+ X.
+A ﬁnal example would be M -estimators, considered in Section 9.8.
+9.1 Weak Law for Random F unctions 1
+In this section we develop a weak law of large numbers for averages of random
+functions. This is used in the rest of the chapter to establish consistency and
+asymptotic normality of maximum likelihood and other estimators.
+LetX
+1,X 2,... be i.i.d., let K be a compact set in Rp, and deﬁne
+Wi(t) = h(t,X i), t ∈K,
+whereh(t,x ) is a continuous function of t for all x. Then W1,W 2,... are i.i.d.
+random functions taking values in C(K), the space of continuous functions
+on K.
+Functions inC(K) behave in many ways like vectors. They can be added,
+subtracted, and multiplied by constants, with these operations satisfying the
+1 The theory developed in this section is fairly technical, but uniform convergence
+is important for applications developed in later sections.
+R.W. Keener, Theoretical Statistics: Topics for a Core Course, Springer Texts in Statistics, 
+DOI 10.1007/978-0-387-93839-4_9, © Springer Science+Business Media, LLC 2010 
+151 
+
+===== PAGE 2 =====
+
+152 9 Estimating Equations and Maximum Likelihood
+usual properties. Sets with these properties are called linear spaces. In addi-
+tion, notions of convergence can be introduced for functions in C(K). There
+are various possibilities. The one we use in this section is based on a notion
+of length. For w ∈C(K) deﬁne
+∥w∥
+∞= sup
+t∈K
+|w(t)|,
+called the supremum norm of w. Functions wn converge to w in this norm if
+∥wn − w∥∞→ 0. With this norm, C(K) is complete (all Cauchy sequences
+converge), and a complete linear space with a norm is called a Banach space.
+A ﬁnal nice property of C(K) is separability. A subset of some set is called
+dense if every element in the set is arbitrarily close to some point in the
+subset. For instance, the rational numbers are a dense subset of R because
+there are rational numbers arbitrarily close to any real number x ∈ R. A
+space is separable if it has a countable dense subset. We state the law of large
+numbers in this section for i.i.d. random functions in C(K), but the result
+also holds for i.i.d. random elements in an arbitrary separable Banach space. 2
+Lemma 9.1. LetW be a random function in C(K) and deﬁne
+µ(t) = EW (t), t ∈K.
+(This function µ is called the mean of W .) If E∥W ∥∞< ∞, then µ is con-
+tinuous. Also,
+sup
+t∈K
+E sup
+s:∥s−t∥<ǫ
+|W (s) − W (t)| → 0
+as ǫ ↓0.
+Proof. Lettn,n ≥ 1, be a sequence of constants in K converging tot. Because
+W is continuous, the random variables W (tn) converge to W (t) as n → ∞.
+They are also dominated by ∥W ∥∞, which has a ﬁnite expectation. Thus
+µ(tn) = EW (tn) → EW (t) = µ(t)
+as n → ∞ by dominated convergence, and µ is continuous.
+For the second part, deﬁne
+Mǫ (t) = sup
+s:∥s−t∥<ǫ
+|W (s) − W (t)|,
+2 As usual, we are not giving much attention to issues of measurability, and the
+notion of what we mean by a “random function” is a bit vague. To be more
+speciﬁc, deﬁne B
+a(w) =
+˘
+f ∈C(K) : ∥f − w∥∞<a
+¯
+, called the open ball with
+radius a centered at w. The Borel σ -ﬁeld B can then be deﬁned as the smallest
+σ -ﬁeld that contains all open balls. If probability is deﬁned on a measurable space
+(X, A), thenW : X → C(K) is measurable and would be called a random function
+ifW−1(B) ∈ A for any Borel set B ∈ B . Aside from deﬁning Borel sets using open
+balls instead of intervals, this deﬁnition is essentially the same as the deﬁnition
+of measurability for random variables given in Deﬁnition 1.7.
+
+===== PAGE 3 =====
+
+9.1 Weak Law for Random Functions 153
+and let λǫ be the mean of Mǫ ,
+λǫ (t) = EMǫ (t).
+Because W is continuous, Mǫ is continuous. Also, since |Mǫ (t)| ≤ 2∥W ∥∞,
+E∥Mǫ ∥∞< ∞, and by the ﬁrst part of this theorem, λǫ is continuous. By
+continuity,Mǫ (t) → 0 as ǫ → 0, and by dominated convergence, λǫ (t) → 0
+as ǫ → 0. Since the functions λǫ are decreasing as ǫ ↓ 0, by Dini’s theorem
+(Theorem A.5) the convergence is uniform, that is, sup t∈K λǫ (t) → 0 as ǫ ↓ 0.
+⊓ ⊔
+Theorem 9.2. Let W,W 1,W 2,... be i.i.d. random functions in C(K), K
+compact, with mean µ and E∥W ∥∞< ∞, and let
+ Wn = (W1 + · · · +Wn)/n .
+Then
+∥
+Wn − µ∥∞
+p
+→ 0
+as n → ∞ .
+By the weak law of large numbers, for any t ∈K,
+Wn(t)
+p
+→ µ(t). But the
+theorem is stronger, asserting that this convergence holds with uniformity in
+t.
+Proof. Fix ǫ> 0. For notation, let
+M
+δ,j (t) = sup
+s:∥s−t∥<δ
+⏐
+⏐W
+j (s) − Wj (t)
+⏐
+⏐
+with mean λ
+δ (t). Choose δ using the second assertion of Lemma 9.1 so that
+λδ (t) = E sup
+s:∥s−t∥<δ
+|W (s) − W (t)|<ǫ, ∀t ∈K,
+and note that with this choice of δ , if ∥t − s∥<δ , then
+|µ(t) − µ(s)|=
+⏐
+⏐E
+[
+W (t) − W (s)
+]⏐
+⏐ ≤ E
+⏐
+⏐W (t) − W (s)
+⏐
+⏐ ≤ ǫ.
+Let B
+δ (t) =
+{
+s : ∥s − t∥ < δ
+}
+, the open ball with radius δ about t. Since
+K is compact, the open sets Bδ (t), t ∈K, covering K have a ﬁnite subcover
+Oi =Bδ (ti), i = 1,...,m . Then
+∥
+Wn − µ∥∞
+= max
+i=1,...,m
+sup
+t∈Oi
+⏐
+⏐
+Wn(t) − µ(t)
+⏐
+⏐
+≤ max
+i
+sup
+t∈Oi
+[⏐
+⏐
+Wn(t) −
+Wn(ti)
+⏐
+⏐ +
+⏐
+⏐
+Wn(ti) − µ(ti)
+⏐
+⏐ +
+⏐
+⏐µ(t
+i) − µ(t)
+⏐
+⏐
+]
+≤ max
+i
+sup
+t∈Oi
+⏐
+⏐
+Wn(t) −
+Wn(ti)
+⏐
+⏐ + max
+i
+⏐
+⏐
+Wn(ti) − µ(ti)
+⏐
+⏐ +ǫ.
+Now
+
+===== PAGE 4 =====
+
+154 9 Estimating Equations and Maximum Likelihood
+sup
+t∈Oi
+⏐
+⏐
+Wn(t) −
+ Wn(ti)
+⏐
+⏐ = 1
+n sup
+t∈Oi
+⏐
+⏐
+⏐
+⏐
+⏐
+⏐
+n∑
+j=1
+[Wj (t) − Wj (ti)]
+⏐
+⏐
+⏐
+⏐
+⏐
+⏐
+≤ 1
+n
+n∑
+j=1
+sup
+t∈Oi
+⏐
+⏐W
+j (t) − Wj (ti)
+⏐
+⏐
+= 1
+n
+n∑
+j=1
+Mδ,j (ti)
+def
+=
+ Mδ,n (ti).
+By the law of large numbers,
+Mδ,n (ti)
+p
+→ λδ (ti)<ǫ.
+Using these bounds,
+∥
+Wn − µ∥∞< 2ǫ + max
+i
+(
+Mδ,n (ti) − λδ (ti)
+)
++ max
+i
+⏐
+⏐
+Wn(ti) − µ(ti)
+⏐
+⏐.
+The two maximums in this equation both converge to zero in probability and
+using this it is easy to argue that P
+(
+∥
+Wn − µ∥∞> 3ǫ
+)
+→ 0 as n → ∞ . ⊓ ⊔
+Remark 9.3. The same proof coupled with the strong law of large numbers,
+stated in Section 8.7, shows that ∥
+Wn − µ∥∞→ 0 almost surely.
+The following result shows the usefulness of uniform convergence. None of
+the conclusions follow from pointwise convergence in probability.
+Theorem 9.4. Let G
+n, n ≥ 1, be random functions in C(K), K compact,
+and suppose ∥Gn − g∥∞
+p
+→ 0 with g a nonrandom function in C(K).
+1. If tn, n ≥ 1, are random variables converging in probability to a constant
+t∗∈K, tn
+p
+→ t∗, then Gn(tn)
+p
+→ g(t∗).
+2. If g achieves its maximum at a unique value t∗, and if tn are random
+variables maximizing Gn, so that
+Gn(tn) = sup
+t∈K
+Gn(t),
+then tn
+p
+→ t∗.
+3. If K ⊂ R and g(t) = 0 has a unique solution t∗, and if tn are random
+variables solving Gn(tn) = 0 , then tn
+p
+→ t∗.
+Proof. For the ﬁrst assertion, since
+⏐
+⏐G
+n(tn) − g(t∗)
+⏐
+⏐ ≤
+⏐
+⏐G
+n(tn) − g(tn)
+⏐
+⏐ +
+⏐
+⏐g(t
+n) − g(t∗)
+⏐
+⏐
+≤ ∥G
+n − g∥∞+
+⏐
+⏐g(t
+n) − g(t∗)
+⏐
+⏐,
+and since g(t
+n)
+p
+→ g(t∗),
+
+===== PAGE 5 =====
+
+9.1 Weak Law for Random Functions 155
+P
+(⏐
+⏐G
+n(tn) − g(t∗)
+⏐
+⏐>ǫ
+)
+≤ P
+(
+∥G
+n − g∥∞+
+⏐
+⏐g(t
+n) − g(t∗)
+⏐
+⏐>ǫ
+)
+≤ P (∥G
+n − g∥∞>ǫ/ 2) +P
+(⏐
+⏐g(t
+n) − g(t∗)
+⏐
+⏐>ǫ/ 2
+)
+→ 0.
+t
+g
+t∗− ǫ t∗ t∗+ǫ
+M
+M − δ/ 2
+Mǫ =M − δ
+  	
+g +δ/ 2
+Fig. 9.1. g and g +δ/ 2.
+For the second assertion, ﬁx ǫ and let Kǫ = K − Bǫ (t∗). This set is
+compact; it is bounded because K is bounded, and it is closed because it
+is the intersection of two closed sets, K and the complement of Bǫ (t∗). Let
+M =g(t∗) = supK g and let Mǫ = supKǫ g. Since Kǫ is compact, Mǫ =g(t∗
+ǫ
+)
+for somet∗
+ǫ
+∈Kǫ , and since g has a unique maximum over K,Mǫ <M . Deﬁne
+δ =M − Mǫ > 0. See Figure 9.1. Suppose ∥Gn − g∥∞<δ/ 2. Then
+sup
+Kǫ
+Gn < sup
+Kǫ
+g + δ
+2 =M − δ
+2
+and
+sup
+K
+Gn ≥ Gn(t∗)>g (t∗) − δ
+2 =M − δ
+2,
+and tn must lie in Bǫ (t∗). Thus
+P
+(
+∥Gn − g∥∞<δ/ 2
+)
+≤ P
+(
+∥tn − t∗∥<ǫ
+)
+.
+Taking complements,
+P
+(
+∥tn − t∗∥ ≥ ǫ
+)
+≤ P
+(
+∥Gn − g∥∞≥ δ/ 2
+)
+→ 0,
+and so tn
+p
+→ t∗. The third assertion in the theorem can be established in a
+similar fashion. ⊓ ⊔
+
+===== PAGE 6 =====
+
+156 9 Estimating Equations and Maximum Likelihood
+Remark 9.5. The law of large numbers and the ﬁrst and third assertions in
+Theorem 9.4 can be easily extended to multivariate situations where the ran-
+dom functions are vector-valued, mapping a compact set K into R
+p.
+Remark 9.6. In the approach to the weak law here, continuity plays a key role
+in proving uniform convergence. Uniform convergence without continuity is
+also possible. One important result concerns empirical distribution functions.
+If X
+1,...,X n are i.i.d., then a natural estimator for the common cumula-
+tive distribution function F would be the empirical cumulative distribution
+function ˆFn, deﬁned as
+ˆFn(x) = 1
+n #{i ≤ n :Xi ≤ x}, x ∈ R.
+The Glivenko–Cantelli theorem asserts that ∥ ˆFn − F ∥∞
+p
+→ 0 as n → ∞. In
+the proof of this result, monotonicity replaces continuity as the key regularity
+used to establish uniform convergence.
+9.2 Consistency of the Maximum Likelihood Estimator
+For this section let X,X 1,X 2,... be i.i.d. with common density fθ , θ ∈ Ω,
+and let ln be the log-likelihood function for the ﬁrst n observations:
+ln(ω ) = log
+n∏
+i=1
+fω (Xi) =
+n∑
+i=1
+logfω (Xi).
+(We use ω as the dummy argument here, reserving θ to represent the true
+value of the unknown parameter in the sequel.) Then the maximum likelihood
+estimator ˆθ
+n = ˆθn(X1,...,X n) from the ﬁrst n observations will maximize ln.
+For regularity, assume fθ (x) is continuous in θ .
+Deﬁnition 9.7. The Kullback–Leibler information is deﬁned as
+I(θ,ω ) = Eθ log
+[
+fθ (X)/f ω (X)
+]
+.
+It can be viewed as a measure of the information discriminating between θ and
+ω when θ is the true value of the unknown parameter.
+Lemma 9.8. If Pθ ̸=Pω , then I(θ,ω )> 0.
+Proof. By Jensen’s inequality,
+−I(θ,ω ) = Eθ log
+[
+fω (X)/f θ (X)
+]
+≤ logEθ
+[
+fω (X)/f θ (X)
+]
+= log
+∫
+fθ >0
+fω (x)
+fθ (x)fθ (x)dµ(x)
+≤ log 1
+= 0.
+
+===== PAGE 7 =====
+
+9.2 Consistency of the Maximum Likelihood Estimator 157
+Strict equality will occur only if fω (X)/f θ (X) is constant a.e. But then the
+densities will be proportional and hence equal a.e., and Pθ andPω will be the
+same. ⊓ ⊔
+The next result gives consistency for the maximum likelihood estimator
+whenΩ is compact. The result following is an extension when Ω = Rp. Deﬁne
+W (ω ) = log
+[fω (X)
+fθ (X)
+]
+.
+Theorem 9.9. If Ω is compact, Eθ ∥W ∥∞< ∞, fω (x) is a continuous func-
+tion of ω for a.e. x, and Pω ̸=Pθ for all ω ̸=θ , then under Pθ , ˆθn
+p
+→ θ .
+Proof. If Wi(ω ) = log
+(
+fω (Xi)/f θ (Xi)
+)
+, then under Pθ , W1,W 2,... are i.i.d.
+random functions in C(Ω) with mean µ(ω ) = −I(θ,ω ). Note that µ(θ ) = 0
+andµ(ω )< 0 for ω ̸=θ by Lemma 9.8, and so µ has a unique maximum at θ .
+Since
+Wn(ω ) = 1
+n
+n∑
+j=1
+Wi(ω ) = ln(ω ) − ln(θ )
+n ,
+ˆθn maximizes
+ Wn. By Theorem 9.2, ∥
+Wn − µ∥∞→ 0, and the result follows
+from the second assertion of Theorem 9.4. ⊓ ⊔
+Remark 9.10. The argument used to prove consistency here is based on the
+proof in Wald (1949). In this paper, the one-sided condition that Eθ supΩ W <
+∞ replaces Eθ ∥W ∥∞< ∞. Inspecting the proof here, it is not hard to see
+that Wald’s weaker condition is suﬃcient.
+Theorem 9.11. Suppose Ω = R
+p, fω (x) is a continuous function of ω for
+a.e.x,Pω ̸=Pθ for all ω ̸=θ , and fω (x) → 0 asω → ∞ . If Eθ ∥1KW ∥∞< ∞
+for any compact set K ⊂ Rp, and if Eθ sup∥ω∥>aW (ω )< ∞ for some a> 0,
+then under Pθ , ˆθn
+p
+→ θ .
+Proof. Since fω (x) → 0 as ω → ∞ , if fθ (X)> 0,
+sup
+∥ω∥>b
+W (ω ) → −∞
+as b → ∞. By a dominated convergence argument the expectation of this
+variable will tend to −∞ as b → ∞ , and we can choose b so that
+Eθ sup
+∥ω∥>b
+W (ω )< 0.
+Note that b must exceed ∥θ ∥, because W (θ ) = 0. Since
+sup
+∥ω∥>b
+Wn(ω ) ≤ 1
+n
+n∑
+j=1
+sup
+∥ω∥>b
+Wi(ω )
+p
+→ Eθ sup
+∥ω∥>b
+W (ω ),
+
+===== PAGE 8 =====
+
+158 9 Estimating Equations and Maximum Likelihood
+Pθ
+(
+sup
+∥ω∥>b
+Wn(ω ) ≥ 0
+)
+→ 0,
+as n → ∞ . Let K be the closed ball of radius b, and let ˜θn be variables
+maximizing
+ Wn over K.3 By Theorem 9.9, ˜θn
+p
+→ θ . Since ˆθn must lie in K
+whenever
+sup
+∥ω∥>b
+Wn(ω )<
+Wn(θ ) = 0,
+Pθ (ˆθn = ˜θn) → 1. It then follows that ˆθn
+p
+→ θ . ⊓ ⊔
+Remark 9.12. A similar result can be obtained when Ω is an arbitrary open
+set. The corresponding conditions would be that fω (x) → 0 as ω approaches
+the boundary of Ω, and that Eθ supω∈Kc W (ω ) < ∞ for some compact set
+K. Although conditions for consistency are fairly mild, counterexamples are
+possible when they fail. Problem 9.4 provides one example.
+Example 9.13. Suppose we have a location family with densities f
+θ (x) = g(x−
+θ ), θ ∈ R, and that
+1.g is continuous and bounded, so sup x∈Rg(x) = K <∞,
+2.g(x) → 0 as x → ±∞ , and
+3. ∫ |logg(x)|g(x)dx< ∞.
+Then
+Eθ sup
+ω∈R
+W (ω ) = Eθ sup
+ω∈R
+logg(X − ω )
+g(X − θ )
+= logK − Eθ logg(X − θ )
+= logK −
+∫
+[logg(x)]g(x)dx
+< ∞.
+Hence ˆθn is consistent by the one-sided adaptation of our consistency theorems
+mentioned in Remark 9.10. The third condition here is not very stringent; it
+holds for most densities, including the Cauchy and other t-densities, that
+decay algebraically near inﬁnity.
+9.3 Limiting Distribution for the MLE
+Theorem 9.14. Assume:
+1. Variables X,X 1,X 2,... are i.i.d. with common density fθ , θ ∈Ω ⊂ R.
+3 To be careful, as we deﬁne ˜θ n, we should also insist that ˜θ n = ˆθ n whenever
+ˆθ n ∈K, to cover cases with multiple maxima.
+
+===== PAGE 9 =====
+
+9.3 Limiting Distribution for the MLE 159
+2. The set A = {x :fθ (x)> 0} is independent of θ .
+3. For every x ∈A, ∂ 2fθ (x)/∂θ 2 exists and is continuous in θ .
+4. Let W (θ ) = log fθ (X). The Fisher information I(θ ) from a single obser-
+vation exists, is ﬁnite, and can be found using either
+I(θ ) = Eθ W′(θ )2 or I(θ ) = −Eθ W′′(θ ).
+Also,
+Eθ W′(θ ) = 0.
+5. For every θ in the interior of Ω there exists ǫ> 0 such that
+Eθ ∥1[θ−ǫ,θ +ǫ ]W′′∥∞< ∞.
+6. The maximum likelihood estimator ˆθn is consistent.
+Then for any θ in the interior of Ω,
+√
+n(ˆθn − θ ) ⇒ N
+(
+0, 1/I (θ )
+)
+under Pθ as n → ∞ .
+The assumptions in this theorem are fairly mild, although similar results,
+such as those in Chapter 16, are possible under weaker conditions. Assump-
+tion 2 usually precludes families of uniform distributions or truncated families.
+Assumptions 3 and 4 are the same as assumptions discussed for the Cram´ er–
+Rao bound, and Assumption 5 strengthens 4. Concerning the ﬁnal assumption,
+for the proof ˆθ
+n needs to be consistent, but it is not essential that it maximizes
+the likelihood. What matters is that √
+n
+W
+′
+n
+(ˆθn)
+Pθ
+→ 0. In regular cases this will
+hold for Bayes estimators. There may also be models satisfying the other as-
+sumptions for this theorem in which the maximum likelihood estimator does
+not exist or is not consistent. In these examples there is often a consistent
+ˆθ
+n solving
+ W
+′
+n
+(ˆθn) = 0, with this consistent root of the likelihood equation
+asymptotically normal.
+The following technical lemma shows that, when proving convergence in
+distribution, we only need consider what happens on a sequence of events with
+probabilities converging to one.
+Lemma 9.15. Suppose Y
+n ⇒ Y , and P (Bn) → 1 as n → ∞ . Then for
+arbitrary random variables Zn, n ≥ 1,
+Yn1Bn +Zn1Bcn ⇒ Y
+as n → ∞ .
+Proof. For any ǫ> 0,
+P
+(
+|Zn1Bcn |>ǫ
+)
+≤ P (Bc
+n) = 1 − P (Bn) → 0
+
+===== PAGE 10 =====
+
+160 9 Estimating Equations and Maximum Likelihood
+as n → ∞ . So Zn1Bc
+n
+p
+→ 0 as n → ∞ . Also,
+P
+(
+|1Bn − 1|>ǫ
+)
+≤ P (Bc
+n) = 1 − P (Bn) → 0
+as n → ∞, and so 1 Bn
+p
+→ 1 as n → ∞. With these observations, the lemma
+now follows from Theorem 8.13. ⊓ ⊔
+Proof of Theorem 9.14 . Choose ǫ> 0 using Assumption 5 small enough that
+[θ − ǫ,θ +ǫ] ⊂ Ω0 and Eθ ∥1[θ−ǫ,θ +ǫ ]W′′∥∞< ∞, and let Bn be the event
+ˆθn ∈ [θ −ǫ,θ +ǫ]. Because ˆθn is consistent,Pθ (Bn) → 1, and since ˆθn maximizes
+n
+Wn(·) = ln(·), on Bn we have
+ W
+′
+n
+(ˆθn) = 0. Taylor expansion of
+ W
+′
+n
+about
+θ gives
+W
+′
+n
+(ˆθn) =
+ W
+′
+n
+(θ ) +
+W
+′′
+n
+(˜θn)(ˆθn − θ ),
+where ˜θn is an intermediate value between ˆθn andθ . Setting the left-hand side
+of this equation to zero and solving, on Bn,
+√
+n(ˆθn − θ ) =
+√
+n
+W
+′
+n
+(θ )
+−
+W
+′′
+n
+(˜θn)
+. (9.1)
+By Assumption 4, the variables averaged in
+ W
+′
+n
+(θ ) are i.i.d., mean zero, with
+varianceI(θ ). By the central limit theorem,
+√
+n
+W
+′
+n
+(θ ) ⇒ Z ∼ N
+(
+0,I (θ )
+)
+.
+Turning to the denominator, since |˜θn − θ | ≤ |ˆθn − θ |, at least on Bn, and ˆθn
+is consistent, ˜θn
+p
+→ θ . By Theorem 9.2,
+∥1[θ−ǫ,θ +ǫ ](
+W
+′′
+n
+− µ)∥∞
+p
+→ 0,
+where µ(ω ) = Eθ W′′(ω ), and so, by second assertion of Theorem 9.4,
+W
+′′
+n
+(˜θn)
+p
+→ µ(θ ) = −I(θ ).
+Since the behavior of ˆθn on Bc
+n cannot aﬀect convergence in distribution (by
+Lemma 9.15),
+√
+n(ˆθn − θ ) ⇒ Z
+I(θ ) ∼ N
+(
+0, 1/I (θ )
+)
+,
+as n → ∞ by Theorem 8.13. ⊓ ⊔
+Remark 9.16. The argument that
+W
+′′
+n
+(˜θn) = 1
+nl′′
+n(˜θn)
+p
+→ − I(θ )
+holds for any variables ˜θn converging to θ in probability. This is exploited
+later as we study asymptotic conﬁdence intervals.
+
+===== PAGE 11 =====
+
+9.4 Conﬁdence Intervals 161
+9.4 Conﬁdence Intervals
+A point estimator δ for an unknown parameter g(θ ) provides no information
+about accuracy. Conﬁdence intervals address this deﬁciency by seeking two
+statistics, δ
+0 and δ 1, that bracket g(θ ) with high probability.
+Deﬁnition 9.17. If δ 0 and δ 1 are statistics, then the random interval (δ 0,δ 1)
+is called a 1 − α conﬁdence interval for g(θ ) if
+Pθ
+(
+g(θ ) ∈ (δ 0,δ 1)
+)
+≥ 1 − α,
+for all θ ∈Ω. Also, a random set S =S(X) constructed from data X is called
+a 1 − α conﬁdence region for g(θ ) if
+Pθ
+(
+g(θ ) ∈S
+)
+≥ 1 − α,
+for all θ ∈Ω.
+Remark 9.18. In many examples, coverage probabilities equal 1 − α for all
+θ ∈Ω, in which case the interval or region might be called an exact conﬁdence
+interval or an exact conﬁdence region.
+Example 9.19. Let X
+1,...,X n be i.i.d. from N (µ,σ 2). Then from the results
+in Section 4.3,
+ X = (X1 + · · · +Xn)/n and S2 = ∑n
+i=1
+(Xi −
+X)2/ (n − 1) are
+independent, with
+ X ∼ N (µ,σ 2/n ) and (n − 1)S2/σ 2 ∼ χ 2
+n−1
+. Deﬁne
+Z =
+ X − µ
+σ/ √
+n ∼ N (0, 1)
+and
+V = (n − 1)S2
+σ 2 ∼ χ 2
+n−1
+.
+These variables Z and V are called pivots, since their distribution does not
+depend on the unknown parameters µ andσ 2. This idea is similar to ancillar-
+ity, but Z and V are not statistics since both variables depend explicitly on
+unknown parameters. Since Z and V are independent, the variable
+T = Z
+√
+V/ (n − 1)
+(9.2)
+is also a pivot. Its distribution is called the t-distribution on n − 1 degrees of
+freedom, denoted T ∼ tn−1. The density for T is
+fT (x) = Γ
+(
+(ν + 1)/ 2
+)
+√
+νπΓ (ν/ 2)(1 +x2/ν )(ν +1)/2 , x ∈ R,
+where ν =n − 1, the number of degrees of freedom.
+
+===== PAGE 12 =====
+
+162 9 Estimating Equations and Maximum Likelihood
+Pivots can be used to set conﬁdence intervals. For p ∈ (0, 1), lettp,ν denote
+the upper pth quantile for the t-distribution on ν degrees of freedom, so that
+P
+(
+T ≥ tp,ν
+)
+=
+∫∞
+tp,ν
+fT (x)dx =p.
+By symmetry,
+P
+(
+T ≥ tα/2 ,n−1
+)
+=P
+(
+T ≤ −tα/2 ,n−1
+)
+=α/ 2,
+and so
+P
+(
+−tα/2 ,n−1 <T <tα/2 ,n−1
+)
+= 1 − α.
+Now
+T = Z
+√
+V/ (n − 1)
+=
+ X − µ
+S/ √
+n,
+and so
+−tα/2 ,n−1 <T <tα/2 ,n−1
+if and only if
+|
+X − µ|
+S/ √
+n <tα/2 ,n−1
+if and only if
+|
+X − µ|<tα/2 ,n−1
+S
+√
+n
+if and only if
+µ ∈
+(
+X − tα/2 ,n−1
+S
+√
+n,
+ X +tα/2 ,n−1
+S
+√
+n
+)
+def
+= (δ 0,δ 1).
+Thus for any θ = (µ,σ 2),
+Pθ
+(
+µ ∈ (δ 0,δ 1)
+)
+= 1 − α
+and (δ 0,δ 1) is a 1 − α conﬁdence interval for µ.
+The pivot V can be used in a similar fashion to set conﬁdence intervals
+for σ 2. Let χ 2
+p,ν
+denote the upper pth quantile for the chi-square distribution
+on ν degrees of freedom. Then
+P
+(
+V ≥ χ 2
+α/2 ,n−1
+)
+=P
+(
+V ≤ χ 2
+1−α/2 ,n−1
+)
+=α/ 2,
+and
+1 − α =Pθ
+(
+χ 2
+1−α/2 ,n−1
+<V = (n − 1)S2
+σ 2 <χ 2
+α/2 ,n−1
+)
+=Pθ
+[
+σ 2 ∈
+(
+(n − 1)S2
+χ 2
+α/2 ,n−1
+, (n − 1)S2
+χ 2
+1−α/2 ,n−1
+)]
+.
+
+===== PAGE 13 =====
+
+9.5 Asymptotic Conﬁdence Intervals 163
+Thus (
+(n − 1)S2
+χ 2
+α/2 ,n−1
+, (n − 1)S2
+χ 2
+1−α/2 ,n−1
+)
+is a 1 − α conﬁdence interval for σ 2.
+9.5 Asymptotic Conﬁdence Intervals
+Suppose the conditions of Theorem 9.14 hold, so that under Pθ ,
+√
+n(ˆθn − θ ) ⇒ N
+(
+0, 1/I (θ )
+)
+as n → ∞, where ˆθn is the maximum likelihood estimator of θ based on n
+observations. Multiplying by
+√
+I(θ ), this implies
+√
+nI(θ )(ˆθn − θ ) ⇒ N (0, 1). (9.3)
+Since the limiting distribution here is independent of θ ,
+√
+nI(θ )(ˆθn − θ ) is
+called an approximate pivot . If we deﬁne zp = Φ←(1 − p), the upper pth
+quantile of N (0, 1), then
+Pθ
+(√
+nI(θ )|ˆθn − θ |<zα/2
+)
+→ 1 − α
+as n → ∞ . If we deﬁne the (random) set
+S =
+{
+θ ∈Ω :
+√
+nI(θ )|ˆθn − θ |<zα/2
+}
+, (9.4)
+then θ ∈S if and only if
+√
+nI(θ )|ˆθn − θ |<zα/2 , and so
+Pθ (θ ∈S) → 1 − α
+as n → ∞ . This set S is called a 1 − α asymptotic conﬁdence region for θ .
+Practical considerations may make the conﬁdence region S in (9.4) unde-
+sirable. It need not be an interval, which may make the region hard to describe
+and diﬃcult to interpret. Also, if the Fisher information I(·) is a complicated
+function, the inequalities deﬁning the region may be diﬃcult to solve. To avoid
+these troubles, note that if I(·) is continuous, then
+√
+I(ˆθn)/I (θ )
+Pθ
+→ 1, and so
+by Theorem 8.13 and (9.3),
+√
+nI(ˆθn)(ˆθn − θ ) =
+√
+I(ˆθn)
+I(θ )
+√
+nI(θ )(ˆθn − θ ) ⇒ N (0, 1)
+as n → ∞ . From this,
+
+===== PAGE 14 =====
+
+164 9 Estimating Equations and Maximum Likelihood
+Pθ
+(√
+nI(ˆθn)|ˆθn − θ |<zα/2
+)
+=Pθ
+
+ θ ∈
+
+ ˆθ
+n − zα/2
+√
+nI(ˆθn)
+, ˆθn + zα/2
+√
+nI(ˆθn)
+
+
+
+
+→ 1 − α
+as n → ∞ . So 
+ ˆθ
+n − zα/2
+√
+nI(ˆθn)
+, ˆθn + zα/2
+√
+nI(ˆθn)
+
+ (9.5)
+is a 1 − α asymptotic conﬁdence interval for θ .
+The interval (9.5) requires explicit calculation of the Fisher information. In
+addition, it might be argued that conﬁdence intervals should be based solely
+on the shape of the likelihood function, and not on quantities that involve
+an expectation, such as I(ˆθ
+n). Using Remark 9.16, −l′′
+n(ˆθn)/n
+Pθ
+→ I(θ ). So√
+−l′′n(ˆθn)/
+√
+nI(θ )
+Pθ
+→ 1, and multiplying (9.3) by this ratio,
+√
+−l′′n(ˆθn)(ˆθn − θ ) ⇒ N (0, 1) (9.6)
+under Pθ as n → ∞ . From this,
+
+ ˆθ
+n − zα/2
+√
+−l′′n(ˆθn)
+, ˆθn + zα/2
+√
+−l′′n(ˆθn)
+
+ (9.7)
+is a 1 −α asymptotic conﬁdence interval forθ . The statistic −l
+′′
+n(ˆθn) used to set
+the width of this interval is called the observed or sample Fisher information .
+The interval (9.7) relies on the log-likelihood only through ˆθn and the
+curvature at ˆθn. Our ﬁnal conﬁdence regions are called proﬁle regions as they
+take more account of the actual shape of the likelihood function. By Taylor
+expansion about ˆθ
+n,
+2ln(ˆθn) − 2ln(θ ) =
+[√
+−l′′n(θ∗n)(θ − ˆθn)
+]2
+,
+where θ∗
+n is an intermediate value between θ and ˆθn (provided l′
+n(ˆθn) = 0,
+which happens with probability approaching one if θ ∈Ωo). By the argument
+leading to (9.6), √
+−l′′n(θ∗n)(ˆθn − θ ) ⇒ Z ∼ N (0, 1),
+and so, using Corollary 8.11,
+2ln(ˆθn) − 2ln(θ ) ⇒ Z2 ∼ χ 2
+1
+.
+Noting that P (Z2 <z 2
+α/2 ) = P (zα/2 <Z <zα/2 ) = 1 − α ,
+
+===== PAGE 15 =====
+
+9.5 Asymptotic Conﬁdence Intervals 165
+Pθ
+(
+2ln(ˆθn) − 2ln(θ )<z 2
+α/2
+)
+→ 1 − α.
+If we deﬁne
+S =
+{
+θ ∈Ω : 2ln(ˆθn) − 2ln(θ )<z 2
+α/2
+}
+, (9.8)
+then Pθ (θ ∈ S) → 1 − α and S is a 1 − α asymptotic conﬁdence region for
+θ . Figure 9.2 illustrates how this set S = (δ 0,δ 1) would be found from the
+log-likelihood function ln(·).
+θ
+l
+ln(ˆθ )
+ln(ˆθ ) − 1
+2z2
+α/ 2
+δ 0 ˆθ δ 1
+Fig. 9.2. Proﬁle conﬁdence interval ( δ 0,δ 1).
+Example 9.20. Suppose X1,...,X n are i.i.d. from a Poisson distribution with
+mean θ . Then
+ln(θ ) = n
+X logθ − nθ − log
+( n∏
+i=1
+Xi!
+)
+,
+where
+ X = (X1 + · · · +Xn)/n . Since
+l′
+n(θ ) = n
+X
+θ − n,
+the maximum likelihood estimator of θ is ˆθ =
+X. Also, I(θ ) = 1/θ . The ﬁrst
+conﬁdence region considered, (9.4), is
+S =
+{
+θ> 0 :
+√
+n/θ |ˆθ − θ |<zα/2
+}
+=
+{
+θ> 0 : ˆθ 2 − 2ˆθθ + ˆθ 2 <z 2
+α/2 θ/n
+}
+= ( ˆθ−, ˆθ +),
+
+===== PAGE 16 =====
+
+166 9 Estimating Equations and Maximum Likelihood
+where
+ˆθ±= ˆθ +
+z2
+α/2
+2n ±
+
+
+
+√
+(
+ˆθ +
+z2
+α/2
+2n
+)2
+− ˆθ 2.
+The next conﬁdence interval, (9.5), based on I(ˆθ ) = 1/
+ X is
+(
+X − zα/2
+√
+X/n,
+ X +zα/2
+√
+X/n
+)
+.
+For this example, the third conﬁdence interval is the same because the ob-
+served Fisher information, −l
+′′
+n(ˆθ ) = n
+X/ ˆθ = n/
+ X, agrees with nI(ˆθ ). Note
+that the lower endpoint for this conﬁdence interval will be negative if
+ X is
+close enough to zero. Finally, the proﬁle conﬁdence interval (9.8) is
+{
+θ> 0 : θ −
+ X log(θ/
+ X) −
+ X <
+z2
+α/2
+2n
+}
+.
+This set will be an interval, because the left-hand side of the inequality is a
+convex function of θ , but the endpoints cannot be given explicitly and must
+be computed numerically.
+Example 9.21. Imagine an experiment in which X is either 1 or 2, according
+to the toss of a fair coin, and that
+Y |X =x ∼ N (θ,x ).
+Multiplying the marginal density (mass function) of X by the conditional
+density of Y givenX, the joint density of X and Y is
+f
+θ (x,y ) = 1
+2
+√
+2πx exp
+[
+− (y − θ )2
+2x
+]
+.
+The Fisher information is
+I(θ ) = −Eθ
+∂ 2
+∂θ 2 logfθ (X,Y ) = Eθ
+[ 1
+X
+]
+= 3
+4.
+If (X1,Y 1),..., (Xn,Y n) is a random sample from this distribution, then
+ln(θ ) =
+n∑
+i=1
+logfθ (Xi,Y i) =
+n∑
+i=1
+[
+− (Yi − θ )2
+2Xi
+− 1
+2 log(8πXi)
+]
+and
+l′
+n(θ ) =
+n∑
+i=1
+Yi − θ
+Xi
+.
+
+===== PAGE 17 =====
+
+9.6 EM Algorithm: Estimation from Incomplete Data 167
+Equating this to zero, the maximum likelihood estimator is
+ˆθn =
+∑n
+i=1
+(Yi/X i)
+∑n
+i=1
+(1/X i) .
+Also,l′′
+n(θ ) = − ∑n
+i=1
+(1/X i). Here the ﬁrst two conﬁdence intervals, (9.4) and
+(9.5), are the same (since the Fisher information is constant), namely
+(
+ˆθn − zα/2
+√
+4
+3n, ˆθn +zα/2
+√
+4
+3n
+)
+.
+The last two intervals are also the same (because the log-likelihood is exactly
+quadratic), namely
+(
+ˆθ
+n − zα/2
+√
+∑n
+i=1
+(1/X i)
+, ˆθn + zα/2
+√
+∑n
+i=1
+(1/X i)
+)
+. (9.9)
+In this example, the latter, likelihood-based intervals are clearly superior.
+Given X
+1 = x1,...,X n = xn, ˆθn is exactly N
+(
+θ, 1/ ∑
+i=1(1/x i)
+)
+, and by
+smoothing, the coverage probability for (9.9) is exactly 1 −α . Also, the width
+of (9.9) varies in an appropriate fashion: it is shorter when many of the Xi
+are 1s, increasing in length when more of the Xi are 2s.
+9.6 EM Algorithm: Estimation from Incomplete Data
+The EM algorithm (Dempster et al. (1977)) is a recursive method to calculate
+maximum likelihood estimators from incomplete data. The “full data” X has
+density from an exponential family, but is not observed. Instead, the observed
+data Y is a known function of X,Y =g(X), with g many-to-one (so that X
+cannot be recovered from Y ). Here we assume for convenience the density for
+X is in canonical form, given by
+h(x)e
+ηT (x)−A(η ).
+We also assume that η ∈ Ω ⊂ R, although the algorithm works in higher
+dimensions, and that Y is discrete. (The full data X can be discrete or con-
+tinuous.)
+The EM algorithm may be useful when data are partially observed in
+some sense. For instance, X1,...,X n could be a random sample from some
+exponential family, and Yi could be Xi rounded to the nearest integer. Similar
+possibilities could include censored or truncated data.
+The EM algorithm can also be used in situations with missing data. For
+instance, we may be studying answers for two multiple choice questions on
+some survey. The full data X gives information on answers for both questions
+
+===== PAGE 18 =====
+
+168 9 Estimating Equations and Maximum Likelihood
+for every subject. The incomplete data Y may provide counts for all answer
+combinations for respondents who answered both questions, along with counts
+for the ﬁrst question for respondents who skipped the second question, and
+counts for the second question for respondents who skipped the ﬁrst question.
+Let X denote the sample space for X, Y the sample space for Y , and X (y)
+the cross-section
+X (y) = {x ∈ X :g(x) = y}.
+Then Y =y if and only if X ∈ X (y).
+Proposition 9.22. The joint density of X and Y (with respect to µ ×ν with
+µ the dominating measure for X and ν counting measure on Y) is
+1
+X (y)(x)h(x)eηT (x)−A(η ).
+Proof. Letf be an arbitrary nonnegative function on X × Y . Then f (X,Y ) =∑
+y∈Yf (X,y )I{Y =y}. Since expectation is linear (or by Fubini’s theorem)
+and Y =g(X),
+Ef (X,Y ) =
+∑
+y∈Y
+Ef (X,y )I{g(X) = y}
+=
+∑
+y∈Y
+∫
+X
+f (x,y )I{g(x) = y}h(x)eηT (x)−A(η )dµ(x),
+and the proposition follows because I{g(x) = y}= 1X (y)(x). ⊓ ⊔
+To deﬁne the algorithm, recall that the maximum likelihood estimate of η
+from the full data X is ψ (T ), where ψ is the inverse of A′. Also, deﬁne
+e(y,η ) = Eη
+[
+T (X)
+⏐
+⏐Y =y
+]
+.
+This can be computed as an integral against the conditional density of X
+givenY =y. Dividing the joint density of X and Y by the marginal density
+of Y , this conditional density is
+1
+X (y)(x)h(x)eηT (x)−A(η )
+fη (y) ,
+where
+fη (y) = Pη (Y =y) = Pη
+(
+X ∈ X (y)
+)
+=
+∫
+X (y)
+h(x)eηT (x)−A(η )dµ(x).
+The algorithm begins with an initial guess ˆη 0 for the true maximum likelihood
+estimate ˆη . Using this initial guess and data Y , the value of T (X) is imputed
+to be T1 = e(Y, ˆη 0) (this is called an E-step). The reﬁned estimate for ˆ η is
+ˆη 1 = ψ (T1) (an M-step). These E- and M-steps are repeated as necessary,
+
+===== PAGE 19 =====
+
+9.6 EM Algorithm: Estimation from Incomplete Data 169
+starting with the current estimate for ˆ η instead of the initial guess, until the
+values converge.
+If the exponential family is not speciﬁed in canonical form, so the density
+is h(x)eη (θ )T (x)−B(θ ), the E-step of the EM algorithm stays the same,
+Tk+1 =Eˆθ k
+[T (X)|Y ],
+and for the M-step, ˆθk maximizes η (θ )Tk − B(θ ) over θ ∈Ω.
+If the EM algorithm converges to ˜η , then ˜η will satisfy
+˜η =ψ
+(
+e(Y, ˜η )
+)
+,
+or, equivalently,
+A′(˜η ) = e(Y, ˜η ).
+Since
+∂
+∂η logfη (Y ) =
+∂
+∂η
+∫
+X (Y )h(x)eηT (x)−A(η ) dµ(x)
+fη (Y )
+=
+∫
+X (Y )
+[
+T (x) − A′(η )
+]
+h(x)eηT (x)−A(η ) dµ(x)
+fη (Y )
+=e(Y,η ) − A′(η ),
+the log-likelihood has zero slope when η = ˜η .
+Example 9.23 (Rounding). SupposeX1,...,X n are i.i.d. exponential variables
+with common density fη (x) = ηe−ηx , x > 0; fη (x) = 0, x ≤ 0, and let
+Yi = ⌊Xi⌋, the greatest integer less than or equal to Xi, so we only observe
+the variables rounded down to the nearest integer. The joint distributions
+of X
+1,...,X n form an exponential family with canonical parameter η and
+complete suﬃcient statistic T = − (X1 + · · · +Xn). The maximum likelihood
+estimator of η based on X is ψ (T ) = −n/T . Arguing as in Proposition 9.22,
+Eη [Xi|Yi =yi] = Eη [Xi|yi ≤ Xi <yi + 1]
+=
+∫yi+1
+yi
+xηe−ηx dx
+∫yi+1
+yi
+ηe−ηx dx
+=yi + eη − 1 − η
+η (eη − 1) ,
+and by the independence,
+Eη [Xi|Y1 =y1,...,Y n =yn] = Eη [Xi|Yi =yi].
+Thus
+e(y,η ) = Eη [T |Y1 =y1,...,Y n =yn]
+= −
+n∑
+i=1
+Eη [Xi|Yi =yi] = −n
+[
+y + eη − 1 − η
+η (eη − 1)
+]
+.
+
+===== PAGE 20 =====
+
+170 9 Estimating Equations and Maximum Likelihood
+The EM algorithm is given by
+ˆηj = − n
+Tj
+and Tj+1 = −n
+[
+Y + eˆη j − 1 − ˆηj
+ˆηj (eˆη j − 1)
+]
+.
+In this example, the mass function for Yi can be computed explicitly:
+Pη (Yi =y) = Pη (y ≤ Xi <y + 1) = (1 − e−η )(e−η )y, y = 0, 1,...,
+and we see that Y1,...,Y n are i.i.d. from a geometric distribution with p =
+1 − e−η . The maximum likelihood estimator for p is
+ˆp = 1
+1 +
+Y ,
+and since η = − log(1 − p), the maximum likelihood estimator for η is
+ˆη = − log(1 − ˆp) = log(1 + 1/
+ Y ).
+To study the convergence of the EM iterates ˆ ηj , j ≥ 1, to the maximum
+likelihood estimator ˆη , suppose ˆηj = ˆη +ǫ. By Taylor expansion,
+Tj+1 = −n
+[
+Y + 1
+ˆη +ǫ − 1
+eˆη +ǫ − 1
+]
+= −n
+ˆη
+[
+1 − ǫ
+ˆη + ǫ ˆηe ˆη
+(eˆη − 1)2 +O(ǫ2)
+]
+,
+and from this,
+ˆηj+1 = ˆη +ǫ
+[
+1 − ˆη 2eˆη
+(eˆη − 1)2
+]
++O(ǫ2). (9.10)
+In particular, if ˆηj = ˆη , so ǫ = 0, ˆηj+1 also equals ˆη . This shows that ˆη is a
+ﬁxed point of the recursion.
+As a numerical routine for optimization, the EM algorithm is generally
+stable and reliable. One appealing property is that the likelihood increases
+with each successive iteration. This follows because it is in the class of MM
+algorithms, discussed in Lange (2004). But convergence is not guaranteed: if
+the likelihood has multiple modes, the algorithm may converge to a local max-
+imum. Suﬃcient conditions for convergence are given by Wu (1983). Although
+the EM algorithm is stable, convergence can be slow. By (9.10), there is linear
+convergence in our example, with the convergence error ˆ η
+j − ˆη decreasing by
+a constant factor (approximately) with each iteration. Linear convergence is
+typical for the EM algorithm. If the likelihood for Y is available, quadratic con-
+vergence, with ˆη
+j+1 − ˆη =O
+(
+(ˆηj − ˆη )2)
+, may be possible by Newton–Raphson
+or another search algorithm, but faster routines are generally less stable and
+often require information about derivatives of the objective function.
+The EM algorithm can be developed without the exponential family struc-
+ture assumed here. It can also be supplemented to provide numerical approx-
+imations for observed Fisher information. For these and other extensions, see
+McLachlan and Krishnan (2008).
+
+===== PAGE 21 =====
+
+9.7 Limiting Distributions in Higher Dimensions 171
+9.7 Limiting Distributions in Higher Dimensions
+Most of the results presented earlier in this chapter have natural extensions in
+higher dimensions. If x = (x
+1,...,x p) and y = (y1,...,y p) are vectors in Rp,
+then x ≤ y will mean that xi ≤ yi, i = 1,...,p . The cumulative distribution
+function H of a random vector Y in Rp is deﬁned by H(y) = P (Y ≤ y).
+Deﬁnition 9.24. LetY,Y 1,Y 2,... be random vectors taking values in Rp, with
+H the cumulative distribution of Y and Hn the cumulative distribution func-
+tion of Yn, n = 1, 2,... . Then Yn converges in distribution to Y as n → ∞,
+written Yn ⇒ Y , if Hn(y) → H(y) as n → ∞ at any continuity point y of H.
+For a setS ⊂ Rp, let ∂S =
+S −So denote the boundary of S. The following
+result lists conditions equivalent to convergence in distribution.
+Theorem 9.25. If Y,Y
+1,Y 2,... are random vectors in Rp, then the following
+conditions are equivalent.
+1.Yn ⇒ Y as n → ∞ .
+2.Eu(Yn) → Eu(Y ) for every bounded continuous function u : Rp → R.
+3. lim infn→∞P (Yn ∈G) ≥ P (Y ∈G) for every open set G.
+4. lim supn→∞P (Yn ∈F ) ≤ P (Y ∈F ) for every closed set F .
+5.P (Yn ∈S) → P (Y ∈S) for any Borel set S such that P (Y ∈∂S ) = 0 .
+This result is called the portmanteau theorem. The second condition in this
+result is often taken as the deﬁnition of convergence in distribution. As is the
+case for one dimension, the following result is an easy corollary.
+Corollary 9.26. If f : R
+p → Rm is a continuous function, and if Yn ⇒ Y (a
+random vector in Rp), then
+f (Yn) ⇒ f (Y ).
+In the multivariate extension of the central limit theorem, averages of i.i.d.
+random vectors, after suitable centering and scaling, will converge to a limit,
+called the multivariate normal distribution. One way to describe this distri-
+bution uses moment generating functions. The moment generating function
+M
+Y for a random vector Y in Rp is given by
+MY (u) = Eeu′Y, u ∈ Rp.
+As in the univariate case, if the moment generating functions of two random
+vectorsX andY agree on any nonempty open set, then X andY have the same
+distribution. Suppose Z = (Z
+1,...,Z p)′with Z1,...,Z p a random sample
+from N (0, 1). By independence,
+Eeu′Z = (Eeu1Z1 ) × · · · × (EeupZp ) = eu2
+1
+/2 × · · · × eu2
+p
+/2 =eu′u/2 .
+
+===== PAGE 22 =====
+
+172 9 Estimating Equations and Maximum Likelihood
+Suppose we deﬁne X =µ +AZ. Then
+EX =µ and Cov(X) = Σ =AA′.
+Takingu = A′t in the formula above for Eeu′Z , X has moment generating
+function
+MX (t) = Eet′X =Eet′µ+t′AZ =et′µEeu′Z
+=et′µ+u′u/2 =et′µ+t′AA′t/ 2 =et′µ+t′Σt/ 2.
+Note that this function depends on A only through the covariance Σ =AA′.
+The distribution for X is called the multivariate normal distribution with
+mean µ and covariance matrix Σ , written
+X ∼ N (µ,Σ ).
+Linear transformations preserve normality. IfX ∼ N (µ,Σ ) andY =AX +
+b, then
+MY (u) = Eeu′(AX+b) =eu′bEeu′AX
+=eu′bMX (A′u) = exp[u′b +u′Aµ +u′AΣA′u/ 2],
+and so
+Y ∼ N (b +Aµ,AΣA ′).
+Naturally, the parameters for this distribution are the mean and covariance
+of Y .
+In the construction for N (µ,Σ ), any nonnegative deﬁnite matrix Σ is
+possible. One suitable matrix A would be a symmetric square root of Σ . This
+can be found writing Σ =ODO
+′with O an orthogonal matrix (so O′O =I)
+and D diagonal, and deﬁning Σ 1/2 =OD1/2 O′, where D1/2 is diagonal with
+entries the square roots of the diagonal entries of D. Then Σ 1/2 is symmetric
+and
+Σ 1/2 Σ 1/2 =OD1/2 O′OD1/2 O′=OD1/2 D1/2 O′=ODO′=Σ. (9.11)
+As a side note, the construction here can be used to deﬁne other pow-
+ers, including negative powers, of a symmetric positive deﬁnite matrix Σ . In
+this case, the diagonal entries Dii of D are all positive, Dα can be taken
+as the diagonal matrix with diagonal entries Dα
+ii, and Σ α def
+= ODα O′. This
+construction gives Σ 0 =I, and the powers of Σ satisfy
+Σ α Σ β =Σ α +β .
+WhenΣ is positive deﬁnite (Σ > 0),N (µ,Σ ) is absolutely continuous. To
+derive the density, note that the density of Z is
+
+===== PAGE 23 =====
+
+9.7 Limiting Distributions in Higher Dimensions 173
+p∏
+i=1
+e−z2
+i/2
+√
+2π = e−z′z/2
+(2π )p/2 .
+Also, the linear transformation z ⇝µ +Σ 1/2 z is one-to-one with inverse x ⇝
+Σ−1/2 (x−µ). (Here Σ−1/2 is the inverse of Σ 1/2 .) The Jacobian of the inverse
+transformation is det(Σ−1/2 ) = 1/
+√
+detΣ . So if X =µ +Σ 1/2 Z ∼ N (µ,Σ ),
+a multivariate change of variables gives
+P (X ∈B) = P (µ +Σ 1/2 Z ∈B) =
+∫
+· · ·
+∫
+1B(µ +Σ 1/2 z)e−z′z/2
+(2π )p/2 dz
+=
+∫
+· · ·
+∫
+1B (x)
+exp
+(
+− 1
+2
+(
+Σ−1/2 (x − µ)
+)′(
+Σ−1/2 (x − µ)
+))
+(2π )p/2
+√
+detΣ
+dx.
+From this, X ∼ N (µ,Σ ) has density
+exp
+(
+− 1
+2 (x − µ)′Σ−1(x − µ)
+)
+(2π )p/2 √
+detΣ
+.
+The following result generalizes the central limit theorem (Theorem 8.12)
+to higher dimensions. For a proof, see Billingsley (1995) or any standard text
+on probability.
+Theorem 9.27 (Multivariate Central Limit Theorem). If X
+1, X2, ...
+are i.i.d. random vectors with common mean µ and common covariance matrix
+Σ , and if
+ Xn = (X1 + · · · +Xn)/n , n ≥ 1, then
+√
+n(
+X − µ) ⇒ Y ∼ N (0,Σ ).
+Asymptotic normality of the maximum likelihood estimator will involve
+random matrices. The most convenient way to deal with convergence in prob-
+ability of random matrices is to treat them as vectors, introducing the Eu-
+clidean (or Frobenius) norm
+∥M ∥ =
+
+
+
+∑
+i,j
+M 2
+ij
+
+
+
+1/2
+.
+Deﬁnition 9.28. A sequence of random matrices Mn, n ≥ 1 converges in
+probability to a random matrix M , written Mn
+p
+→ M , if for every ǫ> 0,
+P
+(
+∥Mn − M ∥>ǫ
+)
+→ 0
+as n → ∞. Equivalently, Mn
+p
+→ M as n → ∞ if [Mn]ij
+p
+→ Mij as n → ∞,
+for all i and j.
+
+===== PAGE 24 =====
+
+174 9 Estimating Equations and Maximum Likelihood
+The following results are natural extensions of the corresponding results
+in one dimension.
+Theorem 9.29. If M
+n
+p
+→ M as n → ∞ , with M a constant matrix, and if f
+is continuous at M , then f (Mn)
+p
+→ f (M ).
+Theorem 9.30. If Y,Y 1,Y 2,... are random vectors in Rp with Yn ⇒ Y as
+n → ∞, and if Mn are random matrices with Mn
+p
+→ M as n → ∞, with M
+a constant matrix, then
+MnYn ⇒ MY
+as n → ∞
+Technical details establishing asymptotic normality of the maximum like-
+lihood estimator in higher dimensions are essentially the same as the details
+in one dimension, so the presentation here just highlights the main ideas
+in an informal fashion. Let X,X
+1,X 2,... be i.i.d. with common density fθ ,
+θ ∈Ω ⊂ Rp. As in one dimension, the log-likelihood can be written as a sum,
+ln(θ ) =
+n∑
+i=1
+logfθ (Xi).
+As in Section 4.6, the Fisher information is a matrix,
+I(θ ) = Covθ
+(
+∇θ logfθ (X)
+)
+= −Eθ ∇ 2
+θ logfθ (X),
+and
+Eθ ∇θ logfθ (X) = 0.
+The maximum likelihood estimator based on X1,...,X n maximizes ln. If
+ˆθn is consistent and θ lies in the interior of Ω, then with probability tending
+to one,
+∇θln(ˆθn) = 0.
+Taylor expansion of ∇θln(·) about θ gives the following approximation:
+∇θln(ˆθn) ≈ ∇θ ln(θ ) + ∇ 2
+θ ln(θ )(ˆθn − θ ).
+Setting this expression to zero, solving, and introducing powers of n,
+√
+n(ˆθn − θ ) ≈
+[
+− 1
+n ∇ 2
+θ ln(θ )
+]−1 1
+√
+n ∇θln(θ ). (9.12)
+By the multivariate central limit theorem,
+1
+√
+n ∇θln(θ ) = √
+n
+[
+1
+n
+n∑
+i=1
+∇θ logfθ (Xi) − 0
+]
+⇒ Y ∼ N
+(
+0,I (θ )
+)
+as n → ∞ . Also, by the law of large numbers,
+
+===== PAGE 25 =====
+
+9.8 M -Estimators for a Location Parameter 175
+− 1
+n ∇ 2
+θ ln(θ ) = 1
+n
+n∑
+i=1
+[
+−∇ 2
+θ logfθ (Xi)
+] Pθ
+→ I(θ )
+asn → ∞ . Since the function A ⇝A−1 is continuous for nonsingular matrices
+A, if I(θ )> 0, [
+− 1
+n ∇ 2
+θ ln(θ )
+]−1
+Pθ
+→ I(θ )−1.
+The error in (9.12) tends to zero in probability, and then using Theorem 9.30,
+√
+n(ˆθn − θ ) ⇒ I(θ )−1Y ∼ N
+(
+0,I (θ )−1)
+.
+To verify the stated distribution for I(θ )−1Y , note that Y has the same dis-
+tribution as I(θ )1/2 Z with Z a vector of i.i.d. standard normal variates, and
+so
+I(θ )−1Y ∼ I(θ )−1I(θ )1/2 Z =I(θ )−1/2 Z ∼ N
+(
+0,I (θ )−1)
+.
+The following proposition is a multivariate extension of the delta method.
+Proposition 9.31. Ifg :Ω → R is diﬀerentiable at θ ,I(θ ) is positive deﬁnite,
+and √
+n(ˆθn − θ ) ⇒ N
+(
+0,I (θ )−1)
+, then
+√
+n
+(
+g(ˆθn) − g(θ )
+)
+⇒ N
+(
+0,ν 2(θ )
+)
+with
+ν 2(θ ) =
+(
+∇g(θ )
+)′
+I(θ )−1∇g(θ ).
+As an application of this result, if ˆνn is a consistent estimator of ν (θ ) and
+ν (θ )> 0, then (
+g(ˆθn) − zα/2 ˆνn
+√
+n , g(ˆθn) + zα/2 ˆνn
+√
+n
+)
+(9.13)
+is a 1 − α asymptotic conﬁdence interval for g(θ ).
+Finally, the delta method can be extended to vector-valued functions. In
+this result, Dg(θ ) denotes a matrix of partial derivatives of g, with entries
+[Dg(θ )]ij =∂gi(θ )/∂θ j .
+Proposition 9.32. If g : Ω → Rm is diﬀerentiable at θ , I(θ ) is positive
+deﬁnite, and √
+n(ˆθn − θ ) ⇒ N
+(
+0,I (θ )−1)
+, then
+√
+n
+(
+g(ˆθn) − g(θ )
+)
+⇒ N
+(
+0,Σ (θ )
+)
+with
+Σ (θ ) = Dg(θ )I(θ )−1[Dg(θ )]′.
+9.8 M -Estimators for a Location Parameter
+Let X,X 1,X 2,... be i.i.d. from some distribution Q, and let ρ be a convex
+function4 on R with ρ (x) → ∞ as x → ±∞ . The M -estimator Tn associated
+4 These conditions on ρ are convenient, because with them H must have a mini-
+mum. But they could be relaxed.
+
+===== PAGE 26 =====
+
+176 9 Estimating Equations and Maximum Likelihood
+with ρ minimizes
+H(t) =
+n∑
+i=1
+ρ (Xi − t)
+over t ∈ R. If ρ is continuously diﬀerentiable and ψ = ρ′, then Tn is also a
+root of the estimating equation
+Wn(t)
+def
+= 1
+n
+n∑
+i=1
+ψ (Xi − t) = 0.
+Several common estimates of location are M -estimators. If ρ (x) = x2,
+then Tn =
+Xn, the sample average, and if ρ (x) = |x|, then Tn is the median.
+Finally, ifQ lies in a location family of absolutely continuous distributions with
+log-concave densities f (x − θ ), then taking ρ = − logf , Tn is the maximum
+likelihood estimator of θ .
+To study convergence, let us assume ρ is continuously diﬀerentiable, and
+deﬁne
+λ (t) = Eψ (X − t) =
+∫
+ψ (x − t)dQ(x).
+Since ρ is convex, ψ is nondecreasing and λ is nonincreasing. Also, λ (t) will
+be negative for t suﬃciently large and positive for t suﬃciently small.
+Lemma 9.33. If λ (t) is ﬁnite for all t ∈ R and λ (t) = 0 has a unique root c,
+then Tn
+p
+→ c.
+Using part 3 of Theorem 9.4, this lemma follows fairly easily from our law
+of large numbers for random functions, Theorem 9.2. The monotonicity of ψ
+can be used both to restrict attention to a compact set K and to argue that
+the envelope of the summands over K is integrable.
+Ifρ is symmetric, ρ (x) = ρ (−x) for all x ∈ R, and if the distribution of X
+is symmetric about some value θ , so that X −θ ∼ θ −X, then in this lemma
+the limiting value c is θ .
+Asymptotic normality for Tn can be established with an argument similar
+to that used to show asymptotic normality for the maximum likelihood esti-
+mator. If ψ is continuously diﬀerentiable, then Taylor expansion of
+Wn about
+c gives
+Wn(Tn) =
+ Wn(c) + (Tn − c)
+W
+′
+n
+(t∗
+n
+),
+with t∗
+n
+an intermediate value between c and Tn. Since
+ Wn(Tn) is zero,
+√
+n(Tn − c) = −
+√
+n
+Wn(c)
+W
+′
+n
+(t∗
+n
+)
+.
+By the central limit theorem,
+√
+n
+Wn(c) ⇒ N
+(
+0, Var[ψ (X − c)]
+)
+,
+
+===== PAGE 27 =====
+
+9.8 M -Estimators for a Location Parameter 177
+and since t∗
+n
+p
+→ c, under suitable regularity 5
+−
+W
+′
+n
+(t∗
+n
+)
+p
+→ − Eψ′(X − c) = λ′(c).
+Thus √
+n(Tn − c) ⇒ N
+(
+0,V (ψ,Q )
+)
+,
+where
+V (ψ,Q ) = Eψ 2(X − c)
+[λ′(c)]2 .
+M -estimation was introduced by Huber (1964) to consider robust estima-
+tion of a location parameter. As noted above, if ρ is symmetric, ρ (x) = ρ (−x)
+for all x ∈ R, and if the distribution of X is symmetric about θ , X − θ ∼
+θ − X, then Tn is a consistent estimator of θ . For instance, we might have
+Q =N (θ, 1), so that X −θ ∼ N (0, 1). Takingρ the square function, ρ (x) = x2,
+Tn is the sample average
+ Xn, which is consistent and fully eﬃcient. In a situ-
+ation like this it may seem foolish to base M -estimation on any other function
+ρ , an impression that seems entirely reasonable if we have complete conﬁdence
+in a normal model for the data. Unfortunately, doubts arise if we entertain the
+possibility that our normal distribution for X is even slightly “contaminated”
+by some other distribution. Perhaps
+X ∼ (1 − ǫ)N (θ, 1) +ǫQ
+∗, (9.14)
+with Q∗some other distribution symmetric about θ . Then
+Var(X) = 1 − ǫ +ǫ
+∫
+(x − θ )2dQ∗(x).
+By the central limit theorem, the asymptotic performance of
+ Xn is driven by
+the variance of the summands, and even a small amount of contamination ǫ
+can signiﬁcantly degrade the performance of
+ Xn if the variance of Q∗is large.
+IfQ∗has inﬁnite variance, √
+n(
+Xn −θ ) will not even converge in distribution.
+Let C = Cǫ be the class of all distributions for X with the form in (9.14).
+If one is conﬁdent that Q ∈ Cǫ it may be natural to use an M -estimator with
+sup
+Q∈Cǫ
+V (ψ,Q )
+as small as possible. The following result shows that this is possible and de-
+scribes the optimal function ψ
+0. The optimal function ψ 0 and ρ 0 = ψ′
+0 are
+plotted in Figure 9.3.
+Theorem 9.34 (Huber). The asymptotic variance V (ψ,Q ) has a saddle
+point: There exists Q0 = (1 − ǫ)N (θ, 1) +ǫQ∗
+0
+∈ Cǫ and ψ 0 such that
+5 The condition E supt∈[c−ǫ,c+ǫ ] |ψ′(X − t)|< ∞ for some ǫ> 0 is suﬃcient.
+
+===== PAGE 28 =====
+
+178 9 Estimating Equations and Maximum Likelihood
+sup
+Q∈Cǫ
+V (ψ 0,Q ) = V (ψ 0,Q 0) = inf
+ψ
+V (ψ,Q 0).
+If k solves
+1
+1 − ǫ =P
+(
+|Z|<k
+)
++ 2φ (k)
+k ,
+whereZ ∼ N (0, 1), and if
+ρ 0(t) =
+{
+1
+2t2, |t| ≤k;
+k|t| −1
+2k2, |t| ≥k,
+then ψ 0 =ρ′
+0
+and Q∗
+0
+is any distribution symmetric about θ with
+Q∗
+0
+(
+[θ − k,θ +k]
+)
+= 0.
+k
+k
+k
+−k
+−k
+−k
+ρ 0 ψ 0
+t
+t
+k2/ 2
+Fig. 9.3. Functionsρ 0 and ψ 0.
+9.9 Models with Dependent Observations 6
+The asymptotic theory developed earlier in this chapter is based on models
+with i.i.d. observations. Extensions in which the observations need not have
+the same distribution and may exhibit dependence are crucial in various ap-
+plications, and there is a huge literature extending basic results in various
+directions. In our discussion of the i.i.d. case, the law of large numbers and
+6 Results in this section are somewhat technical and are not used in later chapters.
+
+===== PAGE 29 =====
+
+9.9 Models with Dependent Observations 179
+the central limit theorem were our main tools from probability. Extensions
+typically rely on more general versions of these results, but the overall nature
+of the argument is similar to that for the i.i.d. case in most other ways. As
+a single example, this section sketches how large-sample theory can be devel-
+oped for models for stationary time series. For extensions in a variety of other
+directions, see DasGupta (2008).
+Time series analysis concerns inference for observations observed over time.
+Dependence is common and is allowed in the models considered here, but we
+restrict attention to observations that are stationary according to the follow-
+ing deﬁnition. A sequence of random variables, X
+n, n ∈ Z, will be called
+a (stochastic) process, and can be viewed as an inﬁnite-dimensional random
+vector taking values in RZ.
+Deﬁnition 9.35. The process X is (strictly) stationary if
+(X1,...,X k) ∼ (Xn+1,...,X n+k),
+for all k ≥ 1 and n ∈ Z.
+Takingk = 1 in this deﬁnition, observations Xi from a stationary process are
+identically distributed, and it feels natural to expect information to accumu-
+late fairly linearly over time, as it would with i.i.d. data.
+Viewing a sequence x
+n, n ∈ Z, as a single point x ∈ RZ, we can deﬁne a
+shift operator T that acts on x by incrementing time. Speciﬁcally, y = T (x)
+if yn =xn+1 for all n ∈ Z. Using T , a process X is stationary if X ∼ T (X),
+where X ∼ Y means that the ﬁnite-dimensional distributions for X and Y
+agree:
+(Xi,X i+1,...X j ) ∼ (Yi,Y i+1,...Y j )
+for all i ≤ j in Z.
+Example 9.36. If Xn, n ∈ Z, are i.i.d. from some distribution Q, then X
+is stationary. More generally, a mixture model in which, given Y = y, the
+variablesXn, n ∈ Z, are i.i.d. from Qy also gives a stationary process X.
+If ǫn, n ∈ Z, are i.i.d. from some distribution Q with Eǫn = 0 and Eǫ 2
+n
+<
+∞, and if cn, n ≥ 1, are square summable constants, then
+Xn =
+∞∑
+j=0
+cjǫn−j, n ∈ Z,
+deﬁnes a stationary process X, called a linear process. If cn =ρn with |ρ |< 1
+then
+Xn+1 =ρXn +ǫn+1,
+and if Q = N (0,σ 2) we have the autoregressive model introduced in Exam-
+ple 6.4.
+
+===== PAGE 30 =====
+
+180 9 Estimating Equations and Maximum Likelihood
+The ergodic theorem is a generalization of the law of large numbers useful
+in this setting. To describe this result, let BZ denote the Borel sets of RZ.7
+A set B ∈ B Z is called shift invariant if x ∈ B if and only if T (x) ∈ B.
+Changing the value for xn at any ﬁxed n will not change whether x lies in a
+shift invariant set; inclusion can only depend on how the sequence behaves as
+|n| → ∞ . For instance, sets
+{
+x : lim sup
+n→−∞
+xn ≤ c
+}
+and
+{
+x : 1
+n
+n∑
+i=1
+xi → c as n → ∞
+}
+are shift invariant, but {x :x3 +x7 ≤ x4} is not.
+Deﬁnition 9.37. A stationary process Xn, n ∈ Z, is ergodic if
+P (X ∈B) = 0 or 1
+whenever B is a shift invariant set in BZ.
+In Example 9.36, i.i.d. variables and linear processes can be shown to be
+ergodic. But i.i.d. mixtures generally are not; see Problem 9.38.
+With this deﬁnition we can now state the ergodic theorem. Let Tj denote
+T composed with itself j times.
+Theorem 9.38 (Ergodic Theorem). If X is a stationary ergodic process
+and E|g(X)|< ∞, then
+1
+n
+n∑
+j=1
+g
+(
+Tj (X)
+)
+→ µg
+def
+= Eg(X)
+almost surely as n → ∞ . The convergence here also holds in mean,
+E
+⏐
+⏐
+⏐
+⏐
+⏐
+⏐
+1
+n
+n∑
+j=1
+g
+(
+Tj (X)
+)
+− µg
+⏐
+⏐
+⏐
+⏐
+⏐
+⏐
+→ 0.
+As noted, if the X
+n are i.i.d. from some distribution Q, then X is ergodic.
+Ifg is deﬁned by g(x) = x0, then µg =EXn,g
+(
+Tj (X)
+)
+=Xj , and the ergodic
+theorem gives the strong law of large numbers.
+For convergence in distribution we use an extension of the ordinary central
+limit theorem to martingales.
+Deﬁnition 9.39. Forn ≥ 1, let M
+n be a function of X1,...,X n. The process
+Mn,n ≥ 1, is a (zero mean) martingale with respect to Xn,n ≥ 1, if EM1 = 0
+and
+E[Mn+1|X1,...,X n] = Mn, n ≥ 1.
+7 Formally, BZ is the smallest σ -ﬁeld that contains all (ﬁnite) rectangles of form
+{x ∈ RZ :xk ∈ (ak,b k ),i ≤ k ≤ j}.
+
+===== PAGE 31 =====
+
+9.9 Models with Dependent Observations 181
+If Mn, n ≥ 1, is a martingale, then by smoothing
+E[Mn+2|X1,...,X n] = E
+[
+E[Mn+2|X1,...,X n+1]
+⏐
+⏐X
+1,...,X n
+]
+=E[Mn+1|X1,...,X n] = Mn.
+With further iteration it is easy to see that
+E[Mn+k |X1,...,X n] = Mn, n ≥ 1, k ≥ 1. (9.15)
+Deﬁning diﬀerences Yn+1 =Mn+1 − Mn, n ≥ 1, with Y1 =M1,
+Mn =
+n∑
+i=1
+Yi, n ≥ 1.
+Using (9.15),
+E[Yn+k |X1,...,X n] = E[Mn+k+1|X1,...,X n] − E[Mn+k|X1,...,X n]
+=Mn − Mn = 0, n ≥ 1, k ≥ 1.
+If the Xi are i.i.d. with mean µ and Yi = Xi − µ, it is easy to check
+that Mn = Y1 + · · · +Yn, n ≥ 1, is a martingale. By the ordinary central
+limit theorem, Mn/ √
+n is approximately normal. In the more general case,
+the summands Yi may be dependent. But by smoothing,
+EYn+kYn =EE [Yn+kYn|X1,...,X n] = E
+[
+YnE[Yn+k |X1,...,X n]
+]
+= 0,
+and so they remain uncorrelated, as in the i.i.d. case. Let σ 2
+n
+def
+= Var(Yn) =
+EY 2
+n , and note that since the summands are uncorrelated,
+Var(Mn) = σ 2
+1 + · · · +σ 2
+n.
+For convenience, we assume that σ 2
+n → σ 2 as n → ∞ . (For more general
+results, see Hall and Heyde (1980).) Then
+Var
+(
+Mn/ √
+n
+)
+= 1
+n
+n∑
+i=1
+σ 2
+i → σ 2.
+In contrast with the ordinary central limit theorem, the result for martin-
+gales requires some control of the conditional variances
+s2
+n
+def
+= Var(Yn|X1,...,X n−1) = E[Y 2
+n |X1,...,X n−1].
+Speciﬁcally, the following result from Brown (1971a) assumes that
+1
+n
+n∑
+1=1
+s2
+i
+p
+→ σ 2, (9.16)
+
+===== PAGE 32 =====
+
+182 9 Estimating Equations and Maximum Likelihood
+and that
+1
+n
+n∑
+i=1
+E
+[
+Y 2
+i I
+{
+|Yi
+⏐
+⏐≥ ǫ√
+n
+}]
+→ 0 (9.17)
+as n → ∞ for all ǫ> 0. Requirement (9.17) is called the Lindeberg condition.
+Since Es2
+i
+=σ 2
+i , (9.16) might be considered a law of large numbers.
+Theorem 9.40. If Mn, n ≥ 1, is a mean zero martingale satisfying (9.16)
+and (9.17), then
+Mn
+√
+n ⇒ N (0,σ 2).
+Turning now to inference, let θ ∈Ω ⊂ R be an unknown parameter, and
+let Pθ be the distribution for a process X that is stationary and ergodic for
+all θ ∈ Ω. Also, assume that ﬁnite-dimensional joint distributions for X are
+dominated, and let fθ (x1,...,x n) denote the density of X1,...,X n underPθ .
+As usual, this density can be factored using conditional densities as
+fθ (x1,...,x n) =
+n∏
+i=1
+fθ (xi|x1,...,x i−1).
+The log-likelihood function is then
+ln(ω ) =
+n∑
+i=1
+logfω (Xi|X1,...,X i−1),
+where, as before, we let ω denote a generic value for the unknown parameter,
+reserving θ for the true value.
+With dependent observations, the conditional distributions for Xn change
+as we condition on past observations. But for most models of interest the
+amount of change decrease as we condition further into the past, with these
+distributions converging to the conditional distribution given the entire history
+of the process. Speciﬁcally, we assume that the conditional densities
+f
+ω (Xn|Xn−1,...,X n−m) → fω (Xn|Xn−1,... ) (9.18)
+in an appropriate sense as m → ∞. The autoregressive model, for instance,
+has Markov structure with the conditional distributions for Xn depending
+only on the previous observation, fω (Xn|Xn−1,...,X n−m) = fω (Xn|Xn−1).
+So in this case (9.18) is immediate.
+In Section 9.2, our ﬁrst step towards understanding consistency of the
+maximum likelihood estimator ˆθn was to argue that if ω ̸=θ ,ln(θ ) will exceed
+ln(ω ) with probability tending to one as n → ∞ . To understand why that will
+happen in this case, deﬁne
+g(X) = log fθ (X0|X−1,X−2,... )
+fω (X0|X−1,X−2,... ).
+
+===== PAGE 33 =====
+
+9.9 Models with Dependent Observations 183
+Note that
+Eθ
+[
+g(X)
+⏐
+⏐X
+−1,X−2,...
+]
+is the Kullback–Leibler information between θ and ω for the conditional dis-
+tributions of X0 given the past, and is positive unless these conditional dis-
+tributions coincide. Assuming this is not almost surely the case,
+µg =Eθg(X) = EθEθ [g(X)|X−1,X−2,... ]
+is positive. Using (9.18), if j is large,
+log fθ (Xj |X1,...,X j−1)
+fω (Xj |X1,...,X j−1) ≈ log fθ (Xj |Xj−1,X j−2,... )
+fω (Xj |Xj−1,X j−2,... ) =g
+(
+Tj (X)
+)
+.
+Using this approximation,
+ln(θ ) − ln(ω )
+n = 1
+n
+n∑
+j=1
+log fθ (Xj |X1,...,X j−1)
+fω (Xj |X1,...,X j−1) ≈ 1
+n
+n∑
+i=1
+g
+(
+Tj (X)
+)
+, (9.19)
+converging toµg > 0 as n → ∞ . If the approximation error here tends to zero
+in probability (see Problem 9.40 for a suﬃcient condition), then the likelihood
+at θ will be greater than the likelihood at ω with probability tending to one.
+Building on this basic idea, consistency of ˆθ
+n can be established in regular
+cases using the same arguments as those for the i.i.d. case, changing likelihood
+at a point ω to the supremum of the likelihood in a neighborhood of ω (or a
+neighborhood of inﬁnity).
+In the univariate i.i.d. case, asymptotic normality followed using Taylor
+approximation to show that
+√
+n(ˆθn − θ ) =
+1
+√
+nl′
+n(θ )
+− 1
+nl′′n(θ )
++op(1) (9.20)
+with 1
+√
+nl′
+n(θ ) ⇒ N
+(
+0,I (θ )
+)
+and − 1
+nl′′
+n(θ )
+p
+→ I(θ ). (9.21)
+The same Taylor expansion argument can be used in this setting, so we mainly
+need to understand why the limits in (9.21) hold. Convergence for −l
+′′
+n(θ )/n
+is similar to the argument for consistency above. If we deﬁne h as
+h(X) = − ∂ 2
+∂θ 2 logfθ (X0|X−1,X−2,... ),
+and assume for large j,
+− ∂ 2
+∂θ 2 logfθ (Xj |X1,...,X j−1) ≈ − ∂ 2
+∂θ 2 logfθ (Xj |Xj−1,X j−2,... )
+=h
+(
+Tj (X)
+)
+,
+
+===== PAGE 34 =====
+
+184 9 Estimating Equations and Maximum Likelihood
+which is essentially that (9.18) holds in a diﬀerentiable sense, then
+− 1
+nl′′
+n(θ ) = − 1
+n
+n∑
+j=1
+∂ 2
+∂θ 2 logfθ (Xj |X1,...,X j−1) ≈ 1
+n
+n∑
+j=1
+h
+(
+Tj (X)
+)
+,
+converging to Eθh(X) by the ergodic theorem. Since Fisher information here
+for all n observations is In(θ ) = −Eθl′′
+n(θ ), if the approximation error tends
+to zero in probability, then
+1
+nIn(θ )
+p
+→ Eθh(X). (9.22)
+So it is natural to deﬁne I(θ ) = Eθh(X), interpreted with large samples as
+average Fisher information per observation.
+Asymptotic normality for the score function l′
+n(θ ) is based on the martin-
+gale central limit theorem. Deﬁne
+Yj = ∂
+∂θ logfθ (Xj |X1,...,X j−1)
+so that
+l′
+n(θ ) =
+n∑
+j=1
+Yj.
+The martingale structure needed will hold if we can pass derivatives inside
+integrals, as in the Cram´ er–Rao bound, but now with conditional densities.
+Speciﬁcally, we want
+0 =
+∫ ∂
+∂θ fθ (xj |x1,...,x j−1)dµ(xj )
+=
+∫ [ ∂
+∂θ logfθ (xj |x1,...,x j−1)
+]
+fθ (xj |x1,...,x j−1)dµ(xj ).
+Viewing this integral as an expectation, we see that
+Eθ
+[
+Yj
+⏐
+⏐X
+1,...,X j−1
+]
+= 0,
+which shows that l′
+n(θ ), n ≥ 1, is a martingale. We also assume
+s2
+j
+def
+= Varθ
+(
+Yj
+⏐
+⏐X
+1,...,X j−1
+)
+= −Eθ
+[ ∂ 2
+∂θ 2 logfθ (Xj |X1,...,X j−1)
+⏐
+⏐
+⏐X
+1,...,X j−1
+]
+,
+which holds if a second derivative can be passed inside the integral above.
+By smoothing, σ
+2
+j = Eθ s2
+j
+= Varθ (Yj ), converging to I(θ ) as j → ∞ by an
+argument like that for (9.22). Therefore if the Lindeberg condition holds, then
+1
+√
+nl′
+n(θ ) ⇒ N
+(
+0,I (θ )
+)
+
+===== PAGE 35 =====
+
+9.10 Problems 185
+as n → ∞ by the martingale central limit theorem. Thus with suitable regu-
+larity (9.21) should hold in this setting as it did with i.i.d. observations. Then
+using (9.20) √
+n(ˆθn − θ ) ⇒ N
+(
+0, 1/I (θ )
+)
+as n → ∞ .
+The derivation above is sketchy, but can be made rigorous with suitable
+regularity. Some possibilities are explored in the problems, but good condi-
+tions may also depend on the context. Martingale limit theory is developed in
+Hall and Heyde (1980). The martingale structure of the score function does
+not depend on stationarity or ergodicity, and Hall and Heyde’s book has a
+chapter on large-sample theory for the maximum likelihood estimator without
+these restrictions. Results for stationary ergodic Markov chains are given in
+Billingsley (1961) and Roussas (1972).
+9.10 Problems 8
+1. Let Z1,Z 2,... be i.i.d. standard normal, and deﬁne random functions Gn,
+n ≥ 1, taking values in C(K) with K = [0, 1] by
+Gn(t) = nZn(1 − t)tn − t, t ∈ [0, 1].
+Finally, take g(t) = EGn(t) = −t.
+a) Show that for any t ∈ [0, 1],Gn(t)
+p
+→ g(t).
+b) Compute sup t∈[0, 1]n(1 − t)tn and ﬁnd its limit as n → ∞ .
+c) Show that ∥Gn − g∥∞does not converge in probability to zero as
+n → ∞ .
+d) Let Tn maximize Gn over [0, 1]. Show that Tn does not converge to
+zero in probability.
+2. Method of moments estimation . Let X1,X 2,... be i.i.d. observations
+from some family of distributions indexed by θ ∈ Ω ⊂ R. Let
+ Xn de-
+note the average of the ﬁrst n observations, and let µ(θ ) = EθXi and
+σ 2(θ ) = Varθ (Xi). Assume that µ is strictly monotonic and continuously
+diﬀerentiable. The method of moments estimator ˆθn solvesµ(θ ) =
+ Xn. If
+µ′(θ ) ̸= 0, ﬁnd the limiting distribution for √
+n(ˆθn − θ ).
+3. Take K = [0, 1], let Wn, n ≥ 1, be random functions taking values in
+C(K), and let f be a constant function in C(K). Consider the following
+conjecture. If ∥Wn − f ∥∞
+p
+→ 0 as n → ∞ , then
+∫ 1
+0 Wn(t)dt
+p
+→
+∫ 1
+0 f (t)dt.
+Is this conjecture true or false? If true, give a proof; if false, ﬁnd a coun-
+terexample.
+4.
+8 Solutions to the starred problems are given at the back of the book.
+
+===== PAGE 36 =====
+
+186 9 Estimating Equations and Maximum Likelihood
+5. maximum likelihood estimation!inconsistent example If Z ∼ N (µ,σ 2),
+then X = eZ has the lognormal distribution with parameters µ and σ 2.
+In some situations a threshold γ , included by taking
+X =γ +eZ,
+may be desirable, and in this case X is said to have the three-parameter
+lognormal distribution with parameters γ ,µ, and σ 2. Let data X1,...,X n
+be i.i.d. from this three-parameter lognormal distribution.
+a) Find the common marginal density for the Xi.
+b) Suppose the threshold γ is known. Find the maximum likelihood es-
+timators ˆµ = ˆµ(γ ) and ˆσ 2 = ˆσ 2(γ ) of µ and σ 2. (Assume γ <X (1).)
+c) Let l(γ,µ,σ 2) denote the log-likelihood function. The maximum like-
+lihood estimator for γ , if it exists, will maximize l
+(
+γ, ˆµ(γ ), ˆσ 2(γ )
+)
+over
+γ . Determine
+lim
+γ↑X(1)
+l
+(
+γ, ˆµ(γ ), ˆσ 2(γ )
+)
+.
+Hint: Show ﬁrst that as γ ↑X(1),
+ˆµ(γ ) ∼ 1
+n log(X(1) − γ ) and ˆσ 2(γ ) ∼ n − 1
+n2 log2(X(1) − γ ).
+Remark: This thought-provoking example is considered in Hill (1963).
+6. Let X1,X 2,... be i.i.d. from a uniform distribution on (0 , 1), and let Tn ∈
+[0, 1] be the unique solution of the equation
+n∑
+i=1
+tXi =
+n∑
+i=1
+X2
+i .
+a) Show that Tn
+p
+→ c as n → ∞ , identifying the constant c.
+b) Find the limiting distribution for √
+n(Tn − c) as n → ∞ .
+7. Let X1,X 2,... be i.i.d. from a uniform distribution on (0 , 1) and let Tn
+maximize n∑
+i=1
+log(1 +t2Xi)
+t
+overt> 0.
+a) Show that Tn
+p
+→ c as n → ∞ , identifying the constant c.
+b) Find the limiting distribution for √
+n(Tn − c) as n → ∞ .
+*8. If V andW are independent variables with V ∼ χ 2
+j
+andW ∼ χ 2
+k
+, then the
+ratio (V/j )/ (W/k ) has an F distribution with j andk degrees of freedom.
+Suppose X1,...,X m is a random sample from N (µx,σ 2
+x) and Y1,...,Y n
+is an independent random sample from N (µy,σ 2
+y ). Find a pivotal quantity
+with an F distribution. Use this quantity to set a 1 −α conﬁdence interval
+for the ratio σx/σ y .
+*9. Let X1,...,X n be i.i.d. from a uniform distribution on (0 ,θ ).
+
+===== PAGE 37 =====
+
+9.10 Problems 187
+a) Find the maximum likelihood estimator ˆθ of θ .
+b) Show that ˆθ/θ is a pivotal quantity and use it to set a 1 −α conﬁdence
+interval for θ .
+*10. Let X1,...,X n be i.i.d. exponential variables with failure rate θ . Then
+T = X1 + · · · +Xn is complete suﬃcient. Determine the density of θT ,
+showing that it is a pivot. Use this pivot to derive a 1 − α conﬁdence
+interval for θ .
+*11. Consider a location/scale family of distributions with densities fθ,σ given
+by
+fθ,σ (x) = g
+(x−θ
+σ
+)
+σ , x ∈ R,
+where g is a known probability density.
+a) Find the density of ( X − θ )/σ if X has density fθ,σ .
+b) If X1 and X2 are independent variables with the same distribution
+from this family, show that
+W = X1 +X2 − 2θ
+|X1 − X2|
+is a pivot.
+c) Derive a conﬁdence interval for θ using the pivot from part (b).
+d) Give a conﬁdence interval for σ based on an appropriate pivot.
+*12. Suppose S1(X) and S2(X) are both 1 −α conﬁdence regions for the same
+parameterg(θ ). Show that the intersection S1(X) ∩S2(X) is a conﬁdence
+region with coverage probability at least 1 − 2α .
+*13. Let ( X1,Y 1), ... , (Xn,Y n) be i.i.d. with Xi ∼ N (0, 1) and Yi|Xi = x ∼
+N (xθ, 1).
+a) Find the maximum likelihood estimate ˆθ of θ .
+b) Find the Fisher information I(θ ) for a single observation ( Xi,Y i).
+c) Determine the limiting distribution of √
+n(ˆθ − θ ).
+d) Give a 1 − α asymptotic conﬁdence interval for θ based on I(ˆθ ).
+e) Compare the interval in part (d) with a 1 − α asymptotic conﬁdence
+interval based on observed Fisher information.
+f) Determine the (exact) distribution of
+√
+∑X2
+i (ˆθ − θ ) and use it to
+ﬁnd the true coverage probability for the interval in part (e). Hint:
+Condition on X
+1,...,X n and use smoothing.
+14. Let X1,...,X n be a random sample from N (θ,θ 2). Give or describe four
+asymptotic conﬁdence intervals for θ .
+*15. Suppose X has a binomial distribution with n trials and success probabil-
+ityp. Give or describe four asymptotic conﬁdence intervals or regions for
+p. Find these regions numerically if 1 − α = 95%, n = 100, and X = 30.
+16. Let X1,...,X n be i.i.d. from a geometric distribution with success prob-
+abilityp. Describe four asymptotic conﬁdence regions for p.
+
+===== PAGE 38 =====
+
+188 9 Estimating Equations and Maximum Likelihood
+17. A variance stabilizing approach . Let X1,X 2,... be i.i.d. from a Poisson
+distribution with mean θ , and let ˆθn =
+ Xn be the maximum likelihood
+estimator of θ .
+a) Find a function g : [0, ∞) → R such that
+Zn = √
+n
+[
+g(ˆθn) − g(θ )
+]
+⇒ N (0, 1).
+b) Find a 1 − α asymptotic conﬁdence interval for θ based on the ap-
+proximate pivot Zn.
+18. Let X1,X 2,... be i.i.d. from N (µ,σ 2). Suppose we know that σ is a known
+function of µ,σ =g(µ). Let ˆµn denote the maximum likelihood estimator
+for µ under this assumption, based on X1,...,X n.
+a) Give a 1 −α asymptotic conﬁdence interval for µ centered at ˆµn. Hint:
+If Z ∼ N (0, 1), then Var(Z2) = 2 and Cov( Z,Z 2) = 0.
+b) Compare the width of the asymptotic conﬁdence interval in part (a)
+with the width of the t-conﬁdence interval that would be appropriate
+if µ and σ were not functionally related. Speciﬁcally, show that the
+ratio of the two widths converges in probability as n → ∞ , identifying
+the limiting value. (The limit should be a function of µ.)
+19. Suppose that the density for our data X comes from an exponential family
+with density
+h(x)eη (θ )T (x)−B(θ ), θ ∈Ω ⊂ R.
+If ˆθ is the maximum likelihood estimator of θ , show that −l′′(ˆθ ) and I(ˆθ )
+agree. (Assume that η is diﬀerentiable and monotonic.) So in this case,
+the asymptotic conﬁdence intervals (9.5) and (9.7) are the same.
+*20. Suppose electronic components are independent and work properly with
+probabilityp, and that components are tested successively until one fails.
+Let X1 denote the number that work properly. In addition, suppose de-
+vices are constructed using two components connected in series. For proper
+performance, both components need to work properly, and these devices
+will work properly with probability p
+2. Assume these devices are made
+with diﬀerent components and are also tested successively until one fails,
+and let X
+2 denote the number of devices that work properly.
+a) Determine the maximum likelihood estimator of p based on X1 and
+X2.
+b) Give the EM algorithm to estimate p from Y =X1 +X2.
+c) If Y = 5 and the initial guess for p is ˆp0 = 1/ 2, give the next two
+estimates, ˆp1 and ˆp2, from the EM algorithm.
+*21. Suppose X1,...,X n are i.i.d. with common (Lebesgue) density
+fθ (x) = θeθx
+2 sinhθ, x ∈ (− 1, 1),
+and let Yi = I{Xi > 0}. If θ = 0 the Xi are uniformly distributed on
+(− 1, 1).
+
+===== PAGE 39 =====
+
+9.10 Problems 189
+a) Give an equation for the maximum likelihood estimator ˆθx based on
+X1,...,X n.
+b) Find the maximum likelihood estimator ˆθy based on Y1, ... ,Yn.
+c) Determine the EM algorithm to compute ˆθy .
+d) Show directly that ˆθy is a ﬁxed point for the EM algorithm.
+e) Give the ﬁrst two iterates, ˆθ 1 and ˆθ 2, of the EM algorithm if the initial
+guess is ˆθ 0 = 0 and there are 5 observations with Y1 + · · · +Y5 = 3.
+22. Consider a multinomial model for a two-way contingency table with inde-
+pendence, so that N = (N11,N 12,N 21,N 22) is multinomial with n trials
+and success probabilities
+(
+pq,p (1−q),q (1−p), (1−p)(1−q)
+)
+. Herep ∈ (0, 1)
+and q ∈ (0, 1) are unknown parameters.
+a) Find the maximum likelihood estimators of p and q based on N .
+b) Suppose we misplace the oﬀ-diagonal entries of the table, so our ob-
+served data are X1 =N11 and X2 =N22. Describe in detail the EM
+algorithm used to compute the maximum likelihood estimators of p
+and q based on X1 and X2.
+c) If the initial guess for p is 2/ 3, the initial guess for q is 1/ 3, the number
+of trials is n = 12, X1 = 4, and X2 = 2, what are the revised estimates
+for p after one and two complete iterations of the EM algorithm?
+23. Let X1,...,X n be i.i.d. exponential variables with failure rate λ . Also,
+for i = 1,...,n, let Yi = I{Xi > ci}, where the thresholds c1,...,c n are
+known constants in (0 , ∞).
+a) Derive the EM recursion to compute the maximum likelihood estima-
+tor of λ based on Y1,...,Y n.
+b) Give the ﬁrst two iterates, ˆλ 1 and ˆλ 2, if the initial guess is ˆλ 0 = 1 and
+there are three observations, Y1 = 1, Y2 = 1, and Y3 = 0, with c1 = 1,
+c2 = 2, and c3 = 3.
+24. Contingency tables with missing data . Counts indicating responses to two
+binary questions, A andB, in a survey are commonly presented in a two-
+by-two contingency table. In practice, some respondents may only answer
+one of the questions. If m respondents answer both questions, then cross-
+classiﬁed counts N = (N
+11,N 12,N 21,N 22) for these respondents would
+be observed, and would commonly be modeled as having a multinomial
+distribution with m trials and success probability p = (p
+11,p 12,p 21,p 22).
+Count information for the nA respondents that only answer question A
+could be summarized by a variable R representing the number of these
+respondents who gave the ﬁrst answer to question A. Under the “missing
+at random” assumption that population proportions for these individuals
+are the same as proportions for individuals who answer both questions,
+R would have a binomial distribution with success probability p
+1+ =
+p11 +p12. Similarly, for the nB respondents who only answer question B,
+the variableC counting the number who give the ﬁrst answer to questionB
+would have a binomial distribution with success probability p+1 =p11 +
+p21.
+
+===== PAGE 40 =====
+
+190 9 Estimating Equations and Maximum Likelihood
+a) Develop an EM algorithm to ﬁnd the maximum likelihood estimator
+of p from these data, N,R,C . The complete data X should be three
+independent tables N , NA, and NB , with sample sizes m, nA, and
+nB , respectively, and common success probability p, related to the
+observed data by R =NA
+1+ and C =NB
++1.
+b) Suppose the observed data are
+N =
+( 5 10
+10 5
+)
+, R = 5, C = 10,
+withm = 30 and nA =nB = 15. If the initial guess for p is ˆp0 =N/ 30,
+ﬁnd the ﬁrst two iterates for the EM algorithm, ˆ p1 and ˆp2.
+25. A simple hidden Markov model . LetX1,X 2,... be Bernoulli variables with
+EX1 = 1/ 2 and the joint mass function determined recursively by
+P (Xk+1 ̸=xk|X1 =x1,...,X k =xk) = θ, n = 1, 2,....
+Viewed as a process in time, Xn,n ≥ 1, is a Markov chain on {0, 1} that
+changes state at each stage with probability θ . Suppose these variables
+are measured with error. Speciﬁcally, let Y1,Y 2,... be Bernoulli variables
+that are conditionally independent given the Xi, satisfying
+P (Yi ̸=Xi|X1,X 2,... ) = γ.
+Assume that the error probability γ is a known constant, and θ ∈ (0, 1) is
+an unknown parameter.
+a) Show that the joint mass functions for X1,...,X n form an exponential
+family.
+b) Find the maximum likelihood estimator for θ based on X1,...,X n.
+c) Give formulas for the EM algorithm to compute the maximum likeli-
+hood estimator of θ based on Y1,...,Y n.
+d) Give the ﬁrst two iterates for the EM algorithm, ˆθ 1 and ˆθ 2, if the
+initial guess is ˆθ 0 = 1/ 2, the error probability γ is 10%, and there are
+four observations: Y1 = 1, Y2 = 1, Y3 = 0 and Y4 = 1.
+26. Probit analysis. Let Y1,...,Y n be independent Bernoulli variables with
+P (Yi = 1) = Φ (α +βti),
+where t1,...,t n are known constants and α and β in R are unknown
+parameters. Also, let X1,...,X n be independent with Xi ∼ N (α +βti, 1),
+i = 1,...,n.
+a) Describe a function g : Rn → { 0, 1}n such that Y ∼ g(X) for any α
+and β .
+b) Find the maximum likelihood estimator for θ = (α,β ) based on X.
+c) Give formulas for the EM algorithm to compute the maximum likeli-
+hood estimator of θ based on Y .
+
+===== PAGE 41 =====
+
+9.10 Problems 191
+d) Suppose we have ﬁve observations, Y = (0, 0, 1, 0, 1) and ti = i for
+i = 1,..., 5. Give the ﬁrst two iterates for the EM algorithm, ˆθ 1 and
+ˆθ 2, if the initial guess is ˆθ 0 = (− 2, 1).
+*27. Suppose X1,X 2,... are i.i.d. with common density fθ , where θ = (η,λ ) ∈
+Ω ⊂ R2. Let I =I(θ ) denote the Fisher information matrix for the family,
+and let ˆθn = (ˆηn, ˆλn) denote the maximum likelihood estimator from the
+ﬁrst n observations.
+a) Show that √
+n(ˆηn − η ) ⇒ N (0,τ 2) under Pθ as n → ∞, giving an
+explicit formula for τ 2 in terms of the Fisher information matrix I.
+b) Let ˜ηn denote the maximum likelihood estimator of η from the ﬁrst n
+observations when λ has a known value. Then √
+n(˜ηn −η ) ⇒ N (0,ν 2)
+under Pθ as n → ∞. Give an explicit formula for ν 2 in terms of the
+Fisher information matrixI, and show that ν 2 ≤ τ 2. When isν 2 =τ 2?
+c) Assume I(·) is a continuous function, and derive a 1 − α asymptotic
+conﬁdence interval for η based on the plug-in estimator I(ˆθn) of I(θ ).
+d) The observed Fisher information matrix for a model with several pa-
+rameters can be deﬁned as −∇ 2l(ˆθn), where ∇ 2 is the Hessian matrix
+of partial derivatives (with respect to η andλ ). Derive a 1 −α asymp-
+totic conﬁdence interval for η based on observed Fisher information
+instead of I(ˆθn).
+28. Let ( X1,Y 1), (X2,Y 2),... be i.i.d. with common Lebesgue density
+exp
+{
+− (x − µx)2 − 2ρ (x − µx)(y − µy ) + (y − µy )2
+2(1 − ρ 2)
+}
+2π
+√
+1 − ρ 2
+,
+where θ = (µx,µ y,ρ) ∈ R2 × (− 1, 1) is an unknown parameter. (This is a
+bivariate normal density with both variances equal to one.)
+a) Give formulas for the maximum likelihood estimators of µx, µy, and
+ρ .
+b) Find the (3 × 3) Fisher information matrixI(θ ) for a single observation.
+c) Derive asymptotic conﬁdence intervals for µx and ρ based on I(ˆθ )
+and based on observed Fisher information (so you should give four
+intervals, two for µ
+x and two for ρ ).
+*29. Suppose W and X have a known joint density q, and that
+Y |W =w, X =x ∼ N (αw +βx, 1).
+Let (W1,X 1,Y 1),..., (Wn,X n,Y n) be i.i.d., each with the same joint dis-
+tribution as (W,X,Y ).
+a) Find the maximum likelihood estimators ˆ α and ˆβ of α and β . Deter-
+mine the limiting distribution of √
+n(ˆα −α ). (The answer will depend
+on moments of W and X.)
+b) Suppose β is known. What is the maximum likelihood estimator ˜ α of
+α ? Find the limiting distribution of √
+n(˜α −α ). When will the limiting
+
+===== PAGE 42 =====
+
+192 9 Estimating Equations and Maximum Likelihood
+distribution for √
+n(˜α −α ) be the same as the limiting distribution in
+part (a)?
+*30. Prove Proposition 9.31 and show that (9.13) is a 1 − α asymptotic conﬁ-
+dence interval for g(θ ). Suggest two estimators for ν (θ ).
+*31. Let N11,...,N 22 be cell counts for a two-way table with independence.
+Speciﬁcally, N has a multinomial distribution on n trials, and the cell
+probabilities satisfy pij =pi+p+j ,i = 1, 2,j = 1, 2. The distribution of N
+is determined by θ = (p+1,p 1+). Find the maximum likelihood estimator
+ˆθ , and give an asymptotic conﬁdence intervals for p11 =θ 1θ 2.
+32. Suppose ( X1,Y 1),..., (Xn,Y n) are i.i.d. random vectors in R2 with com-
+mon density
+exp
+{
+− (x − θx)2 +
+√
+2(x − θx)(y − θy ) − (y − θy )2}
+π
+√
+2 .
+In polar coordinates we can write θx = ∥θ ∥ cosω and θy = ∥θ ∥ sinω , with
+ω ∈ (−π,π ]. Derive asymptotic conﬁdence intervals for ∥θ ∥ and ω .
+33. Suppose X1,X 2,... are i.i.d. from some distribution Qθ , withθ ∈Ω ⊂ Rp.
+Assume that the Fisher information matrix I(θ ) exists and is positive
+deﬁnite and continuous as a function of θ . Also, assume that the family
+{Qθ : θ ∈ Ω} is regular enough that the maximum likelihood estimators
+ˆθn are consistent, and that
+√
+n(ˆθn − θ ) ⇒ N
+(
+0,I (θ )−1)
+.
+a) Find the limiting distribution for
+√
+nI(θ )1/2 (ˆθn − θ ).
+b) Find the limiting distribution for
+n(ˆθn − θ )′I(ˆθ )(ˆθn − θ ).
+Hint: This variable should almost be a function of the random vector
+in part (a).
+c) The variable in part (b) should be an asymptotic pivot. Use this pivot
+to ﬁnd an asymptotic 1 − α conﬁdence region for θ . (Use the upper
+quantile for the limiting distribution only.)
+d) If p = 2 and I(θ ) is diagonal, describe the shape of your asymptotic
+conﬁdence region. What is the shape of the region if I(θ ) is not diag-
+onal?
+34. Simultaneous conﬁdence intervals. SupposeX
+1,X2,... are i.i.d. from some
+distribution Qθ with θ two-dimensional:
+θ =
+(β
+λ
+)
+∈Ω ⊂ R2.
+
+===== PAGE 43 =====
+
+9.10 Problems 193
+Assume that the Fisher information matrix I(θ ) exists, is positive deﬁnite,
+is a continuous function of θ , and is diagonal,
+I(θ ) =
+(Iβ (θ ) 0
+0 Iλ (θ )
+)
+.
+Finally, assume the family {Qθ :θ ∈Ω} is regular enough that the maxi-
+mum likelihood estimators are asymptotically normal:
+√
+n(ˆθn − θ ) = √
+n
+((ˆβn
+ˆλn
+)
+−
+(β
+λ
+))
+⇒ N
+(
+0,I (θ )−1)
+.
+a) Let
+Mn = max
+{√
+nIβ (ˆθn)|ˆβn − β |,
+√
+nIλ (ˆθn)|ˆλn − λ |
+}
+.
+Show that Mn ⇒ M as n → ∞. Does the distribution of M depend
+on θ ?
+b) Let q denote the upper α th quantile for M . Derive a formula relating
+q to quantiles for the standard normal distribution.
+c) Use Mn to ﬁnd a 1 − α asymptotic conﬁdence region S for θ . (You
+should only use the upper quantile for the limiting distribution.) De-
+scribe the shape of the conﬁdence region S.
+d) Find intervals CI
+β and CIλ based on the data, such that
+P (β ∈CIβ and λ ∈CIλ ) → 1 − α.
+From this, it is natural to call intervals CIβ and CIλ asymptotic
+simultaneous conﬁdence intervals for λ and β , because the chance
+they simultaneously cover β and λ is approximately 1 − α .
+35. Multivariate conﬁdence regions. LetX1,...,X m be a random sample from
+N (µx, 1) andY1,...,Y n be a random sample from N (µy, 1), with all m+n
+variables independent, and let
+ X = (X1 + · · · +Xm)/m and
+ Y = (Y1 +
+· · · +Yn)/n .
+a) Find the cumulative distribution function for
+V = max
+{
+|
+X − µx|, |
+Y − µy |
+}
+.
+b) Assume n =m and use the pivot from part (a) to ﬁnd a 1 − α conﬁ-
+dence region for θ = (µx,µ y ). What is the shape of this region?
+36. Let X1,X 2,... be i.i.d. from a distribution Q that is symmetric about θ .
+Let
+ Xn and ˜Xn denote the mean and median of the ﬁrst n observations,
+and let Tn be the M -estimator from the ﬁrst n observations using the
+function ρ given in Theorem 9.34 with k = 1.
+a) Determine the asymptotic relative eﬃciency of Tn with respect to
+ Xn
+if Q =N (θ, 1).
+
+===== PAGE 44 =====
+
+194 9 Estimating Equations and Maximum Likelihood
+b) Determine the asymptotic relative eﬃciency of Tn with respect to ˜Xn
+if Q is absolutely continuous with density
+1
+π [(x − θ )2 + 1],
+a Cauchy density with location θ .
+37. Let X1,X 2,... be i.i.d. from a distribution Q that is symmetric about θ
+and absolutely continuous with density q. Fix ǫ (or k), and let Tn be the
+M -estimator from the ﬁrst n observations using the function ρ given in
+Theorem 9.34. Take ψ =ρ′.
+a) Suggest a consistent estimator for λ′(θ ). You can assume that λ′(θ ) =
+−Eψ′(X − θ ).
+b) Suggest a consistent estimator for Eψ 2(X − θ ).
+c) Using the estimators in parts (a) and (b), ﬁnd an asymptotic 1 − α
+conﬁdence interval for θ .
+38. Suppose Y ∼ N (0, 1) and that, given Y = y, Xn, n ∈ Z, are i.i.d. from
+N (y, 1). Find a shift invariant set B with P (X ∈B) = 1/ 2.
+39. Show that if E|Yi|2+ǫ is bounded for some ǫ > 0, then the Lindeberg
+condition (9.17) holds.
+40. Show that if
+Eθ
+(
+g(x) − log fθ (X0|X−1,...,X −k)
+fω (X0|X−1,...,X −k)
+)2
+, k = 1, 2,...,
+are ﬁnite 9 and tend to zero as k → ∞, then the approximation error in
+(9.19) tends to zero in probability as n → ∞ .
+41. Let Xn,n ∈ Z, be a stationary process with X0 uniformly distributed on
+(0, 1), satisfying
+Xn = ⟨2Xn+1⟩, n ∈ Z.
+Here ⟨x⟩
+def
+= x − ⌊x⌋ denotes the fractional part of x. Show that X − 1/ 2
+is a linear process. Identify a distribution Q for the innovations ǫi and
+coeﬃcients cn, n ≥ 1.
+9 Actually, it is not hard to argue that the conclusion will still hold if some of these
+moments are inﬁnite, provided they still converge to zero.

@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ch 12 — Hypothesis Testing · Theoretical Statistics</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/>
+</head>
+<body data-book="basic_stat" data-page="ch12">
+<header class="site-header">
+<a class="brand" href="/books/basic_stat/">Theoretical Statistics <small>a slow reading guide</small></a>
+<nav>
+<a href="/" class="all-books-link">All books</a>
+    <a href="/books/basic_stat/">Contents</a>
+<button aria-label="toggle theme" class="theme-toggle">Dark</button>
+</nav>
+</header>
+<main class="layout">
+<aside class="sidebar">
+<h4>Chapter 12</h4>
+<ol>
+<li><a href="#s12-1">12.1 Test functions, power, significance</a></li>
+<li><a href="#s12-2">12.2 Simple versus simple</a></li>
+<li><a href="#s12-3">12.3 Uniformly most powerful tests</a></li>
+<li><a href="#s12-4">12.4 Testing &amp; interval estimation</a></li>
+<li><a href="#s12-5">12.5 Generalized Neyman–Pearson</a></li>
+<li><a href="#s12-6">12.6 Two-sided hypotheses</a></li>
+<li><a href="#s12-7">12.7 Unbiased tests</a></li>
+<li><a href="#summary">Summary</a></li>
+</ol>
+</aside>
+<article class="content">
+<section class="hero">
+<div class="kicker">Chapter 12</div>
+<h1>Hypothesis Testing</h1>
+<p class="subtitle" data-cid="ch12-010">Two competing stories about the world; one dataset; a rule for picking sides — and the surprisingly deep theory of what makes such a rule "best".</p>
+<div class="meta">
+<span>Book pages: 219–254</span>
+<span>~75 min reading time</span>
+<span>Prereqs: Ch. 1, Ch. 2 (exponential families)</span>
+</div>
+</section>
+<p data-cid="ch12-020">
+Estimation answers "what is $\theta$?" Hypothesis testing answers a coarser but often more practical question: "is $\theta$ in this set, or in that one?". We have data $X \sim P_\theta$ for some unknown $\theta \in \Omega$, and we want to decide between two competing claims:
+</p>
+$$H_0 : \theta \in \Omega_0 \qquad \text{versus} \qquad H_1 : \theta \in \Omega_1,$$
+<p data-cid="ch12-030">
+where $\Omega_0$ and $\Omega_1$ partition $\Omega$ (no overlap, nothing left out). $H_0$ is the <em>null hypothesis</em> — the boring, default, status-quo claim. $H_1$ is the <em>alternative</em> — the interesting story we'd believe only if the data forced us to. The whole chapter is about how to build, and how to recognize, the best procedures for choosing between them.
+</p>
+<div class="box intuition" data-cid="ch12-040">
+<span class="box-label">A first orientation</span>
+<p data-cid="ch12-050">
+The mathematics of $H_0$ and $H_1$ is symmetric: each is just a subset of $\Omega$. The <em>statistical</em> use of them is not. We rig the whole procedure so that mistakenly rejecting $H_0$ is the error we worry about most — controlling its probability is the first commandment. The "second" error (failing to reject $H_0$ when $H_1$ is true) is something we then minimize <em>subject to</em> that first constraint. Keep this asymmetry in mind; it explains almost every design choice in the chapter.
+</p>
+</div>
+<!-- ===================================================================== -->
+<h2 data-cid="ch12-060" id="s12-1">12.1 Test functions, power, and significance</h2>
+<h3 data-cid="ch12-070">The simplest kind of test</h3>
+<p data-cid="ch12-080">
+A <strong>nonrandomized test</strong> is specified by a <em>critical region</em> (or <em>rejection region</em>) $S \subseteq \mathcal{X}$, with the rule
+</p>
+<ul data-cid="ch12-090">
+<li>If $X \in S$: reject $H_0$, accept $H_1$.</li>
+<li>If $X \notin S$: do not reject $H_0$.</li>
+</ul>
+<p data-cid="ch12-100">That is the whole apparatus. Everything else — power, significance, $p$-values, Neyman–Pearson — is just a way of asking <em>which</em> $S$ is the right one.</p>
+<h3 data-cid="ch12-110">The power function</h3>
+<div class="box definition" data-cid="ch12-120">
+<span class="box-label">Definition 12.1 — power function</span>
+<p data-cid="ch12-130">
+The <strong>power function</strong> of a test with critical region $S$ is
+$$\beta(\theta) = P_\theta(X \in S), \qquad \theta \in \Omega.$$
+It tells you, for each possible value of $\theta$, the probability that the test will reject $H_0$.
+</p>
+</div>
+<p data-cid="ch12-140">
+$\beta(\theta)$ is doing two jobs at once. When $\theta \in \Omega_0$ (the null is true), $\beta(\theta)$ is the <em>probability of a false alarm</em> — we wanted this small. When $\theta \in \Omega_1$ (the alternative is true), $\beta(\theta)$ is the <em>probability of correctly catching the alternative</em> — we wanted this big. The ideal test would have $\beta(\theta) = 0$ on $\Omega_0$ and $\beta(\theta) = 1$ on $\Omega_1$, but except in degenerate cases this is impossible. Real tests live in a tradeoff.
+</p>
+<h3 data-cid="ch12-150">Two kinds of error</h3>
+<div class="box intuition" data-cid="ch12-160">
+<span class="box-label">Type I and Type II</span>
+<p data-cid="ch12-170">
+Two ways to be wrong:
+</p>
+<ul data-cid="ch12-180">
+<li><strong>Type I error</strong> — rejecting $H_0$ when $H_0$ is true. Probability: $\beta(\theta)$ for $\theta \in \Omega_0$.</li>
+<li><strong>Type II error</strong> — failing to reject $H_0$ when $H_1$ is true. Probability: $1 - \beta(\theta)$ for $\theta \in \Omega_1$.</li>
+</ul>
+<p data-cid="ch12-190">
+$\beta(\theta)$ in the alternative region is called <em>power</em>; $1 - \beta(\theta)$ there is the Type II rate. Beginners frequently mix up which is which. A pneumonic: <em>"the test has power against an alternative"</em> means the test is good at detecting that alternative, which means $\beta$ is close to 1 there.
+</p>
+</div>
+<h3 data-cid="ch12-200">The level (significance)</h3>
+<div class="box definition" data-cid="ch12-210">
+<span class="box-label">Definition 12.2 — significance level</span>
+<p data-cid="ch12-220">
+The <strong>significance level</strong> (or just <em>level</em>) of a test is
+$$\alpha \;=\; \sup_{\theta \in \Omega_0} \beta(\theta) \;=\; \sup_{\theta \in \Omega_0} P_\theta(X \in S).$$
+This is the <em>worst-case</em> probability of falsely rejecting $H_0$, taken over every $\theta$ compatible with the null.
+</p>
+</div>
+<p data-cid="ch12-230">
+We pick $\alpha$ in advance — conventionally $0.05$ or $0.01$, though the choice is not sacred — and then design $S$ so that the supremum above is at most $\alpha$. This guarantees that <em>no matter which null parameter is the truth</em>, our chance of a Type I error is bounded by $\alpha$.
+</p>
+<div class="box pause" data-cid="ch12-240">
+<span class="box-label">Pause</span>
+<p data-cid="ch12-250">
+"$\alpha = 0.05$" does not mean "there is a 5% chance that $H_0$ is true given my data". It means: <em>if</em> $H_0$ is true, my test mistakenly rejects it with probability at most 5%. The conditional is one-way. Reverse it and you get the Bayesian quantity $P(H_0 \text{ true} \mid \text{data})$, which is a different number requiring a prior on $\theta$ to compute. Confusing the two is the single most common misreading of $p$-values; we will return to it below.
+</p>
+</div>
+<h3 data-cid="ch12-260">Why allow randomized tests?</h3>
+<p data-cid="ch12-270">
+A <strong>randomized test</strong> is specified by a <em>test function</em> (or <em>critical function</em>) $\varphi : \mathcal{X} \to [0,1]$. The rule is: after observing $X = x$, reject $H_0$ with probability $\varphi(x)$ (by, say, flipping an independent coin with that bias). The power function becomes
+$$\beta(\theta) = E_\theta\,\varphi(X) = \int \varphi(x)\, p_\theta(x)\, d\mu(x).$$
+A nonrandomized test with region $S$ is the special case $\varphi = 1_S$.
+</p>
+<p data-cid="ch12-280">
+Why bother with the extra generality? Because for discrete data, achieving an exact level $\alpha$ may otherwise be impossible. If $X \sim \mathrm{Binomial}(n, \theta)$, the available levels of nonrandomized tests are a finite list determined by the atoms of the distribution. A randomized test lets us interpolate between them and hit any $\alpha \in [0,1]$ exactly. It also makes the set of all tests <em>convex</em> — for any two test functions $\varphi_1, \varphi_2$ and $\gamma \in [0,1]$, the mixture $\gamma\varphi_1 + (1-\gamma)\varphi_2$ is again a test. This convexity is what makes the optimization theory in the rest of the chapter clean.
+</p>
+<div class="box intuition" data-cid="ch12-290">
+<span class="box-label">Don't be spooked</span>
+<p data-cid="ch12-300">
+You will rarely flip a coin in a real experiment — randomized tests are usually a theoretical device, used so that theorems can be stated cleanly for all $\alpha$. In continuous-data settings, the optimal $\varphi$ comes out to $0$ or $1$ almost everywhere anyway, so the randomization disappears.
+</p>
+</div>
+<!-- ===================================================================== -->
+<h2 data-cid="ch12-310" id="s12-2">12.2 Simple versus simple: the Neyman–Pearson lemma</h2>
+<h3 data-cid="ch12-320">Simple vs composite hypotheses</h3>
+<div class="box definition" data-cid="ch12-330">
+<span class="box-label">Definition 12.3 — simple and composite</span>
+<p data-cid="ch12-340">
+A hypothesis $H_i : \theta \in \Omega_i$ is <strong>simple</strong> if $\Omega_i$ contains a single parameter value, and <strong>composite</strong> otherwise.
+</p>
+</div>
+<p data-cid="ch12-350">
+"Simple" means: the hypothesis pins down the entire distribution of $X$. There is no ambiguity left. "Composite" means: the hypothesis names a range of distributions, and even after assuming it, the distribution of the data is not fully known.
+</p>
+<div class="box example" data-cid="ch12-360">
+<span class="box-label">Concrete examples</span>
+<ul data-cid="ch12-370">
+<li>$H_0 : \theta = 0$ vs $H_1 : \theta = 1$ — simple vs simple.</li>
+<li>$H_0 : \theta = 0$ vs $H_1 : \theta &gt; 0$ — simple vs composite.</li>
+<li>$H_0 : \theta \leq 0$ vs $H_1 : \theta &gt; 0$ — composite vs composite.</li>
+<li>$H_0 : \theta = 0$ vs $H_1 : \theta \neq 0$ — simple vs composite (two-sided).</li>
+</ul>
+</div>
+<div class="box warn" data-cid="ch12-380">
+<span class="box-label">Common pitfall</span>
+<p data-cid="ch12-390">
+Calling a hypothesis "simple" does not mean it is easy or natural. It means the parameter set $\Omega_i$ is a single point. Most realistic null hypotheses (e.g. "drug has zero effect") <em>look</em> simple but are often actually composite, because nuisance parameters (variance, sample-to-sample drift) remain free. The cleanest theorems in this chapter are for genuinely simple-vs-simple cases. We then bootstrap our way up.
+</p>
+</div>
+<h3 data-cid="ch12-400">The setup</h3>
+<p data-cid="ch12-410">
+Let $H_0$ and $H_1$ both be simple, with densities $p_0$ and $p_1$ (with respect to a common dominating measure $\mu$ — counting, Lebesgue, or their sum). There are now only two possible distributions for $X$, so the power function of a test $\varphi$ takes only two values:
+</p>
+$$\alpha = E_0\,\varphi = \int \varphi(x)\, p_0(x)\, d\mu(x), \qquad \beta = E_1\,\varphi = \int \varphi(x)\, p_1(x)\, d\mu(x).$$
+<p data-cid="ch12-420">
+We want $\alpha$ near $0$ and $\beta$ near $1$. These two goals conflict (a test that never rejects has $\alpha = 0$ but also $\beta = 0$; one that always rejects has $\beta = 1$ but $\alpha = 1$). The natural compromise is to <em>fix</em> the level $\alpha$ and maximize $\beta$.</p>
+<h3 data-cid="ch12-430">The Lagrange trick</h3>
+<p data-cid="ch12-440">
+Constrained maximization is hard; unconstrained maximization is easy. Lagrange multipliers convert one to the other.
+</p>
+<div class="box definition" data-cid="ch12-450">
+<span class="box-label">Proposition 12.1 — Lagrange shortcut</span>
+<p data-cid="ch12-460">
+Suppose $k \geq 0$, $\varphi^*$ maximizes $E_1\,\varphi - k\,E_0\,\varphi$ over all test functions, and $E_0\,\varphi^* = \alpha$. Then $\varphi^*$ maximizes $E_1\,\varphi$ over all $\varphi$ with level at most $\alpha$.
+</p>
+</div>
+<p data-cid="ch12-470">One-line proof: for any competitor $\varphi$ with $E_0\,\varphi \leq \alpha$,</p>
+$$E_1\varphi \leq E_1\varphi - kE_0\varphi + k\alpha \leq E_1\varphi^* - kE_0\varphi^* + k\alpha = E_1\varphi^*.$$
+
+<p data-cid="ch12-480">
+The unconstrained problem on the inside is transparent. Rearranging,
+</p>
+$$E_1\varphi - kE_0\varphi = \int [p_1(x) - k p_0(x)]\,\varphi(x)\, d\mu(x).$$
+<p data-cid="ch12-490">
+To maximize an integral $\int g(x)\,\varphi(x)\, d\mu(x)$ over $\varphi(x) \in [0,1]$, point by point you take $\varphi(x) = 1$ where $g(x) &gt; 0$ and $\varphi(x) = 0$ where $g(x) &lt; 0$. So:
+</p>
+<div class="box definition" data-cid="ch12-500">
+<span class="box-label">Likelihood ratio test</span>
+<p data-cid="ch12-510">
+Define $L(x) = p_1(x)/p_0(x)$ (with sensible conventions when the denominator is zero). A test of the form
+$$\varphi^*(x) = \begin{cases} 1, &amp; L(x) &gt; k \\ \gamma(x), &amp; L(x) = k \\ 0, &amp; L(x) &lt; k \end{cases}$$
+for some $k \in [0, \infty]$ and some $\gamma(x) \in [0,1]$ on the tie set is called a <strong>likelihood ratio test (LRT)</strong>.
+</p>
+</div>
+<div class="box intuition" data-cid="ch12-520">
+<span class="box-label">What it says</span>
+<p data-cid="ch12-530">
+The likelihood ratio $L(X)$ measures how much more plausible the data is under $H_1$ than under $H_0$. Reject $H_0$ when this ratio is large. The threshold $k$ is whatever value makes the level come out to $\alpha$. That is the whole idea — and it turns out to be optimal.
+</p>
+</div>
+<h3 data-cid="ch12-540">The lemma itself</h3>
+<div class="box definition" data-cid="ch12-550">
+<span class="box-label">Proposition 12.2 — Neyman–Pearson lemma</span>
+<p data-cid="ch12-560">
+For any $\alpha \in [0,1]$ there exists a likelihood ratio test $\varphi_\alpha$ with level exactly $\alpha$, and any LRT with level $\alpha$ maximizes $E_1\,\varphi$ among all tests with level at most $\alpha$.
+</p>
+</div>
+<p data-cid="ch12-570">
+And the converse (Proposition 12.3 in Keener): if a test is optimal, it must be an LRT, almost everywhere where $p_1 \neq k p_0$. Optimality and the likelihood-ratio form are essentially equivalent.
+</p>
+<h3 data-cid="ch12-580">Worked example: testing an exponential rate</h3>
+<div class="box example" data-cid="ch12-590">
+<span class="box-label">Example 12.5 — exponential, one-sided</span>
+<p data-cid="ch12-600">
+Let $X$ have density $p_\theta(x) = \theta e^{-\theta x}$ for $x &gt; 0$. Test $H_0: \theta = 1$ versus $H_1: \theta = \theta_1$ for some fixed $\theta_1 &gt; 1$. The likelihood ratio is
+$$L(x) = \frac{\theta_1 e^{-\theta_1 x}}{e^{-x}} = \theta_1 e^{-(\theta_1 - 1) x}.$$
+This is a decreasing function of $x$, so $L(x) &gt; k$ is equivalent to $x &lt; k'$ for some constant $k'$. Reject $H_0$ when $X$ is small; accept when $X$ is large. Solving for the threshold to get level $\alpha$:
+$$\alpha = P_0(X &lt; k') = 1 - e^{-k'}, \quad \text{i.e.}\quad k' = -\log(1 - \alpha).$$
+The remarkable observation: the optimal threshold $k' = -\log(1-\alpha)$ does not depend on $\theta_1$. So <em>the same test</em> is optimal against every alternative $\theta_1 &gt; 1$ — a hint of a deeper structure, formalized in the next section.
+</p>
+</div>
+<h3 data-cid="ch12-610">Worked example: binomial with randomization</h3>
+<div class="box example" data-cid="ch12-620">
+<span class="box-label">Example 12.6 — binomial proportion</span>
+<p data-cid="ch12-630">
+Let $X \sim \mathrm{Binomial}(n=2, \theta)$. Test $H_0 : \theta = 1/2$ versus $H_1 : \theta = 3/4$. The likelihood ratio is
+$$L(X) = \frac{\binom{2}{X}(3/4)^X(1/4)^{2-X}}{\binom{2}{X}(1/2)^X(1/2)^{2-X}} = \frac{3^X}{4}.$$
+Under $H_0$, $L(X)$ takes values $1/4, 3/4, 9/4$ with probabilities $1/4, 1/2, 1/4$. Aim for level $\alpha = 5\%$.
+</p>
+<p data-cid="ch12-640">
+If we set $k &lt; 9/4$ then $L(2) &gt; k$, forcing $\varphi(2) = 1$ and giving $E_0\varphi \geq 1/4 = 25\%$ — too big. If $k &gt; 9/4$ then $\varphi \equiv 0$ and the level is $0$. So $k = 9/4$, and the only adjustment we can make is on the tie set $\{X = 2\}$:
+$$0.05 = E_0\varphi(X) = \tfrac{1}{4}\varphi(2) \implies \varphi(2) = \tfrac{1}{5}.$$
+The optimal test: never reject if $X \in \{0,1\}$; if $X = 2$, flip a (biased) coin and reject with probability $1/5$. The randomization is what lets us hit $\alpha = 5\%$ exactly.
+</p>
+</div>
+<!-- ===================================================================== -->
+<h2 data-cid="ch12-650" id="s12-3">12.3 Uniformly most powerful tests</h2>
+<h3 data-cid="ch12-660">From simple-vs-simple to one-sided composite</h3>
+<p data-cid="ch12-670">
+Most real testing problems involve a composite alternative. We don't want to test "$\theta = 0$ vs $\theta = 1$" — we want "$\theta = 0$ vs $\theta &gt; 0$" (or some one-sided version). The natural ambition: find a test that beats all competitors <em>simultaneously</em> at every $\theta \in \Omega_1$.
+</p>
+<div class="box definition" data-cid="ch12-680">
+<span class="box-label">Definition — uniformly most powerful (UMP)</span>
+<p data-cid="ch12-690">
+A level-$\alpha$ test $\varphi^*$ is <strong>uniformly most powerful (UMP)</strong> for $H_0$ vs $H_1$ if for every other level-$\alpha$ test $\varphi$,
+$$E_\theta\,\varphi^* \geq E_\theta\,\varphi \quad \text{for all } \theta \in \Omega_1.$$
+</p>
+</div>
+<p data-cid="ch12-700">
+UMP is a strong demand: the same test must dominate every competitor at every alternative. It frequently fails to exist — for two-sided alternatives, for example. But when the parameter is univariate, the alternative is one-sided, and the family has a particular structure, UMP tests exist and have a beautiful description.
+</p>
+<h3 data-cid="ch12-710">Monotone likelihood ratios</h3>
+<div class="box definition" data-cid="ch12-720">
+<span class="box-label">Definition 12.7 — MLR</span>
+<p data-cid="ch12-730">
+A family of densities $\{p_\theta : \theta \in \Omega \subset \mathbb{R}\}$ has <strong>monotone likelihood ratio (MLR)</strong> in a statistic $T$ if, whenever $\theta_1 &lt; \theta_2$, the ratio $p_{\theta_2}(x) / p_{\theta_1}(x)$ is a nondecreasing function of $T(x)$.
+</p>
+</div>
+<p data-cid="ch12-740">
+In other words: bigger $\theta$ shifts likelihood mass toward bigger $T$. The Neyman–Pearson LRT comparing any $\theta_1 &lt; \theta_2$ then reduces to thresholding on $T$, with the <em>same</em> $T$ regardless of the pair — exactly the phenomenon we noticed in Example 12.5.
+</p>
+<div class="box example" data-cid="ch12-750">
+<span class="box-label">Example 12.8 — exponential families have MLR</span>
+<p data-cid="ch12-760">
+If $p_\theta(x) = \exp\{\eta(\theta) T(x) - B(\theta)\} h(x)$ with $\eta(\theta)$ strictly increasing in $\theta$, then for $\theta_2 &gt; \theta_1$,
+$$\frac{p_{\theta_2}(x)}{p_{\theta_1}(x)} = \exp\!\big\{[\eta(\theta_2) - \eta(\theta_1)] T(x) + B(\theta_1) - B(\theta_2)\big\},$$
+which is strictly increasing in $T(x)$. So <em>every</em> one-parameter exponential family with monotone natural parameter has MLR — covering normal mean, exponential rate, Poisson, binomial, and more.
+</p>
+</div>
+<h3 data-cid="ch12-770">The Karlin–Rubin / Keener theorem</h3>
+<div class="box definition" data-cid="ch12-780">
+<span class="box-label">Theorem 12.9 — UMP via MLR</span>
+<p data-cid="ch12-790">
+Suppose the family $\{p_\theta\}$ has MLR in $T$. Then for testing $H_0 : \theta \leq \theta_0$ versus $H_1 : \theta &gt; \theta_0$:
+</p>
+<ol data-cid="ch12-800">
+<li>The test
+$$\varphi^*(x) = \begin{cases} 1, &amp; T(x) &gt; c \\ \gamma, &amp; T(x) = c \\ 0, &amp; T(x) &lt; c \end{cases}$$
+is UMP among all level-$\alpha$ tests. The constants $c$ and $\gamma$ can be chosen to achieve any $\alpha \in (0,1)$.</li>
+<li>The power function $\beta(\theta) = E_\theta\,\varphi^*$ is nondecreasing in $\theta$, and strictly increasing wherever $\beta(\theta) \in (0,1)$.</li>
+<li>For $\theta_1 &lt; \theta_0$, $\varphi^*$ <em>minimizes</em> $E_{\theta_1}\varphi$ among tests with $E_{\theta_0}\varphi = \alpha$.</li>
+</ol>
+</div>
+<p data-cid="ch12-810">
+Part 1 is the headline. Parts 2 and 3 are bonus features: the test's rejection probability moves the right way as $\theta$ changes, and on the null side of the boundary the test is as conservative as possible.
+</p>
+<h3 data-cid="ch12-820">Worked example: testing a normal mean (one-sided)</h3>
+<div class="box example" data-cid="ch12-830">
+<span class="box-label">Normal mean, one-sided</span>
+<p data-cid="ch12-840">
+Let $X_1, \dots, X_n \sim \mathrm{N}(\mu, \sigma^2)$ i.i.d. with $\sigma$ known. Test $H_0 : \mu \leq \mu_0$ vs $H_1 : \mu &gt; \mu_0$. The joint density forms an exponential family with $T = \sum X_i$ and $\eta(\mu) = \mu/\sigma^2$, which is strictly increasing. By Theorem 12.9, the UMP level-$\alpha$ test rejects when $T$ is large, equivalently when
+$$Z \;=\; \frac{\bar{X} - \mu_0}{\sigma/\sqrt{n}} \;&gt;\; z_\alpha,$$
+where $z_\alpha$ is the upper-$\alpha$ standard normal quantile. The power function is
+$$\beta(\mu) = \Phi\!\left( \frac{\mu - \mu_0}{\sigma/\sqrt{n}} - z_\alpha \right),$$
+which is strictly increasing in $\mu$ and equals $\alpha$ at $\mu = \mu_0$. This is the textbook one-sided $z$-test — and now we know why: not because someone declared it, but because MLR forces it.
+</p>
+</div>
+<div class="box example" data-cid="ch12-850">
+<span class="box-label">Bernoulli proportion, one-sided</span>
+<p data-cid="ch12-860">
+Let $X_1, \dots, X_n \sim \mathrm{Bernoulli}(p)$ i.i.d. and test $H_0 : p \leq p_0$ vs $H_1 : p &gt; p_0$. The family is exponential with $T = \sum X_i$ and natural parameter $\log(p/(1-p))$, which is increasing. So the UMP test rejects when $T$ is large. Because $T$ is discrete, exact level $\alpha$ usually requires randomizing on the boundary value $T = c$ — exactly the binomial subtlety we saw in Example 12.6.
+</p>
+</div>
+<h3 data-cid="ch12-870">Inadmissible UMP tests — a cautionary example</h3>
+<p data-cid="ch12-880">
+Theorem 12.9 does not say the UMP test is <em>unique</em>. In Example 12.10, with $X_1, \dots, X_n$ uniform on $(0, \theta)$ and $H_0 : \theta \leq 1$, two different tests both achieve UMP, but one is uniformly worse on the null side. Such a test is <em>inadmissible</em> — there is another test with $\geq$ power on $\Omega_1$ and $\leq$ Type I rate on $\Omega_0$, strictly so somewhere. UMP captures part of "best" but not all of it.
+</p>
+<!-- ===================================================================== -->
+<h2 data-cid="ch12-890" id="s12-4">12.4 Duality between testing and interval estimation</h2>
+<h3 data-cid="ch12-900">The bridge</h3>
+<p data-cid="ch12-910">
+Tests and confidence intervals are two sides of the same coin. Suppose for every $\xi_0$ we have a nonrandomized level-$\alpha$ test of $H_0 : \xi(\theta) = \xi_0$ with acceptance region $A(\xi_0)$. Define
+$$S(x) = \{\xi_0 : x \in A(\xi_0)\}.$$
+Then $\xi(\theta) \in S(X)$ if and only if $X \in A(\xi(\theta))$, so
+$$P_\theta\big(\xi(\theta) \in S(X)\big) = P_\theta\big(X \in A(\xi(\theta))\big) \geq 1 - \alpha.$$
+$S(X)$ is a $1-\alpha$ confidence region for $\xi$. Conversely, given any $1-\alpha$ confidence region, you can build a family of level-$\alpha$ tests by rejecting whenever the hypothesized $\xi_0$ is excluded from the region.
+</p>
+<div class="box intuition" data-cid="ch12-920">
+<span class="box-label">In words</span>
+<p data-cid="ch12-930">
+A confidence region is the <em>set of values you would not reject</em>. A test is <em>the predicate "is this value in the confidence region?"</em>. They contain literally the same information; you can build either from the other. Practically: if your software computes confidence intervals, it has implicitly tested every null in sight.
+</p>
+</div>
+<h3 data-cid="ch12-940">UMP tests give optimal intervals</h3>
+<p data-cid="ch12-950">
+The duality also propagates optimality. If the dual tests are UMP one-sided, then $S(X)$ is optimal in the sense (12.2) of Keener: for any competing $1-\alpha$ region $S^*$ and any incorrect $\theta_0 &lt; \theta$ (truth),
+$$P_\theta(\theta_0 \in S(X)) \leq P_\theta(\theta_0 \in S^*(X)).$$
+$S(X)$ is least likely, among all $1-\alpha$ regions, to contain wrong values. By Fubini, this also implies $S$ has smallest expected length (below the truth).
+</p>
+<div class="box example" data-cid="ch12-960">
+<span class="box-label">Exponential mean — interval from test</span>
+<p data-cid="ch12-970">
+Let $X \sim \mathrm{Exp}(\text{mean } \theta)$, so $p_\theta(x) = \theta^{-1} e^{-x/\theta}$. The family has MLR in $T = X$. For one-sided $H_0 : \theta = \theta_0$ vs $H_1 : \theta &gt; \theta_0$, the UMP test rejects when $X \geq u(\theta_0)$ with $u(\theta) = -\theta \log \alpha$. Inverting, the dual confidence region is
+$$S(X) = \left( \frac{X}{-\log \alpha},\; \infty \right),$$
+the standard one-sided exponential interval. Optimality of the test transfers automatically.
+</p>
+</div>
+<!-- ===================================================================== -->
+<h2 data-cid="ch12-980" id="s12-5">12.5 Generalized Neyman–Pearson lemma</h2>
+<p data-cid="ch12-990">
+Two-sided alternatives don't fit Theorem 12.9, because a test that is most powerful against $\theta &gt; \theta_0$ is generally not most powerful against $\theta &lt; \theta_0$. We need a generalization of Neyman–Pearson that handles multiple side constraints. The setup: maximize $\int \varphi f\, d\mu$ over test functions $\varphi$ satisfying $m$ linear constraints
+$$\int \varphi\, g\, d\mu \;=\; c \in \mathbb{R}^m,$$
+where $g : \mathcal{X} \to \mathbb{R}^m$. Introduce a vector Lagrange multiplier $k \in \mathbb{R}^m$ and consider the unconstrained problem of maximizing $\int (f - k \cdot g)\varphi\, d\mu$.
+</p>
+<div class="box definition" data-cid="ch12-1000">
+<span class="box-label">Theorem 12.13 — generalized NP (essentials)</span>
+<p data-cid="ch12-1010">
+Under integrability conditions and assuming the constraint set is nonempty:
+</p>
+<ol data-cid="ch12-1020">
+<li>A maximizer $\varphi^*$ exists.</li>
+<li>Any $\varphi^*$ satisfying the constraints and the pointwise rule
+$$\varphi^*(x) = \begin{cases} 1, &amp; f(x) &gt; k \cdot g(x) \\ 0, &amp; f(x) &lt; k \cdot g(x) \end{cases}$$
+for some $k \in \mathbb{R}^m$ is a maximizer.</li>
+<li>If additionally $k \geq 0$, then $\varphi^*$ maximizes $\int \varphi f\, d\mu$ over the wider class with $\int \varphi g\, d\mu \leq c$.</li>
+<li>If $c$ is interior to the range of the constraint map, a Lagrange multiplier exists and any maximizer must have this form a.e.</li>
+</ol>
+</div>
+<p data-cid="ch12-1030">
+The proof rests on the <em>weak compactness theorem</em> (every uniformly bounded sequence of test functions has a weakly convergent subsequence) and the <em>supporting hyperplane theorem</em> from convex analysis. The technical content is muscular, but the punchline is the same as for ordinary NP: the optimal test thresholds a single linear combination of densities and constraint functions.
+</p>
+<div class="box intuition" data-cid="ch12-1040">
+<span class="box-label">Why we need this</span>
+<p data-cid="ch12-1050">
+A two-sided alternative against an exponential family hides two competing objectives: the test should detect $\theta &gt; \theta_0$ <em>and</em> $\theta &lt; \theta_0$. Asking for both at once is a constrained problem with two constraints (level $\alpha$ at $\theta_0$, and zero slope of the power function at $\theta_0$). Generalized NP provides the optimization machinery to handle it.
+</p>
+</div>
+<!-- ===================================================================== -->
+<h2 data-cid="ch12-1060" id="s12-6">12.6 Two-sided hypotheses</h2>
+<h3 data-cid="ch12-1070">The fundamental obstacle</h3>
+<p data-cid="ch12-1080">
+For an exponential family with density $h(x) e^{\eta(\theta) T(x) - B(\theta)}$ and $\eta$ strictly increasing, we already have <em>one-sided</em> UMP tests $\varphi^+$ (reject for large $T$) and $\varphi^-$ (reject for small $T$). Each maximizes power on its own side. But neither maximizes power on the <em>other</em> side, and there is no test that does both. So a UMP test for $H_0 : \theta = \theta_0$ versus $H_1 : \theta \neq \theta_0$ generally does not exist.
+</p>
+<div class="box pause" data-cid="ch12-1090">
+<span class="box-label">Pause</span>
+<p data-cid="ch12-1100">
+Re-read that. "UMP does not exist" is not a quirk of one example — it is a structural fact about two-sided alternatives with one-dimensional parameters. To get any kind of optimality theorem, we need to <em>restrict</em> the class of tests we are willing to consider. Section 12.7 picks one principled restriction ("unbiasedness"). This section sets it up.
+</p>
+</div>
+<h3 data-cid="ch12-1110">The derivative of the power function</h3>
+<div class="box definition" data-cid="ch12-1120">
+<span class="box-label">Theorem 12.20</span>
+<p data-cid="ch12-1130">
+For an exponential family with $\eta$ differentiable at $\theta$,
+$$\beta'(\theta) = \eta'(\theta)\, E_\theta[T\varphi] - B'(\theta)\, \beta(\theta).$$
+</p>
+</div>
+<p data-cid="ch12-1140">
+Specializing to $\theta = \theta_0$ and a level-$\alpha$ test ($\beta(\theta_0) = \alpha$), this becomes a linear function of $E_{\theta_0}[T\varphi]$. Constraining the slope $\beta'(\theta_0) = m$ is therefore a linear constraint on $\varphi$, in the exact form generalized NP can handle.
+</p>
+<h3 data-cid="ch12-1150">Two-sided tests</h3>
+<div class="box definition" data-cid="ch12-1160">
+<span class="box-label">Definition 12.21 — two-sided test</span>
+<p data-cid="ch12-1170">
+A test $\varphi$ is <strong>two-sided</strong> if there exist finite $t_1 \leq t_2$ with
+$$\varphi(x) = \begin{cases} 1, &amp; T(x) &lt; t_1 \text{ or } T(x) &gt; t_2 \\ 0, &amp; T(x) \in (t_1, t_2) \end{cases}$$
+and the test is not actually one-sided (both tails carry mass).
+</p>
+</div>
+<p data-cid="ch12-1180">
+Theorem 12.22 then proves: among all level-$\alpha$ tests with power-function slope $m$ at $\theta_0$ (in a range $(m_-, m_+)$ that comes from the one-sided UMP tests), the UMP test exists and is two-sided. The geometric argument: a line $k_1 + k_2 t$ intersects the strictly convex exponential function $e^{[\eta(\tilde\theta) - \eta(\theta_0)] t + \text{const}}$ in at most two points, so the optimal test naturally has a two-piece rejection region.
+</p>
+<!-- ===================================================================== -->
+<h2 data-cid="ch12-1190" id="s12-7">12.7 Unbiased tests</h2>
+<h3 data-cid="ch12-1200">The principle</h3>
+<div class="box definition" data-cid="ch12-1210">
+<span class="box-label">Definition 12.25 — unbiased test</span>
+<p data-cid="ch12-1220">
+A level-$\alpha$ test $\varphi$ is <strong>unbiased</strong> if
+$$\beta_\varphi(\theta) \leq \alpha \quad \text{for all } \theta \in \Omega_0, \qquad \beta_\varphi(\theta) \geq \alpha \quad \text{for all } \theta \in \Omega_1.$$
+</p>
+</div>
+<div class="box intuition" data-cid="ch12-1230">
+<span class="box-label">Translation</span>
+<p data-cid="ch12-1240">
+An unbiased test is at least as likely to reject when the alternative is true as when the null is true. That sounds tautological — but for two-sided alternatives, some tests actually fail it. A test that has high power on one side of $\theta_0$ and low power on the other can have $\beta(\theta) &lt; \alpha$ at some alternative $\theta$, which is absurd: we are more likely to "catch" the alternative when the null is true than when the alternative is. Demanding unbiasedness rules out this pathology.
+</p>
+</div>
+<p data-cid="ch12-1250">
+Every UMP test (when one exists) is automatically unbiased — beat the trivial test $\varphi \equiv \alpha$, which has constant power $\alpha$, and the inequality follows. Conversely, restricting to the unbiased class is exactly the right way to recover an optimality theory when no global UMP exists.
+</p>
+<h3 data-cid="ch12-1260">UMP unbiased for two-sided exponential families</h3>
+<div class="box definition" data-cid="ch12-1270">
+<span class="box-label">Theorem 12.26 — UMPU for two-sided</span>
+<p data-cid="ch12-1280">
+Under the assumptions of Theorem 12.22, there is a two-sided level-$\alpha$ test $\varphi^*$ with $\beta'_{\varphi^*}(\theta_0) = 0$. Any such test is UMP <em>among unbiased tests</em> for $H_0 : \theta = \theta_0$ vs $H_1 : \theta \neq \theta_0$.
+</p>
+</div>
+<p data-cid="ch12-1290">
+The argument is short: an unbiased test attains its minimum (over $\theta$) at $\theta_0$, where the value is $\alpha$. Since $\theta_0$ is interior to $\Omega$, the derivative of $\beta$ must vanish at $\theta_0$. So every unbiased test lies in the class $C_0$ of Theorem 12.22, and the UMP-in-$C_0$ test from that theorem is automatically UMP among unbiased tests. Using Theorem 12.20, the constraint $\beta'_{\varphi^*}(\theta_0) = 0$ is equivalent to $\mathrm{Cov}_{\theta_0}(\varphi^*, T) = 0$: any level-$\alpha$ two-sided test that is uncorrelated with $T$ at $\theta_0$ is UMP unbiased.
+</p>
+<h3 data-cid="ch12-1300">Worked example: two-sided exponential rate</h3>
+<div class="box example" data-cid="ch12-1310">
+<span class="box-label">Example 12.29 — Exp($\theta$), two-sided</span>
+<p data-cid="ch12-1320">
+Let $X \sim \mathrm{Exp}(\theta)$ with $p_\theta(x) = \theta e^{-\theta x}$. Test $H_0 : \theta = 1$ vs $H_1 : \theta \neq 1$. The UMP unbiased test has the form
+$$\varphi(x) = \begin{cases} 0, &amp; x \in (c_1, c_2) \\ 1, &amp; x \leq c_1 \text{ or } x \geq c_2 \end{cases}$$
+with $c_1, c_2$ chosen so that
+$$1 - e^{-c_1} + e^{-c_2} = \alpha \quad \text{and} \quad c_1 e^{-c_1} = c_2 e^{-c_2}.$$
+The second equation is the unbiasedness condition. For $\alpha = 5\%$: $c_1 \approx 0.0424$, $c_2 \approx 4.7652$.
+</p>
+<p data-cid="ch12-1330">
+Compare to the "natural" symmetric-tail test that splits $\alpha/2$ in each tail: $c_1 = -\log(1 - \alpha/2) \approx 0.0253$, $c_2 = -\log(\alpha/2) \approx 3.6889$. These critical values are quite different, and the symmetric-tail test is <em>biased</em>. The lesson: equal-tail probabilities is not the same as unbiasedness, and the conventional choice can be uniformly worse on power.
+</p>
+</div>
+<h3 data-cid="ch12-1340">Worked example: testing a normal mean (two-sided)</h3>
+<div class="box example" data-cid="ch12-1350">
+<span class="box-label">Normal mean, two-sided</span>
+<p data-cid="ch12-1360">
+Let $X_1, \dots, X_n \sim \mathrm{N}(\mu, \sigma^2)$ i.i.d. with $\sigma$ known. Test $H_0 : \mu = \mu_0$ vs $H_1 : \mu \neq \mu_0$. By symmetry of the normal density, the UMP unbiased test rejects when
+$$|Z| \;=\; \left| \frac{\bar X - \mu_0}{\sigma/\sqrt{n}} \right| \;&gt;\; z_{\alpha/2}.$$
+The two tails are symmetric here because the standardized statistic has a symmetric distribution under $H_0$; the unbiasedness constraint reduces to $c_1 = -c_2$. This is the textbook two-sided $z$-test, and now we know it is not only standard but UMP among unbiased level-$\alpha$ tests.
+</p>
+</div>
+<!-- ===================================================================== -->
+<h2 data-cid="ch12-1370" id="practical">Common pitfalls in practice</h2>
+<div class="box warn" data-cid="ch12-1380">
+<span class="box-label">Pitfall — peeking at data</span>
+<p data-cid="ch12-1390">
+The level-$\alpha$ guarantee assumes the test is fixed <em>before</em> the data is seen. If you watch the data come in and stop sampling the moment $p &lt; 0.05$, the actual Type I rate is much higher than $0.05$. Sequential designs require sequential procedures (e.g. Wald's SPRT) or repeated-testing corrections — not the fixed-$n$ tests above.
+</p>
+</div>
+<div class="box warn" data-cid="ch12-1400">
+<span class="box-label">Pitfall — multiple comparisons</span>
+<p data-cid="ch12-1410">
+If you run $K$ independent level-$\alpha$ tests on the same dataset, the probability that <em>at least one</em> commits a Type I error is roughly $1 - (1-\alpha)^K \approx K\alpha$ for small $\alpha$. With $K = 20$ and $\alpha = 0.05$ you'll falsely reject something about 64% of the time. Bonferroni, Holm, Benjamini–Hochberg, etc., are corrections; the cleanest cure is preregistration.
+</p>
+</div>
+<div class="box warn" data-cid="ch12-1420">
+<span class="box-label">Pitfall — significance is not importance</span>
+<p data-cid="ch12-1430">
+A $p$-value being small means the data is inconsistent with $H_0$; it tells you nothing about the size or practical relevance of the deviation. With enough data, any nonzero effect becomes "statistically significant". Always report effect size and a confidence interval — they communicate magnitude. Significance alone communicates only "the effect is unlikely to be exactly zero".
+</p>
+</div>
+<div class="box warn" data-cid="ch12-1440">
+<span class="box-label">Pitfall — $p$ is not $P(H_0 \mid \text{data})$</span>
+<p data-cid="ch12-1450">
+Worth repeating in its own box. A $p$-value is $P(\text{data at least this extreme} \mid H_0)$. It is <em>not</em> $P(H_0 \mid \text{data})$. Those quantities differ; computing the second requires a prior over $\theta$ via Bayes' rule. Almost every scientific misreport of $p$-values reverses this conditional.
+</p>
+</div>
+<!-- ===================================================================== -->
+<h2 data-cid="ch12-1460" id="summary">Summary — what you learned in Chapter 12</h2>
+<ol data-cid="ch12-1470">
+<li>A <strong>test</strong> is a function $\varphi : \mathcal{X} \to [0,1]$ giving the probability of rejecting $H_0$ when $X = x$.</li>
+<li>Its <strong>power function</strong> $\beta(\theta) = E_\theta\varphi$ does double duty: it is the Type I rate on $\Omega_0$ and the power on $\Omega_1$. The <strong>level</strong> $\alpha = \sup_{\Omega_0} \beta$ is what we bound.</li>
+<li><strong>Simple</strong> hypothesis = single parameter value; <strong>composite</strong> = a set of values. The cleanest theorems are simple-vs-simple.</li>
+<li><strong>Neyman–Pearson</strong>: for simple-vs-simple, the most powerful level-$\alpha$ test is the likelihood ratio test, rejecting when $p_1/p_0$ exceeds a threshold (with randomization on ties when needed).</li>
+<li><strong>Monotone likelihood ratio</strong> in a statistic $T$ extends NP to one-sided composite alternatives: thresholding on $T$ is <strong>UMP</strong> for $H_0 : \theta \leq \theta_0$ vs $H_1 : \theta &gt; \theta_0$.</li>
+<li>Every one-parameter exponential family with monotone natural parameter has MLR — so the standard one-sided $z$-tests, $t$-tests, and binomial tests are UMP.</li>
+<li><strong>Testing $\leftrightarrow$ interval estimation</strong>: a $1-\alpha$ confidence region is the set of nulls that would not be rejected at level $\alpha$. UMP tests give optimal (shortest expected-length) intervals.</li>
+<li>For two-sided alternatives, UMP <em>generally fails to exist</em>. Restricting to <strong>unbiased</strong> tests — those whose power is never below $\alpha$ on the alternative — recovers optimality. The UMP unbiased two-sided test for an exponential family rejects on a two-tail rejection region with the tails balanced so that $\mathrm{Cov}_{\theta_0}(\varphi, T) = 0$.</li>
+<li>The standard two-sided $z$-test is the UMP unbiased test for a normal mean; the standard equal-tail exponential test, by contrast, is biased.</li>
+</ol>
+<div class="box pause" data-cid="ch12-1480">
+<span class="box-label">Did this land?</span>
+<p data-cid="ch12-1490">Before moving to Chapter 13, you should be able to answer:</p>
+<ul data-cid="ch12-1500">
+<li>Distinguish Type I and Type II errors, and explain why the level $\alpha$ controls only the first.</li>
+<li>State the Neyman–Pearson lemma. Why does randomization matter for discrete data?</li>
+<li>What is MLR, and why does it imply UMP for one-sided tests?</li>
+<li>Why is there generally no UMP test for two-sided alternatives, and what restriction recovers optimality?</li>
+<li>Give the precise (mis)interpretation of "$p = 0.04$" — what does it mean, and what does it <em>not</em> mean?</li>
+</ul>
+<p data-cid="ch12-1510">If any of these feel shaky, the corresponding section is the place to go.</p>
+</div>
+<nav class="chapter-nav">
+<a href="ch11.html"><span class="label">← Previous</span><span class="title">11. Empirical Bayes and Shrinkage Estimators</span></a>
+<a class="next" href="ch13.html"><span class="label">Next →</span><span class="title">13. Optimal Tests in Higher Dimensions</span></a>
+</nav>
+</article>
+</main>
+<script src="/js/main.js"></script><script src="/js/comments.js"></script>
+</body>
+</html>

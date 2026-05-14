@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ch 3 — Risk, Sufficiency, Completeness, and Ancillarity · Theoretical Statistics</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/>
+</head>
+<body data-book="basic_stat" data-page="ch03">
+<header class="site-header">
+<a class="brand" href="/books/basic_stat/">Theoretical Statistics <small>a slow reading guide</small></a>
+<nav>
+<a href="/" class="all-books-link">All books</a>
+    <a href="/books/basic_stat/">Contents</a>
+<button aria-label="toggle theme" class="theme-toggle">Dark</button>
+</nav>
+</header>
+<main class="layout">
+<aside class="sidebar">
+<h4>Chapter 3</h4>
+<ol>
+<li><a href="#s3-1">3.1 Models, estimators, risk</a></li>
+<li><a href="#s3-2">3.2 Sufficient statistics</a></li>
+<li><a href="#s3-3">3.3 Factorization theorem</a></li>
+<li><a href="#s3-4">3.4 Minimal sufficiency</a></li>
+<li><a href="#s3-5">3.5 Completeness</a></li>
+<li><a href="#s3-6">3.6 Ancillarity &amp; Basu's theorem</a></li>
+<li><a href="#s3-7">3.7 Convex loss &amp; Rao–Blackwell</a></li>
+<li><a href="#summary">Summary</a></li>
+</ol>
+</aside>
+<article class="content">
+<section class="hero">
+<div class="kicker">Chapter 3</div>
+<h1>Risk, Sufficiency, Completeness, and Ancillarity</h1>
+<p class="subtitle" data-cid="ch03-010">How statisticians compare estimators, and how they spot the parts of a dataset that actually carry information about the unknown.</p>
+<div class="meta">
+<span>Book pages: 39–59</span>
+<span>~50 min reading time</span>
+<span>Prereqs: Chapters 1–2</span>
+</div>
+</section>
+<h2 data-cid="ch03-020" id="s3-1">3.1 Models, estimators, and the risk function</h2>
+<h3 data-cid="ch03-030">What is a statistical model, really?</h3>
+<p data-cid="ch03-040">
+      Inferential statistics is, at heart, the science of guessing something we cannot see — an unknown parameter
+      $\theta$ — from something we <em>can</em> see — data $X$. The link between the two is a
+      <strong>statistical model</strong>: a family of candidate distributions
+      $$\mathcal{P} = \{P_\theta : \theta \in \Omega\},$$
+      one $P_\theta$ for each possible value of the unknown $\theta$. The set $\Omega$ is called the
+      <strong>parameter space</strong>; it might be a finite set (does the coin favor heads or tails?), a single
+      interval (a success probability in $[0,1]$), or a subset of $\mathbb{R}^p$ (a regression coefficient vector).
+      We write $X \sim P_\theta$ to mean "the data $X$ was drawn from the distribution indexed by $\theta$".
+    </p>
+<p data-cid="ch03-050">
+      The slogan is: <em>nature picks one $\theta$ in $\Omega$, draws $X$ from $P_\theta$, hands us $X$, and hides $\theta$.</em>
+      Inference is the reverse trip — using $X$ to say something about $\theta$.
+    </p>
+<div class="box definition" data-cid="ch03-060">
+<span class="box-label">Definition — statistic</span>
+<p data-cid="ch03-070">A <strong>statistic</strong> is any function $\delta(X)$ of the data alone. It may not depend on $\theta$
+      — only on what we actually observed. When $\delta$ is meant to approximate some quantity $g(\theta)$, we call
+      $\delta(X)$ an <strong>estimator</strong> of $g(\theta)$.</p>
+</div>
+<p data-cid="ch03-080">
+      The qualifier "of the data alone" is important. A formula like $\bar X - \theta$ is <em>not</em> a statistic,
+      because we cannot compute it without knowing the very $\theta$ we are trying to estimate. A formula like
+      $\bar X = (X_1 + \cdots + X_n)/n$ <em>is</em> a statistic — it uses only the numbers in front of us.
+    </p>
+<h3 data-cid="ch03-090">Loss functions: what does a bad estimate cost?</h3>
+<p data-cid="ch03-100">
+      To compare estimators, we need to agree on what "bad" means. The decision-theoretic answer is a
+      <strong>loss function</strong> $L(\theta, d)$: the price we pay if we report the value $d$ when the truth is $\theta$.
+      Two natural ground rules:
+    </p>
+<ul data-cid="ch03-110">
+<li>$L(\theta, g(\theta)) = 0$ — getting the answer exactly right costs nothing.</li>
+<li>$L(\theta, d) \geq 0$ — losses are never negative.</li>
+</ul>
+<p data-cid="ch03-120">The single most common choice is <strong>squared-error loss</strong>,
+      $$L(\theta, d) = \big(g(\theta) - d\big)^2,$$
+      which penalizes large errors much more than small ones. Absolute-error loss $|g(\theta) - d|$ and $0/1$-loss
+      $1\{g(\theta) \neq d\}$ are also standard. The choice of loss reflects what you actually care about — not a
+      universal truth.</p>
+<h3 data-cid="ch03-130">From loss to risk</h3>
+<p data-cid="ch03-140">
+      The trouble is that $L(\theta, \delta(X))$ is itself random: even a fantastic estimator will sometimes get
+      unlucky data. To average over that randomness we define the <strong>risk function</strong>
+      $$R(\theta, \delta) = E_\theta L(\theta, \delta(X)),$$
+      where $E_\theta$ means "expectation when $X \sim P_\theta$". For each candidate $\theta$, the risk is one number:
+      the expected loss we pay using $\delta$ if nature's choice is $\theta$. As $\theta$ varies over $\Omega$, the risk
+      traces out a function. To compare two estimators, we compare their risk <em>functions</em>.
+    </p>
+<div class="box example" data-cid="ch03-150">
+<span class="box-label">Worked example — coin on edge (Example 3.1)</span>
+<p data-cid="ch03-160">
+        Spin a coin on its edge $n = 100$ times. Let $X$ count heads. Then $X \sim \text{Binomial}(100, \theta)$,
+        and the model is $\mathcal{P} = \{\text{Binomial}(100, \theta) : \theta \in [0, 1]\}$. A natural estimator
+        of $\theta$ is the sample proportion $\delta(X) = X/100$. Under squared-error loss,
+        $$R(\theta, \delta) = E_\theta\!\left[\left(\theta - \frac{X}{100}\right)^2\right]
+          = \operatorname{Var}_\theta\!\left(\frac{X}{100}\right) = \frac{\theta(1 - \theta)}{100}.$$
+        This is largest at $\theta = 1/2$ (where the binomial has the most variance) and smallest near the boundary
+        values $0$ and $1$. The risk function is an inverted parabola.
+      </p>
+</div>
+<div class="box intuition" data-cid="ch03-170">
+<span class="box-label">Why a function and not a number?</span>
+<p data-cid="ch03-180">
+        You might wish for a single "the risk of $\delta$" number, but that would require averaging over $\theta$ —
+        which means putting a prior distribution on $\theta$. That is the Bayesian road, and Keener takes it later.
+        Frequentist inference keeps the risk as a function of $\theta$ and asks: <em>can I find a $\delta$ whose risk
+        curve sits below every competitor's, for every $\theta$?</em> Often the answer is no, and that's the central
+        difficulty of estimation.
+      </p>
+</div>
+<div class="box pause" data-cid="ch03-190">
+<span class="box-label">Pause — when risk curves cross</span>
+<p data-cid="ch03-200">
+        Consider three competing estimators for the binomial $\theta$: $\delta_0(X) = X/100$, $\delta_1(X) = (X+3)/100$,
+        and $\delta_2(X) = (X+3)/106$ (a shrunken version). Plotting their risks, $\delta_2$ wins when $\theta$ is near
+        $1/2$, but $\delta_0$ wins near $0$ and $1$. Neither estimator dominates the other across all $\theta$.
+        If we knew $\theta$ we could pick — but if we knew $\theta$ we would not need to estimate it. This is the
+        whole problem of statistics in one paragraph.
+      </p>
+</div>
+<h3 data-cid="ch03-210">Admissibility, in one breath</h3>
+<p data-cid="ch03-220">
+      An estimator $\delta$ is <strong>inadmissible</strong> if there is a competing $\tilde\delta$ with
+      $R(\theta, \tilde\delta) \leq R(\theta, \delta)$ for every $\theta$, and strict inequality for some $\theta$.
+      Inadmissibility is a death sentence: you'd be silly to use a procedure that another procedure beats everywhere.
+      If no competitor improves on $\delta$, then $\delta$ is <strong>admissible</strong>. Admissibility is a weak
+      requirement — many obviously poor estimators are admissible — but inadmissibility is a strong condemnation.
+    </p>
+<h2 data-cid="ch03-230" id="s3-2">3.2 Sufficient statistics</h2>
+<h3 data-cid="ch03-240">The motivating thought</h3>
+<p data-cid="ch03-250">
+      Suppose your data is a long list of numbers $X = (X_1, \ldots, X_n)$, but you suspect a single function $T(X)$
+      already contains every drop of information about $\theta$ that the full sample carries. Can we make that precise?
+      Keener opens this section with an arresting calculation. Two i.i.d. exponential variates $X, Y$ are reshuffled into
+      $\tilde X = UT$ and $\tilde Y = (1-U)T$, where $T = X + Y$ and $U$ is an independent uniform on $(0,1)$. The
+      punchline: $(\tilde X, \tilde Y)$ has exactly the same joint distribution as $(X, Y)$. So if you only know
+      $T$, you can manufacture fake data $(\tilde X, \tilde Y)$ — using a random number generator that does not depend
+      on $\theta$ — that is statistically indistinguishable from the real data.
+    </p>
+<p data-cid="ch03-260">
+      The conclusion is striking: as far as learning about $\theta$ goes, the single number $T = X + Y$ is just as
+      informative as the pair $(X, Y)$. The dimension dropped from two to one with no loss. We call $T$ a
+      <strong>sufficient statistic</strong>.
+    </p>
+<div class="box definition" data-cid="ch03-270">
+<span class="box-label">Definition 3.2 — sufficient statistic</span>
+<p data-cid="ch03-280">
+        Let $X \sim P_\theta$ with $\theta \in \Omega$. A statistic $T = T(X)$ is <strong>sufficient</strong> for
+        $\mathcal{P} = \{P_\theta\}$ if, for every $t$, the conditional distribution of $X$ given $T = t$ does not
+        depend on $\theta$.
+      </p>
+</div>
+<div class="box intuition" data-cid="ch03-290">
+<span class="box-label">Why this is the right definition</span>
+<p data-cid="ch03-300">
+        Read it as: once you have told me $T$, the leftover detail in $X$ is pure noise — the $\theta$-information
+        has already been wrung out. Concretely, if I know $T = t$, I can simulate a fresh dataset from the
+        $\theta$-free conditional distribution $Q_t$, and that simulated dataset has the same marginal distribution
+        as the real $X$. The data and the simulation are statistically interchangeable. Sufficiency says:
+        <em>everything $\theta$-relevant in $X$ is already encoded in $T$.</em>
+</p>
+</div>
+<p data-cid="ch03-310">
+      Notation gloss: $Q_t(B) = P_\theta(X \in B \mid T = t)$ is the conditional distribution of $X$ given $T = t$.
+      The crucial property is that this object — despite appearing to depend on $\theta$ through the symbol $P_\theta$
+      — actually does not. It is the same kernel $Q_t$ regardless of which $\theta$ generated the data.
+    </p>
+<div class="box example" data-cid="ch03-320">
+<span class="box-label">Worked example — Bernoulli trials</span>
+<p data-cid="ch03-330">
+        Let $X_1, \ldots, X_n$ be i.i.d. Bernoulli$(\theta)$ and let $T = X_1 + \cdots + X_n$. Given $T = t$, every
+        sequence of $0$'s and $1$'s with exactly $t$ ones is equally likely — the conditional distribution is uniform
+        over the $\binom{n}{t}$ such sequences, with no $\theta$ in sight. So $T$ is sufficient. Knowing the order
+        of the heads and tails gives you nothing extra; only the total count carries information about $\theta$.
+      </p>
+</div>
+<h3 data-cid="ch03-340">The randomization theorem</h3>
+<p data-cid="ch03-350">
+      Sufficiency would be a mere curiosity if it had no operational payoff. Here is the payoff: given any estimator
+      $\delta(X)$, there is a randomized estimator based only on $T$ with the <em>same</em> risk function. The
+      construction: when $T = t$, draw a fake $\tilde X$ from $Q_t$ using a random number generator, and report
+      $\delta(\tilde X)$. Because $\tilde X$ has the same distribution as $X$ under every $P_\theta$, the risk is
+      unchanged. So whatever you can do with $X$, you can match using just $T$ (plus an independent dice roll).
+    </p>
+<div class="box pause" data-cid="ch03-360">
+<span class="box-label">Pause — randomized vs. non-randomized</span>
+<p data-cid="ch03-370">
+        The argument so far only promises a <em>randomized</em> estimator from $T$. In Section 3.7 we will see that
+        when the loss is convex, we can do strictly better: a non-randomized estimator based on $T$ beats any
+        randomized one. So sufficient statistics will turn out to be the only estimators worth considering — not
+        merely as good as any other, but actually superior.
+      </p>
+</div>
+<h2 data-cid="ch03-380" id="s3-3">3.3 The Factorization Theorem</h2>
+<h3 data-cid="ch03-390">From definition to a usable check</h3>
+<p data-cid="ch03-400">
+      Definition 3.2 is elegant but inconvenient: to verify sufficiency we'd have to compute conditional distributions,
+      which is a chore. The Factorization Theorem (sometimes called Fisher–Neyman) turns sufficiency into a one-line
+      check on densities.
+    </p>
+<div class="box definition" data-cid="ch03-410">
+<span class="box-label">Definition 3.5 — dominated family</span>
+<p data-cid="ch03-420">A family $\mathcal{P} = \{P_\theta\}$ is <strong>dominated</strong> if there exists a single $\sigma$-finite
+      measure $\mu$ such that $P_\theta \ll \mu$ for every $\theta$. Each $P_\theta$ then has a density
+      $p_\theta = dP_\theta/d\mu$.</p>
+</div>
+<p data-cid="ch03-430">"Dominated" is mild. For continuous models we usually take $\mu$ to be Lebesgue measure; for discrete models,
+      counting measure. Mixed and exotic families need slightly more care but the assumption holds in essentially every
+      situation you'll meet.</p>
+<div class="box definition" data-cid="ch03-440">
+<span class="box-label">Theorem 3.6 — Factorization Theorem</span>
+<p data-cid="ch03-450">
+        Let $\mathcal{P} = \{P_\theta : \theta \in \Omega\}$ be dominated by $\mu$, with densities $p_\theta$.
+        A statistic $T$ is sufficient if and only if there exist non-negative functions $g_\theta$ and $h$ such that
+        $$p_\theta(x) = g_\theta\big( T(x) \big) \, h(x) \quad \text{for $\mu$-a.e. } x.$$
+      </p>
+</div>
+<div class="box intuition" data-cid="ch03-460">
+<span class="box-label">How to read the formula</span>
+<p data-cid="ch03-470">
+        Two ingredients. The factor $h(x)$ depends only on the data — not on $\theta$ — and so contributes nothing to
+        any comparison between candidate $\theta$'s. The factor $g_\theta(T(x))$ depends on $\theta$ but reaches the
+        data $x$ <em>only</em> through the summary $T(x)$. Cancelling shared $h(x)$'s in any likelihood ratio
+        $p_\theta(x)/p_{\theta'}(x)$, you find the ratio depends on $x$ only through $T(x)$. So $T$ contains
+        all the $\theta$-discriminating information.
+      </p>
+</div>
+<div class="box example" data-cid="ch03-480">
+<span class="box-label">Worked example — Bernoulli, factored</span>
+<p data-cid="ch03-490">
+        For i.i.d. Bernoulli$(\theta)$ data the joint mass function is
+        $$p_\theta(x) = \prod_{i=1}^n \theta^{x_i}(1-\theta)^{1-x_i}
+          = \theta^{\sum x_i} (1-\theta)^{n-\sum x_i}.$$
+        Set $T(x) = \sum x_i$, $g_\theta(t) = \theta^t (1-\theta)^{n-t}$, and $h(x) = 1$. The factorization is immediate,
+        so $T$ is sufficient — recovering by formula what we argued by symmetry above.
+      </p>
+</div>
+<div class="box example" data-cid="ch03-500">
+<span class="box-label">Worked example — Normal one-sample</span>
+<p data-cid="ch03-510">
+        Let $X_1, \ldots, X_n$ be i.i.d. $N(\mu, \sigma^2)$ with $\theta = (\mu, \sigma^2)$ both unknown.
+        The joint density is
+        $$p_\theta(x) = (2\pi\sigma^2)^{-n/2}
+          \exp\!\left[ -\frac{1}{2\sigma^2}\sum_{i=1}^n (x_i - \mu)^2 \right]
+          = (2\pi\sigma^2)^{-n/2}
+          \exp\!\left[ \frac{\mu}{\sigma^2}\sum x_i - \frac{1}{2\sigma^2}\sum x_i^2 - \frac{n\mu^2}{2\sigma^2}\right].$$
+        Setting $T(x) = \big(\sum x_i, \, \sum x_i^2\big)$, we can pull the entire $\theta$-dependence into a function
+        of $T(x)$, with $h(x) \equiv 1$. So the pair $(\sum X_i, \sum X_i^2)$ is sufficient — equivalently,
+        $(\bar X, S^2)$ is sufficient.
+      </p>
+</div>
+<div class="box example" data-cid="ch03-520">
+<span class="box-label">Worked example — Poisson</span>
+<p data-cid="ch03-530">
+        For i.i.d. Poisson$(\lambda)$ data,
+        $$p_\lambda(x) = \prod_{i=1}^n \frac{\lambda^{x_i} e^{-\lambda}}{x_i!}
+          = \lambda^{\sum x_i} e^{-n\lambda} \cdot \frac{1}{\prod x_i!}.$$
+        With $T(x) = \sum x_i$, $g_\lambda(t) = \lambda^t e^{-n\lambda}$, and $h(x) = 1/\prod x_i!$, factorization gives
+        $T$ sufficient.
+      </p>
+</div>
+<div class="box example" data-cid="ch03-540">
+<span class="box-label">Worked example — uniform with shifting support (Example 3.8)</span>
+<p data-cid="ch03-550">
+        Let $X_1, \ldots, X_n$ be i.i.d. uniform on $(\theta, \theta + 1)$. The marginal density $f_\theta = 1_{(\theta, \theta+1)}$
+        forces us to keep track of where the data live. The joint density equals one exactly when every $x_i$ falls in
+        the interval, i.e. when $\min_i x_i &gt; \theta$ and $\max_i x_i &lt; \theta + 1$. So
+        $$p_\theta(x) = 1_{(\theta, \infty)}\!\big(\min_i x_i\big) \cdot 1_{(-\infty, \theta + 1)}\!\big(\max_i x_i\big).$$
+        Both factors depend on $\theta$ and on data only through $T = (\min_i X_i, \max_i X_i)$. So this two-dimensional
+        statistic is sufficient — even though $\theta$ is only one-dimensional.
+      </p>
+</div>
+<div class="box warn" data-cid="ch03-560">
+<span class="box-label">Common pitfall — indicator handling</span>
+<p data-cid="ch03-570">
+        When the support of $p_\theta$ depends on $\theta$, you must keep the indicator functions explicit and check
+        the factorization works for <em>every</em> $x$, not just $x$ in the support. Sloppy bookkeeping of indicators
+        is the most frequent mistake in homework-set sufficiency problems.
+      </p>
+</div>
+<h2 data-cid="ch03-580" id="s3-4">3.4 Minimal sufficiency</h2>
+<h3 data-cid="ch03-590">Why "minimal"?</h3>
+<p data-cid="ch03-600">
+      Sufficient statistics are not unique. If $T$ is sufficient and we apply any one-to-one function $f$ to it,
+      $\tilde T = f(T)$ is also sufficient. Worse, padding works: the entire data vector $X$ is trivially sufficient.
+      So is $(X, U)$ for any independent random number $U$. We want the <em>most compressed</em> sufficient statistic
+      — the one that throws away every drop of nuisance information while keeping all the $\theta$-information.
+    </p>
+<div class="box definition" data-cid="ch03-610">
+<span class="box-label">Definition 3.9 — minimal sufficient</span>
+<p data-cid="ch03-620">
+        A statistic $T$ is <strong>minimal sufficient</strong> if it is sufficient and, for every other sufficient
+        statistic $\tilde T$, there is a function $f$ with $T = f(\tilde T)$ almost surely under every $P \in \mathcal{P}$.
+      </p>
+</div>
+<div class="box intuition" data-cid="ch03-630">
+<span class="box-label">Translation</span>
+<p data-cid="ch03-640">
+        $T$ is minimal sufficient if it is a function of every other sufficient statistic — meaning every other
+        sufficient statistic must "know" at least as much as $T$. Geometrically, the family of sufficient statistics
+        forms a hierarchy of coarsenings; minimal sufficient statistics sit at the bottom of the hierarchy. There is
+        nothing finer you can squeeze out.
+      </p>
+</div>
+<div class="box example" data-cid="ch03-650">
+<span class="box-label">Why $(\sum_{i \le n} X_i, \sum_{i &gt; n} X_i)$ is not minimal (Example 3.10)</span>
+<p data-cid="ch03-660">
+        For i.i.d. $N(\theta, 1)$ data with $\theta \in \mathbb R$, splitting the data into two halves and reporting
+        the two partial sums gives a sufficient statistic — but it carries more information than needed. The full
+        sum $T = \sum_{i=1}^{2n} X_i$ is also sufficient and is a function of the partial-sum pair: $T = f(\tilde T)$
+        with $f(t_1, t_2) = t_1 + t_2$. Section 3.5 will show $T$ is minimal sufficient. So the two-sum statistic is
+        unnecessarily detailed.
+      </p>
+</div>
+<h3 data-cid="ch03-670">Likelihood shape and minimal sufficiency</h3>
+<p data-cid="ch03-680">
+      Here is the slogan to remember: <em>the minimal sufficient statistic is whatever determines the shape of the
+      likelihood function.</em> Two data points $x$ and $y$ give the same likelihood shape if $p_\theta(x)$ and
+      $p_\theta(y)$ are proportional as functions of $\theta$ — written $p_\theta(x) \propto_\theta p_\theta(y)$.
+    </p>
+<div class="box definition" data-cid="ch03-690">
+<span class="box-label">Theorem 3.11 — likelihood-shape criterion</span>
+<p data-cid="ch03-700">
+        Suppose $\mathcal{P}$ is a dominated family with densities $p_\theta(x) = g_\theta(T(x))\, h(x)$.
+        If
+        $$p_\theta(x) \propto_\theta p_\theta(y) \implies T(x) = T(y),$$
+        then $T$ is minimal sufficient.
+      </p>
+</div>
+<div class="box intuition" data-cid="ch03-710">
+<span class="box-label">Why the criterion works</span>
+<p data-cid="ch03-720">
+        Sufficiency already tells us the likelihood depends on data only through $T$. The reverse implication in the
+        theorem says: distinct values of $T$ produce distinct likelihood shapes. Together: $T$ and the likelihood
+        shape are in one-to-one correspondence. Any other sufficient statistic must also determine the likelihood
+        shape, hence must determine $T$ — that's exactly the definition of minimal sufficiency.
+      </p>
+</div>
+<div class="box example" data-cid="ch03-730">
+<span class="box-label">Worked example — exponential family minimal sufficient statistic (Example 3.12)</span>
+<p data-cid="ch03-740">
+        For an $s$-parameter exponential family
+        $$p_\theta(x) = e^{\eta(\theta) \cdot T(x) - B(\theta)} h(x),$$
+        suppose $p_\theta(x) \propto_\theta p_\theta(y)$. Cancelling $h$'s and constants, we get
+        $\eta(\theta) \cdot T(x) = \eta(\theta) \cdot T(y) + c$ for some $c$ that does not depend on $\theta$. Taking
+        differences across two parameter values $\theta_0, \theta_1$, the constant $c$ disappears and we are left with
+        $[\eta(\theta_0) - \eta(\theta_1)] \cdot [T(x) - T(y)] = 0$. If the differences $\eta(\theta_0) - \eta(\theta_1)$
+        span all of $\mathbb R^s$ as $\theta_0, \theta_1$ range over $\Omega$, then $T(x) - T(y) = 0$, hence
+        $T(x) = T(y)$. So $T$ is minimal sufficient — provided the parametrization is rich enough.
+      </p>
+</div>
+<div class="box example" data-cid="ch03-750">
+<span class="box-label">Worked example — Laplace location (Example 3.13)</span>
+<p data-cid="ch03-760">
+        For i.i.d. data from the double-exponential density $f_\theta(x) = \tfrac{1}{2} e^{-|x - \theta|}$, the joint
+        log-likelihood is $-\sum |x_i - \theta| + \text{const}$. Sufficiency from the factorization theorem gives the
+        order statistics $X_{(1)} \le \cdots \le X_{(n)}$ as a sufficient statistic. Are they minimal? Two datasets
+        $x, y$ produce proportional likelihoods only when $\sum |x_i - \theta|$ and $\sum |y_i - \theta|$ differ by a
+        constant in $\theta$. Each is a piecewise-linear function of $\theta$ whose slope jumps by $2$ at each order
+        statistic. The two piecewise-linear functions can differ by a constant only when their breakpoints coincide —
+        that is, when $x$ and $y$ have the same order statistics. So the order statistics are minimal sufficient.
+      </p>
+</div>
+<div class="box pause" data-cid="ch03-770">
+<span class="box-label">Pause — is $\bar X$ sufficient for $N(\theta, 1)$?</span>
+<p data-cid="ch03-780">
+        For i.i.d. $N(\theta, 1)$ with variance known, $\bar X$ is minimal sufficient — try Example 3.12 with the
+        one-parameter exponential form. Now change the question slightly: i.i.d. $N(\mu, \sigma^2)$ with <em>both</em>
+        unknown. Then $\bar X$ alone is not sufficient — you also need $\sum X_i^2$ (or equivalently $S^2$) to recover
+        the likelihood. The same statistic can be sufficient for one parametrization and inadequate for another.
+        Sufficiency depends on the model, not just the data.
+      </p>
+</div>
+<h2 data-cid="ch03-790" id="s3-5">3.5 Completeness</h2>
+<h3 data-cid="ch03-800">The unfamiliar condition</h3>
+<p data-cid="ch03-810">
+      Completeness is a technical strengthening of sufficiency. It says, roughly: there is no non-trivial function of
+      the statistic whose expectation is zero for every $\theta$.
+    </p>
+<div class="box definition" data-cid="ch03-820">
+<span class="box-label">Definition 3.14 — complete statistic</span>
+<p data-cid="ch03-830">
+        A statistic $T$ is <strong>complete</strong> for $\mathcal{P} = \{P_\theta : \theta \in \Omega\}$ if
+        $$E_\theta f(T) = 0 \text{ for every } \theta \in \Omega \implies f(T) = 0 \ \text{a.s. under every } P_\theta.$$
+      </p>
+</div>
+<div class="box intuition" data-cid="ch03-840">
+<span class="box-label">What completeness is really saying</span>
+<p data-cid="ch03-850">
+        Take any function $f$ of $T$ that integrates to zero against every distribution in the family. If the family
+        is "rich enough" — if $\theta$ can scan widely enough over $\Omega$ — the only way to keep the integral at
+        zero for all $\theta$ is for $f$ itself to be zero almost surely. Completeness is a non-degeneracy condition on
+        the family of distributions, not on $T$ in isolation. A tiny family (say, just one distribution) is hardly ever
+        complete; a full-rank exponential family always is.
+      </p>
+</div>
+<div class="box example" data-cid="ch03-860">
+<span class="box-label">Worked example — uniform on $(0, \theta)$ (Example 3.16)</span>
+<p data-cid="ch03-870">
+        Let $X_1, \ldots, X_n$ be i.i.d. uniform on $(0, \theta)$ with $\theta &gt; 0$, and let $T = \max_i X_i$.
+        Factorization gives $T$ sufficient. Its density is $p_T(t) = n t^{n-1}/\theta^n$ on $(0, \theta)$. Suppose
+        $E_\theta f(T) = 0$ for every $\theta$. Then $\int_0^\theta f(t) t^{n-1} dt = 0$ for every $\theta &gt; 0$.
+        Differentiating in $\theta$ gives $f(\theta) \theta^{n-1} = 0$, so $f(\theta) = 0$ for every $\theta &gt; 0$.
+        Hence $f \equiv 0$ and $T$ is complete.
+      </p>
+</div>
+<div class="box definition" data-cid="ch03-880">
+<span class="box-label">Theorem 3.17 — complete + sufficient $\Rightarrow$ minimal sufficient</span>
+<p data-cid="ch03-890">If $T$ is both complete and sufficient, then $T$ is minimal sufficient.</p>
+</div>
+<p data-cid="ch03-900">
+      The proof idea: if $\tilde T$ is minimal sufficient, then $\tilde T = f(T)$ (since $T$ is sufficient and $\tilde T$
+      is minimal). Define $g(\tilde T) = E[T \mid \tilde T]$ (this is $\theta$-free because $\tilde T$ is sufficient).
+      Then $E_\theta(T - g(\tilde T)) = 0$ for every $\theta$. By completeness, $T = g(\tilde T)$ almost surely. So $T$
+      and $\tilde T$ are one-to-one functions of each other, and $T$ is also minimal sufficient.
+    </p>
+<h3 data-cid="ch03-910">Full-rank exponential families: the cleanest case</h3>
+<div class="box definition" data-cid="ch03-920">
+<span class="box-label">Definition 3.18 — full rank</span>
+<p data-cid="ch03-930">
+        An exponential family $p_\theta(x) = \exp\{\eta(\theta) \cdot T(x) - B(\theta)\} h(x)$ is of <strong>full rank</strong>
+        if the interior of $\eta(\Omega)$ is non-empty and the components $T_1, \ldots, T_s$ do not satisfy any linear
+        constraint $v \cdot T = c$ almost surely.
+      </p>
+</div>
+<div class="box definition" data-cid="ch03-940">
+<span class="box-label">Theorem 3.19</span>
+<p data-cid="ch03-950">In a full-rank exponential family, $T$ is complete (and hence, with sufficiency from factorization, minimal sufficient).</p>
+</div>
+<div class="box example" data-cid="ch03-960">
+<span class="box-label">Worked example — Normal known variance</span>
+<p data-cid="ch03-970">
+        For i.i.d. $N(\mu, 1)$ data with $\mu \in \mathbb R$, the joint density is a one-parameter exponential family
+        with sufficient statistic $T = \sum X_i$ and natural parameter $\eta = \mu$ ranging over all of $\mathbb R$.
+        Full rank holds, so $T$ — equivalently $\bar X$ — is complete and minimal sufficient.
+      </p>
+</div>
+<div class="box example" data-cid="ch03-980">
+<span class="box-label">Worked example — Poisson</span>
+<p data-cid="ch03-990">
+        For i.i.d. Poisson$(\lambda)$ data with $\lambda &gt; 0$, the natural parameter is $\eta = \log \lambda \in \mathbb R$
+        and $T = \sum X_i$. The family is full-rank, so $T$ is complete and minimal sufficient. This will make Poisson
+        examples a recurring testbed in Chapter 4 (unbiased estimation).
+      </p>
+</div>
+<div class="box warn" data-cid="ch03-1000">
+<span class="box-label">Common pitfall — completeness without full rank</span>
+<p data-cid="ch03-1010">
+        If you restrict an exponential family's parameter space — say, fix $\sigma^2$ in a normal model to a known value
+        rather than letting it vary — the rank may drop, and what was complete becomes incomplete. A standard counterexample:
+        $X \sim N(\theta, \theta^2)$ (so the mean and variance are tied together). The natural parameter vector traces a
+        curve in $\mathbb{R}^2$, not an open set, and completeness fails. Lesson: completeness is a property of the
+        <em>whole family</em>, and rank-deficiency kills it.
+      </p>
+</div>
+<h2 data-cid="ch03-1020" id="s3-6">3.6 Ancillarity and Basu's theorem</h2>
+<h3 data-cid="ch03-1030">Statistics that say nothing about $\theta$</h3>
+<div class="box definition" data-cid="ch03-1040">
+<span class="box-label">Definition 3.20 — ancillary statistic</span>
+<p data-cid="ch03-1050">
+        A statistic $V = V(X)$ is <strong>ancillary</strong> for $\mathcal{P}$ if its distribution does not depend on
+        $\theta$.
+      </p>
+</div>
+<div class="box intuition" data-cid="ch03-1060">
+<span class="box-label">Why ancillaries matter</span>
+<p data-cid="ch03-1070">
+        An ancillary statistic by itself contains zero information about $\theta$ — its distribution is the same
+        whatever $\theta$ is. Examples: differences of order statistics in a location family, ratios in a scale family,
+        the sample variance in a $N(\mu, 1)$ location model. Although they say nothing about $\theta$ on their own,
+        ancillary statistics can interact with sufficient statistics in subtle ways — especially in conditional
+        inference (Chapter 7).
+      </p>
+</div>
+<div class="box definition" data-cid="ch03-1080">
+<span class="box-label">Theorem 3.21 — Basu's theorem</span>
+<p data-cid="ch03-1090">
+        If $T$ is complete and sufficient for $\mathcal{P} = \{P_\theta : \theta \in \Omega\}$ and $V$ is ancillary,
+        then $T$ and $V$ are independent under every $P_\theta$.
+      </p>
+</div>
+<div class="box intuition" data-cid="ch03-1100">
+<span class="box-label">Reading Basu</span>
+<p data-cid="ch03-1110">
+        The information about $\theta$ has been wrung out of the data into $T$, and there is none in $V$. Completeness
+        guarantees that this clean split goes a step further: not just informationally separate, but probabilistically
+        independent. Independence is much stronger than no-shared-information; it's a remarkable bonus.
+      </p>
+</div>
+<div class="box example" data-cid="ch03-1120">
+<span class="box-label">Worked example — independence of $\bar X$ and $S^2$ (Example 3.22)</span>
+<p data-cid="ch03-1130">
+        Fix $\sigma$ known and let $X_1, \ldots, X_n$ be i.i.d. $N(\mu, \sigma^2)$ with $\mu \in \mathbb R$. The family
+        $\mathcal{P}_\sigma$ is a full-rank one-parameter exponential family with complete sufficient statistic $\bar X$.
+        Now consider $S^2 = \frac{1}{n-1}\sum (X_i - \bar X)^2$. Setting $Y_i = X_i - \mu$, the $Y_i$ are i.i.d.
+        $N(0, \sigma^2)$ — a distribution that does not depend on $\mu$. And $S^2$ written in terms of the $Y_i$
+        is identical: $S^2 = \frac{1}{n-1}\sum (Y_i - \bar Y)^2$. So $S^2$ has the same distribution for every $\mu$
+        — it is ancillary. By Basu, $\bar X \perp S^2$. This is the famous independence used in deriving the
+        $t$-distribution (Chapter 4).
+      </p>
+</div>
+<div class="box pause" data-cid="ch03-1140">
+<span class="box-label">Pause — Basu in disguise</span>
+<p data-cid="ch03-1150">
+        Basu's theorem yields many "miraculous" independence results almost for free. Examples to chew on:
+        for i.i.d. uniform$(0, 1)$ data, $\max_i X_i$ is complete sufficient and $X_1/\max_i X_i$ is ancillary —
+        so they're independent. For i.i.d. $\text{Exp}(\lambda)$ data, $\bar X$ is complete sufficient and
+        $X_1/\bar X$ is ancillary — independent. Each looks like a calculation; Basu makes it a one-liner.
+      </p>
+</div>
+<div class="box warn" data-cid="ch03-1160">
+<span class="box-label">Common pitfall — Basu needs completeness</span>
+<p data-cid="ch03-1170">
+        Sufficiency alone is not enough. Without completeness, an ancillary statistic can absolutely be correlated
+        with a sufficient one. The classical counterexample uses a curved exponential family. Don't drop the
+        "complete" hypothesis from Basu.
+      </p>
+</div>
+<h2 data-cid="ch03-1180" id="s3-7">3.7 Convex loss and the Rao–Blackwell theorem</h2>
+<h3 data-cid="ch03-1190">Convex functions, briefly</h3>
+<p data-cid="ch03-1200">
+      A function $f$ on a convex set $C \subseteq \mathbb R^p$ is <strong>convex</strong> if for every $x \ne y$ in $C$
+      and every $\gamma \in (0, 1)$,
+      $$f(\gamma x + (1 - \gamma) y) \le \gamma f(x) + (1 - \gamma) f(y).$$
+      Geometrically, the graph of $f$ lies below the chord joining any two of its points. If the inequality is strict
+      whenever $x \ne y$, $f$ is <strong>strictly convex</strong>. Common examples: $x^2$, $e^x$, $-\log x$, $|x|$ (not
+      strictly), $1/x$ on $(0, \infty)$.
+    </p>
+<div class="box definition" data-cid="ch03-1210">
+<span class="box-label">Theorem 3.25 — Jensen's inequality</span>
+<p data-cid="ch03-1220">
+        Let $f$ be convex on an open interval $C$, $X$ a random variable with $P(X \in C) = 1$ and $E|X| &lt; \infty$.
+        Then $f(EX) \le E f(X)$. If $f$ is strictly convex, the inequality is strict unless $X$ is almost surely constant.
+      </p>
+</div>
+<div class="box intuition" data-cid="ch03-1230">
+<span class="box-label">Mental picture</span>
+<p data-cid="ch03-1240">
+        Drop a support line through the point $(EX, f(EX))$ on the graph of $f$. The line sits below the graph everywhere.
+        Take expectations on both sides of "line $\le f$" and the line's value at $EX$ is exactly $f(EX)$ — that's the
+        inequality. Strictness comes from the fact that the gap between line and graph is positive everywhere except at
+        the tangent point.
+      </p>
+</div>
+<h3 data-cid="ch03-1250">Rao–Blackwell: condition on a sufficient statistic, win for free</h3>
+<div class="box definition" data-cid="ch03-1260">
+<span class="box-label">Theorem 3.28 — Rao–Blackwell</span>
+<p data-cid="ch03-1270">
+        Let $T$ be sufficient for $\mathcal{P}$, let $\delta(X)$ be an estimator of $g(\theta)$, and define
+        $$\eta(T) = E[\delta(X) \mid T].$$
+        If $L(\theta, \cdot)$ is convex and $R(\theta, \delta) &lt; \infty$ for every $\theta \in \Omega$, then
+        $$R(\theta, \eta) \le R(\theta, \delta) \quad \text{for every } \theta.$$
+        If $L(\theta, \cdot)$ is strictly convex, the inequality is strict unless $\delta(X) = \eta(T)$ almost surely
+        under $P_\theta$.
+      </p>
+</div>
+<div class="box intuition" data-cid="ch03-1280">
+<span class="box-label">The Rao–Blackwell move in one sentence</span>
+<p data-cid="ch03-1290">
+        Given any estimator, replace it by its conditional expectation given a sufficient statistic. The result is a
+        function of $T$ alone, and (for convex loss) it has at most the risk of the original — usually less.
+        It's the cheapest improvement in statistics: just apply $E[\cdot \mid T]$.
+      </p>
+</div>
+<p data-cid="ch03-1300">
+      Two things are subtly important. First, $\eta(T) = E[\delta(X) \mid T]$ is itself a statistic — it does not depend
+      on $\theta$ — precisely because $T$ is sufficient. (Without sufficiency, conditional expectations would generally
+      involve $\theta$ and couldn't be used as estimators.) Second, the improvement is strict for strictly convex loss
+      unless $\delta$ was already a function of $T$. So once you've Rao–Blackwellized once, doing it again gains nothing.
+    </p>
+<div class="box example" data-cid="ch03-1310">
+<span class="box-label">Worked example — Bernoulli, estimating $\theta^2$</span>
+<p data-cid="ch03-1320">
+        Let $X_1, \ldots, X_n$ be i.i.d. Bernoulli$(\theta)$. The crude estimator $\delta(X) = X_1 X_2$ has
+        $E_\theta \delta = \theta^2$, so it is unbiased for $\theta^2$, but its variance is huge — most of the data
+        is being ignored. Take $T = \sum X_i$ (the complete sufficient statistic) and Rao–Blackwellize:
+        $$\eta(T) = E[X_1 X_2 \mid T] = P(X_1 = 1, X_2 = 1 \mid T)
+          = \frac{T(T-1)}{n(n-1)}.$$
+        This new estimator is still unbiased for $\theta^2$ (the conditional expectation preserves $E_\theta$)
+        and has uniformly smaller variance. We will see in Chapter 4 that, since $T$ is complete, $\eta(T)$ is in fact
+        the <em>unique</em> minimum-variance unbiased estimator of $\theta^2$.
+      </p>
+</div>
+<div class="box pause" data-cid="ch03-1330">
+<span class="box-label">Pause — why convexity?</span>
+<p data-cid="ch03-1340">
+        The proof of Rao–Blackwell is literally Jensen's inequality applied to the conditional distribution of $\delta(X)$
+        given $T$: convexity of $L(\theta, \cdot)$ pushes the expectation inside. Drop convexity (e.g. with $0/1$-loss
+        in classification) and the theorem can fail — averaging an estimator can make it worse. Squared error, absolute
+        error, log loss, and Kullback–Leibler are all convex, so Rao–Blackwell applies widely.
+      </p>
+</div>
+<div class="box warn" data-cid="ch03-1350">
+<span class="box-label">Common pitfall — conditioning on the wrong thing</span>
+<p data-cid="ch03-1360">
+        Rao–Blackwell requires conditioning on a <em>sufficient</em> statistic. Conditioning on something arbitrary
+        (e.g. a single $X_i$) does not give a $\theta$-free estimator and can introduce bias. Conditioning on the data
+        $X$ itself returns $\delta$ unchanged and gains nothing. The sweet spot is a non-trivial sufficient $T$ — ideally
+        the minimal sufficient one.
+      </p>
+</div>
+<h3 data-cid="ch03-1370">Randomized estimators are inadmissible</h3>
+<p data-cid="ch03-1380">
+      A randomized estimator $\delta(X, U)$ uses an auxiliary $\theta$-independent random number $U$. Treating both
+      $X$ and $U$ as data, $X$ alone is sufficient (since $U$ contributes no $\theta$-information). Rao–Blackwell then
+      says $E[\delta(X, U) \mid X]$ has lower risk under any strictly convex loss. So randomization can never help with
+      strictly convex loss — a comforting fact when you start worrying whether your estimator should secretly involve
+      a coin flip.
+    </p>
+<h2 data-cid="ch03-1390" id="summary">Summary — what you learned in Chapter 3</h2>
+<p data-cid="ch03-1400">The whole chapter, in eight bullets:</p>
+<ol data-cid="ch03-1410">
+<li>A <strong>statistical model</strong> $\{P_\theta : \theta \in \Omega\}$ pairs each candidate parameter with a
+        distribution for the data. An <strong>estimator</strong> $\delta(X)$ is any function of the data alone.</li>
+<li>A <strong>loss function</strong> $L(\theta, d)$ encodes the cost of guessing $d$ when the truth is $\theta$.
+        Its expectation, the <strong>risk function</strong> $R(\theta, \delta)$, scores estimators across all $\theta$.</li>
+<li>$T$ is <strong>sufficient</strong> if the conditional distribution of $X$ given $T$ does not depend on $\theta$.
+        Equivalently (Factorization Theorem), the joint density factors as $g_\theta(T(x)) h(x)$.</li>
+<li>$T$ is <strong>minimal sufficient</strong> if every other sufficient statistic determines $T$. Operationally:
+        $T$ is in one-to-one correspondence with the shape of the likelihood function.</li>
+<li>$T$ is <strong>complete</strong> if no non-trivial function of $T$ has zero expectation under every $\theta$.
+        Full-rank exponential families always have complete minimal sufficient statistics.</li>
+<li>A statistic $V$ is <strong>ancillary</strong> if its distribution does not depend on $\theta$. By
+        <strong>Basu's theorem</strong>, complete sufficient and ancillary statistics are independent.</li>
+<li><strong>Rao–Blackwell</strong>: under convex loss, conditioning any estimator on a sufficient statistic
+        produces a $\theta$-free estimator with at most the same risk — strictly less for strictly convex loss unless
+        the original was already a function of $T$.</li>
+<li>Sufficient statistics aren't merely "as good as" the data — under convex loss they are strictly better than any
+        estimator that ignores them, and any randomized estimator is beaten by a non-randomized counterpart.</li>
+</ol>
+<div class="box pause" data-cid="ch03-1420">
+<span class="box-label">Did this land?</span>
+<p data-cid="ch03-1430">Before moving to Chapter 4, you should be able to answer (without looking back):</p>
+<ul data-cid="ch03-1440">
+<li>State the Factorization Theorem and explain how to use it to verify sufficiency for i.i.d. Poisson data.</li>
+<li>Why are minimal sufficient statistics in one-to-one correspondence with likelihood shape?</li>
+<li>What does completeness add to sufficiency, and why is Basu's theorem false without it?</li>
+<li>State the Rao–Blackwell theorem. Where does convexity enter the proof?</li>
+</ul>
+<p data-cid="ch03-1450">If any of these feel shaky, re-read the matching section. There's no hurry.</p>
+</div>
+<nav class="chapter-nav">
+<a href="ch02.html"><span class="label">← Previous</span><span class="title">2. Exponential Families</span></a>
+<a class="next" href="ch04.html"><span class="label">Next →</span><span class="title">4. Unbiased Estimation</span></a>
+</nav>
+</article>
+</main>
+<script src="/js/main.js"></script><script src="/js/comments.js"></script>
+</body>
+</html>

@@ -1,0 +1,1035 @@
+
+===== PAGE 1 =====
+
+19
+Bootstrap Methods
+Bootstrap methods use computer simulation to reveal aspects of the sampling
+distribution for an estimator ˆθ of interest. With the power of modern com-
+puters the approach has broad applicability and is now a practical and useful
+tool for applied statisticians.
+19.1 Introduction
+To describe the bootstrap approach to inference, let X1,...,X n be i.i.d. from
+some unknown distribution Q, and let
+X = (X1,...,X n)
+denote all n observations. For now we proceed nonparametrically with Q an
+arbitrary distribution. Natural modiﬁcations when Q comes from a parametric
+family are introduced in Section 19.3. With Q arbitrary, a natural estimator
+for it would be the empirical distribution
+ˆQ = 1
+n
+n∑
+i=1
+δXi.
+Here δx represents a “point mass” at x, that assigns full probability to the
+point x, δx({x}) = 1, and zero probability to all other points, δx({x}c) = 0.
+Then the estimator ˆQ is a discrete distribution that assigns mass 1 /n to each
+data point Xi, 1 ≤ i ≤ n, and ˆQ(A) is just the proportion of these values that
+lie in A:
+ˆQ(A) = 1
+n #{i ≤ n :Xi ∈A}.
+Note that by the law of large numbers, ˆQ(A)
+p
+→ Q(A) as n → ∞ , supporting
+the notion that ˆQ is a reasonable estimator for Q.
+Suppose next that ˆθ = ˆθ (X) is an estimator for some parameter θ =θ (Q).
+Anyone using ˆθ should have interest in the distribution for the error ˆθ −θ , since
+R.W. Keener, Theoretical Statistics: Topics for a Core Course, Springer Texts in Statistics, 
+DOI 10.1007/978-0-387-93839-4_19, © Springer Science+Business Media, LLC 2010 
+391
+
+===== PAGE 2 =====
+
+392 19 Bootstrap Methods
+this distribution provides information about the bias, variance, and accuracy
+of ˆθ . Unfortunately, this error distribution typically varies withQ, and because
+Q is unknown we cannot hope to know it exactly. Bootstrap methods are based
+on the hope or intuition that the true error distribution may be similar to the
+error distribution if the observations were sampled from ˆQ instead of Q.
+In principle, the error distribution with observations drawn from ˆQ is
+a speciﬁc function of ˆQ, but exact calculations are generally intractable.
+This is where computer simulation plays an important role in practice.
+Given the original data X, a computer routine draws a bootstrap sample
+X
+∗= (X∗
+1,...,X ∗
+n), with the variables in this sample conditionally i.i.d. from
+ˆQ, so X∗|X ∼ ˆQn. Note that since ˆQ assigns mass 1 /n to each observation,
+X∗
+1,...,X ∗
+n can be viewed as a random sample drawn with replacement from
+the set {X1,...,X n}. So these variables are very easy to simulate. If ˆθ∗is the
+estimate from the bootstrap sample,
+ˆθ∗= ˆθ (X∗) = ˆθ (X∗
+1,...,X ∗
+n),
+then the distribution of ˆθ∗− ˆθ is used to estimate the unknown distribution of
+the error ˆθ − θ . To be more precise, the estimate for the error distribution is
+the conditional distribution for ˆθ∗− ˆθ given the original data X. The following
+examples show ways this estimate for the error distribution might be used.
+Example 19.1. Bias Reduction . Let
+b =b(Q) = E
+Q[ˆθ − θ ]
+denote the bias of an estimator ˆθ = ˆθ (X) for a parameter θ = θ (Q). If this
+bias were known, subtracting it from ˆθ would give an unbiased estimator. The
+true bias depends only on the error distribution. Substituting the bootstrap
+estimate for the true error distribution gives
+ˆb =E[ˆθ
+∗− ˆθ |X]
+as the bootstrap estimate for the bias. Subtracting this estimate from ˆθ gives
+a new estimator ˆθ − ˆb, generally less biased that the original estimator ˆθ .
+Results detailing improvement are derived in the next section for a special
+case in which ˆθ =
+X
+3
+and θ is the cube of the mean of Q.
+In practice, ˆb would typically be computed by numerical simulation, having
+a computer routine draw multiple random samples, X∗
+1
+,..., X∗
+B
+, each from
+ˆQn. Letting ˆθ∗
+i = ˆθ (X∗
+i
+) denote the estimate from ith bootstrap sample X∗
+i
+,
+if the number of replications B is large, then by the law of large numbers ˆb
+should be well approximated by the average
+1
+B
+B∑
+i=1
+[ˆθ∗
+i − ˆθ
+]
+.
+
+===== PAGE 3 =====
+
+19.1 Introduction 393
+A natural assumption, relating the unknown parameter θ =θ (Q) and the
+estimator ˆθ (X), is that the estimator has no error whenever proportions in
+the sample agree with probabilities from Q, which happens if Q = ˆQ. With
+this assumption,
+ˆθ (X) = θ ( ˆQ), (19.1)
+and so ˆb =b( ˆQ). Hence, from a technical viewpoint, the bootstrap estimator
+here is found by plugging the empirical distribution ˆQ into the functional
+of interest, b(·). This mathematical structure occurs generally and underlies
+various results in the literature showing that bootstrap methods perform well
+when functionals of interest are smooth in an appropriate sense.
+Example 19.2. Conﬁdence Intervals . Quantiles for |ˆθ −θ |are useful in assessing
+the accuracy of ˆθ , for ifq =q(Q) is the upper α th quantile
+1 for the distribution
+of |ˆθ − θ |, then
+P
+(
+θ ∈ [ˆθ − q, ˆθ +q]
+)
+= 1 − α.
+The bootstrap estimator ˆ q for q would be the upper α th quantile for the
+conditional distribution of |ˆθ∗− ˆθ |given X. If this estimator is reasonably
+accurate, we expect that
+P
+(
+θ ∈ [ˆθ − ˆq, ˆθ + ˆq]
+)
+≈ 1 − α,
+so that [ ˆθ − ˆq, ˆθ + ˆq] is an approximate 1 − α interval for θ . As in the bias
+example, ˆq can be approximated numerically by simulation, still with random
+samples X∗
+1
+,..., X∗
+B
+from ˆQn, again taking ˆθ∗
+i = ˆθ (X∗
+i
+). Then ˆq could be
+approximated as the upper α th quantile for the list of values |ˆθ∗
+i − ˆθ |, i =
+1,...,B , generated in the simulation, or more formally as
+ˆq ≈ inf
+{
+x : 1
+B #{i ≤ B : |ˆθ∗
+i − ˆθ | ≤x} ≥ 1 − α
+}
+.
+Mathematically, the structure is much the same as the bias example, with the
+bootstrap estimator ˆq obtained by plugging ˆQ intoq(·); that is, ˆq =q( ˆQ).
+In practice, bootstrap conﬁdence intervals can often be improved by mod-
+ifying the approach and approximating the distribution of studentized errors,
+obtained by dividing the error ˆθ −θ by an estimate of the standard deviation
+of ˆθ . If ˜q = ˜q(Q) is the upper α th quantile for the distribution of the absolute
+studentized error |ˆθ − θ |/ ˆτ , where ˆτ = ˆτ (X) is an estimate for the standard
+deviation of ˆθ , then
+P
+(
+θ ∈ [ˆθ − ˜qˆτ, ˆθ + ˜qˆτ ]
+)
+= 1 − α.
+1 For convenience, we assume that ˆθ −θ has a continuous distribution. When this is
+not the case, some of the equations above may not hold exactly, but discrepancies
+will be quite small if masses for atoms of the error distribution are small.
+
+===== PAGE 4 =====
+
+394 19 Bootstrap Methods
+The bootstrap estimator ˆ
+˜q for ˜q is the upper α th quantile for the conditional
+distribution of |ˆθ
+∗− ˆθ |/ ˆτ∗given X, where ˆτ∗= ˆτ (X∗). If this estimator is
+reasonably accurate, then
+[ˆθ − ˆ
+˜qˆτ, ˆθ + ˆ
+˜qˆτ ]
+should be an approximate 1 −α interval for θ . Again, the bootstrap estimate
+ˆ
+˜q can be computed numerically by simulation as the upper α th quantile for
+the list |ˆθ
+∗
+i − ˆθ |/ ˆτ∗
+i ,i = 1,...,B , with ˆθ∗
+i as before, and ˆτ∗
+i = ˆτ (X∗
+i
+).
+To appreciate the value of studentizing, note that in various settings, in-
+cluding those detailed in the large-sample theory developed in Chapter 8,
+(ˆθ − θ )/ ˆτ is approximately standard normal. If this is the case, the quantile
+˜q is nearly independent of Q, making it easy to estimate. For instance, if the
+studentized error distribution happened to be exactly standard normal
+2 for
+any Q, ˜q would always equal zα/2 and could be “estimated” perfectly, even
+without data.
+19.2 Bias Reduction
+In this section we explore a simple case of bias reduction where the perfor-
+mance of bootstrap estimators can be determined explicitly. Speciﬁcally, in
+Example 19.1 let
+θ =θ (Q) = µ
+3,
+where µ =EXi is the mean of Q,
+µ =µ(Q) =
+∫
+xdQ (x).
+The mean of ˆQ is the average,
+µ( ˆQ) =
+∫
+xd ˆQ(x) =
+ X = 1
+n
+n∑
+i=1
+Xi,
+and so
+ˆθ =θ ( ˆQ) =
+ X
+3
+.
+To ﬁnd the bias b we need E ˆθ =E
+X
+3
+. Let σ 2 = Var(Xi) and γ =E(Xi −µ)3.
+Sinceγ is the third cumulant forXi, the third cumulant forn
+X =X1+· · ·+Xn
+is nγ , and so
+E(n
+X − nµ)3 =n3E(
+X − µ)3 =nγ.
+Thus E(
+X − µ)3 = γ/n 2. Also, E(
+X − µ)2 = Var(
+X) = σ 2/n . Using these
+identities,
+2 This could only happen in parametric situations.
+
+===== PAGE 5 =====
+
+19.2 Bias Reduction 395
+E
+X
+3
+=E(
+X − µ +µ)3
+=E
+[
+µ3 + 3µ2(
+X − µ) + 3µ(
+X − µ)2 + (
+X − µ)3]
+=µ3 + 3µσ 2
+n + γ
+n2. (19.2)
+So
+b =b(Q) = E ˆθ − θ =E
+X
+3
+− µ3 = 3µσ 2
+n + γ
+n2. (19.3)
+Because ˆb =b( ˆQ), we ﬁnd the bootstrap estimate for b with the same calcu-
+lations but with data drawn from ˆQ. The mean, variance, and third central
+moment of ˆQ are
+X =
+∫
+xd ˆQ(x), ˆσ 2 =
+∫
+(x −
+ X)2 d ˆQ(x) = 1
+n
+n∑
+i=1
+(Xi −
+ X)2,
+and
+ˆγ = 1
+n
+n∑
+i=1
+(Xi −
+X)3.
+Using these in (19.3),
+ˆb = 3
+X ˆσ 2
+n + ˆγ
+n2.
+Subtracting this from
+ X
+3
+, the “bias-reduced” estimator is
+ˆθ − ˆb =
+X
+3
+− 3
+X ˆσ 2
+n − ˆγ
+n2.
+To see whether bootstrapping actually reduces the bias, we need to eval-
+uate the mean of this new estimator. From (19.2) with n = 1, EX 3
+1 =
+µ3 + 3µσ 2 +γ . Next, by symmetry, for any j,
+EXj
+n∑
+i=1
+X2
+i =EX1
+n∑
+i=1
+X2
+i =EX 3
+1 +
+n∑
+i=2
+EX1X2
+i
+=µ3 + 3µσ 2 +γ + (n − 1)µ(µ2 +σ 2).
+Averaging over j,
+E
+X
+n∑
+i=1
+X2
+i =µ3 + 3µσ 2 +γ + (n − 1)µ(µ2 +σ 2).
+Finally, since
+ˆσ 2 = 1
+n
+n∑
+i=1
+X2
+i −
+X
+2
+,
+
+===== PAGE 6 =====
+
+396 19 Bootstrap Methods
+we have
+E
+X ˆσ 2 =E
+[
+1
+n
+X
+n∑
+i=1
+X2
+i −
+ X
+3
+]
+=µσ 2 + 1
+n (γ − µσ 2) − 1
+n2γ.
+To ﬁnd Eˆγ , note that
+E(X1 − µ)2(
+X − µ) = 1
+nE(X1 − µ)3 = γ
+n,
+and by symmetry
+E(X1 − µ)(
+X − µ)2 = 1
+n
+n∑
+i=1
+E(Xi − µ)(
+X − µ)2 =E(
+X − µ)3 = γ
+n2.
+Using these and symmetry,
+Eˆγ =E(X1 −
+X)3
+=E
+[
+(X1 − µ)3 − 3(X1 − µ)2(
+X − µ)
++ 3(X1 − µ)(
+X − µ)2 − (
+X − µ)3]
+=γ
+(
+1 − 3
+n + 2
+n2
+)
+.
+Using these formulas, the mean of ˆθ − ˆb is
+E[ˆθ − ˆb] = µ3 + 3
+n2 (µσ 2 − γ ) + 6γ
+n3 − 2γ
+n4.
+For large n the bias of this estimator is of order 1 /n 2 compared with a bias
+of order 1/n for ˆθ . So bootstrap correction here typically improves the bias. 3
+19.3 Parametric Bootstrap Conﬁdence Intervals
+In this section we consider parametric models in which our data are i.i.d.
+from a distribution Q in some parametric family {Q
+λ : λ ∈ Λ }. Knowing
+the marginal distribution lies in this family, ˆQ = Qˆλ , with ˆλ the maximum
+likelihood estimator of λ , is a more natural estimator for Q than the empirical
+distribution used in earlier sections. With this modiﬁcation, the bootstrap
+approach is essentially the same as before. If ˆθ is the maximum likelihood
+3 If bias is the sole concern, there are unbiased estimators for µ3. The most natural
+one might be the U -statistic P
+i<j<k XiXjXk/
+`n
+3
+´
+. Other resampling approaches,
+such as the jackknife, could also be used to reduce bias. See Problem 19.2.
+
+===== PAGE 7 =====
+
+19.3 Parametric Bootstrap Conﬁdence Intervals 397
+estimator4 for a parameter θ = θ (λ ), and if X∗is a bootstrap sample with
+entries conditionally i.i.d. from ˆQ =Qˆλ , so
+X∗|X ∼ ˆQn,
+then the error distribution for ˆθ would be estimated as the conditional distri-
+bution for ˆθ∗− ˆθ given X, with ˆθ∗= ˆθ (X∗).
+As in Example 19.2, interval estimation for θ can be approached with an
+attempt to estimate the upper α th quantileq =q(λ ) for |ˆθ −θ |. The bootstrap
+estimate ˆq for q is the upper α th quantile for the conditional distribution of
+|ˆθ∗− ˆθ |given X, and the approximate conﬁdence interval based on ˆ q is
+(ˆθ − ˆq, ˆθ + ˆq).
+As before, studentizing the error distribution may give a more accurate con-
+ﬁdence interval. If ˆτ = ˆτ (X) is an estimate for the standard deviation of ˆθ ,
+and ˜q = ˜q(λ ) denotes the upper α th quantile for the distribution of the ab-
+solute studentized error |ˆθ − θ |/ ˆτ , then the bootstrap estimate ˆ
+˜q for ˜q is the
+upper α th quantile for the conditional distribution of |ˆθ
+∗− ˆθ |/τ ∗given X,
+with ˆτ∗= ˆτ (X∗), and the associated approximate conﬁdence interval is
+(ˆθ − ˆ
+˜qˆτ, ˆθ + ˆ
+˜qˆτ ).
+If the functions q(·) or ˜q(·) are tractable, quantile estimates ˆ q and ˆ
+˜q can
+be found by evaluation at the maximum likelihood estimator: ˆ q = q(ˆλ ) and
+ˆ
+˜q = ˜q(ˆλ ). When this is not feasible or practical, these estimators can be
+approximated by bootstrap simulation. Speciﬁcally ˆq or ˆ
+˜q would be approxi-
+mated numerically as upper α th quantiles for the lists |ˆθ
+∗
+i − ˆθ |,i = 1,...,B , or
+|ˆθ∗
+i − ˆθ |/ ˆσ∗
+i ,i = 1,...,B , with ˆθ∗
+i = ˆθ (X∗
+i
+), ˆσ∗
+i = ˆσ (X∗
+i
+), and X∗
+i
+,i = 1,...,B ,
+conditionally i.i.d. from ˆQn =Qn
+ˆλ , given the original data X.
+To illustrate these ideas, consider interval estimation of the mean of a
+normal distribution. Taking λ = (θ,σ ), ˆλ = ( ˆθ, ˆσ ), with ˆθ =
+X and
+ˆσ 2 = 1
+n
+n∑
+i=1
+(Xi −
+X)2.
+Given X, the resampled data X∗
+1,...,X ∗
+n are i.i.d. from N (
+X, ˆσ 2). Since ˆθ∗=
+(X∗
+1 + · · · +X∗
+n)/n , we have
+ˆθ∗|X ∼ N (
+X, ˆσ 2/n ) and ˆq =zα/2 ˆσ/ √
+n,
+and the bootstrap conﬁdence interval is
+(
+X − zα/2
+ˆσ
+√
+n,
+ X +zα/2
+ˆσ
+√
+n
+)
+.
+4 The maximum likelihood structure here replaces assumption (19.1).
+
+===== PAGE 8 =====
+
+398 19 Bootstrap Methods
+Exploiting the independence of
+ X and ˆσ , the coverage probability for this
+bootstrap conﬁdence interval can be expressed as
+P
+(
+X − zα/2
+ˆσ
+√
+n<θ<
+ X +zα/2
+ˆσ
+√
+n
+)
+=P
+(
+−zα/2
+ˆσ
+σ <
+X − θ
+σ/ √
+n<zα/2
+ˆσ
+σ
+)
+=EP
+(
+−zα/2
+ˆσ
+σ <
+X − θ
+σ/ √
+n<zα/2
+ˆσ
+σ
+⏐
+⏐
+⏐
+⏐ ˆσ
+)
+= 1 − 2EΦ
+(
+−
+√
+z2
+α/2
+ˆσ 2
+σ 2
+)
+.
+By Taylor expansion about ˆσ 2/σ 2 = 1,
+Φ
+(
+−
+√
+z2
+α/2
+ˆσ 2
+σ 2
+)
+=Φ (−zα/2 ) − 1
+2zα/2 φ (zα/2 )
+( ˆσ 2
+σ 2 − 1
+)
++o(ˆσ 2 − σ 2).
+Taking expectations of this approximation 5 and using
+E ˆσ 2 = n − 1
+n ES 2 = n − 1
+n σ 2,
+the coverage probability of the bootstrap conﬁdence interval is
+1 − α − zα/2 φ (zα/2 )
+n +o(1/n ).
+Because ˆθ =
+ X has standard deviation τ = σ/ √
+n, for the studentized
+approach we take ˆτ = ˆσ/ √
+n and deﬁne ˜q(λ ) as the upper α th quantile for
+|
+X − θ |/ ˆτ . If S2 = nˆσ 2/ (n − 1) is the sample variance, then T
+def
+= √
+n(
+X −
+θ )/S ∼ tn−1. Since
+|ˆθ − θ |
+ˆτ =
+√
+n|T |
+√
+n − 1z,
+we have
+˜q(λ ) =
+√
+ntα/2 ,n−1
+√
+n − 1 .
+This quantile is independent of λ , and so ˆ
+˜q = ˜q and the studentized bootstrap
+conﬁdence interval is
+(ˆθ − ˆ
+˜qˆτ, ˆθ + ˆ
+˜qˆτ ) = (
+X − tα/2 ,n−1S/ √
+n,
+ X +tα/2 ,n−1S/ √
+n).
+This interval is the same as the usual t-conﬁdence interval, so in this case stu-
+dentizing works perfectly, giving a bootstrap conﬁdence interval with coverage
+exactly 1 − α .
+5 This can be justiﬁed using dominated convergence.
+
+===== PAGE 9 =====
+
+19.4 Nonparametric Accuracy for Averages 399
+19.4 Nonparametric Accuracy for Averages
+In this section we consider in some detail the performance of the nonpara-
+metric bootstrap when ˆθ is the sample mean
+Xn, estimating θ =EXi. In this
+case error distributions can also be approximated using central limit theory,
+and it is of interest to see if a bootstrap approach does as well or better. Let
+σ
+2 = Var(Xi),
+ˆσ 2
+n = 1
+n
+n∑
+i=1
+(Xi −
+Xn)2,
+the variance of the empirical distribution ˆQn, and γ =E(Xi − θ )3. If
+Zn
+def
+=
+√
+n(ˆθ − θ )
+σ ,
+then by the central limit theorem, Zn ⇒ N (0, 1) and P (Zn ≤ x) → Φ (x). The
+next result shows that the error of this large-sample approximation is typically
+of order 1 / √
+n. Note that if Q is a lattice distribution, assigning probability
+one to a set of the form {a +bj : j ∈ Z}, then this would have to be the
+case as the distribution for
+ Xn would have to have jumps of order 1 / √
+n. The
+theorem assumes that Q is nonlattice.
+Theorem 19.3. If Q is nonlattice and E|Xi|3 < ∞, then
+P (Zn ≤ x) = Φ (x) − γ (x2 − 1)
+6σ 3√
+n φ (x) +o
+(
+1/ √
+n
+)
+as n → ∞ , uniformly in x.
+A proof of this result is given in Appendix A.7.3. Let Yi = (Xi −θ )/σ , so
+that Zn = √
+n
+Yn, let f be the characteristic function 6 of Yi, deﬁned as
+f(t) = EeitYi, t ∈ R,
+and let fn be the characteristic function of Zn,
+fn(t) = EeitZn = fn(
+t/ √
+n
+)
+.
+Using a smoothing lemma based on an inversion formula for characteristic
+functions (Lemma A.14), this theorem follows from two facts: ﬁrst, that
+f
+n(t) = e−t2/2
+(
+1 − iγt 3
+6σ 3√
+n
+)
++o
+(
+1/ √
+n
+)
+, (19.4)
+which follows by Taylor expansion of f using the ﬁrst three moments of Y :
+EYi = 0,EY 2
+i = 1, and EY 3
+i =γ/σ 3; and second, that for any 0 <δ <c< ∞,
+6 See Appendix A.7.1.
+
+===== PAGE 10 =====
+
+400 19 Bootstrap Methods
+sup
+|t|∈[δ,c ]
+⏐
+⏐f(t)
+⏐
+⏐< 1, (19.5)
+which follows from the nonlattice assumption.
+A bootstrap approach to inference would approximate the distribution for
+Z
+n by the conditional distribution for
+Z∗
+n
+def
+=
+√
+n(ˆθ∗− ˆθ )
+ˆσn
+.
+The following result, due to Singh (1981), shows that this conditional distribu-
+tion is the same to o
+p
+(
+1/ √
+n
+)
+, which represents an improvement over normal
+approximation.
+Theorem 19.4. If Q is nonlattice and E|X
+i|3 < ∞, then
+P (Z∗
+n ≤ x|X) = Φ (x) − γ (x2 − 1)
+6σ 3√
+n φ (x) +op
+(
+1/ √
+n
+)
+as n → ∞ , uniformly in x.
+Proof (Sketch). If we deﬁne Y∗
+i = (X∗
+i −
+ Xn)/ ˆσn, then Z∗
+n = √
+n
+Y
+∗
+n
+, and
+given X, Y∗
+1 ,...,Y ∗
+n are conditionally i.i.d. So the conditional structure here
+is identical to that in Theorem 19.3. Also,
+E(Y∗
+i |X) = 0, E (Y∗
+i
+2|X) = 1,
+and
+E(Y∗
+i
+3|X) = ˆγn
+ˆσ 3n
+,
+with
+ˆγn = 1
+n
+n∑
+i=1
+(Xi −
+ Xn)3.
+So the ﬁrst two conditional moments for Y∗
+i are exactly the same as the
+corresponding moments of Yi, and by the law of large numbers,
+E(Y∗
+i
+3|X) = ˆγn/ ˆσ 3
+n
+p
+→ EY 3
+i .
+The same Taylor expansion argument used to show (19.4) gives
+f∗
+n
+(t) = e−t2/2
+(
+1 − iγt 3
+6σ 3√
+n
+)
++op
+(
+1/ √
+n
+)
+,
+with f∗
+n
+the conditional characteristic function for Z∗
+n, f∗
+n
+(t) = E[eitZ∗
+n |X].
+The proof is completed, using the same argument used to prove Theo-
+rem 19.3, by showing that for any 0 < δ < c <∞, there exists ǫ > 0 such
+that
+
+===== PAGE 11 =====
+
+19.4 Nonparametric Accuracy for Averages 401
+P
+(
+sup
+|t|∈[δ,c ]
+⏐
+⏐f
+∗(t)
+⏐
+⏐> 1 − ǫ
+)
+→ 0, (19.6)
+where f
+∗is the conditional characteristic function for Y∗
+i , given by
+f∗(t) = E
+(
+eitY ∗
+i
+⏐
+⏐ X
+)
+= 1
+n
+n∑
+j=1
+exp
+[it(Xj −
+ Xn)
+ˆσn
+]
+, t ∈ R.
+Using Theorem 9.2, our law of large numbers for random functions, it is not
+hard to show that
+sup
+|t|∈[δ,c ]
+|f(t) − f∗(t)|
+p
+→ 0,
+and (19.6) then follows from (19.5). ⊓ ⊔
+Because the approximations in Theorems 19.3 and 19.4 hold uniformly in
+x,
+P
+[√
+n(ˆθ −θ ) ≤ x
+]
+=P (Zn ≤ x/σ ) = Φ (x/σ ) − γ (x2 − σ 2)
+6σ 5√
+n φ (x/σ ) +o
+(
+1/ √
+n
+)
+and
+P
+[√
+n(ˆθ∗− ˆθ ) ≤ x
+⏐
+⏐ X
+]
+=Φ (x/ ˆσ
+n) − γ (x2 − σ 2)
+6σ 5√
+n φ (x/σ ) +op
+(
+1/ √
+n
+)
+.
+Since ˆσn − σ = Op
+(
+1/ √
+n
+)
+, by the delta method the leading terms in these
+approximations diﬀer by Op
+(
+1/ √
+n
+)
+. So in this case, bootstrap methods do a
+better job of approximating the distribution of the standardized variable Zn
+than the distribution of the scaled error √
+n(ˆθ − θ ). Although the issues are
+somewhat diﬀerent, this provides some support for the notion that studentiz-
+ing generally improves the bootstrap performance.
+The results above on the accuracy of bootstrap approximations can be ex-
+tended in various ways. Perhaps the ﬁrst thing worth noting is that Edgeworth
+expansions for distributions can be used to derive corresponding approxima-
+tions, called Cornish–Fisher expansions, for quantiles. These expansions nat-
+urally play a central role in studying the performance of bootstrap conﬁdence
+intervals.
+Although the algebra is more involved, Edgeworth expansions can be de-
+rived to approximate distributions of averages of random vectors. And in
+principle these expansions lead directly to expansions for the distributions
+of smooth functions of averages. In his monograph, Hall (1992) uses this ap-
+proach to study the performance of the bootstrap when ˆθ is a smooth function
+of averages. With suitable regularity, the discrepancy between the true cov-
+erage probability and the desired nominal value for the symmetric two-sided
+bootstrap conﬁdence intervals described in Example 19.2 is of order O(1/n )
+without studentizing, and of order O(1/n
+2) with studentizing.
+
+===== PAGE 12 =====
+
+402 19 Bootstrap Methods
+As mentioned earlier, if θ =θ (Q) and ˆθ =θ ( ˆQ), then bootstrapping should
+work well ifθ (·) is suitably smooth. One regularity condition, studied in Bickel
+and Freedman (1981), is that θ (·) is Gˆ ateaux diﬀerentiable with the derivative
+representable as an integral. Such θ (·) are often called von Mises functionals .
+Bickel and Freedman (1981) also give examples showing that bootstrapping
+can fail when θ (·) is not smooth.
+19.5 Problems
+1. Bootstrap methods can also be used to reduce bias in parametric esti-
+mation. As an example, suppose X1,...,X n are i.i.d. from N (µ, 1), and
+consider estimating θ = sinµ.
+a) The maximum likelihood estimator, ˆθ = sin
+X, is (for most µ) a biased
+estimator of θ . Derive an approximation for the bias of ˆθ , accurate to
+o(1/n 2) as n → ∞ .
+b) Consider a parametric bootstrap approach to estimating the bias
+b(µ) = Eµ ˆθ − θ , in which, given X = (X1,...,X n), X∗
+1,...,X ∗
+n are
+conditionally i.i.d. from N (
+X, 1). Letting ˆb = E[ˆθ∗− ˆθ |X], derive an
+approximation for the bias of ˆθ − ˆb, accurate to o(1/n 2) as n → ∞ .
+2. Another resampling approach to inference is called the jackknife. Let ˆθ be
+an estimator for θ based on i.i.d. observations X1,...,X n, let ˆθ−i be the
+estimator obtained omitting observation Xi from the data set, and deﬁne
+˜θi =nˆθ − (n − 1)ˆθ−i, i = 1,...,n,
+called pseudo-values by Tukey.
+a) Let ˜θ denote the average of the pseudo-values, and assume
+E ˆθ =θ + a1
+n + a2
+n2 +o(1/n 2),
+as n → ∞. Derive an approximation for the bias of ˜θ as n → ∞,
+accurate to o(1/n ).
+b) Assume now that the observations Xi are random variables with a
+ﬁnite mean µ and variance σ 2 ∈ (0, ∞), and that θ = A(µ) and ˆθ =
+A(
+X) for some function A, with A′and A′′bounded and continuous.
+Show that √
+n(˜θ − θ )
+˜S
+⇒ N (0, 1),
+as n → ∞ , where ˜S is the sample standard deviation for the pseudo-
+values:
+˜S2 = 1
+n − 1
+n∑
+i=1
+(˜θi − ˜θ )2.
+
+===== PAGE 13 =====
+
+19.5 Problems 403
+3. Consider a parametric bootstrap approach to interval estimation with ob-
+servations from a location family. Let X1,...,X n be i.i.d. from an abso-
+lutely continuous distribution with densityf (x−θ ). Let ˆθ be the maximum
+likelihood estimator of θ , and deﬁne q = q(θ ) as the upper α th quantile
+for the distribution of |ˆθ − θ |. The bootstrap estimate of q is ˆq = q(ˆθ ).
+Show that the associated conﬁdence interval
+(ˆθ − ˆq, ˆθ + ˆq)
+has exact coverage 1 − α .
+4. Let qα denote the upper α th quantile for Zn = √
+n(
+Xn − θ )/σ in Sec-
+tion 19.4. Use Theorem 19.3 to derive an approximation for qα , accurate
+to o
+(
+1/ √
+n
+)
+as n → ∞ .
+5. Let X1,X 2,... be i.i.d. from a nonlattice distribution Q, with common
+mean µ, common variance σ 2, and E|Xi|3 < ∞; and let g be a twice
+continuously diﬀerentiable function with g(µ) ̸= 0. Use Theorem 19.3 to
+derive an approximation for
+P
+[√
+n
+(
+g(
+Xn) − g(µ)
+)
+≤ x
+]
+,
+accurate to o
+(
+1/ √
+n
+)
+as n → ∞ .
+6. Let X1,X 2,... be i.i.d. absolutely continuous variables from a canonical
+exponential family with marginal density
+fη (x) = exp {ηx − A(η )}h(x), x ∈ R,
+for η ∈ Ξ . The maximum likelihood estimator of η based on the ﬁrst
+n observations is then ˆηn = ψ (
+Xn) with ψ the inverse of A′. Consider
+a parametric bootstrap approach to estimating the error distribution for
+ˆηn. Given X = (X1,...,X n), let X∗
+1,...,X ∗
+n be conditionally i.i.d. with
+marginal density fˆη n . Assume that the approximation derived in Prob-
+lem 19.5 holds uniformly in some neighborhood of η , and use it to derive
+approximations for
+P
+(√
+n(ˆηn − η ) ≤ x
+)
+and
+P
+(√
+n(ˆη∗
+n − ˆη ) ≤ x
+⏐
+⏐ X
+)
+,
+both accurate to o
+p
+(
+1/ √
+n
+)
+. Are these the same to op
+(
+1/ √
+n
+)
+?
+
+===== PAGE 14 =====
+

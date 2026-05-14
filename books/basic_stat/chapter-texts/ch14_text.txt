@@ -1,0 +1,2238 @@
+
+===== PAGE 1 =====
+
+14
+General Linear Model
+The general linear model incorporates many of the most popular and useful
+models that arise in applied statistics, including models for multiple regression
+and the analysis of variance. The basic model can be written succinctly in
+matrix form as
+Y =Xβ +ǫ, (14.1)
+whereY , our observed data, is a random vector in R
+n,X is an n ×p matrix of
+known constants, β ∈ Rp is an unknown parameter, and ǫ is a random vector
+in Rn of unobserved errors. We usually assume that ǫ1,...,ǫ n are a random
+sample from N (0,σ 2), with σ> 0 an unknown parameter, so that
+ǫ ∼ N (0,σ 2I). (14.2)
+But some of our results hold under the less restrictive conditions that Eǫi = 0
+for all i, Var(ǫi) = σ 2 for all i, and Cov( ǫi,ǫ j ) = 0 for all i ̸= j. In matrix
+notation, Eǫ = 0 and Cov( ǫ) = σ 2I. Since Y is ǫ plus a constant vector and
+Eǫ = 0, we have EY = Xβ and Cov(Y ) = Cov(ǫ) = σ 2I. With the normal
+distribution for ǫ in (14.2),
+Y ∼ N (Xβ,σ 2I). (14.3)
+Example 14.1 (Quadratic Regression). In quadratic regression, a response
+variableY is modeled as a quadratic function of some explanatory variable x
+plus a random error. Speciﬁcally,
+Yi =β 1 +β 2xi +β 3x2
+i
++ǫi, i = 1,...,n.
+Here the explanatory variables x1,...,x n are taken to be known constants,
+β 1,β 2, andβ 3 are unknown parameters, and ǫ1,...,ǫ n are i.i.d. from N (0,σ 2).
+If we deﬁne the design matrix X as
+R.W. Keener, Theoretical Statistics: Topics for a Core Course, Springer Texts in Statistics, 
+DOI 10.1007/978-0-387-93839-4_14, © Springer Science+Business Media, LLC 2010 
+269
+
+===== PAGE 2 =====
+
+270 14 General Linear Model
+X =
+
+
+
+
+
+
+1 x
+1 x2
+1
+1 x2 x2
+2
+.
+.
+.
+.
+.
+.
+.
+.
+.
+1x
+n x2
+n
+
+
+
+
+
+
+,
+then Y =Xβ +ǫ, as in (14.1).
+Example 14.2 (One-Way ANOVA). Suppose we have independent random
+samples from three normal populations with common variance σ
+2, so
+Yi ∼
+
+
+
+
+
+N (β
+1,σ 2), i = 1,...,n 1;
+N (β 2,σ 2), i =n1 + 1,...,n 1 +n2;
+N (β 3,σ 2), i =n1 +n2 + 1,...,n 1 +n2 +n3
+def
+= n.
+If we deﬁne
+X =
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1 0 0
+.
+.
+.
+.
+.
+.
+.
+.
+.
+1 0 0
+0 1 0
+.
+.
+.
+.
+.
+.
+.
+.
+.
+0 1 0
+0 0 1
+.
+.
+.
+.
+.
+.
+.
+.
+.
+0 0 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+,
+then EY =Xβ and the model has form (14.3).
+In applications the parameters β
+1,...,β p usually arise naturally when for-
+mulating the model. As a consequence they are generally easy to interpret.
+But for technical reasons it is often more convenient to view the unknown
+mean of Y , namely,
+ξ
+def
+= EY =Xβ
+in Rn as the unknown parameter. If c1,...,c p are the columns of X, then
+ξ =Xβ =β 1c1 + · · · +βpcp,
+which shows that ξ must be a linear combination of the columns of X. So ξ
+must lie in the vector space
+ω
+def
+= span {c1,...,c p} = {Xβ :β ∈ Rp}.
+Using ξ instead of β , the vector of unknown parameters is θ = (ξ,σ ) taking
+values in Ω =ω × (0, ∞).
+
+===== PAGE 3 =====
+
+14.1 Canonical Form 271
+SinceY has mean ξ , it is fairly intuitive that our data must provide some
+information distinguishing between any two values for ξ , since the distribu-
+tions for Y under two diﬀerent values for ξ must be diﬀerent. Whether this
+also holds for β depends on the rank r of X. Since X has p columns, this
+rank r is at most p. If the rank of X equals p then the mapping β ⇝Xβ is
+one-to-one, and each value ξ ∈ω is the image of a unique value β ∈ Rp. But if
+the columns of X are linearly dependent, then a nontrivial linear combination
+of the columns of X will equal zero, so Xv = 0 for some v ̸= 0. But then
+X(β +v) = Xβ +Xv =Xβ , and parameters β andβ∗=β +v both give the
+same mean ξ . Here our data Y provides no information to distinguish between
+parameter values β and β∗.
+Example 14.3. Suppose
+X =
+
+
+
+
+1 0 1
+1 0 1
+1 1 0
+1 1 0
+
+
+
+ .
+Here the three columns of X are linearly dependent because the ﬁrst column
+is the sum of the second and third columns, and the rank of X is 2, r = 2 <
+p = 3. Note that parameter values
+β =
+
+
+1
+0
+0
+
+ and β
+∗=
+
+
+0
+1
+1
+
+
+both give
+ξ =
+
+
+
+
+1
+1
+1
+1
+
+
+
+ .
+14.1 Canonical F orm
+Many results about testing and estimation in the general linear model follow
+easily once the data are expressed in a canonical form. Let v
+1,...,v n be an
+orthonormal basis for Rn, chosen so that v1,...,v r span ω . Entries in the
+canonical data vector Z are coeﬃcients expressing Y as a linear combination
+of these basis vectors,
+Y =Z1v1 + · · · +Znvn. (14.4)
+Algebraically,Z can be found introducing an n × n matrix O with columns
+v1,...,v n. Then O is an orthogonal matrix, O′O = OO′= I, and Y and Z
+are related by
+Z =O′Y or Y =OZ.
+
+===== PAGE 4 =====
+
+272 14 General Linear Model
+SinceY =ξ +ǫ,Z =O′(ξ +ǫ) = O′ξ +O′ǫ. If we deﬁne η =O′ξ andǫ∗=O′ǫ,
+then
+Z =η +ǫ∗.
+Because Eǫ∗=EO′ǫ =O′Eǫ = 0 and
+Cov(ǫ∗) = Cov(O′ǫ) = O′Cov(ǫ)O =O′(σ 2I)O =σ 2O′O =σ 2I,
+ǫ∗∼ N (0,σ 2I) and ǫ∗
+1
+,...,ǫ ∗
+n
+are i.i.d. from N (0,σ 2). Since Z =η +ǫ∗,
+Z ∼ N (η,σ 2I). (14.5)
+Next, let c1,...,c p denote the columns of the design matrix X. Then
+ξ =Xβ = ∑p
+i=1
+βici and
+η =O′ξ =
+
+
+
+v
+′
+1
+.
+.
+.
+v
+′
+n
+
+
+
+p∑
+i=1
+βici =
+
+
+
+∑
+p
+i=1
+βiv′
+1ci
+.
+.
+.∑
+p
+i=1
+βiv′
+nci
+
+
+ .
+Since c
+1,...,c p all lie in ω , and vr+1,...,v n all lie in ω⊥, we have v′
+kci = 0
+for k >r, and thus
+ηr+1 = · · · =ηn = 0. (14.6)
+Because η =O′ξ ,
+ξ =Oη = (v1...v n)
+
+
+
+
+
+
+
+
+
+
+η
+1
+.
+.
+.
+η
+r
+0
+.
+.
+.
+0
+
+
+
+
+
+
+
+
+
+
+=
+r∑
+i=1
+ηivi.
+These equations establish a one-to-one relation between points ξ ∈ ω and
+(η 1,...,η r ) ∈ Rr .
+Since Z ∼ N (η,σ 2I), the variables Z1,...,Z n are independent with Zi ∼
+N (ηi,σ 2). The density of Z, taking advantage of the fact that ηr+1 = · · · =
+ηn = 0, is
+1
+√
+2πσ 2n exp
+[
+− 1
+2σ 2
+r∑
+i=1
+(zi − ηi)2 − 1
+2σ 2
+n∑
+i=r+1
+z2
+i
+]
+= exp
+[
+− 1
+2σ 2
+n∑
+i=1
+z2
+i + 1
+σ 2
+r∑
+i=1
+ηizi −
+r∑
+i=1
+η 2
+i
+2σ 2 − n
+2 log(2πσ 2)
+]
+.
+These densities form a full rank ( r + 1)-parameter exponential family with
+complete suﬃcient statistic
+(
+Z1,...,Z r,
+n∑
+i=1
+Z2
+i
+)
+. (14.7)
+
+===== PAGE 5 =====
+
+14.2 Estimation 273
+14.2 Estimation
+Exploiting the canonical form, many parameters are easy to estimate. Because
+EZ
+i = ηi, i = 1,...,r , Zi is the UMVU estimator of ηi, i = 1,...,r . Also,
+since ξ = ∑r
+i=1
+ηivi,
+ˆξ =
+r∑
+i=1
+Zivi (14.8)
+is a natural estimator of ξ . Noting that
+E ˆξ =
+r∑
+i=1
+EZivi =
+r∑
+i=1
+ηivi =ξ,
+ˆξ is unbiased. Since it is a function of the complete suﬃcient statistic, it should
+be optimal in some sense. One measure of optimality might be the expected
+squared distance from the true value ξ . If ˜ξ is a competing unbiased estimator,
+then
+E∥ ˜ξ − ξ ∥
+2 =
+n∑
+j=1
+E( ˜ξj − ξj )2 =
+n∑
+j=1
+Var(˜ξj ). (14.9)
+Because ˆξj is unbiased for ξj and is a function of the complete suﬃcient
+statistic, Var( ˆξj ) ≤ Var(˜ξj ), j = 1,...,n. So ˆξ minimizes each term in the
+sum in (14.9), and hence
+E∥ ˆξ − ξ ∥2 ≤ E∥ ˜ξ − ξ ∥2.
+A more involved argument shows that ˆξ also minimizes the expectation of any
+other nonnegative quadratic form in the estimation error, E( ˜ξ − ξ )′A( ˜ξ − ξ ),
+among all unbiased estimators.
+From (14.4), we can write Y as
+Y =
+r∑
+i=1
+Zivi +
+n∑
+i=r+1
+Zivi = ˆξ +
+n∑
+i=r+1
+Zivi.
+In this expression the ﬁrst summand, ˆξ , lies in ω , and the second, Y − ˆξ =∑n
+i=r+1
+Zivi, lies in ω⊥. This diﬀerence Y − ˆξ is called the vector of residuals ,
+denoted by e:
+e
+def
+= Y − ˆξ =
+n∑
+i=r+1
+Zivi. (14.10)
+Since Y = ˆξ +e, by the Pythagorean theorem, if ˜ξ is any point in ω , then
+∥Y − ˜ξ ∥2 = ∥ ˆξ − ˜ξ +e∥2 = ∥ ˆξ − ˜ξ ∥2 + ∥e∥2,
+because ˆξ − ˜ξ ∈ω is orthogonal to e ∈ω⊥. From this equation, it is apparent
+that ˆξ is the unique point in ω closest to the data vector Y . This closest point
+
+===== PAGE 6 =====
+
+274 14 General Linear Model
+is called the projection ofY ontoω . The mapping Y ⇝ ˆξ is linear and can be
+represented by an n × n matrix P ,
+ˆξ =PY,
+withP called the (orthogonal) projection matrix ontoω . Since ˆξ ∈ω ,P ˆξ = ˆξ ,
+and so P 2Y = P (PY ) = P ˆξ = ˆξ = PY . Because Y can take arbitrary
+values in Rn, this shows that P 2 = P . (Matrices that satisfy this equation
+are called idempotent.) Using the orthonormal basis, P can be written as
+P =v1v′
+1 + · · · +vrv′
+r . (To check that this works, just multiply (14.4) by this
+sum.) But for explicit calculation, formulas that do not rely on construction
+of the basis vectors v
+1,...,v n are more convenient, and are developed below.
+Since arbitrary points in ω can be written as Xβ for some β ∈ Rp, if
+ˆξ =X ˆβ , then ˆβ must minimize
+∥Y − Xβ ∥2 =
+n∑
+i=1
+[
+Yi − (Xβ )i
+]2
+(14.11)
+overβ ∈ Rp. For this reason, ˆβ is called the least squares estimator of β . Of
+course, when the rank r of X is less than p, ˆβ will not be unique. But unique
+or not, all partial derivatives of the least squares criterion (14.11) must vanish
+at β = ˆβ . This often provides a convenient way to calculate ˆβ and then ˆξ .
+Another approach to explicit calculation proceeds directly from geometric
+considerations. Since the columns c
+i,i = 1,...,p , of X lie in ω , and e =Y − ˆξ
+lies in ω⊥, we must have c′
+i
+e = 0, which implies
+X′e = 0.
+Since Y = ˆξ +e,
+X′Y =X′( ˆξ +e) = X′ˆξ +X′e =X′ˆξ =X′X ˆβ. (14.12)
+If X′X is invertible, then this equation gives
+ˆβ = (X′X)−1X′Y. (14.13)
+The matrixX′X is invertible ifX has full rank, r =p. In fact, X′X is positive
+deﬁnite in this case. To see this, let v be an eigenvector of X′X with ∥v∥ = 1
+and eigenvalue λ . Then
+∥Xv ∥2 =v′X′Xv =λv′v =λ,
+which must be strictly positive since Xv =c1v1 + · · · +cpvp cannot be zero if
+X has full rank. When X has full rank
+PY = ˆξ =X ˆβ =X(X′X)−1X′Y,
+and so the projection matrix P ontoω can be written as
+
+===== PAGE 7 =====
+
+14.3 Gauss–Markov Theorem 275
+P =X(X′X)−1X′. (14.14)
+Since ˆξ is unbiased, a′ˆξ is an unbiased estimator of a′ξ . This estimator is
+UMVU because ˆξ is a function of the complete suﬃcient statistic. By (14.12),
+X′Y =X′ˆξ , and so by (14.13), when X is full rank
+ˆβ = (X′X)−1X′ˆξ.
+This equation shows that ˆβi is a linear function of ˆξ , and so ˆβi is UMVU for
+βi.
+14.3 Gauss–Markov Theorem
+For this section we relax the assumptions for the general linear model. The
+model still has Y =Xβ +ǫ, but now the ǫ
+i,i = 1,...,n, need not be a random
+sample fromN (0,σ 2). Instead, we assume the ǫi,i = 1,...,n, have zero mean,
+Eǫi = 0, i = 1,...,n; a common variance, Var( ǫi) = σ 2, i = 1,...,n; and are
+uncorrelated, Cov(ǫi,ǫ j ) = 0, i ̸= j. In matrix form, these assumptions can
+be written as
+Eǫ = 0 and Cov( ǫ) = σ 2I.
+Then
+EY =Xβ =ξ and Cov(Y ) = σ 2I.
+Any estimator of the form a′Y =a1Y1 +· · ·+anYn, witha ∈ Rn a constant
+vector, is called a linear estimate . Using (1.15),
+Var(a′Y ) = Cov(a′Y ) = a′Cov(Y )a
+=a′(σ 2I)a =σ 2a′a =σ 2∥a∥2. (14.15)
+Because EY = ξ , the estimator a′ˆξ is unbiased for a′ξ . Since ˆξ = PY ,
+a′ˆξ =a′PY = (Pa )′Y , and so by (14.15)
+Var(a′ˆξ ) = σ 2∥Pa ∥2. (14.16)
+Also, by (1.15) and since P is symmetric with P 2 =P ,
+Cov(ˆξ ) = Cov(PY ) = P Cov(Y )P =P (σ 2I)P =σ 2P.
+When X has full rank, we can compute the covariance of the least squares
+estimator ˆβ using (1.15) as
+Cov( ˆβ ) = Cov
+(
+(X′X)−1X′Y
+)
+= (X′X)−1X′Cov(Y )X(X′X)−1 =σ 2(X′X)−1. (14.17)
+
+===== PAGE 8 =====
+
+276 14 General Linear Model
+Theorem 14.4 (Gauss–Markov). Suppose
+EY =Xβ and Cov(Y ) = σ 2I.
+Then the (least squares) estimator a′ˆξ of a′ξ is unbiased and has uniformly
+minimum variance among all linear unbiased estimators.
+Proof. Let δ = b
+′Y be a competing unbiased estimator. By (14.15) and
+(14.16), the variances of δ and a′ˆξ are
+Var(δ ) = σ 2∥b∥2 and Var(a′ˆξ ) = σ 2∥Pa ∥2.
+Ifǫ happens to come from a normal distribution, since both of these estimators
+are unbiased and a′ˆξ is UMVU, Var(a′ˆξ ) ≤ Var(δ ), or
+σ 2∥Pa ∥2 ≤ σ 2∥b∥2.
+But formulas for the variances of the estimators do not depend on normality,
+and thus Var(a
+′ˆξ ) ≤ Var(δ ) in general. ⊓ ⊔
+Although a′ˆξ is the “best” linear estimate, in some examples nonlinear
+estimates can be more precise.
+Example 14.5. Suppose
+Y
+i =β +ǫi, i = 1,...,n,
+where ǫ1,...,ǫ n are i.i.d. with common density
+f (x) = e−
+√
+2|x|/σ
+σ
+√
+2 , x ∈ R.
+By the symmetry, Eǫi = 0, i = 1,...,n, and
+Var(ǫi) = Eǫ 2
+i
+= 2
+∫∞
+0
+x2e−
+√
+2x/σ
+σ
+√
+2 dx
+= σ 2
+2
+∫∞
+0
+u2e−udu = σ 2
+2 Γ (3) = σ 2, i = 1,...,n.
+So Cov(Y ) = Cov(ǫ) = σ 2I, and if we take X = (1,..., 1)′, then EY =Xβ .
+This shows that the conditions of the Gauss–Markov theorem are satisﬁed. If
+a = n
+−1X, then a′ξ = n−1X′Xβ = β . By the Gauss–Markov theorem, the
+best linear estimator of β is
+ˆβ = 1
+nX′ˆξ = 1
+nX′X(X′X)−1X′Y = 1
+nX′Y =
+Y,
+the sample average. This estimator has variance σ 2/n . A competing estimator
+might be the sample median,
+
+===== PAGE 9 =====
+
+14.4 Estimating σ 2 277
+˜Y = med{Y1,...,Y n} =β + med{ǫ1,...,ǫ n}.
+By (8.5), √
+n( ˜Y − β ) ⇒ N (0,σ 2/ 2). This result suggests that
+Var
+(√
+n( ˜Y − β )
+)
+→ σ 2/ 2.
+This can be established formally using Theorem 8.16 and showing that the
+variablesn( ˜Y −β )
+2 are uniformly integrable. Since Var
+(√
+n(
+Y −β )
+)
+=σ 2, for
+large n the variance of ˜Y is roughly half the variance of
+ Y .
+14.4 Estimating σ2
+From the discussion in Section 14.1, Zr+1,...,Z n are i.i.d. from N (0,σ 2).
+ThusEZ 2
+i =σ 2,i =r + 1....,n, and the average of these variables,
+S2 = 1
+n − r
+n∑
+i=r+1
+Z2
+i , (14.18)
+is an unbiased estimator of σ 2. But S2 is a function of the complete suﬃcient
+statistic (Z1,...,Z r, ∑n
+i=1
+Z2
+i ) in (14.7), and so S2 is the UMVU estimator of
+σ 2. The estimator S2 can be computed from the length of the residual vector
+e in (14.10). To see this, ﬁrst write
+∥e∥2 =e′e =
+( n∑
+i=r+1
+Ziv′
+i
+) 
+
+n∑
+j=r+1
+Zjvj
+
+ =
+n∑
+i=r+1
+n∑
+j=r+1
+ZiZjv′
+ivj.
+Because v1,...,v n is an orthonormal basis, v′
+ivj equals zero when i ̸= j and
+equals one when i = j. So the double summation in this equation simpliﬁes
+giving
+∥e∥2 =
+n∑
+i=r+1
+Z2
+i, (14.19)
+and so
+S2 = ∥e∥2
+n − r = ∥Y − ˆξ ∥2
+n − r . (14.20)
+Because ˆξ in (14.8) is a function of Z1,...,Z r , ande in (14.10) is a function
+of Zr+1,...,Z n, S2 and ˆξ are independent. Also, using (14.19), (14.20), and
+the deﬁnition of the chi-square distribution,
+(n − r)S2
+σ 2 =
+n∑
+i=r+1
+(Zi/σ )2 ∼ χ 2
+n−r
+, (14.21)
+since Zi/σ ∼ N (0, 1).
+
+===== PAGE 10 =====
+
+278 14 General Linear Model
+The distribution theory just presented can be used to set conﬁdence inter-
+vals for linear estimators. If a is a constant vector in Rn, then from (14.16)
+the standard deviation of least squares estimator a′ˆξ of a′ξ is σ ∥Pa ∥. This
+standard deviation is naturally estimated as
+ˆσa′ˆξ
+def= S∥Pa ∥.
+Theorem 14.6. In the general linear model with Y ∼ N (ξ,σ 2I), ξ ∈ω , and
+σ 2 > 0, (
+a′ˆξ − ˆσa′ˆξtα/2 ,n−r,a′ˆξ + ˆσa′ˆξtα/2 ,n−r
+)
+is a 1 − α conﬁdence interval for a′ξ .
+Proof. Because a′ˆξ ∼ N
+(
+a′ξ,σ 2∥Pa ∥2)
+,
+a′ˆξ − a′ξ
+σ ∥Pa ∥ ∼ N (0, 1).
+This variable is independent of (n−r)S2/σ 2 becauseS2 and ˆξ are independent.
+Using (9.2), the deﬁnition of the t-distribution,
+a′ˆξ − a′ξ
+σ ∥Pa ∥
+√
+1
+n − r
+(n − r)S2
+σ 2
+= a′ˆξ − a′ξ
+S∥Pa ∥ ∼ tn−r.
+The coverage probability of the stated interval is
+P
+(
+a′ˆξ − S∥Pa ∥tα/2 ,n−r <a′ξ <a′ˆξ +S∥Pa ∥tα/2 ,n−r
+)
+=P
+(
+−tα/2 ,n−r < a′ˆξ − a′ξ
+S∥Pa ∥ <tα/2 ,n−r
+)
+= 1 − α. ⊓ ⊔
+When X has full rank, βi is a linear function of ξ , estimated by ˆβi with
+varianceσ
+[
+(X′X)−1]
+ii. So the estimated standard deviation of ˆβi is
+ˆσ ˆβ i
+=S
+√
+[
+(X′X)−1]
+ii,
+and (ˆβi − ˆσ ˆβ i
+tα/2 ,n−p, ˆβi + ˆσ ˆβ i
+tα/2 ,n−p
+)
+(14.22)
+is a 1 − α conﬁdence interval for βi.
+
+===== PAGE 11 =====
+
+14.5 Simple Linear Regression 279
+14.5 Simple Linear Regression
+To illustrate the ideas developed, we consider simple linear regression in which
+a response variable Y is a linear function of an independent variable x plus
+random error. Speciﬁcally,
+Y
+i =β 1 +β 2(xi −
+x) +ǫi, i = 1,...,n.
+The independent variables x1,...,x n with average
+ x are taken to be known
+constants, β 1 and β 2 are unknown parameters, and ǫ1,...,ǫ n are i.i.d. from
+N (0,σ 2). This gives a general linear model with design matrix
+X =
+
+
+
+1 x
+1 −
+x
+.
+.
+.
+.
+.
+.
+1x
+n −
+x
+
+
+ .
+In parameterizing the mean of Y (called the regression function) as β
+1 +
+β 2(x −
+x),β 1 would be interpreted not as an intercept, but as the value of the
+regression when x =
+ x. Note that ∑n
+i=1
+(xi −
+ x) = ∑n
+i=1
+xi − n
+x = 0, which
+means that the two columns of X are orthogonal. This will simplify many
+later results. For instance, X will have rank 2 unless all entries in the second
+column are zero, which can only occur if x1 = · · · =xn. Also, since the entries
+inX′X are inner products of the columns of X, this matrix and ( X′X)−1 are
+both diagonal:
+X′X =
+(n 0
+0 ∑n
+i=1
+(xi −
+ x)2
+)
+and
+(X′X)−1 =
+(1/n 0
+0 1 / ∑n
+i=1
+(xi −
+ x)2
+)
+.
+Since
+X′Y =
+( ∑n
+i=1
+Yi
+∑n
+i=1
+Yi(xi −
+ x)
+)
+,
+ˆβ = (X′X)−1X′Y =
+( 1
+n
+∑n
+i=1
+Yi
+∑n
+i=1
+Yi(xi −
+ x)/ ∑n
+i=1
+(xi −
+x)2
+)
+.
+Also,
+Cov( ˆβ ) = σ 2(X′X)−1 =
+(σ 2/n 0
+0 σ 2/ ∑n
+i=1
+(xi −
+x)2
+)
+. (14.23)
+To estimate σ 2, since ˆξi = ˆβ 1 + ˆβ 2(xi −
+ x),
+ei =Yi − ˆβ 1 − ˆβ 2(xi −
+ x),
+
+===== PAGE 12 =====
+
+280 14 General Linear Model
+and then
+S2 = 1
+n − 2
+n∑
+i=1
+e2
+i
+.
+This equation can be rewritten in various ways. For instance,
+S2 = 1
+n − 2
+n∑
+i=1
+(Yi −
+Y )2(1 − ˆρ 2),
+where ˆρ is the sample correlation deﬁned as
+ˆρ =
+∑n
+i=1
+(Yi −
+Y )(xi −
+ x)
+[∑n
+i=1
+(Yi −
+ Y )2 ∑n
+i=1
+(xi −
+ x)2]1/2 .
+This equation shows that ˆρ 2 may be viewed as the proportion of the variation
+of Y that is “explained” by the linear relation between Y and x.
+Using (14.22),
+(
+ˆβ 1 − Stα/2 ,n−2
+√
+n , ˆβ 1 + Stα/2 ,n−2
+√
+n
+)
+is a 1 − α conﬁdence interval for β 1, and
+(
+ˆβ 2 − Stα/2 ,n−2
+√
+∑n
+i=1
+(xi −
+ x)2, ˆβ 2 + Stα/2 ,n−2
+√
+∑n
+i=1
+(xi −
+ x)2
+)
+is a 1 − α conﬁdence interval for β 2.
+14.6 Noncentral F and Chi-Square Distributions
+Distribution theory for testing in the general linear model relies on noncentral
+F and chi-square distributions.
+Deﬁnition 14.7. If Z
+1,...,Z p are independent and δ ≥ 0 with
+Z1 ∼N (δ, 1) and Zj ∼ N (0, 1), j = 2,...,p,
+then W = ∑p
+i=1
+Z2
+i has the noncentral chi-square distribution with noncen-
+trality parameter δ 2 and p degrees of freedom, denoted
+W ∼ χ 2
+p
+(δ 2).
+Lemma 14.8. If Z ∼ Np(µ,I ), then Z′Z ∼ χ 2
+p
+(∥µ∥2).
+
+===== PAGE 13 =====
+
+14.7 Testing in the General Linear Model 281
+Proof. Let O be an orthogonal matrix where the ﬁrst row is µ′/ ∥µ∥, so that
+Oµ = ˜µ =
+
+
+
+
+
+∥µ∥
+0
+.
+.
+.
+0
+
+
+
+
+ .
+Then
+˜Z =OZ ∼ N
+p(˜µ,I p).
+From the deﬁnition, ˜Z′˜Z = ∑p
+i=1
+˜Z2 ∼ χ 2
+p
+(∥µ∥2), and the lemma follows
+because
+˜Z′˜Z =Z′O′OZ =Z′Z. ⊓ ⊔
+The next lemma shows that certain quadratic forms for multivariate nor-
+mal vectors have noncentral chi-square distributions.
+Lemma 14.9. If Σ is a p × p positive deﬁnite matrix and if Z ∼ N
+p(µ,Σ ),
+then
+Z′Σ−1Z ∼ χ 2
+p
+(µ′Σ−1µ).
+Proof. Let A =Σ−1/2 , the symmetric square root of Σ−1, deﬁned in (9.11).
+Then AZ ∼ Np(Aµ,I p), and so
+Z′Σ−1Z = (AZ)′(AZ) ∼ χ 2
+p
+(∥Aµ∥2).
+The lemma follows because ∥Aµ∥2 = (Aµ)′(Aµ) = µ′AAµ =µ′Σ−1µ. ⊓ ⊔
+Deﬁnition 14.10. If V and W are independent variables with V ∼ χ 2
+k
+(δ 2)
+and W ∼ χ 2
+m
+, then
+V/k
+W/m ∼ Fk,m (δ 2),
+the noncentral F -distribution with degrees of freedom k and m and noncen-
+trality parameter δ 2. When δ 2 = 0 this distribution is simply called the F
+distribution, Fk,m .
+14.7 Testing in the General Linear Model
+In the general linear model, Y ∼ N (ξ,σ 2I) with the mean ξ in a linear
+subspace ω with dimension r. In this section we consider testing H0 :ξ ∈ω 0
+versusH1 :ξ ∈ω −ω 0 withω 0 aq-dimensional linear subspace of ω , 0 ≤ q <r.
+Null hypotheses of this form arise when β satisﬁes linear constraints. For
+instance we might have H0 : β 1 = β 2 or H0 : β 1 = 0. (Similar ideas can be
+used to test β 1 =c or other aﬃne constraints; see Problem 14.13.)
+
+===== PAGE 14 =====
+
+282 14 General Linear Model
+Let ˆξ and ˆξ 0 denote least squares estimates for ξ under the full model
+and under H0. Speciﬁcally, ˆξ = PY and ˆξ0 = P0Y , where P and P0 are the
+projection matrices onto ω and ω 0. The test statistic of interest is based on
+∥Y − ˆξ ∥, the distance between Y and ω , and ∥Y − ˆξ 0∥, the distance between
+Y and ω 0. Because ω 0 ⊂ ω , the former distance must be smaller, but if the
+distances are comparable, then at least qualitatively H0 may seem adequate.
+The test statistic is
+T = n − r
+r − q
+∥Y − ˆξ0∥2 − ∥Y − ˆξ ∥2
+∥Y − ˆξ ∥2
+,
+andH0 will be rejected if T exceeds a suitable constant. Noting that Y − ˆξ ∈
+ω⊥and ˆξ − ˆξ 0 ∈ ω , the vectors Y − ˆξ and ˆξ − ˆξ 0 are orthogonal, and the
+squared length of their sum, by the Pythagorean theorem, is
+∥Y − ˆξ 0∥2 = ∥Y − ˆξ ∥2 + ∥ ˆξ − ˆξ0∥2.
+Using this, the formula for T can be rewritten as
+T = n − r
+r − q
+∥ ˆξ − ˆξ 0∥2
+∥Y − ˆξ ∥2 = ∥ ˆξ − ˆξ 0∥2
+(r − q)S2. (14.24)
+This test statistic is equivalent to the generalized likelihood ratio test statistic
+that will be introduced and studied in Chapter 17. When r − q = 1 the test
+is uniformly most powerful unbiased, and when r − q > 1 the test is most
+powerful among tests satisfying symmetry restrictions.
+For level and power calculations we need the distribution of T given in the
+next theorem.
+Theorem 14.11. Under the general linear model,
+T ∼ F
+r−q,n−r (δ 2),
+where
+δ 2 = ∥ξ − P0ξ ∥2
+σ 2 . (14.25)
+Proof. Write
+Y =
+n∑
+i=1
+Zivi,
+wherev1,...,v n is an orthonormal basis chosen so that v1,...,v q spanω 0 and
+v1,...,v r span ω . Then, as in (14.8),
+ˆξ0 =
+q∑
+i=1
+Zivi and ˆξ =
+r∑
+i=1
+Zivi.
+
+===== PAGE 15 =====
+
+14.7 Testing in the General Linear Model 283
+Also, as in (14.5) and (14.6), Z ∼ N (η,σ 2I) with ηr+1 = · · · =ηn = 0. Since
+v′
+ivj is zero when i ̸=j and one when i =j,
+∥Y − ˆξ ∥2 =
+
+
+
+
+
+n∑
+i=r+1
+Zivi
+
+
+
+
+
+2
+=
+( n∑
+i=r+1
+Ziv′
+i
+) 
+
+n∑
+j=r+1
+Zjvj
+
+
+=
+n∑
+i=r+1
+n∑
+j=r+1
+ZiZjv′
+ivj =
+n∑
+i=r+1
+Z2
+i.
+Similarly
+∥Y − ˆξ 0∥2 =
+n∑
+i=q+1
+Z2
+i ,
+and so
+T =
+1
+r − q
+∑r
+i=q+1
+(Zi/σ )2
+1
+n − r
+∑n
+i=r+1
+(Zi/σ )2
+.
+The variables Zi are independent, and so the numerator and denomina-
+tor in this formula for T are independent. Because Zi/σ ∼ N (ηi/σ, 1), by
+Lemma 14.8,
+r∑
+i=q+1
+(Zi
+σ
+)2
+∼ χ 2
+r−q
+(δ 2),
+where
+δ 2 =
+r∑
+i=q+1
+η 2
+i
+σ 2. (14.26)
+Also, since ηi = 0 for i = r + 1,...,n, Zi/σ ∼ N (0, 1), i = r + 1,...,n,
+and so ∑n
+i=r+1
+(Zi/σ )2 ∼ χ 2
+n−r
+. So by Deﬁnition 14.10 for the noncentral F -
+distribution, T ∼ Fr−q,n−r (δ 2) with δ 2 given in (14.26). To ﬁnish we must
+show that (14.25) and (14.26) agree, or that
+r∑
+i=q+1
+η 2
+i = ∥ξ − P0ξ ∥2.
+Since
+ξ =E ˆξ =
+r∑
+i=1
+ηivi
+and
+P0ξ =EP0Y =E ˆξ 0 =
+q∑
+i=1
+ηivi,
+
+===== PAGE 16 =====
+
+284 14 General Linear Model
+ξ − P0ξ =
+r∑
+i=q+1
+ηivi.
+Then, by the Pythagorean theorem,
+∥ξ − P0ξ ∥2 =
+r∑
+i=q+1
+η 2
+i,
+as desired. ⊓ ⊔
+Example 14.12. Consider a model in which
+Yi =
+{
+xiβ 1 +ǫi, i = 1,...,n 1;
+xiβ 2 +ǫi, i =n1 + 1,...,n 1 +n2 =n,
+withǫ1,...,ǫ n i.i.d. from N (0,σ 2) and independent variables x1,...,x n taken
+as known constants. This model might be appropriate if you have bivariate
+data from two populations, each satisfying simple linear regression through
+the origin. In such a situation, the most interesting hypothesis to consider
+may be that the two populations are the same, and so let us test H
+0 :β 1 =β 2
+versusH1 :β 1 ̸=β 2. The design matrix under the full model is
+X =
+
+
+
+
+
+
+
+
+
+
+x
+1 0
+.
+.
+.
+.
+.
+.
+x
+n1 0
+0 xn1 +1
+.
+.
+. .
+.
+.
+0 x
+n
+
+
+
+
+
+
+
+
+
+
+,
+and straightforward algebra gives
+X
+′X =
+(∑n1
+i=1x2
+i
+0
+0 ∑n
+i=n
+1 +1x2
+i
+)
+and X′Y =
+( ∑n1
+i=1xiYi
+∑n
+i=n
+1+1xiYi
+)
+.
+So
+ˆβ = (X′X)−1X′Y =
+( ∑n1
+i=1xiYi/ ∑n1
+i=1x2
+i
+∑n
+i=n
+1 +1xiYi/ ∑n
+i=n
+1 +1x2
+i
+)
+and
+∥Y − ˆξ ∥2 =
+n1∑
+i=1
+(Yi − xi ˆβ 1)2 +
+n∑
+i=n1 +1
+(Yi − xi ˆβ 2)2.
+HereX is of full rank (unless x1 = · · · =xn1 = 0 or xn1 = · · · =xn = 0), and
+so r =p = 2 and
+
+===== PAGE 17 =====
+
+14.7 Testing in the General Linear Model 285
+S2 = ∥Y − ˆξ ∥2
+n − 2 .
+UnderH0 we also have a general linear model. If β 0 denotes the common
+value of β 1 andβ 2, then Yi =xiβ 0 +ǫi,i = 1,...,n, and the design matrix is
+X0 =
+
+
+
+x
+1
+.
+.
+.
+x
+n
+
+
+ .
+Then X
+′
+0X0 = ∑n
+i=1
+x2
+i
+and X′
+0Y = ∑n
+i=1
+xiYi, and so
+ˆβ 0 = (X′
+0X0)−1X′
+0Y =
+∑n
+i=1
+xiYi
+∑n
+i=1
+x2
+i
+.
+Thus
+∥ ˆξ − ˆξ0∥2 =
+n1∑
+i=1
+(xi ˆβ 1 − xi ˆβ 0)2 +
+n∑
+i=n1+1
+(xi ˆβ 2 − xi ˆβ 0)2
+= ( ˆβ 1 − ˆβ 0)2
+n1∑
+i=1
+x2
+i
++ ( ˆβ 2 − ˆβ 0)2
+n∑
+i=n1 +1
+x2
+i
+.
+Noting that ˆβ 0 is a weighted average of ˆβ 1 and ˆβ 2,
+ˆβ 0 =
+∑n1
+i=1x2
+i
+∑n
+i=1
+x2
+i
+ˆβ 1 +
+∑n
+i=n
+1 +1x2
+i
+∑n
+i=1
+x2
+i
+ˆβ 2,
+this expression simpliﬁes to
+∥ ˆξ − ˆξ0∥2 =
+∑n1
+i=1x2
+i
+∑n
+i=n
+1 +1x2
+i
+∑n
+i=1
+x2
+i
+( ˆβ 1 − ˆβ 2)2. (14.27)
+So the test statistic T is given by
+T =
+∑n1
+i=1x2
+i
+∑n
+i=n
+1 +1x2
+i
+S2 ∑n
+i=1
+x2
+i
+( ˆβ 1 − ˆβ 2)2.
+UnderH0,T ∼ F1,n−2, and the level-α test will rejectH0 ifT exceedsFα, 1,n−2,
+the upper α th quantile of this F -distribution.
+For power calculations we need the noncentrality parameter δ 2 in (14.25).
+Given the calculations we have done, the easiest way to ﬁnd δ 2 is to note that
+if our data were observed without error, i.e., if ǫ were zero, then ˆξ would be ξ ,
+ˆβ 1 and ˆβ 2 would be β 1 and β 2, and ˆξ0 would be P0ξ . Using this observation
+and (14.27),
+δ 2 =
+∑n1
+i=1 x2
+i
+∑n
+i=n
+1 +1x2
+i
+σ 2 ∑n
+i=1
+x2
+i
+(β 1 − β 2)2.
+The power is then the chance that a variable from F1,n−2(δ 2) exceedsFα, 1,n−2.
+
+===== PAGE 18 =====
+
+286 14 General Linear Model
+14.8 Simultaneous Conﬁdence Intervals
+A researcher studying a complex data set may construct conﬁdence intervals
+for many parameters. Even with a high coverage probability for each interval
+there may be a substantial chance some of them will fail, raising a concern
+that the ones that fail may be reported as meaningful when all that is really
+happening is natural chance variation. Simultaneous conﬁdence intervals have
+been suggested to protect against this possibility. A few basic ideas are devel-
+oped here, ﬁrst in the context of one-way ANOV A models, introduced before
+in Example 14.2.
+The model under consideration has
+Y
+kl =βk +ǫkl, 1 ≤ l ≤ c, 1 ≤ k ≤ p.
+This can be viewed as a model for independent random samples from p normal
+populations all with a common variance. The design here has the same number
+of observations c from each population. Listing the variables Y
+kl in a single
+vector, as in Example 14.2, this is a general linear model. The least squares
+estimator of β should minimize
+c∑
+l=1
+p∑
+k=1
+(Ykl − βk)2.
+The partial derivative of this criterion with respect to βm is
+− 2
+c∑
+l=1
+(Yml − βm)
+which vanishes when βm = ˆβm given by
+ˆβm =
+Ym·
+def= 1
+c
+c∑
+l=1
+Yml, m = 1,...,p.
+These are the least squares estimators. Here r =p and n =pc, so
+S2 = ∥Y − ˆξ ∥2
+pc − p = 1
+p(c − 1)
+c∑
+l=1
+p∑
+k=1
+(Ykl − ˆβk )2.
+The least squares estimators are averages of diﬀerent collections of the Ykl .
+Thus ˆβ 1,..., ˆβp are independent with
+ˆβk ∼ N (βk,σ 2/c) , k = 1,...,p.
+Also
+p(c − 1)S2
+σ 2 ∼ χ 2
+p(c−1)
+,
+
+===== PAGE 19 =====
+
+14.8 Simultaneous Conﬁdence Intervals 287
+and S2 is independent of ˆβ .
+To start, let us try to ﬁnd intervals I1,...,I p that simultaneously cover
+parameters β 1,...,β p with speciﬁed probability 1 − α . Speciﬁcally, we want
+P (βk ∈Ik,k = 1,...,p ) = 1 − α.
+The conﬁdence intervals in Theorem 14.6 or (14.22) are
+(
+ˆβk − S
+√
+ctα/2 ,p (c−1), ˆβk + S
+√
+ctα/2 ,p (c−1)
+)
+,
+and intuition suggests that we may be able to achieve our objective taking
+Ik =
+(
+ˆβk − S
+√
+cq, ˆβk + S
+√
+cq
+)
+, k = 1,...,p,
+if q is chosen suitably. Now
+P (βk ∈Ik,k = 1,...,p ) = P
+(
+|ˆβk − βk |< S
+√
+cq,k = 1,...,p
+)
+=P
+(
+max
+1≤k≤p
+|ˆβk − βk|
+S/ √
+c <q
+)
+=P
+(
+max
+1≤k≤p
+|Zk |
+√
+W
+<q
+)
+,
+where
+Zk =
+ˆβk − βk
+σ/ √
+c ∼ N (0, 1), k = 1,...,p
+and W =S2/σ 2. Because Z1,...,Z p and W are independent and mW ∼ χ 2
+m
+withm =p(c− 1), the simultaneous coverage probability here does not depend
+on β or σ .
+Deﬁnition 14.13. If Z1,...,Z p and W are independent variables with Zk ∼
+N (0, 1), k = 1,...,p , and mW ∼ χ 2
+m
+, then
+max1≤k≤p |Zk|
+√
+W
+has the studentized maximum modulus distribution with parameters p and
+m.
+If q is the upper α th quantile of this studentized maximum modulus dis-
+tribution, then the intervals I1,...,I p have simultaneous coverage probability
+1 − α .
+In practice, researchers will often be more interested in comparing pop-
+ulations than estimating individual means, and so conﬁdence intervals for
+
+===== PAGE 20 =====
+
+288 14 General Linear Model
+diﬀerences βj − βi may be of interest. So let us now seek intervals Iij such
+that
+P (βj − βi ∈Iij, ∀i ̸=j) = 1 − α.
+Now we may naturally suspect we can achieve this objective with intervals of
+the form
+I
+ij =
+(
+ˆβj − ˆβi − S
+√
+cq, ˆβj − ˆβi + S
+√
+cq
+)
+with q adjusted suitably. Then
+P (βj − βi ∈Iij, ∀i ̸=j)
+=P
+(⏐
+⏐( ˆβ
+j − βj ) − ( ˆβi − βi)
+⏐
+⏐< S
+√
+cq, ∀i ̸=j
+)
+=P
+( ⏐
+⏐√
+c( ˆβj − βj ) − √
+c( ˆβi − βi)
+⏐
+⏐
+S <q, ∀i ̸=j
+)
+=P
+(|Zj − Zi|
+√
+W
+<q, ∀i ̸=j
+)
+=P
+(max1≤k≤pZk − min1≤k≤pZk
+√
+W
+<q
+)
+.
+This approach works because this probability does not depend on β or σ .
+Deﬁnition 14.14. If Z1,...,Z p and W are independent variables with Zk ∼
+N (0, 1), k = 1,...,p and mW ∼ χ 2
+m
+, then
+max1≤k≤pZk − min1≤k≤p Zk
+√
+W
+has the studentized range distribution with parameters p and m.
+If q is the upper α th quantile of the studentized range distribution, then
+the intervals Iij will have simultaneous coverage probability 1 − α .
+The derivations of simultaneous conﬁdence intervals just presented relies
+heavily on the structure of the ANOV A model under consideration. More
+general results are possible using a method due to Scheﬀ´ e. This method is
+based on conﬁdence sets for a parameter ψ ∈ R
+q, with q ≤ r, which is a linear
+function of the mean ξ ; that is,
+ψ =Aξ =AXβ
+for some q × n matrix A. When X is full rank β = (X′X)−1X′ξ , and so
+A = (X′X)−1X′will give ψ =β . Other linear functions of β are also possible.
+Because Pξ = ξ , we have APξ = Aξ = ψ , and replacing A by A∗= AP
+will not change ψ . Then A∗P = APP = AP = A∗. Changing A to A∗, if
+necessary, we can assume without loss of generality that A = AP . This is
+convenient because then the least squares estimator of ψ is
+
+===== PAGE 21 =====
+
+14.8 Simultaneous Conﬁdence Intervals 289
+ˆψ =A ˆξ =APY =AY.
+Finally, we assume that the rows of AX are linearly independent. Since AX
+is then of full rank and ψ =AXβ , this ensures that ψ can assume arbitrary
+values in Rq . Also, note that then the rank of AX will be less than the rank
+of A, for if the rows of A satisfy a nontrivial linear constraint, v′A = 0, then
+v′AX = 0, and the rows of AX will satisfy the same linear constraint. If we
+deﬁne B =AA′, then B is positive deﬁnite because
+q ≤ rank(AX) ≤ rank(A) ≤ q,
+showing that A and AX are both of full rank, and v′Bv =v′AA′v = ∥A′v∥2,
+which is positive unless v = 0 as A is full rank. Using (1.15),
+ˆψ ∼ N (ψ,σ 2B),
+and so by Lemma 14.9,
+( ˆψ − ψ )′B−1( ˆψ − ψ )
+σ 2 ∼ χ 2
+q
+.
+Because ˆψ is a function of ˆξ , and ˆξ is independent of S2, this quadratic form
+is independent of
+(n − r)S2
+σ 2 ∼ χ 2
+n−r
+.
+Then by Deﬁnition 14.10,
+( ˆψ − ψ )′B−1( ˆψ − ψ )/ (qσ 2)
+S2/σ 2 = ( ˆψ − ψ )′B−1( ˆψ − ψ )
+qS2 ∼ Fq,n−r.
+From this
+P
+(
+( ˆψ − ψ )′B−1( ˆψ − ψ ) ≤ qS 2Fα,q,n −r
+)
+= 1 − α.
+The set of values for ψ where this event obtains is a multivariate ellipse cen-
+tered at ˆψ . This random ellipse is a 1 − α conﬁdence set for ψ .
+To form simultaneous conﬁdence intervals from the conﬁdence ellipse de-
+scribed, note that
+( ˆψ − ψ )′B−1( ˆψ − ψ ) = ∥B−1/2 ( ˆψ − ψ )∥2.
+Also, for any h ∈ Rq,
+h′Bh =h′B1/2 B1/2 h = ∥B1/2 h∥2.
+By the Schwarz inequality,
+∥B1/2 h∥2∥B−1/2 ( ˆψ − ψ )∥2 ≥
+[
+h′B1/2 B−1/2 ( ˆψ − ψ )
+]2
+=
+[
+h′( ˆψ − ψ )
+]2
+.
+
+===== PAGE 22 =====
+
+290 14 General Linear Model
+So
+P
+{[
+h′( ˆψ − ψ )
+]2
+≤ qS 2h′BhFα,q,n −r, ∀h ∈ Rq
+}
+≥ P
+(
+∥B1/2 h∥2∥B−1/2 ( ˆψ − ψ )∥2 ≤ qS2h′BhFα,q,n −r, ∀h ∈ Rq )
+=P
+(
+∥B−1/2 ( ˆψ − ψ )∥2 ≤ qS2Fα,q,n −r
+)
+= 1 − α.
+But taking h =B−1( ˆψ −ψ ), this probability can be at most 1 −α , and so we
+must have equality. Since
+Var
+(
+h′( ˆψ − ψ )
+)
+=σ 2h′Bh,
+naturally estimated by
+ˆσ 2
+h′ ˆψ =S2h′Bh,
+we can write this identity as
+P
+{[
+h′( ˆψ − ψ )
+]2
+≤ ˆσ 2
+h′ ˆψ qFα,q,n −r, ∀h ∈ Rq
+}
+= 1 − α.
+So the intervals
+(
+h′ˆψ − ˆσh′ ˆψ
+√
+qFα,q,n −r,h′ˆψ + ˆσh′ ˆψ
+√
+qFα,q,n −r
+)
+containh′ψ simultaneously for all h ∈ Rq , with probability 1 − α .
+Example 14.15. In the model for simple linear regression considered in Sec-
+tion 14.5, the value for the regression function at a speciﬁed value x for the
+independent variable is β 1 +β 2(x −
+ x), estimated by ˆβ 1 + ˆβ 2(x −
+ x). Using
+(14.23), the variance of this estimator is
+σ 2
+[ 1
+n + (x −
+ x)2
+sxx
+]
+,
+where sxx = ∑n
+i=1
+(xi −
+x)2. This variance is estimated by
+S2
+[ 1
+n + (x −
+x)2
+sxx
+]
+.
+Takingψ =β , the regression at x, β 1 +β 2(x −
+x), will lie in
+(
+ˆβ 1 + ˆβ 2(x −
+x) − S
+√
+1
+n + (x −
+x)2
+sxx
+√
+2Fα, 2,n−2,
+ˆβ 1 + ˆβ 2(x −
+x) +S
+√
+1
+n + (x −
+x)2
+sxx
+√
+2Fα, 2,n−2
+)
+,
+simultaneously for all x ∈ R, with probability at least 1 −α . These conﬁdence
+bands are plotted along with the regression line in Figure 14.1.
+
+===== PAGE 23 =====
+
+14.8 Simultaneous Conﬁdence Intervals 291
+y
+x
+Fig. 14.1. Conﬁdence bands.
+Example 14.16. In one-way ANOV A comparisons between weighted averages
+of the means of certain populations and weighted averages of the means of
+diﬀerent populations may be of interest. Scaled diﬀerences between weighted
+averages are called contrasts.
+Deﬁnition 14.17. A contrast in one-way ANOVA is any parameter of the
+form
+a
+′β =a1β 1 + · · · +apβp
+with a1 + · · · +ap = 0.
+Examples of contrasts include β 3 −β 1 or 1
+2 (β 1 +β 3) −
+(1
+6β 2 + 1
+3β 4 + 1
+2β 5
+)
+.
+Taking
+ψ =
+
+
+
+β
+1 − βp
+.
+.
+.
+β
+p−1 − βp
+
+
+ ,
+a contrast a
+′β equalsh′ψ withh′= (a1,...,a p−1). The least squares estimate
+of this contrast is ∑p
+i=1
+ai ˆβi which has variance ∑p
+i=1
+a2
+i
+σ 2/c = ∥a∥2σ 2/c,
+estimated replacing σ 2 byS2. Thus with probability 1 − α ,
+a′β ∈
+(
+a′ˆβ − S∥a∥
+√
+c
+√
+(p − 1)Fα,p −1,p (c−1),
+a′ˆβ + S∥a∥
+√
+c
+√
+(p − 1)Fα,p −1,p (c−1)
+)
+,
+
+===== PAGE 24 =====
+
+292 14 General Linear Model
+simultaneously for all a ∈ Rp with a1 + · · · +ap = 0. If instead we were
+interested in all linear combinations of β , we would need to take ψ =β . For
+this case, q equals p, and we have simultaneous conﬁdence intervals
+a′β ∈
+(
+a′ˆβ − S∥a∥
+√
+c
+√
+pFα,p,p (c−1),a′ˆβ + S∥a∥
+√
+c
+√
+pFα,p,p (c−1)
+)
+,
+for all a ∈ Rp. These intervals will be a bit wider than the simultaneous
+conﬁdence intervals for contrasts.
+14.9 Problems 1
+*1. Consider a model in which our data are
+Yi =β 1 +wiβ 2 +xiβ 3 +ǫi, i = 1,...,n,
+wherew1,...,w n andx1,...,x n are observed constants;β 1,β 2, andβ 3 are
+unobserved parameters; and ǫ1,...,ǫ n are unobserved random variables
+which are i.i.d. from N (0,σ 2). Assume that through accident or design,
+w1 + · · ·+wn = 0 and x1 + · · ·+xn = 0. For notation, let Sww = ∑n
+i=1
+w2
+i ,
+Sxx = ∑n
+i=1
+x2
+i
+, Swx = ∑n
+i=1
+wixi, and so on.
+a) Write the model in matrix form as Y =Xβ +ǫ describing entries in
+the matrix X.
+b) If n> 3, when will X be of full rank?
+c) Assuming X is of full rank, give an explicit formula for ˆβ . (It will
+involve terms such as Sxx, SxY , etc.)
+d) Find the covariance matrix of ˆβ .
+e) Give a formula for the UMVU estimator of σ 2.
+f) Find conﬁdence intervals for β 1 and for β 3 − β 2.
+2. Consider a general linear model with n = 2m in whichYi =β 1 +β 3xi +ǫi,
+i = 1,...,m , and Yi =β 2 +β 3xi +ǫi,i =m + 1,...,n. Here ǫ1,...,ǫ n are
+i.i.d. fromN (0,σ 2);β = (β 1,β 2,β 3)′andσ 2 are unknown parameters, and
+x1,...,x n are known constants with x1 + · · ·+xm =xm+1 + · · ·+xn = 0.
+a) Write the model in vector form as Y = Xβ +ǫ describing entries in
+the design matrix X.
+b) Determine the UMVU estimator ˆβ of β .
+c) Write β 1 as a linear function of ξ =EY ; that is, ﬁnd a vector w such
+that β 1 =w′ξ .
+d) Find the UMVU estimator ˆξi of ξi.
+e) Show that ˆβ 1 from part (b) equals w′ˆξ from parts (c) and (d).
+f) Determine the variance of ˆβ 2 − ˆβ 1.
+g) Determine the UMVU estimator S2 of σ 2.
+1 Solutions to the starred problems are given at the back of the book.
+
+===== PAGE 25 =====
+
+14.9 Problems 293
+h) Derive a 1 − α conﬁdence interval for β 2 − β 1.
+i) If the parameter β were known, the best estimate for a future observa-
+tionY from the ﬁrst population (the population for the ﬁrst half of the
+data observed) at some speciﬁed level x for the independent variable
+would be β 1 +β 3x. Give a 95% conﬁdence interval for this quantity.
+Sketch the upper and lower limits of this interval as a function of x if
+ˆβ 1 = 0 and ˆβ 3 = 1/ 2.
+j) Give an explicit formula for the test statistic T used to test H0 :β 1 =
+β 2 versusH1 :β 1 ̸=β 2, and explain how this statistic would be used
+to test H0 versusH1 at level α .
+k) Determine the distribution for T with an explicit formula for the non-
+centrality parameter.
+l) Show that the test of β 1 =β 2 rejects H0 if and only if the conﬁdence
+interval for β 2 − β 1 does not contain zero.
+3. Consider a general linear model with n = 2m in which
+Yi =β 1 +β 2xi +ǫi, i = 1,...,m,
+and
+Yi =β 1 +β 3xi +ǫi, i =m + 1,...,n.
+Here ǫ1,...,ǫ n are i.i.d. from N (0,σ 2); β = (β 1,β 2,β 3)′and σ 2 are un-
+known parameters; and x1,...,x n are known constants with x1 + · · · +
+xm =xm+1 + · · · +xn = 0.
+a) Write the model in vector form as Y = Xβ +ǫ describing entries in
+the design matrix X.
+b) Determine the UMVU estimator ˆβ of β .
+c) Write β 2 as a linear function of ξ =EY ; that is, ﬁnd a vector w such
+that β 2 =w′ξ .
+d) Find the UMVU estimator ˆξi of ξi.
+e) Show that ˆβ 2 from part (b) equals w′ˆξ from parts (c) and (d).
+f) Determine the UMVU estimator S2 of σ 2.
+g) Determine the variance of ˆβ 3 − ˆβ 2.
+h) Derive a 95% conﬁdence interval for β 3 − β 2.
+i) If the parameter β were known, the best estimate for a future observa-
+tionY from the ﬁrst population (the population for the ﬁrst half of the
+data observed) at some speciﬁed level x for the independent variable
+would be β 1 +β 2x. Give a 95% conﬁdence interval for this quantity.
+Sketch the upper and lower limits of this interval as a function of x if
+ˆβ 1 = 0 and ˆβ 2 = 1/ 2.
+j) Use the fact that a suitable multiple of ( ˆβ 3 − ˆβ 2)/S has at-distribution
+to derive a test of H0 :β 2 =β 3 versusH1 :β 2 ̸=β 3 with levelα = 5%.
+k) Show that this test of H0 : β 2 = β 3 rejects H0 if and only if the
+conﬁdence interval for β 3 − β 2 does not contain zero.
+
+===== PAGE 26 =====
+
+294 14 General Linear Model
+l) Derive the F -test of H0 : β 2 = β 3 versus H1 : β 2 ̸= β 3 with level
+α = 5%. Show that this test is the same as the test above based on
+the t-distribution.
+*4. Two-way analysis of variance without replication. Suppose a researcher
+wishes to study the eﬀects of two factors A and B on some response
+variable. If A and B both occur at m levels, then there are m
+2 possible
+combinations of factors. If observations are expensive, a design in which
+there is a single observation for each treatment combination may be de-
+sirable. Let Y
+ij denote the response when factor A is at level i and factor
+B is at level j. A common (additive) model for these data has
+Yij =αi +γj +ǫij,
+where the ǫij are i.i.d. from N (0,σ 2). This can be considered a general
+linear model with β = (α 1,...,α m,γ 1,...,γ m)′.
+a) Increasing every parameter αi by an amount ∆ and simultaneously
+decreasing every parameter γj by the same amount ∆ leaves the mean
+ξ of Y unchanged. So it is clear that r = dim(ω ) is less than p = 2m.
+Determine the dimension r of ω in this model.
+b) Find the least squares estimate for ξij =EYij in this model.
+c) Determine S2, the usual unbiased estimator of σ 2.
+d) Show that αi − αj is a linear function of ξ and determine the least
+squares estimate of this diﬀerence.
+e) Let
+ Yi· = (Yi1 + · · · +Yim)/m , the average response with factor A
+at level i. Use the studentized range distribution and the fact that
+Y 1·,...,
+ Ym· are independent to derive simultaneous 1 −α conﬁdence
+intervals for all diﬀerences αi − αj , 1 ≤ i<j ≤ m.
+f) Derive a level 1 − α test of H0 : α 1 = · · · = αm versus H1 : αi ̸= αj
+for some i ̸=j.
+g) Give the power for this test of α 1 = · · · = αm. Your answer should
+involve the cumulative distribution function for a noncentral F dis-
+tribution. Give the degrees of freedom and provide a formula for the
+noncentrality parameter.
+h) Use the Scheﬀ´ e method to derive simultaneous conﬁdence intervals for
+all contrasts of the α
+i, that is, all linear combinations a1α 1 + · · · +
+amαm witha1 + · · ·+am = 0. Note that these contrasts are estimable
+because they can be written as linear combinations of diﬀerences α 1 −
+αm,...,α m−1 − αm.
+5. Time series regression models often incorporate regular oscillation over
+time, and in some cases this structure can be incorporated into a general
+linear model. Let t
+j ,j = 1,...,n, be known time points, and assume
+Yj =r sin(tj +θ ) +ǫj, j = 1,...,n.
+Here the errors ǫi are i.i.d. from N (0,σ 2), and r > 0, θ ∈ [−π,π ), and
+σ 2 > 0 are unknown parameters. Assume for convenience that the time
+
+===== PAGE 27 =====
+
+14.9 Problems 295
+points are evenly spaced with 4 k observations per cycle and m cycles, so
+that n = 4km and tj =jπ/ (2k). With these assumptions,
+n∑
+j=1
+sin2(tj ) =
+n∑
+j=1
+cos2(tj ) = n/ 2
+and n∑
+j=1
+sin(tj ) =
+n∑
+j=1
+cos(tj ) =
+n∑
+j=1
+sin(tj ) cos(tj ) = 0.
+a) Introduce new parameters β 1 = r sinθ and β 2 = r cosθ . Show that
+after replacingr andθ with these parameters, we have a general linear
+model.
+b) Find UMVU estimators ˆβ 1 and ˆβ 2 for β 1 and β 2.
+c) Find the UMVU estimator of σ 2.
+d) Derive 95% conﬁdence intervals for β 1 and β 2.
+e) Show that a suitable multiple of ˆ r2 = ˆβ 2
+1 + ˆβ 2
+2 has a noncentral chi-
+square distribution. Identify the degrees of freedom and the noncen-
+trality parameter.
+f) Derive a test of H
+0 :θ =θ 0 versusH1 :θ ̸=θ 0 with level α = 5%.
+6. Let β 1,...,β 3 be the angles for a triangle in degrees, so β 1 +β 2 +β 3 =
+180; and let Y1,...,Y 3 be measurements of these angles. Assume that the
+measurement errors, ǫi =Yi − βi, i = 1,..., 3, are i.i.d. N (0,σ 2).
+a) Find UMVU estimates ˆβ 1 and ˆβ 2 for β 1 and β 2.
+b) Find the covariance matrix for ( ˆβ 1, ˆβ 2) and compare the variance of
+ˆβ 1 with Y1.
+c) Find an unbiased estimator for σ 2.
+d) Derive conﬁdence intervals for β 1 and β 2 − β 1.
+7. Side conditions when r < p. When r < p, diﬀerent values for β will give
+the same mean ξ =Xβ , and various values for β will minimize ∥Y −Xβ ∥2.
+One approach to force a unique answer is to impose side conditions on
+β . Because the row span and column span of a matrix are the same, the
+space V ⊂ R
+p spanned by the rows of X will have dimension r < p, and
+V⊥will have dimension p − r.
+a) Show that β ∈V⊥if and only if Xβ = 0.
+b) Let ω = {Xβ :β ∈ Rp}. Show that the map β ⇝Xβ from V to ω is
+one-to-one and onto.
+c) Let h1,...,h p−r be linearly independent vectors spanning V⊥. Show
+that β ∈ V if and only if hi ·β = 0, i = 1,...,p − r. Equivalently,
+β ∈V if and only if Hβ = 0, where H′= (h1,...,h p−r ).
+d) From part (b), there should be a unique ˆβ in V with X ˆβ = ˆξ , and ˆβ
+will then minimize ∥Y − Xβ ∥2 overβ ∈V . Using part (c), ˆβ can be
+characterized as the unique value minimizing ∥Y −Xβ ∥2 overβ ∈ Rp
+satisfying the side condition H ˆβ = 0. Show that ˆβ minimizes
+
+===== PAGE 28 =====
+
+296 14 General Linear Model
+
+
+
+
+(Y
+0
+)
+−
+(X
+H
+)
+β
+
+
+
+
+2
+overβ ∈ Rp. Use this to derive an explicit equation for ˆβ .
+8. A variable Y has a log-normal distribution with parameters µ and σ 2 if
+logY ∼ N (µ,σ 2).
+a) Find the mean and density for the log-normal distribution.
+b) If Y1,...,Y n are i.i.d. from the log-normal distribution with unknown
+parameters µ and σ 2, ﬁnd the UMVU for µ.
+c) If Y1,...,Y n are i.i.d. from the log-normal distribution with param-
+eters µ and σ 2, with σ 2 a known constant, ﬁnd the UMVU for the
+common mean ν =EYi.
+d) In simple linear regression, Y1,...,Y n are independent with Yi ∼
+N (β 1 +β 2xi,σ 2). In some applications this model may be inappro-
+priate because the Yi are positive; perhaps Yi is the weight or volume
+of the ith unit. Suggest a similar model without this defect based on
+the log-normal distribution. Explain how you would estimate β 1 and
+β 2 in your model.
+9. Consider the general linear model with normality:
+Y ∼ N (Xβ,σ 2I), β ∈ Rp, σ 2 > 0.
+If the rank r of X equals p, show that ( ˆβ,S 2) is a complete suﬃcient
+statistic.
+10. Consider a regression version of the two-sample problem in which
+Yi =
+{
+β 1 +β 2xi +ǫi, i = 1,...,n 1;
+β 3 +β 4xi +ǫi, i =n1 + 1,...,n 1 +n2 =n,
+with ǫ1,...,ǫ n i.i.d. from N (0,σ 2). Derive a 1 − α conﬁdence interval for
+β 4 − β 2, the diﬀerence between the two regression slopes.
+11. Inverse linear regression. Consider the model for simple linear regression,
+Yi =β 1 +β 2(xi −
+x) +ǫi, i = 1,...,n,
+studied in Section 14.5.
+a) Derive a level α -test of H0 :β 2 = 0 versus H1 :β 2 ̸= 0.
+b) Let y0 denote a “target” value for the mean of Y . The regression line
+β 1 +β 2(x −
+ x) achieves this value when the independent variable x
+equals
+θ =
+x + y0 − β 1
+β 2
+.
+Derive a level-α test of H0 :θ =θ 0 versusH1 :θ ̸=θ 0. Hint: You may
+want to ﬁnd a test ﬁrst assuming y0 = 0. After a suitable transforma-
+tion, the general case should be similar.
+
+===== PAGE 29 =====
+
+14.9 Problems 297
+c) Use duality to ﬁnd a conﬁdence region, ﬁrst discovered by Fieller
+(1954), for θ . Show that this region is an interval if the test in part (a)
+rejects β 2 = 0.
+12. Find the mean and variance of the noncentral chi-square distribution on
+p degrees of freedom with noncentrality parameter δ 2.
+*13. Consider a general linear model Y ∼ N (ξ,σ 2In), ξ ∈ ω , σ 2 > 0 with
+dim(ω ) = r. Deﬁne ψ =Aξ ∈ Rq whereq <r, and assume A =AP where
+P is the projection onto ω , so that ˆψ = A ˆξ = AY , and that A has full
+rank q.
+a) The F test derived in Section 14.7 allows us to test ψ = 0 versus
+ψ ̸= 0. Modify that theory and give a level- α test of H0 : ψ = ψ 0
+versus H1 : ψ ̸= ψ 0 with ψ 0 some constant vector in Rq . Hint: Let
+Y∗=Y −ξ0 withξ0 ∈ω andAξ0 =ψ 0. Then the null hypothesis will
+be H∗
+0 :Aξ∗= 0.
+b) In the discussion of the Sheﬀ´ e method for simultaneous conﬁdence
+intervals,
+{
+ψ : (ψ − ˆψ )′(AA′)−1(ψ − ˆψ ) ≤ qS2Fα,q,n −r
+}
+was shown to be a level 1 −α conﬁdence ellipse for ψ . Show that this
+conﬁdence region can be obtained using duality from the family of
+tests in part (a).
+*14. Analysis of covariance . Suppose
+Y
+kl =βk +β 0xkl +ǫkl, 1 ≤ l ≤ c, 1 ≤ k ≤ p,
+with the ǫkl i.i.d. from N (0,σ 2) and the xkl known constants.
+a) If ∑c
+l=1
+xkl = 0, k = 1,...,c , use the studentized maximum modulus
+distribution to derive simultaneous conﬁdence intervals for β 1,...,β p.
+b) If ∑c
+l=1
+x1l = ∑c
+l=1
+x2l = · · · = ∑c
+l=1
+xpl, use the studentized range
+distribution to derive simultaneous conﬁdence intervals for all diﬀer-
+ences β
+i − βj , 1 ≤ i<j ≤ p. Hint: The algebra will be simpler if you
+ﬁrst reparameterize adding an appropriate multiple of β 0 toβ 1,...,β p.
+*15. Unbalanced one-way layout. Suppose we have samples fromp normal popu-
+lations with common variance, but that the sample sizes from the diﬀerent
+populations are not the same, so that
+Y
+ij =βi +ǫij, 1 ≤ i ≤ p, j = 1,...,n i,
+with the ǫij i.i.d. from N (0,σ 2).
+a) Derive a level- α test of H0 : β 1 = · · · = βp versus H1 : βi ̸= βj for
+some i ̸=j.
+b) Use the Scheﬀ´ e method to derive simultaneous conﬁdence intervals for
+all contrasts a1β 1 + · · · +apβp with a1 + · · · +ap = 0.
+16. Factorial experiments . A “2 4” experiment is a factorial experiment to
+study the eﬀects of four factors, each at two levels. The experiment has
+
+===== PAGE 30 =====
+
+298 14 General Linear Model
+n = 16 as the sample size (called the number of runs), with each run one
+of the 16 possible combinations of the four factors. Letting “+” and “ − ”
+be shorthand for +1 and − 1, deﬁne vectors
+x′
+A
+= (+, +, +, +, +, +, +, +, −, −, −, −, −, −, −, −),
+x′
+B
+= (+, +, +, +, −, −, −, −, +, +, +, +, −, −, −, − ),
+x′
+C
+= (+, +, −, −, +, +, −, −, +, +, −, −, +, +, −, −),
+x′
+D
+= (+, −, +, −, +, −, +, −, +, −, +, −, +, −, +, −),
+and let 1 denote a column of ones. A “+1” for the jth entry of one of
+these vectors means that factor is set to the high level on the jth run, and
+a “ − 1” means the factor is set to the low level. So, for instance, on run 5,
+factorsA,C, and D are at the high level, and factor B is at the low level.
+The vector Y gives the responses for the 16 runs. In an additive model for
+the experiment,
+Y =µ1 +θAxA +θBxB +θCxC +θDxD +ǫ,
+with the unobserved error ǫ ∼ N (0,σ 2I). Parameters θA, θB , θC , and θD
+are called the main eﬀects for the factors.
+a) Find the least squares estimates for the main eﬀects, and give the
+covariance matrix for these estimators.
+b) Find the UMVU estimator for σ 2.
+c) Derive simultaneous conﬁdence intervals for the main eﬀects using the
+studentized maximum modulus distribution.
+17. Consider the 2 4 factorial experiment described in Problem 14.16. Let xAB
+be the elementwise product of xA with xB ,
+x′
+AB
+= (+, +, +, +, −, −, −, −, −, −, −, −, +, +, +, +),
+and deﬁne xAC , xAD, xBC , xBD , and xCD similarly. A model with two-
+way interactions has
+Y =µ1 +θAxA +θBxB +θCxC +θDxD +θABxAB
++θACxAC +θADxAD +θBCxBC +θBDxBD +θCDxCD +ǫ,
+still with ǫ ∼ N (0,σ 2I). The additional parameters in this model are
+called two-way interaction eﬀects. For instance, θBD is the interaction
+eﬀect of factors B and D.
+a) Find least squares estimators for the
+(4
+2
+)
+interaction eﬀects, and give
+the covariance matrix for these estimators.
+b) Derive a test for the null hypothesis that all of the interaction eﬀects
+are null, that is,
+H0 :xAB =xAC =xAD =xBC =xBD =xCD = 0,
+versus the alternative that at least one of these eﬀects is nonzero.
+
+===== PAGE 31 =====
+
+14.9 Problems 299
+c) Use the Scheﬀ´ e method to derive simultaneous conﬁdence intervals for
+all contrasts of the two-way interaction eﬀects.
+18. Bonferroni approach to simultaneous conﬁdence intervals .
+a) Suppose I1,...,I k are 1 − α conﬁdence intervals for parameters
+η 1 = g1(θ ),...,η k = gk(θ ), and let γ be the simultaneous coverage
+probability,
+γ = inf
+θ
+P
+[
+ηi ∈Ii, ∀i = 1,...,k
+]
+.
+Use Boole’s inequality (see Problem 1.7) to derive a lower bound for
+γ . For a ﬁxed value α
+∗, what choice for α will ensure γ ≥ 1 − α∗?
+b) Suppose the conﬁdence intervals in part (a) are independent. In this
+case, what choice for α will ensure γ ≥ 1 − α∗?
+c) Consider one-way ANOV A with c = 6 observations from each of p = 4
+populations. Compare the Bonferroni approach to simultaneous esti-
+mation of the diﬀerences β
+i − βj , 1 ≤ i < j≤ 4, with the approach
+based on the studentized range distribution. Because the Bonferroni
+approach is conservative, the intervals should be wider. What is the
+ratio of the lengths when 1 − α
+∗= 95%? The 95th percentile for the
+studentized range distribution with parameters 4 and 20 is 3.96.
+
+===== PAGE 32 =====
+

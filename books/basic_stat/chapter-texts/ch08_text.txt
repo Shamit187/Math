@@ -1,0 +1,1387 @@
+
+===== PAGE 1 =====
+
+8
+Large-Sample Theory
+To this point, most of the statistical results in this book concern properties
+that hold in some exact sense. An estimator is either suﬃcient or not, unbi-
+ased or not, Bayes or not. If exact properties are impractical or not available,
+statisticians often rely on approximations. This chapter gives several of the
+most basic results from probability theory used to derive approximations. Sev-
+eral notions of convergence for random variables and vectors are introduced,
+and various limit theorems are presented. These results are used in this chap-
+ter and later to study and compare the performance of various estimators in
+large samples.
+8.1 Convergence in Probability
+Our ﬁrst notion of convergence holds if the variables involved are close to their
+limit with high probability.
+Deﬁnition 8.1. A sequence of random variables Y
+n converges in probability
+to a random variable Y as n → ∞ , written
+Yn
+p
+→ Y,
+if for every ǫ> 0,
+P
+(
+|Yn − Y | ≥ǫ
+)
+→ 0
+as n → ∞ .
+Theorem 8.2 (Chebyshev’s Inequality). For any random variable X and
+any constant a> 0,
+P
+(
+|X| ≥a
+)
+≤ EX 2
+a2 .
+R.W. Keener, Theoretical Statistics: Topics for a Core Course, Springer Texts in Statistics, 
+DOI 10.1007/978-0-387-93839-4_8, © Springer Science+Business Media, LLC 2010 
+129 
+
+===== PAGE 2 =====
+
+130 8 Large-Sample Theory
+Proof. Regardless of the value of X,
+I
+{
+|X| ≥a} ≤X2/a 2.
+The result follows by taking expectations. ⊓ ⊔
+Proposition 8.3. If E(Yn − Y )2 → 0 as n → ∞ , then Yn
+p
+→ Y .
+Proof. By Chebyshev’s inequality, for any ǫ> 0,
+P
+(
+|Yn − Y | ≥ǫ
+)
+≤ E(Yn − Y )2
+ǫ2 → 0. ⊓ ⊔
+Example 8.4. SupposeX1,X 2,... are i.i.d., with mean µ and varianceσ 2, and
+let
+ Xn = (X1 + · · · +Xn)/n . Then
+E(
+Xn − µ)2 = Var(
+Xn) = σ 2/n → 0,
+and so
+ Xn
+p
+→ µ as n → ∞. In fact,
+ Xn
+p
+→ µ even when σ 2 = ∞, provided
+E|Xi|< ∞. This result is called the weak law of large numbers .
+Proposition 8.5. If f is continuous at c and if Yn
+p
+→ c, then f (Yn)
+p
+→ f (c).
+Proof. Because f is continuous at c, given any ǫ> 0, there exists δǫ > 0 such
+that |f (y) − f (c)|<ǫ whenever |y − c|<δ ǫ . Thus
+P
+(
+|Yn − c|<δ ǫ
+)
+≤ P
+(
+|f (Yn) − f (c)|<ǫ
+)
+,
+which implies
+P
+(
+|f (Yn) − f (c)| ≥ǫ
+)
+≤ P
+(
+|Yn − c| ≥δǫ
+)
+→ 0. ⊓ ⊔
+In statistics there is a family of distributions of interest, indexed by a pa-
+rameterθ ∈Ω, and the symbol
+Pθ
+→ is used to denote convergence in probability
+with Pθ as the underlying probability measure.
+Deﬁnition 8.6. A sequence of estimators δn, n ≥ 1, is consistent for g(θ ) if
+for any θ ∈Ω,
+δn
+Pθ
+→ g(θ )
+as n → ∞ .
+If R(θ,δ n) = Eθ
+(
+δn − g(θ )
+)2
+is the mean squared error, or risk, of δn
+under squared error loss, then by Proposition 8.3, δn will be consistent if
+R(θ,δ n) → 0 as n → ∞, for any θ ∈ Ω. Letting bn(θ ) = Eθ δn − g(θ ), called
+the bias of δn,
+R(θ,δ n) = b2
+n
+(θ ) + Varθ (δn),
+
+===== PAGE 3 =====
+
+8.2 Convergence in Distribution 131
+and so suﬃcient conditions for consistency are that bn(θ ) → 0 and Varθ (δn) →
+0 as n → ∞ , for all θ ∈Ω.
+Convergence in probability extends directly to higher dimensions. If Y ,Y1,
+Y2,... are random vectors in Rp, thenYn converges in probability toY , written
+Yn
+p
+→ Y , if for every ǫ > 0, P (∥Yn − Y ∥ > ǫ) → 0 as n → ∞. Equivalently,
+Yn
+p
+→ Y if [Yn]i
+p
+→ [Y ]i as n → ∞ for i = 1,...,p . Proposition 8.5 also
+holds as stated, with the same proof, for random vectors Yn andc ∈ Rp, with
+f a vector-valued function, f : Rp → Rq . For instance, since addition and
+multiplication are continuous functions from R2 → R, if Xn
+p
+→ a and Yn
+p
+→ b
+as n → ∞ , then
+Xn +Yn
+p
+→ a +b and XnYn
+p
+→ ab, (8.1)
+as n → ∞ .
+8.2 Convergence in Distribution
+If a sequence of estimators δn is consistent forg(θ ), then the distribution of the
+errorδn −g(θ ) must concentrate around zero as n increases. But convergence in
+probability will not tell us how rapidly this concentration occurs or the shape
+of the error distribution after suitable magniﬁcation. For this, the following
+notion of convergence in distribution is more appropriate.
+Deﬁnition 8.7. A sequence of random variables Y
+n, n ≥ 1, with cumulative
+distribution functions Hn, converges in distribution (or law) to a random
+variable Y with cumulative distribution function H if
+Hn(y) → H(y)
+as n → ∞ whenever H is continuous at y. For notation we write Yn ⇒ Y or
+Yn ⇒ PY .
+One aspect of this deﬁnition that may seem puzzling at ﬁrst is that point-
+wise convergence of the cumulative distribution functions only has to hold at
+continuity points of H. Here is a simple example that should make this seem
+more natural.
+Example 8.8. Suppose Y
+n = 1/n , a degenerate random variable, and that Y
+is always zero. Then
+Hn(y) = P (Yn ≤ y) = I{1/n ≤ y}.
+If y >0, then Hn(y) = I{1/n ≤ y} → 1 as n → ∞, for eventually 1 /n will
+be less than y. If y ≤ 0, then Hn(y) = I{1/n ≤ y} = 0 for all n, and so
+Hn(y) → 0 as n → ∞. Because H(y) = P (Y ≤ y) = I{0 ≤ y}, comparisons
+with the limits just obtained show that Hn(y) → H(y) if y ̸= 0. But Hn(0) =
+0 → 0 ̸= 1 = H(0). In this example, Yn ⇒ Y , but the cumulative distribution
+functions Hn(y) do not converge to H(y) when y = 0, a discontinuity point
+of H.
+
+===== PAGE 4 =====
+
+132 8 Large-Sample Theory
+Theorem 8.9. Convergence in distribution, Yn ⇒ Y , holds if and only if
+Ef (Yn) → Ef (Y ) for all bounded continuous functions f .
+Remark 8.10. The convergence of expectations in this theorem is often taken
+as the deﬁnition for convergence in distribution. One advantage of this as a
+deﬁnition is that it generalizes easily to random vectors. Extensions to more
+abstract objects, such as random functions, are even possible.
+Corollary 8.11. If g is a continuous function and Y
+n ⇒ Y , then
+g(Yn) ⇒ g(Y ).
+Proof. Iff is bounded and continuous, then f ◦g is also bounded and contin-
+uous. Since Yn ⇒ Y ,
+Ef
+(
+g(Yn)
+)
+→ Ef
+(
+g(Y )
+)
+.
+Becausef is arbitrary, this shows that the second half of Theorem 8.9 holds for
+the induced sequence g(Yn) and g(Y ). So by the equivalence, g(Yn) ⇒ g(Y ).
+⊓ ⊔
+For convergence in distribution, the central limit theorem is our most basic
+tool. For a derivation and proof, see Appendix A.7, or any standard text on
+probability.
+Theorem 8.12 (Central Limit Theorem). SupposeX
+1, X2, ... are i.i.d.
+with common mean µ and variance σ 2. Take
+ Xn = (X1 + · · · +Xn)/n . Then
+√
+n(
+Xn − µ) ⇒ N (0,σ 2).
+As an application of this result, let Hn denote the cumulative distribution
+function of √
+n(
+Xn − µ) and note that
+P (µ − a/ √
+n<
+ Xn ≤ µ +a/ √
+n) = P
+(
+−a< √
+n(
+Xn − µ) ≤ a
+)
+=Hn(a) − Hn(−a)
+→ Φ (a/σ ) − Φ (−a/σ ).
+This information about the distribution of
+ Xn from the central limit theorem
+is more detailed than information from the weak law of large numbers, that
+Xn
+p
+→ µ.
+The central limit theorem is certainly one of the most useful and cele-
+brated results in probability and statistics, and it has been extended in nu-
+merous ways. Theorems 9.27 and 9.40 provide extensions to averages of i.i.d.
+random vectors and martingales, respectively. Other extensions concern situa-
+tions in which the summands are independent but from diﬀerent distributions
+or weakly dependent in a suitable sense. In addition, some random variables
+will be approximately normal because their diﬀerence from a variable in one
+of these central limit theorems converges to zero, an approach used repeatedly
+
+===== PAGE 5 =====
+
+8.2 Convergence in Distribution 133
+later in this book. Results bounding the error in the central limit theorem have
+also been derived. With the assumptions of Theorem 8.12, the Berry–Ess´ een
+theorem, given as Theorem 16.5.1 of Feller (1971), states that
+⏐
+⏐P
+(√
+n(
+Xn − µ) ≤ x
+)
+− Φ (x/σ )
+⏐
+⏐ ≤ 3E|X
+1 − µ|3
+σ 3√
+n . (8.2)
+The next result begins to develop a calculus for convergence of random
+variables combining convergence in distribution with convergence in probabil-
+ity.
+Theorem 8.13. If Y
+n ⇒ Y , An
+p
+→ a, and Bn
+p
+→ b, then
+An +BnYn ⇒ a +bY.
+The central limit theorem stated only provides direct information about
+distributions of averages. Many estimators in statistics are not exactly aver-
+ages, but can be related to averages in some fashion. In some of these cases,
+clever use of the central limit theorem still provides a limit theorem for an
+estimator’s distribution. A ﬁrst possibility would be for variables that are
+smooth functions of an average and can be written as f (
+Xn). The Taylor
+approximation
+f (
+Xn) ≈ f (µ) +f′(µ)(
+Xn − µ)
+with the central limit theorem motivates the following proposition.
+Proposition 8.14 (Delta Method). With the assumptions in the central
+limit theorem, if f is diﬀerentiable at µ, then
+√
+n
+(
+f (
+Xn) − f (µ)
+)
+⇒ N
+(
+0, [f′(µ)]2σ 2)
+.
+Proof. For convenience, let us assume that f has a continuous derivative1 and
+write
+f (
+Xn) = f (µ) +f′(µn)(
+Xn − µ),
+where µn is an intermediate point lying between
+ Xn and µ. Since |µn − µ| ≤
+|
+Xn −µ|and
+Xn
+p
+→ µ,µn
+p
+→ µ, and since f′is continuous,f′(µn)
+p
+→ f′(µ) by
+Proposition 8.5. If Z ∼ N (0,σ 2), then √
+n(
+Xn − µ) ⇒ Z ∼ N (0,σ 2) by the
+central limit theorem. Thus by Theorem 8.13,
+√
+n
+(
+f (
+Xn) − f (µ)
+)
+=f′(µn)
+[√
+n(
+Xn − µ)
+]
+⇒ f′(µ)Z ∼ N
+(
+0, [f′(µ)]2σ 2)
+.
+This use of Taylor’s theorem to approximate distributions is called the delta
+method. ⊓ ⊔
+1 A proof under the stated condition takes a bit more care; one approach is given
+in the discussion following Proposition 8.24.
+
+===== PAGE 6 =====
+
+134 8 Large-Sample Theory
+By Theorem 8.9, if Xn ⇒ X andf is bounded and continuous, Ef (Xn) →
+Ef (X). If f is continuous but unbounded, convergence of Ef (Xn) may fail.
+The theorem below shows that convergence will hold if the variables are uni-
+formly integrable according to the following deﬁnition.
+Deﬁnition 8.15. Random variables X
+n, n ≥ 1, are uniformly integrable if
+sup
+n≥1
+E
+[
+|Xn|I{|Xn| ≥t
+}]
+→ 0,
+as t → ∞ .
+Because E|Xn| ≤ t +E
+[
+|Xn|I
+{
+|Xn| ≥ t
+}]
+, if sup n≥1E
+[
+|Xn|I{|Xn| ≥
+t
+}]
+is ﬁnite for some t, supnE|Xn|< ∞. Thus uniform integrability implies
+supnE|Xn|< ∞. But the converse can fail. If Yn ∼ Bernoulli(1/n ) and
+Xn = nYn, then E|Xn| = 1 for all n, but the variables Xn, n ≥ 1, are
+not uniformly integrable.
+Theorem 8.16. If X
+n ⇒ X, then E|X| ≤ lim infE|Xn|. If Xn, n ≥ 1, are
+uniformly integrable and Xn ⇒ X, then EXn → EX . If X and Xn, n ≥ 1,
+are nonnegative and integrable with Xn ⇒ X and EXn → EX , then Xn,
+n ≥ 1, are uniformly integrable.
+tt
+tt
+−t−t
+−t−t
+gt ht
+xx
+Fig. 8.1. Functionsgt and ht.
+Proof. Fort >0, deﬁne functions 2 gt(x) = |x| ∧t and ht(x) = −t ∨ (x ∧t),
+pictured in Figure 8.1. These functions are bounded and continuous, and so if
+2 Herex ∧y
+def
+= min {x,y } and x ∨y
+def
+= max {x,y }.
+
+===== PAGE 7 =====
+
+8.3 Maximum Likelihood Estimation 135
+Xn ⇒ X,Egt(Xn) → Egt(X) andEht(Xn) → Eht(X). For the ﬁrst assertion
+in the theorem,
+lim infE|Xn| ≥lim infE|Xn| ∧t =E|X| ∧t,
+and the right-hand side increases to E|X|ast → ∞ by monotone convergence
+(Problem 1.25).
+For the second assertion, by uniform integrability and the ﬁrst result,
+E|X|< ∞. Since |Xn − ht(X)| ≤ |Xn|I{|Xn| ≥t},
+lim sup |EXn − EX | ≤lim sup |Eht(Xn) − Eht(X)|+E |X − ht(X)|
++ supE |Xn − ht(Xn)|
+≤ E |X − ht(X)|+ supE
+[
+|Xn|I
+{
+|Xn| ≥t
+}]
+,
+which decreases to zero as t → ∞ .
+For the ﬁnal assertion, since the variables are nonnegative with EXn →
+EX and Egt(Xn) → Egt(X), then for any t> 0,
+E(Xn − t)+ =EXn − Egt(Xn) → EX − Egt(X) = E(X − t)+.
+Using this, since xI{x ≥ 2t} ≤ 2(x − α )+, x> 0,
+lim supE
+[
+XnI{Xn ≥ 2t}
+]
+≤ lim sup 2E(Xn − t)+ = 2E(X − t)+.
+By dominated convergence E(X − t)+ → 0 as t → ∞ . Thus
+lim
+t→∞
+lim supE
+[
+|Xn|I{Xn ≥ 2t}
+]
+.
+Uniform integrability follows fairly easily from this (see Problem 8.9). ⊓ ⊔
+8.3 Maximum Likelihood Estimation
+Suppose data vector X has density pθ . This density, evaluated at X and
+viewed as a function of θ ,L(θ ) = pθ (X), is called the likelihood function, and
+the value ˆθ = ˆθ (X) maximizing L(·) is called the maximum likelihood esti-
+mator ofθ . The maximum likelihood estimator of g(θ ) is deﬁned 3 to be g(ˆθ ).
+For explicit calculation it is often convenient to maximize the log-likelihood
+function, l(θ ) = log L(θ ). instead of L(·).
+Example 8.17. Suppose the density for our data X comes from a canonical
+one-parameter exponential family with density
+p
+η (x) = exp
+{
+ηT (x) − A(η )
+}
+h(x).
+3 It is not hard to check that this deﬁnition remains consistent if diﬀerent param-
+eters are used to specify the model.
+
+===== PAGE 8 =====
+
+136 8 Large-Sample Theory
+Then the maximum likelihood estimator ˆη of η maximizes
+l(η ) = log pη (X) = ηT − A(η ) + logh(X).
+Because l′′(η ) = −A′′(η ) = − Varη (T ) < 0, the ˆη is typically 4 the unique
+solution of
+0 = l′(η ) = T − A′(η ).
+Letting ψ denote the inverse function of A′,
+ˆη =ψ (T ).
+If our data are a random sample X1,...,X n with common density pη , then
+the joint density is ∏n
+i=1
+pη (xi) and the log-likelihood is
+l(η ) = η
+n∑
+i=1
+T (Xi) − nA(η ) + log
+n∏
+i=1
+h(Xi).
+The maximum likelihood estimator ˆη solves
+0 = l′(η ) =
+n∑
+i=1
+T (Xi) − nA′(η ),
+and so
+ˆη =ψ (
+T ), where
+ T = 1
+n
+n∑
+i=1
+T (Xi).
+It is interesting to note that the maximum likelihood estimator for the mean
+of T ,E
+η T (Xi) = A′(η ), is
+A′(ˆη ) = A′(
+ψ (
+T )
+)
+=
+T.
+The maximum likelihood estimator here is an unbiased function of the com-
+plete suﬃcient statistic; therefore, it is also UMVU. But in general maximum
+likelihood estimators may have some bias.
+Since the maximum likelihood estimator in this example is a function of
+an average of i.i.d. variables, its asymptotic distribution can be determined
+using the delta method, Proposition 8.14. By the implicit function theorem,
+ψ has derivative (1/A
+′′) ◦ψ . This derivative evaluated at A′(η ) = Eη T (Xi) is
+1
+A′′[
+ψ
+(
+A′(η )
+)]= 1
+A′′(η ).
+Because Varη
+(
+T (Xi)
+)
+=A′′(η ), by Proposition 8.14
+4 Examples are possible in which l(·) is strictly increasing or strictly decreasing.
+The equation here holds whenever T ∈η′(Ξ ).
+
+===== PAGE 9 =====
+
+8.4 Medians and Percentiles 137
+√
+n(ˆη − η ) ⇒ N
+(
+0, 1/A′′(η )
+)
+. (8.3)
+Note that since the Fisher information from each observation is A′′(η ), by the
+Cram´ er–Rao lower bound, if an estimator ˜η is unbiased for η , then
+Varη
+[√
+n(˜η − η )
+]
+=nVarη (˜η ) ≥ 1
+A′′(η ).
+So (8.3) can be interpreted as showing that ˆη achieves the Cram´ er–Rao lower
+bound in an asymptotic sense. For this reason, ˆ η is considered asymptoti-
+cally eﬃcient. A rigorous treatment of asymptotic eﬃciency is delicate and
+technical; a few of the main developments are given in Section 16.6.
+8.4 Medians and Percentiles
+Let X1,...,X n be random variables. These variables, arranged in increasing
+order, X(1) ≤ X(2) ≤ · · · ≤ X(n), are called order statistics . The ﬁrst order
+statisticX(1) is the smallest value,X(1) = min{X1,...,X n}, and the last order
+statistic X(n) is the largest value, X(n) = max {X1,...,X n}. The median is
+the middle order statistic when n is odd, or (by convention) the average of
+the two middle order statistics when n is even:
+˜X =
+{
+X(m), n = 2m − 1;
+1
+2 (X(m) +X(m+1)), n = 2m.
+The median ˜X and mean
+ X are commonly used to describe the center or
+overall location of the variables X1,...,X n. One possible advantage for the
+median is that it will not be inﬂuenced by a few extreme values. For instance,
+if the data are (1 , 2, 3, 4, 5), then both ˜X and
+X are 3. But if the data are
+(1, 2, 3, 4, 500), ˜X is still 3, but
+ X = 102. If we view them as estimators, it
+is also natural to want to compare the error distributions of
+ X and ˜X. For
+a random sample, the error distribution of
+ X can be approximated using the
+central limit theorem. In what follows, we derive an analogous result for ˜X.
+Assume now that X1,X 2,... are i.i.d. with common cumulative distribu-
+tion function F , and let ˜Xn be the median of the ﬁrst n observations. For
+regularity, assume that F has a unique median θ , so F (θ ) = 1 / 2, and that
+F′(θ ) exists and is ﬁnite and positive. Let us try to approximate
+P
+(√
+n( ˜Xn − θ ) ≤ a
+)
+=P ( ˜Xn ≤ θ +a/ √
+n).
+Deﬁne
+Sn = #{i ≤ n :Xi ≤ θ +a/ √
+n}.
+The key to this derivation is the observation that ˜Xn ≤ θ +a/ √
+n if and only
+ifSn ≥ m. Also, by viewing observation i as a success if Xi ≤ θ +a/ √
+n, it is
+evident that
+
+===== PAGE 10 =====
+
+138 8 Large-Sample Theory
+Sn ∼ Binomial
+(
+n,F (θ +a/ √
+n)
+)
+.
+The next step involves normal approximation for the distribution of Sn.
+First note that if Yn ∼ Binomial(n,p ), thenYn/n can be viewed as the average
+of n i.i.d. Bernoulli variables. Therefore by the central limit theorem,
+√
+n
+(Yn
+n − p
+)
+= Yn − np
+√
+n ⇒ N (0,p (1 − p)),
+and hence
+P
+(Yn − np
+√
+n >y
+)
+= 1 − P
+(Yn − np
+√
+n ≤ y
+)
+→ 1 − Φ
+(
+y
+√
+p(1 − p)
+)
+=Φ
+(
+−y
+√
+p(1 − p)
+)
+,
+as n → ∞. In fact, this approximation for the binomial distribution holds
+uniformly in y and uniformly for p in any compact subset of (0 , 1).5
+The normal approximation for the binomial distribution just discussed
+gives
+P
+(√
+n( ˜Xn − θ ) ≤ a
+)
+=P (Sn >m − 1)
+=P
+(Sn − nF (θ +a/ √
+n)
+√
+n > m − 1 − nF (θ +a/ √
+n)
+√
+n
+)
+=Φ
+
+
+[
+nF (θ +a/ √
+n) − m + 1
+]
+/ √
+n
+√
+F (θ +a/ √
+n)
+(
+1 − F (θ +a/ √
+n)
+)
+
+ +o(1). (8.4)
+Here “o(1)” is used to denote a sequence that tends to zero as n → ∞ .
+See Section 8.6 for a discussion of notation and various notions of scales of
+magnitude. Since F is continuous at θ ,
+√
+F (θ +a/ √
+n)
+(
+1 − F (θ +a/ √
+n)
+)
+→ 1/ 2,
+as n → ∞ . And because F is diﬀerentiable at θ ,
+nF (θ +a/ √
+n) − m + 1)
+√
+n =aF (θ +a/ √
+n) − F (θ )
+a/ √
+n + nF (θ ) − m + 1
+√
+n
+=aF (θ +a/ √
+n) − F (θ )
+a/ √
+n + 1
+2√
+n → aF′(θ ).
+5 “Uniformity” here means that the diﬀerence between the two sides will tend to
+zero as n → ∞ , even if y and p both vary with n, provided p stays away from
+zero and one (lim sup p <1 and lim inf p >0). This can be easily proved using
+the Berry–Ess´ een bound (8.2).
+
+===== PAGE 11 =====
+
+8.5 Asymptotic Relative Eﬃciency 139
+Since the numerator and denominator of the argument of Φ in (8.4) both
+converge,
+P
+(√
+n( ˜Xn − θ ) ≤ a
+)
+→ Φ
+(
+2aF′(θ )
+)
+.
+The limit here is the cumulative distribution function for the normal distri-
+bution with mean zero and variance 1/
+(
+4[F
+′(θ )]2)
+evaluated at a, and so
+√
+n( ˜Xn − θ ) ⇒ N
+(
+0, 1
+4[F′(θ )]2
+)
+. (8.5)
+A similar derivation leads to the following central limit theorem for other
+quantiles.
+Theorem 8.18. Let X
+1,X 2,... be i.i.d. with common cumulative distribu-
+tion function F , let γ ∈ (0, 1), and let ˜θn be the ⌊γn ⌋th order statistic for
+X1,...,X n (or a weighted average of the ⌊γn ⌋th and ⌈γn ⌉th order statistics). 6
+If F (θ ) = γ , and if F′(θ ) exists and is ﬁnite and positive, then
+√
+n(˜θn − θ ) ⇒ N
+(
+0, γ (1 − γ )
+[
+F′(θ )
+]2
+)
+,
+as n → ∞ .
+8.5 Asymptotic Relative Eﬃciency
+A comparison of the mean and median will only be natural if they both
+estimate the same parameter. In a location family this will happen naturally if
+the error distribution is symmetric. So let us assume that our data are i.i.d. and
+have common density f (x − θ ) with f symmetric about zero, f (u) = f (−u),
+u ∈ R. Then P
+θ (Xi < θ) = Pθ (Xi > θ) = 1/ 2, and EθXi = θ (provided the
+mean exists). By the central limit theorem,
+√
+n(
+Xn − θ ) ⇒ N (0,σ 2),
+where
+σ 2 =
+∫
+x2f (x)dx,
+and by (8.5),
+√
+n( ˜Xn − θ ) ⇒ N
+(
+0, 1
+4f 2(0)
+)
+.
+(Here we naturally take f (0) = F′(0).) Suppose f is the standard normal
+density,f (x) = e−x2/2 /
+√
+2π . Then σ 2 = 1 and 1 /
+(
+4f 2(0)
+)
+= π/ 2. Since the
+6 Here ⌊x⌋, called the ﬂoor of x, is the largest integer y with y ≤ x. Also, ⌈x⌉ is
+the smallest integer y ≥ x, called the ceiling of x.
+
+===== PAGE 12 =====
+
+140 8 Large-Sample Theory
+variance of the limiting distribution is larger for the median than the mean,
+the median is less eﬃcient than the mean. To understand the import of this
+diﬀerence in eﬃciency, deﬁne m = m
+n = ⌊πn/ 2⌋, and note that
+√
+n/m →√
+2/π as n → ∞ . Using Theorem 8.13,
+√
+n( ˜Xm − θ ) =
+√
+n
+m
+√
+m( ˜Xm − θ ) ⇒ N (0, 1).
+This shows that the error distribution for the median of m observations is ap-
+proximately the same as the error distribution for the mean of n observations.
+As n → ∞, m/n → π/ 2, and this limiting ratio π/ 2 is called the asymptotic
+relative eﬃciency (ARE) of the mean
+ Xn with respect to the median ˜Xn. In
+general, if ˆθn and ˜θn are sequences of estimators, and if
+√
+n(ˆθn − θ ) ⇒ N (0,σ 2
+ˆθ )
+and √
+n(˜θn − θ ) ⇒ N (0,σ 2
+˜θ ),
+then the asymptotic relative eﬃciency of ˆθn with respect to ˜θn isσ 2
+˜θ /σ 2
+ˆθ . This
+relative eﬃciency can be interpreted as the ratio of sample sizes necessary for
+comparable error distributions.
+In our ﬁrst comparison of the mean and median the data were a random
+sample from N (θ, 1). In this case, the mean is UMVU, so it should be of no
+surprise that it is more eﬃcient than the median. If instead
+f (x) = 1
+2e−|x|,
+then
+σ 2 =
+∫
+x2 1
+2e−|x|dx =
+∫∞
+0
+x2e−xdx =Γ (3) = 2! = 2.
+So here √
+n(
+Xn − θ ) ⇒ N (0, 2), √
+n( ˜Xn − θ ) ⇒ N (0, 1), and the asymptotic
+relative eﬃciency of
+ Xn with respect to ˜Xn is 1/ 2. Now the median is more
+eﬃcient than the mean, and roughly twice as many observations will be needed
+for a comparable error distribution if the mean is used instead of the median.
+In this case, the median is the maximum likelihood estimator of θ . Later
+results in Sections 9.3 and 16.6 show that maximum likelihood estimators are
+generally fully eﬃcient.
+Example 8.19. Suppose X
+1,...,X n is a random sample from N (θ, 1), and we
+are interested in estimating
+p =Pθ (Xi ≤ a) = Φ (a − θ ).
+One natural estimator is
+ˆp =Φ (a −
+ X),
+
+===== PAGE 13 =====
+
+8.6 Scales of Magnitude 141
+where
+ X = (X1 + · · · +Xn)/n . (This is the maximum likelihood estimator.)
+Another natural estimator is the proportion of the observations that are at
+most a,
+˜p = 1
+n #{i ≤ n :Xi ≤ a} = 1
+n
+n∑
+i=1
+I{Xi ≤ a}.
+By the central limit theorem,
+√
+n(˜p − p) ⇒ N (0, ˜σ 2),
+as n → ∞ , where
+˜σ 2 = Varθ
+(
+I{Xi ≤ a}
+)
+=Φ (a − θ )
+(
+1 − Φ (a − θ )
+)
+.
+Because the ﬁrst estimator is a function of the average
+ X, by the delta method,
+Proposition 8.14, √
+n(ˆp − p) ⇒ N (0, ˆσ 2),
+as n → ∞ , where
+ˆσ 2 =
+[ d
+dxΦ (a − x)
+⏐
+⏐
+⏐
+x=θ
+]2
+=φ 2(a − θ ).
+The asymptotic relative eﬃciency of ˆp with respect to ˜p is
+ARE = Φ (a − θ )
+(
+1 − Φ (a − θ )
+)
+φ 2(a − θ ) .
+In this example, the asymptotic relative eﬃciency depends on the unknown
+parameterθ . When θ =a, ARE = π/ 2, and the ARE increases without bound
+as |θ − a|increases. Note, however, that ˜p is a sensible estimator even if the
+stated model is wrong, provided the data are indeed i.i.d. In contrast, ˆ p is
+only reasonable if the model is correct. Gains in eﬃciency using ˆ p should be
+balanced against the robustness of ˜p to departures from the model.
+8.6 Scales of Magnitude
+In many asymptotic calculations it is convenient to have a standard notation
+indicating orders of magnitudes of variables in limiting situations. We begin
+with a deﬁnition for sequences of constants.
+Deﬁnition 8.20. Leta
+n and bn, n ≥ 1, be constants. Then
+1.an =o(bn) as n → ∞ means that an/b n → 0 as n → ∞ ;
+2.an = O(bn) as n → ∞ means that |an/b n|remains bounded, i.e., that
+lim supn→∞|an/b n|< ∞; and
+
+===== PAGE 14 =====
+
+142 8 Large-Sample Theory
+3.an ∼ bn means that an/b n → 1 as n → ∞ .
+Thusan =o(bn) when an is of smaller order of magnitude than bn, an =
+O(bn) when the magnitude of an is at most comparable to the magnitude of
+bn, and an ∼ bn whenan is asymptotic to bn. Note that an =o(1) means that
+an → 0.
+Large oh and small oh notation may also be used in equations or in-
+equalities. For instance, an = bn +O(cn) means that an − bn = O(cn), and
+an ≤ bn +o(cn) means thatan ≤ bn +dn for some sequencedn withdn =o(cn).
+Exploiting this idea, an ∼ bn can be written as an =bn
+(
+1 +o(1)
+)
+.
+Although Deﬁnition 8.20 is stated for sequences indexed by a discrete
+variable n, analogous notation can be used for functions indexed by a con-
+tinuous variable x. For instance, a(x) = o
+(
+b(x)
+)
+as x → x0 would mean that
+a(x)/b (x) → 0 as x → x0. The limit x0 here could be ﬁnite or inﬁnite. As an
+example, if f has two derivatives at x, then the two-term Taylor expansion
+for f can be expressed as
+f (x +ǫ) = f (x) +ǫf′(x) + 1
+2ǫ2f′′(x) +o(ǫ2)
+as ǫ → 0. If f′′′is exists and is ﬁnite at x, this can be strengthened to
+f (x +ǫ) = f (x) +ǫf′(x) + 1
+2ǫ2f′′(x) +O(ǫ3)
+as ǫ → 0.
+In the following stochastic extension, the basic idea is that the original
+notion can fail, but only on a set with arbitrarily small probability.
+Deﬁnition 8.21. Let X
+n and Yn, n ≥ 1, be random variables, and let bn,
+n ≥ 1, be constants. Then
+1.Xn =op(bn) as n → ∞ means that Xn/b n
+p
+→ 0 as n → ∞ ;
+2.Xn =Op(1) as n → ∞ means that
+sup
+n
+P
+(
+|Xn|>K
+)
+→ 0
+as K → ∞ ; and
+3.Xn =Op(bn) means that Xn/b n =Op(1) as n → ∞ .
+The deﬁnition for Op(1) is equivalent to a notion called tightness for the
+distributions of the Xn. Tightness is necessary for convergence in distribution,
+and so, if Xn ⇒ X, then Xn =Op(1).
+Here are a few useful propositions about stochastic scales of magnitude.
+Proposition 8.22. If Xn =Op(an) and Yn =Op(bn), then
+XnYn =Op(anbn).
+
+===== PAGE 15 =====
+
+8.7 Almost Sure Convergence 143
+Also, if α > 0 and Xn = Op(an), then Xα
+n = Op(aα
+n
+). Similarly, if Xn =
+Op(an), α> 0, and Yn =op(bn), then
+XnYn =op(anbn) and Yα
+n =op(bα
+n
+).
+Proposition 8.23. Letα and β be constants with α> 0. If E|Xn|α =O(nβ )
+as n → ∞ , then Xn =Op(nβ/α ) as n → ∞ .
+Proposition 8.24. If Xn = Op(an) with an → 0, and if f (ǫ) = o(ǫα ) as
+ǫ → 0 with α> 0, then
+f (Xn) = op(aα
+n
+).
+This result is convenient for delta method derivations such as Proposi-
+tion 8.14. By the central limit theorem,
+ Xn =µ +Op
+(
+1/ √
+n
+)
+, and by Taylor
+expansion
+f (µ +ǫ) = f (µ) +ǫf′(µ) +o(ǫ)
+as ǫ → 0, whenever f is diﬀerentiable at µ. So by Proposition 8.24,
+f
+(
+Xn
+)
+− f (µ) =
+(
+Xn − µ
+)
+f′(µ) +op
+(
+1/ √
+n
+)
+,
+and rearranging terms,
+√
+n
+(
+f (
+Xn) − f (µ)
+)
+= √
+n
+(
+Xn − µ
+)
+f′(µ) +op(1) ⇒ N
+(
+0, [f′(µ)]2σ 2)
+.
+8.7 Almost Sure Convergence 7
+In this section, we consider a notion of convergence for random variables called
+almost sure convergence or convergence with probability one .
+Deﬁnition 8.25. Random variables Y
+1,Y 2,... deﬁned on a common probabil-
+ity space converge almost surely to a random variable Y on the same space
+if
+P (Yn → Y ) = 1.
+The statistical implications of this mode of convergence are generally sim-
+ilar to the implications of convergence in probability, and in the rest of this
+book we refer to almost sure convergence only when the distinction seems
+statistically relevant. To understand the diﬀerence between these modes of
+convergence, introduce
+M
+n = sup
+k≥n
+|Yk − Y |,
+and note that Yn → Y if and only if Mn → 0. Now Mn → 0 if for every ǫ> 0,
+Mn <ǫ for all n suﬃciently large. Deﬁne Bǫ as the event that Mn <ǫ for all
+7 Results in this section are used only in Chapter 20.
+
+===== PAGE 16 =====
+
+144 8 Large-Sample Theory
+n suﬃciently large. An outcome is in Bǫ if and only if it is in one of the sets
+{Mn <ǫ }, and thus
+Bǫ =
+⋃
+{Mn <ǫ }.
+If an outcome gives a convergent sequence, it must be in Bǫ for every ǫ, and
+so
+{Yn → Y }=
+⋂
+ǫ> 0
+Bǫ,
+and we have almost sure convergence if and only if
+P
+[ ⋂
+ǫ> 0
+Bǫ
+]
+= 1.
+Since the Bǫ decrease as ǫ → 0, using the continuity property of probability
+measures (1.1), this will happen if and only if P (Bǫ ) = 1 for all ǫ > 0. But
+because the events {Mn < ǫ} increase with n, P (Bǫ ) = lim n→∞P (Mn <
+ǫ). Putting this all together, Yn → Y almost surely if and only if for every
+ǫ > 0, P (Mn ≥ ǫ) → 0, that is, if and only if Mn
+p
+→ 0. In words, almost
+sure convergence means the largest diﬀerence after stage n tends to zero in
+probability as n → ∞ .
+Example 8.26. If Yn ∼ Bernoulli(pn), then Yn
+p
+→ 0 if and only if pn → 0.
+Almost sure convergence will also depend on the joint distribution of these
+variables. If they are independent, then M
+n = supk≥n |Yn − 0| ∼Bernoulli(πn)
+with
+1 − πn =P (Mn = 0) = P (Yk = 0,k ≥ n) =
+∞∏
+k=n
+(1 − pk).
+This product tends to 1 as n → ∞ if and only if ∑pn < ∞. So in this
+independent case, Yn → 0 almost surely if and only if ∑pn < ∞. If instead U
+is uniformly distributed on (0 , 1) and Yn = I{U ≤ pn}, then Yn → 0 almost
+surely if and only if pn → 0, that is, if and only if Yn
+p
+→ 0.
+The following result is the most famous result on almost sure convergence.
+For a proof, see Billingsley (1995) or any standard text on probability.
+Theorem 8.27 (Strong Law of Large Numbers). If X
+1,X 2,... are i.i.d.
+with ﬁnite mean µ = EXi, and if
+ Xn = (X1 + · · · +Xn)/n , then
+ Xn → µ
+almost surely as n → ∞ .
+8.8 Problems 8
+*1. Random variables X1,X2,... are called “m-dependent” if Xi andXj are
+independent whenever |i −j| ≥m. Suppose X1,X2,... arem-dependent
+8 Solutions to the starred problems are given at the back of the book.
+
+===== PAGE 17 =====
+
+8.8 Problems 145
+with EX1 = EX2 = · · · = ξ and Var(X1) = Var(X2) = · · · = σ 2 < ∞.
+Let
+ Xn = (X1 + · · · +Xn)/n . Show that
+ Xn
+p
+→ ξ as n → ∞. Hint: You
+should be able to bound Cov( Xi,X j ) and Var(
+Xn).
+*2. Let X1,...,X n be i.i.d. from an exponential distribution with failure rate
+λ , and let Mn = max {X1,...,X n}. Is log( n)/M n a consistent estimator
+of λ ?
+*3. If X1,...,X n are i.i.d. from the uniform distribution on (0 ,θ ) with
+maximum Mn = max {X1,...,X n}, then the UMVU estimator of θ is
+ˆθn = (n + 1)Mn/n . Determine the limiting distribution of n(ˆθn − θ ) as
+n → ∞ .
+*4. Let X1,...,X n be i.i.d. Bernoulli variables with success probability p. Let
+ˆpn = (X1 + · · · +Xn)/n .
+a) Show that √
+n(ˆp2
+n
+− p2) ⇒ N
+(
+0, 4p3(1 − p)
+)
+.
+b) Find the UMVU estimator δn of σ 2 = 4p3(1 − p), the asymptotic
+variance in (a).
+c) Determine the limiting distribution of n(δn −σ 2) when p = 3/ 4. Hint:
+The maximum likelihood estimator of σ 2 is ˆσ 2 = 4ˆp3
+n
+(1 − ˆpn). Show
+thatn(δn − ˆσ 2
+n) converges in probability to a constant, and use a two-
+term Taylor expansion to ﬁnd the limiting distribution of n(ˆσ 2 −σ 2).
+*5. Let X1,...,X n be i.i.d. with common density fθ (x) = (x−θ )+eθ−x. Show
+thatMn = min{X1,...,X n} is a consistent estimator of θ , and determine
+the limiting distribution for √
+n(Mn − θ ).
+*6. Prove that if An
+p
+→ 1 and Yn ⇒ Y , then AnYn ⇒ Y . (This is a special
+case of Theorem 8.13.)
+7. Suppose X1,X 2,... are i.i.d. with common density
+f (x) =
+
+
+
+1
+(1 +x)2, x> 0;
+0, otherwise,
+and let Mn = max {X1,...,X n}. Show that Mn/n converges in distribu-
+tion, and give a formula for the limiting distribution function.
+8. If ǫ > 0 and sup E|Xn|1+ǫ < ∞, show that Xn, n ≥ 1, are uniformly
+integrable.
+9. Suppose X1,X 2,... are integrable and
+lim
+t→∞
+lim sup
+n→∞
+E
+[
+|Xn|I
+{
+|Xn| ≥t
+}]
+= 0.
+Show that Xn, n ≥ 1, are uniformly integrable.
+10. Suppose Xn ⇒ X, xn → x, and the cumulative distribution function for
+X is continuous at x. Show that P (Xn ≤ xn) → P (X ≤ x).
+11. Let X1,X 2,... be i.i.d. variables uniformly distributed on (0 , 1), and let
+˜Xn denote the geometric average of the ﬁrst n of these variables; that is,
+˜Xn = (X1 × · · · × Xn)1/n .
+
+===== PAGE 18 =====
+
+146 8 Large-Sample Theory
+a) Show that ˜Xn
+p
+→ 1/e as n → ∞ .
+b) Show that √
+n( ˜Xn − 1/e ) converges in distribution, and identify the
+limit.
+12. Let X1,X 2,... be i.i.d. from the uniform distribution on (1 , 2), and let
+Hn denote the harmonic average of the ﬁrst n variables:
+Hn = n
+X−1
+1 + · · · +X−1n
+.
+a) Show that Hn
+p
+→ c as n → ∞ , identifying the constant c.
+b) Show that √
+n(Hn −c) converges in distribution, and identify the limit.
+13. Show that if Yn
+p
+→ c as n → ∞, then Yn ⇒ Y as n → ∞. Give the
+distribution or cumulative distribution function for Y .
+14. Let X1,X 2,... be i.i.d. from a uniform distribution on (0 ,e ), and deﬁne
+Yn =
+n
+√
+∏n2
+i=1 Xi.
+Show thatYn ⇒ Y asn → ∞ , giving the cumulative distribution function
+for Y .
+15. Let X1,X 2,... be i.i.d. from N (µ,σ 2), let w1,w 2,... be positive weights,
+and deﬁne weighted averages
+Yn =
+∑n
+i=1
+wiXi
+∑n
+i=1
+wi
+, n = 1, 2,....
+a) Suppose wk = 1/k , k = 1, 2,... . Show that Yn
+p
+→ c, identifying the
+limiting value c.
+b) Suppose wk = 1/ (2k − 1)2. Show that Yn ⇒ Y , giving the distribution
+for Y . Hint:
+∞∑
+k=1
+1
+(2k − 1)2 = π 2
+8 and
+∞∑
+k=1
+1
+(2k − 1)4 = π 4
+96.
+*16. Let Y1,...,Y n be independent with Yi ∼ N (α +βxi,σ 2), i = 1,...,n,
+where x1,...,x n are known constants, and α , β , and σ 2 are unknown
+parameters. Find the maximum likelihood estimators of these parameters,
+α , β , and σ
+2.
+*17. Let X1,...,X n be jointly distributed. The ﬁrst variable X1 ∼ N (0, 1),
+and, for j = 1,...,n − 1, the conditional distribution of Xj+1 givenX1 =
+x1,...,X j = xj is N (ρxj, 1). Find the maximum likelihood estimator of
+ρ .
+18. Distribution theory for order statistics in the tail of the distribution can
+behave diﬀerently than order statistics such as the median, that are near
+the middle of the distribution. Let X
+1,...,X n be i.i.d. from an exponential
+distribution with unit failure rate.
+
+===== PAGE 19 =====
+
+8.8 Problems 147
+a) Suppose we are interested in the limiting distribution for X(2), the
+second order statistic. Naturally, X(2)
+p
+→ 0 as n → ∞. For an inter-
+esting limit theory we should scale X(2) by an appropriate power of
+n, but the correct power is not 1 / 2. Suppose x > 0. Find a value p
+so that P (npX(2) ≤ x) converges to a value between 0 and 1. (If p
+is too small, the probability will tend to 1, and if p is too large the
+probability will tend to 0.)
+b) Determine the limiting distribution for X(n) − logn.
+*19. Let X1,...,X n be i.i.d. from an exponential distribution with failure rate
+θ . Let ˆpn = #{i ≤ n :Xi ≥ 1}/n and
+Xn = (X1 + · · ·+Xn)/n . Determine
+the asymptotic relative eﬃciency of − log ˆpn with respect to 1 /
+ Xn.
+*20. Let X1,...,X n be i.i.d. from N (θ,θ ), with θ> 0 an unknown parameter,
+and consider estimating θ (θ + 1). Determine the asymptotic relative eﬃ-
+ciency of
+ Xn(
+Xn + 1) with respect to δn = (X2
+1 + · · · +X2
+n)/n , where, as
+usual,
+ Xn = (X1 + · · · +Xn)/n .
+*21. Let Qn denote the upper quartile (or 75th percentile) for a random sample
+X1,...,X n from N (0,σ 2). If Φ (c) = 3 / 4, then Qn
+p
+→ cσ , and so ˜σn =
+Qn/c is a consistent estimator of σ . Let ˆσ be the maximum likelihood
+estimator of σ . Determine the asymptotic relative eﬃciency of ˜ σ with
+respect to ˆσ .
+22. If X1,...,X n are i.i.d. from N (θ,θ ), then two natural estimators of θ are
+the sample mean
+X and the sample varianceS2. Determine the asymptotic
+relative eﬃciency of S2 with respect to
+ X.
+23. Suppose X1,...,X n are i.i.d. Poisson variables with mean λ and we are
+interested in estimating p =Pλ (Xi = 0) = e−λ .
+a) One estimator for p is the proportion of zeros in the sample, ˜ p =
+#{i ≤ n :Xi = 0}/n . Find the limiting distribution for √
+n(˜p − p).
+b) Another estimator would be the maximum likelihood estimator ˆp. Give
+a formula for ˆp and determine the limiting distribution for √
+n(ˆp −p).
+c) Find the asymptotic relative eﬃciency of ˜ p with respect to ˆp.
+*24. Suppose X1,...,X n are i.i.d. N (0,σ 2), and let M be the median of
+|X1|,..., |Xn|.
+a) Find c ∈ R so that ˜σ =cM is a consistent estimator of σ .
+b) Determine the limiting distribution for √
+n(˜σ − σ ).
+c) Find the maximum likelihood estimator ˆ σ of σ and determine the
+limiting distribution for √
+n(ˆσ − σ ).
+d) Determine the asymptotic relative eﬃciency of ˜ σ with respect to ˆσ .
+25. Suppose X1,X 2,... are i.i.d. from the beta distribution with parameters
+α> 0 and β > 0. The mean of this distribution is µ =α/ (α +β ). Solving,
+α =βµ/ (1 − µ). If β is known, this suggests
+˜α = β
+X
+1 −
+X
+as a natural estimator for α . Determine the asymptotic relative eﬃciency
+of this estimator ˜α with respect to the maximum likelihood estimator ˆ α .
+
+===== PAGE 20 =====
+
+148 8 Large-Sample Theory
+26. Let X1,...,X n be i.i.d. Poisson with mean λ , and consider estimating
+g(λ ) = Pλ (Xi = 1) = λe−λ .
+One natural estimator might be the proportion of ones in the sample:
+ˆpn = 1
+n #{i ≤ n :Xi = 1}.
+Another choice would be the maximum likelihood estimator, g(
+Xn), with
+Xn the sample average.
+a) Find the asymptotic relative eﬃciency of ˆ pn with respect to g(
+Xn).
+b) Determine the limiting distribution of
+n
+[
+g(
+Xn) − 1/e
+]
+when λ = 1.
+27. Let X1,...,X n be i.i.d. from N (θ, 1), and let U1,...,U n be i.i.d. from a
+uniform distribution on (0 , 1), with all 2 n variables independent. Deﬁne
+Yi =XiUi,i = 1,...,n. If the Xi andUi are both observed, then
+ X would
+be a natural estimator for θ . If only the products Y1,...,Y n are observed,
+then 2
+Y may be a reasonable estimator. Determine the asymptotic relative
+eﬃciency of 2
+Y with respect to
+ X.
+28. Deﬁnition 8.21 for Op(1) does not refer explicitly to limiting values as
+n → ∞. But in fact the conclusion only depends on the behavior of the
+sequence for large n. Show that if
+lim sup
+n→∞
+P
+(
+|Xn|>K
+)
+→ 0
+as K → ∞, then Xn = Op(1), so that “sup” in the deﬁnition could be
+changed to “lim sup.”
+29. Prove Proposition 8.22.
+30. Markov’s inequality . Show that for any constant c > 0 and any random
+variableX,
+P (|X| ≥c) ≤ E|X|/c.
+31. Use Markov’s inequality from the previous problem to prove Proposi-
+tion 8.23.
+32. If X
+n ⇒ X as n → ∞, show that Xn = Op(1) as n → ∞. Also, show
+that the converse fails, ﬁnding a sequence of random variables Xn that
+are Op(1) but do not converge in distribution.
+33. Show that if Xn =Op(1) as n → ∞ and f is a continuous function on R,
+then f (Xn) = Op(1) as n → ∞ . Also, give an example showing that this
+result can fail if f is discontinuous at some point x.
+34. Let Mn,n ≥ 1, be positive, integer-valued random variables.
+a) Show that if Mn → ∞ almost surely as n → ∞ , and Xn → 0 almost
+surely as n → ∞ , then XMn → 0 almost surely as n → ∞ .
+
+===== PAGE 21 =====
+
+8.8 Problems 149
+b) Show that if Mn
+p
+→ ∞ , and Xn → 0 almost surely, then XMn
+p
+→ 0.
+35. Let X1,X 2,... be independent Bernoulli variables with P (Xn = 1) = 1/n .
+Then Xn
+p
+→ 0, but almost sure convergence fails. Find positive, integer-
+valued random variables Mn, n ≥ 1, such that Mn → ∞ almost surely
+withXmn = 1. This shows that the almost sure convergence for Xn in the
+previous problem is essential.
+
+===== PAGE 22 =====
+
