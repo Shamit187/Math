@@ -8,7 +8,8 @@
     ? "http://localhost:8765/api"
     : `${location.origin}/api`;
 
-  const SPEED_STEPS = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0];
+  const SPEED_MIN = 0.25;
+  const SPEED_MAX = 4.0;
   const SPEED_KEY = "tts-speed";
   const VOICE_KEY = "tts-voice";
 
@@ -20,16 +21,13 @@
   let audioResolve = null;
   let nextUrl = null;
   let nextUrlIdx = -1;
-  let speedIdx = Math.max(
-    0,
-    SPEED_STEPS.indexOf(parseFloat(localStorage.getItem(SPEED_KEY) || "1"))
-  );
-  if (speedIdx < 0) speedIdx = 2; // default 1.0×
+  let speedVal = parseFloat(localStorage.getItem(SPEED_KEY) || "1");
+  if (isNaN(speedVal) || speedVal < SPEED_MIN || speedVal > SPEED_MAX) speedVal = 1.0;
 
   let voices = [];                                            // [{id, label, grade, lang}]
   let currentVoice = localStorage.getItem(VOICE_KEY) || "";   // resolved once voices arrive
 
-  function speed() { return SPEED_STEPS[speedIdx]; }
+  function speed() { return speedVal; }
 
   // ---- API helpers ----
 
@@ -60,7 +58,7 @@
     const r = await fetch(`${API}/tts/synthesize`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text, speed: speed(), voice: currentVoice }),
+      body: JSON.stringify({ text, voice: currentVoice }),
     });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     return URL.createObjectURL(await r.blob());
@@ -70,6 +68,9 @@
 
   function getText(el) {
     const clone = el.cloneNode(true);
+
+    // Remove nested blocks — their text is read when those blocks are reached individually
+    clone.querySelectorAll("[data-cid]").forEach(nested => nested.remove());
 
     // Replace math: use data-tts description when present, else generic placeholder
     clone.querySelectorAll(".katex").forEach(k => {
@@ -103,7 +104,9 @@
         label.textContent = idle ? "" : `Block ${currentIdx + 1} / ${blocks.length}`;
       }
       if (playBtn) playBtn.textContent = isPlaying ? "⏸ Pause" : "▶ Resume";
-      if (speedLabel) speedLabel.textContent = `${speed()}×`;
+      if (speedLabel) speedLabel.textContent = `${+speedVal.toFixed(2)}×`;
+      const slider = bar.querySelector(".tts-speed-slider");
+      if (slider) slider.value = speedVal;
     }
 
     if (headerBtn) {
@@ -168,6 +171,7 @@
     }
 
     const audio = new Audio(url);
+    audio.playbackRate = speed();
     currentAudio = audio;
 
     await new Promise(resolve => {
@@ -206,15 +210,6 @@
     if (nextUrl) { URL.revokeObjectURL(nextUrl); nextUrl = null; nextUrlIdx = -1; }
   }
 
-  function changeSpeed(delta) {
-    const next = speedIdx + delta;
-    if (next < 0 || next >= SPEED_STEPS.length) return;
-    speedIdx = next;
-    localStorage.setItem(SPEED_KEY, speed());
-    discardPrefetch();   // pre-fetched audio was at the old speed
-    refreshUI();
-  }
-
   function changeVoice(voiceId) {
     if (!voiceId || voiceId === currentVoice) return;
     currentVoice = voiceId;
@@ -250,10 +245,9 @@
         <span class="tts-voice-icon">👤</span>
         <select class="tts-voice-sel" aria-label="Reader voice">${voiceOptions}</select>
       </span>
-      <span class="tts-speed-ctrl">
-        <button class="tts-speed-dec" title="Slower">−</button>
-        <span class="tts-speed-val">${speed()}×</span>
-        <button class="tts-speed-inc" title="Faster">+</button>
+      <span class="tts-speed-ctrl" title="Playback speed">
+        <span class="tts-speed-val">${+speedVal.toFixed(2)}×</span>
+        <input class="tts-speed-slider" type="range" min="${SPEED_MIN}" max="${SPEED_MAX}" step="any" value="${speedVal}" aria-label="Playback speed">
       </span>
       <button class="tts-focus" title="Scroll to current block">⊙ Focus</button>
       <button class="tts-play" title="Pause or Resume">⏸ Pause</button>
@@ -262,8 +256,12 @@
     bar.querySelector(".tts-play").addEventListener("click", pauseResume);
     bar.querySelector(".tts-stop").addEventListener("click", stop);
     bar.querySelector(".tts-focus").addEventListener("click", focusCurrentBlock);
-    bar.querySelector(".tts-speed-dec").addEventListener("click", () => changeSpeed(-1));
-    bar.querySelector(".tts-speed-inc").addEventListener("click", () => changeSpeed(+1));
+    bar.querySelector(".tts-speed-slider").addEventListener("input", e => {
+      speedVal = parseFloat(e.target.value);
+      localStorage.setItem(SPEED_KEY, speedVal);
+      if (currentAudio) currentAudio.playbackRate = speedVal;
+      refreshUI();
+    });
     bar.querySelector(".tts-voice-sel").addEventListener("change", e => changeVoice(e.target.value));
     document.body.appendChild(bar);
   }

@@ -93,35 +93,59 @@
 .tts-voice-sel:focus { outline: none; color: var(--accent); }
 .tts-voice-sel option { color: var(--ink); background: var(--bg-elev); }
 
-/* ---- Speed control ---- */
+/* ---- Speed control (slider) ---- */
 .tts-speed-ctrl {
   display: inline-flex;
   align-items: center;
-  gap: 0;
+  gap: 0.5rem;
   border: 1px solid var(--rule);
   border-radius: 6px;
-  overflow: hidden;
+  padding: 0.22rem 0.65rem;
 }
-
-.tts-speed-ctrl button {
-  border: none;
-  border-radius: 0;
-  padding: 0.3rem 0.6rem;
-  font-size: 1rem;
-  line-height: 1;
-}
-
-.tts-speed-ctrl button:first-child { border-right: 1px solid var(--rule); }
-.tts-speed-ctrl button:last-child  { border-left:  1px solid var(--rule); }
 
 .tts-speed-val {
-  padding: 0 0.55rem;
   font-family: var(--mono);
   font-size: 0.78rem;
   color: var(--ink-soft);
-  min-width: 2.6rem;
-  text-align: center;
+  min-width: 2.4rem;
+  text-align: right;
   user-select: none;
+}
+
+.tts-speed-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 80px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--rule);
+  outline: none;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+}
+
+.tts-speed-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: none;
+  transition: transform 0.1s;
+}
+
+.tts-speed-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+.tts-speed-slider::-moz-range-thumb {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: none;
 }
 
 /* ---- Per-block speaker button (shows on hover, in the right gutter) ---- */
