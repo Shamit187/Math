@@ -22,10 +22,11 @@ logger = logging.getLogger(__name__)
 # Curated voice catalog. Each entry maps a Kokoro voice ID to its display label,
 # its language code (which selects the pipeline), and its quality grade.
 VOICES: list[dict] = [
-    {"id": "af_heart",  "label": "Heart — US female",   "lang": "a", "grade": "A"},
-    {"id": "af_bella",  "label": "Bella — US female",   "lang": "a", "grade": "A-"},
-    {"id": "af_nicole", "label": "Nicole — US female",  "lang": "a", "grade": "B-"},
-    {"id": "bf_emma",   "label": "Emma — UK female",    "lang": "b", "grade": "B-"},
+    {"id": "af_heart",  "label": "Heart, Neutral",        "lang": "a", "grade": "A"},
+    {"id": "af_bella",  "label": "Bella, Charming",        "lang": "a", "grade": "A-"},
+    {"id": "af_sky",    "label": "Sky, Mature",   "lang": "a", "grade": "B+"},
+    {"id": "af_nicole", "label": "Nicole, ASMR",       "lang": "a", "grade": "B-"},
+    {"id": "bf_emma",   "label": "Emma, British",         "lang": "b", "grade": "B-"},
 ]
 DEFAULT_VOICE = "af_heart"
 DEFAULT_LANG = "a"

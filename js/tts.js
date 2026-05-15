@@ -294,6 +294,41 @@
     nav.insertBefore(btn, nav.firstChild);
   }
 
+  // ---- Keyboard shortcuts ----
+
+  function setupKeyboard() {
+    document.addEventListener("keydown", function (e) {
+      // Don't intercept while typing in a form field
+      const active = document.activeElement;
+      const tag = active ? active.tagName : "";
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || active?.isContentEditable) return;
+
+      switch (e.key) {
+        case " ":
+        case "Spacebar":       // legacy Firefox
+        case "MediaPlayPause": // dedicated media key
+          e.preventDefault();
+          if (!isActive) startFrom(currentIdx >= 0 ? currentIdx : 0);
+          else pauseResume();
+          break;
+
+        case "ArrowRight":
+          if (isActive) {
+            e.preventDefault();
+            startFrom(Math.min(currentIdx + 1, blocks.length - 1));
+          }
+          break;
+
+        case "ArrowLeft":
+          if (isActive) {
+            e.preventDefault();
+            startFrom(Math.max(currentIdx - 1, 0));
+          }
+          break;
+      }
+    });
+  }
+
   // ---- Init ----
 
   async function init() {
@@ -312,6 +347,7 @@
     buildBar();
     addHeaderBtn();
     blocks.forEach((b, i) => addBlockBtn(b, i));
+    setupKeyboard();
   }
 
   if (document.readyState === "loading") {
