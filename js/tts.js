@@ -10,6 +10,7 @@
 
   const SPEED_STEPS = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0];
   const SPEED_KEY = "tts-speed";
+  const VOICE_KEY = "tts-voice";
 
   let blocks = [];
   let currentIdx = -1;
@@ -24,6 +25,9 @@
     SPEED_STEPS.indexOf(parseFloat(localStorage.getItem(SPEED_KEY) || "1"))
   );
   if (speedIdx < 0) speedIdx = 2; // default 1.0×
+
+  let voices = [];                                            // [{id, label, grade, lang}]
+  let currentVoice = localStorage.getItem(VOICE_KEY) || "";   // resolved once voices arrive
 
   function speed() { return SPEED_STEPS[speedIdx]; }
 
@@ -40,11 +44,23 @@
     }
   }
 
+  async function fetchVoices() {
+    try {
+      const r = await fetch(`${API}/tts/voices`, {
+        signal: AbortSignal.timeout(3000),
+      });
+      if (!r.ok) return null;
+      return await r.json();
+    } catch (_) {
+      return null;
+    }
+  }
+
   async function fetchAudio(text) {
     const r = await fetch(`${API}/tts/synthesize`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text, speed: speed() }),
+      body: JSON.stringify({ text, speed: speed(), voice: currentVoice }),
     });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     return URL.createObjectURL(await r.blob());
@@ -65,8 +81,8 @@
       k.replaceWith(s);
     });
 
-    // Remove any UI buttons we injected
-    clone.querySelectorAll(".tts-btn, .cmt-btn").forEach(b => b.remove());
+    // Remove any UI buttons / pins we injected
+    clone.querySelectorAll(".tts-btn, .cmt-btn, .note-pin, .hl-toolbar").forEach(b => b.remove());
 
     return clone.textContent.replace(/\s+/g, " ").trim();
   }
@@ -186,14 +202,24 @@
     refreshUI();
   }
 
+  function discardPrefetch() {
+    if (nextUrl) { URL.revokeObjectURL(nextUrl); nextUrl = null; nextUrlIdx = -1; }
+  }
+
   function changeSpeed(delta) {
     const next = speedIdx + delta;
     if (next < 0 || next >= SPEED_STEPS.length) return;
     speedIdx = next;
     localStorage.setItem(SPEED_KEY, speed());
-    // Discard pre-fetched audio since it was at the old speed
-    if (nextUrl) { URL.revokeObjectURL(nextUrl); nextUrl = null; nextUrlIdx = -1; }
+    discardPrefetch();   // pre-fetched audio was at the old speed
     refreshUI();
+  }
+
+  function changeVoice(voiceId) {
+    if (!voiceId || voiceId === currentVoice) return;
+    currentVoice = voiceId;
+    localStorage.setItem(VOICE_KEY, voiceId);
+    discardPrefetch();   // pre-fetched audio was in the old voice
   }
 
   function startFrom(idx) {
@@ -213,8 +239,17 @@
     const bar = document.createElement("div");
     bar.id = "tts-bar";
     bar.className = "tts-bar tts-bar--hidden";
+
+    const voiceOptions = voices.map(v =>
+      `<option value="${v.id}"${v.id === currentVoice ? " selected" : ""}>${v.label}</option>`
+    ).join("");
+
     bar.innerHTML = `
       <span class="tts-label"></span>
+      <span class="tts-voice-ctrl" title="Reader voice">
+        <span class="tts-voice-icon">👤</span>
+        <select class="tts-voice-sel" aria-label="Reader voice">${voiceOptions}</select>
+      </span>
       <span class="tts-speed-ctrl">
         <button class="tts-speed-dec" title="Slower">−</button>
         <span class="tts-speed-val">${speed()}×</span>
@@ -229,6 +264,7 @@
     bar.querySelector(".tts-focus").addEventListener("click", focusCurrentBlock);
     bar.querySelector(".tts-speed-dec").addEventListener("click", () => changeSpeed(-1));
     bar.querySelector(".tts-speed-inc").addEventListener("click", () => changeSpeed(+1));
+    bar.querySelector(".tts-voice-sel").addEventListener("change", e => changeVoice(e.target.value));
     document.body.appendChild(bar);
   }
 
@@ -263,6 +299,12 @@
   async function init() {
     const status = await fetchStatus();
     if (!status || !status.enabled || status.state !== "ready") return;
+
+    const voiceData = await fetchVoices();
+    voices = voiceData?.voices || [];
+    const defaultVoice = voiceData?.default || (voices[0] && voices[0].id) || "";
+    // Validate the saved voice is still in the catalog; fall back to default otherwise
+    if (!voices.some(v => v.id === currentVoice)) currentVoice = defaultVoice;
 
     blocks = [...document.querySelectorAll("[data-cid]")].filter(el => el !== document.body);
     if (!blocks.length) return;

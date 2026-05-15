@@ -1,0 +1,193 @@
+/* ============================================================
+   Highlights + notes UI
+   ============================================================ */
+
+/* ---- The highlighted text itself ---- */
+span.hl {
+  background: rgba(255, 224, 92, 0.55);   /* warm yellow, light theme */
+  border-bottom: 1px solid rgba(214, 175, 60, 0.6);
+  border-radius: 2px;
+  padding: 0 0.05em;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+span.hl:hover { background: rgba(255, 217, 60, 0.75); }
+
+/* Highlights that carry a note read slightly cooler so the difference is visible */
+span.hl.hl--has-note {
+  background: rgba(255, 200, 92, 0.55);
+  border-bottom-color: rgba(214, 145, 60, 0.7);
+}
+span.hl.hl--has-note:hover { background: rgba(255, 185, 60, 0.8); }
+
+[data-theme="dark"] span.hl {
+  background: rgba(225, 170, 0, 0.35);
+  border-bottom-color: rgba(225, 170, 0, 0.65);
+}
+[data-theme="dark"] span.hl:hover { background: rgba(245, 195, 50, 0.5); }
+[data-theme="dark"] span.hl.hl--has-note { background: rgba(230, 145, 30, 0.35); }
+[data-theme="dark"] span.hl.hl--has-note:hover { background: rgba(245, 165, 40, 0.55); }
+
+/* ---- The pin marker that follows a highlight with a note ---- */
+.note-pin {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.1rem;
+  height: 1.1rem;
+  border: none;
+  background: transparent;
+  font-size: 0.7rem;
+  cursor: pointer;
+  padding: 0;
+  vertical-align: 0.2em;
+  margin: 0 0.05em 0 0.1em;
+  border-radius: 4px;
+  line-height: 1;
+  opacity: 0.85;
+  transition: transform 0.12s ease, opacity 0.12s ease;
+  user-select: none;
+}
+.note-pin:hover {
+  opacity: 1;
+  transform: scale(1.15);
+}
+
+/* ---- Floating selection toolbar ---- */
+.hl-toolbar {
+  position: absolute;
+  z-index: 300;
+  display: inline-flex;
+  align-items: stretch;
+  gap: 0;
+  background: var(--bg-elev);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  padding: 0;
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  overflow: hidden;
+  animation: hl-toolbar-in 0.12s ease;
+}
+
+@keyframes hl-toolbar-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.hl-toolbar button {
+  background: transparent;
+  border: none;
+  border-right: 1px solid var(--rule);
+  padding: 0.45rem 0.8rem;
+  color: var(--ink);
+  cursor: pointer;
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  white-space: nowrap;
+  transition: background 0.1s, color 0.1s;
+}
+.hl-toolbar button:last-child { border-right: none; }
+.hl-toolbar button:hover { background: var(--bg); color: var(--accent); }
+.hl-toolbar .hl-toolbar-cancel:hover { color: var(--warn-edge); }
+
+/* ---- Popover that appears when you click a highlight ---- */
+.hl-popover {
+  position: absolute;
+  z-index: 300;
+  min-width: 240px;
+  max-width: 340px;
+  background: var(--bg-elev);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--intuition-edge);
+  border-radius: 8px;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.15);
+  padding: 0.7rem 0.85rem;
+  font-family: var(--sans);
+  font-size: 0.86rem;
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  animation: hl-toolbar-in 0.12s ease;
+}
+
+.hl-popover-note-text {
+  white-space: pre-wrap;
+  line-height: 1.5;
+  color: var(--ink);
+  font-size: 0.88rem;
+}
+
+.hl-popover-empty {
+  color: var(--ink-soft);
+  font-style: italic;
+  font-size: 0.82rem;
+}
+
+.hl-popover-meta {
+  font-size: 0.7rem;
+  color: var(--ink-soft);
+}
+
+.hl-popover-textarea {
+  width: 100%;
+  min-height: 90px;
+  resize: vertical;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 0.88rem;
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+.hl-popover-textarea:focus { outline: none; border-color: var(--intuition-edge); }
+
+.hl-popover-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.hl-popover-actions button {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  padding: 0.32rem 0.7rem;
+  border-radius: 6px;
+  border: 1px solid var(--rule);
+  background: var(--bg);
+  color: var(--ink);
+  cursor: pointer;
+}
+.hl-popover-actions button:hover { border-color: var(--intuition-edge); color: var(--intuition-edge); }
+.hl-popover-actions .hl-popover-save {
+  background: var(--intuition-edge);
+  color: #fff;
+  border-color: var(--intuition-edge);
+}
+.hl-popover-actions .hl-popover-save:hover { opacity: 0.9; color: #fff; }
+.hl-popover-actions .hl-popover-add {
+  background: var(--intuition-edge);
+  color: #fff;
+  border-color: var(--intuition-edge);
+}
+.hl-popover-actions .hl-popover-add:hover { opacity: 0.9; color: #fff; }
+.hl-popover-actions .hl-popover-del-hl:hover,
+.hl-popover-actions .hl-popover-del-note:hover {
+  color: var(--warn-edge);
+  border-color: var(--warn-edge);
+}
+
+.hl-popover-status {
+  flex: 1;
+  font-size: 0.74rem;
+  color: var(--ink-soft);
+}
+.hl-popover-status.err { color: var(--warn-edge); }
