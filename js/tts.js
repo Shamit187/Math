@@ -127,9 +127,18 @@
 
   // ---- Playback engine ----
 
+  function goToNextPage() {
+    const nextLink = document.querySelector("nav.chapter-nav a.next");
+    if (!nextLink) { stop(); return; }
+    const url = new URL(nextLink.href, location.href);
+    url.searchParams.set("autoplay", "1");
+    stop();
+    location.href = url.toString();
+  }
+
   async function playBlock(idx) {
     if (!isActive || idx >= blocks.length) {
-      if (isActive) stop();
+      if (isActive) goToNextPage();
       return;
     }
 
@@ -346,6 +355,12 @@
     addHeaderBtn();
     blocks.forEach((b, i) => addBlockBtn(b, i));
     setupKeyboard();
+
+    if (new URLSearchParams(location.search).get("autoplay") === "1") {
+      // Strip the param from the address bar without adding a history entry
+      history.replaceState(null, "", location.pathname);
+      startFrom(0);
+    }
   }
 
   if (document.readyState === "loading") {
