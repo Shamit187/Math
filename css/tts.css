@@ -185,12 +185,88 @@
   transform: scale(1) !important;
 }
 
-/* ---- Highlight the block currently being read ---- */
+/* ---- Smooth blur/fade transitions for all content blocks ---- */
+[data-cid] {
+  transition: filter 0.35s ease, opacity 0.35s ease;
+}
+
+/* ---- Blur everything except the active reading block ---- */
+/* :not([data-cid] [data-cid]) prevents double-blurring nested blocks (e.g. paragraphs
+   inside a box): the parent box gets blurred and its children inherit it naturally. */
+body.tts-active [data-cid]:not(.tts-reading):not(.tts-reading-ancestor):not([data-cid] [data-cid]) {
+  filter: blur(2px);
+  opacity: 0.35;
+}
+
+
+/* ---- Spinning RGB border + glow on active block ---- */
+@property --tts-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes tts-rotate {
+  to { --tts-angle: 360deg; }
+}
+
+@keyframes tts-glow-shift {
+  0%   { box-shadow: 0 0 14px 5px rgba(255,  34, 100, 0.85), 0 0 34px 16px rgba(255,  34, 100, 0.28); }
+  16%  { box-shadow: 0 0 14px 5px rgba(255, 120,   0, 0.85), 0 0 34px 16px rgba(255, 120,   0, 0.28); }
+  33%  { box-shadow: 0 0 14px 5px rgba(210, 210,   0, 0.85), 0 0 34px 16px rgba(210, 210,   0, 0.28); }
+  50%  { box-shadow: 0 0 14px 5px rgba(  0, 210, 110, 0.85), 0 0 34px 16px rgba(  0, 210, 110, 0.28); }
+  66%  { box-shadow: 0 0 14px 5px rgba( 30,  80, 255, 0.85), 0 0 34px 16px rgba( 30,  80, 255, 0.28); }
+  83%  { box-shadow: 0 0 14px 5px rgba(140,   0, 255, 0.85), 0 0 34px 16px rgba(140,   0, 255, 0.28); }
+  100% { box-shadow: 0 0 14px 5px rgba(255,  34, 100, 0.85), 0 0 34px 16px rgba(255,  34, 100, 0.28); }
+}
+
 [data-cid].tts-reading {
-  outline: 2px solid var(--accent-soft);
-  outline-offset: 3px;
-  border-radius: 4px;
-  transition: outline-color 0.15s;
+  outline: none;
+  position: relative;
+  isolation: isolate;
+  border-radius: 8px;
+  animation: tts-glow-shift 3s linear infinite;
+}
+
+/* Rainbow conic-gradient ring — animation runs here so --tts-angle is local to ::before */
+[data-cid].tts-reading::before {
+  content: '';
+  position: absolute;
+  inset: -20px;
+  border-radius: 28px;
+  --tts-angle: 0deg;
+  background: conic-gradient(
+    from var(--tts-angle),
+    #ff2264, #ff6600, #ffee00, #00dd77, #0066ff, #8800ff, #ff2264
+  );
+  animation: tts-rotate 3s linear infinite;
+  z-index: -2;
+  pointer-events: none;
+}
+
+/* Solid fill — extends 8px beyond the element edge to create a breathing-room buffer
+   between text and the visible gradient ring for elements with no padding (p, li, etc.) */
+[data-cid].tts-reading::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 16px;
+  background: var(--bg);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* ---- Reading progress bar (bottom edge of site-header) ---- */
+#tts-progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(to right, #ff2264, #ff6600, #ffee00, #00dd77, #0066ff, #8800ff);
+  transition: width 0.4s ease;
+  pointer-events: none;
+  z-index: 1;
 }
 
 /* ---- Header "Read" button ---- */

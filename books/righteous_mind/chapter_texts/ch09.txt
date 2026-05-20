@@ -1,0 +1,1105 @@
+NINE
+
+Why Are We So Groupish?
+
+In the terrible days after the terrorist attacks of September 11,
+2001, I felt an urge so primitive I was embarrassed to admit it to
+my friends: I wanted to put an American ag decal on my car.
+The urge seemed to come out of nowhere, with no connection to
+anything I’d ever done. It was as if there was an ancient alarm box
+in the back of my brain with a sign on it that said, “In case of
+foreign attack, break glass and push button.” I hadn’t known the
+alarm box was there, but when those four planes broke the glass
+and pushed the button I had an overwhelming sense of being an
+American. I wanted to do something, anything, to support my team.
+Like so many others, I gave blood and donated money to the Red
+Cross. I was more open and helpful to strangers. And I wanted to
+display my team membership by showing the ag in some way.
+But I was a professor, and professors don’t do such things. Flag
+waving and nationalism are for conservatives. Professors are liberal
+globetrotting universalists, re exively wary of saying that their
+nation is better than other nations.1 When you see an American ag
+on a car in a UVA sta parking lot, you can bet that the car belongs
+to a secretary or a blue-collar worker.
+After three days and a welter of feelings I’d never felt before, I
+found a solution to my dilemma. I put an American ag in one
+corner of my rear windshield, and I put the United Nations ag in
+the opposite corner. That way I could announce that I loved my
+country, but don’t worry, folks, I don’t place it above other
+countries, and this was, after all, an attack on the whole world, sort
+of, right?
+
+So far in this book I’ve painted a portrait of human nature that is
+somewhat cynical. I’ve argued that Glaucon was right and that we
+care more about looking good than about truly being good.2
+Intuitions come rst, strategic reasoning second. We lie, cheat, and
+cut ethical corners quite often when we think we can get away with
+it, and then we use our moral thinking to manage our reputations
+and justify ourselves to others. We believe our own post hoc
+reasoning so thoroughly that we end up self-righteously convinced
+of our own virtue.
+I do believe that you can understand most of moral psychology by
+viewing it as a form of enlightened self-interest, and if it’s selfinterest, then it’s easily explained by Darwinian natural selection
+working at the level of the individual. Genes are sel sh,3 sel sh
+genes create people with various mental modules, and some of
+these mental modules make us strategically altruistic, not reliably
+or universally altruistic. Our righteous minds were shaped by kin
+selection plus reciprocal altruism augmented by gossip and
+reputation management. That’s the message of nearly every book
+on the evolutionary origins of morality, and nothing I’ve said so far
+contradicts that message.
+But in Part III of this book I’m going to show why that portrait is
+incomplete. Yes, people are often sel sh, and a great deal of our
+moral, political, and religious behavior can be understood as thinly
+veiled ways of pursuing self-interest. (Just look at the awful
+hypocrisy of so many politicians and religious leaders.) But it’s also
+true that people are groupish. We love to join teams, clubs, leagues,
+and fraternities. We take on group identities and work shoulder to
+shoulder with strangers toward common goals so enthusiastically
+that it seems as if our minds were designed for teamwork. I don’t
+think we can understand morality, politics, or religion until we have
+a good picture of human groupishness and its origins. We cannot
+understand conservative morality and the Durkheimian societies I
+described in the last chapter. Neither can we understand socialism,
+communism, and the communalism of the left.
+Let me be more precise. When I say that human nature is sel sh, I
+mean that our minds contain a variety of mental mechanisms that
+
+make us adept at promoting our own interests, in competition with
+our peers. When I say that human nature is also groupish, I mean
+that our minds contain a variety of mental mechanisms that make us
+adept at promoting our group’s interests, in competition with other
+groups.4 We are not saints, but we are sometimes good team
+players.
+Stated in this way, the origin of these groupish mechanisms
+becomes a puzzle. Do we have groupish minds today because
+groupish individuals long ago outcompeted less groupish individuals
+within the same group? If so, then this is just standard, bread-andbutter natural selection operating at the level of the individual. And
+if that’s the case, then this is Glauconian groupishness—we should
+expect to nd that people care about the appearance of loyalty, not
+the reality.5 Or do we have groupish mechanisms (such as the rallyround-the- ag re ex) because groups that succeeded in coalescing
+and cooperating outcompeted groups that couldn’t get it together?
+If so, then I’m invoking a process known as “group selection,” and
+group selection was banished as a heresy from scienti c circles in
+the 1970s.6
+In this chapter I’ll argue that group selection was falsely
+convicted and unfairly banished. I’ll present four pieces of new
+evidence that I believe exonerate group selection (in some but not
+all forms). This new evidence demonstrates the value of thinking
+about groups as real entities that compete with each other. This new
+evidence leads us directly to the third and nal principle of moral
+psychology: Morality binds and blinds. I will suggest that human
+nature is mostly sel sh, but with a groupish overlay that resulted
+from the fact that natural selection works at multiple levels
+simultaneously. Individuals compete with individuals, and that
+competition rewards sel shness—which includes some forms of
+strategic cooperation (even criminals can work together to further
+their own interests).7 But at the same time, groups compete with
+groups, and that competition favors groups composed of true team
+players—those who are willing to cooperate and work for the good
+of the group, even when they could do better by slacking, cheating,
+or leaving the group.8 These two processes pushed human nature in
+
+di erent directions and gave us the strange mix of sel shness and
+sel essness that we know today.
+VICTORIOUS TRIBES?
+Here’s an example of one kind of group selection. In a few
+remarkable pages of The Descent of Man, Darwin made the case for
+group selection, raised the principal objection to it, and then
+proposed a way around the objection:
+When two tribes of primeval man, living in the same
+country, came into competition, if (other circumstances
+being equal) the one tribe included a great number of
+courageous, sympathetic and faithful members, who
+were always ready to warn each other of danger, to aid
+and defend each other, this tribe would succeed better and
+conquer the other.… The advantage which disciplined
+soldiers have over undisciplined hordes follows chie y
+from the con dence which each man feels in his
+comrades.… Sel sh and contentious people will not cohere,
+and without coherence nothing can be e ected. A tribe rich
+in the above qualities would spread and be victorious over
+other tribes.9
+Cohesive tribes began to function like individual organisms,
+competing with other organisms. The tribes that were more
+cohesive generally won. Natural selection therefore worked on
+tribes the same way it works on every other organism.
+But in the very next paragraph, Darwin raised the free rider
+problem, which is still the main objection raised against group
+selection:
+But it may be asked, how within the limits of the same
+tribe did a large number of members rst become
+endowed with these social and moral qualities, and how
+was the standard of excellence raised? It is extremely
+
+doubtful whether the o spring of the more sympathetic and
+benevolent parents, or of those who were the most faithful to
+their comrades, would be reared in greater numbers than the
+children of sel sh and treacherous parents belonging to the
+same tribe. He who was ready to sacri ce his life, as
+many a savage has been, rather than betray his
+comrades, would often leave no o spring to inherit his
+noble nature.10
+Darwin grasped the basic logic of what is now known as multilevel
+selection.11 Life is a hierarchy of nested levels, like Russian dolls:
+genes within chromosomes within cells within individual organisms
+within hives, societies, and other groups. There can be competition
+at any level of the hierarchy, but for our purposes (studying
+morality) the only two levels that matter are those of the individual
+organism and the group. When groups compete, the cohesive,
+cooperative group usually wins. But within each group, sel sh
+individuals (free riders) come out ahead. They share in the group’s
+gains while contributing little to its e orts. The bravest army wins,
+but within the bravest army, the few cowards who hang back are
+the most likely of all to survive the ght, go home alive, and
+become fathers.
+Multilevel selection refers to a way of quantifying how strong the
+selection pressure is at each level, which means how strongly the
+competition of life favors genes for particular traits.12 A gene for
+suicidal self-sacri ce would be favored by group-level selection (it
+would help the team win), but it would be so strongly opposed by
+selection at the individual level that such a trait could evolve only
+in species such as bees, where competition within the hive has been
+nearly eliminated and almost all selection is group selection.13 Bees
+(and ants and termites) are the ultimate team players: one for all,
+all for one, all the time, even if that means dying to protect the hive
+from invaders.14 (Humans can be turned into suicide bombers, but it
+takes a great deal of training, pressure, and psychological
+manipulation. It doesn’t come naturally to us.)15
+
+Once human groups had some minimal ability to band together
+and compete with other groups, then group-level selection came
+into play and the most groupish groups had an advantage over
+groups of sel sh individualists. But how did early humans get those
+groupish abilities in the rst place? Darwin proposed a series of
+“probable steps” by which humans evolved to the point where there
+could be groups of team players in the rst place.
+The rst step was the “social instincts.” In ancient times, loners
+were more likely to get picked o by predators than were their
+more gregarious siblings, who felt a strong need to stay close to the
+group. The second step was reciprocity. People who helped others
+were more likely to get help when they needed it most.
+But the most important “stimulus to the development of the social
+virtues” was the fact that people are passionately concerned with
+“the praise and blame of our fellow-men.”16 Darwin, writing in
+Victorian England, shared Glaucon’s view (from aristocratic Athens)
+that people are obsessed with their reputations. Darwin believed
+that the emotions that drive this obsession were acquired by natural
+selection acting at the individual level: those who lacked a sense of
+shame or a love of glory were less likely to attract friends and
+mates. Darwin also added a nal step: the capacity to treat duties
+and principles as sacred, which he saw as part of our religious
+nature.
+When you put these steps together, they take you along an
+evolutionary path from earlier primates to humans, among whom
+free riding is no longer so attractive. In a real army, which
+sacralizes honor, loyalty, and country, the coward is not the most
+likely to make it home and father children. He’s the most likely to
+get beaten up, left behind, or shot in the back for committing
+sacrilege. And if he does make it home alive, his reputation will
+repel women and potential employers.17 Real armies, like most
+e ective groups, have many ways of suppressing sel shness. And
+anytime a group nds a way to suppress sel shness, it changes the
+balance of forces in a multilevel analysis: individual-level selection
+becomes less important, and group-level selection becomes more
+powerful. For example, if there is a genetic basis for feelings of
+
+loyalty and sanctity (i.e., the Loyalty and Sanctity foundations),
+then intense intergroup competition will make these genes become
+more common in the next generation. The reason is that groups in
+which these traits are common will replace groups in which they are
+rare, even if these genes impose a small cost on their bearers
+(relative to those that lack them within each group).
+In what might be the pithiest and most prescient statement in the
+history of moral psychology, Darwin summarized the evolutionary
+origin of morality in this way:
+Ultimately our moral sense or conscience becomes a
+highly complex sentiment—originating in the social
+instincts, largely guided by the approbation of our
+fellow-men, ruled by reason, self-interest, and in later
+times by deep religious feelings, and con rmed by
+instruction and habit.18
+Darwin’s response to the free rider problem satis ed readers for
+nearly a hundred years, and group selection became a standard part
+of evolutionary thinking. Unfortunately, most writers did not bother
+to work out exactly how each particular species solved the free
+rider problem, as Darwin had done for human beings. Claims about
+animals behaving “for the good of the group” proliferated—for
+example, the claim that individual animals restrain their grazing or
+their breeding so as not to put the group at risk of overexploiting its
+food supply. Even more lofty claims were made about animals
+acting for the good of the species, or even of the ecosystem.19 These
+claims were naive because individuals that followed the sel ess
+strategy would leave fewer surviving o spring and would soon be
+replaced in the population by the descendants of free riders.
+In 1966, this loose thinking was brought to a halt, along with
+almost all thinking about group selection.
+A FAST HERD OF DEER?
+
+In 1955, a young biologist named George Williams attended a
+lecture at the University of Chicago by a termite specialist. The
+speaker claimed that many animals are cooperative and helpful, just
+like termites. He said that old age and death are the way that nature
+makes room for the younger and tter members of each species. But
+Williams was well versed in genetics and evolution, and he was
+repulsed by the speaker’s Panglossian mushiness. He saw that
+animals are not going to die to bene t others, except in very special
+circumstances such as those that prevail in a termite nest (where all
+are sisters). He set out to write a book that would “purge biology”
+of such sloppy thinking once and for all.20
+In Adaptation and Natural Selection (published in 1966), Williams
+told biologists how to think clearly about adaptation. He saw
+natural selection as a design process. There’s no conscious or
+intelligent designer, but Williams found the language of design
+useful nonetheless.21 For example, wings can only be understood as
+biological mechanisms designed to produce ight. Williams noted
+that adaptation at a given level always implies a selection (design)
+process operating at that level, and he warned readers not to look
+to higher levels (such as groups) when selection e ects at lower
+levels (such as individuals) can fully explain the trait.
+He worked through the example of running speed in deer. When
+deer run in a herd, we observe a fast herd of deer, moving as a unit
+and sometimes changing course as a unit. We might be tempted to
+explain the herd’s behavior by appealing to group selection: for
+millions of years, faster herds have escaped predators better than
+slower herds, and so over time fast herds replaced slower herds. But
+Williams pointed out that deer have been exquisitely well designed
+as individuals to ee from predators. The selection process operated
+at the level of individuals: slower deer got eaten, while their faster
+cousins in the same herd escaped. There is no need to bring in
+selection at the level of the herd. A fast herd of deer is nothing
+more than a herd of fast deer.22
+Williams gave an example of what it would take to force us up to
+a group-level analysis: behavioral mechanisms whose goal or
+function was clearly the protection of the group, rather than the
+
+individual. If deer with particularly keen senses served as sentinels,
+while the fastest runners in the herd tried to lure predators away
+from the herd, we’d have evidence of group-related adaptations,
+and, as Williams put it, “only by a theory of between-group
+selection could we achieve a scienti c explanation of group-related
+adaptations.”23
+Williams said that group selection was possible in theory. But
+then he devoted most of the book to proving his thesis that “grouprelated adaptations do not in fact exist.”24 He gave examples from
+across the animal kingdom, showing in every case that what looks
+like altruism or self-sacri ce to a naive biologist (such as that
+termite specialist) turns out to be either individual sel shness or kin
+selection (whereby costly actions make sense because they bene t
+other copies of the same genes in closely related individuals, as
+happens with termites). Richard Dawkins did the same thing in his
+1976 best seller The Sel sh Gene, granting that group selection is
+possible but then debunking apparent cases of group-related
+adaptations. By the late 1970s there was a strong consensus that
+anyone who said that a behavior occurred “for the good of the
+group” was a fool who could be safely ignored.
+We sometimes look back on the 1970s as the “me decade.” That
+term was rst applied to the growing individualism of American
+society, but it describes a broad set of changes in the social sciences
+as well. The idea of people as Homo economicus spread far and
+wide. In social psychology, for example, the leading explanation of
+fairness (known as “equity theory”) was based on four axioms, the
+rst of which was “Individuals will try to maximize their
+outcomes.” The authors then noted that “even the most contentious
+scientist would nd it di cult to challenge our rst proposition.
+Theories in a wide variety of disciplines rest on the assumption that
+‘man is sel sh.’ ”25 All acts of apparent altruism, cooperation, and
+even simple fairness had to be explained, ultimately, as covert
+forms of self-interest.26
+
+Of course, real life is full of cases that violate the axiom. People
+leave tips in restaurants they’ll never return to; they donate
+anonymously to charities; they sometimes drown after jumping into
+rivers to save children who are not their own. No problem, said the
+cynics; these are just mis rings of ancient systems designed for life
+in the small groups of the Pleistocene, where most people were
+close kin.27 Now that we live in large anonymous societies, our
+ancient sel sh circuits erroneously lead us to help strangers who
+will not help us in return. Our “moral qualities” are not adaptations,
+as Darwin had believed. They are by-products; they are mistakes.
+Morality, said Williams, is “an accidental capability produced, in its
+boundless stupidity, by a biological process that is normally
+opposed to the expression of such a capability.”28 Dawkins shared
+this cynicism: “Let us try to teach generosity and altruism because
+we are born sel sh.”29
+I disagree. Human beings are the gira es of altruism. We’re oneof-a-kind freaks of nature who occasionally—even if rarely—can be
+as sel ess and team-spirited as bees.30 If your moral ideal is the
+person who devotes her life to helping strangers, well then, OK—
+such people are so rare that we send lm crews out to record them
+for the evening news. But if you focus, as Darwin did, on behavior
+in groups of people who know each other and share goals and
+values, then our ability to work together, divide labor, help each
+other, and function as a team is so all-pervasive that we don’t even
+notice it. You’ll never see the headline “Forty- ve Unrelated
+College Students Work Together Cooperatively, and for No Pay, to
+Prepare for Opening Night of Romeo and Juliet.”
+When Williams proposed his fanciful example of deer dividing
+labor and working together to protect the herd, was it not obvious
+that human groups do exactly that? By his own criterion, if people
+in every society readily organize themselves into cooperative
+groups with a clear division of labor, then this ability is an excellent
+candidate for being a group-related adaptation. As Williams himself
+put it: “Only by a theory of between-group selection could we
+achieve a scienti c explanation of group-related adaptations.”
+
+The 9/11 attacks activated several of these group-related
+adaptations in my mind. The attacks turned me into a team player,
+with a powerful and unexpected urge to display my team’s ag and
+then do things to support the team, such as giving blood, donating
+money, and, yes, supporting the leader.31 And my response was
+tepid compared to the hundreds of Americans who got in their cars
+that afternoon and drove great distances to New York in the vain
+hope that they could help to dig survivors out of the wreckage, or
+the thousands of young people who volunteered for military service
+in the following weeks. Were these people acting on sel sh
+motives, or groupish motives?
+The rally-round-the- ag re ex is just one example of a groupish
+mechanism.32 It is exactly the sort of mental mechanism you’d
+expect to nd if we humans were shaped by group selection in the
+way that Darwin described. I can’t be certain, however, that this
+re ex really did evolve by group-level selection. Group selection is
+controversial among evolutionary theorists, most of whom still
+agree with Williams that group selection never actually happened
+among humans. They think that anything that looks like a grouprelated adaptation will—if you look closely enough—turn out to be
+an adaptation for helping individuals outcompete their neighbors
+within the same group, not an adaptation for helping groups
+outcompete other groups.
+Before we can move on with our exploration of morality, politics,
+and religion, we’ve got to address this problem. If the experts are
+divided, then why should we side with those who believe that
+morality is (in part) a group-related adaptation?33
+In the following sections I’ll give you four reasons. I’ll show you
+four “exhibits” in my defense of multilevel selection (which includes
+group selection). But my goal here is not just to build a legal case in
+an academic battle that you might care nothing about. My goal is to
+show you that morality is the key to understanding humanity. I’ll
+take you on a brief tour of humanity’s origins in which we’ll see
+how groupishness helped us transcend sel shness. I’ll show that our
+
+groupishness—despite all of the ugly and tribal things it makes us
+do—is one of the magic ingredients that made it possible for
+civilizations to burst forth, cover the Earth, and live ever more
+peacefully in just a few thousand years.34
+EXHIBIT A: MAJOR TRANSITIONS IN EVOLUTION
+Suppose you entered a boat race. One hundred rowers, each in a
+separate rowboat, set out on a ten-mile race along a wide and slowmoving river. The rst to cross the nish line will win $10,000.
+Halfway into the race, you’re in the lead. But then, from out of
+nowhere, you’re passed by a boat with two rowers, each pulling just
+one oar. No fair! Two rowers joined together into one boat! And
+then, stranger still, you watch as that rowboat is overtaken by a
+train of three such rowboats, all tied together to form a single long
+boat. The rowers are identical septuplets. Six of them row in perfect
+synchrony while the seventh is the coxswain, steering the boat and
+calling out the beat for the rowers. But those cheaters are deprived
+of victory just before they cross the nish line, for they in turn are
+passed by an enterprising group of twenty-four sisters who rented a
+motorboat. It turns out that there are no rules in this race about
+what kinds of vehicles are allowed.
+That was a metaphorical history of life on Earth. For the rst
+billion years or so of life, the only organisms were prokaryotic cells
+(such as bacteria). Each was a solo operation, competing with
+others and reproducing copies of itself.
+But then, around 2 billion years ago, two bacteria somehow
+joined together inside a single membrane, which explains why
+mitochondria have their own DNA, unrelated to the DNA in the
+nucleus.35 These are the two-person rowboats in my example. Cells
+that had internal organelles could reap the bene ts of cooperation
+and the division of labor (see Adam Smith). There was no longer
+any competition between these organelles, for they could reproduce
+only when the entire cell reproduced, so it was “one for all, all for
+one.” Life on Earth underwent what biologists call a “major
+
+transition.”36 Natural selection went on as it always had, but now
+there was a radically new kind of creature to be selected. There was
+a new kind of vehicle by which sel sh genes could replicate
+themselves. Single-celled eukaryotes were wildly successful and
+spread throughout the oceans.
+A few hundred million years later, some of these eukaryotes
+developed a novel adaptation: they stayed together after cell
+division to form multicellular organisms in which every cell had
+exactly the same genes. These are the three-boat septuplets in my
+example. Once again, competition is suppressed (because each cell
+can only reproduce if the organism reproduces, via its sperm or egg
+cells). A group of cells becomes an individual, able to divide labor
+among the cells (which specialize into limbs and organs). A
+powerful new kind of vehicle appears, and in a short span of time
+the world is covered with plants, animals, and fungi.37 It’s another
+major transition.
+Major transitions are rare. The biologists John Maynard Smith
+and Eörs Szathmáry count just eight clear examples over the last 4
+billion years (the last of which is human societies).38 But these
+transitions are among the most important events in biological
+history, and they are examples of multilevel selection at work. It’s
+the same story over and over again: Whenever a way is found to
+suppress free riding so that individual units can cooperate, work as
+a team, and divide labor, selection at the lower level becomes less
+important, selection at the higher level becomes more powerful,
+and that higher-level selection favors the most cohesive
+superorganisms.39 (A superorganism is an organism made out of
+smaller organisms.) As these superorganisms proliferate, they begin
+to compete with each other, and to evolve for greater success in
+that competition. This competition among superorganisms is one
+form of group selection.40 There is variation among the groups, and
+the ttest groups pass on their traits to future generations of
+groups.
+Major transitions may be rare, but when they happen, the Earth
+often changes.41 Just look at what happened more than 100 million
+years ago when some wasps developed the trick of dividing labor
+
+between a queen (who lays all the eggs) and several kinds of
+workers who maintain the nest and bring back food to share. This
+trick was discovered by the early hymenoptera (members of the
+order that includes wasps, which gave rise to bees and ants) and it
+was discovered independently several dozen other times (by the
+ancestors of termites, naked mole rats, and some species of shrimp,
+aphids, beetles, and spiders).42 In each case, the free rider problem
+was surmounted and sel sh genes began to craft relatively sel ess
+group members who together constituted a supremely sel sh group.
+These groups were a new kind of vehicle: a hive or colony of
+close genetic relatives, which functioned as a unit (e.g., in foraging
+and ghting) and reproduced as a unit. These are the motorboating
+sisters in my example, taking advantage of technological
+innovations and mechanical engineering that had never before
+existed. It was another transition. Another kind of group began to
+function as though it were a single organism, and the genes that got
+to ride around in colonies crushed the genes that couldn’t “get it
+together” and rode around in the bodies of more sel sh and solitary
+insects. The colonial insects represent just 2 percent of all insect
+species, but in a short period of time they claimed the best feeding
+and breeding sites for themselves, pushed their competitors to
+marginal grounds, and changed most of the Earth’s terrestrial
+ecosystems (for example, by enabling the evolution of owering
+plants, which need pollinators).43 Now they’re the majority, by
+weight, of all insects on Earth.
+What about human beings? Since ancient times, people have
+likened human societies to beehives. But is this just a loose
+analogy? If you map the queen of the hive onto the queen or king
+of a city-state, then yes, it’s loose. A hive or colony has no ruler, no
+boss. The queen is just the ovary. But if we simply ask whether
+humans went through the same evolutionary process as bees—a
+major transition from sel sh individualism to groupish hives that
+prosper when they nd a way to suppress free riding—then the
+analogy gets much tighter.
+Many animals are social: they live in groups, ocks, or herds. But
+only a few animals have crossed the threshold and become
+
+ultrasocial, which means that they live in very large groups that
+have some internal structure, enabling them to reap the bene ts of
+the division of labor.44 Beehives and ant nests, with their separate
+castes of soldiers, scouts, and nursery attendants, are examples of
+ultrasociality, and so are human societies.
+One of the key features that has helped all the nonhuman ultrasocials to cross over appears to be the need to defend a shared nest.
+The biologists Bert Hölldobler and E. O. Wilson summarize the
+recent nding that ultrasociality (also called “eusociality”)45 is
+found among a few species of shrimp, aphids, thrips, and beetles, as
+well as among wasps, bees, ants, and termites:
+In all the known [species that] display the earliest stages
+of eusociality, their behavior protects a persistent,
+defensible resource from predators, parasites, or
+competitors. The resource is invariably a nest plus
+dependable food within foraging range of the nest
+inhabitants.46
+Hölldobler and Wilson give supporting roles to two other factors:
+the need to feed o spring over an extended period (which gives an
+advantage to species that can recruit siblings or males to help out
+Mom) and intergroup con ict. All three of these factors applied to
+those rst early wasps camped out together in defensible naturally
+occurring nests (such as holes in trees). From that point on, the
+most cooperative groups got to keep the best nesting sites, which
+they then modi ed in increasingly elaborate ways to make
+themselves even more productive and more protected. Their
+descendants include the honeybees we know today, whose hives
+have been described as “a factory inside a fortress.”47
+Those same three factors applied to human beings. Like bees, our
+ancestors were (1) territorial creatures with a fondness for
+defensible nests (such as caves) who (2) gave birth to needy
+o spring that required enormous amounts of care, which had to be
+given while (3) the group was under threat from neighboring
+groups. For hundreds of thousands of years, therefore, conditions
+
+were in place that pulled for the evolution of ultrasociality, and as a
+result, we are the only ultrasocial primate. The human lineage may
+have started o acting very much like chimps,48 but by the time our
+ancestors started walking out of Africa, they had become at least a
+little bit like bees.
+And much later, when some groups began planting crops and
+orchards, and then building granaries, storage sheds, fenced
+pastures, and permanent homes, they had an even steadier food
+supply that had to be defended even more vigorously. Like bees,
+humans began building ever more elaborate nests, and in just a few
+thousand years, a new kind of vehicle appeared on Earth—the citystate, able to raise walls and armies.49 City-states and, later,
+empires spread rapidly across Eurasia, North Africa, and
+Mesoamerica, changing many of the Earth’s ecosystems and
+allowing the total tonnage of human beings to shoot up from
+insigni cance at the start of the Holocene (around twelve thousand
+years ago) to world domination today.50 As the colonial insects did
+to the other insects, we have pushed all other mammals to the
+margins, to extinction, or to servitude. The analogy to bees is not
+shallow or loose. Despite their many di erences, human
+civilizations and beehives are both products of major transitions in
+evolutionary history. They are motorboats.
+The discovery of major transitions is Exhibit A in the retrial of
+group selection. Group selection may or may not be common among
+other animals, but it happens whenever individuals nd ways to
+suppress sel shness and work as a team, in competition with other
+teams.51 Group selection creates group-related adaptations. It is not
+far-fetched, and it should not be a heresy to suggest that this is how
+we got the groupish overlay that makes up a crucial part of our
+righteous minds.
+EXHIBIT B: SHARED INTENTIONALITY
+In 49 BCE, Gaius Julius made the momentous decision to cross the
+Rubicon, a shallow river in northern Italy. He broke Roman law
+
+(which forbade generals to approach Rome with their armies),
+started a civil war, and became Julius Caesar, the absolute ruler of
+Rome. He also gave us a metaphor for any small action that sets in
+motion an unstoppable train of events with momentous
+consequences.
+It’s great fun to look back at history and identify Rubicon
+crossings. I used to believe that there were too many small steps in
+the evolution of morality to identify one as the Rubicon, but I
+changed my mind when I heard Michael Tomasello, one of the
+world’s foremost experts on chimpanzee cognition, utter this
+sentence: “It is inconceivable that you would ever see two
+chimpanzees carrying a log together.”52
+I was stunned. Chimps are arguably the second-smartest species
+on the planet, able to make tools, learn sign language, predict the
+intentions of other chimps, and deceive each other to get what they
+want. As individuals, they’re brilliant. So why can’t they work
+together? What are they missing?
+Tomasello’s great innovation was to create a set of simple tasks
+that could be given to chimps and to human toddlers in nearly
+identical form.53 Solving the task earned the chimp or child a treat
+(usually a piece of food for the chimp, a small toy for the child).
+Some of the tasks required thinking only about physical objects in
+physical space—for example, using a stick to pull in a treat that was
+out of reach, or choosing the dish that had the larger number of
+treats in it rather than the smaller number. Across all ten tasks, the
+chimps and the two-year-olds did equally well, solving the problems
+correctly about 68 percent of the time.
+But other tasks required collaborating with the experimenter, or
+at least recognizing that she intended to share information. For
+example, in one task, the experimenter demonstrated how to
+remove a treat from a clear tube by poking a hole in the paper that
+covered one end, and then she gave an identical tube to the chimp
+or child. Would the subjects understand that the experimenter was
+trying to teach them what to do? In another task, the experimenter
+hid the treat under one of two cups and then tried to show the
+chimp or child the correct cup (by looking at it or pointing to it).
+
+The kids aced these social challenges, solving them correctly 74
+percent of the time. The chimps bombed, solving them just 35
+percent of the time (no better than chance on many of the tasks).
+According to Tomasello, human cognition veered away from that
+of other primates when our ancestors developed shared
+intentionality.54 At some point in the last million years, a small
+group of our ancestors developed the ability to share mental
+representations of tasks that two or more of them were pursuing
+together. For example, while foraging, one person pulls down a
+branch while the other plucks the fruit, and they both share the
+meal. Chimps never do this. Or while hunting, the pair splits up to
+approach an animal from both sides. Chimps sometimes appear to
+do this, as in the widely reported cases of chimps hunting colobus
+monkeys,55 but Tomasello argues that the chimps are not really
+working together. Rather, each chimp is surveying the scene and
+then taking the action that seems best to him at that moment.56
+Tomasello notes that these monkey hunts are the only time that
+chimps seem to be working together, yet even in these rare cases
+they fail to show the signs of real cooperation. They make no e ort
+to communicate with each other, for example, and they are terrible
+at sharing the spoils among the hunters, each of whom must use
+force to obtain a share of meat at the end. They all chase the
+monkey at the same time, yet they don’t all seem to be on the same
+page about the hunt.
+In contrast, when early humans began to share intentions, their
+ability to hunt, gather, raise children, and raid their neighbors
+increased exponentially. Everyone on the team now had a mental
+representation of the task, knew that his or her partners shared the
+same representation, knew when a partner had acted in a way that
+impeded success or that hogged the spoils, and reacted negatively to
+such violations. When everyone in a group began to share a
+common understanding of how things were supposed to be done,
+and then felt a ash of negativity when any individual violated
+those expectations, the rst moral matrix was born.57 (Remember
+that a matrix is a consensual hallucination.) That, I believe, was our
+Rubicon crossing.
+
+Tomasello believes that human ultrasociality arose in two steps.
+The rst was the ability to share intentions in groups of two or
+three people who were actively hunting or foraging together. (That
+was the Rubicon.) Then, after several hundred thousand years of
+evolution for better sharing and collaboration as nomadic huntergatherers, more collaborative groups began to get larger, perhaps in
+response to the threat of other groups. Victory went to the most
+cohesive groups—the ones that could scale up their ability to share
+intentions from three people to three hundred or three thousand
+people. This was the second step: Natural selection favored
+increasing levels of what Tomasello calls “group-mindedness”—the
+ability to learn and conform to social norms, feel and share grouprelated emotions, and, ultimately, to create and obey social
+institutions, including religion. A new set of selection pressures
+operated within groups (e.g., nonconformists were punished, or at
+very least were less likely to be chosen as partners for joint
+ventures)58 as well as between groups (cohesive groups took
+territory and other resources from less cohesive groups).
+Shared intentionality is Exhibit B in the retrial of group selection.
+Once you grasp Tomasello’s deep insight, you begin to see the vast
+webs of shared intentionality out of which human groups are
+constructed. Many people assume that language was our Rubicon,
+but language became possible only after our ancestors got shared
+intentionality. Tomasello notes that a word is not a relationship
+between a sound and an object. It is an agreement among people
+who share a joint representation of the things in their world, and
+who share a set of conventions for communicating with each other
+about those things. If the key to group selection is a shared
+defensible nest, then shared intentionality allowed humans to
+construct nests that were vast and ornate yet weightless and
+portable. Bees construct hives out of wax and wood bers, which
+they then ght, kill, and die to defend. Humans construct moral
+communities out of shared norms, institutions, and gods that, even
+in the twenty- rst century, they ght, kill, and die to defend.
+
+EXHIBIT C: GENES AND CULTURES COEVOLVE
+When did our ancestors cross the Rubicon? We’ll never know when
+the rst pair of foragers worked as a team to pluck gs from a tree,
+but when we begin to see signs in the fossil record of cultural
+innovations accumulating and building on earlier innovations, we
+can guess that the innovators had crossed over. When culture
+accumulates, it means that people are learning from each other,
+adding their own innovations, and then passing their ideas on to
+later generations.59
+Our ancestors rst began to diverge from the common ancestor
+we share with chimps and bonobos between 5 million and 7 million
+years ago. For the next few million years, there were many species
+of hominids walking around on two legs in Africa. But judging from
+their brain size and their limited use of tools, these creatures
+(including australopithecines such as “Lucy”) are better thought of
+as bipedal apes than as early humans.60
+Then, beginning around 2.4 million years ago, hominids with
+larger brains begin to appear in the fossil record. These were the
+rst members of the genus Homo, including Homo habilis, so named
+because these creatures were “handy men” compared to their
+ancestors. They left behind a profusion of simple stone tools known
+as the Oldowan tool kit. These tools, mostly just sharp akes they
+had knocked o larger stones, helped Homo habilis to cut and scrape
+meat o carcasses killed by other animals. Homo habilis was not
+much of a hunter.
+
+9.1. Time line of major events in human evolution. MYA =
+million years ago; KYA = thousand years ago. Dates drawn from
+Potts and Sloan 2010; Richerson and Boyd 2005; and Tattersall
+2009.
+FIGURE
+
+Then, beginning around 1.8 million years ago, some hominids in
+East Africa began making new and more nely crafted tools, known
+as the Acheulean tool kit.61 The main tool was a teardrop-shaped
+hand axe, and its symmetry and careful crafting jump out at us as
+something new under the sun, something made by minds like ours
+(see gure 9.2). This seems like a promising place to start talking
+about cumulative culture. But here’s the weird thing: Acheulean
+tools are nearly identical everywhere, from Africa to Europe to
+Asia, for more than a million years. There’s hardly any variation,
+which suggests that the knowledge of how to make these tools may
+not have been passed on culturally. Rather, the knowledge of how
+to make these tools may have become innate, just as the
+“knowledge” of how to build a dam is innate in beavers.62
+It’s only around 600,000 or 700,000 years ago that we begin to
+see creatures who may have crossed over. The rst hominids with
+brains as large as ours begin appearing in Africa and then Europe.
+
+FIGURE
+
+9.2. Acheulean hand axe. (photo credit 9.1)
+
+They are known collectively as Homo heidelbergensis, and they
+were the ancestors of Neanderthals as well as of us. At their
+campsites we nd the rst clear evidence of hearths, and of spears.
+The oldest known spears were just sharpened sticks, but later they
+became sharp stone points attached to wooden shafts and balanced
+for accurate throwing. These people made complex weapons and
+then worked together to hunt and kill large animals, which they
+brought back to a central campsite to be butchered, cooked, and
+shared.63
+Homo heidelbergensis is therefore our best candidate for Rubicon
+crosser.64 These people had cumulative culture, teamwork, and a
+division of labor. They must have had shared intentionality,
+including at least some rudimentary moral matrix that helped them
+work together and then share the fruits of their labor. By crossing
+over, they transformed not just the course of human evolution but
+the very nature of the evolutionary process. From that point
+onward, people lived in an environment that was increasingly of
+their own making.
+The anthropologists Pete Richerson and Rob Boyd have argued
+that cultural innovations (such as spears, cooking techniques, and
+religions) evolve in much the same way that biological innovations
+evolve, and the two streams of evolution are so intertwined that
+you can’t study one without studying both.65 For example, one of
+the best-understood cases of gene-culture coevolution occurred
+
+among the rst people who domesticated cattle. In humans, as in all
+other mammals, the ability to digest lactose (the sugar in milk) is
+lost during childhood. The gene that makes lactase (the enzyme that
+breaks down lactose) shuts o after a few years of service, because
+mammals don’t drink milk after they are weaned. But those rst
+cattle keepers, in northern Europe and in a few parts of Africa, had
+a vast new supply of fresh milk, which could be given to their
+children but not to adults. Any individual whose mutated genes
+delayed the shutdown of lactase production had an advantage. Over
+time, such people left more milk-drinking descendants than did their
+lactose-intolerant cousins. (The gene itself has been identi ed.)66
+Genetic changes then drove cultural innovations as well: groups
+with the new lactase gene then kept even larger herds, and found
+more ways to use and process milk, such as turning it into cheese.
+These cultural innovations then drove further genetic changes, and
+on and on it went.
+If cultural innovations (such as keeping cattle) can lead to genetic
+responses (such as adult lactose tolerance), then might cultural
+innovations related to morality have led to genetic responses as
+well? Yes. Richerson and Boyd argue that gene-culture coevolution
+helped to move humanity up from the small-group sociability of
+other primates to the tribal ultrasociality that is found today in all
+human societies.67
+According to their “tribal instincts hypothesis,” human groups
+have always been in competition to some degree with neighboring
+groups. The groups that gured out (or stumbled upon) cultural
+innovations that helped them cooperate and cohere in groups larger
+than the family tended to win these competitions (just as Darwin
+said).
+Among the most important such innovations is the human love of
+using symbolic markers to show our group memberships. From the
+tattoos and face piercings used among Amazonian tribes through the
+male circumcision required of Jews to the tattoos and facial
+piercings used by punks in the United Kingdom, human beings take
+extraordinary, costly, and sometimes painful steps to make their
+bodies advertise their group memberships. This practice surely
+
+started modestly, perhaps just with colored powders for body
+painting.68 But however it began, groups that built on it and
+invented more permanent markers found a way to forge a sense of
+“we” that extended beyond kinship. We trust and cooperate more
+readily with people who look and sound like us.69 We expect them
+to share our values and norms.
+And once some groups developed the cultural innovation of
+prototribalism, they changed the environment within which genetic
+evolution took place. As Richerson and Boyd explain:
+Such environments favored the evolution of a suite of
+new social instincts suited to life in such groups,
+including a psychology which “expects” life to be
+structured by moral norms and is designed to learn and
+internalize such norms; new emotions such as shame and
+guilt, which increase the chance that the norms are
+followed, and a psychology which “expects” the social
+world to be divided into symbolically marked groups.70
+In such prototribal societies, individuals who found it harder to
+play along, to restrain their antisocial impulses, and to conform to
+the most important collective norms would not have been anyone’s
+top choice when it came time to choose partners for hunting,
+foraging, or mating. In particular, people who were violent would
+have been shunned, punished, or in extreme cases killed.
+This process has been described as “self-domestication.”71 The
+ancestors of dogs, cats, and pigs got less aggressive as they were
+domesticated and shaped for partnership with human beings. Only
+the friendliest ones approached human settlements in the rst place;
+they volunteered to become the ancestors of today’s pets and farm
+animals.
+In a similar way, early humans domesticated themselves when
+they began to select friends and partners based on their ability to
+live within the tribe’s moral matrix. In fact, our brains, bodies, and
+behavior show many of the same signs of domestication that are
+found in our domestic animals: smaller teeth, smaller body, reduced
+
+aggression, and greater playfulness, carried on even into
+adulthood.72 The reason is that domestication generally takes traits
+that disappear at the end of childhood and keeps them turned on for
+life. Domesticated animals (including humans) are more childlike,
+sociable, and gentle than their wild ancestors.
+These tribal instincts are a kind of overlay, a set of groupish
+emotions and mental mechanisms laid down over our older and
+more sel sh primate nature.73 It may sound depressing to think that
+our righteous minds are basically tribal minds, but consider the
+alternative. Our tribal minds make it easy to divide us, but without
+our long period of tribal living there’d be nothing to divide in the
+rst place. There’d be only small families of foragers—not nearly as
+sociable as today’s hunter-gatherers—eking out a living and losing
+most of their members to starvation during every prolonged
+drought. The coevolution of tribal minds and tribal cultures didn’t
+just prepare us for war; it also prepared us for far more peaceful
+coexistence within our groups, and, in modern times, for
+cooperation on a vast scale as well.
+Gene-culture coevolution is Exhibit C in the retrial of group
+selection. Once our ancestors crossed the Rubicon and became
+cumulatively cultural creatures, their genes began to coevolve with
+their cultural innovations. At least some of these innovations were
+directed at marking members of a moral community, fostering
+group cohesion, suppressing aggression and free riding within the
+group, and defending the territory shared by that moral community.
+These are precisely the sorts of changes that make major transitions
+happen.74 Even if group selection played no role in the evolution of
+any other mammal,75 human evolution has been so di erent since
+the arrival of shared intentionality and gene-culture coevolution
+that humans may well be a special case. The wholesale dismissal of
+group selection in the 1960s and 1970s, based mostly on arguments
+and examples from other species, was premature.
+EXHIBIT D: EVOLUTION CAN BE FAST
+
+When exactly did we become ultrasocial? Humans everywhere are
+so groupish that most of the genetic changes must have been in
+place before our ancestors spread out from Africa and the Middle
+East around 50,000 years ago.76 (I suspect it was the development
+of cooperative groupishness that enabled these ancestors to conquer
+the world and take over Neanderthal territory so quickly.) But did
+gene-culture coevolution stop at that point? Did our genes freeze in
+place, leaving all later adaptation to be handled by cultural
+innovation? For decades, many anthropologists and evolutionary
+theorists said yes. In an interview in 2000, the paleontologist
+Stephen Jay Gould said that “natural selection has almost become
+irrelevant in human evolution” because cultural change works
+“orders of magnitude” faster than genetic change. He next asserted
+that “there’s been no biological change in humans in 40,000 or
+50,000 years. Everything we call culture and civilization we’ve built
+with the same body and brain.”77
+If you believe Gould’s assertion that there’s been no biological
+evolution in the last 50,000 years, then you’ll be most interested in
+the Pleistocene era (the roughly 2 million years prior to the rise of
+agriculture), and you’ll dismiss the Holocene (the last 12,000 years)
+as irrelevant for understanding human evolution. But is 12,000
+years really just an eye blink in evolutionary time? Darwin didn’t
+think so; he wrote frequently about the e ects obtained by animal
+and plant breeders in just a few generations.
+The speed at which genetic evolution can occur is best illustrated
+by an extraordinary study by Dmitri Belyaev, a Soviet scientist who
+had been demoted in 1948 for his belief in Mendelian genetics.
+(Soviet morality required the belief that traits acquired during one’s
+lifetime could be passed on to one’s children.)78 Belyaev moved to a
+Siberian research institute, where he decided to test his ideas by
+conducting a simple breeding experiment with foxes. Rather than
+selecting foxes based on the quality of their pelts, as fox breeders
+would normally do, he selected them for tameness. Whichever fox
+pups were least fearful of humans were bred to create the next
+generation. Within just a few generations the foxes became tamer.
+But more important, after nine generations, novel traits began to
+
+appear in a few of the pups, and they were largely the same ones
+that distinguish dogs from wolves. For example, patches of white
+fur appeared on the head and chest; jaws and teeth shrank; and tails
+formerly straight began to curl. After just thirty generations the
+foxes had become so tame that they could be kept as pets. Lyudmila
+Trut, a geneticist who had worked with Belyaev on the project and
+who ran it after his death, described the foxes as “docile, eager to
+please, and unmistakably domesticated.”79
+It’s not just individual-level selection that is fast. A second study
+done with chickens shows that group selection can produce equally
+dramatic results. If you want to increase egg output, common sense
+tells you to breed only the hens that lay the most eggs. But the
+reality of the egg industry is that hens live crammed together into
+cages, and the best laying hens tend to be the more aggressive,
+dominant hens. Therefore, if you use individual selection (breeding
+only the most productive hens), total productivity actually goes
+down because aggressive behavior—including killing and
+cannibalism—goes up.
+
+9.3. Lyudmila Trut with Pavlik, a forty-second generation
+decendant of Belyaev’s original study. (photo credit 9.2)
+
+FIGURE
+
+In the 1980s the geneticist William Muir used group selection to
+get around this problem.80 He worked with cages containing twelve
+hens each, and he simply picked the cages that produced the most
+eggs in each generation. Then he bred all of the hens in those cages
+to produce the next generation. Within just three generations,
+aggression levels plummeted. By the sixth generation, the death
+rate fell from the horri c baseline of 67 percent to a mere 8
+percent. Total eggs produced per hen jumped from 91 to 237,
+mostly because the hens started living longer, but also because they
+laid more eggs per day. The group-selected hens were more
+productive than were those subjected to individual-level selection.
+They also actually looked like the pictures of chickens you see in
+children’s books—plump and well-feathered, in contrast to the
+battered, beaten-up, and partially defeathered hens that resulted
+from individual-level selection.
+Humans were probably never subjected to such a strong and
+consistent selection pressure as were those foxes and hens, so it
+would take more than six or ten generations to produce novel traits.
+But how much longer? Can the human genome respond to new
+selection pressures in, say, thirty generations (six hundred years)?
+Or would it take more than ve hundred generations (ten thousand
+years) for a new selection pressure to produce any genetic
+adaptation?
+The actual speed of genetic evolution is a question that can be
+answered with data, and thanks to the Human Genome Project, we
+now have that data. Several teams have sequenced the genomes of
+thousands of people from every continent. Genes mutate and drift
+through populations, but it is possible to distinguish such random
+drift from cases in which genes are being “pulled” by natural
+selection.81 The results are astonishing, and they are exactly the
+opposite of Gould’s claim: genetic evolution greatly accelerated
+during the last 50,000 years. The rate at which genes changed in
+response to selection pressures began rising around 40,000 years
+
+ago, and the curve got steeper and steeper after 20,000 years ago.
+Genetic change reached a crescendo during the Holocene era, in
+Africa as well as in Eurasia.
+It makes perfect sense. In the last ten years, geneticists have
+discovered just how active genes are. Genes are constantly turning
+on and o in response to conditions such as stress, starvation, or
+sickness. Now imagine these dynamic genes building vehicles
+(people) who are hell-bent on exposing themselves to new climates,
+predators, parasites, food options, social structures, and forms of
+warfare. Imagine population densities skyrocketing during the
+Holocene, so that there are more people putting more genetic
+mutations into play. If genes and cultural adaptations coevolve in a
+“swirling waltz” (as Richerson and Boyd put it), and if the cultural
+partner suddenly starts dancing the jitterbug, the genes are going to
+pick up the pace too.82 This is why genetic evolution kicked into
+overdrive in the Holocene era, pulling along mutations such as the
+lactose tolerance gene, or a gene that changed the blood of Tibetans
+so that they could live at high altitudes.83 Genes for these recent
+traits and dozens of others have already been identi ed.84 If genetic
+evolution was able to ne-tune our bones, teeth, skin, and
+metabolism in just a few thousand years as our diets and climates
+changed, how could genetic evolution not have tinkered with our
+brains and behaviors as our social environments underwent the
+most radical transformation in primate history?
+I don’t think evolution can create a new mental module from
+scratch in just 12,000 years, but I can see no reason why existing
+features—such as the six foundations I described in chapters 7 and
+8, or the tendency to feel shame—would not be tweaked if
+conditions changed and then stayed stable for a thousand years. For
+example, when a society becomes more hierarchical or
+entrepreneurial, or when a group takes up rice farming, herding, or
+trade, these changes alter human relationships in many ways, and
+reward very di erent sets of virtues.85 Cultural change would
+happen very rapidly—the moral matrix constructed upon the six
+foundations can change radically within a few generations. But if
+that new moral matrix then stays somewhat steady for a few dozen
+
+generations, new selection pressures will apply and there could be
+some additional gene-culture coevolution.86
+Fast evolution is Exhibit D in the retrial of group selection. If
+genetic evolution can be fast, and if the human genome coevolves
+with cultural innovations, then it becomes quite possible that human
+nature was altered in just a few thousand years, somewhere in
+Africa, by group selection during particularly harsh periods.
+For example, the climate in Africa uctuated wildly between
+70,000 and 140,000 years ago.87 With each swing from warmer to
+cooler, or from wetter to drier, food sources changed and
+widespread starvation was probably common. A catastrophic
+volcanic eruption 74,000 years ago from the Toba volcano in
+Indonesia may have dramatically changed the Earth’s climate within
+a single year.88 Whatever the cause, we know that almost all
+humans were killed o at some point during this time period. Every
+person alive today is descended from just a few thousand people
+who made it through one or more population bottlenecks.89
+What was their secret? We’ll probably never know, but let’s
+imagine that 95 percent of the food on Earth magically disappears
+tonight, guaranteeing that almost all of us will starve to death
+within two months. Law and order collapse. Chaos and mayhem
+ensue. Who among us will still be alive a year from now? Will it be
+the biggest, strongest, and most violent individuals in each town?
+Or will it be the people who manage to work together in groups to
+monopolize, hide, and share the remaining food supplies among
+themselves?
+Now imagine starvations like that occurring every few centuries,
+and think about what a few such events would do to the human
+gene pool. Even if group selection was con ned to just a few
+thousand years, or to the longer period between 70,000 and
+140,000 years ago, it could have given us the group-related
+adaptations that allowed us to burst forth from Africa soon after the
+bottleneck to conquer and populate the globe.90
+IT’S NOT ALL ABOUT WAR
+
+I’ve presented group selection so far in its simplest possible form:
+groups compete with each other as if they were individual
+organisms, and the most cohesive groups wipe out and replace the
+less cohesive ones during intertribal warfare. That’s the way that
+Darwin rst imagined it. But when the evolutionary psychologist
+Lesley Newson read an early draft of this chapter, she sent me this
+note:
+I think it is important not to give readers the impression
+that groups competing necessarily meant groups being at
+war or ghting with one another. They were competing
+to be the most e cient at turning resources into
+o spring. Don’t forget that women and children were
+also very important members of these groups.
+Of course she’s right. Group selection does not require war or
+violence. Whatever traits make a group more e cient at procuring
+food and turning it into children makes that group more t than its
+neighbors. Group selection pulls for cooperation, for the ability to
+suppress antisocial behavior and spur individuals to act in ways that
+bene t their groups. Group-serving behaviors sometimes impose a
+terrible cost on outsiders (as in warfare). But in general,
+groupishness is focused on improving the welfare of the in-group,
+not on harming an out-group.
+IN SUM
+Darwin believed that morality was an adaptation that evolved by
+natural selection operating at the individual level and at the group
+level. Tribes with more virtuous members replaced tribes with more
+sel sh members. But Darwin’s idea was banished from the academic
+world when Williams and Dawkins argued that the free rider
+problem dooms group selection. The sciences then entered a threedecade period during which competition between groups was
+downplayed and everyone focused on competition among
+
+individuals within groups. Seemingly altruistic acts had to be
+explained as covert forms of sel shness.
+But in recent years new scholarship has emerged that elevates the
+role of groups in evolutionary thinking. Natural selection works at
+multiple levels simultaneously, sometimes including groups of
+organisms. I can’t say for sure that human nature was shaped by
+group selection—there are scientists whose views I respect on both
+sides of the debate. But as a psychologist studying morality, I can
+say that multilevel selection would go a long way toward explaining
+why people are simultaneously so sel sh and so groupish.91
+There is a great deal of new scholarship since the 1970s that
+compels us to think anew about group selection (as a part of
+multilevel selection). I organized that scholarship into four
+“exhibits” that collectively amount to a defense92 of group selection.
+Exhibit A: Major transitions produce superorganisms. The
+history of life on Earth shows repeated examples of
+“major transitions.” When the free rider problem is
+muted at one level of the biological hierarchy, larger and
+more powerful vehicles (superorganisms) arise at the
+next level up in the hierarchy, with new properties such
+as a division of labor, cooperation, and altruism within
+the group.
+Exhibit B: Shared intentionality generates moral matrices.
+The Rubicon crossing that let our ancestors function so
+well in their groups was the emergence of the uniquely
+human ability to share intentions and other mental
+representations. This ability enabled early humans to
+collaborate, divide labor, and develop shared norms for
+judging each other’s behavior. These shared norms were
+the beginning of the moral matrices that govern our
+social lives today.
+Exhibit C: Genes and cultures coevolve. Once our
+ancestors crossed the Rubicon and began to share
+intentions, our evolution became a two-stranded a air.
+People created new customs, norms, and institutions that
+
+altered the degree to which many groupish traits were
+adaptive. In particular, gene-culture coevolution gave us
+a set of tribal instincts: we love to mark group
+membership, and then we cooperate preferentially with
+members of our group.
+Exhibit D: Evolution can be fast. Human evolution did
+not stop or slow down 50,000 years ago. It sped up.
+Gene-culture coevolution reached a fever pitch during
+the last 12,000 years. We can’t just examine modern-day
+hunter-gatherers and assume that they represent
+universal human nature as it was locked into place
+50,000 years ago. Periods of massive environmental
+change (as occurred between 70,000 and 140,000 years
+ago) and cultural change (as occurred during the
+Holocene era) should gure more prominently in our
+attempts to understand who we are, and how we got our
+righteous minds.
+Most of human nature was shaped by natural selection operating
+at the level of the individual. Most, but not all. We have a few
+group-related adaptations too, as many Americans discovered in the
+days after 9/11. We humans have a dual nature—we are sel sh
+primates who long to be a part of something larger and nobler than
+ourselves. We are 90 percent chimp and 10 percent bee.93 If you
+take that claim metaphorically, then the groupish and hivish things
+that people do will make a lot more sense. It’s almost as though
+there’s a switch in our heads that activates our hivish potential
+when conditions are just right.
+
+

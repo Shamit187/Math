@@ -91,6 +91,16 @@
   // ---- Visual state ----
 
   function refreshUI() {
+    document.body.classList.toggle("tts-active", isActive);
+
+    const progressBar = document.getElementById("tts-progress-bar");
+    if (progressBar) {
+      const pct = isActive && blocks.length > 0
+        ? ((currentIdx + 1) / blocks.length * 100)
+        : 0;
+      progressBar.style.width = pct + "%";
+    }
+
     const bar = document.getElementById("tts-bar");
     const headerBtn = document.getElementById("tts-header-btn");
     const idle = !isActive && currentIdx < 0;
@@ -116,8 +126,15 @@
   }
 
   function highlight(idx) {
+    document.querySelectorAll(".tts-reading-ancestor").forEach(el => el.classList.remove("tts-reading-ancestor"));
     blocks.forEach((b, i) => b.classList.toggle("tts-reading", i === idx));
     if (idx >= 0 && idx < blocks.length) {
+      // Mark [data-cid] ancestors so they are not blurred (CSS filter on a parent propagates)
+      let el = blocks[idx].parentElement;
+      while (el && el !== document.body) {
+        if (el.hasAttribute("data-cid")) el.classList.add("tts-reading-ancestor");
+        el = el.parentElement;
+      }
       const rect = blocks[idx].getBoundingClientRect();
       if (rect.top < 90 || rect.bottom > window.innerHeight - 90) {
         blocks[idx].scrollIntoView({ behavior: "smooth", block: "center" });
@@ -275,6 +292,14 @@
     document.body.appendChild(bar);
   }
 
+  function buildProgressBar() {
+    const header = document.querySelector(".site-header");
+    if (!header) return;
+    const el = document.createElement("div");
+    el.id = "tts-progress-bar";
+    header.appendChild(el);
+  }
+
   function addBlockBtn(block, idx) {
     const btn = document.createElement("button");
     btn.className = "tts-btn";
@@ -352,6 +377,7 @@
     if (!blocks.length) return;
 
     buildBar();
+    buildProgressBar();
     addHeaderBtn();
     blocks.forEach((b, i) => addBlockBtn(b, i));
     setupKeyboard();
