@@ -1,0 +1,6 @@
+{
+  "title": "SemBench: A Benchmark for Semantic Query Processing Engines",
+  "authors": "Jiale Lao, Andreas Zimmerer, Olga Ovcharenko, Tianji Cong, Matthew Russo, Gerardo Vitagliano, Michael Cochez, Fatma Özcan, Gautam Gupta, Thibaud Hottelier, H. V. Jagadish, Kris Kissel, Sebastian Schelter, Andreas Kipf, Immanuel Trummer",
+  "venue": "PVLDB, Vol. 14, No. 1 (2026) · arXiv:2511.01716",
+  "description": "A benchmark for a new class of database systems that extend SQL with LLM-evaluated semantic operators on multimodal data — covering 5 scenarios, 55 queries, and 4 real systems."
+}

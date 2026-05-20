@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SemBench: A Benchmark for Semantic Query Processing Engines · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="sembench" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/sembench/">SemBench</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. What Is an SQPE?</a></li>
+    <li><a href="#s2">2. Background</a></li>
+    <li><a href="#s3">3. Benchmark Design</a></li>
+    <li><a href="#s4">4. Semantic Operators</a></li>
+    <li><a href="#s5">5. Benchmark Scenarios</a></li>
+    <li><a href="#s6">6. Experimental Setup</a></li>
+    <li><a href="#s7">7. Results</a></li>
+    <li><a href="#s8">8. Scalability</a></li>
+    <li><a href="#s9">9. System Comparison</a></li>
+    <li><a href="#s10">10. Lessons Learned</a></li>
+    <li><a href="#s11">11. Conclusions</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <!-- ═══════════════════════════════════════════ HERO -->
+  <section class="hero">
+    <div class="kicker">PVLDB 2026 · Experiment, Analysis &amp; Benchmark</div>
+    <h1>SemBench: A Benchmark for Semantic Query Processing Engines</h1>
+    <div class="paper-meta">
+      <span class="authors">Jiale Lao, Andreas Zimmerer, Olga Ovcharenko, Tianji Cong, Matthew Russo,
+        Gerardo Vitagliano, Michael Cochez, Fatma Özcan, Gautam Gupta, Thibaud Hottelier,
+        H. V. Jagadish, Kris Kissel, Sebastian Schelter, Andreas Kipf, Immanuel Trummer</span>
+      <span class="venue">Proceedings of the VLDB Endowment, Vol. 14, No. 1 · arXiv:2511.01716v2 (Mar 2026)</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════ ABSTRACT -->
+  <div class="paper-abstract" data-cid="main-0010" id="abstract">
+    <strong>Abstract</strong>
+    Semantic query processing engines (SQPEs) are a new class of database systems that extend SQL
+    with <em>semantic operators</em> — natural-language-configured predicates and transformations
+    evaluated by large language models (LLMs). They enable queries over multimodal data (text,
+    images, audio) that traditional SQL cannot express. SemBench is the first benchmark designed
+    specifically for SQPEs. It covers five real-world scenarios (movie reviews, wildlife detection,
+    e-commerce, car damage, and multimodal QA), 55 queries, three data modalities, and five
+    semantic operator types. The authors evaluate four systems — LOTUS, Palimpzest, ThalamusDB,
+    and Google BigQuery — finding that every system has significant trade-offs in cost, quality,
+    and latency, and that no single system handles all queries well today.
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 1: WHAT IS AN SQPE -->
+  <h2 data-cid="main-0020" id="s1">1. What Is a Semantic Query Processing Engine?</h2>
+
+  <p data-cid="main-0030">
+    Relational databases store numbers, strings, and dates — types that SQL was designed to
+    reason about. But modern tables increasingly contain <em>blobs</em>: a column of product
+    images, a column of audio recordings, a column of unstructured complaint text. You can store
+    these, but traditional SQL cannot reason about their <em>content</em>. You cannot write a
+    WHERE clause that asks "does this image show a red car?" because SQL has no concept of
+    visual understanding.
+  </p>
+
+  <div class="box definition" data-cid="main-0040">
+    <span class="box-label">Definition — Semantic Query Processing Engine (SQPE)</span>
+    <p data-cid="main-0050">
+      An SQPE extends relational SQL with <strong>semantic operators</strong>: operators that accept
+      a natural language instruction and are evaluated by a large language model. The LLM reads,
+      looks at, or listens to the data and returns a judgment — in zero-shot mode, with no
+      task-specific training data required. The result is a database system that can answer
+      content-aware questions about multimodal data using ordinary SQL syntax.
+    </p>
+  </div>
+
+  <p data-cid="main-0060">
+    The paper's motivating example: a table <code>Cars</code> with a column <code>pic</code>
+    containing one car photograph per row. The following query counts pictures of red cars:
+  </p>
+
+  <div class="box example" data-cid="main-0070">
+    <span class="box-label">Example 1.1 — AI.IF as a semantic filter</span>
+    <pre><code>SELECT COUNT(*)
+FROM Cars
+WHERE AI.IF(pic, 'the picture shows a red car');</code></pre>
+    <p data-cid="main-0080">
+      <code>AI.IF</code> is a semantic operator. It receives each row's image and the natural
+      language description; the LLM returns TRUE or FALSE. Standard SQL aggregation does the
+      rest. The same syntax — with slight rewriting — is supported by LOTUS, Palimpzest,
+      ThalamusDB, and BigQuery.
+    </p>
+  </div>
+
+  <h3 data-cid="main-0090">Why SQPEs change query optimization</h3>
+
+  <p data-cid="main-0100">
+    Semantic operators change the cost structure of query execution in two fundamental ways:
+  </p>
+
+  <ul data-cid="main-0110">
+    <li>
+      <strong>Per-byte cost explodes.</strong> A single LLM API call costs orders of magnitude
+      more than reading a row from disk or RAM. Traditional cost models optimize for I/O and
+      CPU. In an SQPE, the dominant cost is LLM invocations — a completely different unit.
+      The paper's central optimization goal becomes: <em>minimize the number and size of LLM
+      calls while maximizing result accuracy</em>.
+    </li>
+    <li>
+      <strong>Results are stochastic.</strong> LLMs are not deterministic oracles. They can
+      miss valid rows (false negatives) or include wrong ones (false positives). Accuracy
+      is not guaranteed. Unlike traditional approximate query processing (AQP), there is no
+      clean statistical model for LLM error — it depends on the prompt, the model, and the
+      data domain.
+    </li>
+  </ul>
+
+  <div class="box intuition" data-cid="main-0120">
+    <span class="box-label">The right mental model</span>
+    <p data-cid="main-0130">
+      Think of an SQPE as SQL with a "ask the AI" button on each row. Traditional SQL filters
+      rows by comparing numbers or strings — instant, deterministic, cheap. Semantic operators
+      filter rows by having an AI <em>read, look at, or listen to</em> the data and answer a
+      question about it. The price: each "ask" takes a second and costs a fraction of a cent.
+      Multiply by millions of rows and the costs dominate. The job of an SQPE optimizer is to
+      minimize how many times it has to "ask".
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 2: BACKGROUND -->
+  <h2 data-cid="main-0140" id="s2">2. Background</h2>
+
+  <h3 data-cid="main-0150">2.1 The Crowdsourced Precursor</h3>
+
+  <p data-cid="main-0160">
+    The idea of SQL with natural-language operators is not new. In the early 2010s, systems
+    like CrowdDB, Deco, and Qurk used human crowdworkers (via Amazon Mechanical Turk) to
+    evaluate semantic predicates. A query could ask a crowdworker "does this image contain a
+    cat?" and route the answer back into the query plan. These systems faced the same
+    optimization challenge: minimizing human calls while maximizing accuracy. A large body of
+    research — on specialized operator implementations, query rewrites, and parallelism —
+    grew from this work. But crowdworkers are expensive, slow, and have limited scalability.
+  </p>
+
+  <h3 data-cid="main-0170">2.2 Large Language Models Change the Game</h3>
+
+  <p data-cid="main-0180">
+    LLMs — built on the Transformer architecture and trained on enormous corpora via transfer
+    learning — can address new tasks from a natural language description alone (zero-shot
+    learning). They can also be guided by a few examples (few-shot learning). Crucially, modern
+    LLMs handle multimodal inputs: text, images, and audio in the same model. This makes LLMs
+    natural replacements for crowdworkers in semantic query systems.
+  </p>
+
+  <div class="box intuition" data-cid="main-0190">
+    <span class="box-label">Why the jump from crowdworkers to LLMs matters</span>
+    <p data-cid="main-0200">
+      Crowdworkers required task-specific instructions and manual quality control. They took
+      minutes to hours to return results. Their availability was limited. LLMs respond in
+      milliseconds, work around the clock, handle 20 parallel calls easily, and need only a
+      one-line instruction. The volume of data you can process semantically goes from thousands
+      of rows to millions — which is why SQPEs are now appearing in production systems like
+      Google BigQuery and Snowflake.
+    </p>
+  </div>
+
+  <h3 data-cid="main-0210">2.3 Semantic Query Processing Engines Today</h3>
+
+  <p data-cid="main-0220">
+    In the past two years, several SQPEs have emerged, including academic prototypes (LOTUS,
+    Palimpzest, ThalamusDB) and production systems (Google BigQuery AI Functions, Snowflake
+    Cortex). Each extends a relational algebra with semantic operators and uses LLMs to evaluate
+    them. All support the extended data model where table cells may contain image or audio file
+    paths. The optimization strategies — and their trade-offs — differ significantly across
+    systems, which is exactly what SemBench is designed to measure.
+  </p>
+
+  <h3 data-cid="main-0230">2.4 Why Existing Benchmarks Don't Work</h3>
+
+  <p data-cid="main-0240">
+    TPC-H and TPC-DS have driven innovation in relational databases for decades. But they
+    contain only standard SQL operators. The optimization techniques they reward — better
+    indexes, smarter join algorithms, compressed storage — do not help with semantic operators.
+    For SQPEs, the dominant costs come from LLM calls, not disk I/O. A benchmark that doesn't
+    include semantic operators cannot measure what matters: how many LLM calls are made, how
+    much they cost, and how accurate the results are.
+  </p>
+
+  <!-- ═══════════════════════════════════════════ SECTION 3: BENCHMARK DESIGN -->
+  <h2 data-cid="main-0250" id="s3">3. Benchmark Design Principles</h2>
+
+  <h3 data-cid="main-0260">3.1 Data Model</h3>
+
+  <p data-cid="main-0270">
+    SemBench uses a standard relational model with one extension: columns may contain image or
+    audio file paths in addition to SQL data types (integers, text, floats). All four evaluated
+    SQPEs support this format. The underlying data comes from manually annotated Kaggle datasets
+    — the ground truth labels are the original human-assigned labels from the source datasets,
+    not generated by the systems being tested. This prevents contamination of ground truth by
+    LLM outputs.
+  </p>
+
+  <h3 data-cid="main-0280">3.2 Query Design</h3>
+
+  <p data-cid="main-0290">
+    Each scenario has at least 10 queries. Every query uses at least one semantic operator,
+    possibly mixed with standard SQL. Queries are designed so that LLM call costs dominate
+    total processing time — this keeps the benchmark focused on SQPE-specific optimization
+    challenges rather than relational I/O. Three query types appear across scenarios:
+  </p>
+
+  <ul data-cid="main-0300">
+    <li><strong>Simple queries</strong> — one semantic operator in isolation, for individual
+        operator benchmarking.</li>
+    <li><strong>Complex queries</strong> — multiple semantic operators, possibly across different
+        data modalities, to test cross-operator optimization.</li>
+    <li><strong>LIMIT queries</strong> — queries requesting only the top-<em>k</em> results,
+        which should allow early termination once enough rows are produced.</li>
+  </ul>
+
+  <h3 data-cid="main-0310">3.3 Metrics</h3>
+
+  <p data-cid="main-0320">
+    SemBench evaluates systems across three dimensions. All quality metrics are normalized to
+    <span class="tts-math" data-tts="0 1">$[0, 1]$</span> where higher means better.
+  </p>
+
+  <div class="box definition" data-cid="main-0330">
+    <span class="box-label">Result Quality</span>
+    <p data-cid="main-0340">
+      How correct is the system's output compared to ground truth?
+    </p>
+    <ul data-cid="main-0350">
+      <li><strong>Aggregation queries</strong> (COUNT, SUM): relative error
+          <span class="tts-math" data-tts="1 over 1 plus relative error">$1/(1+\text{relative error})$</span>,
+          where relative error
+          <span class="tts-math" data-tts="equals absolute value of ground truth minus result over ground truth">
+            $= |v_{\text{truth}} - v_{\text{result}}| / |v_{\text{truth}}|$</span>.</li>
+      <li><strong>Retrieval queries</strong>: F1 score — harmonic mean of recall (fraction of
+          ground-truth rows returned) and precision (fraction of returned rows that are correct).</li>
+      <li><strong>Ranking queries</strong>: Spearman's rank correlation coefficient
+          (<span class="tts-math" data-tts="1">$1$</span> = perfect ranking,
+          <span class="tts-math" data-tts="0">$0$</span> = random).</li>
+      <li><strong>Join / classification queries</strong>: Adjusted Rand Index (ARI) — measures
+          how well the system's groupings match the ground-truth groupings. Values
+          above <span class="tts-math" data-tts="0">$0$</span> are better than random.</li>
+    </ul>
+  </div>
+
+  <div class="box definition" data-cid="main-0360">
+    <span class="box-label">Processing Cost</span>
+    <p data-cid="main-0370">
+      Three cost dimensions are tracked per query:
+    </p>
+    <ul data-cid="main-0380">
+      <li><strong>Monetary cost</strong>: dollars paid for LLM API calls.</li>
+      <li><strong>Execution time</strong>: wall-clock seconds. Queries exceeding 1 hour are
+          marked as timed out; the system is not evaluated at larger scales.</li>
+      <li><strong>Memory usage</strong>: peak gigabytes of RAM during query execution.</li>
+    </ul>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 4: SEMANTIC OPERATORS -->
+  <h2 data-cid="main-0390" id="s4">4. The Five Semantic Operators</h2>
+
+  <p data-cid="main-0400">
+    SemBench covers five semantic operator types. Each is defined as a function from tuple
+    types to output types, evaluated by a language model
+    <span class="tts-math" data-tts="M">$M$</span>
+    applying a natural language instruction
+    <span class="tts-math" data-tts="l">$l$</span>.
+  </p>
+
+  <div class="box definition" data-cid="main-0410">
+    <span class="box-label">Table 1 — Semantic Operators in SemBench</span>
+    <table>
+      <tr>
+        <th>Operator</th>
+        <th>Informal definition</th>
+        <th>SQL analogy</th>
+        <th>Example</th>
+      </tr>
+      <tr>
+        <td><code>sem_filter(l: X→Bool)</code></td>
+        <td>Keep rows where the LLM says <em>l</em> is true.</td>
+        <td>WHERE clause</td>
+        <td>Select patients with sick lungs from X-ray images.</td>
+      </tr>
+      <tr>
+        <td><code>sem_join(l: (X,Y)→Bool)</code></td>
+        <td>Return pairs from two tables where the LLM says <em>l</em> holds for that pair.</td>
+        <td>JOIN … ON</td>
+        <td>Match two images of the same animal.</td>
+      </tr>
+      <tr>
+        <td><code>sem_map(l: X→Y)</code></td>
+        <td>Transform each row — the LLM produces a new value per row.</td>
+        <td>SELECT expression</td>
+        <td>Extract brand names from product descriptions.</td>
+      </tr>
+      <tr>
+        <td><code>sem_rank(l: T[X]→Seq[X], k)</code></td>
+        <td>Order all rows by the LLM's scoring on <em>l</em>; return the top <em>k</em>.</td>
+        <td>ORDER BY … LIMIT k</td>
+        <td>Rank reviews by positivity.</td>
+      </tr>
+      <tr>
+        <td><code>sem_classify(l: X→Y)</code></td>
+        <td>Assign each row to one of a predefined set of categories.</td>
+        <td>CASE WHEN … END</td>
+        <td>Classify animals by species from images.</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="box warn" data-cid="main-0420">
+    <span class="box-label">The join cost problem</span>
+    <p data-cid="main-0430">
+      Semantic filters, maps, and classifiers process <em>one row at a time</em> — cost scales
+      as <span class="tts-math" data-tts="O of N">$O(N)$</span> in the table size. But a naive
+      semantic join must consider every pair of rows from two tables — cost scales as
+      <span class="tts-math" data-tts="O of M times N">$O(M \times N)$</span>. For tables of
+      a few thousand rows, this means millions of LLM calls. A single semantic join query in
+      the MMQA scenario required 40,000 LLM calls and took over 35 minutes. <em>Semantic join
+      optimization is the central challenge for SQPEs.</em>
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 5: SCENARIOS -->
+  <h2 data-cid="main-0440" id="s5">5. Benchmark Scenarios</h2>
+
+  <p data-cid="main-0450">
+    Five scenarios, each grounded in a real-world data domain. Together they cover the
+    full space of data modalities and operator types, ensuring no SQPE can be evaluated
+    on only the subset of queries it supports best.
+  </p>
+
+  <!-- MOVIES -->
+  <h3 data-cid="main-0460">5.1 Movies — Text Only</h3>
+
+  <p data-cid="main-0470">
+    <strong>Purpose:</strong> widest system support; tests all five operator types on plain text.<br/>
+    <strong>Data:</strong> Rotten Tomatoes movie reviews from Kaggle (1.38 million reviews).<br/>
+    <strong>Tables:</strong> <code>Movies(id, title, text)</code> and <code>Reviews(id, reviewId, reviewText)</code>.<br/>
+    <strong>Scale:</strong> base 2,000 rows; scalability experiments up to 1,375,738 rows.
+  </p>
+
+  <p data-cid="main-0480">
+    All four evaluated systems support all 10 queries in this scenario. It serves as the
+    "level playing field" test — any differences are due to system design choices, not
+    missing modality support.
+  </p>
+
+  <div class="box example" data-cid="main-0490">
+    <span class="box-label">Example 4.1 — Counting positive reviews</span>
+    <pre><code>SELECT COUNT(*) AS positive_review_cnt
+FROM Reviews R
+WHERE R.id = 'taken_3'
+AND AI.IF(R.reviewText, 'this review expresses a positive sentiment');</code></pre>
+    <p data-cid="main-0500">
+      Standard SQL <code>COUNT</code> and <code>WHERE</code> combined with a semantic filter
+      on the review text. The LLM decides per review whether it expresses positive sentiment.
+    </p>
+  </div>
+
+  <!-- WILDLIFE -->
+  <h3 data-cid="main-0510">5.2 Wildlife — Image + Audio</h3>
+
+  <p data-cid="main-0520">
+    <strong>Purpose:</strong> tests semantic filters on non-text modalities (image and audio).<br/>
+    <strong>Data:</strong> camera trap photos (species labels) + animal sound recordings (species labels), both from Kaggle.<br/>
+    <strong>Tables:</strong> <code>ImageTable(image, city, stationID)</code> and <code>AudioTable(audio, city, stationID)</code>.<br/>
+    <strong>Scale:</strong> base 200 rows; image rows 8,718; audio rows 650.
+  </p>
+
+  <p data-cid="main-0530">
+    LOTUS does not support audio data in version 1.1.3, so it can only answer 4 of the
+    10 queries. This scenario exposes a modality coverage gap in current SQPEs.
+  </p>
+
+  <div class="box example" data-cid="main-0540">
+    <span class="box-label">Example 4.2 — Finding cities where elephants are detected</span>
+    <pre><code>SELECT DISTINCT city
+FROM (SELECT city FROM ImageTable I
+      WHERE AI.IF(I.image, 'the picture shows an elephant'))
+UNION
+(SELECT city FROM AudioTable A
+ WHERE AI.IF(A.audio, 'this sounds like an elephant'));</code></pre>
+    <p data-cid="main-0550">
+      A UNION query that sources evidence from two modalities. A city qualifies if an elephant
+      is detected in either a photo OR an audio recording taken at a station in that city.
+      This tests whether the system can evaluate semantic filters across heterogeneous column
+      types in a single query.
+    </p>
+  </div>
+
+  <!-- E-COMMERCE -->
+  <h3 data-cid="main-0560">5.3 E-Commerce — Text + Image</h3>
+
+  <p data-cid="main-0570">
+    <strong>Purpose:</strong> the most operator-diverse scenario; tests all five operator types including joins.<br/>
+    <strong>Data:</strong> fashion retail dataset from Kaggle (44,446 items: clothes, shoes, accessories).<br/>
+    <strong>Table:</strong> <code>styles_details(id, productDescription text, productImage img, …)</code>.<br/>
+    <strong>Scale:</strong> base 500 rows; scalability up to 44,446.
+  </p>
+
+  <p data-cid="main-0580">
+    14 queries are split into two groups:
+  </p>
+  <ul data-cid="main-0590">
+    <li><strong>Queries 1–9</strong>: each tests one semantic operator in isolation (filter, map,
+        classify, or join) on text, image, or both.</li>
+    <li><strong>Queries 10–14</strong>: complex pipelines combining multiple operators, e.g.,
+        a semantic filter followed by a semantic join across text and image modalities.</li>
+  </ul>
+
+  <div class="box example" data-cid="main-0600">
+    <span class="box-label">Example 4.3 — Finding Reebok backpack product IDs</span>
+    <pre><code>SELECT id
+FROM styles_details
+WHERE AI.IF('This is a backpack from Reebok', productDescription);</code></pre>
+    <p data-cid="main-0610">
+      A single semantic filter on product descriptions. Simple, cheap, high quality. This is
+      what queries 1–9 look like. Queries 10–14 combine this kind of filter with a semantic
+      join, which is where costs diverge dramatically across systems.
+    </p>
+  </div>
+
+  <!-- CARS -->
+  <h3 data-cid="main-0620">5.4 Cars — All Four Modalities</h3>
+
+  <p data-cid="main-0630">
+    <strong>Purpose:</strong> the most modality-rich scenario; tests semantic operators across tables, text, image, and audio simultaneously.<br/>
+    <strong>Data:</strong> four interconnected Kaggle datasets synthesized into a car damage detection database.<br/>
+    <strong>Tables:</strong>
+  </p>
+  <ul data-cid="main-0640">
+    <li><code>Cars(CarId, Mileage, FuelType, TransmissionType, VIN, RegistrationDate, Country, NumberPlate, PreviousOwners)</code></li>
+    <li><code>ComplaintsText(CarId, ComplaintId, Complaint text)</code></li>
+    <li><code>CarImage(CarId, ImageId, Image img)</code></li>
+    <li><code>DiagnostAudio(CarId, AudioId, Audio audio)</code></li>
+  </ul>
+  <p data-cid="main-0650">
+    <strong>Scale:</strong> base 19,672 rows; scalability up to 157,376.
+  </p>
+
+  <p data-cid="main-0660">
+    A given car may show damage in zero, one, or multiple modalities. Damage visible in
+    a photograph may or may not match what a diagnostic recording reveals. This scenario
+    tests whether a system can reason about the same real-world concept (car damage) across
+    incompatible evidence sources.
+  </p>
+
+  <div class="box example" data-cid="main-0670">
+    <span class="box-label">Example 4.4 — Finding all damaged cars across all evidence types</span>
+    <pre><code>(SELECT CarId FROM ComplaintsText
+ WHERE AI.IF('The car is damaged according to the symptoms.', Complaint))
+UNION DISTINCT
+(SELECT CarId FROM DiagnostAudio
+ WHERE AI.IF('The car is damaged according to the audio.', Audio))
+UNION DISTINCT
+(SELECT CarId FROM CarImage
+ WHERE AI.IF('The car is damaged according to the image.', Image));</code></pre>
+    <p data-cid="main-0680">
+      Three parallel semantic filters, one per modality, unioned together.
+      Only LOTUS lacks audio support; the rest handle all three branches.
+    </p>
+  </div>
+
+  <div class="box intuition" data-cid="main-0690">
+    <span class="box-label">Why audio support matters</span>
+    <p data-cid="main-0700">
+      In the Cars scenario, three out of ten queries involve audio data (diagnostic recordings).
+      LOTUS cannot evaluate any of these. For a manufacturer trying to identify cars with
+      brake problems from engine-sound recordings, LOTUS simply cannot help. Audio is currently
+      the least-supported modality across SQPEs — a major coverage gap the benchmark makes
+      visible.
+    </p>
+  </div>
+
+  <!-- MMQA -->
+  <h3 data-cid="main-0710">5.5 MMQA — Multimodal Question Answering</h3>
+
+  <p data-cid="main-0720">
+    <strong>Purpose:</strong> the most complex scenario; tests multi-hop reasoning combining structured tables, text, and images.<br/>
+    <strong>Data:</strong> MultiModalQA dataset (Wikipedia tables + texts + images).<br/>
+    <strong>Tables:</strong> 5 tables (athlete records, actor records, airport data, images).<br/>
+    <strong>Scale:</strong> base 200 rows; scalability up to 1,000.
+  </p>
+
+  <p data-cid="main-0730">
+    11 questions require varied combinations of semantic filters, joins, maps, extraction,
+    and summarization. Only Palimpzest technically supports all required operators. LOTUS
+    encounters internal processing errors on one query (unexpected LLM output schema).
+    ThalamusDB handles only a small subset (no SEM_MAP, no cross-modal SEM_JOIN). BigQuery
+    can perform one-to-one SEM_MAP but not many-to-one summarization.
+  </p>
+
+  <div class="box example" data-cid="main-0740">
+    <span class="box-label">Example 4.5 — Joining airlines with images of their logos</span>
+    <pre><code>SELECT t.Airlines, i.uri
+FROM mmqa.tampa_international_airport t, mmqa.images i
+WHERE AI.IF(
+  'You will be provided with an airline name and an image.
+   Determine if the image shows the logo of the airline.
+   Airline: ', t.Airlines, ', Image: ', i.uri);</code></pre>
+    <p data-cid="main-0750">
+      A semantic join across two tables: one with airline names (text), one with images. For
+      each candidate pair the LLM decides whether the image shows that airline's logo.
+      At scale 400, this query required 160,000 LLM calls, cost ~$50–60, and took over
+      35 minutes for LOTUS and Palimpzest. BigQuery completed it in ~92 seconds using
+      dynamic parallelism.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 6: EXPERIMENTAL SETUP -->
+  <h2 data-cid="main-0760" id="s6">6. Experimental Setup</h2>
+
+  <h3 data-cid="main-0770">6.1 Hardware</h3>
+
+  <p data-cid="main-0780">
+    Main experiments run on an AWS EC2 <code>g4dn.2xlarge</code> instance: 32 GB RAM,
+    4 vCPUs, NVIDIA T4 GPU (used only for embeddings in LOTUS), 250 GB disk.
+    Scalability experiments run on a separate Ubuntu server with 2× Intel Xeon Gold 5218
+    CPUs and 384 GB RAM — necessary because some systems require over 200 GB of memory
+    when processing large-scale image join queries.
+  </p>
+
+  <h3 data-cid="main-0790">6.2 LLM Choice: Why gemini-2.5-flash for All Systems</h3>
+
+  <p data-cid="main-0800">
+    All four systems use <code>gemini-2.5-flash</code> as their backing LLM. This is a
+    deliberate design choice: using the same model eliminates it as a confounding variable.
+    Any difference in cost, quality, or latency between systems can be attributed to the
+    system's query processing strategy, not the underlying AI model.
+  </p>
+
+  <div class="box pause" data-cid="main-0810">
+    <span class="box-label">Why this matters for interpretation</span>
+    <p data-cid="main-0820">
+      If LOTUS uses GPT-4o and ThalamusDB uses Gemini Flash, a quality difference could be
+      entirely explained by the model, not the system. By fixing the model, the benchmark
+      isolates what actually differs: prompt design, batching strategy, pre-filtering,
+      parallelism, and early termination. These are the engineering decisions that SQPE
+      developers control.
+    </p>
+  </div>
+
+  <p data-cid="main-0830">
+    Additional settings: temperature = 0 for all systems (except BigQuery, which manages
+    this internally); reasoning capability disabled (too slow and costly); LLM parallelism
+    fixed at 20 simultaneous calls for all academic systems. Each experiment repeated
+    5 times; mean and standard deviation reported.
+  </p>
+
+  <h3 data-cid="main-0840">6.3 The Four Systems</h3>
+
+  <div class="box definition" data-cid="main-0850">
+    <span class="box-label">LOTUS 1.1.3</span>
+    <p data-cid="main-0860">
+      Academic system. Strategy: <strong>embedding-based pre-filtering for joins</strong>.
+      LOTUS embeds all rows using
+      <code>e5-base-v2</code> (text) or <code>clip-ViT-B-32</code> (images). For a semantic
+      join, it only sends candidate pairs to the LLM if their embedding vectors are within a
+      distance threshold. This dramatically reduces LLM calls. Tradeoff: embedding-based
+      pre-filtering can miss valid matches whose embeddings happen to be far apart, lowering
+      recall. LOTUS uses relatively concise prompt templates (low token count → lower cost per
+      call) but <strong>does not support audio data</strong>.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-0870">
+    <span class="box-label">Palimpzest 0.8.2</span>
+    <p data-cid="main-0880">
+      Academic system. Strategy: <strong>MaxQuality objective — optimize for output accuracy
+      above all else</strong>. Uses the Abacus optimizer with quality as the primary objective.
+      Very detailed prompt templates with few-shot examples; these raise input token counts and
+      therefore cost more per call, but the LLM has more context and tends to produce better
+      outputs. Palimpzest is consistently among the highest-quality systems but also among the
+      most expensive.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-0890">
+    <span class="box-label">ThalamusDB 0.1.15</span>
+    <p data-cid="main-0900">
+      Academic system. Strategy: <strong>batch processing for joins</strong>. Instead of sending
+      one row pair per LLM call, ThalamusDB packs multiple pairs into a single prompt and asks
+      the LLM to decide which pairs satisfy the join condition. Batch size 10 (for the join
+      operator) reduces LLM call count by ~10×. Result: lowest average cost ($0.17 avg across
+      scenarios). Tradeoff: with many pairs in one prompt, the LLM sometimes confuses candidates
+      or misses valid matches — join quality (0.487) is notably lower than Palimpzest (0.703).
+      ThalamusDB also supports a limited subset of operators.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-0910">
+    <span class="box-label">Google BigQuery (AI Functions)</span>
+    <p data-cid="main-0920">
+      Industrial system. Strategy: <strong>dynamic runtime parallelism</strong>. BigQuery
+      adjusts the number of parallel LLM invocations based on actual input sizes — the only
+      system to do this. This allows BigQuery to scale where others run out of memory or
+      time out (e.g., E-Commerce and MMQA at large scales). Model parameters are managed
+      internally (not configurable by users), so temperature and prompt templates are set
+      by Google. BigQuery achieves the lowest average latency (31.7 s) and the best image
+      classification quality on some scenarios, but its filter quality on text is below LOTUS.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 7: RESULTS -->
+  <h2 data-cid="main-0930" id="s7">7. Results — Key Findings per Scenario</h2>
+
+  <p data-cid="main-0940">
+    Table 4 in the paper contains per-query cost, quality, and latency for all four systems
+    across all five scenarios. The following summarizes the most significant findings.
+  </p>
+
+  <h3 data-cid="main-0950">7.1 Movies — The Clean Baseline</h3>
+
+  <p data-cid="main-0960">
+    All four systems support all 10 queries. Average results:
+    ThalamusDB achieves cost of $0.02 (by far the cheapest) at quality 0.82;
+    BigQuery achieves quality 0.75 at cost $0.55; LOTUS quality 0.68 at cost $0.62;
+    Palimpzest quality 0.73 at cost $0.82.
+  </p>
+
+  <div class="box intuition" data-cid="main-0970">
+    <span class="box-label">The join cost asymmetry</span>
+    <p data-cid="main-0980">
+      Queries Q1–Q2 are semantic filters with a LIMIT clause: they cost $0.01 or less for most
+      systems. Query Q7 is a semantic join with no LIMIT clause (must compare all review pairs).
+      LOTUS: $1.81, 432 s. Palimpzest: $7.72, 1056 s. The difference between Q1 and Q7 is more
+      than 100×. This single comparison illustrates why semantic joins are the dominant
+      optimization target — they are where SQPE costs go from "negligible" to "prohibitive."
+    </p>
+  </div>
+
+  <h3 data-cid="main-0990">7.2 E-Commerce — Operator Diversity Reveals Coverage Gaps</h3>
+
+  <p data-cid="main-1000">
+    14 queries covering all five operator types. Only LOTUS and BigQuery support the full
+    set. Palimpzest is missing SEM_RANK + SEM_MAP combined; ThalamusDB supports only 5 of 14.
+    Complex queries Q10–Q14 (multi-operator pipelines crossing text and image) time out or
+    error for ThalamusDB and BigQuery.
+  </p>
+
+  <p data-cid="main-1010">
+    Q7 (image-to-image semantic join) is the most expensive query: LOTUS $1.33 / 199 s,
+    Palimpzest $1.79 / 287 s, BigQuery $0.86 / 45 s. At even base scale (500 rows), joining
+    images takes hundreds of seconds and costs over a dollar — before any scaling.
+  </p>
+
+  <h3 data-cid="main-1020">7.3 Wildlife — Image Quality and the Audio Gap</h3>
+
+  <p data-cid="main-1030">
+    LOTUS is absent from 6 of 10 queries (no audio support). Among systems supporting all
+    queries, BigQuery achieves the highest average quality with a gap of more than 3 standard
+    deviations — the largest quality gap across all scenarios. The authors attribute this to
+    BigQuery's internal prompts being well-tuned for image classification tasks, which dominate
+    the Wildlife scenario.
+  </p>
+
+  <p data-cid="main-1040">
+    ThalamusDB achieves the lowest cost (near $0.07 avg) with near-zero variance, because
+    Wildlife uses only semantic filters (no joins). For filters, ThalamusDB also implements
+    early-exit logic: once it finds sufficient evidence to satisfy a query (e.g., at least one
+    city with elephants), it stops evaluating further rows — saving LLM calls that other
+    systems waste.
+  </p>
+
+  <h3 data-cid="main-1050">7.4 Cars — Audio Weakness and Image-Join Expense</h3>
+
+  <p data-cid="main-1060">
+    This is the scenario where current systems perform worst. Queries involving audio
+    (Q2, Q5, Q9) are either unsupported by LOTUS or produce poor quality across all systems.
+    Queries involving classification (Q10) are unsupported by ThalamusDB and LOTUS.
+  </p>
+
+  <p data-cid="main-1070">
+    Image-text joins (Q6–Q8) are dramatically expensive. Q8 in the Cars scenario (semantic
+    join between complaint text and car images) took LOTUS 1350 seconds — 22 minutes —
+    at base scale. This single query required scanning thousands of image-complaint pairs
+    through the LLM.
+  </p>
+
+  <div class="box intuition" data-cid="main-1080">
+    <span class="box-label">Specificity improves LLM accuracy</span>
+    <p data-cid="main-1090">
+      An interesting finding from the Cars scenario: queries about specific damage types
+      (e.g., "engine problems") yield higher LLM quality than queries about generic conditions
+      (e.g., "crash or accident"). LLMs perform better when the problem space is narrow and
+      well-defined. This suggests that SQPEs could improve accuracy by automatically refining
+      broad instructions into more specific sub-queries — a form of prompt engineering that
+      no current system implements.
+    </p>
+  </div>
+
+  <h3 data-cid="main-1100">7.5 MMQA — The Frontier of Current Capability</h3>
+
+  <p data-cid="main-1110">
+    Only Palimpzest supports all 11 queries. LOTUS encounters schema-mismatch errors on Q4
+    (the LLM returns output in an unexpected format that the downstream code cannot parse).
+    ThalamusDB handles 3 queries; BigQuery handles 6.
+  </p>
+
+  <p data-cid="main-1120">
+    Q7 (semantic join between airline text data and logo images) is the single most expensive
+    query in the entire benchmark:
+    LOTUS $13.61 / 2311 s (38.5 min),
+    Palimpzest $15.65 / 2101 s (35 min),
+    BigQuery $1.18 / 91.7 s.
+    BigQuery's 25× speed advantage for this query comes entirely from dynamic parallelism —
+    it can invoke far more LLM calls in parallel than the 20-call limit on the other systems.
+  </p>
+
+  <div class="box warn" data-cid="main-1130">
+    <span class="box-label">BigQuery quality reversal on MMQA</span>
+    <p data-cid="main-1140">
+      In most scenarios BigQuery achieves quality at or above the academic systems. In MMQA it
+      averages only 0.32 quality — well below LOTUS (0.88) and Palimpzest (0.88). The reason:
+      BigQuery's internal prompt templates are optimized for common analytical tasks. The
+      complex, multi-hop Wikipedia table-joining queries in MMQA require rich contextual
+      reasoning that BigQuery's default prompts do not support. This is a reminder that LLM
+      quality is domain-dependent and prompt-dependent — raw model capability is not enough.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 8: SCALABILITY -->
+  <h2 data-cid="main-1150" id="s8">8. Scalability Experiments</h2>
+
+  <p data-cid="main-1160">
+    Each scenario has a base scale and several larger scales (Table 3 in the paper). A 1-hour
+    per-query timeout is enforced; systems that time out are not evaluated at larger scales.
+  </p>
+
+  <div class="box intuition" data-cid="main-1170">
+    <span class="box-label">Movies and Wildlife: linear and manageable</span>
+    <p data-cid="main-1180">
+      Both scenarios use mostly semantic filters (no joins). Filter costs grow roughly linearly
+      with data size. All systems scale to the largest Movie scale (1.38M rows) within one hour
+      — except LOTUS, which times out at scale 16K on Q6 (a semantic join with a LIMIT clause).
+      LOTUS evaluates all data before applying the LIMIT as post-processing; other systems
+      terminate early once the required number of rows is found. This single design decision
+      causes LOTUS to exceed the timeout while the others complete comfortably.
+    </p>
+  </div>
+
+  <div class="box warn" data-cid="main-1190">
+    <span class="box-label">E-Commerce and MMQA: quadratic join growth causes failure</span>
+    <p data-cid="main-1200">
+      For scenarios with semantic joins over images, only BigQuery scales to large sizes.
+      At scale 400 in MMQA, Q7 costs ~$50 for LOTUS and ~$60 for Palimpzest. At scale 4,000
+      in E-Commerce, Q8 costs ~$140 for BigQuery alone. Memory is the primary failure mode
+      for the academic systems: they buffer all candidate image pairs in RAM before sending
+      them to the LLM, never releasing them. Q8 in E-Commerce requires 250 GB of RAM for
+      ThalamusDB, 150 GB for LOTUS, and 100 GB for Palimpzest at moderate scale — causing
+      server crashes before reaching the timeout.
+    </p>
+  </div>
+
+  <p data-cid="main-1210">
+    Cars is the exception: all four systems scale to the full 157,376-row dataset.
+    Because Cars uses semantic filters and classifiers (not joins) as its primary operators,
+    cost grows linearly. BigQuery achieves better execution time due to dynamic parallelism;
+    result quality remains stable across all scales for all systems.
+  </p>
+
+  <!-- ═══════════════════════════════════════════ SECTION 9: SYSTEM COMPARISON -->
+  <h2 data-cid="main-1220" id="s9">9. System Comparison — Aggregated Results</h2>
+
+  <p data-cid="main-1230">
+    Table 5 in the paper aggregates results by operator type across all scenarios, reporting
+    average quality, latency, and cost for queries that all available systems support.
+  </p>
+
+  <div class="box definition" data-cid="main-1240">
+    <span class="box-label">Table 5 — Aggregated results by operator type (base scale)</span>
+    <table>
+      <tr>
+        <th>Operator</th>
+        <th>System</th>
+        <th>Quality</th>
+        <th>Latency</th>
+        <th>Cost</th>
+      </tr>
+      <tr>
+        <td rowspan="4">Filter</td>
+        <td>LOTUS</td><td>0.896</td><td>194 s</td><td>$0.34</td>
+      </tr>
+      <tr>
+        <td>Palimpzest</td><td>0.777</td><td>72 s</td><td>$0.40</td>
+      </tr>
+      <tr>
+        <td>ThalamusDB</td><td>0.698</td><td>101 s</td><td>$0.19</td>
+      </tr>
+      <tr>
+        <td>BigQuery</td><td>0.574</td><td>27 s</td><td>$0.36</td>
+      </tr>
+      <tr>
+        <td rowspan="4">Join</td>
+        <td>LOTUS</td><td>0.614</td><td>541 s</td><td>$2.74</td>
+      </tr>
+      <tr>
+        <td>Palimpzest</td><td>0.703</td><td>454 s</td><td>$3.29</td>
+      </tr>
+      <tr>
+        <td>ThalamusDB</td><td>0.487</td><td>387 s</td><td>$0.14</td>
+      </tr>
+      <tr>
+        <td>BigQuery</td><td>0.601</td><td>69 s</td><td>$1.02</td>
+      </tr>
+      <tr>
+        <td rowspan="4">Overall avg</td>
+        <td>LOTUS</td><td>0.731</td><td>212 s</td><td>$0.86</td>
+      </tr>
+      <tr>
+        <td>Palimpzest</td><td>0.715</td><td>165 s</td><td>$1.06</td>
+      </tr>
+      <tr>
+        <td>ThalamusDB</td><td>0.592</td><td>244 s</td><td>$0.17</td>
+      </tr>
+      <tr>
+        <td>BigQuery</td><td>0.677</td><td>32 s</td><td>$0.45</td>
+      </tr>
+    </table>
+  </div>
+
+  <p data-cid="main-1250">
+    Reading the table, four patterns stand out:
+  </p>
+
+  <ul data-cid="main-1260">
+    <li><strong>LOTUS achieves the best filter quality</strong> (0.896) by using detailed
+        prompt templates that give the LLM more context — at the cost of higher token counts
+        and therefore higher per-call expense. BigQuery's simpler internal prompts give it
+        much lower filter quality (0.574) for text-heavy tasks.</li>
+    <li><strong>Palimpzest achieves the best join quality</strong> (0.703). Its full-prompt,
+        no-shortcut strategy pays off when every candidate pair matters.</li>
+    <li><strong>ThalamusDB is cheapest</strong> ($0.17 overall avg) thanks to batching. But
+        this comes with a quality cost: join quality (0.487) is 30% below Palimpzest's.</li>
+    <li><strong>BigQuery is fastest</strong> (32 s avg) due to dynamic parallelism — it can
+        run far more LLM calls simultaneously than the others.</li>
+  </ul>
+
+  <div class="box intuition" data-cid="main-1270">
+    <span class="box-label">Join vs. filter cost ratio</span>
+    <p data-cid="main-1280">
+      Across all systems, semantic joins cost 3–10× more than semantic filters per query.
+      For LOTUS and Palimpzest the ratio is about 8×. For BigQuery it is about 3× because
+      dynamic parallelism amortizes the per-pair overhead. This gap explains why semantic
+      join optimization — pre-filtering with embeddings, batching, or dynamic parallelism —
+      is the highest-value area for future SQPE research.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 10: LESSONS -->
+  <h2 data-cid="main-1290" id="s10">10. Lessons Learned</h2>
+
+  <div class="box intuition" data-cid="main-1300">
+    <span class="box-label">Lesson 1 — LIMIT clauses need real early termination</span>
+    <p data-cid="main-1310">
+      LOTUS evaluates all data and applies LIMIT as post-processing. The correct approach:
+      terminate semantic operator evaluation as soon as enough rows have been collected.
+      ThalamusDB does this; LOTUS does not. At 16K rows in the Movie scenario, LOTUS times
+      out on Q6 (join with LIMIT) while ThalamusDB completes it in under a minute. The fix
+      is architecturally straightforward but requires integrating the LIMIT constraint into
+      the query execution engine, not just the output layer.
+    </p>
+  </div>
+
+  <div class="box intuition" data-cid="main-1320">
+    <span class="box-label">Lesson 2 — Systems should reason about when to stop</span>
+    <p data-cid="main-1330">
+      For filter queries that ask "does at least one row satisfy this condition in each
+      group?", the system can stop evaluating rows in a group once it has found sufficient
+      evidence. ThalamusDB implements this; other systems continue evaluating every row.
+      This design decision costs nothing in quality and saves substantial LLM calls.
+    </p>
+  </div>
+
+  <div class="box intuition" data-cid="main-1340">
+    <span class="box-label">Lesson 3 — LLM parallelism must be runtime-adjustable</span>
+    <p data-cid="main-1350">
+      BigQuery adjusts the number of parallel LLM invocations dynamically based on query
+      input size. This is the primary reason BigQuery is the only system that scales
+      E-Commerce and MMQA queries to large datasets — others are bottlenecked at 20 parallel
+      calls regardless of how much work they have. Exposing parallelism as a runtime
+      parameter, rather than a fixed configuration, is a key engineering requirement for
+      production SQPEs.
+    </p>
+  </div>
+
+  <div class="box intuition" data-cid="main-1360">
+    <span class="box-label">Lesson 4 — LLM failures need explicit handling</span>
+    <p data-cid="main-1370">
+      LLM API calls fail for many reasons: network outages, rate limiting, unstable APIs.
+      No current academic system handles these failures robustly. BigQuery can stall for
+      over 48 hours at large scale due to network issues or rate limiting. Systems should
+      implement retries with exponential backoff. Without this, long-running benchmark
+      queries become unreliable.
+    </p>
+  </div>
+
+  <div class="box warn" data-cid="main-1380">
+    <span class="box-label">Lesson 5 — Memory management for multimodal joins is critical</span>
+    <p data-cid="main-1390">
+      Academic systems buffer all candidate image pairs in RAM before sending them to the
+      LLM, never releasing memory as the query proceeds. At moderate scale, this causes
+      memory usage exceeding 100–250 GB for a single query, leading to server crashes.
+      The fix — streaming pairs and releasing memory as results arrive — is known in streaming
+      databases but not yet implemented in any evaluated SQPE.
+    </p>
+  </div>
+
+  <h3 data-cid="main-1400">Optimization Opportunities Not Yet Implemented</h3>
+
+  <p data-cid="main-1410">
+    The paper identifies three promising directions that no current system pursues:
+  </p>
+
+  <ul data-cid="main-1420">
+    <li><strong>Operator fusion</strong>: if a query has both a semantic filter and a semantic
+        join on the same data, combining them into a single LLM call ("does this item satisfy
+        condition A and match item B?") could reduce call count by 2–3×.</li>
+    <li><strong>Result caching</strong>: many SemBench queries apply similar predicates to
+        overlapping row sets. Caching LLM results for already-evaluated (row, instruction)
+        pairs would avoid redundant calls across queries in the same session.</li>
+    <li><strong>Automated prompt optimization</strong>: currently, prompt design is manual.
+        Different systems make different trade-offs (detailed vs. concise prompts), with
+        quality varying up to 4× for the same underlying model. An SQPE that automatically
+        explores the prompt design space and converges on a cost-quality optimum would
+        outperform all current approaches.</li>
+  </ul>
+
+  <!-- ═══════════════════════════════════════════ SECTION 11: CONCLUSIONS -->
+  <h2 data-cid="main-1430" id="s11">11. Conclusions and Outlook</h2>
+
+  <p data-cid="main-1440">
+    SemBench fills a gap that has existed since the emergence of LLM-powered database systems:
+    before this paper, no benchmark existed to measure SQPE performance on multimodal queries
+    with semantic operators. The benchmark provides ground truth from real annotated datasets
+    (not generated by the systems being tested), a multi-dimensional evaluation framework
+    (quality, cost, latency, scalability), and public access via
+    <a href="https://sembench.org">sembench.org</a>.
+  </p>
+
+  <p data-cid="main-1450">
+    Key empirical conclusions from the evaluation:
+  </p>
+
+  <ul data-cid="main-1460">
+    <li>Every system incurs non-negligible cost or latency overhead for at least some queries.</li>
+    <li>Semantic joins are 3–10× more expensive than filters and are the dominant optimization
+        target.</li>
+    <li>Audio processing is poorly supported — only 3 of 4 systems handle it at all.</li>
+    <li>No single system dominates across all dimensions: LOTUS for filter quality, Palimpzest
+        for join quality, ThalamusDB for cost, BigQuery for latency and scalability.</li>
+    <li>LLM quality is highly domain-dependent; a system that works well for image classification
+        may perform poorly on multi-hop reasoning — and vice versa.</li>
+  </ul>
+
+  <div class="box intuition" data-cid="main-1470">
+    <span class="box-label">Broader significance</span>
+    <p data-cid="main-1480">
+      SemBench marks a transition in database benchmarking: from measuring purely relational
+      performance to measuring the joint performance of database engines and the AI models
+      embedded within them. As SQPEs expand their operator coverage (semantic aggregation,
+      grouping) and data modality support (video, multi-image), SemBench plans to add
+      corresponding scenarios. The public leaderboard at sembench.org will continuously
+      update as new systems and results become available.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ REFERENCES -->
+  <h2 data-cid="main-1490" id="references">References (Selected)</h2>
+
+  <ol class="paper-references">
+    <li data-cid="main-1500">
+      Jiale Lao et al. (2025). SemBench: A Benchmark for Semantic Query Processing Engines.
+      <em>PVLDB</em>, 14(1). arXiv:2511.01716.
+    </li>
+    <li data-cid="main-1510">
+      Liana Patel et al. (2024). LOTUS: Enabling Semantic Queries with LLMs Over Tables of
+      Unstructured and Structured Data. <em>CoRR</em> abs/2407.11418.
+    </li>
+    <li data-cid="main-1520">
+      Matthew Russo et al. (2025). Abacus: A Cost-Based Optimizer for Semantic Operator
+      Systems (Palimpzest). <em>CIDR 2025</em>.
+    </li>
+    <li data-cid="main-1530">
+      Saehan Jo and Immanuel Trummer (2024). ThalamusDB: Approximate Query Processing on
+      Multi-Modal Data. <em>Proc. ACM Manag. Data</em>, 2(3), 186.
+    </li>
+    <li data-cid="main-1540">
+      José Fernandes and Jorge Bernardino (2015). What Is BigQuery? In <em>Proc. ICEIS</em>.
+      (Google BigQuery reference.)
+    </li>
+    <li data-cid="main-1550">
+      Alon Talmor et al. (2021). MultiModalQA: Complex Question Answering over Text, Tables
+      and Images. <em>ICLR 2021</em>. (Source of the MMQA scenario dataset.)
+    </li>
+    <li data-cid="main-1560">
+      Viktor Leis et al. (2015). How Good Are Query Optimizers, Really? <em>PVLDB</em> 9(3),
+      204–215. (Background on cost-based optimization and benchmark methodology.)
+    </li>
+    <li data-cid="main-1570">
+      Shreya Shankar et al. (2025). DocETL: Agentic Query Rewriting and Evaluation for
+      Complex Document Processing. <em>PVLDB Endow.</em> 18(9).
+    </li>
+  </ol>
+
+</article>
+</main>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    renderMathInElement(document.body, {
+      delimiters: [
+        {left: "$$", right: "$$", display: true},
+        {left: "$", right: "$", display: false}
+      ]
+    });
+  });
+</script>
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script>
+</body>
+</html>

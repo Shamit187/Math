@@ -337,6 +337,12 @@
       We define</p>
     <span class="tts-math" data-tts="the integral of f d mu equals the limit as n to infinity of the integral of f sub n d mu .">$$\int f \, d\mu = \lim_{n \to \infty} \int f_n \, d\mu.$$</span>
     <p data-cid="ch01-820">The limit is the same regardless of <em>which</em> increasing sequence we picked.</p>
+<div class="box intuition" data-cid="ch01-2020">
+<span class="box-label">Why Theorem 1.8 isn't just a magic claim</span>
+<p data-cid="ch01-2030">
+        Here is the explicit construction. For each resolution level <span class="tts-math" data-tts="n">$n$</span>, partition the <em>y-axis</em> into strips of height <span class="tts-math" data-tts="1 over 2 to the n">$1/2^n$</span> and set <span class="tts-math" data-tts="f sub n x">$f_n(x)$</span> equal to the bottom of whichever strip <span class="tts-math" data-tts="f x">$f(x)$</span> falls into (capped at <span class="tts-math" data-tts="n">$n$</span> to handle the infinite case). The result is a step function — finitely many constant levels — which is exactly a simple function. As <span class="tts-math" data-tts="n">$n$</span> grows, the strips get narrower (<span class="tts-math" data-tts="1 over 2 to the n goes to 0">$1/2^n \to 0$</span>), so <span class="tts-math" data-tts="f sub n">$f_n$</span> creeps up toward <span class="tts-math" data-tts="f">$f$</span> from below. The sequence is increasing and converges to <span class="tts-math" data-tts="f">$f$</span> everywhere. The theorem is just saying this obvious rounding construction always works.
+      </p>
+</div>
 <p data-cid="ch01-830"><strong>Step 4 — general functions.</strong> Split <span class="tts-math" data-tts="f">$f$</span> into its positive and negative parts:</p>
     <span class="tts-math" data-tts="f^ plus x equals max f x 0 f^ minus x equals minus min f x 0 .">$$f^+(x) = \max\{f(x), 0\}, \qquad f^-(x) = -\min\{f(x), 0\}.$$</span>
     <p data-cid="ch01-840">Both <span class="tts-math" data-tts="f^ plus">$f^+$</span> and <span class="tts-math" data-tts="f^ minus">$f^-$</span> are non-negative, and <span class="tts-math" data-tts="f equals f^ plus minus f^ minus">$f = f^+ - f^-$</span>. So we define</p>
@@ -368,6 +374,12 @@
         isn't — it means <span class="tts-math" data-tts="f">$f$</span> doesn't tangle the structure of <span class="tts-math" data-tts="script X">$\mathcal{X}$</span> so badly that we lose the ability to
         ask measurement questions about it.
       </p>
+<p data-cid="ch01-2040">
+        <strong>Why pre-image and not image?</strong> You might expect the condition to say "the image of every measurable set is measurable". But that would be wrong — and here is a clean counterexample. Take <span class="tts-math" data-tts="f">$f$</span> that maps the entire real line to a single point: <span class="tts-math" data-tts="f x equals 0 for all x">$f(x) = 0$</span> for all <span class="tts-math" data-tts="x">$x$</span>. This is constant and completely "nice". Now take any crazy non-measurable set <span class="tts-math" data-tts="A">$A$</span>. Its image under <span class="tts-math" data-tts="f">$f$</span> is just <span class="tts-math" data-tts="the set containing 0">$\{0\}$</span>, which is perfectly measurable. So requiring the image to be measurable would place no real constraint on <span class="tts-math" data-tts="f">$f$</span> at all.
+      </p>
+<p data-cid="ch01-2050">
+        The pre-image condition is what we actually need because we care about <em>questions we can ask about <span class="tts-math" data-tts="f">$f$</span></em>. A set <span class="tts-math" data-tts="B subset of the real numbers">$B \subseteq \mathbb{R}$</span> represents a question: "did <span class="tts-math" data-tts="X">$X$</span> land in <span class="tts-math" data-tts="B">$B$</span>?" For that question to have a probability, the set of inputs that map into <span class="tts-math" data-tts="B">$B$</span> — i.e. <span class="tts-math" data-tts="f inverse of B">$f^{-1}(B)$</span> — must be measurable in <span class="tts-math" data-tts="script X">$\mathcal{X}$</span>. That is exactly the definition. There is no constraint on what <span class="tts-math" data-tts="f">$f$</span> does to non-measurable sets because we never need to ask about them.
+      </p>
 <p data-cid="ch01-930">
         Every continuous function is measurable. Every piecewise-continuous function is measurable. Almost every
         function you can write down is measurable. Non-measurable functions exist but you can't construct one
@@ -392,15 +404,29 @@
         reads off a number from each outcome.
       </p>
 </div>
+<div class="box example" data-cid="ch01-2060">
+<span class="box-label">Example — rolling a die</span>
+<p data-cid="ch01-2070">
+        Let <span class="tts-math" data-tts="E equals 1 2 3 4 5 6">$E = \{1, 2, 3, 4, 5, 6\}$</span> with <span class="tts-math" data-tts="P">$P$</span> assigning probability <span class="tts-math" data-tts="1 over 6">$\tfrac{1}{6}$</span> to each outcome.
+      </p>
+<ul data-cid="ch01-2080">
+<li>Define <span class="tts-math" data-tts="X e equals e">$X(e) = e$</span> — "the number shown". This is a random variable. <span class="tts-math" data-tts="P X equals 3 equals 1 over 6">$P(X = 3) = \tfrac{1}{6}$</span>.</li>
+<li>Define <span class="tts-math" data-tts="Y e equals 1 if e is even 0 otherwise">$Y(e) = \mathbf{1}\{e \text{ is even}\}$</span> — "did an even number come up?". Also a random variable. <span class="tts-math" data-tts="P Y equals 1 equals 1 half">$P(Y = 1) = \tfrac{1}{2}$</span>.</li>
+</ul>
+<p data-cid="ch01-2090">
+        Both <span class="tts-math" data-tts="X">$X$</span> and <span class="tts-math" data-tts="Y">$Y$</span> are functions defined on the <em>same</em> probability space. The word "variable" in "random variable" is historical accident — think <em>function</em> instead.
+      </p>
+</div>
 <p data-cid="ch01-1010">The <strong>distribution</strong> of <span class="tts-math" data-tts="X">$X$</span> is the measure <span class="tts-math" data-tts="P sub X">$P_X$</span> on <span class="tts-math" data-tts="the real numbers">$\mathbb{R}$</span> defined by</p>
     <span class="tts-math" data-tts="P sub X A equals P e in E X e in A equals P X in A .">$$P_X(A) = P\big( \{e \in E : X(e) \in A\} \big) = P(X \in A).$$</span>
 
     <div class="box intuition" data-cid="ch01-1020">
-<span class="box-label">What's happening</span>
+<span class="box-label">What's happening — concrete example</span>
 <p data-cid="ch01-1030">
-        <span class="tts-math" data-tts="P">$P$</span> lives on the abstract outcome space <span class="tts-math" data-tts="E">$E$</span> — which we usually can't see directly.
-        <span class="tts-math" data-tts="P sub X">$P_X$</span> pushes that probability forward onto <span class="tts-math" data-tts="the real numbers">$\mathbb{R}$</span> — where we <em>can</em> see it. We almost always
-        work with <span class="tts-math" data-tts="P sub X">$P_X$</span> and forget <span class="tts-math" data-tts="E">$E$</span> ever existed.
+        Think of a coin flip. The abstract outcome space is <span class="tts-math" data-tts="E equals heads tails">$E = \{\text{heads}, \text{tails}\}$</span>, with <span class="tts-math" data-tts="P heads equals P tails equals one half">$P(\text{heads}) = P(\text{tails}) = \tfrac{1}{2}$</span>. Define <span class="tts-math" data-tts="X heads equals 1 X tails equals 0">$X(\text{heads}) = 1$</span> and <span class="tts-math" data-tts="X tails equals 0">$X(\text{tails}) = 0$</span>. Then <span class="tts-math" data-tts="P sub X">$P_X$</span> is the measure on <span class="tts-math" data-tts="the real numbers">$\mathbb{R}$</span> that assigns probability <span class="tts-math" data-tts="one half">$\tfrac{1}{2}$</span> to the point <span class="tts-math" data-tts="1">$1$</span> and <span class="tts-math" data-tts="one half">$\tfrac{1}{2}$</span> to the point <span class="tts-math" data-tts="0">$0$</span>. The original <span class="tts-math" data-tts="P">$P$</span> lives on the coin flip space; <span class="tts-math" data-tts="P sub X">$P_X$</span> carries the same information but lives on the number line, where we can do arithmetic with it.
+      </p>
+<p data-cid="ch01-2100">
+        More generally: <span class="tts-math" data-tts="P">$P$</span> lives on the abstract outcome space <span class="tts-math" data-tts="E">$E$</span> — which we usually can't see directly. <span class="tts-math" data-tts="P sub X">$P_X$</span> pushes that probability forward onto <span class="tts-math" data-tts="the real numbers">$\mathbb{R}$</span> — where we <em>can</em> compute expectations, CDFs, and densities. We almost always work with <span class="tts-math" data-tts="P sub X">$P_X$</span> and forget <span class="tts-math" data-tts="E">$E$</span> ever existed.
       </p>
 </div>
 <p data-cid="ch01-1040">The <strong>cumulative distribution function (CDF)</strong> is</p>
@@ -412,6 +438,18 @@
 <p data-cid="ch01-1080">If a statement holds for all <span class="tts-math" data-tts="x">$x$</span> except possibly in some null set, we say the statement holds
       <strong>almost everywhere</strong> (abbreviated <strong>a.e.</strong>). When <span class="tts-math" data-tts="mu">$\mu$</span> is a probability measure,
       we instead say <strong>with probability one</strong>.</p>
+<div class="box intuition" data-cid="ch01-2110">
+<span class="box-label">Unpacking "with probability one"</span>
+<p data-cid="ch01-2120">
+        "With probability one" does <em>not</em> mean "always, without any exception." It means the set of exceptions has probability zero — but exceptions can still exist, they're just unmeasurably rare.
+      </p>
+<p data-cid="ch01-2130">
+        Example: pick a number <span class="tts-math" data-tts="X">$X$</span> uniformly at random from <span class="tts-math" data-tts="the interval 0 1">$[0,1]$</span>. The probability that <span class="tts-math" data-tts="X">$X$</span> is irrational equals <span class="tts-math" data-tts="1">$1$</span> — because the rationals have Lebesgue measure zero. Every rational in <span class="tts-math" data-tts="0 1">$[0,1]$</span> is still a possible outcome, so there <em>are</em> exceptions. The statement "<span class="tts-math" data-tts="X">$X$</span> is irrational" holds with probability one, but not with certainty.
+      </p>
+<p data-cid="ch01-2140">
+        In statistics you will often see: "estimator <span class="tts-math" data-tts="T sub n">$T_n$</span> converges to <span class="tts-math" data-tts="theta">$\theta$</span> with probability one." This means there is a null set of sample sequences on which convergence fails — but since that set has probability zero, we ignore it for all practical purposes.
+      </p>
+</div>
 <div class="box example" data-cid="ch01-1090">
 <span class="box-label">Example</span>
 <p data-cid="ch01-1100">
@@ -442,6 +480,15 @@
       Given a distribution <span class="tts-math" data-tts="P">$P$</span>, can we represent it as "integration of a function against a simpler measure"?
       The answer is yes — sometimes — and the function we get is called a density.
     </p>
+<div class="box intuition" data-cid="ch01-2150">
+<span class="box-label">Why we want this</span>
+<p data-cid="ch01-2160">
+        Working directly with an abstract measure <span class="tts-math" data-tts="P">$P$</span> is hard. But if we can write <span class="tts-math" data-tts="P A equals the integral over A of f d mu">$P(A) = \int_A f \, d\mu$</span> for a familiar reference measure <span class="tts-math" data-tts="mu">$\mu$</span> (Lebesgue or counting), then everything reduces to ordinary calculus or summation using the function <span class="tts-math" data-tts="f">$f$</span>. Computing probabilities, expectations, and likelihood ratios all become concrete calculations on <span class="tts-math" data-tts="f">$f$</span>.
+      </p>
+<p data-cid="ch01-2170">
+        In statistics specifically: a likelihood function <em>is</em> a density. When you write <span class="tts-math" data-tts="p of x given theta">$p(x \mid \theta)$</span>, you are writing a Radon–Nikodym derivative — the density of the data distribution with respect to Lebesgue or counting measure. The entire machinery of maximum likelihood and Bayesian inference is built on being able to work with these densities.
+      </p>
+</div>
 <div class="box definition" data-cid="ch01-1180">
 <span class="box-label">Definition 1.9 — absolute continuity</span>
 <p data-cid="ch01-1190">
@@ -476,9 +523,17 @@
 <div class="box pause" data-cid="ch01-1260">
 <span class="box-label">Why the derivative notation?</span>
 <p data-cid="ch01-1270">
-        Compare it to the fundamental theorem of calculus: <span class="tts-math" data-tts="sub a to the b f x dx equals F b minus F a">$\int_a^b f(x) \, dx = F(b) - F(a)$</span>, where <span class="tts-math" data-tts="f equals F prime">$f = F'$</span>.
+        Compare it to the fundamental theorem of calculus: <span class="tts-math" data-tts="the integral from a to b of f x dx equals F b minus F a">$\int_a^b f(x) \, dx = F(b) - F(a)$</span>, where <span class="tts-math" data-tts="f equals F prime">$f = F'$</span>.
         Here, <span class="tts-math" data-tts="f equals dP over d mu">$f = dP/d\mu$</span> plays the same role: integrating <span class="tts-math" data-tts="f">$f$</span> against <span class="tts-math" data-tts="mu">$\mu$</span> reconstructs <span class="tts-math" data-tts="P">$P$</span>. So <span class="tts-math" data-tts="f">$f$</span> is the
         "derivative of <span class="tts-math" data-tts="P">$P$</span> with respect to <span class="tts-math" data-tts="mu">$\mu$</span>".
+      </p>
+<p data-cid="ch01-2180">The analogy side by side:</p>
+<ul data-cid="ch01-2190">
+<li><strong>FTC:</strong> You have a function <span class="tts-math" data-tts="F">$F$</span> (e.g. the CDF). Differentiate to get <span class="tts-math" data-tts="f equals F prime">$f = F'$</span> (the PDF). Then integrating <span class="tts-math" data-tts="f">$f$</span> recovers <span class="tts-math" data-tts="F b minus F a">$F(b) - F(a)$</span> — i.e. the probability in an interval.</li>
+<li><strong>Radon–Nikodym:</strong> You have a measure <span class="tts-math" data-tts="P">$P$</span>. "Differentiate" with respect to <span class="tts-math" data-tts="mu">$\mu$</span> to get <span class="tts-math" data-tts="f equals dP over d mu">$f = dP/d\mu$</span>. Then integrating <span class="tts-math" data-tts="f">$f$</span> against <span class="tts-math" data-tts="mu">$\mu$</span> over any set <span class="tts-math" data-tts="A">$A$</span> recovers <span class="tts-math" data-tts="P A">$P(A)$</span>.</li>
+</ul>
+<p data-cid="ch01-2200">
+        When <span class="tts-math" data-tts="mu">$\mu$</span> is Lebesgue measure, <span class="tts-math" data-tts="f equals dP over d mu">$f = dP/d\mu$</span> is literally the PDF you computed derivatives of in a calculus course: <span class="tts-math" data-tts="f x equals the derivative of F sub X at x">$f(x) = F_X'(x)$</span>. The Radon–Nikodym theorem is the generalization that works even when <span class="tts-math" data-tts="P">$P$</span> has no classical derivative — for instance when <span class="tts-math" data-tts="mu">$\mu$</span> is counting measure, in which case <span class="tts-math" data-tts="f equals dP over d mu">$f = dP/d\mu$</span> is just the mass function.
       </p>
 </div>
 <h3 data-cid="ch01-1280">The two special cases that recover everything you know</h3>
