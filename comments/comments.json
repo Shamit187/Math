@@ -1,3 +1,14 @@
 {
-  "comments": []
+  "comments": [
+    {
+      "id": "c_ee66fb45e59d",
+      "book": "basic_stat",
+      "page": "ch01",
+      "cid": "ch01-930",
+      "text": "What if the function turns measurable set to unmeasurable?",
+      "block_excerpt": "Every continuous function is measurable. Every piecewise-continuous function is measurable. Almost every function you can write down is measurable. Non-measurable functions exist but you can't constru…",
+      "created_at": "2026-05-22T09:34:32Z",
+      "updated_at": "2026-05-22T09:34:32Z"
+    }
+  ]
 }

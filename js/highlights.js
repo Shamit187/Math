@@ -338,7 +338,7 @@
   }
 
   function buildToolbar(rect) {
-    hideToolbar();
+    if (toolbar) { toolbar.remove(); toolbar = null; }
     toolbar = document.createElement("div");
     toolbar.className = "hl-toolbar";
     toolbar.innerHTML = `
