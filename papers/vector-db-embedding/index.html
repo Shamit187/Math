@@ -733,49 +733,149 @@
   <!-- ============================================================ -->
   <h2 data-cid="main-0810" id="s6">6. Algorithm Design Details</h2>
 
-  <h3 data-cid="main-0820">Determining cluster scope</h3>
+  <h3 data-cid="main-0820">Determining cluster scope via intrinsic dimension</h3>
   <p data-cid="main-0830">
     The bound in Theorem 1 implies a tension: smaller clusters improve local isometry
-    accuracy but degrade conditioning. The paper resolves this by setting the cluster
-    size adaptively based on the intrinsic dimensionality of the data and the condition
-    number of the reference matrix. In practice, it uses
-    <span class="tts-math" data-tts="k">$k$</span>-means clustering on reference
-    vectors, with the number of clusters
-    <span class="tts-math" data-tts="n">$n$</span>
-    tuned empirically or by a principled search over the integration error vs. conditioning curve.
+    accuracy (<span class="tts-math" data-tts="alpha">$\alpha$</span> decreases) but
+    degrade conditioning (<span class="tts-math" data-tts="sigma min of X">$\sigma_{\min}(X)$</span>
+    shrinks). From (I2), the size
+    <span class="tts-math" data-tts="absolute value of X">$|X|$</span>
+    of a cluster should be at least
+    <span class="tts-math" data-tts="d">$d$</span>, the ambient dimension of the embeddings.
+    But real embeddings have very high
+    <span class="tts-math" data-tts="d">$d$</span>
+    (OpenAI-Ada is 1536, Mistral is 1024), so requiring
+    <span class="tts-math" data-tts="absolute value of X greater than or equal to d">$|X| \geq d$</span>
+    would force large clusters and inflate alignment error.
+  </p>
+  <p data-cid="main-0835">
+    The paper's resolution: choose the cluster size to match the data's <em>intrinsic
+    dimension</em> rather than its ambient dimension. The intrinsic dimension is the
+    minimal number of directions in which the data actually varies — usually far smaller
+    than the ambient
+    <span class="tts-math" data-tts="d">$d$</span>.
   </p>
 
-  <h3 data-cid="main-0840">Generating reference vectors when none are given</h3>
+  <div class="box definition" data-cid="main-0838">
+    <span class="box-label">MLE intrinsic dimension estimator (Levina–Bickel)</span>
+    <p data-cid="main-0839">
+      For each data point
+      <span class="tts-math" data-tts="x sub i">$x_i$</span>,
+      look at its
+      <span class="tts-math" data-tts="K">$K$</span>
+      nearest neighbours and estimate the local intrinsic dimension as:
+    </p>
+    <p data-cid="main-0836">
+      <span class="tts-math" data-tts="d hat equals one over N times K minus 1, times the sum over i and j, of the log of T sub K of x sub i over T sub j of x sub i, all to the negative one">
+        $$\hat{d} \;=\; \left[\frac{1}{N(K-1)} \sum_{i=1}^{N} \sum_{j=1}^{K-1} \log \frac{T_K(x_i)}{T_j(x_i)} \right]^{-1}$$
+      </span>
+    </p>
+    <p data-cid="main-0837">
+      where
+      <span class="tts-math" data-tts="T sub j of x sub i">$T_j(x_i)$</span>
+      is the distance from
+      <span class="tts-math" data-tts="x sub i">$x_i$</span>
+      to its
+      <span class="tts-math" data-tts="j">$j$</span>-th nearest neighbour. The paper sets
+      <span class="tts-math" data-tts="N equals 10 and K equals 20">$N = 10$, $K = 20$</span>
+      per dataset. Experiments (Fig. 7) confirm that recall@100 peaks exactly when
+      <span class="tts-math" data-tts="absolute value of X">$|X|$</span>
+      matches this intrinsic dimension.
+    </p>
+  </div>
+
+  <h3 data-cid="main-0840">Handling rank-deficient references via PCA</h3>
+  <p data-cid="main-0841">
+    Once the intrinsic dimension
+    <span class="tts-math" data-tts="d hat">$\hat{d}$</span>
+    is set, clusters are typically smaller than the ambient dimension and so
+    <span class="tts-math" data-tts="X">$X$</span>
+    becomes rank-deficient — directly exacerbating the conditioning problem from (I3).
+    The paper handles this by computing the SVD of each cluster's reference matrix
+    and projecting both
+    <span class="tts-math" data-tts="X and Y">$X$ and $Y$</span>
+    into their respective
+    <span class="tts-math" data-tts="d hat">$\hat{d}$</span>-dimensional subspaces:
+  </p>
+  <p data-cid="main-0842">
+    <span class="tts-math" data-tts="X hat equals X times V sub X to the d hat, and Y hat equals Y times V sub Y to the d hat">
+      $$\hat{X} = X V_X^{\hat{d}}, \qquad \hat{Y} = Y V_Y^{\hat{d}}$$
+    </span>
+  </p>
+  <p data-cid="main-0843">
+    where
+    <span class="tts-math" data-tts="V sub X to the d hat">$V_X^{\hat{d}}$</span>
+    and
+    <span class="tts-math" data-tts="V sub Y to the d hat">$V_Y^{\hat{d}}$</span>
+    are the top
+    <span class="tts-math" data-tts="d hat">$\hat{d}$</span>
+    right singular vectors. The isometry is fit on the projected vectors, and a new
+    non-reference vector
+    <span class="tts-math" data-tts="z">$z$</span>
+    is reduced by
+    <span class="tts-math" data-tts="z hat equals z times V sub X to the d hat">$\hat{z} = z V_X^{\hat{d}}$</span>,
+    transformed by
+    <span class="tts-math" data-tts="f hat iso">$\hat{f}_{\text{iso}}$</span>,
+    then lifted back via
+    <span class="tts-math" data-tts="V sub Y to the d hat transpose">$V_Y^{\hat{d}\,\top}$</span>.
+    This also conveniently handles non-square dimensions across models (e.g. FastText
+    300-dim vs NV-Embed-V2 4096-dim) — both are projected into the shared
+    <span class="tts-math" data-tts="d hat">$\hat{d}$</span>-dim subspace before alignment.
+  </p>
+
+  <h3 data-cid="main-0844">Online integration</h3>
+  <p data-cid="main-0845">
+    LA2M is split into an offline preprocessing pass (Steps 1–2: grouping references,
+    fitting local isometries) and an online step (Step 3: transforming non-reference
+    vectors as they arrive). The offline pass materialises the
+    <span class="tts-math" data-tts="n">$n$</span>
+    local isometries
+    <span class="tts-math" data-tts="f iso 1 through f iso n">$f^1_{\text{iso}}, \ldots, f^n_{\text{iso}}$</span>
+    as a small auxiliary vector database keyed by cluster centroids. When a new vector
+    <span class="tts-math" data-tts="x">$x$</span>
+    is added to
+    <span class="tts-math" data-tts="D 1">$D_1$</span>,
+    LA2M does a top-1 search over the centroids to find the right isometry and
+    applies it — making online integration cheap and incremental.
+  </p>
+
+  <h3 data-cid="main-0846">Generating reference vectors when none are given</h3>
   <p data-cid="main-0850">
-    In many scenarios, reference vectors (items encoded by both models) are naturally
-    available — e.g., in backfilling, the overlap between old and new embeddings
-    is known. But in privacy-sensitive federated settings, no such correspondence may
-    be pre-known. The paper provides an interface for LA2M to automatically discover
-    reference vectors:
+    In many scenarios — backfilling, data linkage, domain knowledge — reference
+    vectors are naturally available. In privacy-sensitive federated settings they
+    are not. The paper specifies an active sampling algorithm parameterised by
+    <span class="tts-math" data-tts="L">$L$</span>,
+    the number of local isometries we want, and
+    <span class="tts-math" data-tts="gamma">$\gamma$</span>,
+    the fraction of items to use as references:
   </p>
   <ol data-cid="main-0860">
-    <li>Sample a small set of query vectors from one database.</li>
-    <li>Query the remote party's database (or a public endpoint of the embedding model)
-    to obtain candidate reference vectors.</li>
-    <li>Use entity linking or data linkage techniques to confirm correspondences.</li>
+    <li>Cluster the source database
+    <span class="tts-math" data-tts="D">$D$</span>
+    into
+    <span class="tts-math" data-tts="L">$L$</span>
+    groups via k-means.</li>
+    <li>From each cluster
+    <span class="tts-math" data-tts="C sub i">$C_i$</span>,
+    uniformly sample
+    <span class="tts-math" data-tts="gamma times the size of C sub i">$\gamma \cdot |C_i|$</span>
+    vectors as reference candidates
+    <span class="tts-math" data-tts="script X">$\mathcal{X}$</span>.</li>
+    <li>Query the target party's embedding model with the corresponding data items
+    to obtain matching vectors
+    <span class="tts-math" data-tts="script Y">$\mathcal{Y}$</span>.
+    The pair
+    <span class="tts-math" data-tts="script X and script Y">$(\mathcal{X}, \mathcal{Y})$</span>
+    serves as input to LA2M.</li>
   </ol>
   <p data-cid="main-0870">
-    Experiments show LA2M is robust: reducing the fraction of reference vectors from 80%
-    to 20% degrades integration quality by only about 3%.
-  </p>
-
-  <h3 data-cid="main-0880">Handling non-square dimensions</h3>
-  <p data-cid="main-0890">
-    Different embedding models may produce vectors of different dimensions (e.g.,
-    FastText: 300 dimensions, NV-Embed-V2: 4096 dimensions). The isometry
-    <span class="tts-math" data-tts="f of x equals s R times open paren x plus t close paren">
-      $f(x) = s \cdot R(x + \mathbf{t})$
-    </span>
-    requires the same dimension for
-    <span class="tts-math" data-tts="R">$R$</span>.
-    The paper handles dimension mismatch by padding or projecting to a common dimension
-    as a pre-processing step, or using rectangular transformations (not pure orthogonal
-    matrices).
+    Experiments (Fig. 8) show LA2M's cluster-stratified sampling consistently beats
+    uniform random sampling and is robust: dropping
+    <span class="tts-math" data-tts="gamma">$\gamma$</span>
+    from 80% to 20% raises integration error by only ~3%. When even querying the
+    target model is forbidden, the paper suggests synthesising reference items
+    (e.g., from a diffusion model) — works best when the source database itself
+    was generated that way.
   </p>
 
   <!-- ============================================================ -->
@@ -785,15 +885,55 @@
 
   <h3 data-cid="main-0910">Experimental setup</h3>
   <p data-cid="main-0920">
-    The paper evaluates on five major embedding models:
-    <strong>NV-Embed-V2</strong> (NVIDIA, 4096-dim), <strong>OpenAI Ada</strong>
-    (OpenAI, 1536-dim), <strong>GloVe</strong> (Stanford, 300-dim),
-    <strong>Mistral</strong>, and <strong>FastText</strong> (Facebook, 300-dim).
-    Five text retrieval benchmarks are used: SciFact, NFCorpus, ArguAna, SciDocs,
-    and FiQA-2018. Each dataset is split so that
+    The paper evaluates on <strong>six</strong> major embedding models spanning small
+    to large scale: <strong>GloVe</strong> (300-dim, trained), <strong>FastText</strong>
+    (300-dim, trained), <strong>NV-Embed-V2</strong> (1024-dim, fine-tunable),
+    <strong>GTE-Qwen2</strong> (1024-dim, fine-tunable), <strong>OpenAI-Ada</strong>
+    (1536-dim, no training), and <strong>Mistral</strong> (1024-dim, no training).
+    Five text retrieval benchmarks are used: <strong>SciFact</strong> (5,183 docs,
+    fact-checking), <strong>NFCorpus</strong> (3,633 docs, biomedical),
+    <strong>ArguAna</strong> (8,674 docs, counter-arguments), <strong>SciDocs</strong>
+    (25,657 docs, citation prediction), and <strong>FiQA-2018</strong> (57,638 docs,
+    financial Q&amp;A). Each dataset is split so that
     <span class="tts-math" data-tts="O intersection">$O_\cap$</span>
-    contains one-third of all documents. Evaluation uses recall@100 and a
-    relative NDCG (Normalized Discounted Cumulative Gain) measure.
+    contains one-third of all documents.
+  </p>
+  <p data-cid="main-0925">
+    The paper reports four quality measures, each capturing a different facet of
+    integration quality:
+  </p>
+  <ul data-cid="main-0927">
+    <li><strong>Recall@k</strong>: fraction of benchmark queries for which the
+    ground-truth answer is within the top
+    <span class="tts-math" data-tts="k">$k$</span>
+    of the integrated database.</li>
+    <li><strong>Recall@k[<span class="tts-math" data-tts="D 1">$D_1$</span>]</strong>:
+    recall@k restricted to queries whose answer lives in
+    <span class="tts-math" data-tts="D 1">$D_1$</span>
+    only. This eliminates "free credit" — since half the benchmark answers sit in
+    <span class="tts-math" data-tts="D 2">$D_2$</span>,
+    Union can score ~50% recall just by ignoring
+    <span class="tts-math" data-tts="D 1">$D_1$</span>
+    entirely.
+    Recall@k[<span class="tts-math" data-tts="D 1">$D_1$</span>] is the honest measure
+    of whether integration actually surfaces
+    <span class="tts-math" data-tts="D 1">$D_1$</span>'s items.</li>
+    <li><strong>Relative NDCG</strong>: ranking-quality score relative to the
+    ground-truth database
+    <span class="tts-math" data-tts="D star equals emb 2 of O 1 union O intersection union O 2">$D_* = \text{emb}_2(O_1 \cup O_\cap \cup O_2)$</span>.
+    Captures rank changes, not just hits.</li>
+    <li><strong>Integration error
+    <span class="tts-math" data-tts="beta">$\beta$</span></strong>: average distance
+    between
+    <span class="tts-math" data-tts="T of emb 1 of o">$T(\text{emb}_1(o))$</span>
+    and the ideal
+    <span class="tts-math" data-tts="emb 2 of o">$\text{emb}_2(o)$</span>
+    in
+    <span class="tts-math" data-tts="D 2">$D_2$</span>'s
+    space — a direct geometric measure of how well the integration places each vector.</li>
+  </ul>
+  <p data-cid="main-0928">
+    Experiments ran on an AMD EPYC 7713P (120 GB RAM) with an NVIDIA A100 80 GB GPU.
   </p>
 
   <h3 data-cid="main-0930">Baselines compared</h3>
@@ -829,6 +969,39 @@
       the local geometry is well-behaved (Hypothesis B holds), so the fit is accurate.
       The gain isn't just incremental; it's transformative because top-k search is
       dominated by the nearest neighbours, exactly the local structure that LA2M captures.
+    </p>
+  </div>
+
+  <div class="box warn" data-cid="main-0992">
+    <span class="box-label">Why isometries beat MLPs (LA2M vs LA2M<sub>MLP</sub>)</span>
+    <p data-cid="main-0994">
+      Tables 4–9 also report LA2M<sub>MLP</sub>, where each local alignment is a 2-layer
+      MLP trained on the reference pairs. Despite higher expressiveness and often
+      <em>lower</em> alignment error on the references themselves, LA2M<sub>MLP</sub>
+      consistently underperforms plain LA2M on recall and NDCG. The reason: isometries
+      preserve top-k search results over
+      <span class="tts-math" data-tts="D 1">$D_1$</span>
+      (Theorem 1 guarantees bounded
+      <span class="tts-math" data-tts="delta">$\delta$</span>),
+      whereas a nonlinear MLP can rearrange distances and lose neighbour structure
+      even when it fits references well. Expressiveness without distance preservation
+      is the wrong trade for retrieval.
+    </p>
+  </div>
+
+  <div class="box pause" data-cid="main-0996">
+    <span class="box-label">Ceiling on absolute recall</span>
+    <p data-cid="main-0998">
+      LA2M's relative gains are dramatic, but absolute recall is still bounded by each
+      embedding model's <em>native</em> retrieval quality on the benchmark. FastText
+      alone achieves only ~17% recall@100 on NFCorpus regardless of integration —
+      that's a property of FastText's representation, not of the integration method.
+      Two factors put a ceiling on what any integration approach can achieve:
+      (a) the intrinsic difficulty of the benchmark for the chosen embedding model, and
+      (b) the inherent <em>model disagreement</em> between
+      <span class="tts-math" data-tts="emb 1 and emb 2">$\text{emb}_1$ and $\text{emb}_2$</span>
+      (e.g., GloVe vs FastText were trained on very different corpora with different
+      tokenisation, so they encode different similarity).
     </p>
   </div>
 
