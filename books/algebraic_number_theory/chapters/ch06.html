@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ch 06 — Global Class Field Theory · Algebraic Number Theory</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/><link href="/css/tts.css" rel="stylesheet"/>
+</head>
+<body data-book="algebraic_number_theory" data-page="ch06">
+<header class="site-header">
+<a class="home-btn" href="/">Home</a>
+<a class="brand" href="/books/algebraic_number_theory/">Algebraic Number Theory <small>a slow reading guide</small></a>
+<nav>
+<button aria-label="toggle theme" class="theme-toggle">Dark</button>
+</nav>
+</header>
+<main class="layout">
+<aside class="sidebar">
+<h4>Chapter 06</h4>
+<ol>
+<li><a href="#intro">Orientation</a></li>
+<li><a href="#s6-1">6.1 Idèles and Idèle Classes</a></li>
+<li><a href="#s6-2">6.2 Idèles in Field Extensions</a></li>
+<li><a href="#s6-3">6.3 The Herbrand Quotient of the Idèle Class Group</a></li>
+<li><a href="#s6-4">6.4 The Class Field Axiom</a></li>
+<li><a href="#s6-5">6.5 The Global Reciprocity Law</a></li>
+<li><a href="#s6-6">6.6 Global Class Fields</a></li>
+<li><a href="#s6-7">6.7 The Ideal-Theoretic Version</a></li>
+<li><a href="#s6-8">6.8 The Reciprocity Law of the Power Residues</a></li>
+<li><a href="#summary">Summary</a></li>
+</ol>
+</aside>
+<article class="content">
+<section class="hero">
+<div class="kicker">Chapter 06</div>
+<h1>Global Class Field Theory</h1>
+<p class="subtitle" data-cid="ch06-010">The summit: we glue the local class field theories of every completion into one object — the idèle class group — and read off the abelian extensions of a number field, ending with Gauss reciprocity falling out for free.</p>
+<div class="meta">
+<span>Neukirch Chapter VI</span>
+<span>~75 min reading time</span>
+<span>Prereqs: Ch. IV (abstract class field theory, Herbrand quotient), Ch. V (local class field theory), Dirichlet's unit theorem</span>
+</div>
+</section>
+
+<h2 id="intro" data-cid="ch06-020">Orientation: what is this chapter doing?</h2>
+<p data-cid="ch06-030">
+In local class field theory (Chapter V) the hero was the multiplicative group <span class="tts-math" data-tts="K p star">$K_\mathfrak{p}^*$</span> of a local field, and the punchline was a reciprocity isomorphism between <span class="tts-math" data-tts="K p star modulo norms">$K_\mathfrak{p}^*/N L_\mathfrak{P}^*$</span> and the abelianized Galois group. The whole point of <em>global</em> class field theory is to do the same thing for a number field <span class="tts-math" data-tts="K">$K$</span> — to classify all abelian extensions of <span class="tts-math" data-tts="K">$K$</span> and describe how primes split — but a number field has <em>infinitely many</em> completions, one for each prime <span class="tts-math" data-tts="p">$\mathfrak{p}$</span>, and the answer must somehow involve all of them at once.
+</p>
+<p data-cid="ch06-040">
+The naïve guess — "use <span class="tts-math" data-tts="K star">$K^*$</span> the way we used <span class="tts-math" data-tts="K p star">$K_\mathfrak{p}^*$</span>" — fails. The reason is concrete: <span class="tts-math" data-tts="K star">$K^*$</span> by itself carries no useful topology — it is not locally compact, and as a bare group it cannot "see" all the completions <span class="tts-math" data-tts="K p">$K_\mathfrak{p}$</span> at once. The abstract machine of Chapter IV needs a <em>locally compact</em> group to run; bundling the local groups <span class="tts-math" data-tts="K p star">$K_\mathfrak{p}^*$</span> together is precisely what supplies that structure while keeping every completion in view. The right replacement is the <strong>idèle class group</strong> <span class="tts-math" data-tts="C sub K">$C_K$</span>. It is built by bundling together all the local groups <span class="tts-math" data-tts="K p star">$K_\mathfrak{p}^*$</span> into a single locally compact group (the idèle group), then quotienting by the diagonal copy of <span class="tts-math" data-tts="K star">$K^*$</span>. Almost the entire chapter is the verification that this object satisfies the <em>class field axiom</em> of Chapter IV — once it does, the abstract machine of Chapter IV hands us the reciprocity law, the existence theorem, and the classification, all at once.</p>
+<div class="box intuition" data-cid="ch06-050">
+<span class="box-label">The shape of the argument</span>
+<p data-cid="ch06-060">The chapter is one long pincer movement on a single inequality. Compute the Herbrand quotient of <span class="tts-math" data-tts="C sub L">$C_L$</span> (§3) to get <span class="tts-math" data-tts="the index of the norm group is at least n">$(C_K : N C_L) \ge n$</span>. Then bound the other direction via Kummer theory (§4) to get <span class="tts-math" data-tts="at most n">$\le n$</span>. Equality is the class field axiom, and from there Chapter IV does the rest (§5–§7). Section 8 is the victory lap: power-residue and quadratic reciprocity.</p>
+</div>
+
+<!-- ===================== 6.1 ===================== -->
+<h2 id="s6-1" data-cid="ch06-070">6.1 Idèles and Idèle Classes</h2>
+<p data-cid="ch06-080">
+The notion of idèle is a modification of the notion of ideal, introduced by Claude Chevalley to give a clean home for the <em>local-to-global principle</em>: the idea that a problem over <span class="tts-math" data-tts="K">$K$</span> should be reducible to the same problem over each completion <span class="tts-math" data-tts="K p">$K_\mathfrak{p}$</span>. The trick is to package all the completions into one object without making it absurdly large.</p>
+<div class="box definition" data-cid="ch06-090">
+<span class="box-label">Adèle ring</span>
+<p data-cid="ch06-100">An <strong>adèle</strong> of <span class="tts-math" data-tts="K">$K$</span> is a family <span class="tts-math" data-tts="alpha equals the tuple of alpha p">$\alpha = (\alpha_\mathfrak{p})$</span> with <span class="tts-math" data-tts="alpha p in K p">$\alpha_\mathfrak{p} \in K_\mathfrak{p}$</span>, where <span class="tts-math" data-tts="p">$\mathfrak{p}$</span> runs over <em>all</em> primes of <span class="tts-math" data-tts="K">$K$</span> (finite and infinite), subject to the restriction that <span class="tts-math" data-tts="alpha p is integral, that is lies in o p">$\alpha_\mathfrak{p} \in \mathfrak{o}_\mathfrak{p}$</span> for <em>almost all</em> <span class="tts-math" data-tts="p">$\mathfrak{p}$</span> (all but finitely many). With componentwise addition and multiplication these form the adèle ring</p>
+<span class="tts-math" data-tts="the adele ring A sub K is the restricted product over p of K p with respect to o p">
+$$\mathbb{A}_K = {\prod_\mathfrak{p}}' \, K_\mathfrak{p} \quad (\text{restricted product w.r.t. } \mathfrak{o}_\mathfrak{p}).$$
+</span>
+</div>
+<p data-cid="ch06-110">
+The word "restricted" is doing all the work — and it is exactly what the prime on the product symbol <span class="tts-math" data-tts="the restricted product symbol, a product sign with a prime">${\prod}'$</span> abbreviates: that apostrophe is shorthand for "all but finitely many components must be integral." If we took the full product <span class="tts-math" data-tts="the product over all p of K p">$\prod_\mathfrak{p} K_\mathfrak{p}$</span> the result would be too big and would carry the wrong (non-locally-compact) topology. The full direct sum, by contrast, is too small — it would forget the integral structure. The restricted product is the Goldilocks object: it allows finitely many components to be "large" while forcing the rest to live in the compact rings of integers.</p>
+<div class="box definition" data-cid="ch06-120">
+<span class="box-label">Idèle group</span>
+<p data-cid="ch06-130">The <strong>idèle group</strong> is the unit group of the adèle ring, <span class="tts-math" data-tts="I sub K equals A sub K star">$I_K = \mathbb{A}_K^*$</span>. Concretely an idèle is a family <span class="tts-math" data-tts="alpha equals the tuple of alpha p">$\alpha = (\alpha_\mathfrak{p})$</span> with <span class="tts-math" data-tts="alpha p in K p star">$\alpha_\mathfrak{p} \in K_\mathfrak{p}^*$</span> such that <span class="tts-math" data-tts="alpha p is a unit, lies in o p star">$\alpha_\mathfrak{p} \in \mathfrak{o}_\mathfrak{p}^*$</span> for almost all <span class="tts-math" data-tts="p">$\mathfrak{p}$</span>. It is the restricted product</p>
+<span class="tts-math" data-tts="I sub K is the restricted product over p of K p star with respect to the unit groups o p star">
+$$I_K = {\prod_\mathfrak{p}}' \, K_\mathfrak{p}^* \quad (\text{w.r.t. } \mathfrak{o}_\mathfrak{p}^*).$$
+</span>
+</div>
+<div class="box example" data-cid="ch06-135">
+<span class="box-label">A concrete idèle of <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span></span>
+<p data-cid="ch06-136">Take <span class="tts-math" data-tts="K equals Q">$K=\mathbb{Q}$</span>. The places of <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span> are the primes <span class="tts-math" data-tts="2, 3, 5, 7, and so on">$2,3,5,7,\dots$</span> together with the one infinite (real) place. Consider the idèle <span class="tts-math" data-tts="alpha">$\alpha$</span> whose components are</p>
+<span class="tts-math" data-tts="alpha at infinity equals the square root of 2, alpha at 3 equals one third, and alpha at p equals 1 for every other prime p">
+$$\alpha_\infty = \sqrt{2}\in\mathbb{R}^*, \qquad \alpha_3 = \tfrac{1}{3}\in\mathbb{Q}_3^*, \qquad \alpha_p = 1 \ \ (p\ne 3).$$
+</span>
+<p data-cid="ch06-137">This is a legitimate idèle: every component is a nonzero local number, and <span class="tts-math" data-tts="alpha p is a unit, in Z p star">$\alpha_p\in\mathbb{Z}_p^*$</span> for all but one finite prime (here only the component at <span class="tts-math" data-tts="3">$3$</span> fails to be a unit, since <span class="tts-math" data-tts="one third has 3-adic valuation minus one">$v_3(1/3)=-1$</span>). Applying the idèle-to-ideal map <span class="tts-math" data-tts="alpha maps to the product of p to the v p of alpha p">$\alpha\mapsto\prod_p p^{v_p(\alpha_p)}$</span> reads off only the finite valuations and forgets the rest, giving the fractional ideal <span class="tts-math" data-tts="3 to the minus one, that is the ideal one third">$3^{-1}=(\tfrac{1}{3})$</span>. The archimedean datum <span class="tts-math" data-tts="the square root of 2 at infinity">$\sqrt 2$</span> at infinity is exactly the information an ideal throws away.</p>
+</div>
+<div class="box warn" data-cid="ch06-140">
+<span class="box-label">Why not just use the ideal class group?</span>
+<p data-cid="ch06-150">An ideal records, for each finite prime, only an integer exponent <span class="tts-math" data-tts="v p of alpha">$v_\mathfrak{p}(\alpha)$</span> — it has thrown away the unit part and all the archimedean information. The idèle remembers the <em>whole</em> local element <span class="tts-math" data-tts="alpha p">$\alpha_\mathfrak{p}$</span> at every place, including the infinite ones. That extra data is exactly what's needed to see ramified and archimedean phenomena that the ideal class group is blind to.</p>
+</div>
+<p data-cid="ch06-160">
+For a finite set <span class="tts-math" data-tts="S">$S$</span> of primes containing all infinite places, the idèles that are units outside <span class="tts-math" data-tts="S">$S$</span> form the group of <strong>S-idèles</strong></p>
+<span class="tts-math" data-tts="I sub K superscript S equals the product over p in S of K p star, times the product over p not in S of o p star">
+$$I_K^S = \prod_{\mathfrak{p}\in S} K_\mathfrak{p}^* \times \prod_{\mathfrak{p}\notin S} \mathfrak{o}_\mathfrak{p}^*,$$
+</span>
+<p data-cid="ch06-170">and <span class="tts-math" data-tts="I sub K is the union of the I K superscript S as S grows">$I_K = \bigcup_S I_K^S$</span>. Each <span class="tts-math" data-tts="I K superscript S">$I_K^S$</span> is an honest (unrestricted) product because we've fixed where the "large" components are allowed to sit.</p>
+<div class="box definition" data-cid="ch06-180">
+<span class="box-label">Principal idèles and the idèle class group</span>
+<p data-cid="ch06-190">The <strong>diagonal embedding</strong> sends <span class="tts-math" data-tts="a in K star">$a \in K^*$</span> to the idèle whose every component is <span class="tts-math" data-tts="a">$a$</span> (viewed in <span class="tts-math" data-tts="K p">$K_\mathfrak{p}$</span> via <span class="tts-math" data-tts="K sits inside K p">$K \hookrightarrow K_\mathfrak{p}$</span>). This is injective, and its image consists of the <strong>principal idèles</strong>. The quotient</p>
+<span class="tts-math" data-tts="C sub K equals I sub K modulo K star">
+$$C_K = I_K / K^*$$
+</span>
+<p data-cid="ch06-200">is the <strong>idèle class group</strong> of <span class="tts-math" data-tts="K">$K$</span>. The class of an idèle <span class="tts-math" data-tts="alpha">$\alpha$</span> is written <span class="tts-math" data-tts="bracket alpha">$[\alpha]$</span>.</p>
+</div>
+<p data-cid="ch06-210">
+That the diagonal <span class="tts-math" data-tts="K star">$K^*$</span> makes sense as a subgroup is itself a theorem in disguise: it relies on the fact that a nonzero element of <span class="tts-math" data-tts="K">$K$</span> is a unit at almost all primes (it has only finitely many zeros and poles). So principal idèles automatically satisfy the restricted-product condition.</p>
+
+<h3 data-cid="ch06-220">From idèles back to ideals</h3>
+<p data-cid="ch06-230">
+There is a surjection from idèles to fractional ideals, <span class="tts-math" data-tts="alpha maps to the product over finite p of p to the v p of alpha p">$\alpha \mapsto (\alpha) = \prod_{\mathfrak{p}\nmid\infty} \mathfrak{p}^{v_\mathfrak{p}(\alpha_\mathfrak{p})}$</span>, sending an idèle to "what ideal it looks like." It carries principal idèles to principal ideals, and so descends to a surjection <span class="tts-math" data-tts="C sub K onto the ideal class group Cl sub K">$C_K \twoheadrightarrow \mathrm{Cl}_K$</span>. This is the bridge between the new object and the classical one.</p>
+<div class="box pause" data-cid="ch06-240">
+<span class="box-label">The dictionary, in one line</span>
+<p data-cid="ch06-250">Killing the unit information (the components at infinite places and the unit parts at finite places) turns <span class="tts-math" data-tts="C sub K">$C_K$</span> into <span class="tts-math" data-tts="the ideal class group Cl sub K">$\mathrm{Cl}_K$</span>. Precisely (Prop. 1.3), <span class="tts-math" data-tts="the ideal class group equals I sub K modulo I K to the infinity times K star">$\mathrm{Cl}_K = I_K / I_K^\infty K^*$</span>, where <span class="tts-math" data-tts="I K to the infinity">$I_K^\infty = \prod_{\mathfrak{p}\mid\infty}K_\mathfrak{p}^* \times \prod_{\mathfrak{p}\nmid\infty}\mathfrak{o}_\mathfrak{p}^*$</span> collapses everything the ideal forgets.</p>
+</div>
+<p data-cid="ch06-260">
+A useful finiteness statement (Prop. 1.4): for a large enough finite set <span class="tts-math" data-tts="S">$S$</span>, every idèle class is represented by an S-idèle, i.e. <span class="tts-math" data-tts="I sub K equals I K superscript S times K star">$I_K = I_K^S K^*$</span>. This is the idèle-theoretic shadow of the finiteness of the class number: take <span class="tts-math" data-tts="S">$S$</span> to contain the finitely many primes dividing a set of ideal-class representatives.</p>
+
+<h3 data-cid="ch06-270">Topology and the norm-one subgroup</h3>
+<p data-cid="ch06-280">
+The idèle group carries a canonical topology in which a basis of neighborhoods of <span class="tts-math" data-tts="1">$1$</span> is given by products <span class="tts-math" data-tts="the product over p in S of W p times the product over p not in S of o p star">$\prod_{\mathfrak{p}\in S} W_\mathfrak{p} \times \prod_{\mathfrak{p}\notin S}\mathfrak{o}_\mathfrak{p}^*$</span>. Because each <span class="tts-math" data-tts="o p star">$\mathfrak{o}_\mathfrak{p}^*$</span> is compact, <span class="tts-math" data-tts="I sub K">$I_K$</span> is a <strong>locally compact</strong> topological group. Crucially, this is <em>not</em> the subspace topology from <span class="tts-math" data-tts="the product of all K p">$\prod K_\mathfrak{p}$</span>; the restricted-product topology is finer, and it is what makes the inverse map continuous.</p>
+<div class="box pause" data-cid="ch06-290">
+<span class="box-label">Proposition 1.5</span>
+<p data-cid="ch06-300"><span class="tts-math" data-tts="K star">$K^*$</span> is a <strong>discrete</strong>, hence closed, subgroup of <span class="tts-math" data-tts="I sub K">$I_K$</span>. (Reminder — the <em>product formula</em>: for any nonzero <span class="tts-math" data-tts="x in K star">$x\in K^*$</span> the product of all its normalized absolute values over every place is <span class="tts-math" data-tts="1">$1$</span>, <span class="tts-math" data-tts="the product over all p of the absolute value of x at p equals 1">$\prod_\mathfrak{p}|x|_\mathfrak{p}=1$</span>. It is the global analogue of "the degree of the divisor of a rational function is <span class="tts-math" data-tts="0">$0$</span>.") The proof is the product formula in action: the neighborhood <span class="tts-math" data-tts="the set of alpha with absolute value of alpha p equal to 1 for finite p, and alpha p minus 1 small for infinite p">$\{\alpha : |\alpha_\mathfrak{p}|_\mathfrak{p}=1 \text{ for } \mathfrak{p}\nmid\infty,\ |\alpha_\mathfrak{p}-1|_\mathfrak{p}&lt;1 \text{ for } \mathfrak{p}\mid\infty\}$</span> contains no principal idèle but <span class="tts-math" data-tts="1">$1$</span>, because <span class="tts-math" data-tts="the product over all p of the absolute value of x p equals 1">$\prod_\mathfrak{p}|x|_\mathfrak{p}=1$</span> forbids a nontrivial <span class="tts-math" data-tts="x in K star">$x\in K^*$</span> from being that close to <span class="tts-math" data-tts="1">$1$</span> everywhere.</p>
+</div>
+<p data-cid="ch06-310">
+Since <span class="tts-math" data-tts="K star">$K^*$</span> is closed, the quotient <span class="tts-math" data-tts="C sub K">$C_K$</span> is again a locally compact Hausdorff group. Define the <strong>absolute norm</strong> of an idèle by <span class="tts-math" data-tts="the absolute norm of alpha equals the product over p of the absolute value of alpha p">$\mathfrak{N}(\alpha) = \prod_\mathfrak{p}|\alpha_\mathfrak{p}|_\mathfrak{p}$</span>. The product formula says <span class="tts-math" data-tts="the absolute norm of a principal idele is 1">$\mathfrak{N}(x)=1$</span> for <span class="tts-math" data-tts="x in K star">$x\in K^*$</span>, so this descends to a continuous homomorphism <span class="tts-math" data-tts="the absolute norm from C sub K to the positive reals">$\mathfrak{N}: C_K \to \mathbb{R}_+^*$</span>.</p>
+<div class="box example" data-cid="ch06-320">
+<span class="box-label">Theorem 1.6 — the key compactness</span>
+<p data-cid="ch06-330">The kernel <span class="tts-math" data-tts="C sub K to the zero">$C_K^0 = \{[\alpha]\in C_K : \mathfrak{N}([\alpha])=1\}$</span> is <strong>compact</strong>. This single fact secretly contains both the finiteness of the class number <em>and</em> the finiteness of the unit rank (Dirichlet). It is the global analogue of the compactness of <span class="tts-math" data-tts="o p star">$\mathfrak{o}_\mathfrak{p}^*$</span> in the local theory, and it is what will let the abstract class field theory machinery turn over.</p>
+</div>
+<div class="box example" data-cid="ch06-340">
+<span class="box-label">Generalized Dirichlet unit theorem (Prop. 1.1)</span>
+<p data-cid="ch06-350">For <span class="tts-math" data-tts="S">$S$</span> containing all infinite places, the map <span class="tts-math" data-tts="lambda of a equals the tuple of log absolute value of a at p, for p in S">$\lambda(a) = (\log|a|_\mathfrak{p})_{\mathfrak{p}\in S}$</span> on the S-units <span class="tts-math" data-tts="K superscript S">$K^S$</span> has kernel the roots of unity <span class="tts-math" data-tts="mu of K">$\mu(K)$</span> and image a complete lattice in the trace-zero hyperplane <span class="tts-math" data-tts="H equals the set of x with the sum of coordinates equal to zero">$H = \{(x_\mathfrak{p}) : \sum x_\mathfrak{p}=0\}$</span> of dimension <span class="tts-math" data-tts="the size of S minus 1">$\#S-1$</span>. Setting <span class="tts-math" data-tts="S equals the infinite places">$S=S_\infty$</span> recovers the classical unit theorem; allowing more primes is the S-unit version.</p>
+</div>
+
+<h3 data-cid="ch06-360">Congruence subgroups and ray class groups</h3>
+<p data-cid="ch06-370">
+The idèle class group comes with canonical subgroups that play the role of the higher unit groups <span class="tts-math" data-tts="1 plus p to the n">$U^{(n)}=1+\mathfrak{p}^n$</span> in the local theory. Fix a <strong>module</strong> <span class="tts-math" data-tts="m equals the product of p to the n p over finite primes">$\mathfrak{m} = \prod_{\mathfrak{p}\nmid\infty}\mathfrak{p}^{n_\mathfrak{p}}$</span> (an integral ideal). For each place put <span class="tts-math" data-tts="U p to the n p">$U_\mathfrak{p}^{(n_\mathfrak{p})}$</span> equal to <span class="tts-math" data-tts="1 plus p to the n p">$1+\mathfrak{p}^{n_\mathfrak{p}}$</span> at finite primes dividing <span class="tts-math" data-tts="m">$\mathfrak{m}$</span>, the positive reals at real places, and all of <span class="tts-math" data-tts="K p star">$K_\mathfrak{p}^*$</span> at complex places.</p>
+<div class="box definition" data-cid="ch06-380">
+<span class="box-label">Definition 1.7</span>
+<p data-cid="ch06-390">The <strong>congruence subgroup mod <span class="tts-math" data-tts="m">$\mathfrak{m}$</span></strong> is <span class="tts-math" data-tts="C sub K superscript m equals I K superscript m times K star modulo K star">$C_K^\mathfrak{m} = I_K^\mathfrak{m} K^* / K^*$</span>, where <span class="tts-math" data-tts="I K superscript m equals the product of the U p to the n p">$I_K^\mathfrak{m} = \prod_\mathfrak{p} U_\mathfrak{p}^{(n_\mathfrak{p})}$</span>. The quotient <span class="tts-math" data-tts="C sub K modulo C K superscript m">$C_K/C_K^\mathfrak{m}$</span> is the <strong>ray class group mod <span class="tts-math" data-tts="m">$\mathfrak{m}$</span></strong>.</p>
+</div>
+<div class="box pause" data-cid="ch06-400">
+<span class="box-label">Proposition 1.8 — why this matters</span>
+<p data-cid="ch06-410">The closed subgroups of <em>finite index</em> in <span class="tts-math" data-tts="C sub K">$C_K$</span> are precisely those containing some congruence subgroup <span class="tts-math" data-tts="C K superscript m">$C_K^\mathfrak{m}$</span>. So the congruence subgroups are cofinal (they sit below every finite-index subgroup): they give a complete overview of all the closed finite-index subgroups — and, once we have the existence theorem (§6), of all the finite abelian extensions of <span class="tts-math" data-tts="K">$K$</span>.</p>
+</div>
+<div class="box example" data-cid="ch06-420">
+<span class="box-label">The ray class group of <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span> (Prop. 1.10)</span>
+<p data-cid="ch06-430">For <span class="tts-math" data-tts="K equals Q">$K=\mathbb{Q}$</span> and module <span class="tts-math" data-tts="m equals the ideal m">$\mathfrak{m}=(m)$</span>, the ray class group is</p>
+<span class="tts-math" data-tts="C Q modulo C Q superscript m is isomorphic to the unit group of Z mod m Z">
+$$C_\mathbb{Q}/C_\mathbb{Q}^\mathfrak{m} \;\cong\; (\mathbb{Z}/m\mathbb{Z})^*.$$
+</span>
+<p data-cid="ch06-440">This is no accident: <span class="tts-math" data-tts="the unit group of Z mod m Z">$(\mathbb{Z}/m\mathbb{Z})^*$</span> is the Galois group <span class="tts-math" data-tts="of Q of the m-th roots of unity over Q">$G(\mathbb{Q}(\mu_m)|\mathbb{Q})$</span> of the cyclotomic field. So the cyclotomic fields <em>are</em> the ray class fields of <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span>. The entire chapter is, in one sense, the generalization of this single isomorphism to arbitrary number fields.</p>
+</div>
+<p data-cid="ch06-450">
+There is also a purely ideal-theoretic description (Prop. 1.9): if <span class="tts-math" data-tts="J K superscript m">$J_K^\mathfrak{m}$</span> is the group of fractional ideals prime to <span class="tts-math" data-tts="m">$\mathfrak{m}$</span> and <span class="tts-math" data-tts="P K superscript m">$P_K^\mathfrak{m}$</span> the principal ones generated by <span class="tts-math" data-tts="a congruent to 1 mod m and totally positive">$a\equiv 1\bmod\mathfrak{m}$</span> totally positive, then <span class="tts-math" data-tts="C sub K modulo C K superscript m is isomorphic to J K superscript m modulo P K superscript m">$C_K/C_K^\mathfrak{m} \cong J_K^\mathfrak{m}/P_K^\mathfrak{m}$</span>. We return to this in §7.</p>
+
+<!-- ===================== 6.2 ===================== -->
+<h2 id="s6-2" data-cid="ch06-460">6.2 Idèles in Field Extensions</h2>
+<p data-cid="ch06-470">
+To do class field theory we must track idèles as we move up a finite extension <span class="tts-math" data-tts="L over K">$L|K$</span>. There are two operations: an inclusion <span class="tts-math" data-tts="I sub K into I sub L">$I_K\hookrightarrow I_L$</span> and a norm <span class="tts-math" data-tts="N from I sub L to I sub K">$N_{L|K}: I_L\to I_K$</span>.</p>
+<div class="box definition" data-cid="ch06-480">
+<span class="box-label">The inclusion</span>
+<p data-cid="ch06-490">An idèle <span class="tts-math" data-tts="alpha equals the tuple alpha p of K">$\alpha=(\alpha_\mathfrak{p})$</span> of <span class="tts-math" data-tts="K">$K$</span> becomes the idèle of <span class="tts-math" data-tts="L">$L$</span> whose component at a prime <span class="tts-math" data-tts="P above p">$\mathfrak{P}\mid\mathfrak{p}$</span> is <span class="tts-math" data-tts="alpha p viewed in L sub P via the inclusion K p into L P">$\alpha_\mathfrak{p}\in K_\mathfrak{p}\hookrightarrow L_\mathfrak{P}$</span>. So <span class="tts-math" data-tts="alpha at P equals alpha p whenever P lies above p">$\alpha'_\mathfrak{P} = \alpha_\mathfrak{p}$</span> for all <span class="tts-math" data-tts="P above p">$\mathfrak{P}\mid\mathfrak{p}$</span>. An idèle of <span class="tts-math" data-tts="L">$L$</span> lies in <span class="tts-math" data-tts="I sub K">$I_K$</span> exactly when its components are constant on each fiber above a prime of <span class="tts-math" data-tts="K">$K$</span> and lie in <span class="tts-math" data-tts="K p">$K_\mathfrak{p}$</span>.</p>
+</div>
+<div class="box pause" data-cid="ch06-500">
+<span class="box-label">Proposition 2.1 — Galois descent for idèles</span>
+<p data-cid="ch06-510">If <span class="tts-math" data-tts="L over K">$L|K$</span> is Galois with group <span class="tts-math" data-tts="G">$G$</span>, then the fixed points of the <span class="tts-math" data-tts="G">$G$</span>-action on idèles are exactly the idèles of the base: <span class="tts-math" data-tts="I sub L to the G equals I sub K">$I_L^G = I_K$</span>. The action permutes the primes above each <span class="tts-math" data-tts="p">$\mathfrak{p}$</span>, and a fixed idèle must be constant on each fiber with values in <span class="tts-math" data-tts="K p">$K_\mathfrak{p}$</span> — i.e. it comes from <span class="tts-math" data-tts="K">$K$</span>.</p>
+</div>
+<p data-cid="ch06-520">
+The cleanest viewpoint groups primes by their place below. Writing <span class="tts-math" data-tts="L sub p equals the product over P above p of L P">$L_\mathfrak{p} = \prod_{\mathfrak{P}\mid\mathfrak{p}}L_\mathfrak{P}$</span>, this is a <span class="tts-math" data-tts="K p">$K_\mathfrak{p}$</span>-algebra of degree <span class="tts-math" data-tts="L over K">$[L:K]$</span>, and in fact <span class="tts-math" data-tts="L sub p is isomorphic to K p tensor K with L">$L_\mathfrak{p}\cong K_\mathfrak{p}\otimes_K L$</span>. This gives the slick identity</p>
+<span class="tts-math" data-tts="the adele ring of L equals the adele ring of K tensored over K with L">
+$$\mathbb{A}_L = \mathbb{A}_K \otimes_K L,$$
+</span>
+<p data-cid="ch06-530">under which the inclusion <span class="tts-math" data-tts="A sub K into A sub L">$\mathbb{A}_K\hookrightarrow\mathbb{A}_L$</span> is just <span class="tts-math" data-tts="a maps to a tensor 1">$a\mapsto a\otimes 1$</span>. This "back-and-forth-free" formalism is convenient and we'll lean on it.</p>
+<div class="box definition" data-cid="ch06-540">
+<span class="box-label">The idèle norm (Prop. 2.2)</span>
+<p data-cid="ch06-550">The norm <span class="tts-math" data-tts="N from I sub L to I sub K">$N_{L|K}: I_L\to I_K$</span> is assembled from local norms: the <span class="tts-math" data-tts="p">$\mathfrak{p}$</span>-component of <span class="tts-math" data-tts="the norm of alpha">$N_{L|K}(\alpha)$</span> is</p>
+<span class="tts-math" data-tts="the norm of alpha at p equals the product over P above p of the local norm from L P to K p of alpha at P">
+$$N_{L|K}(\alpha)_\mathfrak{p} = \prod_{\mathfrak{P}\mid\mathfrak{p}} N_{L_\mathfrak{P}|K_\mathfrak{p}}(\alpha_\mathfrak{P}).$$
+</span>
+</div>
+<p data-cid="ch06-560">
+The norm has all the expected properties (Prop. 2.3): it is transitive in towers, it equals <span class="tts-math" data-tts="the product over G mod H of sigma alpha">$\prod_{\sigma\in G/H}\sigma\alpha$</span> in the Galois case, it sends <span class="tts-math" data-tts="alpha to alpha to the L over K">$\alpha\mapsto\alpha^{[L:K]}$</span> on idèles already in <span class="tts-math" data-tts="I sub K">$I_K$</span>, and on a principal idèle <span class="tts-math" data-tts="x in L star">$x\in L^*$</span> it gives the principal idèle of the usual field norm <span class="tts-math" data-tts="the norm of x">$N_{L|K}(x)$</span>. Because it respects principal idèles, it descends to a norm on idèle class groups <span class="tts-math" data-tts="N from C sub L to C sub K">$N_{L|K}: C_L\to C_K$</span>.</p>
+<div class="box example" data-cid="ch06-570">
+<span class="box-label">Two descent facts for classes</span>
+<p data-cid="ch06-580"><strong>Prop. 2.4:</strong> the inclusion induces an <em>injection</em> <span class="tts-math" data-tts="C sub K into C sub L">$C_K\hookrightarrow C_L$</span> — the idèle class group only grows in extensions. <strong>Prop. 2.5 (Galois descent):</strong> for <span class="tts-math" data-tts="L over K">$L|K$</span> Galois, <span class="tts-math" data-tts="C sub L to the G equals C sub K">$C_L^G = C_K$</span>. This second one is genuinely subtle: surjectivity of <span class="tts-math" data-tts="I sub L to the G onto C sub L to the G">$I_L^G\to C_L^G$</span> uses <strong>Hilbert 90</strong> to trivialize a crossed homomorphism. Contrast with the ideal class group, which famously does <em>not</em> have Galois descent.</p>
+</div>
+<div class="box intuition" data-cid="ch06-585">
+<span class="box-label">Reminder — what Hilbert 90 says</span>
+<p data-cid="ch06-586"><strong>Hilbert 90</strong> is the vanishing statement <span class="tts-math" data-tts="H to the minus one of G acting on L star is trivial">$\hat H^{-1}(G, L^*)=1$</span>: for a cyclic <span class="tts-math" data-tts="L over K">$L|K$</span> with generator <span class="tts-math" data-tts="sigma">$\sigma$</span>, every element of <span class="tts-math" data-tts="L star">$L^*$</span> of norm <span class="tts-math" data-tts="1">$1$</span> has the form <span class="tts-math" data-tts="sigma of x over x">$\sigma x / x$</span>. Here it kills the obstruction because the failure of an element to come from the base is measured by such a crossed homomorphism — and Hilbert 90 says every one of those is a coboundary, i.e. trivial, so the descent goes through.</p>
+</div>
+
+<!-- ===================== 6.3 ===================== -->
+<h2 id="s6-3" data-cid="ch06-590">6.3 The Herbrand Quotient of the Idèle Class Group</h2>
+<p data-cid="ch06-600">
+Goal: show <span class="tts-math" data-tts="C sub K">$C_K$</span> satisfies the class field axiom of Chapter IV. The first half is to compute the <strong>Herbrand quotient</strong> <span class="tts-math" data-tts="h of G acting on C sub L">$h(G,C_L)$</span> for a cyclic <span class="tts-math" data-tts="L over K">$L|K$</span>. We do it by splitting <span class="tts-math" data-tts="C sub L">$C_L$</span> into idèle and unit pieces and using the exact sequence <span class="tts-math" data-tts="1 to L star to I sub L to C sub L to 1">$1\to L^*\to I_L\to C_L\to 1$</span>.</p>
+<div class="box intuition" data-cid="ch06-604">
+<span class="box-label">Reminder — the Herbrand quotient</span>
+<p data-cid="ch06-606">For a cyclic group <span class="tts-math" data-tts="G">$G$</span> acting on a module <span class="tts-math" data-tts="A">$A$</span>, the <strong>Herbrand quotient</strong> is the ratio of the orders of the two Tate cohomology groups,</p>
+<span class="tts-math" data-tts="h of G acting on A equals the order of H zero divided by the order of H minus one">
+$$h(G,A) = \frac{\#\hat H^0(G,A)}{\#\hat H^{-1}(G,A)}.$$
+</span>
+<p data-cid="ch06-608">Two properties carry the whole computation. First, it is <strong>multiplicative across exact sequences</strong>: given <span class="tts-math" data-tts="1 to A to B to C to 1">$1\to A\to B\to C\to 1$</span> one has <span class="tts-math" data-tts="h of B equals h of A times h of C">$h(B)=h(A)\,h(C)$</span> — this is exactly why, when we divide the idèle piece by the unit piece below, the <em>local factors cancel</em>. Second, it is <strong>unchanged on passing to a finite-index sublattice</strong>, which lets us replace an awkward lattice by a convenient induced one without changing the answer.</p>
+</div>
+<div class="box intuition" data-cid="ch06-610">
+<span class="box-label">Why everything localizes — induced modules</span>
+<p data-cid="ch06-620">The decisive structural fact (Prop. 3.1) is that for each place <span class="tts-math" data-tts="p">$\mathfrak{p}$</span> of <span class="tts-math" data-tts="K">$K$</span>, the local factor <span class="tts-math" data-tts="L p star equals the product over P above p of L P star">$L_\mathfrak{p}^* = \prod_{\mathfrak{P}\mid\mathfrak{p}}L_\mathfrak{P}^*$</span> is an <strong>induced</strong> <span class="tts-math" data-tts="G">$G$</span>-module: <span class="tts-math" data-tts="L p star equals the induced module from the decomposition group G P up to G of L P star">$L_\mathfrak{p}^* = \mathrm{Ind}_{G_\mathfrak{P}}^G(L_\mathfrak{P}^*)$</span>. Here the <strong>decomposition group</strong> <span class="tts-math" data-tts="G P">$G_\mathfrak{P}$</span> is the stabilizer of a chosen prime <span class="tts-math" data-tts="P">$\mathfrak{P}$</span> above <span class="tts-math" data-tts="p">$\mathfrak{p}$</span> — the automorphisms fixing <span class="tts-math" data-tts="P">$\mathfrak{P}$</span> as a set — and it is canonically the <em>local</em> Galois group <span class="tts-math" data-tts="G P is isomorphic to the Galois group of L P over K p">$G_\mathfrak{P}\cong G(L_\mathfrak{P}|K_\mathfrak{p})$</span>. <strong>Shapiro's lemma</strong> says the cohomology of an induced module equals the cohomology of the subgroup it was induced from: <span class="tts-math" data-tts="the cohomology of G acting on the induced module equals the cohomology of G P acting on L P star">$\hat H^i(G,\mathrm{Ind}_{G_\mathfrak{P}}^G L_\mathfrak{P}^*)\cong\hat H^i(G_\mathfrak{P},L_\mathfrak{P}^*)$</span>. So the global cohomology collapses into a sum of <em>local</em> cohomologies, one per place — this is where the local-to-global magic happens.</p>
+</div>
+<p data-cid="ch06-630">
+Consequently (Prop. 3.2), for a cyclic extension and <span class="tts-math" data-tts="S">$S$</span> containing all ramified primes,</p>
+<span class="tts-math" data-tts="the i-th Tate cohomology of G acting on I sub L equals the direct sum over p of the i-th cohomology of the decomposition group G P acting on L P star">
+$$\hat H^i(G, I_L) = \bigoplus_\mathfrak{p} \hat H^i(G_\mathfrak{P}, L_\mathfrak{P}^*).$$
+</span>
+<p data-cid="ch06-640">
+Two payoffs drop out immediately. First, <span class="tts-math" data-tts="H to the minus 1 of G acting on I L is trivial">$\hat H^{-1}(G,I_L)=1$</span> by Hilbert 90 locally. Second, <span class="tts-math" data-tts="H to the zero">$\hat H^0$</span> gives the <strong>norm-locally-everywhere</strong> principle for idèles:</p>
+<div class="box pause" data-cid="ch06-650">
+<span class="box-label">Local norms patch to global idèle norms</span>
+<p data-cid="ch06-660">An idèle <span class="tts-math" data-tts="alpha of K">$\alpha\in I_K$</span> is a norm from <span class="tts-math" data-tts="I sub L">$I_L$</span> if and only if every component <span class="tts-math" data-tts="alpha p">$\alpha_\mathfrak{p}$</span> is locally a norm from <span class="tts-math" data-tts="L P over K p">$L_\mathfrak{P}|K_\mathfrak{p}$</span>. That is, <span class="tts-math" data-tts="I sub K modulo the idele norm of I sub L equals the direct sum of the local norm quotients">$I_K/N_{L|K}I_L = \bigoplus_\mathfrak{p} K_\mathfrak{p}^*/N L_\mathfrak{P}^*$</span>.</p>
+</div>
+<p data-cid="ch06-670">
+By local class field theory each local factor has order <span class="tts-math" data-tts="n p equals the local degree">$n_\mathfrak{p}=[L_\mathfrak{P}:K_\mathfrak{p}]$</span>, so the Herbrand quotient of the S-idèles is (Prop. 3.3) <span class="tts-math" data-tts="h of G on I K superscript S equals the product over p in S of n p">$h(G,I_K^S) = \prod_{\mathfrak{p}\in S} n_\mathfrak{p}$</span>.</p>
+<div class="box example" data-cid="ch06-680">
+<span class="box-label">The unit part (Prop. 3.5)</span>
+<p data-cid="ch06-690">The Herbrand quotient of the group of S-units is</p>
+<span class="tts-math" data-tts="h of G on L superscript S equals one over n times the product over p in S of n p">
+$$h(G, L^S) = \frac{1}{n}\prod_{\mathfrak{p}\in S} n_\mathfrak{p}.$$
+</span>
+<p data-cid="ch06-700">The proof realizes the lattice of S-units (via the logarithm map of §1) inside an explicit permutation representation, then uses a lattice lemma (3.4) to replace it by an induced sublattice of finite index, where the Herbrand quotient is computable place-by-place. The lone factor <span class="tts-math" data-tts="one over n">$1/n$</span> comes from splitting off a trivial <span class="tts-math" data-tts="Z">$\mathbb{Z}$</span> (the "trace zero" constraint).</p>
+</div>
+<div class="box definition" data-cid="ch06-710">
+<span class="box-label">Theorem 3.6 — the Herbrand quotient of <span class="tts-math" data-tts="C sub L">$C_L$</span></span>
+<p data-cid="ch06-720">Dividing the idèle quotient by the unit quotient (using <span class="tts-math" data-tts="C sub L equals I L superscript S modulo L superscript S">$1\to L^S\to I_L^S\to C_L\to 1$</span>) and the multiplicativity of the Herbrand quotient, the local factors cancel perfectly. Writing it out, with <span class="tts-math" data-tts="h of the S-idele part equal to the product over p in S of n p">$h(I_L^S)=\prod_{\mathfrak{p}\in S}n_\mathfrak{p}$</span> (Prop. 3.3) and <span class="tts-math" data-tts="h of the S-unit part equal to one over n times that same product">$h(L^S)=\tfrac1n\prod_{\mathfrak{p}\in S}n_\mathfrak{p}$</span> (Prop. 3.5):</p>
+<span class="tts-math" data-tts="h of C sub L equals h of the S-idele part divided by h of the S-unit part, equals the product of n p divided by one over n times the product of n p, and the products cancel leaving n">
+$$h(C_L) = \frac{h(I_L^S)}{h(L^S)} = \frac{\displaystyle\prod_{\mathfrak{p}\in S}n_\mathfrak{p}}{\ \dfrac{1}{n}\displaystyle\prod_{\mathfrak{p}\in S}n_\mathfrak{p}\ } = n.$$
+</span>
+<p data-cid="ch06-722">The entire product <span class="tts-math" data-tts="the product over p in S of n p">$\prod_{\mathfrak{p}\in S}n_\mathfrak{p}$</span> — all the local data — divides out top against bottom, and only the lone <span class="tts-math" data-tts="one over n">$1/n$</span> from the unit part survives, flipped up to give <span class="tts-math" data-tts="n">$n$</span>. So</p>
+<span class="tts-math" data-tts="h of G acting on C sub L equals the order of H zero divided by the order of H minus one equals n equals the degree L over K">
+$$h(G,C_L) = \frac{\#\hat H^0(G,C_L)}{\#\hat H^{-1}(G,C_L)} = n = [L:K].$$
+</span>
+<p data-cid="ch06-730">In particular <span class="tts-math" data-tts="the index of the norm group, C sub K mod N C sub L, is at least n">$(C_K : N_{L|K}C_L) \ge n$</span>. This is the "<span class="tts-math" data-tts="greater than or equal">$\ge$</span>" half of the class field axiom.</p>
+</div>
+<div class="box example" data-cid="ch06-740">
+<span class="box-label">A free corollary: nonsplit primes exist (Cor. 3.7, 3.8)</span>
+<p data-cid="ch06-750">If <span class="tts-math" data-tts="L over K">$L|K$</span> is cyclic of prime-power degree, there are <em>infinitely many</em> primes of <span class="tts-math" data-tts="K">$K$</span> that do not split in <span class="tts-math" data-tts="L">$L$</span> (3.7). Sharper (3.8): <strong>if almost all primes of <span class="tts-math" data-tts="K">$K$</span> split completely in <span class="tts-math" data-tts="L">$L$</span>, then <span class="tts-math" data-tts="L equals K">$L=K$</span>.</strong> A number field is determined by its set of completely-split primes — a quiet but powerful rigidity statement we'll use repeatedly.</p>
+</div>
+
+<!-- ===================== 6.4 ===================== -->
+<h2 id="s6-4" data-cid="ch06-760">6.4 The Class Field Axiom</h2>
+<p data-cid="ch06-770">
+We have <span class="tts-math" data-tts="the index is at least n">$(C_K : NC_L)\ge n$</span> from the Herbrand quotient. The class field axiom demands equality, so we need the reverse: <span class="tts-math" data-tts="the order of H zero divides n">$\#\hat H^0(G,C_L)\mid n$</span>. Attacking <span class="tts-math" data-tts="H to the minus one">$\hat H^{-1}$</span> directly is hopeless, so the strategy is to compute <span class="tts-math" data-tts="H zero">$\hat H^0$</span> explicitly in the one case we can — a <strong>Kummer extension</strong> — and then bootstrap to the general cyclic case by induction.</p>
+<div class="box intuition" data-cid="ch06-780">
+<span class="box-label">Why Kummer extensions?</span>
+<p data-cid="ch06-790">If <span class="tts-math" data-tts="K">$K$</span> contains the <span class="tts-math" data-tts="n-th">$n$</span>-th roots of unity, every abelian extension of exponent <span class="tts-math" data-tts="n">$n$</span> is <span class="tts-math" data-tts="K adjoin n-th roots of elements">$K(\sqrt[n]{\Delta})$</span> for some subgroup <span class="tts-math" data-tts="capital Delta">$\Delta\subseteq K^*$</span> (Kummer theory). The simplest case makes this concrete: for <span class="tts-math" data-tts="n equals 2">$n=2$</span>, the extensions of exponent <span class="tts-math" data-tts="2">$2$</span> are exactly the quadratic fields <span class="tts-math" data-tts="K adjoin the square root of d">$K(\sqrt d)$</span>, one for each class <span class="tts-math" data-tts="d in K star modulo squares">$d\in K^*/(K^*)^2$</span> — so the "subgroup <span class="tts-math" data-tts="capital Delta">$\Delta$</span>" is just a choice of square classes. The hypothesis that <span class="tts-math" data-tts="K contains the n-th roots of unity">$\mu_n\subseteq K$</span> is what makes this clean: it guarantees that adjoining one <span class="tts-math" data-tts="n-th">$n$</span>-th root of <span class="tts-math" data-tts="d">$d$</span> brings along all of them (since they differ by roots of unity already in <span class="tts-math" data-tts="K">$K$</span>), so <span class="tts-math" data-tts="K adjoin the n-th root of d">$K(\sqrt[n]{d})$</span> is Galois with cyclic group. This makes the norm group <em>computable</em>: it can be pinned down by congruence conditions at finitely many places.</p>
+</div>
+<p data-cid="ch06-800">
+Setup: <span class="tts-math" data-tts="K">$K$</span> contains the <span class="tts-math" data-tts="n-th">$n$</span>-th roots of unity (<span class="tts-math" data-tts="n">$n$</span> a prime power), <span class="tts-math" data-tts="L over K">$L|K$</span> has group <span class="tts-math" data-tts="Z mod n Z to the r">$(\mathbb{Z}/n\mathbb{Z})^r$</span>. Choosing <span class="tts-math" data-tts="S">$S$</span> large (Prop. 4.1), one finds a set <span class="tts-math" data-tts="T">$T$</span> of <span class="tts-math" data-tts="s minus r">$s-r$</span> auxiliary primes outside <span class="tts-math" data-tts="S">$S$</span> with <span class="tts-math" data-tts="L equals K adjoin the n-th root of capital Delta">$L = K(\sqrt[n]{\Delta})$</span>, where <span class="tts-math" data-tts="capital Delta">$\Delta$</span> is the kernel of the map from S-units into <span class="tts-math" data-tts="the product over p in T of K p star modulo K p star to the n">$\prod_{\mathfrak{p}\in T}K_\mathfrak{p}^*/K_\mathfrak{p}^{*n}$</span>.</p>
+<div class="box definition" data-cid="ch06-810">
+<span class="box-label">Theorem 4.2 — the norm group, explicitly</span>
+<p data-cid="ch06-820">With <span class="tts-math" data-tts="C sub K of S and T">$C_K(S,T) = I_K(S,T)K^*/K^*$</span> built from the idèle group <span class="tts-math" data-tts="I sub K of S T equals the product of K p star to the n over S, times K p star over T, times units elsewhere">$I_K(S,T) = \prod_{\mathfrak{p}\in S}K_\mathfrak{p}^{*n}\times\prod_{\mathfrak{p}\in T}K_\mathfrak{p}^*\times\prod_{\mathfrak{p}\notin S\cup T}\mathfrak{o}_\mathfrak{p}^*$</span>, one has</p>
+<span class="tts-math" data-tts="N C sub L is contained in C K of S T, and the index of C K of S T in C K is the degree L over K">
+$$N_{L|K}C_L \subseteq C_K(S,T), \qquad (C_K : C_K(S,T)) = [L:K].$$
+</span>
+<p data-cid="ch06-830">For <span class="tts-math" data-tts="L over K">$L|K$</span> cyclic these coincide: <span class="tts-math" data-tts="N C sub L equals C K of S T">$N_{L|K}C_L = C_K(S,T)$</span>. The index computation is a careful count of local indices; the inclusion uses that each local component is visibly a norm (an <span class="tts-math" data-tts="n-th">$n$</span>-th power at <span class="tts-math" data-tts="S">$S$</span>, a unit in an unramified extension elsewhere).</p>
+</div>
+<div class="box definition" data-cid="ch06-840">
+<span class="box-label">Theorem 4.4 — the Global Class Field Axiom</span>
+<p data-cid="ch06-850">For every cyclic extension <span class="tts-math" data-tts="L over K">$L|K$</span> of number fields,</p>
+<span class="tts-math" data-tts="the order of the i-th Tate cohomology of G acting on C sub L equals the degree L over K when i is zero, and equals 1 when i is minus one">
+$$\#\hat H^i(G, C_L) = \begin{cases} [L:K] & i=0,\\ 1 & i=-1.\end{cases}$$
+</span>
+<p data-cid="ch06-860">The proof reduces an arbitrary cyclic <span class="tts-math" data-tts="L over K">$L|K$</span> to prime-degree steps; in the hard prime-degree case it passes to <span class="tts-math" data-tts="K prime equals K adjoin the p-th roots of unity">$K' = K(\mu_p)$</span> to make a Kummer extension, where 4.2 applies, then descends via a norm/transfer argument.</p>
+</div>
+<div class="box example" data-cid="ch06-870">
+<span class="box-label">Corollary 4.5 — the Hasse Norm Theorem</span>
+<p data-cid="ch06-880">For <span class="tts-math" data-tts="L over K">$L|K$</span> <em>cyclic</em>, an element <span class="tts-math" data-tts="x in K star">$x\in K^*$</span> is a global norm from <span class="tts-math" data-tts="L">$L$</span> if and only if it is a norm <strong>locally everywhere</strong> (a norm in each completion <span class="tts-math" data-tts="L P over K p">$L_\mathfrak{P}|K_\mathfrak{p}$</span>). This is the cleanest possible local-to-global statement and follows immediately from <span class="tts-math" data-tts="H to the minus one of C sub L is trivial">$\hat H^{-1}(G,C_L)=1$</span> feeding into the long exact sequence.</p>
+</div>
+<div class="box warn" data-cid="ch06-890">
+<span class="box-label">Cyclicity is essential</span>
+<p data-cid="ch06-900">For a non-cyclic abelian extension the Hasse norm theorem can fail: a global element that is everywhere locally a norm need only be the norm of an <em>idèle</em>, not of a principal idèle. The classic counterexample lives in <span class="tts-math" data-tts="Q adjoin the square roots of 13 and 17">$\mathbb{Q}(\sqrt{13},\sqrt{17})$</span>. The cohomological reason: <span class="tts-math" data-tts="H to the minus one">$\hat H^{-1}$</span> need not vanish for non-cyclic groups.</p>
+</div>
+
+<!-- ===================== 6.5 ===================== -->
+<h2 id="s6-5" data-cid="ch06-910">6.5 The Global Reciprocity Law</h2>
+<p data-cid="ch06-920">
+Now that <span class="tts-math" data-tts="C sub K">$C_K$</span> satisfies the class field axiom, Chapter IV's abstract machine applies — but it needs a starting datum: a pair <span class="tts-math" data-tts="d from the Galois group to Z hat, and v from C sub Q to Z hat">$(d: G_\mathbb{Q}\to\hat{\mathbb{Z}},\ v: C_\mathbb{Q}\to\hat{\mathbb{Z}})$</span> obeying the rules of abstract class field theory. We build it over <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span> using a canonical <span class="tts-math" data-tts="Z hat">$\hat{\mathbb{Z}}$</span>-extension.</p>
+<div class="box definition" data-cid="ch06-930">
+<span class="box-label">The base <span class="tts-math" data-tts="Z hat">$\hat{\mathbb{Z}}$</span>-extension (Prop. 5.1)</span>
+<p data-cid="ch06-940">Reminder: <span class="tts-math" data-tts="Z hat">$\hat{\mathbb{Z}}$</span> is the ring of <strong>profinite integers</strong>, <span class="tts-math" data-tts="Z hat is the inverse limit of Z mod n, isomorphic to the product over all primes p of the p-adic integers Z p">$\hat{\mathbb{Z}}=\varprojlim\mathbb{Z}/n\mathbb{Z}\cong\prod_p\mathbb{Z}_p$</span>. Abstract class field theory (Chapter IV) needs a base extension whose Galois group is <span class="tts-math" data-tts="Z hat">$\hat{\mathbb{Z}}$</span> precisely because <span class="tts-math" data-tts="Z hat">$\hat{\mathbb{Z}}$</span> is what supports the degree map <span class="tts-math" data-tts="d">$d$</span> and the Frobenius — its quotients <span class="tts-math" data-tts="Z hat mod n is Z mod n">$\hat{\mathbb{Z}}/n\cong\mathbb{Z}/n$</span> give one cyclic layer of each degree, the global stand-in for "the unramified extensions" of the local theory. Concretely the cyclotomic layers do the job: <span class="tts-math" data-tts="the Galois group of Q of the m-th roots of unity over Q is the unit group of Z mod m">$G(\mathbb{Q}(\mu_m)|\mathbb{Q})\cong(\mathbb{Z}/m\mathbb{Z})^*$</span>. Adjoin all roots of unity to get <span class="tts-math" data-tts="Omega over Q">$\Omega|\mathbb{Q}$</span> with <span class="tts-math" data-tts="Galois group Z hat star">$G(\Omega|\mathbb{Q})=\hat{\mathbb{Z}}^*$</span>. Quotient by the torsion subgroup: the fixed field <span class="tts-math" data-tts="tilde Q over Q">$\tilde{\mathbb{Q}}|\mathbb{Q}$</span> is a <span class="tts-math" data-tts="Z hat">$\hat{\mathbb{Z}}$</span>-extension, <span class="tts-math" data-tts="G of tilde Q over Q is isomorphic to Z hat">$G(\tilde{\mathbb{Q}}|\mathbb{Q})\cong\hat{\mathbb{Z}}$</span>. Fix one such isomorphism — there is no canonical choice, but the reciprocity law won't depend on it. For a finite <span class="tts-math" data-tts="K over Q">$K|\mathbb{Q}$</span>, <span class="tts-math" data-tts="K tilde over K">$\tilde K = K\tilde{\mathbb{Q}}$</span> is the <strong>cyclotomic <span class="tts-math" data-tts="Z hat">$\hat{\mathbb{Z}}$</span>-extension</strong> of <span class="tts-math" data-tts="K">$K$</span>.</p>
+</div>
+<div class="box definition" data-cid="ch06-950">
+<span class="box-label">The global norm residue symbol — local pieces glued</span>
+<p data-cid="ch06-960">For a finite abelian <span class="tts-math" data-tts="L over K">$L|K$</span>, define <span class="tts-math" data-tts="the symbol bracket alpha, L over K">$[\alpha, L|K]: I_K\to G(L|K)$</span> as the product of <em>local</em> norm residue symbols:</p>
+<span class="tts-math" data-tts="bracket alpha L over K equals the product over p of the local symbol alpha p, L P over K p">
+$$[\alpha, L|K] = \prod_\mathfrak{p}(\alpha_\mathfrak{p}, L_\mathfrak{P}|K_\mathfrak{p}).$$
+</span>
+<p data-cid="ch06-970">Almost all factors are <span class="tts-math" data-tts="1">$1$</span> because almost all <span class="tts-math" data-tts="L P over K p">$L_\mathfrak{P}|K_\mathfrak{p}$</span> are unramified and almost all <span class="tts-math" data-tts="alpha p">$\alpha_\mathfrak{p}$</span> are units, so the product converges.</p>
+</div>
+<div class="box pause" data-cid="ch06-980">
+<span class="box-label">Proposition 5.3 — the crucial vanishing</span>
+<p data-cid="ch06-990">For every root of unity <span class="tts-math" data-tts="zeta">$\zeta$</span> and every <em>principal</em> idèle <span class="tts-math" data-tts="a in K star">$a\in K^*$</span>, one has <span class="tts-math" data-tts="bracket a, K adjoin zeta over K equals 1">$[a, K(\zeta)|K]=1$</span>. The proof reduces to <span class="tts-math" data-tts="K equals Q">$K=\mathbb{Q}$</span> and a prime-power root of unity, where it becomes an explicit and beautiful computation: the Frobenius contributions at the unramified primes, the wild contribution at <span class="tts-math" data-tts="the prime ell">$\ell$</span>, and the sign at infinity all <strong>multiply to <span class="tts-math" data-tts="1">$1$</span></strong> — precisely the product formula <span class="tts-math" data-tts="a equals the sign of a times the product of p to the valuation of a">$a = \mathrm{sgn}(a)\prod p^{v_p(a)}$</span> in disguise. We flag this as a computation to <em>take on faith</em> here: the honest verification is a careful place-by-place tally (one term per prime dividing <span class="tts-math" data-tts="a">$a$</span>, one wild term, one sign), and the punchline is simply that it reassembles the product formula. Read it as "the product formula reappearing" and move on — the structure, not the bookkeeping, is the point.</p>
+</div>
+<p data-cid="ch06-1000">
+Because <span class="tts-math" data-tts="K tilde over K">$\tilde K|K$</span> sits inside the field of all roots of unity, Prop. 5.3 gives <span class="tts-math" data-tts="bracket a, K tilde over K equals 1">$[a,\tilde K|K]=1$</span> for principal <span class="tts-math" data-tts="a">$a$</span>. So the symbol descends to <span class="tts-math" data-tts="C sub K">$C_K$</span>, and composing with <span class="tts-math" data-tts="d sub K">$d_K$</span> gives the henselian valuation <span class="tts-math" data-tts="v sub K from C sub K to Z hat">$v_K: C_K\to\hat{\mathbb{Z}}$</span> (Prop. 5.4). Surjectivity uses the rigidity Cor. 3.8 (split-completely-implies-trivial); the splitting <span class="tts-math" data-tts="C sub K equals C K zero times the positive reals">$C_K = C_K^0\times\mathbb{R}_+^*$</span> uses the compactness of <span class="tts-math" data-tts="C K zero">$C_K^0$</span> from Theorem 1.6.</p>
+<div class="box definition" data-cid="ch06-1010">
+<span class="box-label">Theorem 5.5 — Artin Reciprocity</span>
+<p data-cid="ch06-1020">For every <strong>finite Galois</strong> extension <span class="tts-math" data-tts="L over K">$L|K$</span> of number fields there is a canonical isomorphism</p>
+<span class="tts-math" data-tts="r sub L over K, from the abelianized Galois group of L over K, to C sub K modulo the norm group N C sub L">
+$$r_{L|K}: G(L|K)^{\mathrm{ab}} \;\xrightarrow{\ \sim\ }\; C_K / N_{L|K}C_L.$$
+</span>
+<p data-cid="ch06-1030">Its inverse is the surjective <strong>global norm residue symbol</strong> <span class="tts-math" data-tts="the symbol open paren comma L over K close paren from C sub K onto the abelianized Galois group">$(\,\cdot\,, L|K): C_K \to G(L|K)^{\mathrm{ab}}$</span> with kernel exactly <span class="tts-math" data-tts="N C sub L">$N_{L|K}C_L$</span>. This is <em>the</em> theorem of the chapter.</p>
+</div>
+<div class="box example" data-cid="ch06-1040">
+<span class="box-label">Local-global compatibility (Prop. 5.6, Cor. 5.7)</span>
+<p data-cid="ch06-1050">The local and global symbols fit into a commutative square: for any place <span class="tts-math" data-tts="p">$\mathfrak{p}$</span>, the local symbol <span class="tts-math" data-tts="open paren comma L P over K p close paren">$(\,\cdot\,, L_\mathfrak{P}|K_\mathfrak{p})$</span> on <span class="tts-math" data-tts="K p star">$K_\mathfrak{p}^*$</span> agrees with the global symbol applied to the idèle supported at <span class="tts-math" data-tts="p">$\mathfrak{p}$</span>. Hence for any idèle <span class="tts-math" data-tts="open paren alpha, L over K close paren equals the product over p of the local symbols">$(\alpha, L|K) = \prod_\mathfrak{p}(\alpha_\mathfrak{p}, L_\mathfrak{P}|K_\mathfrak{p})$</span>, and for principal <span class="tts-math" data-tts="a">$a$</span> the <strong>product formula</strong> <span class="tts-math" data-tts="the product over p of the local symbols of a is 1">$\prod_\mathfrak{p}(a, L_\mathfrak{P}|K_\mathfrak{p})=1$</span> holds. This product formula is the engine behind every reciprocity law in §8.</p>
+</div>
+<div class="box example" data-cid="ch06-1060">
+<span class="box-label">Corollary 5.8 — local norms are global norms ∩ <span class="tts-math" data-tts="K p star">$K_\mathfrak{p}^*$</span></span>
+<p data-cid="ch06-1070">For finite abelian <span class="tts-math" data-tts="L over K">$L|K$</span>, <span class="tts-math" data-tts="the global norm group intersected with K p star equals the local norm group N p of L P star">$N C_L \cap K_\mathfrak{p}^* = N_\mathfrak{p}L_\mathfrak{P}^*$</span>. This pins the global norm group down place-by-place and will be the key to computing conductors in §6.</p>
+</div>
+
+<!-- ===================== 6.6 ===================== -->
+<h2 id="s6-6" data-cid="ch06-1080">6.6 Global Class Fields</h2>
+<p data-cid="ch06-1090">
+Reciprocity gives a map; the <strong>existence theorem</strong> says that map is a perfect dictionary between subgroups and fields.</p>
+<div class="box definition" data-cid="ch06-1100">
+<span class="box-label">Theorem 6.1 — the Existence Theorem</span>
+<p data-cid="ch06-1110">The assignment <span class="tts-math" data-tts="L maps to its norm group N C sub L">$L\mapsto \mathcal{N}_L = N_{L|K}C_L$</span> is an inclusion-reversing <strong>bijection</strong> between finite abelian extensions <span class="tts-math" data-tts="L over K">$L|K$</span> and <strong>closed subgroups of finite index</strong> in <span class="tts-math" data-tts="C sub K">$C_K$</span>, with</p>
+<span class="tts-math" data-tts="G of L over K is isomorphic to C sub K modulo its norm group">
+$$G(L|K) \cong C_K / \mathcal{N}_L, \quad L_1\subseteq L_2 \Leftrightarrow \mathcal{N}_{L_1}\supseteq \mathcal{N}_{L_2}, \quad \mathcal{N}_{L_1 L_2}=\mathcal{N}_{L_1}\cap\mathcal{N}_{L_2}.$$
+</span>
+<p data-cid="ch06-1120">The field <span class="tts-math" data-tts="L">$L$</span> attached to a subgroup <span class="tts-math" data-tts="N">$\mathcal{N}$</span> is the <strong>class field</strong> of <span class="tts-math" data-tts="N">$\mathcal{N}$</span>.</p>
+</div>
+<p data-cid="ch06-1130">
+The content of the proof is topological: <em>closed of finite index</em> for the natural topology coincides with <em>open in the norm topology</em>. The compactness <span class="tts-math" data-tts="C K zero">$C_K^0$</span> (Theorem 1.6) again does the heavy lifting in showing norm groups are closed.</p>
+<div class="box definition" data-cid="ch06-1140">
+<span class="box-label">Definition 6.2 — ray class fields</span>
+<p data-cid="ch06-1150">The class field of the congruence subgroup <span class="tts-math" data-tts="C K superscript m">$C_K^\mathfrak{m}$</span> is the <strong>ray class field mod <span class="tts-math" data-tts="m">$\mathfrak{m}$</span></strong> <span class="tts-math" data-tts="K superscript m">$K^\mathfrak{m}$</span>, with</p>
+<span class="tts-math" data-tts="G of K superscript m over K equals C sub K modulo C K superscript m, the ray class group mod m">
+$$G(K^\mathfrak{m}|K) \cong C_K/C_K^\mathfrak{m} = \text{ray class group mod }\mathfrak{m}.$$
+</span>
+</div>
+<p data-cid="ch06-1160">
+Since every closed finite-index subgroup contains some <span class="tts-math" data-tts="C K superscript m">$C_K^\mathfrak{m}$</span> (Prop. 1.8), <strong>every finite abelian extension lies in some ray class field</strong> (Cor. 6.3). The ray class fields are the global analogue of the cyclotomic fields, and they exhaust the abelian extensions.</p>
+<div class="box example" data-cid="ch06-1170">
+<span class="box-label">Conductor (Def. 6.4, Prop. 6.5, Cor. 6.6)</span>
+<p data-cid="ch06-1180">The <strong>conductor</strong> <span class="tts-math" data-tts="f">$\mathfrak{f}$</span> of <span class="tts-math" data-tts="L over K">$L|K$</span> is the gcd of all modules <span class="tts-math" data-tts="m">$\mathfrak{m}$</span> with <span class="tts-math" data-tts="L inside K superscript m">$L\subseteq K^\mathfrak{m}$</span> — so <span class="tts-math" data-tts="K to the f">$K^\mathfrak{f}$</span> is the smallest ray class field containing <span class="tts-math" data-tts="L">$L$</span>. It factors into local conductors <span class="tts-math" data-tts="f equals the product over p of f p">$\mathfrak{f} = \prod_\mathfrak{p}\mathfrak{f}_\mathfrak{p}$</span> (using Cor. 5.8), and the upshot is the clean criterion:</p>
+<span class="tts-math" data-tts="p is ramified in L if and only if p divides the conductor f">
+$$\mathfrak{p} \text{ ramifies in } L \iff \mathfrak{p}\mid\mathfrak{f}.$$
+</span>
+</div>
+<div class="box example" data-cid="ch06-1190">
+<span class="box-label">Proposition 6.7 — cyclotomic fields are the ray class fields of <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span></span>
+<p data-cid="ch06-1200">For <span class="tts-math" data-tts="K equals Q">$K=\mathbb{Q}$</span> and <span class="tts-math" data-tts="m equals the ideal m">$\mathfrak{m}=(m)$</span>, the ray class field mod <span class="tts-math" data-tts="m">$\mathfrak{m}$</span> is <span class="tts-math" data-tts="Q of the m-th roots of unity">$\mathbb{Q}(\mu_m)$</span>. As a bonus this reproves the <strong>Kronecker–Weber theorem</strong>: every finite abelian <span class="tts-math" data-tts="L over Q">$L|\mathbb{Q}$</span> sits in some cyclotomic field, because its norm group contains some <span class="tts-math" data-tts="C Q superscript m">$C_\mathbb{Q}^\mathfrak{m}$</span>.</p>
+</div>
+<div class="box definition" data-cid="ch06-1210">
+<span class="box-label">The Hilbert class fields (Prop. 6.8, 6.9)</span>
+<p data-cid="ch06-1220">The ray class field mod <span class="tts-math" data-tts="1">$1$</span> is the <strong>big Hilbert class field</strong> — the maximal <em>unramified</em> abelian extension of <span class="tts-math" data-tts="K">$K$</span> (where "unramified" allows the infinite places to ramify). Cutting down so that real places stay real gives the <strong>small Hilbert class field</strong> <span class="tts-math" data-tts="H over K">$H|K$</span>, the maximal abelian extension unramified everywhere including infinity, with the strikingly clean</p>
+<span class="tts-math" data-tts="G of H over K is isomorphic to the ideal class group Cl sub K">
+$$G(H|K) \cong \mathrm{Cl}_K, \qquad [H:K]=h_K.$$
+</span>
+<p data-cid="ch06-1230">So the Galois group of the Hilbert class field <em>is</em> the ideal class group, and its degree is the class number.</p>
+</div>
+<div class="box intuition" data-cid="ch06-1240">
+<span class="box-label">Kronecker's Jugendtraum (Thm. 6.10, 6.11)</span>
+<p data-cid="ch06-1250">The existence theorem tells us ray class fields <em>exist</em> but not how to <em>generate</em> them. Over <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span> we generate them with values of <span class="tts-math" data-tts="e to the 2 pi i z">$e^{2\pi i z}$</span> at rational points (roots of unity). Over an <strong>imaginary quadratic</strong> field <span class="tts-math" data-tts="K">$K$</span>, Kronecker's "dream of his youth" delivers an analogous explicit construction: the <span class="tts-math" data-tts="j-invariant">$j$</span>-invariant <span class="tts-math" data-tts="j of an ideal a">$j(\mathfrak{a})$</span> of the elliptic curve <span class="tts-math" data-tts="C modulo a">$\mathbb{C}/\mathfrak{a}$</span> (with complex multiplication by <span class="tts-math" data-tts="the ring of integers o sub K">$\mathfrak{o}_K$</span>) generates the Hilbert class field, and Weber functions generate the higher ray class fields. This is the analytic theory of complex multiplication — beautiful, genuinely beyond our scope here, and the subject of a whole separate book. Treat it as a signpost, not a result we will prove.</p>
+</div>
+
+<!-- ===================== 6.7 ===================== -->
+<h2 id="s6-7" data-cid="ch06-1260">6.7 The Ideal-Theoretic Version of Class Field Theory</h2>
+<p data-cid="ch06-1270">
+Historically, class field theory was created in the language of <em>ideals</em> (Weber, Takagi, Artin) long before Chevalley's idèles. This section translates the idèle-theoretic results back into that classical language — not just for history, but because ideal groups are more concrete and more usable in many applications.</p>
+<div class="box definition" data-cid="ch06-1280">
+<span class="box-label">The Artin symbol</span>
+<p data-cid="ch06-1290">For an unramified prime <span class="tts-math" data-tts="p">$\mathfrak{p}$</span> in an abelian <span class="tts-math" data-tts="L over K">$L|K$</span>, the decomposition group is generated by the <strong>Frobenius</strong> <span class="tts-math" data-tts="phi sub p">$\varphi_\mathfrak{p}$</span>, the unique automorphism with <span class="tts-math" data-tts="phi p of a is congruent to a to the q mod P">$\varphi_\mathfrak{p}(a)\equiv a^q\bmod\mathfrak{P}$</span> (where <span class="tts-math" data-tts="q is the size of the residue field at p">$q=\#(\mathfrak{o}/\mathfrak{p})$</span>). (Reminder: when <span class="tts-math" data-tts="p">$\mathfrak{p}$</span> is unramified the residue extension is cyclic and generated by the <span class="tts-math" data-tts="q-th">$q$</span>-power map <span class="tts-math" data-tts="x maps to x to the q">$x\mapsto x^q$</span> on the residue field; this canonical generator lifts <em>uniquely</em> to the decomposition group, and that lift is <span class="tts-math" data-tts="phi sub p">$\varphi_\mathfrak{p}$</span> — which is exactly why the Frobenius exists and is well-defined.) Write <span class="tts-math" data-tts="the Artin symbol L over K, p">$\left(\frac{L|K}{\mathfrak{p}}\right)=\varphi_\mathfrak{p}$</span>. Extending multiplicatively over ideals prime to a module of definition <span class="tts-math" data-tts="m">$\mathfrak{m}$</span> gives the <strong>Artin map</strong></p>
+<span class="tts-math" data-tts="the Artin symbol of an ideal a equals the product over p of the Artin symbol of p to the v p of a">
+$$\left(\frac{L|K}{\cdot}\right): J_K^\mathfrak{m}\to G(L|K), \qquad \mathfrak{a}=\prod\mathfrak{p}^{v_\mathfrak{p}}\mapsto \prod\left(\frac{L|K}{\mathfrak{p}}\right)^{v_\mathfrak{p}}.$$
+</span>
+</div>
+<div class="box definition" data-cid="ch06-1300">
+<span class="box-label">Theorem 7.1 / Cor. 7.2 — ideal-theoretic Artin reciprocity</span>
+<p data-cid="ch06-1310">If <span class="tts-math" data-tts="m">$\mathfrak{m}$</span> is a module of definition for <span class="tts-math" data-tts="L over K">$L|K$</span>, the Artin map induces an isomorphism</p>
+<span class="tts-math" data-tts="J K superscript m modulo H sub m is isomorphic to G of L over K, where H sub m is the norm ideals times the ray principal ideals">
+$$J_K^\mathfrak{m}/H_\mathfrak{m} \;\xrightarrow{\ \sim\ }\; G(L|K), \qquad H_\mathfrak{m} = (N_{L|K}J_L^\mathfrak{m})\,P_K^\mathfrak{m}.$$
+</span>
+<p data-cid="ch06-1320">The subgroup <span class="tts-math" data-tts="H sub m">$H_\mathfrak{m}$</span> — the "ideal group defined mod <span class="tts-math" data-tts="m">$\mathfrak{m}$</span>" — is generated by ray-principal ideals and norms of ideals from <span class="tts-math" data-tts="L">$L$</span>. The correspondence <span class="tts-math" data-tts="L maps to H sub m">$L\mapsto H_\mathfrak{m}$</span> is the classical Takagi bijection between subfields of <span class="tts-math" data-tts="K superscript m">$K^\mathfrak{m}$</span> and subgroups of <span class="tts-math" data-tts="J K superscript m">$J_K^\mathfrak{m}$</span> containing <span class="tts-math" data-tts="P K superscript m">$P_K^\mathfrak{m}$</span>.</p>
+</div>
+<div class="box example" data-cid="ch06-1330">
+<span class="box-label">Theorem 7.3 — the Decomposition Law</span>
+<p data-cid="ch06-1340">For an unramified prime <span class="tts-math" data-tts="p">$\mathfrak{p}$</span>, let <span class="tts-math" data-tts="f">$f$</span> be the order of <span class="tts-math" data-tts="p mod H sub m">$\mathfrak{p}\bmod H_\mathfrak{m}$</span> in the class group <span class="tts-math" data-tts="J K superscript m mod H sub m">$J_K^\mathfrak{m}/H_\mathfrak{m}$</span> — the least <span class="tts-math" data-tts="f">$f$</span> with <span class="tts-math" data-tts="p to the f in H sub m">$\mathfrak{p}^f\in H_\mathfrak{m}$</span>. Then <span class="tts-math" data-tts="p factors into r equals n over f primes, each of residue degree f">$\mathfrak{p} = \mathfrak{P}_1\cdots\mathfrak{P}_r$</span> into <span class="tts-math" data-tts="r equals n over f">$r=n/f$</span> distinct primes of residue degree <span class="tts-math" data-tts="f">$f$</span> over <span class="tts-math" data-tts="p">$\mathfrak{p}$</span>. <strong>The splitting of <span class="tts-math" data-tts="p">$\mathfrak{p}$</span> is read off purely from its ideal class.</strong></p>
+</div>
+<div class="box pause" data-cid="ch06-1350">
+<span class="box-label">Two beautiful special cases</span>
+<p data-cid="ch06-1360">For the cyclotomic field <span class="tts-math" data-tts="Q of mu m over Q">$\mathbb{Q}(\mu_m)|\mathbb{Q}$</span>, the decomposition law says <span class="tts-math" data-tts="p splits completely if and only if p is congruent to 1 mod m">$p$</span> splits completely iff <span class="tts-math" data-tts="p congruent to 1 mod m">$p\equiv 1\bmod m$</span>. For the Hilbert class field (Cor. 7.4): <strong>a prime ideal splits completely in the Hilbert class field iff it is principal.</strong> The class group governs splitting exactly.</p>
+</div>
+<div class="box definition" data-cid="ch06-1370">
+<span class="box-label">Theorem 7.5 — the Principal Ideal Theorem</span>
+<p data-cid="ch06-1380">In the Hilbert class field <span class="tts-math" data-tts="K one">$K_1$</span> of <span class="tts-math" data-tts="K">$K$</span>, <strong>every ideal of <span class="tts-math" data-tts="K">$K$</span> becomes principal.</strong> Note this does <em>not</em> say <span class="tts-math" data-tts="K one">$K_1$</span> has class number <span class="tts-math" data-tts="1">$1$</span> — only that ideals of the base capitulate. The proof is a stunning reduction: via the transfer map (<span class="tts-math" data-tts="Verlagerung">$\mathrm{Ver}$</span>) and the identification <span class="tts-math" data-tts="G of K one over K equals the ideal class group">$G(K_1|K)=\mathrm{Cl}_K$</span>, the statement becomes the purely group-theoretic <strong>Principal Ideal Theorem 7.6:</strong> for a finitely generated group <span class="tts-math" data-tts="G">$G$</span> with <span class="tts-math" data-tts="G mod G prime finite">$(G:G')&lt;\infty$</span>, the transfer <span class="tts-math" data-tts="Ver from G mod G prime to G prime mod G double prime">$\mathrm{Ver}: G/G'\to G'/G''$</span> is <em>trivial</em>. Witt's elegant proof uses the augmentation ideal of the group ring.</p>
+</div>
+<div class="box warn" data-cid="ch06-1390">
+<span class="box-label">The class field tower problem</span>
+<p data-cid="ch06-1400">Iterating — <span class="tts-math" data-tts="K, then its Hilbert class field, then its Hilbert class field, and so on">$K\subset K_1\subset K_2\subset\cdots$</span>, each the Hilbert class field of the last — gives the <strong>class field tower</strong>. Does it terminate? A finite tower would force a field of class number <span class="tts-math" data-tts="1">$1$</span> in which all ideals of <span class="tts-math" data-tts="K">$K$</span> capitulate. <strong>Golod–Shafarevich (1964) showed it can be infinite.</strong> So this hope fails in general.</p>
+</div>
+<div class="box example" data-cid="ch06-1410">
+<span class="box-label">Artin's non-abelian example (exercises)</span>
+<p data-cid="ch06-1420">The polynomial <span class="tts-math" data-tts="X to the fifth minus X plus 1">$f(X)=X^5-X+1$</span> has discriminant <span class="tts-math" data-tts="19 times 151">$19\cdot 151$</span> and splitting field of Galois group <span class="tts-math" data-tts="the symmetric group S 5">$S_5$</span> (degree <span class="tts-math" data-tts="120">$120$</span>). One shows <span class="tts-math" data-tts="k equals Q of alpha">$k=\mathbb{Q}(\alpha)$</span> has class number <span class="tts-math" data-tts="1">$1$</span>, and the splitting field is an <em>unramified</em> (non-abelian!) extension of <span class="tts-math" data-tts="Q of the square root of 19 times 151">$\mathbb{Q}(\sqrt{19\cdot 151})$</span> — showing unramified non-abelian extensions exist and live beyond class field theory's reach.</p>
+</div>
+
+<!-- ===================== 6.8 ===================== -->
+<h2 id="s6-8" data-cid="ch06-1430">6.8 The Reciprocity Law of the Power Residues</h2>
+<p data-cid="ch06-1440">
+The payoff. Class field theory was <em>born</em> from Gauss's quadratic reciprocity; here we watch the full <span class="tts-math" data-tts="n-th">$n$</span>-th power reciprocity law — and quadratic reciprocity as its baby case — fall directly out of the global product formula of §5. Let <span class="tts-math" data-tts="K">$K$</span> contain the <span class="tts-math" data-tts="n-th">$n$</span>-th roots of unity.</p>
+<div class="box definition" data-cid="ch06-1450">
+<span class="box-label">Theorem 8.1 — the Hilbert symbol product formula</span>
+<p data-cid="ch06-1460">Recall the local <span class="tts-math" data-tts="n-th">$n$</span>-th Hilbert symbol <span class="tts-math" data-tts="the Hilbert symbol a, b at p">$\left(\frac{a,b}{\mathfrak{p}}\right)$</span>, defined so that <span class="tts-math" data-tts="the local norm residue symbol of a acting on the n-th root of b equals the Hilbert symbol times the n-th root of b">$(a, K_\mathfrak{p}(\sqrt[n]{b})|K_\mathfrak{p})\sqrt[n]{b} = \left(\frac{a,b}{\mathfrak{p}}\right)\sqrt[n]{b}$</span>. For all <span class="tts-math" data-tts="a, b in K star">$a,b\in K^*$</span>,</p>
+<span class="tts-math" data-tts="the product over all places p of the Hilbert symbol a b at p equals 1">
+$$\prod_\mathfrak{p}\left(\frac{a,b}{\mathfrak{p}}\right) = 1.$$
+</span>
+<p data-cid="ch06-1470">This is <em>immediate</em> from Cor. 5.7: the symbols are the local pieces of the global norm residue symbol of a principal idèle, whose product is forced to be <span class="tts-math" data-tts="1">$1$</span>.</p>
+</div>
+<p data-cid="ch06-1480">
+The <strong><span class="tts-math" data-tts="n-th">$n$</span>-th power residue symbol</strong> <span class="tts-math" data-tts="a over p">$\left(\frac{a}{\mathfrak{p}}\right)$</span> for <span class="tts-math" data-tts="p not dividing n">$\mathfrak{p}\nmid n$</span> is defined via the Hilbert symbol and satisfies <span class="tts-math" data-tts="a over p is congruent to a to the q minus 1 over n, mod p">$\left(\frac{a}{\mathfrak{p}}\right)\equiv a^{(q-1)/n}\bmod\mathfrak{p}$</span> — the familiar Euler-style criterion. Extending multiplicatively (Def. 8.2) to <span class="tts-math" data-tts="a over b equals the product over p dividing b of a over p">$\left(\frac{a}{\mathfrak{b}}\right)=\prod_{\mathfrak{p}\mid\mathfrak{b}}\left(\frac{a}{\mathfrak{p}}\right)^{v_\mathfrak{p}}$</span> gives a symbol multiplicative in both slots.</p>
+<div class="box definition" data-cid="ch06-1490">
+<span class="box-label">Theorem 8.3 — the general power reciprocity law</span>
+<p data-cid="ch06-1500">For <span class="tts-math" data-tts="a, b in K star">$a,b\in K^*$</span> coprime to each other and to <span class="tts-math" data-tts="n">$n$</span>,</p>
+<span class="tts-math" data-tts="a over b times the reciprocal of b over a equals the product over places p dividing n times infinity of the Hilbert symbol a b at p">
+$$\left(\frac{a}{b}\right)\left(\frac{b}{a}\right)^{-1} = \prod_{\mathfrak{p}\mid n\infty}\left(\frac{a,b}{\mathfrak{p}}\right).$$
+</span>
+<p data-cid="ch06-1510">The proof rearranges the product formula 8.1: the symbols at primes dividing <span class="tts-math" data-tts="a">$a$</span> assemble into <span class="tts-math" data-tts="b over a">$\left(\frac{b}{a}\right)$</span>, those dividing <span class="tts-math" data-tts="b">$b$</span> into <span class="tts-math" data-tts="a over b">$\left(\frac{a}{b}\right)$</span>, and what survives is exactly the "bad" places dividing <span class="tts-math" data-tts="n times infinity">$n\infty$</span>. <strong>Reciprocity is bookkeeping on the product formula.</strong></p>
+</div>
+<div class="box example" data-cid="ch06-1520">
+<span class="box-label">Theorem 8.4 — Gauss reciprocity recovered</span>
+<p data-cid="ch06-1530">Take <span class="tts-math" data-tts="K equals Q">$K=\mathbb{Q}$</span>, <span class="tts-math" data-tts="n equals 2">$n=2$</span>. The only "bad" places are <span class="tts-math" data-tts="2 and infinity">$2$</span> and <span class="tts-math" data-tts="infinity">$\infty$</span>, and plugging in the explicit Hilbert symbols there gives, for odd coprime <span class="tts-math" data-tts="a, b">$a,b$</span>,</p>
+<span class="tts-math" data-tts="a over b times b over a equals minus one to the power, a minus 1 over 2 times b minus 1 over 2, times minus one to the power, sign of a minus 1 over 2 times sign of b minus 1 over 2">
+$$\left(\frac{a}{b}\right)\left(\frac{b}{a}\right) = (-1)^{\frac{a-1}{2}\frac{b-1}{2}}\cdot(-1)^{\frac{\mathrm{sgn}(a)-1}{2}\frac{\mathrm{sgn}(b)-1}{2}},$$
+</span>
+<p data-cid="ch06-1540">together with the two supplementary laws <span class="tts-math" data-tts="minus one over b equals minus one to the b minus one over two">$\left(\frac{-1}{b}\right)=(-1)^{\frac{b-1}{2}}$</span> and <span class="tts-math" data-tts="two over b equals minus one to the b squared minus one over eight">$\left(\frac{2}{b}\right)=(-1)^{\frac{b^2-1}{8}}$</span>. For positive odd <span class="tts-math" data-tts="a, b">$a,b$</span> this is exactly the classical quadratic reciprocity.</p>
+</div>
+<div class="box example" data-cid="ch06-1542">
+<span class="box-label">The two bad places, explicitly</span>
+<p data-cid="ch06-1544">Here is the specialization in full. For <span class="tts-math" data-tts="n equals 2">$n=2$</span> over <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span>, the product formula <span class="tts-math" data-tts="the product over all places of the Hilbert symbol a b equals 1">$\prod_\mathfrak{p}\left(\frac{a,b}{\mathfrak{p}}\right)=1$</span> has only two nontrivial factors for odd coprime <span class="tts-math" data-tts="a, b">$a,b$</span> — at <span class="tts-math" data-tts="2">$2$</span> and at <span class="tts-math" data-tts="infinity">$\infty$</span> — once the symbols at the odd primes have been collected into the residue symbols <span class="tts-math" data-tts="a over b and b over a">$\left(\frac{a}{b}\right),\left(\frac{b}{a}\right)$</span>. The two surviving local symbols are</p>
+<span class="tts-math" data-tts="the Hilbert symbol a b at 2 equals minus one to the power, a minus one over two times b minus one over two; and the Hilbert symbol a b at infinity equals minus one to the power, sign of a minus one over two times sign of b minus one over two">
+$$\left(\frac{a,b}{2}\right)=(-1)^{\frac{a-1}{2}\frac{b-1}{2}}, \qquad \left(\frac{a,b}{\infty}\right)=(-1)^{\frac{\mathrm{sgn}(a)-1}{2}\frac{\mathrm{sgn}(b)-1}{2}}.$$
+</span>
+<p data-cid="ch06-1546">Now read the product formula as "everything multiplies to <span class="tts-math" data-tts="1">$1$</span>" and move the two bad factors to the other side: <span class="tts-math" data-tts="a over b times b over a equals the Hilbert symbol at 2 times the Hilbert symbol at infinity">$\left(\frac{a}{b}\right)\left(\frac{b}{a}\right)=\left(\frac{a,b}{2}\right)\left(\frac{a,b}{\infty}\right)$</span>. Substituting the two formulas above gives the displayed reciprocity law verbatim. For positive <span class="tts-math" data-tts="a, b">$a,b$</span> the infinite factor is <span class="tts-math" data-tts="1">$1$</span> (both signs are positive), and we recover the bare <span class="tts-math" data-tts="minus one to the a minus one over two times b minus one over two">$(-1)^{\frac{a-1}{2}\frac{b-1}{2}}$</span> of Gauss.</p>
+</div>
+<div class="box example" data-cid="ch06-1550">
+<span class="box-label">It actually computes</span>
+<p data-cid="ch06-1560">The Jacobi symbol <span class="tts-math" data-tts="a over b">$\left(\frac{a}{b}\right)$</span> can be evaluated by iterating reciprocity and reduction — no factorization needed. For instance one flips and reduces <span class="tts-math" data-tts="the symbol 40077 over 65537">$\left(\frac{40077}{65537}\right)$</span> down through <span class="tts-math" data-tts="a chain of reductions">$\left(\frac{65537}{40077}\right),\left(\frac{25460}{40077}\right),\dots$</span> to a final value of <span class="tts-math" data-tts="1">$1$</span>. This is the algorithmic heart of quadratic residue computations.</p>
+</div>
+<div class="box intuition" data-cid="ch06-1570">
+<span class="box-label">The arc of the whole subject</span>
+<p data-cid="ch06-1580">Class field theory began as the search for a power-residue analogue of Gauss's law. The all-embracing answer turned out to be Artin's reciprocity (Thm. 5.5), and what we once called "reciprocity" is now just one corollary of it. The one piece left unfinished by the abstract theory — explicit formulas for the wild Hilbert symbols at <span class="tts-math" data-tts="p dividing n">$\mathfrak{p}\mid n$</span> — was completed by Brückner and Vostokov in the 1960s.</p>
+</div>
+
+<!-- ===================== Summary ===================== -->
+<h2 id="summary" data-cid="ch06-1590">Summary</h2>
+<p data-cid="ch06-1600">
+This chapter built the global theory in one disciplined sweep, mirroring the abstract framework of Chapter IV with <span class="tts-math" data-tts="C sub K">$C_K$</span> in the role local theory gave to <span class="tts-math" data-tts="K p star">$K_\mathfrak{p}^*$</span>.</p>
+<ul data-cid="ch06-1610">
+<li data-cid="ch06-1620"><strong>§1 The object.</strong> The <em>idèle class group</em> <span class="tts-math" data-tts="C sub K equals I sub K mod K star">$C_K = I_K/K^*$</span>, built from the restricted product of all local groups. Key facts: it's locally compact, <span class="tts-math" data-tts="K star">$K^*$</span> is discrete, and the norm-one part <span class="tts-math" data-tts="C K zero">$C_K^0$</span> is compact (encoding class number + unit rank finiteness). Congruence subgroups are cofinal among finite-index subgroups.</li>
+<li data-cid="ch06-1630"><strong>§2 Functoriality.</strong> Inclusion <span class="tts-math" data-tts="C K into C L">$C_K\hookrightarrow C_L$</span> and norm <span class="tts-math" data-tts="N from C L to C K">$N: C_L\to C_K$</span>; Galois descent <span class="tts-math" data-tts="C L to the G equals C K">$C_L^G=C_K$</span> via Hilbert 90.</li>
+<li data-cid="ch06-1640"><strong>§3–§4 The axiom.</strong> Herbrand quotient <span class="tts-math" data-tts="h of C L equals n">$h(C_L)=n$</span> (giving <span class="tts-math" data-tts="index at least n">$\ge n$</span>) plus Kummer computation (giving <span class="tts-math" data-tts="at most n">$\le n$</span>) prove the <em>class field axiom</em>. Corollaries: Hasse norm theorem; primes don't all split.</li>
+<li data-cid="ch06-1650"><strong>§5 Reciprocity.</strong> The <em>Artin reciprocity law</em> <span class="tts-math" data-tts="G of L over K abelianized is isomorphic to C K mod N C L">$G(L|K)^{\mathrm{ab}}\cong C_K/N C_L$</span>, with the global norm residue symbol a product of local ones and a product formula for principal idèles.</li>
+<li data-cid="ch06-1660"><strong>§6 Classification.</strong> The <em>existence theorem</em>: finite abelian extensions <span class="tts-math" data-tts="correspond to">$\leftrightarrow$</span> closed finite-index subgroups. Ray class fields, conductors, ramification criterion; cyclotomic fields and Hilbert class fields as special cases; Kronecker's Jugendtraum.</li>
+<li data-cid="ch06-1670"><strong>§7 Ideal language.</strong> Artin symbol, the decomposition law (splitting from ideal class), the principal ideal theorem (via transfer), the class field tower.</li>
+<li data-cid="ch06-1680"><strong>§8 Reciprocity payoff.</strong> The Hilbert symbol product formula yields <span class="tts-math" data-tts="n-th">$n$</span>-th power reciprocity, with Gauss's quadratic reciprocity as the case <span class="tts-math" data-tts="K equals Q, n equals 2">$K=\mathbb{Q},n=2$</span>.</li>
+</ul>
+<div class="box pause" data-cid="ch06-1690">
+<span class="box-label">One sentence to remember</span>
+<p data-cid="ch06-1700">Global class field theory says: the abelian extensions of <span class="tts-math" data-tts="K">$K$</span>, and how every prime splits in them, are completely encoded in the subgroup structure of the single locally compact group <span class="tts-math" data-tts="C sub K equals I sub K mod K star">$C_K = I_K/K^*$</span> — and all the classical reciprocity laws are just the product formula for its norm residue symbol.</p>
+</div>
+<p data-cid="ch06-1710">
+Next we leave the algebraic edifice and turn to the analytic side — zeta and L-functions — where the same arithmetic reappears encoded in special values and functional equations.</p>
+
+<nav class="chapter-nav">
+<a href="ch05.html"><span class="label">← Previous</span><span class="title">V. Local Class Field Theory</span></a>
+<a class="next" href="ch07.html"><span class="label">Next →</span><span class="title">VII. Zeta Functions and L-series</span></a>
+</nav>
+</article>
+</main>
+<script src="/js/main.js"></script><script src="/js/comments.js"></script><script src="/js/tts.js"></script>
+</body>
+</html>

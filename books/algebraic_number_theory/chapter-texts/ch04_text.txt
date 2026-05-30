@@ -1,0 +1,1951 @@
+
+===== PDF PAGE 277 =====
+
+Chapter IV
+Abstract Class Field Theory
+§ 1. Infinite Galois Theory
+Every field k is equipped with a distinguished Galois extension: the
+separable closure k\k. Its Galois group Gk = G(k\k) is called the absolute
+Galois group of k. As a rule, this extension will have infinite degree. It
+does, however, have the advantage of collecting all finite Galois extensions
+of k. This is why it is reasonable to try to give it a prominent place in Galois
+theory. But such an attempt faces the difficulty that the main theorem of
+Galois theory does not remain true for infinite extensions. Let us explain this
+in the following
+Example: The absolute Galois group G¥p = G(¥p\¥p) of the field ¥p with
+p elements contains the Frobenius automorphism cp which is given by
+x<p=xp for all xe¥p.
+The subgroup (cp) = {<pn \n e Z} has the same fixed field ¥p as the whole
+of G^p. But contrary to what we are used to in finite Galois theory, we
+find (cp) ^ G^p. In order to check this, let us construct an element i// e G^p
+which does not belong to (cp). We choose a sequence {an}nG^ of integers
+satisfying
+an = am mod m
+whenever m\n9 but such that there is no integer a satisfying an = a mod n
+for all n eN.An example of such a sequence is given by an = n'xn, where
+we write n — nfpvP^n\ (n\ p) = 1, and 1 = n'xn + pVp(jC*yn. Now put
+*n = <Pan\Fpn eG(¥pn\¥p).
+If ¥pm c ¥pn, then m |n, so that an = am mod m, and therefore
+fn \wpm = <pan \Fpm = <pam \¥pm = fm .
+Observe that (p\wpm has order m. Therefore the \j/n define an automorphism
+x/r of ¥p = U^li ^pn- Now i// cannot belong to (cp) because t// = cpa, for
+a e Z, would imply i//\w n = <Pa"\F n = <Pa If n and hence an = a mod n
+for all n, which is what we ruled out by construction.
+J. Neukirch, Algebraic Number Theory
+© Springer-Verlag Berlin Heidelberg 1999
+
+===== PDF PAGE 278 =====
+
+262 Chapter IV. Abstract Class Field Theory
+The example does not mean, however, that we have to chuck the main
+theorem of Galois theory altogether in the case of infinite extensions. We just
+have to amend it using the observation that the Galois group G = G(Q\k)
+of any Galois extension £2\k carries a canonical topology. This topology is
+called the Krull topology and is obtained as follows. For every a e G we
+take the cosets
+aG(Q\K)
+as a basis of neighbourhoods of a, with K\k ranging over finite Galois
+subextensions of £2\k. The multiplication and the inverse map
+G xG —> G, (a, r) i—> ax, and G —> G, a i—> a"1,
+are continuous maps, since the preimage of a fundamental open
+neighbourhood axG(Q\K), resp. o~xG(Q\K), contains the open neighbourhood
+oG(Q\K) x xG(Q\K), resp. oG(Q\K). Thus G is a topological group
+which satisfies the following
+(1.1) Proposition. For every (finite or infinite) Galois extension Q\k the
+Galois group G = G(Q\k) is compact Hausdorff with respect to the Krull
+topology.
+Proof: If a, x e G and a ^ r, then there exists a finite Galois subextension
+K\k of Q\k such that o\K ^ x\K, so that oG(Q\K) ^ xG(Q\K) and
+thus oG(Q\K) n xG(Q\K) = 0. This shows that G is Hausdorff. In order
+to prove compactness, consider the mapping
+h:G—>Y\G(K\k), ori—►PM*.K K
+where K\k varies over the finite Galois subextensions. We view the finite
+groups G(K\k) as discrete compact topological groups. Their product is
+therefore a compact topological space, by Tykhonov's theorem (see [98]).
+The homomorphism h is injective, because o\k = 1 for all K is equivalent
+to a = 1. The sets U = Y\k^k0 G(K\k) x {a} form a subbasis of
+open sets of the product ["J^G^I^)* where K0\k varies over the finite
+subextensions of £2\k and a e G(Ko\k). If a e G is a preimage
+of a, then h~l(U) = oG(£2\Kq). Thus h is continuous. Moreover
+h(aG(£2\K0)) = h(G) n U, so h : G h> h(G) is open, and thus a
+homeomorphism. It therefore suffices to show that h(G) is closed in the
+compact set \\k G(K\k). To see this we consider, for each pair V 2 L of
+finite Galois subextensions of £2\k, the set
+MV\l = {Yl°K € Y\G(K\k) I av\L = aL) .K K
+
+===== PDF PAGE 279 =====
+
+§ 1. Infinite Galois Theory 263
+One clearly has h(G) = Hlol^'I^- ^° ^ suffices to show that My\L
+is closed. But if G(L\k) = {a\, ...,an], and 5/ c G(U\k) is the set of
+extensions of at to Z/, then
+Mlu=U( II G(i:|t)xS,-x{ffi}),
+i.e., M^/jl is indeed closed. □
+The main theorem of Galois theory for infinite extensions can now be
+formulated as follows.
+(1.2) Theorem. Let Q\k be a (finite or infinite) Galois extension. Then the
+assignment
+K i—► G(Q\K)
+is a 1-1 -correspondence between the subextensions K\k of Q\k and the
+closed subgroups of G(Q\k). The open subgroups of G(Q\k) correspond
+precisely to the finite subextensions of Q\k.
+Proof: Every open subgroup of G(Q\k) is also closed, because it is the
+complement of the union of its open cosets. If K \k is a finite subextension,
+then G(Q\K) is open, because each a e G(Q\K) admits the open
+neighbourhood crG(£2\N) c G(Q\K), where N\k is the normal closure
+of K \k. If K \k is an arbitrary subextension, then
+G(a\K) = f)G(S2\Ki),
+i
+where Kj\k varies over the finite subextensions of K\k. Therefore G(Q\K)
+is closed.
+The assignment K h-> G(£2\K) is injective, since K is the fixed field of
+G(Q\K). To prove surjectivity, we have to show that, given an arbitrary
+closed subgroup H of G(Q\k), we always have
+H = G(Q\K),
+where K is the fixed field of H. The inclusion H c G(Q\K) is trivial.
+Conversely, let a e G(Q \K). If L \K is a finite Galois subextension of Q \K,
+then aG(Q \L) is a fundamental open neighbourhood of a in G(Q \K). The
+map H -> G(L\K) is certainly surjective, because the image H has fixed
+field K and is therefore equal to G(L\K), by the main theorem of Galois
+theory for finite extensions. Thus we may choose are// such that
+
+===== PDF PAGE 280 =====
+
+264 Chapter IV. Abstract Class Field Theory
+t|l = c|l, i.e., r e H n <rG(£?|L). This shows that a belongs to the
+closure of H in G{Q\K), and thus to H itself, so that H = G(Q\K).
+If // is an open subgroup of G(Q \k), then it is also closed, and therefore
+of the form H = G(£2\K). But G(Q\k) is the disjoint union of the open
+cosets of H. Since G(Q\k) is compact, a finite number of cosets suffices to
+cover the group. Thus there is only a finite number of them; H = G(Q\K)
+has finite index in G(Q\k), and this implies that K\k has finite degree. □
+The topological Galois groups G = G(Q\k) have the special property
+that there is a fundamental system of neighbourhoods of the neutral element
+1 e G which consists of normal subgroups. This property leads us to the
+abstract, purely group-theoretical notion of a profinite group.
+(1.3) Definition. A profinite group is a topological group G which is
+Hausdorff and compact, and which admits a basis of neighbourhoods of
+\ e G consisting of normal subgroups.
+It can be shown that the last condition is tantamount to G being totally
+disconnected, i.e., to the condition that each element of G is equal to its own
+connected component. Every closed subgroup H of G is obviously again a
+profinite group. The disjoint coset decomposition
+G = \JcnH
+i
+shows immediately that H is open if and only if the index (G : H) is finite.
+Profinite groups are fairly close relatives of finite groups. They can
+be reconstituted rather easily from their finite quotients. For the precise
+description of this we need the notion of projective limit, which naturally
+occurs in various places in number theory and which we will introduce next.
+Exercise 1. Let L\k be a Galois extension and K\k an arbitrary extension, both
+contained in a common extension Q\k. If L C\ K = k, then the mapping
+G(LK\K)->G(L\k), (7h>(j|L,
+is a topological isomorphism, that is, an isomorphism of groups and a
+homeomorphism of topological spaces.
+Exercise 2. Given a family of Galois extensions Kt\k in Q\k, let K\k be the
+composite of all Kt\k, and K[\k the composite of the extensions Kj\k such that
+j ^ i. If Ki fl K[ — k for all /, then one has a topological isomorphism
+G(K\k) ^YlG(Ki\k).
+
+===== PDF PAGE 281 =====
+
+§2. Projective and Inductive Limits 265
+Exercise 3. A compact Hausdorff group is totally disconnected if and only if
+its neutral element admits a basis of neighbourhoods consisting only of normal
+subgroups.
+Exercise 4. Every quotient G/H of a profinite group G by a closed normal subgroup
+H is a profinite group.
+Exercise 5. Let G' be the closure of the commutator subgroup of a profinite group,
+and Gab — G/G'. Show that every continuous homomorphism G -> A into an
+abelian profinite group factorizes through Gab.
+§ 2. Projective and Inductive Limits
+The notions of projective, resp. inductive limit generalize the operations
+of intersection, resp. union. If {X/},-e/ is a family of subsets of a topological
+space X which for any two sets Xj, Xj also contains the set X/ n Xj
+(resp. Xj U Xj), then the projective (resp. inductive) limit of this family is
+simply de ined by
+ljm Xi = fl ^ (resp. lug X; = \J Xt).
+Writing / < j if Xj c X/ (resp. X; c X;) makes the indexing set / into a
+directed system, i.e., an ordered set in which, for every pair /, /, there exists
+a k such that / < k and y < /:. In the case at hand, such a k is given by
+Xk = Xi fl X; (resp. X# = X; U X;). For / < j we denote the inclusion
+Xj ^ Xi (resp. X/ ^ X;) by //y and obtain a system {X/,//;} of sets
+and maps. The operations of intersection and union are now generalized by
+replacing the inclusions ftj with arbitrary maps.
+(2.1) Definition. Let I be a directed system. A projective, resp. inductive
+system over I is a family {Xi, ftj \ i, j e I, i < j} of topological spaces Xi
+and continuous maps
+fij : Xj —> Xi, resp. ftj : Xi —► Xj,
+such that one has fu = idx, and
+fik = fij o fjk, resp. fik = fjk o fij,
+when i < j < k.
+In order to define the projective, resp. inductive limit of a projective,
+resp. inductive system {Xi, fij}, we make use of the direct product f~[/€/ X/,
+resp. the disjoint union JJ- 7 X,-.
+
+===== PDF PAGE 282 =====
+
+266 Chapter IV. Abstract Class Field Theory
+(2.2) Definition. The projective limit
+X = ljm Xi
+of the projective system {Xi, fij) is defined to be the subset
+X = { (Xi)iel € n Xi I fij(*j) = xi for l < j]izl
+of the product f~[/€/ Xi •
+The product Yliei Xi is equipped with the product topology. If the X/ are
+Hausdorff, then so is the product, and it contains in this case X as a closed
+subspace. Indeed, one has
+X=f]Xij,
+i<j
+where Xy = {(**)*€/ ^ I"I* ^* I fij(xj) = xi] * so that it suffices to show
+the closedness of the sets Xij. Writing pi : Ylkei Xk -> ^/ for the /-th
+projection, the two maps g = /?;, / = //; o pj : n^€/ ^ -> X/ are
+continuous, and we may write X/; = [x e Y\k Xk \ g(x) = f(x)}. But in
+the Hausdorff case the equation g(x) = f(x) defines a closed subset. This
+representation X = fl/</ Xij also gives the following
+(2.3) Proposition. The projective limit X = Um Xi of nonempty compact
+spaces Xi is itself nonempty and compact i
+Proof: If all the X,- are compact, then so is the product YliGlXi, by
+Tykhonov's theorem, and thus also the closed subset X. Furthermore,
+X = n*<; Xij cannot be the empty set if the X/ are nonempty. In fact,
+as the product f]/ Xi is compact, there would have to be an intersection
+of finitely many X/; which is empty. But this is impossible: if all indices
+entering into this finite intersection satisfy i,j<n, and if xn e Xn, then the
+element (x/)/G/ belongs to this intersection, where we choose x; = fin(xn),
+for i < n, and arbitrarily for all other /. □
+(2.4) Definition. The inductive limit
+X = linj Xiiel
+of an inductive system {Xi, fij} is defined to be the quotient
+x = (LL-6/X.-)/~
+of the disjoint union JJ/e/ X/, where we consider two elements x/ G X; and
+Xj e Xj equivalent if there exists ak > /, j such that
+fik(Xi) = fjlc(Xj).
+
+===== PDF PAGE 283 =====
+
+§ 2. Projective and Inductive Limits 267
+In the applications, the projective and inductive systems {X/,//y} that
+occur will not just be systems of topological spaces and continuous maps,
+but the Xj will usually be topological groups, rings or modules, etc., and
+the fij will be continuous homomorphisms. In what follows, we will deal
+explicitly only with projective and inductive systems {G/, g/y} of topological
+groups. But since everything works exactly the same way for systems of
+rings or modules, these cases may be thought of tacitly as being treated
+as well.
+Let {G(,gij} be a projective, resp. inductive system of topological groups.
+Then the projective, resp. inductive limit
+G = Hm G/, resp. G = lim G/
+is a topological group as well. The multiplication in the projective
+limit is induced by the componentwise multiplication in the product
+f|/e/ G(. In the case of the inductive limit, given two equivalence classes
+x,y e G = lim G/, one has to choose representatives Xk and yk in the
+same Gk in order to define
+xy = equivalence class of Xkyk •
+We leave it to the reader to check that this definition is independent of the
+choice of representatives, and that the operation thus defined makes G into
+a group.
+The projections pt : fj/e/ Gi —> G/, resp. the inclusions ij : G/ ->
+17/e/ G/, induce a family of continuous homomorphisms
+gi: : G —> G/, resp. gt : G/ —> G
+such that gi = gij o gj, resp. gi = gj o giJ9 for i < j. This family has the
+following universal property.
+(2.5) Proposition. If H is a topological group and
+hi : H —> Gi, resp. hi : G/ —> H
+is a family of continuous homomorphisms such that
+hi = gij o hJ9 resp. hi = hj o gtj
+for i < j, then there exists a unique continuous homomorphism
+h.H —> G= Um Gi, resp. h:G= ligi G/ —> H
+i i
+satisfying hi = gi oh, resp. hi = ho gi, for all i e I.
+
+===== PDF PAGE 284 =====
+
+268 Chapter IV. Abstract Class Field Theory
+The easy proof is left to the reader. A morphism between two projective,
+resp. inductive systems {G;,g;;} and {G^,g- } of topological groups is a
+family of continuous homomorphisms // : G/ —> G •, / e /, such that the
+diagrams
+fj
+8U
+Gt
++ G)
+■> g;.
+fj> g:
+resp.&j
+Gt -> g:­
+commute for / < j. Such a family (//)/€/ defines a mapping
+f--Y\Gi-+nG'i, resp. / : JJ G,;-> [J Gj,
+which induces a homomorphism
+/ : Hm Gt —> lyn G\, resp. / : lim G/ —► lim G,.
+/€/ /€/ /€/ /€/
+In this way Hm , resp. lim , becomes a functor. A particularly important
+property of this functor is its so-called "exactness". For the inductive
+limit lim , exactness holds without restrictions. In other words, one has the
+(2.6) Proposition. Let a : {G'i9g'u} -> {Gi.gij} and 0 : [Gi.gij] ->
+[G",g":} be morphisms between inductive systems of topological groups
+such that the sequence
+g; -% d -^ Gfi
+is exact for every i e I. Then the induced sequence
+lir§ G; -^ lir§ G/ -^> lir§ Gj'
+is aiso exact.
+id /€/ /€/
+Proof: Let G' = Hgi G^G= linfi G/, G" = H31 G". We consider the
+commutative diagram
+■> G/ -^-> g;'
+G' -> G -> G".
+
+===== PDF PAGE 285 =====
+
+§ 2. Projective and Inductive Limits 269
+Let leGbe such that P(x) = 1. Then there exists an / and an x/ e G; such
+that gi(Xj) = x. As
+g'/pi(xi)=pgi(xi) = p(x) = h
+there exists y > / such that /3/(x;) equals 1 in G'j. Changing notation, we
+may therefore assume that )8/(jc/) = 1, so that there exists yi e G\ such that
+oiiiyi) = X(. Putting y = g •(?/), we have a(y)=x. D
+The projective limit is not exact in complete generality, but only for
+compact groups, so that we have the
+(2.7) Proposition. Let a : {G^g^} -> {G/,gl7} and p : {G/,g0} ->
+{G",g;'•} be morphisms between projective systems of compact topological
+groups such that the sequence
+G't -2l> Gi -^> g{;
+is exact for every / e I. Then
+Ign GJ -^> Ijm G, -^ ^m Gj;/ / i
+is again an exact sequence of compact topological groups.
+Proof: Let x = (jc/)/€/ e ^m G/ and jS(jc) = 1, so that $(*/) = 1 f°r
+all i e I. The preimages 7/ = at (x/) c G^ then form a projective system
+of nonempty closed, and hence compact subsets of the G'r By (2.3), this
+means that the projective limit Y = Um 7/ c Um G\ is nonempty, and
+a maps every element y e 7 to x. l l D
+Now that we have at our disposal the notion of projective limit, we
+return to our starting point, the profinite groups. Recall that these are the
+topological groups which are Hausdorff, compact and totally disconnected,
+i.e., they admit a basis of neighbourhoods of the neutral element consisting
+of normal subgroups. The next proposition shows that they are precisely the
+projective limits of finite groups (which we view as compact topological
+groups with respect to the discrete topology).
+
+===== PDF PAGE 286 =====
+
+270 Chapter IV. Abstract Class Field Theory
+(2.8) Proposition. If G is a profinite group, and if N varies over the open
+normal subgroups of G, then one has, algebraically as well as topologically,
+that
+G = lyn G/N.
+N
+If conversely {G/,g/y} is a projective system of finite (or even profinite)
+groups, then
+G= Urn Gt
+i
+is a proGnite group.
+Proof: Let G be a profinite group and let {N( \ i e 1} be the family of its
+open normal subgroups. We make / into a directed system by defining / < j
+if Nj 2 Nj. The groups G; = G/Nf are finite since the cosets of Nf in
+G form a disjoint open covering of G, which must be finite because G is
+compact. For / < j we have the projections gtj : Gj -> G; and obtain a
+projective system {G/, gtj} of finite, and hence discrete, compact groups. We
+show that the homomorphism
+/ : G —> ^m Gi, a i—> f] o\, oi = a mod Nj,
+is an isomorphism and a homeomorphism. / is injective because its kernel
+is the intersection H/e/ ^' which equals {1} because G is Hausdorff and
+the N( form a basis of neighbourhoods of 1. The groups
+tfs = nGixn{iGf-},
+with S varying over the finite subsets of /, form a basis of neighbourhoods
+of the neutral element in [~[/€/ Gi. As f~l(Us(^ Um G/) = f]iGs Ni> we see
+that / is continuous. Moreover, as G is compact, the image f(G) is closed
+in Hm G/. On the other hand it is also dense. For if x = (jc/)/€/ g lyn G/,
+and x(Us H Hm G/) is a fundamental neighbourhood of x, then we may
+choose a y e G which is mapped to Xk under the projection G -> G/Nk,
+where we put JV* = P|/€5 Ni- ^hen y mod iV/ = jc/ for all / e S, so that
+/(y) belongs to the neighbourhood x(Us H Hm G/). Therefore the closed
+set f(G) is indeed dense in Hm Gj, and so f(G) = ^m G,-. Since G
+is compact, / maps closed sets into closed sets, and thus also open sets
+into open sets. This shows that / : G -> Hm Gj is an isomorphism and a
+homeomorphism.
+Conversely, let {G,-,g/y} be a projective system of profinite groups. As
+the Gi are Hausdorff and compact, so is the projective limit G = Hm G/,
+
+===== PDF PAGE 287 =====
+
+§ 2. Projective and Inductive Limits 271
+by (2.3). If Ni varies over a basis of neighbourhoods of the neutral element
+in Gt which consists of normal subgroups, then the groups
+Us=Y\GiX Y\Ni9
+with S varying over the finite subsets of /, make up a basis of neighbourhoods
+of the neutral element in f~[/€/ Gt consisting of normal subgroups. The normal
+subgroups Us H Km G/ therefore form a basis of neighbourhoods of the
+neutral element in Hm G;; thus Hm G/ is a profinite group. □
+Let us now illustrate the notions of profinite group and projective limit by
+a few concrete examples.
+Example 1: The Galois group G = G{Q\k) of a Galois extension Q\k
+is a profinite group with respect to the Krull topology. This was already
+stated in § 1. If K \k varies over the finite Galois subextensions of Q \k, then,
+by definition of the Krull topology, G(£2\K) varies over the open normal
+subgroups of G. In view of the identity G(K\k) = G{Q\k)/G{Q\K) and
+of (2.8), we therefore obtain the Galois group G(Q \k) as the projective limit
+G{Q\k) = lyn G(K\k)
+of the finite Galois groups G(K\k).
+Example 2: If p is a prime number, then the rings Z/pnZ, n e N, form
+a projective system with respect to the projections Z/pnZ -> Z/pmZ,
+for n > m. The projective limit
+Zp = ^m Z/pnZ
+n
+is the ring of p-adic integers (see chap. II, § 1).
+Example 3: Let o be the valuation ring in a p-adic number field K and p its
+maximal ideal. The ideals pn, n e N, make up a basis of neighbourhoods of
+the zero element 0 in o. o is Hausdorff and compact, and so is a profinite ring.
+The rings o/pn, n € N, are finite and we have a topological isomorphism
+o = lyn o/pn, a i—► 11 (a mod pn).n neN
+The group of units U = o* is closed in o, hence Hausdorff and compact,
+and the subgroups U^ = 1 + pn form a basis of neighbourhoods of 1 e U.
+Thus
+U = ljm tZ/t/^
+is also a profinite group. In fact, we have seen all this already in chap. II, §4.
+
+===== PDF PAGE 288 =====
+
+272 Chapter IV. Abstract Class Field Theory
+Example 4: The rings Z/nZ, n e N, form a projective system with respect
+to the projections Z/nZ -> Z/mZ, n\m, where the ordering on N is now
+given by divisibility, n\m. The projective limit
+Z = ljm Z/nZ
+n
+was originally called the Priifer ring, whereas nowadays it has become
+customary to refer to it by the somewhat curt abbreviation "zed-hat"
+(or "zee-hat"). This ring is going to occupy quite an important position
+in what follows. It contains Z as a dense subring. The groups 72Z, n e N, are
+precisely the open subgroups of Z, and it is easy to verify that
+Z/nZ = Z/nZ.
+Taking, for each natural number n, the prime factorization n = I~L PVp'»the
+Chinese remainder theorem implies the decomposition
+Z/nZ = Y\Z/pvPZ,
+p
+and passing to the projective limit,
+z = \\zp.
+p
+This takes the natural embedding of Z into Z to the diagonal embedding
+Z -► \\pZp, a v+ (a,a,a, ...).
+Example 5: For the field F^ with q elements, we get isomorphisms
+G(Fqn\Fq) = Z/nZ,
+one for every n e N, by mapping the Frobenius automorphism cpn to
+1 mod nZ. Passing to the projective limit gives an isomorphism
+GCF^IF^) = Z
+which sends the Frobenius automorphism cp e G(Fq\Fq) to I e Z, and the
+subgroup (cp) = {cpn | n e Z} onto the dense (but not closed) subgroup Z
+of Z. Given this, it is now clear, in the example at the beginning of this
+chapter, how we were able to construct an element ^ € G( F^ |F^) which did
+not belong to (cp). In fact, looking at it via the isomorphism G( F^ |F^) = Z,
+what we did amounted to writing down the element
+(...,0,0,lp,0,0, ...)e\\Zf> = Z,i
+which does not belong to Z.
+
+===== PDF PAGE 289 =====
+
+§ 2. Projective and Inductive Limits 273
+Example 6: Let Q|Q be the extension obtained by adjoining all roots
+of unity. Its Galois group G(Q|Q) is then canonically isomorphic (as a
+topological group) to the group of units Z* = J"] Z* of Z,
+G(Q|Q) = Z*.
+This isomorphism is obtained by passing to the projective limit from the
+canonical isomorphisms
+G(Q(/z„)|Q) = (Z//iZ)*,
+where [in denotes the group of n-th roots of unity.
+Example 7: The groups Zp and Z are (additive) special cases of the class
+of procyclic groups. These are profinite groups G which are topologically
+generated by a single element a; i.e., G is the closure (a) of the subgroup
+(a) = [an | n e Z}. The open subgroups of a procyclic group G = (a) are
+all of the form Gn. Indeed, Gn is closed, being the image of the continuous
+map G -> G, x h^ x", and the quotient group G/G" is finite, because it
+contains the finite group [av mod Gn | 0 < v < n} as a dense subgroup,
+and is therefore equal to it. Conversely, if H is a subgroup of G of index n,
+then G" c H c G and n = (G : //) < (G : G") < n, so that H = Gn.
+Every procyclic group G is a quotient of the group Z. In fact, if G = (a),
+then we have for every n the surjective homomorphism
+Z/nZ -> G/G", 1 mod nZ \-+a mod G",
+and in view of (2.7), passing to the projective limit yields a continuous
+surjection Z —> G.
+Example 8: Let /I be an abelian torsion group. Then the Pontryagin dual
+X(A) = Hom(A,Q/Z)
+is a profinite group. For one has
+where A/ varies over the finite subgroups of A, and thus
+X(A) = ^m x(A/)
+with finite groups x(^i)- If f°r instance,
+A = Q/Z = U 5Z/Z,
+
+===== PDF PAGE 290 =====
+
+274 Chapter IV. Abstract Class Field Theory
+then x(£z/Z) = Z/wZ, so that
+X(Q/Z) = Urn Z/nZ =
+Example 9: If G is any group and N varies over all normal subgroups of
+finite index, then the profinite group
+G = Urn G/N
+N
+is called the profinite completion of G. The profinite completion of Z, for
+example, is the group Z = ljim Z/nZ.
+Exercise 1. Show that, for a profinite group G, the power map G x Z -> G,
+(a, n) h> a", extends to a continuous map
+GxZ->G, (or,0)h-»aa,
+and that one has (aa)b = a** and cr*+* = or*cr* if G is abelian.
+Exercise 2. If a e G and a = lim at e Z with at e Z, then <ra = lim aa/ is in G.
+Exercise 3. A pro-p-group is a profinite group G whose quotients G/N, modulo all
+open normal subgroups N, are finite p -groups. Imitating exercise 1, make sense of
+the powers aa, for all a e G and a e Zp.
+Exercise 4. A closed subgroup H of a profinite group G is called a /i-Sylow
+subgroup of G if, for every open normal subgroup N of G, the group HN/N is a
+p-Sylow subgroup of G/N. Show:
+(i) For every prime number p, there exists a p-Sylow subgroup of G.
+(ii) Every pro-p-subgroup of G is contained in a p-Sylow subgroup.
+(iii) Every two p-Sylow subgroups of G are conjugate.
+Exercise 5. What is the p-Sylow subgroup of Z and of Z* ?
+Exercise 6. If {G/} is a projective system of profinite groups and G = Hm G/,
+then Gab = Jim Gf (see § 1, exercise 5).
+
+===== PDF PAGE 291 =====
+
+§3. Abstract Galois Theory 275
+§ 3. Abstract Galois Theory
+Class field theory is the final outcome of a long development of algebraic
+number theory the beginning of which was Gauss's reciprocity law
+/a\/b\ / ^ a-\ b-\
+The endeavours to generalize this law finally produced a theory of the abelian
+extensions of algebraic and p-adic number fields. These extensions L \ K are
+classified by certain subgroups Ml = Nl\kAl of a group Ak attached to
+the base field. In the local case, Ak is the multiplicative group K* and in
+the global case it is a modification of the ideal class group. At the heart of
+this theory there is a mysterious canonical isomorphism
+G(L\K) ^ Ak/NL\kAl,
+which — if we view things in the right way — encapsulates the reciprocity
+law in its most general form. Now, this map can be abstracted completely
+from the field-theoretic situation and treated on a purely group theoretical
+basis. In this way, class field theory can be given an abstract, but elementary
+foundation, to which we will now turn.
+We begin our considerations by giving ourselves a profinite group G.
+The theory we are about to develop is purely group theoretical in nature.
+However, the only applications we have in mind are field theoretical, and the
+language of field theory allows immediate insights into the group theoretical
+relations. We will therefore formally interpret the profinite group G as a
+Galois group in the following way. (Let us remark in passing that every
+profinite group is indeed the Galois group G = G(k\k) of a Galois field
+extension k\k; this will allow the reader to rely on his standard knowledge
+of Galois theory whenever the formal development in terms of group theory
+alone would seem odd.)
+We denote the closed subgroups of G by Gk , and call these indices K
+"fields"; K will be called the fixed field of GK. The field k such that Gk = G
+is called the base field, and k denotes the field satisfying G^ = {1}. The
+field belonging to the closure (a) of the cyclic group (a) = [ak \ k e Z}
+generated by an element a e G is simply called the fixed field of a.
+We write formally K c L or L\K if Gl Q Gk, and we call the pair
+L\K a field extension. L\K is called a finite extension, if Gl is open, i.e.,
+of finite index in Gk , and this index
+[L : K] := (GK : GL)
+
+===== PDF PAGE 292 =====
+
+276 Chapter IV. Abstract Class Field Theory
+will be called the degree of L\K. L\K is said to be normal or Galois if Gl
+is a normal subgroup of Gk- If this is the case, we define the Galois group
+of L\K by
+G(L\K) = GK/GL.
+If N 2 L 2 K are Galois extensions of K, we define the restriction of an
+element a e G(N\K) to L by
+or |L = cr mod G(N\L) e G(L\K).
+This gives a homomorphism
+G(Af|iO —> G(L|tf), a i—► a|L,
+with kernel G(N\L). The extension L|jRT is called cyclic, abelian, solvable,
+etc., if the Galois group G(L\K) has these properties. We put
+K = H Kt ("intersection")
+i
+if Gk is topologically generated by the subgroups G/^, and
+K = \\Ki ("composite")
+if GK = Hi GKr If GK' = cr~lGKcr for a e G, we write Kf = K°.
+Now let A be a continuous multiplicative G -module. By this we mean
+a multiplicative abelian group A on which the elements a G G operate as
+automorphisms on the right, a:A^A,ah>/. This action must satisfy
+(i) a1 = a,
+(ii) (ab)a =aaba,
+(iii) aaT = (aa)\
+(iv) A = {J[K:k]<ooAK,
+where A/j: in the last condition denotes the fixed module AGk under Gk,
+so that
+AK = {a e A\a° = a for all a e Gk } ,
+and where K varies over all extensions that are finite over k. The
+condition (iv) says that G operates continuously on A, i.e., the map
+G x A—> A, (cr,a)\—> a° ,
+is continuous, where A is equipped with the discrete topology. Indeed, this
+continuity is equivalent to the fact that, for every element (a,a) e G x A,
+there exists an open subgroup U = Gk of G such that the neighbourhood
+all x {a} of (a,a) is mapped to the open set {aa}, and this means simply
+that<2a € ^ = AK.
+
+===== PDF PAGE 293 =====
+
+§3. Abstract Galois Theory 277
+Remark: In the exponential notation a°, the operation of G on A appears
+as an action on the right. This notation is adequate for many computations
+in the case of multiplicative G-modules A. For instance, the notation
+aa~l := a° a~x is to be preferred to writing (a — \)a = a a • a~l. On the
+other hand, classical usage often calls for an operation on the left. Thus in the
+case of a Galois extension L\K of actual fields, the Galois group G(L\K)
+acts as the automorphism group on L from the left, and therefore also in the
+same way on the multiplicative group L*. This occasional switch from the
+left to the right should not confuse the reader.
+For every extension L\K we have Ak Q Al, and if L\K is finite, then
+we have the norm map
+a
+where a varies over a system of representatives of Gl \Gk • If L \ K is Galois,
+then Ai is a G(L\K)-module and one has
+A^K) = AK.
+At the center of class field theory there is the norm residue group
+H°(G(L\K),AL) =AK/NL\KAL.
+We also consider the group
+H-X{G{L\K),AL) =nL[KAl/1g{L\K)Al,
+where
+nL\kAl = {a e Al\ NL\K(a) = 1}
+is the "norm-one group" and Ig(l\k)Al is the subgroup of nL\KAl which is
+generated by all elements
+with a e Al, and a e G(L\K). If G(L\K) is cyclic and a is a generator,
+then Ig(l\k)Al is simply the group
+A*"1 = {a*'1 \ a e AL] .
+In fact, the formal identity ak — 1 = (1 + <j H + ak~x)(a — 1) implies
+a**'1 = b°~x with b = nto a°'•
+Let us now apply the notions introduced so far to the example of Kummer
+theory. For this, we impose on the G-module A the following axiomatic
+condition.
+
+===== PDF PAGE 294 =====
+
+278 Chapter IV. Abstract Class Field Theory
+(3.1) Axiom. One has H~l(G(L\K),AL) = 1 for all finite cyclic
+extensions L\K.
+The theory we are about to develop makes reference to a surjective
+G -homomorphism
+p : A —> A, a i—> ap,
+with finite cyclic kernel /zp. The order n = #/xp is called the exponent of
+the operator p. The case of prime interest to us is when p is the n-th power
+map a h-> an, and /xp = jjin = {£ e A \ t=n = 1} is the group of "n-th roots
+of unity" in A.
+We now fix a field K such that jjlp c A^. For every subset B c A,
+let ^(Z?) denote the fixed field of the closed subgroup
+H = {a e GK | b° = b for all b e B]
+of Gk- If # is Gk-invariant, then K(B)\K is obviously Galois. A Kummer
+extension (with respect to p) is by definition an extension of the form
+K(p-\A))\K,
+where A c A#. A Kummer extension K(p~l(A))\K is always Galois,
+and its Galois group is abelian of exponent n. Indeed, for an extension
+K(p~l(a))\K, we have the injective homomorphism
+G(K(p-l(a))\K) -->/xp, ori—x**-1,
+where a G p-1(^). Since jjlp c A/j:, this definition does not depend
+on the choice of a. Thus, for a Kummer extension L = K(p~l(A)) =
+Y[aeAK(p~l(a)), the composite map
+G(L\K) —> ft G(K(p-\a))\K) —> /z£
+is an injective homomorphism.
+The following proposition says that conversely, any abelian extension
+L | K of exponent n is a Kummer extension.
+(3.2) Proposition. If L\K is an abelian extension of exponent n, then
+L = K{p~\A)) with A = Apr\AK.
+If in particular, L\K is cyclic, then we find L = K(a) with ap = a e Ak­
+
+===== PDF PAGE 295 =====
+
+§3. Abstract Galois Theory 279
+Proof: We have p~l(A) c Al, for if x e A and xp = ap = a e Ak,
+a e Al, then x = t=a e Al for some £ e jjlp c A^. Therefore
+^(p-1^)) c L. On the other hand, the extension L\K is the composite of
+its cyclic subextensions. For it is the composite of its finite subextensions,
+and the Galois group of a finite subextension is the product of cyclic
+groups, which may be interpreted as Galois groups of cyclic subextensions.
+Let now M\K be a cyclic subextension of L\K. It suffices to show that
+M c K(p~l(A)). Let a be a generator of G(M\K) and f a generator
+of /xp. Let d = [M : AT], d' = n/d and f = ?<*'. Since NM\kG) = $d = h
+(3.1) shows that § = a°~x for some a e Am. Thus # c AT (a) c M.
+But aa/ = t-la. Thus aa/ = a is equivalent to / = 0 mod d, so that
+K(a) = M. But (aP)a~l = (aa~1)^ = $*> = 1, so that a = a^ e AK; then
+a G p~l(A), and therefore M c K(p~l(A)). D
+As the main result of general Kummer theory, we now obtain the following
+(3.3) Theorem. The correspondence
+A^L = K(p-\A))
+is a 1-1 -correspondence between the groups A such that A9K c. A c. Ak and
+the abelian extensions L\K of exponent n.
+If A and L correspond to each other, then A^ (1 Ak = A, and we have a
+canonical isomorphism
+A/APK ^ Hom(G(L|tf),Atp), a mod APK i—► Xfl,
+where the character Xa • G(L\K) -> jjlp is given by XafaO = aa~l, for
+a e p~l(a).
+Proof: Let L\K be an abelian extension of exponent n. By (3.2), we then
+find L = K(p~l(A)) with A = Ap n Ak- We consider the homomorphism
+A —► nom(G(L\K),np) , a\—> Xa,
+where Xa(&) = &°~x, ot e p~l(a). Since
+Xa = 1 ^=> ota~x = 1 for all a e G(L\K)
+4=^ a e AK 4=* a = ap e APK,
+it has the kernel A9K. To prove the surjectivity, we let x € Hom(G(L \K), /xp).
+X defines a cyclic extension M\K and is the composite of homomorphisms
+G(L\K) -> G(Af|AT) -^> /xp. Let a be a generator of G(M\K). Since
+
+===== PDF PAGE 296 =====
+
+280 Chapter IV. Abstract Class Field Theory
+Nm\k(x((*)) = X(°)[M:K] = 1, we deduce from (3.1) that J (a) = a°~x for
+some a e Am- Now, (ap)a~l = (aa~l)p = x(a)p = 1, so that a = ap e
+ApnAK = A. For r e G(L\K)9 one has X(r) = J(r \M) = aT~l = Xfl(r),
+so that x = Xa> This proves the surjectivity, and we obtain an isomorphism
+A/Ap ^ Hom(G(L|tf),Atp).
+If A is any group between APK and Ak and if L = K(p~l(A)), then
+A = A9L n Ak- In fact, putting ^' = A^n^, we have just seen that one
+has
+Af/APK SHom(G(L|tf),Mp).
+The subgroup ^/^4^ corresponds under Pontryagin duality to the subgroup
+Hom(G(L|iO/tf ,jLtp), where
+// = {a GG(L|iT)| Xa(cr) = 1 forall^GZ\}.
+As a^7-1 = Xa(o) for a G p~l(a), H leaves fixed the elements
+of p~l(A), and as K(p~l(A)) = L, we find that H = 1, so that
+Hom(G(L|iO/tf,Atp) = Hom(G(L|^),/xp). It follows that A/APK =
+Ar/APK,i.z.,A = A'.
+It is therefore clear that the correspondence A h-> L = K(p~l(A)) is
+a 1 — 1-correspondence, as claimed. This finishes the proof of the theorem. □
+Remarks and Examples: 1) If L\K is infinite, then Hom(G(L\K), jjlp)
+has to be interpreted as the group of all continuous homomorphisms
+X : G(L\K) -> /xp, i.e., as the character group of the topological group
+G(L\K).
+2) The composite of two abelian extensions of K of exponent n is again
+of the same type, and all of them lie in the maximal abelian extension of
+exponent n. It is given by K = K(p~1(Ak)), and for the Pontryagin dual
+G(K\K)* = Hom(G(K\K),Q/Z) = Hom(G(K\K)9iip)
+we have by (3.3) that
+G(K\K)* S AK/APK.
+3) If k is an actual field of positive characteristic p and k is the separable
+closure of k, then A may be chosen to be the additive group k and p to be
+the operator
+p : k —> k, a i—> pa = ap — a.
+Then axiom (3.1) is indeed satisfied, for we have, in complete generality:
+
+===== PDF PAGE 297 =====
+
+§ 3. Abstract Galois Theory 281
+(3.4) Proposition. For every cyclic finite field extension L|AT, one has
+H-l(G(L\K),L) = 1.
+Proof: The extension L \ K always admits a normal basis [oc\g e G(L | AT)},
+so that L = 0a Koc. This means that L is a G(L\AT)-induced module in
+the sense of §7, and then H~l(G(L\K),L) = 1, by (7.4). □
+The Kummer theory with respect to the operator pa = ap — a is usually
+called Artin-Schreier theory.
+4) The chief application of the theory developed above is to the case where G
+is the absolute Galois group G(k\k) of an actual field k, A is the multiplicative
+group k* of the algebraic closure, and p is the n-th power map a \-+ an, for
+some natural number n which is relatively prime to the characteristic of k
+(in particular, n is arbitrary if char(£) = 0). Axiom (3.1) is always satisfied
+in this case and is called Hilbert 90 because this statement occurs as Satz
+number 90 among the 169 theorems in Hilbert's famous "Zahlbericht" [72].
+Thus we have the
+(3.5) Theorem (Hilbert 90). For a cyclic field extension L\K one always
+has
+H-l(G(L\K),L*) =1.
+In other words:
+An element a e L* of norm Nl\k(&) = 1 is of the form a = fia~l9
+where f5 e L* and a is a generator ofG(L\K).
+Proof: Let n = [L : AT]. By virtue of the linear independence of the
+automorphisms 1,<7, ... ,an~l (see [15], chap. 5, §7, no. 5), there exists an element
+y e L* such that
+0 = y+ayG +ax+GyGl + • • • +a1+or+-+or""2yor""1 # 0.
+As NL\K(a) = 1, one gets a$° = p, and thus a = pl~a. □
+If now the field AT contains the group /j,n of n-th roots of unity, the
+operator p(a) = an has exponent n, and we obtain the following corollary,
+which is the most important special case of theorem (3.3).
+
+===== PDF PAGE 298 =====
+
+282 Chapter IV. Abstract Class Field Theory
+(3.6) Corollary. Let n be a natural number which is relatively prime to the
+characteristic of the field K, and assume that jjin c K.
+Then the abelian extensions L\K of exponent n correspond I —I to the
+subgroups A C K* which contain K*n, via the rule
+A\-± L = K(Z/A) ,
+and we have
+G(L\K) ^ Hom(A/K*n9iin).
+Hilbert's theorem 90, which is the main basis of this corollary, admits the
+following generalization to arbitrary Galois extensions L\K, which goes back
+to the mathematician Emmy Noether (1882-1935). Let G be a finite group
+and A a multiplicative G-module. A 1-cocycle, or crossed homomorphism,
+of G with values in A is a function / : G -> A satisfying
+/(err) = f(cr)Tf(T)
+for all a, r e G. The 1-cocycles form an abelian group Zl(G, A). For every
+a e A, the function
+fa(a)=aa~l
+is a 1-cocycle, for one has
+fa(ar) = aaT~l = (aa~lyaT-1 = fa(cr)Tfa(r).
+The functions fa are called 1-coboundaries and form a subgroup Bl(G, A)
+of Zl(G, A). We define
+H\G, A) = Zl(G, A)/B\G, A)
+and obtain as a first result about this group the
+(3.7) Proposition. IfG is cyclic, then Hl(G,A) ^ H~l(G9A).
+Proof: Let G = (a). If / e Zl(G, A), then for k > 1
+/(a*) = /(a*-1)*/^) = f(ak-2y2f((?rf(cr) = • • • = Ifl /(*)''.
+and /(l) = 1 because /(l) = /(1)/(1). If n = #G, then
+NG/(a) = "n f{af = f(an) = /(l) = 1,
+/=0
+
+===== PDF PAGE 299 =====
+
+§ 3. Abstract Galois Theory 283
+so that f(a) e ngA = {a e A \ NGa = Y\"Zo °°X = !}• Conversely we
+obtain, for every a e A such that NGa = 1, a 1-cocycle by putting f(a) = a
+and
+/(or*)=nV.
+/=o
+The reader is invited to check this. The map / h-> f(a) therefore is an
+isomorphism between Zl(G, A) and ngA. This isomorphism maps Bl(G, A)
+onto IGA, because / e Bl(G, A) <(=> f(crk) = a° ~l for some fixed a <<=*>f(a) = a°-l^f(a)eIGA. D
+Noether's generalization of Hilbert's theorem 90 now reads:
+(3.8) Proposition. For a finite Galois field extension L\K, one has that
+Hl(G(L\K),L*) = 1.
+Proof: Let / : G —> L* be a 1-cocycle. For c e L*, we put
+«= E f(P)ca.
+aeG(L\K)
+Since the automorphisms a are linearly independent (see [15], chap. 5, §7,
+no. 5), we can choose c e L* such that a ^ 0. For r e G(L | AT), we obtain
+<*r = E/V)^ = E/W*7(^r)cffT = /(T)"1^a a
+i.e.,f(T) = pT-lwithp=a-1. D
+This proposition will only be applied once in this book (see chap. VI,
+(2.5)).
+Exercise 1. Show that Hilbert 90 in Noether's formulation also holds for the additive
+group L of a Galois extension L \ K. x
+Hint: Use the normal basis theorem.
+Exercise 2. Let k be a field of characteristic p arid k its separable closure. For fixed
+n > 1, consider in the ring of Witt vectors W(k) (see chap. II, § 4, exercise 2-6) the
+additive group Wn(k) of truncated Witt vectors a — (ao,a\, ...,an-\). Show that
+axiom (3.1) holds for the G(k\k)-module A = Wn(k).
+Exercise 3. Show that the operator
+p : Wn(k) -> Wn(k), pa = Fa-a,
+is a homomorphism with cyclic kernel /xp of order pn. Discuss the corresponding
+Kummer theory for the abelian extensions of exponent pn.
+
+===== PDF PAGE 300 =====
+
+284 Chapter IV. Abstract Class Field Theory
+Exercise 4. Let G be a profinite group and A a continuous G -module. Put
+Hl(G, A) = Zl(G, A)/Bl(G, A),
+where Zl(G,A) consists of all continuous maps / : G -> A (with respect to the
+discrete topology on A) such that f(crr) = f(cr)zf(r), and Bl(G,A) consists of
+all functions of the form fa(cr) — a°~l, a e A. Show that if g is a closed normal
+subgroup of G, then one has an exact sequence
+1 -> Hl(G/g,As) -> Hl(G, A) -> Hl(g9A).
+Exercise 5. Show that Hl(G,A) = lini Hl(G/N,AN), where N varies over all
+the open normal subgroups of G.
+Exercise 6. If 1 -> A -> B -> C -> 1 is an exact sequence of continuous
+G -modules, then one has an exact sequence
+1 -> AG -> BG -> CG -> //](G, A) -> H](G,B) -> Hl(G,C).
+Remark: The group Hl(G,A) is only the first term of a whole series of groups
+H'(G, A), i = 1,2,3, ..., which are the objects of group cohomology (see [145]).
+Class field theory can also be built upon this theory (see [10], [108]).
+Exercise 7. Even for infinite Galois extensions L\K, one has Hilbert's theorem 90:
+Hl(G(L\K),L*) = 1.
+Exercise 8. If n is not divisible by the characteristic of the field K and if jin denotes
+the group of n -th roots of unity in the separable closure K, then
+H\GK,iin) = K*/K*n.
+§ 4. Abstract Valuation Theory
+The further development will now be based on a fixed choice of a
+surjective continuous homomorphism
+d : G —¥ Z
+from the profinite group G onto the procyclic group Z = Hm Z/nZ (see
+§2, example 4). This homomorphism will produce a theory which is an
+abstract reflection of the ramification theory of p-adic number fields. Indeed,
+in the case where G is the absolute Galois group Gk = G(k\k) of a p-adic
+number field k, such a surjective homomorphism d : G -> Z arises via the
+maximal unramified extension k\k: if ¥q is the residue class field of k, then,
+by chap. II, § 9, p. 173 and example 5 in § 2, we have canonical isomorphisms
+G(k\k) ^ G(¥q\¥q) = Z
+
+===== PDF PAGE 301 =====
+
+§ 4. Abstract Valuation Theory 285
+which associate to the element 1 e Z the Frobenius automorphism
+cp e G(k\k). It is defined by
+a? = aq mod p for a e 5,
+where e>, resp. p, denote the valuation ring of k, resp. its maximal ideal. The
+homomorphism d : G -> Z in question is then given, in this concrete case,
+as the composite
+G—> G(JE|*)-^*Z.
+In the abstract situation, the initial choice of a surjective homomorphism
+d : G -> Z mimics the p-adic case, but the applications of the theory are by
+no means confined to p-adic number fields. The kernel I of d has a certain
+fixed field k\k, and d induces an isomorphism G(k\k) = Z.
+More generally, for any field K we denote by Ik the kernel of the
+restriction d : Gk -> Z, and call it the inertia group over K. Since
+Ik = Gk n / = G# nGp G^,
+the fixed field K of /# is the composite
+K = Kk.
+We call K\K the maximal unramified extension of K. We put
+fK = {Z:d(GK)), eK = (I :1k)
+and obtain, when /k is finite, a surjective homomorphism
+dK = —d : Gk —► Z
+with kernel Ik , and an isomorphism
+dK :G(K\K) -^>Z.
+(4.1) Definition. The element cpK e G(K\K) such that (1k(sPk) = 1 1S
+called the Frobenius over K.
+For a field extension L\K we define the inertia degree /lia: and the
+ramification index ei\K by
+fh\K = (d(GK) : rf(GL)) and eL{K = Uk : /l) •
+For a tower of fields K c L c M this definition obviously implies that
+/m\k =/l\k/m\l and ^mia: = ^lia: ^mil •
+
+===== PDF PAGE 302 =====
+
+286 Chapter IV. Abstract Class Field Theory
+(4.2) Proposition. For every extension L\K we have the "fundamental
+identity"
+[L : K] = fL\KeL\K­
+Proof: The exact commutative diagram
+1 —> IL ► GL ► d(GL) —> 1
+1 —> Ik > GK > d(GK) —> 1
+immediately yields, if L\K is Galois, the exact sequence
+1 —> Ik/Il —> G(L\K) —> d(GK)/d(GL) —> 1.
+If L|jRT is not Galois, we pass to a Galois extension M\K containing L, and
+get the result from the above transitivity rules for e and /. □
+L\K is called unramified if ei\K = 1, i.e., if L c K. L\K is called
+totally ramified if fi\K = 1, i.e., if L n K = K. In the unramified case, we
+have the surjective homomorphism
+G(K\K)^G(L\K)
+and, if /k < oo, we call the image cpi\K of cpz the Frobenius automorphism
+of L\K.
+For an arbitrary extension L\K one has
+L=LK,
+since LjRT = LjRT^ = Lk = L, and L n AT | AT is the maximal unramified
+subextension of L\K. It clearly has degree
+fL]K = [LnK:K].
+Equally obvious is the
+(4.3) Proposition. If /k and ft are finite, then /l\k = /l/Zk, and we
+have the commutative diagram
+GL -^-» Z
+Il\k
+Gk -±-+ z.
+r
+In particular, one has (pL\g = cpKL{K.
+
+===== PDF PAGE 303 =====
+
+§ 4. Abstract Valuation Theory 287
+The Frobenius automorphism governs the entire class field theory like
+a king. It is therefore most remarkable that in the case of a finite Galois
+extension L\K, every a e G(L\K) becomes a Frobenius automorphism once
+it is manceuvered into the right position. This is achieved in the following
+manner. For what follows, let us assume systematically that fa < oo.
+We pass from the Galois extension L\K to the extension L\K and consider
+in the Galois group G(L\K) the semigroup
+Frob(L\K) = {a e G(L\K) \ dK(cr) e N} .
+Observe here that cLk : Gk —> % factorizes through G(L\K) because
+Gi = 11 c IK\ recall also that 0 ^ N. Firstly, we have the
+(4.4) Proposition. For a finite Galois extension L\K the mapping
+Frob(L|jRO —> G(L\K), a i—► a|L,
+is surjective.
+Proof: Let a e G(L\K) and let cp e G(L\K) be an element such that
+<1k(<P) = 1. Then (p\g = <Pk and (p\Ln£ = (PLnK\K- Restricting a to the
+maximal unramified subextension L n K\K, it becomes a power of the
+Frobenius automorphism, cr\Ln^ = <pnL j>lK> so we maY choose n in N. As
+L = LK, we have
+G(L\K) = G(L\LHK).
+If now r e G(L\K) is mapped to crcp~n\L under this isomorphism, then
+a = xcpn is an element satisfying <t|l = r<Pn\L = acp~ncpn\i = a and
+&\k = Vk- Hence daia) = n, and so a e Frob(L\K). D
+Thus every element a e G(L\K) may be lifted to an element
+a e Frob(L |K). The following proposition shows that this lifting, considered
+over its fixed field, is actually the Frobenius automorphism.
+(4.5) Proposition. Let a e Frob(L|jST), and let E be the fixed field of a.
+Then we have:
+(i) fz\K = dK(9)9 (ii) [S:K]< oo, (iii) £ = L, (iv) 9 = <pL.
+
+===== PDF PAGE 304 =====
+
+288 Chapter IV. Abstract Class Field Theory
+dK&)Proof: (i) E n K is the fixed field of a \% = cpKKK \ so that
+fzlK = [ZnK:K]=dK(a).
+(ii) One has K c UK = ICL; thus
+es\K = Uk : /r) = #G(S\K) < #G(L\K)
+is finite. Therefore [E : jRT] = fz\K^E\K is finite as well.
+(iii) The canonical surjection F = G(L\E) -> G(X?|2;) = Z has to be
+bijective. For since T = (a) is procyclic, one finds (F : Fn) < n for every
+n eN (see §2, ^273). Thus the induced maps F/Fn = Z/nZjxe bijective
+and so is F -> Z. But G(L\E) = G(E\E) implies that L = E.
+(iv) fz\Kdz(a) = dK(a) = fE{K; thus ^(a) = 1, and so a = <ps. D
+Let us illustrate the situation described in the last proposition by a diagram,
+which one should keep in mind for the sequel.
+VL
+K
+fL\K
+y, a=ipE
+fz\K VK
+L=E
+K
+All the preceding discussions arose entirely from the initial datum of the
+homomorphism d : G —> Z. We now add to the data a multiplicative G­
+module A, which we equip with a homomorphism that is to play the role of
+a henselian valuation.
+(4.6) Definition. A henselian valuation of Ak with respect to d:G­
+a homomorphism ^
+v : Ak -> Z
+satisfying the following properties:
+(i) v(Ak) = Z 2 Z and Z/nZ = Z/nZ for all neN,
+(ii) v(Nk\icAk) = IkZ for all finite extensions K\k.
+>Z is
+Exactly like the original homomorphism d : Gk -> Z, the henselian
+valuation v : Ak —> Z has the property of reproducing itself over every finite
+extension K of k.
+
+===== PDF PAGE 305 =====
+
+§ 4. Abstract Valuation Theory 289
+(4.7) Proposition. For every field K which is finite over k, the formula
+vK = —voNK\k : AK —> ZJK
+defines a surjective homomorphism satisfying the following properties:
+(i) vk = vk° o a for all a e G.
+(ii) For every finite extension L\K, one has the commutative diagram
+AL
+Nl\k Il\k
+Ak -IL^z.
+Proof: (i) If r runs through a system of representatives of G/c/Gk, then
+o~xxo sweeps across a system of representatives of Gk/cr~lGKO' =
+Gic/Gk°' Hence we have, for a e Ak,
+vKo{a°) = -±-v(l\a°°-h°) = ±v((Y\ar)a) = -j-v(NKik(a))JK° x JK x JK
+= vK(a).
+(ii) For a e Al one has:
+fL\KVL(a) = fL\K—v{NL\k(a)) = — f (N/n*(NL|/K<3)))JL JK= vK(NL\K(a)). U
+(4.8) Definition. A prime element of Ak is an element ttk € Ak such that
+vk(xk) = 1- We put
+UK = {ueAK\vK(u) = 0}.
+For an unramified extension L\K, that is, an extension such that
+fL\K = [L:K],we have from (4.7), (ii) that vl\ak =vk- In particular, a
+prime element of Ak is itself also a prime element of Ai. If on the other
+hand, L\K is totally ramified, i.e., /l\k = 1, and if m is a prime element
+of Ai, then ttk = Nl\k{kl) is a prime element of A#.
+
+===== PDF PAGE 306 =====
+
+290 Chapter IV. Abstract Class Field Theory
+Exercise 1. Assume that every closed abelian subgroup of G is procyclic. Let K\k
+be a finite extension. A microprime p of K is by definition a conjugacy class
+(a) c Gk of some Frobenius element a e Frob(k\K) which is not a proper power
+a,n, n > 1, of some other Frobenius element a' g ¥rob(k\K). Let spec(^T) be the
+set of all microprimes of K. Show that if L\K is a finite extension, then there is a
+canonical mapping
+7i : spec(L) -> spec(K).
+Above any microprime p there are only finitely many microprimes *P of L, i.e., the
+set 7t~l(p) is finite. We write *p|p to mean *p e 7r_1(p).
+Exercise 2. For a finite extension L\K and a microprime *P|p of L, let
+/<piP = d(^p)/d(p). Show that
+E/*IP = [*<:*].
+Exercise 3. For an infinite extension L \ K, let
+spec(L) = Hm spec(La),
+a
+where La\K varies over the finite subextensions of L\K. What are the microprimes
+of it?
+Exercise 4. Show that if L\K is Galois, then the Galois group G(L\K) operates
+transitively on spec(L). The "decomposition group"
+Gv(L\K) = {a eG(L\K)\¥? =¥}
+is cyclic, and if Z<p = lgv(l\k) js ^ "decomposition field" of ^3 e spec(L), then
+L|Z<p is unramified.
+§ 5. The Reciprocity Map
+Continuing with the notation of the previous section, we consider again a
+profinite group G, a continuous G-module A, and a pair of homomorphisms
+d:G —>% v : Ak —>Z,
+such that d is continuous and surjective and v is a henselian valuation with
+respect to d. In the following we introduce the convention that the letter K,
+whenever it occurs without embellishments or commentary to the contrary,
+will always denote a field of finite degree over k. We furthermore impose the
+following axiomatic condition, which will be systematically assumed in the
+sequel.
+(5.1) Axiom. For every unramified finite extension L\K one has
+Hl(G(L\K),UL) =\ for i = 0, -1.
+
+===== PDF PAGE 307 =====
+
+§ 5. The Reciprocity Map 291
+For an infinite extension L\K we set
+NL\KAL = f)NM\KAM,
+M
+with M\K varying over the finite subextensions of L\K.
+Our goal is to define a canonical homomorphism
+rLlK:G(L\K)—>AK/NLlKAL
+for every finite Galois extension L \ K. To this end, we pass from L \ K to the
+extension L \ K and define first a mapping on the semigroup
+Frob(L|iO = {a e G(L\K) | dK(a) e N} .
+(5.2) Definition. The reciprocity map
+%K :Vrob(L\K) -> AK/NUKAL
+is defined by
+rzlK(<J) = Nz\K(7tz) mod NL{KAZ,
+where E is the fixed field of a and ttz e As is a prime element
+Observe that E is of finite degree over K by (4.5), and a becomes the
+Frobenius automorphism tpz over E. The definition of ri\K(o) does not
+depend on the choice of the element n^. For another one differs from ttz
+only by an element u e U-%, and for this we have Nz\k(m) £ ^l\k^D
+so £hat Nz\k(u) e Nm\kAm for every finite Galois subextension M\K
+of L\K. To see this, we may clearly assume that E c M. Applying (5.1) to
+the unramified extension M\E, one finds u = Nm\e(£), £ € (/m, and thus
+Ne\k(u) = NzIK(NM\z(s)) =NM\k(s) e NM\kAm.
+Next we want to show that the reciprocity map r^K is multiplicative. To do
+this, we consider for every a e G(L\K) and every n e N the endomorphisms
+a - 1: Ai —> Afr a i—> <f~x = a° ja,n-\ .
+on\ Ai —> AL, a\—> a°n =\\a° .
+on — 1
+In formal notation, this gives on = r, and we find thata — 1
+(a — 1) o an = on o (a — 1) = an — 1.
+Now we introduce the homomorphism
+N = NL\k ' AL —* Ak
+and prove two lemmas for it.
+
+===== PDF PAGE 308 =====
+
+292 Chapter IV. Abstract Class Field Theory
+(5.3) Lemma. Letcp, a e Frob(L\K) with dx((p) = 1, ^(a) = n. If E is
+the fixed field of a and a e A%, then
+Ne\k {a) = (N o (pn)(a) = (cpn o N)(a).
+Proof: The maximal unramified subextension S° = UC\K \ K is of degree n,
+and its Galois group G(£°\K) is generated by the Frobenius automorphism
+<Pe*\k = <Pk\zo = (p\g\zo = cp\Eo. Consequently, NEo]K = <^Ur0- 0n
+the other hand, one has UK = L and X n K = X*0, and therefore
+NE\Eo = N\ae> For a e A% we thus get
+Nz\K(a) = NjjolK(NLlIjo(a)) = N{df* = N{a**).
+The last equation follows from cpG(L\K) = G(L\K)cp. D
+The subgroup Ig(L\K)Ul> which is generated by all elements of the
+form uT~l, u € U£, r e G(L\K), is mapped to 1 by the homomorphism
+N = N^g :U£-> U%. We therefore obtain an induced homomorphism
+N : H0(G(l\K)9Uz) ^> Ug
+on the quotient group Ho(G(L\K), Uj) = ^ll^GiL\K)^L' ^or ^s §rouP' we
+have the following lemma.
+(5.4) Lemma. If x e H0(G(L\K),Ui) is fixed by an element <p e G(L\K)
+such that c!k((P) = 1, i.e., x^ = x, then
+N(x)eNl]KUL.
+Proof: Let x = u mod IG(1\k)Ui> with x^~x = 1, so that
+(*) u*-l = {[u]l-\ uteUL, neG(L\K).
+Let M\K be a finite Galois subextension of L\K. In order to prove that
+N(u) e Nm\kUm, we may assume that w,w/ e Um and L c M. Let
+n = [M : K], a = cpn and let E 2 M be the fixed field of a. Further,
+let En\E be the unramified extension of degree n, i.e., the fixed field of
+an = cpnE. By (5.1), we can then find elements u, ut e Uzn such that
+u = NEn\E(u) = ua\ ui= NEnlz(ui) = u0{n.
+
+===== PDF PAGE 309 =====
+
+§5. The Reciprocity Map 293
+By (*), the elements w^-1 and {"]/ uf" only differ by an element x e Uzn
+such that Nsn\E(x) = 1. Hence — again by (5.1) — they differ by an element
+of the form ya~l, with y e Uzn • We may thus writei i
+Applying N gives N{u)^~x = N(y^)^-X, so that
+N(u) = N(y<p")-z,
+for some z e 11% such that zv~x = 1; therefore z* = z, and z e Uk- Finally,
+applying an and putting y = y°n = Nsn\s(y) € Us, we obtain, observing
+n = [M : K] and using (5.3), that
+JV(«) = N(uf" = N ($*")"" za' = Niy^z"
+= Nz\K(y)NM\K(z) € Nm\kUM- □
+(5.5) Proposition. The reciprocity map
+rUK :¥ro\>(L\K) -± AK/NUKA~L
+is multiplicative.
+Proof: Let o\Oi = a3 be an equation in Frob(L|Ar), «/ = d,K(cFi), X1; the
+fixed field of a/ and 717 G ^(. a prime element, for / = 1,2,3. We have to
+show that
+NzilKiniWztiKfa) = Nz3lK(n3) mod N^KAL.
+Choose a fixed <p e G(L\K) such that dic(<p) = 1 and put
+Xi =crrl(pni eG(L\K).
+From a^2 = 03 and «i + n-i = «3, we then deduce that
+Putting 04 = (p~n2Gi(pn2, n4 = (1k(Pa) = n\> £4 = E\ , ^4 = tff € Ai;4
+and r4 = <74~ V4» we fin(l T3 — T2^4 and
+A^I^Ou) = NEl\K(7tl).
+We may therefore pass to the congruence
+Nz^KiTty) = Nz2\K(7r2)Nz4\K(7r4) mod N^KAL
+
+===== PDF PAGE 310 =====
+
+294 Chapter IV. Abstract Class Field Theory
+the proof of which uses the identity T3 = T2T4. From (5.3), we have
+NzAK^i) = N(7tfni). Thus, if we put
+<P«3 -(Pn4 -<Pn2U = 7t3 7t4 7t2 ,
+then the congruence amounts simply to the relation N(u) e N£,KA£. For
+this, however, lemma (5.4) gives us all that we need.
+(0ni — 1 a7 <pni—\ x—\Since <pni o (cp — I) = cpni — I and nj =7til = ni' » we have
+(D — 1 T-x — 1 1 — Ta 1 —To
+IT = 7t33 7t4 *7t2 .
+From the identity r3 = t2t4, it follows that (r3 — 1) + (1 — T2) + (1 — T4) =
+(1 — T2XI — T4). Putting now
+^3 = ^3^4, ^2 — u2 ^4' ^4 — ^4^4, W; G [/*£,
+we obtain
+1=2
+For the element x = u mod IG(£\k)Uz € H0(G(L\K), Uj), this means that
+x^-1 = 1, and sox^=i; then by (5.4), we do get N(u) = N(x) e N^A^.
+D
+From the surjectivity of the mapping
+Frob(L\K) —> G(L\K)
+and the fact that Ni,kAi^Ni\kAi,wo now have the
+(5.6) Proposition. For every finite Galois extension L\K, there is a
+canonical homomorphism
+rLlK:G(L\K)—> AK/NLlKAL
+given by
+rL\K(cr) = NzlK(nz) mod NL{KAL ,
+where £ is the fixed field ofapreimage a e Frob(L | K) of a e G(L\K) and
+7tz e Az is a prime element. It is called the reciprocity homomorphism
+ofL\K.
+
+===== PDF PAGE 311 =====
+
+§5. The Reciprocity Map 295
+Proof: We first show that the definition of tl\k{^) is independent of the
+choice of the preimage a e Frob(L\K) of a. For this, let a' e Frob(L\K)
+be another preimage, X" its fixed field and jtsf € A& a prime element.
+If (Ik(g) = dK(vr), then a\g = af\^ and a\i = a'\i, so that a = a\
+and there is nothing to show. However, if we have, say, <1k(g) < (Ik(g')i
+then af = ax for some f e Frob(L\K), and f\i = 1. The fixed field X"'
+of f contains L, so r^K(i) = Nz"\k{^e") = 1 mod Nl\kAl. It follows
+therefore that r^K(af) = r^K{a)r^K{x) = r^K(a).
+The fact that the mapping is a homomorphism now follows directly
+from (5.5): if a\,&2 e Frob(L|jfiO are preimages of a\,ai € G(L\K), then
+or3 = a\&2 is a preimage of a3 = a\ai. □
+The definition of the reciprocity map expresses the fundamental principle
+of class field theory to the effect that Frobenius automorphisms correspond
+to prime elements: the element a = cpz e G(L\E) is mapped to nz € A^\
+for reasons of functoriality, the inclusion G(L\E) ^ G(L\K) corresponds
+to the norm map Nz\k • Az -> Ak- So the definition of ri\x(a) is already
+forced upon us by these requirements. This principle appears at its purest in
+the
+(5.7) Proposition. If L\K is an unramified extension, then the reciprocity
+map
+rLlK:G(L\K)—>AK/NLlKAL
+is given by
+rL\K<SPL\K) = *K mod NL\KAL,
+and is an isomorphism.
+Proof: In this case one has L = K and cpK e G(K\K) is a preimage of
+(Pl\k with fixed field K, i.e., ti\k{(Pl\k) = kk mod Nl\kAl. The fact that
+we have an isomorphism is seen from the composite
+G(L\K) —> AK/NL\KAL —> Z/nZ = Z/nZ,
+with n = [L : K], where the second map is induced by the valuation
+vk • Ak -> Z because vk{Nl\kAl) c nZ. It is an isomorphism, for
+if vk{o) = 0 mod nZ, then a = U7t^n, and since u = Nl\k(s) for some
+8 e Ulj by (5.1), we find a = Ni^isn^) = 1 mod Nl\kAl. On the side of
+the homomorphisms, the generators (Pl\k^k mod Nl\kAl, and 1 mod nZ
+correspond to each other, and everything is proved. □
+The reciprocity homomorphism r^\K exhibits the following functorial
+behaviour.
+
+===== PDF PAGE 312 =====
+
+296 Chapter IV. Abstract Class Field Theory
+(5.8) Proposition. Let L\K and L'\Kf be finite Galois extensions, so that
+K C K' and L c V', and let a e G. Then we have the commutative diagrams
+G{L'\Kf) -11W+Ak>INl,\K,Al, G(L\K) ^k > AK/NL]KAL
+NK'\K a* \G
+G(L\K) !—► AK/NLlKAL G(L°\K°) —U AK'/NLolKoALo
+where the vertical arrows on the left are given by a' h-> ct'Il, resp. by the
+conjugation x h> a_1ra.
+Proof: Let a' G G{L'\K') and a = a'\L eG(L\K). If of' g Frob(L'|iT)
+is a preimage of a', then a = a'\^ G Frob(L|AT) is a preimage of a such
+that dK(a) = fK'\KdK'(?') € N. Let X1' be the fixed field of a'. Then
+X = X' n L = X' n X is the fixed field of a and fE>\x = 1. If now
+7T2;/ G i4^/ is a prime element of X', then jr^; = Nz'\z(nz) g /l^; is a
+prime element of X. The commutativity of the diagram on the left therefore
+follows from the equality of norms
+Nz\k(Kz) = Nz\k(Nz>\z(7Tz>)) = NE>\k(7Tz>) = NK>\K(NE>\k> (*£>)) •
+On the other hand, let r G G(L\K), and let f be a^preimage in FrobCLI^RT)
+with fixed field X, and f G G a lifting of f to £. Then Xa is the fixed
+field of a~lta \i°, and if it G /l^; is a prime element of X, then ^a G A^cr
+is a prime element of Xa. The commutativity of the diagram on the right
+therefore follows from the equality of norms
+Nz*lK°(7ra) = NzlK(itr. □
+Another very interesting functorial property of the reciprocity map is
+obtained via the transfer (Verlagerung in German). For an arbitrary group
+G, let Gf denote the commutator subgroup and write
+Gab = G/G'
+for the maximal abelian quotient group. If then H c G is a subgroup of
+finite index, we have a canonical homomorphism
+Ycr:Gab —> Hab,
+which is called transfer from G to H. This homomorphism is defined as
+follows (see [75], chap. IV, § 1).
+
+===== PDF PAGE 313 =====
+
+§5. The Reciprocity Map 297
+Let R be a system of representatives for the left cosets of H in G,
+G = RH, 1 e R. If a e G we write, for every p e R,
+op = p'op, op e H, p' e R,
+and we define
+Ver(a mod GO = \\ ap mod //'.
+pcR
+Another description of the transfer results from the double coset
+decomposition
+G = \J(o)xH
+T
+of G in terms of the subgroups (a) and H. Letting f(r) denote the smallest
+natural number such that aT = r~la^T\ e //,onehas Hn(r~lar) = (<rr),
+and we find that
+Ver(a mod GO = f[ °V mod H'.r
+This formula is obtained from the one above by choosing for R the set
+[alx | / = 1, ..., f(x)}. Applying this to the reciprocity homomorphism
+rLlK:G(L\K)ab—>AK/NLlKAL
+we get the
+(5.9) Proposition. Let L\K be a finite Galois extension and K' an
+intermediate field. Then we have the commutative diagram
+G(L\Kf)ab ^> AK>/NL\K,AL
+Ver
+G(L\K)ab ^U AK/NL\KAL,
+where the arrow on the right is induced by inclusion.
+Proof: Let us write temporarily G = G(L\K) and H = G(L\Kf). Let
+g e G(L\K)^and let & be a preimage in Frob(L|jRT) with fixed field E
+and S = G(L\E) = (a). We consider the double coset decomposition
+G = \JStH and put ST = r~lSr n H and aT = r~laf{r)r as above. Letr
+G = G(L\K), H = G(L\K'), S = (a), x=x\L and ax=ax\L.
+Then we obviously have
+G = \JSfH,
+
+===== PDF PAGE 314 =====
+
+298 Chapter IV. Abstract Class Field Theory
+and therefore
+Ver(a mod G(L\K)r) =\\aT mod G{L\K')'.r
+For every r, let cdx vary over a system of right coset representatives of H/ST.
+Then one has
+H = |J Sro>r and G = |J St&>r .
+Let 27r be the fixed field of aT, i.e., the fixed field of ST. ET is the fixed
+field of x~lax so that ET\ET is the unramified subextension of degree /(t)
+in L\ET. If now 7T e A^; is a prime element of X1, then 7tT e A^ is a
+prime element of 17r, and thus also of ET. In view of the above double coset
+decomposition, we therefore find
+nzIK(7t)= n ^ra,r = n(ri(^Trr) =n^rri^(^T),T,COT T COT X
+and since aT e FrobCLIA^) is a preimage of ax e G(L\K'), it follows that
+rL\K(cr) = UniK'^r) = ^'(FK) = rL|tf'(Ver(cr mod G(L\K)')) .T T
+D
+Exercise 1. Let L\K be abelian and totally ramified, and let tt be a prime element
+of AL. If then a e G(L\K) and
+y<p-l = n<r-l
+with y e Ui, then r^O) = N(y) mod Nl\KAl, where A/" = A^ (B.Dwork, see
+[122], chap. XIII, §5).
+Exercise 2. Generalize the theory developed so far in the following way. Let P be
+a set of prime numbers and let G be a pro-P-group, i.e., a profinite group all of
+whose quotients G/N by open normal subgroups N have order divisible only by
+primes in P.
+Let d : G -> ZP be a surjective homomorphism onto the group ZP — Y\pep ^p*
+and let A be a G-module. A henselian P-valuation with respect to d is by definition
+a homomorphism
+v : Ak —> Z/>
+which satisfies the following properties:
+(i) v(AK) = Z2Z and Z/nZ = Z/rcZ for all natural numbers rc which are
+divisible only by primes in P,
+(ii) v(NK\kAK) = /tfZ for all finite extensions K\k, where /# = (d(G) : d(GK)).
+Under the hypothesis that Hl(G(L\K), UL) = 1 for i = 0, - 1, for all unramified
+extensions L |AT, prove the existence of a canonical reciprocity homomorphism rL\K :
+G(L|AT)flft -> AK/NL\KAL for every finite Galois extension L|£.
+
+===== PDF PAGE 315 =====
+
+§ 6. The General Reciprocity Law 299
+Exercise 3. Let d : G —> Z be a surjective homomorphism, A a G-module which
+satisfies axiom (5.1), and let v : Ak -> Z be a henselian valuation with respect to d.
+Let /n& be a finite extension and let spec^) be the set of microprimes of K
+(see §4, exercise 1-5). Define a canonical mapping
+rK : spec(/0 -> AK/N-k^KA-k,
+and show that, for a finite extension, the diagram
+spec(L) ——> AL/N^LA-k
+Nl\k
+spec(/0 > AK/N-k{KA-h
+rK
+commutes. Show furthermore that, for every finite Galois extension L\K, rK induces
+the reciprocity isomorphism
+rLlK:G(L\K)-> AK/NLlKAL.
+Hint: Let cp e GK be an element such that d/rOp) £ N. Let E be the fixed field ofcp and ^
+Az = Jim A/ra ,a
+where #a | £ varies over the finite subextensions of E \ K, and where the projective
+limit is taken with respect to the norm maps NK^\Ka : AK& -> AKa. Then there is a
+surjective homomorphism vs : As -> Z and a homomorphism A^a: : A^ -> AK.
+§ 6. The General Reciprocity Law
+We now impose on the continuous G -module A the following condition.
+(6.1) Class Field Axiom. For every cyclic extension L\K one has
+K] fori=0,
+fori = —\.#W{G{L\K\AL) =\[^:
+Among the cyclic extensions there are in particular the unramified ones.
+For them the above condition amounts precisely to requiring axiom (5.1), so
+that one has
+(6.2) Proposition. For a finite unramified extension L\K, one has
+//f'(G(L|A:),£/L) =1 for i=0,-l.
+
+===== PDF PAGE 316 =====
+
+300 Chapter IV. Abstract Class Field Theory
+Proof: Since L\K is unramified, a prime element ttk of Ak is also a
+prime element of Ai. As H~~1(G(L\K),Al) = 1, every element u e Ui
+such that Nl\k(u) = 1 is of the form u = aa~l, with a e Ai, a = v>l\k>
+So writing a = sn^, s e Ul, we obtain u = sa~l. This shows that
+H-\G(L\K),UL) = h
+On the other hand, the homomorphism vk • Ak -> Z gives rise to a
+homomorphism
+v/r : AK/NL\KAL —> Z/nZ = Z//iZ,
+where n = [L : K] = /l\k, because vk(Nl\kAl) = /l\kZ = nZ. This
+homomorphism is surjective as vk^k mod Nl\kAl) = 1 mod nZ, and it is
+bijective as #Ak/Nl\kAl = n. If now u e Uk, then we have u = Nl\k(cl),
+with a e AL, since vk(u) = 0. But 0 = vk(u) = vk(Nl\k(^)) = nvL(a),
+so we get in fact a eUL. This proves that H°(G(L\K), UL) = \. □
+By definition, a class field theory is a pair of homomorphisms
+(d : G -> Z, v : A -► Z) ,
+where /I is a G-module which satisfies axiom (6.1), d is a surjective
+continuous homomorphism, and v is a henselian valuation. From proposition
+(6.2) and §5, we obtain for every finite Galois extension L\K, the reciprocity
+homomorphism
+rLlK:G(L\K)ab-^ AK/NL]KAL.
+But the class field axiom yields moreover the following theorem, which
+represents the main theorem of class field theory, and which we will call the
+general reciprocity law.
+(6.3) Theorem. For every finite Galois extension L\K, the homomorphism
+is an isomorphism.
+rLlK '• G(L\K)ab —> AK/NL\KAL
+Proof: If M\K is a Galois subextension of L\K, we get from (5.8) the
+commutative exact diagram
+1 > G(L\M) ► G(L\K) ► G(M\K) ^1
+rL\M rL\K rM\K
+Nm\k
+Am/NL\MAl > AK/NL\KAL > Ak/Nm\kAm —> 1.
+We use this diagram to make three reductions.
+
+===== PDF PAGE 317 =====
+
+§ 6. The General Reciprocity Law 301
+First reduction. We may assume that G(L\K) is abelian. For if the
+theorem is proved in this case, then, putting M = Lab the maximal
+abelian subextension of L\K, we find G(L\K)ab = G(M\K), and the
+commutator subgroup G(L\M) of G(L\K) is precisely the kernel of ri\K,
+i.e., G(L\K)ab -> Ak/Nl\kAl is injective. The surjectivity follows by
+induction on the degree. Indeed, in the case where G(L\K) is solvable,
+one has either M = L or [L : M] < [L : K], and if rM\K and ri\M are
+surjective, then so is r^. In the general case, let M be the fixed field of a
+p-Sylow subgroup. M\K need not be Galois, but we may use the left part
+of the diagram, where ri\M is surjective. It then suffices to show that the
+image of Nm\k is the p-Sylow subgroup Sp of Ak/Nl\kAl. That this holds
+true for all p amounts to saying that ri\K is surjective. Now the inclusion
+Ak ^ Am induces a homomorphism
+i : AK/NL\KAL —> AM/NL\MAL,
+such that NM\k o i = [M : K]. As ([M : K]9p) = 1, Sp -^i Sp is
+surjective, so Sp lies in the image of Nm\k, and therefore of r^.
+Second reduction. We may assume that L\K is cyclic. For if M\K varies
+over all cyclic subextensions of L \ K, then the diagram shows that the kernel
+of ri\K lies in the kernel of the map G(L\K) -> \\MG(M\K). Since
+G(L |K) is abelian, this map is injective and hence the same is true of r^/r.
+Choosing a proper cyclic subextension M\K of L\K, surjectivity follows by
+induction on the degree as in the first reduction for solvable extensions.
+Third reduction. Let L\K be cyclic. We may assume that fi\K = 1. To
+see this, let M = L n K be the maximal unramified subextension of LI^RT.
+Then /^|M = 1 and rM\K is an isomorphism by (5.7). In the bottom
+sequence of our diagram, the map Nm\k is injective because the groups
+in this sequence have the respective orders [L : M], [L : K], [M : K] by
+axiom (6.1). Therefore ri\K is an isomorphism if r^\M is.
+Now let L\K be cyclic and totally ramified, i.e., fi\K = 1. Let a be a
+generator of G (L | K )^ We view a via the isomorphism G (L \ K) = G (L | K)
+as an element of G(L\K), and obtain the element a = acpi e Frob(L\K),
+which is a preimage of a e G(L\K) such that dx. (?) = dic(<PL) = fh]K = 1.
+We thus find for the fixed field E \ K of a that £; | K = 1, and so 17 n AT = if.
+Let M|jRT be a finite Galois subextension of L\K containing £ and L, let
+M° = M n jRT be the maximal unramified subextension of M|jRT, and put
+N = NMlMo. As fE\K = fL\K = 1, one finds A^Ur =Ne\k,N\Al = NL{K
+(see the proof of (5.3)).
+
+===== PDF PAGE 318 =====
+
+302 Chapter IV. Abstract Class Field Theory
+For the injectivity of vl\k, we have to prove this: if ri\K(crk) = 1, where
+0 < k < n = [L : K]9 then k = 0.
+In order to do this, let ttz € As, ttl e Ai be prime elements. Since
+U, L c M, 7tz and m are both prime elements of M. Putting jr^ = un£,
+u e Um » we obtain
+rLMr (or*) = N(itkE) = tf(M) • #(*£) = //(m) mod tfLMr AL .
+From ri\K{cfk) = 1, it thus follows that Af(w) = N(v) for some i> e [/l, so
+that N(u~lv) = 1. From axiom (6.1), we may write u~lv = aa~l for some
+a e Am, and find in Am the equation
+^„,\0r-lrkn%\a-l U,\0r-1 „cr-l\cr-l(^Lu) = (^Lu) = (nEu v) = {a ) = {a )
+and so x = 7i\yax~° e AMo. Now v^o(x) e Z and nvMo(x) = vm{x) = k
+imply that one has k = 0, and so vl\k is injective. The surjectivity thenfollows from (6.1). □
+The inverse of the mapping r^\K : G(L\K)ab -> Ak/Nl\kAl gives, for
+every finite Galois extension L\K, & surjective homomorphism
+( ,L\K):AK G(L\K) ab
+with kernel Nl\kAl. This map is called the norm residue symbol of L\K.
+From (5.8) and (5.9) we have the
+(6.4) Proposition. Let L\K and L'\K' be finite Galois extensions such that
+K C K' andL C Z/, and let a e G. Then we have the commutative diagrams
+ak> (,W)> g^w*Ajr ( 'L|i° > G(L|iC)'aft
+W/f'|AT
+Ajc ( 'L|g)> G(L\K)ah, AKa±-^^G{La\Ka)ab,
+and if K' c. L, we have the commutative diagram
+Ak, ( MK'\ G(L\K')ab
+Ver
+Ak ( 'L^K\ G(L\K)ab.
+
+===== PDF PAGE 319 =====
+
+§6. The General Reciprocity Law 303
+The definition of the norm residue symbol automatically extends to
+infinite Galois extensions L\K. For if L{\K varies over the finite Galois
+subextensions, then
+G(L\K)ab = ]gn G(Li\K)ab
+i
+(see §2, exercise 6). As (a,Li'\K)\Lab = (a,Li\K) for L// 2 £/, the
+individual norm residue symbols (a,Li \K), a e Ak, determine an element
+(a,L\K)eG(L\K)ab.
+In the special case of the extension K\K, we^find the following intimate
+connection between the maps cIk , vk , and ( , K \K).
+(6.5) Proposition. One has
+(a, K\K) = cpvKK{a\ andthus dK o ( ,K\K) = vK .
+Proof: Let L\K be the subextension of K\K of degree /. As Z/fZ =
+Z//Z, we have vk(o) = n + /z, with n e Z, z G Z; that is, (3 = ujr^b^,
+with u e Uk, b e Ak- From (5.7), we obtain
+Thus we must have {a, K \K) = cpvKK{a). □
+The main goal of field theory is to classify all algebraic extensions of
+a given field K. The law governing the constitution of extensions of K is
+hidden in the inner structure of the base field K itself, and should therefore
+be expressed in terms of entities directly associated with it. Class field theory
+solves this problem as far as the abelian extensions of K are concerned.
+It establishes a 1 — 1-correspondence between these extensions and certain
+subgroups of Ak. More precisely, this is done as follows.
+For every field K, we equip the group Ak with a topology by declaring
+the cosets ciNl\kAl to be a basis of neighbourhoods of a e Ak, where L\K
+varies over all finite Galois extensions of K. We call this topology the norm
+topology of Ak .
+(6.6) Proposition, (i) The open subgroups of Ak are precisely the closed
+subgroups of finite index.
+(ii) The valuation vk : Ak -> Z is continuous.
+
+===== PDF PAGE 320 =====
+
+304 Chapter IV. Abstract Class Field Theory
+(iii) If L\K is a finite extension, then Nl\k : Ai —► Ak is continuous.
+(iv) Ak is Hausdorff if and only if the group
+A°k = C]Nl\kAl
+L
+of universal norms is trivial.
+Proof: (i) If AT is a subgroup of Ak, then
+M= AK \ |J oAf.
+Now, if AT is open, so are all cosets aAf, so that Af is closed, and since Af has
+to contain one of the neighbourhoods Nl\kAl of the basis of neighbourhoods
+of 1, Af is also of finite index. If, conversely, Af is closed and of finite index,
+then the union of the finitely many cosets aAf ^ Af is closed, and so Af
+is open.
+(ii) The groups /Z, / G N, form a basis of neighbourhoods of 0 e Z
+(see § 2), and if L \ K is the unramified extension of degree /, then it follows
+from (4.7) that
+VK(NL\KAL) = fvL(AL)<ZfZ,
+which shows the continuity of vk .
+(iii) Let Nm\kAm be an open neighbourhood of 1 e Ak- Then
+Nl\k(Nml\lAml) = Nml\kAml ^ NM\kAm,
+which shows the continuity of Nl\k­(iv) is self-evident. □
+The finite abelian extensions L \ K are now classified as follows.
+(6.7) Theorem. Associating
+i^JVL =NL\KAL
+sets up a 1-1 -correspondence between the finite abelian extensions L\K and
+the open subgroups Af of Ak- Furthermore, one has
+Lx <zl2^=>MLx 2A/"l2, NLxl2 = AfLl n A/Z2, AfLlnL2 = AfLlAfLl.
+The field L corresponding to the subgroup Af of A k is called the class
+field associated with Af. By (6.3), it satisfies
+G(L\K) * AK/Af.
+
+===== PDF PAGE 321 =====
+
+§ 6. The General Reciprocity Law 305
+Proof of (6.7): If L x and L2 are abelian extensions of K, then the transitivity
+of the norm implies Mlxl2 ^ Nlx HA/l2- If, conversely, a e Mlx nA/L2, then
+the element (<s, LXL2\K) e G(LXL2\K) projects trivially onto G{Lt \K), that
+is, (a,Li\K) = 1 for/ = 1,2. Thus (<2,LiL2|iO = 1, i.e., a e MLxL2. We
+therefore have Mlxl2 = Nlx n A/l2, and so
+A/"Ll 2 MLl « MLx nAfL2=AfLlL2=AfL2 *=> [LXL2 : K]
+= [L2:K]^LX<ZL2.
+This shows the injectivity of the correspondence L h-> Ml •
+If AT is any open subgroup, then it contains the norm group Ml = Nl\k^l
+of some Galois extension L\K. (6.3) implies that Ml = MLab, so we may
+assume L\K to be abelian. But (M,L\K) = G(L\L') for some intermediate
+field V of L\K. Since M 2 Ml, the group M is the full preimage of
+G(L\Lf) under the map ( ,L\K) : AK -> G(L|iT), and thus it is the full
+kernel of ( ,L'\K) : AK -* G(Z/|#)- Thus AT = A/"z/. This shows that the
+correspondence L h-> A/l is surjective.
+Finally, the equality Mlxhl2 = M'lxMl2 is obtained as follows.
+Lx (1L2 c L( implies that Mlxhl2 2 Ml{ , / = 1,2, and thus
+As MlxMl2 is open, we have just shown that MlxMl2 = Ml for some finite
+abelian extension L\K. But Ml( Q Ml implies L c. Lx nL2, so that
+MLxMl2=Ml 2ATLlnL2. □
+Exercise 1. Let n be a natural number, and assume the group fin — {§ e A | §" = 1}
+is cyclic of order rc, and A c An. Let £ be a field such that [in c A/r, and let
+L|^T be the maximal abelian extension of exponent n. If L\K is finite, then one has
+NLlKAL=AnK.
+Exercise 2. Under the hypotheses of exercise 1, Kummer theory and class field theory
+yield, via Pontryagin duality G(L\K) x Hom(G(L\K),/jin) -> //,„, a nondegenerate
+bilinear mapping (the abstract "Hilbert symbol")
+( , ):AKIAnKxAK/AnK-+iLn.
+Exercise 3. Let p be a prime number and (d : G -> Zp, v : Ak -> Zp) a p-class
+field theory in the sense of §5, exercise 2. Let d' : G -> Zp be another surjective
+homomorphism, and K'\K the Zp-extension defined by d'. Let t/ : A* -> Zp be the
+composite of
+Then (d',v') is also a p-class field theory. The norm residue symbols associated to
+(d,v) and (d!\vf) coincide. (No analogous statement holds in the case of Z-class
+field theories (d : G -> Z, v : Ak -> Z).)
+
+===== PDF PAGE 322 =====
+
+306 Chapter IV. Abstract Class Field Theory
+Exercise 4. (Generalization to infinite extensions.) Let (d : G -> Z, v : Ak -> Z)
+be a class field theory. We assume that the kernel Uk of i>* : Ak —> Z is compact for
+every finite extension ^f|fc. For an infinite extension K\k, put
+AK = Jim A^a,
+where ^fjfc varies over the finite subextensions of K\k and the projective limit is
+taken with respect to the norm maps NKfi\Ka : AKp -> AKa. Show:
+1) For every (finite or infinite) extension L\K, one has a norm map
+NL\K : AL-* AK,
+and if L\K is finite, there is an injection iL\K : Ak —> AL. If furthermore L|^f is
+Galois, then one has A/r = AL \
+2) For every extension K \k with finite inertia degree fK = [KC\k:k], (d, v) induces
+a class field theory (dK :GK -> Z, i;^ : AK -> Z).
+3) If ^T c ^T; are extensions of k with /k, /k' < oo, and L|^T and Z/I^f' are (finite
+or infinite) Galois extensions with LCL', then one has a commutative diagram
+AK> { ,L^K')>G(L'\K')ab
+"K>\K
+AK {MK) > G(L\K)ab.
+Exercise 5. If L\K is a finite Galois extension, then G£6 is a G(L|A')-module in a
+canonical way, and the transfer from Gk to GL is a homomorphism
+Ver:GaKb -> (Gf)G(L|^}.
+Exercise 6. (Tautological class field theory.) Assume that the profinite group G
+satisfies the condition: for every finite Galois extension,
+Ver : Gf -> (GaLb)G(L]K)
+is an isomorphism. (These are the profinite groups of "strict cohomological
+dimension 2" (see [145], chap. Ill, th. (3.6.4)).) Put AK = Gf and form the direct limit
+A — lirri AK via the transfer. Then Ak is identified with AGk .
+Show that for every cyclic extension L \ K one has
+[L:K] for/=0,#H'(G(L\K)9AL)-U {ori = _h
+and that for every surjective homomorphism d : G —> Z, the induced map
+v : Ak — Gab —> Z is a henselian valuation with respect to d. The corresponding
+reciprocity map rL\K : G(L\K) -> AK/NL\KAL is essentially the identity.
+Abstract class field theory acquires a much broader range of applications if it is
+generalized as follows.
+Exercise 7. Let G be a profinite group and B(G) the category of finite G-sets,
+i.e., of finite sets X with a continuous G-operation. Show that the connected, i.e.,
+transitive G-sets in B(G) are, up to isomorphism, the sets G/Gk, where GK is an
+open subgroup of G, and G operates via multiplication on the left.
+
+===== PDF PAGE 323 =====
+
+§ 6. The General Reciprocity Law 307
+If X is a finite G-set and x e X, then
+7ii(X,x) — Gx = {a e G \ax — x]
+is called the fundamental group of X with base point x. For a map / : X -> Y in
+£(G), we put
+G(X\Y) = AutY(X).
+f is called Galois if X and F are connected and G(X\Y) operates transitively on
+the fibres f~l(y).
+Exercise 8. Let / : X -> Y be a map of connected finite G-sets, and let jc e X,
+y — f(x) e Y. Show that / is Galois if and only if 7t\(X,x) is a normal subgroup
+of 7Z\(Y,y). In this case, one has a canonical isomorphism
+G(x\Y) ^7n(r,?)/*!(*,*).
+A pair of functors
+A = (A*,A*) : £(G)-> (ab),
+consisting of a contravariant functor A* and a covariant functor A* from B(G) to
+the category (afr) of abelian groups is called a double functor if
+A*(X) = A*(X) =: A(X)
+for all X e B(G). We define
+AK = A(G/GK).
+If / : X -> F is a morphism in 5(G), then we put
+A*(f) = f and A,(/) = /,.
+A homomorphism /* : A -> 5 of double functors is a family of homomorphisms
+/*(X) : A(X) -> 5(X) representing natural transformations A* -> B* and A* -> 5*.
+A G -modulation is defined to be a double functor A such that
+(i) A(X UH = A(X) x A(F).
+(ii) If among the two diagrams
+g'X ^ X'
+f f and
+Y'
+A(X)
+f*
+A(Y)
+~> A(X')
+fl
+A(Y')
+in B(G), resp. (ab), the one on the left is cartesian, then the one on the right is
+commutative.
+Remark: G-modulations were introduced in a general context by A. Dress under
+the name of Mackey functors (see [32]).
+Exercise 9. G-modulations form an abelian category.
+Exercise 10. If A is a G-module, then the function A(G/Gk) — AGk extends to a
+G-modulation A in such a way that, for an extension L\K, the map /* : Ak -> AL,
+resp. /* : AL -> AK, induced by / : G/Gl -> G/Gk, is the inclusion, resp. the
+norm NL\K.
+
+===== PDF PAGE 324 =====
+
+308 Chapter IV. Abstract Class Field Theory
+The rule A i-> A is an equivalence between the category of G-modules and the
+category of G-modulations with "Galois descent", i.e., of those G-modulations A
+such that
+/* : A(Y) -> A(X)G(XlY\
+for every Galois mapping / : X -> Y, is an isomorphism.
+Exercise 11. G-modulations are explicitly given by the following data. Let
+Bq(G) be the category whose objects are the G-sets G/U, where U varies
+over the open subgroups of G, and whose morphisms are just the projections
+7i : G/U -> G/V for U c V, as well as the maps c(a) : G/U -> G/aUa~\
+xU h> xUo~x = tg-1(gUg-1), for a e G.
+Let A = (A*, A*) : B0(G) -> (ab) be a double functor and for n :G/U -> G/V
+(U c V), resp. c(a) : G/U -> G/aUa~l (a e G), define
+Ind£ = A*(jz): A(G/U) -» A(G/V),
+Res£ = A*(tt): A(G/lO -> A(G/U),
+c(a\ = A*(c(cr)): A(G/U) -» A(G/aUa~l).
+If for any three open subgroups U,V C.W of G, one has the induction formula
+Res£ olndj; = £ Ind^^"1 oc(a)* o Res^.,^ ,u\w/v
+then A extends uniquely to a G-modulation A : 5(G) -> (afr).
+Hint: If X is an arbitrary finite G-set, then the disjoint union
+Ax = U MG/GX)
+xeX
+is again a G-set, because c(a)*A(G/Gx) = A(G/Gax). Define A(X) to be the
+group
+A(X) = Homx(X,Ax)
+of all G-equivariant sections X -> Ax of the projection A* -> X.
+Exercise 12. The function 7iab(G/GK) = Gf extends to a G-modulation
+nab : 5(G) -> (pro-ab)
+into the category of pro-abelian groups. Thus, for an extension L\K, the maps
+/* : Gf -> Gf, resp. /* : GaLb -> Gf, induced by / : G/GL -> G/GK are given
+by the transfer, resp. the inclusion Gl —> G#.
+Exercise 13. Let A be a G -modulation. For every connected finite G -set X, let
+NA(X) = r\f.A(X),
+where the intersection is taken over all Galois maps / : Y -> X. Show that the
+function NA(X) defines a G-submodulation N A of A, the modulation of universal
+norms.
+Exercise 14. If A is a G-modulation, then the completion A is again a G-modulation
+which, for connected X, is given by
+A(X) = lim A(X)//*A(K),
+where the projective limit is taken over all Galois maps / : Y —> X.
+
+===== PDF PAGE 325 =====
+
+§ 6. The General Reciprocity Law 309
+For the following, let d : G —> Z be a fixed surjective homomorphism. Let
+/ : X —> Y be a map of connected finite G-sets and x e X, y — f(x) e Y. The
+inertia degree, resp. the ramification index, of / is defined by
+fx\Y = (d(Gy) : d(Gx)), resp. eX\Y = (Iy : Ix),
+where /y, resp. Ix, is the kernel of d : Gy -> Z, resp. d : Gx -* Z. f is called
+unramified if ^xir = 1­
+Exercise 15. d defines a G-modulation Z such that the maps /*, /*, corresponding
+to a mapping / : X -> Y of connected G-sets, are given by
+Z(F) = Z < XlY > Z = Z(X).
+This gives a homomorphism of G -modulations
+<*:***—* Z.
+Exercise 16. An unramified map / : X -> Y of connected finite G-sets is Galois,
+and d induces an isomorphism
+G(X\Y) = Z/faYZ.
+Let cpX\Y € G(X|F) be the element which is mapped to 1 mod fx\yZ.
+Let A be a G-modulation. We define a henselian valuation of A to be a
+homomorphism
+v : A-* Z
+such that the submodulation u(A) of Z comes from a subgroup Z c Z which
+contains Z and satisfies Z/rcZ = Z/nZ for all rc e N. Let U denote the kernel of A.
+Exercise 17. Compare this definition with the definition (4.6) of a henselian valuation
+of a G-module A.
+Exercise 18. Assume that for every unramified map / : X -> Y of connected finite
+G-sets, the sequence
+0 -> U(Y) -C U(X) ^'" > U(X) -^> C/(F) -> 0
+is exact, and that A(Y)[X:Y] c /^^(X) for every Galois mapping / : X -> Y (the
+latter is a consequence of the condition which will be imposed in exercise 19). Then
+the pair (d, v) gives, for every Galois mapping / : X -> Y, a canonical "reciprocity
+homomorphism"
+rxlY :G(X|F)-> A(Y)/f*A(X).
+Exercise 19. Assume, beyond the condition required in exercise 18, that for every
+Galois mapping / : X -> Y with cyclic Galois group G(X\Y), one has
+(A(Y):f*A(X)) = [X:Y] and ker/* = im(a* - 1),
+where [X : Y] = #f~l(y), with y e Y, and a is a generator of G(X|7). Then if rX|y
+is an isomorphism for every Galois mapping / : X -> Y of prime degree [X : F],
+so is
+rxlY :G(X\Y)ab-> A(Y)/f*A(X),
+for every Galois mapping / : X —> Y.
+
+===== PDF PAGE 326 =====
+
+310 Chapter IV. Abstract Class Field Theory
+Exercise 20. Under the hypotheses of exercise 18 and 19 one obtains a canonical
+homomorphism of G -modulations
+A—>izab
+whose kernel is the G -modulation NA of universal norms (see exercise 13). It
+induces an isomorphism
+A-^7tab
+of the completion A of A (see exercise 14).
+Remark: The theory sketched above and contained in the exercises has a very
+interesting application to higher dimensional class field theory. In chap. V, (1.3),
+we will show that, for a Galois extension L\K of local fields, there is a reciprocity
+isomorphism
+G(L\K)ab = K*/NLlKL*.
+The multiplicative group K* may be interpreted in K-theory as the group K\(K) of
+the field K. The group K2(K) is defined to be the quotient group
+K2(K) = (K* ® K*)/R,
+where R is generated by all elements of the form jc ® (1 — jc). Treating Galois
+extensions L\K of "2-local fields" — these are discretely valued complete fields
+with residue class field a local field (e.g., Qp((jc)), Fp((jc))((v)) ) — the Japanese
+mathematician Kazuya Kato (see [83]) has established a canonical isomorphism
+G(L\K)ab = K2(K)/NL]KK2(L).
+Kato's proof is intricate and needs heavy machinery. It was simplified by the
+Russian mathematician I.Fesenko (see [36], [37], [38]). His proof may be viewed
+as a special case of the theory sketched above. The basic idea is the following.
+The correspondence K h> K2(K) may be extended to a G-modulation K2. It does
+not satisfy the hypothesis of exercise 15, so that one may not apply the abstract
+theory directly to K2. But Fesenko considers on K2 the finest topology for which the
+canonical map ( ,) : K* x K* —> K2(K) is sequentially continuous, and for which
+one has xn + yn -> 0, — xn -> 0 whenever xn -> 0, yn -> 0. He puts
+Kl°v(K) = K2(K)/A2(K),
+where A2(K) is the intersection of all open neighbourhoods of 1 in K2(K), and he
+shows that
+K2°V(K)/NL]KK2°V(L) = K2(K)/NL]KK2(L)
+for every Galois extension L\K, and that Kl2°v{K) satisfies properties which imply
+the hypothesis of exercise 18 and 19 when viewing K^ as a G -modulation. This
+makes Kato's theorem into a special case of the theory developed above.
+§ 7. The Herbrand Quotient
+The preceding section concluded abstract class field theory. In order to
+be able to apply it to the concrete situations encountered in number theory,
+
+===== PDF PAGE 327 =====
+
+§ 7. The Herbrand Quotient 311
+it is all important to verify the class field axiom (6.1) in these contexts.
+An excellent tool for this is the Herbrand quotient. It is a group-theoretic
+formalism, which we develop here for future use.
+Let G be a finite cyclic group of order n, let a be a generator, and A a.
+G -module. As before, we form the two groups
+H°(G,A) = AG/NGA and H~l(G,A)= NgA/IgA,
+where
+n-\
+AG = {a eA\a° = a] , NGA = [NGa = Y\ aa'\ a € A] ,i=0
+NG A = {a e A \ NGa = 1} , IGA = {aa~l \ a e A} .
+(7.1) Proposition. If 1 —> A —> B —> C —> 1 is an exact sequence of
+G -modules, then we obtain an exact hexagon
+^H°(G,A) -^H°(G,B)
+H~\G,C)
+h H~\G,B) H~\G,A)
+H°(G,C)
+Proof: The homomorphisms /i,/4 and /2,/s are induced by A —1-> B
+and B —> C. We identify A with its image in B so that / becomes the
+inclusion. Then fa is defined as follows. Let c e CG and let b e B be
+an element such that j(b) = c. Then we have j(b°~l) = c°~x = 1 and
+NG(ba-1) = NG(ba)/NG(b) = 1, so that ba~l e NgA. f3 is thus defined
+by c mod NGC h-> b°~x mod IGA. In order to define fe, let c e ngC, and
+let b e B be an element such that j(b) = c. Then j(NGb) = NGc = 1, so
+that NGb e A. The map fa is now given by c mod IGA \-> NGb mod NGA.
+We now prove exactness at the place H°(G,A). Let a e AG such that
+f\(a mod NGA) = 1; in other words, a = NGb for some b e B. Writing
+c = j(b), we find f6(c mod IGC) = a mod NGA. Exactness at //-1(G, A)
+is deduced as follows: let a eNGA and fa(a mod IGA) = 1, i.e., a = ba~l,
+with b e B. Writing c = j(b), we find /3(c mod NGC) = a mod IGA.
+The exactness at all other places is seen even more easily. □
+
+===== PDF PAGE 328 =====
+
+312 Chapter IV. Abstract Class Field Theory
+(7.2) Definition. The Herbrand quotient of the G -module A is defined
+to be
+h(G,A) = : 9
+provided that both orders are finite.
+The salient property of the Herbrand quotient is its multiplicativity.
+(7.3) Proposition. If 1 —> A —> B —> C —> 1 is an exact sequence of
+G -modules, then one has
+h(G,B) = h(G,A)h(G,C)
+in the sense that, whenever two of these quotients are defined, so is the third
+and the identity holds.
+For a finite G-module A, one has h(G,A) = 1.
+Proof: We consider the exact hexagon (7.1). Calling «/ the order of the
+image of //, we find
+#H°(G, A) = n6m , #H°(G, B) = nln2, #//°(G, C) = n2n3,
+#H~l(G,A) = n3n4, #H~l(G,B) = n4n5, #H~l(G,C) = n5n6,
+and thus
+#//°(G, A) • #//°(G, C) • #//"1 (G, B)
+= #//°(G, B) • #H~l(G, A) • #H~l(G, C).
+At the same time, we see that if any two of the quotients are well­
+defined, then so is the third. And from the last equation, we obtain
+h(G,B) = h(G,A)h(G,C). Finally, if A is a finite G-module, then the
+exact sequences
+1 —> AG —> A ^> IGA —> 1, 1 —>NgA —> A -?% NGA—> 1,
+show that #A = #AG -#IGA= #Nc A • WGA, and h(G, A) = 1. □
+If G is an arbitrary group and g a subgroup, then to any g-module B, we
+may associate the so-called induced G-module
+A = IndgG(B).
+
+===== PDF PAGE 329 =====
+
+§ 7. The Herbrand Quotient 313
+It consists of all functions / : G —> B such that f(xr) = f(x)T for all
+r e g. The operation of a e G is given by
+r(x) = f(ax).
+If g = {1}, we write IndciB) instead of Ind^(£). We have a canonical
+g -homomorphism
+n:Ind8G(B)—>B, /h-+/(1),
+which maps the g-submodule
+B' = {fe Ind* (*) | /(*) = 1 for* £ g}
+isomorphically onto 5. We identify £' with B. If g is of finite index, we find
+Ind8G(B)= ft B°,
+aeG/g
+where the notation aeG/g signifies that a varies over a system of left
+coset representatives of G/g.
+Indeed, for any / e IndG(B) we have a unique factorization / = Y[a fa >
+where fa denotes the function in Br which is determined by fa (1) = f(cr~l).
+If conversely A is a G-module with a g-submodule B such that A is the
+direct product
+A= \\ B\
+oeG/g
+then A = Ind* (£) via B = Bf.
+(7.4) Proposition. Let G be a finite cyclic group, g a subgroup and B a
+g-module. Then we have canonically
+Hl(G, Ind^(fl)) =Hl(g,B) for / = 0, — 1.
+Proof: Let /I = Ind^(£) and let /? be a system of right coset representatives
+for G/g with I e R. We consider the g-homomorphisms
+7T.A-+B, /h^/(1); v:A —>£, /■—>n/(P)­
+pert
+*:£—► A, bt-+ fb(a) =
+Both admit the g-homomorphism
+f b° for a e g,
+I 1 f or o $ g,
+as a section, i.e., 7ros = vos = id, and we have
+7T O Afc = Ng O V ,
+
+===== PDF PAGE 330 =====
+
+314 Chapter IV. Abstract Class Field Theory
+because one finds that, for / e A,
+(Ng/xd = n n /pr(D = uuf(pr) = n(n/(p))r = ^(v(/>).reg peR r p r p
+life AG, then f(a) = /(l) for all a e G, and /(l) = /(r) = /(l)r for
+all r eg. The map n therefore induces an isomorphism
+n :AG —> B8.
+It sends NgA onto NgB, for one has tt(NgA) = Ng(vA) c Afg£ on the
+one hand, and on the other, Ng(B) = Ng(vsB) = tt(Ng(sB)) c jt(NgA).
+Therefore H°(G, A) = //°(g, 5).
+As Ng o v = 7T o Ng, the g-homomorphism v : i4 -> £ induces a
+g -homomorphism
+v : NgA —> NgB.
+It is surjective since v o s = id. We show that /g^4 is the preimage of IgB.
+IgA consists of all elements fa~l, f e A, a e G. For if G = (oo) and
+a = aj, then Z*-1 = /(J+^o+ +or^1)(a0-i) € ^ In the same way? one
+has IgB = {bT~l \ b e B, reg}. Writing now op = prTp, with p, pf e /?,
+tp e g, we obtain
+pert /(P) p' J(P) P
+On the other hand, for bT~l e IgB, the function /T~\ with / = s&,
+is a preimage as v(fT~l) = vs(b)T~l = bT~l. After this it remains to
+show ker(v) c IGA. Let G = (<p), n = (G : g), R = {l,<p, ...,(pn~1}.
+Let / €ng A be such that v(f) = YXilo <Pl — 1- Define the function
+AeAby h{\) = 1, /*(/) = Utl /V). Then /(/) = h{cpk) / h{cpk~l) =
+^(^-i)!-^"1 for o < £ < n, and /(l)/^-1"^) = EKo /V) = 1- Hence
+/ = h1'^1 e IGA. Thus we finally get H~l(G9A) = H'l(g9B). D
+Exercise 1. Let f9g be endomorphisms of an abelian group A such that
+fog = gof=zO. Make sense of the following statement. The quotient
+(ker/:img)
+*'"(A) = <k*r,:m./)
+is multiplicative.
+Exercise 2. Let f,g be two commuting endomorphisms of an abelian group A.
+Show that
+4o,gf(A) =q0,g(A)q0J(A),
+provided all quotients are defined.
+
+===== PDF PAGE 331 =====
+
+§7. The Herbrand Quotient 315
+Exercise 3. Let G be a cyclic group of prime order p, and let A be a G-module
+such that q^p{A) is defined. Show that
+h(G,A)p-l=q0,p(AG)p/q0,p(A).
+Hint: Use the exact sequence
+0 -» AG —* A -^> A0'1 -» 0.
+Let N == 1 + a + 1- ap~l in the group ring Z[G]. Show that the ring Z[G]/ZN
+is isomorphic to Z[f ], for f a primitive p-th root of unity, and that in this ring
+one has
+p = (a - l)p-ls,
+where e is a unit in Z[G]/ZN.
+Exercise 4. Let L|^T be a cyclic extension of prime degree. Using exercise 3,
+compute the Herbrand quotient of the group of units o*L of L, viewed as a
+G(L |ff)-module.
+Exercise 5. If G is a group, g a normal subgroup and A a g-module, then
+//HG.IndSW)) = Hl(g,A).
+
+===== PDF PAGE 332 =====
+

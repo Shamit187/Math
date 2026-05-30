@@ -1,0 +1,1303 @@
+
+===== PDF PAGE 333 =====
+
+Chapter V
+Local Class Field Theory
+§ 1. The Local Reciprocity Law
+The abstract class field theory that we have developed in the last chapter
+is now going to be applied to the case of a local field, i.e., to a field which is
+complete with respect to a discrete valuation, and which has a finite residue
+class field. By chap. II, (5.2), these are precisely the finite extensions K of
+the fields Qp or Fp((t)). We will use the following notation. Let
+vk be the discrete valuation normalized by vk(K*) = Z,
+Ok = {a e K | vk{o) > 0} the valuation ring,
+p^ = |^ e K | vk(cl) > 0} the maximal ideal,
+k = Ok/Pk the residue class field,
+Uk = [a e K*\vK(a) = 0} the unit group,
+U^ = 1 + pnK the group of rc-th higher units, n = 1,2, ...,
+q =qK =#k,
+\a\p = q~v^(a) the normalized p-adic absolute value,
+jjin the group of n-th roots of unity, and /jLn(K) = jjinn K*.
+ttk, or simply n, denotes a prime element of K, i.e., p# = ttok­
+In local class field theory, the role of the profinite group G of abstract
+class field theory is taken by the absolute Galois group G{k\k) of a fixed
+local field k, and that of the G-module A by the multiplicative group k*
+of the separable closure k of k. For a finite extension K\k we thus have
+Ak = K*, and the crucial point is to verify for the multiplicative group of
+a local field the class field axiom:
+(1.1) Theorem. For a cyclic extension L\K of local fields, one has
+^(wnw)-!"• = " **!-°­I 1 fori = -1.
+J. Neukirch, Algebraic Number Theory
+© Springer-Verlag Berlin Heidelberg 1999
+
+===== PDF PAGE 334 =====
+
+318 Chapter V. Local Class Field Theory
+Proof: For / = — 1 this is the claim of proposition (3.5) ("Hilbert 90")
+in chap. IV. So all we have to show is that the Herbrand quotient is
+h(G9L*) = #//°(G,L*) = [L : K], where we have put G = G(L\K).
+The exact sequence
+1 —> UL —> L* -^> Z —» 0,
+in which Z has to be viewed as the trivial G-module, yields, by chap. IV,
+(7.3),
+h(G9L*) = h(G9Z)h(G9UL) = [L : K]h(G9UL).
+Hence we have to show that h{G9Ui) = 1. For this we choose a normal
+basis [a* \ a e G} of L\K (see [93], chap. VIII, § 12, th. 20), a e oL, and
+consider in Ol the open (and closed) G -module M = J2ggG °k^°'. Then
+the open sets
+Vn = l+7r£M, ti = 1,2, ...,
+form a basis of open neighbourhoods of 1 in Ul- Since M is open, we have
+Kk°l — M for suitable N, and forn>N the yrt are even subgroups
+(of finite index) of Ul , because we have
+(7inKM)(nnKM) = nfMM c n%oL c nf~NM c tt£M.
+Hence V^V71 c V71, and since 1 - 7r£/z, for /x € M, lies in V71, so
+does (1 — 7T^/x)_1 = 1+ yTgiYltLi f^1 ^k )• Via ^e correspondence
+1 + 7r^a h> a mod ttkM, we obtain G-isomorphisms as in II, (3.10),
+Vn/Vn+l = M/nKM= ®(oK/pK)aa =lndG(oK/pK).
+oreG
+So by chap. IV, (7.4), we have //<(G, Vn/Vn+X) = 1 for i = 0, - 1
+and n > N. This in turn implies that Hl(G9Vn) = 1 for / = 0, - 1
+and n > N. Indeed, if for instance / = 0 and a e (Vn)G, then a = (NGbo)a\,
+with b0 e Vn, ax e (Vn+l)G, and thus ax = {NGbx)a2, for some bx e Vn+\
+a2 e (Vn+2)G, etc.; in general,
+at = (NGbi)ai+l, bt e Vn+l, ai+l € (yn+i+l)G.
+This yields a = NGb9 with the convergent product b = YlhLobi € Vn >
+so that H°(G9Vn) = 1. In the same way we have for a e Vn such that
+NGa = 1, that a = b°~x 9 for some b e Vn9 where a is a generator of G.
+Thus //-1(G, V") = 1. We now obtain
+h(G9 UL) = h(G9 UL/Vn) h(G9 Vn) = 1
+because Ul/V11 is finite. □
+
+===== PDF PAGE 335 =====
+
+§ 1. The Local Reciprocity Law 319
+(1.2) Corollary. If L\K is an unramified extension of local fields, then for
+i = 0, — 1, one has
+//'"(GCLIAO.C/l) =1 and Hl(G(L\K),U{^) = 1 for /i = 1,2,...
+In particular,
+NL\kUl=Uk and NLlKU™ =UJ? .
+Proof: Let G = G(L \K). We have already seen that W{G,UL) = 1 in
+chap. IV, (6.2). In order to prove Hl (G, £/£ ) = 1, we first show that
+H((G,X*) = 1 and //'"(G.A.) = 1,
+for the residue class field X of L. It is enough to prove this for / = —1,
+as A. is finite, and so h(G,X*) = h(G,X) = 1. We have H~l(G,k*) = 1
+by Hilbert 90 (see chap. IV, (3.5)). Let / = [X : k] be the degree of X over
+the residue class field k of K, and let cp be the Frobenius automorphism
+of X\k. Then we have
+#NgX = #{x e X | J2 X*' = £ **' = 0} < qf~l
+and
+#((p-l)l = qf-\
+since the map X > X has kernel k. Therefore H~l(G, X) = N X/(cp — \)X
+= 1.
+Applying now the exact hexagon of chap. IV, (7.1), to the exact sequence
+of G -modules
+i —> u{Ll) —> uL —> r —> i,
+we obtain W'iQ.U^) = H^GMl) = 1, because Hl(G,X*) = 1. If tt is
+a prime element of jRT, then n is also a prime element of L, so the map
+£/£° -> A giver
+exact sequence
+t/^ -> A given by 1 +ann h-> a mod pz, is a G-homomorphism. From the
+1 _> tfOi+D _> f/W _> x _> ls
+we now deduce by induction just as above, because Hl (G,X) = 0, that
+Hl{G,U{^x)) = Hl(G,uln)) = 1,
+since Hi(G,U{Ll)) = 1. □
+
+===== PDF PAGE 336 =====
+
+320 Chapter V. Local Class Field Theory
+We now consider the maximal unramified extension k\k over the ground
+field k. By chap. II, §9, the residue class field of k is the algebraic closure ic
+of the residue class field k of k. By chap. II, (9.9), we get a canonical
+isomorphism
+G(k\k) = G(k\k) = Z.
+It associates to the element 1 e Z the Frobenius automorphism x h-> xq
+in G(k\k), and the Frobenius automorphism cpk in G(k\k) which is given by
+a™ = aq mod p£, a € o^.
+For the absolute Galois group G = G(k\k) we therefore obtain the
+continuous and surjective homomorphism
+d:G—> Z.
+Thus the abstract notions of chap. IV, §4, based on this homomorphism,
+like "unramified", "ramification index", "inertia degree", etc., do agree, in
+the case at hand, with the corresponding concrete notions defined in chap. II.
+As stated above we choose A = k* to be our G-module. Hence Ak = K*9
+for every finite extension K\k. The usual normalized exponential valuation
+Vk : k* -> Z is then henselian with respect to d, in the sense of chap. IV, (4.6).
+For, given any finite extension K\k, j-vk is the extension of Vk to K*, and
+by chap. II, (4.8),
+— **&*) = TT-TiVk(NK\kK*) = -^vk(NK\kK*),eK [K:k] eKfK
+i.e., Vk(NK\kK*) = /kVk(K*) = Sk%- The pair of homomorphisms
+(d : G -> Z, ujk : k* -> Z)
+therefore satisfies all the properties of a class field theory, and we obtain the
+Local Reciprocity Law:
+(1.3) Theorem. For every finite Galois extension L \ K of local fields we have
+a canonical isomorphism
+rLlK : G(L\K)ab ^+ K*/NLlKL*.
+The general definition of the reciprocity map in chap. IV, (5.6), was
+actually inspired by the case of local class field theory. This is why it is
+especially transparent in this case: let a e G(L\K), and let a be an extension
+of a to the maximal unramified extension L\K of L such that dK(5) € N
+
+===== PDF PAGE 337 =====
+
+§ 1. The Local Reciprocity Law 321
+lor, in other words, a\g = cp^, for some n e N. If E is the fixed field of a
+and tie € E is a prime element, then
+rL\K(cr) = Nz\k(ttz) mod NL\KL*.
+Inverting ti\k gives us the local norm residue symbol
+( 9L\K) :K* —> G(L\K)ab.
+It is surjective and has kernel Nl\kL*.
+In global class field theory we will have to take into account the field
+K = Qoo along with the p-adic number fields Qp. It also admits a reciprocity
+law: for the unique non-trivial Galois extension C|R, we define the norm
+residue symbol
+( ,C|R) :R* —> G(C|R)
+by
+(fl,c|R)V=T = V=T88n(fl).
+The kernel of ( , C|R) is the group R+ of all positive real numbers, which
+is again the group of norms Nc\^C* = [zz \ z e C*}.
+The reciprocity law gives us a very simple classification of the abelian
+extensions of a local field K. It is formulated in the following
+(1.4) Theorem. The rule
+L^AfL=NL]KL*
+gives a 1 — 1 -correspondence between the finite abelian extensions of a local
+field K and the open subgroups J\f of finite index in K*. Furthermore,
+Lx cLi^^ 2A/Z2, MLxl2 =MLl r\J\fL2, J\fLlnL2 =NlxNl2­
+Proof: By chap. IV, (6.7), all we have to show is that the subgroups J\f
+of jRT* which are open in the norm topology are precisely the subgroups of
+finite index which are open in the valuation topology. A subgroup J\f which is
+open in the norm topology contains by definition a group of norms Nl\kL*.
+By (1.3), this has finite index in K*. It is also open because it contains the
+subgroup Nl\kUl which itself is open, for it is closed, being the image of
+the compact group Ul , and has finite index in Uk • We prove the converse
+first in
+The case char(jST) \ n. Let AT be a subgroup of finite index n = (K* : J\f).
+Then K*n c J\f, and it is enough to show that K*n contains a group of
+
+===== PDF PAGE 338 =====
+
+322 Chapter V. Local Class Field Theory
+norms. For this we use Kummer theory (see chap. IV, § 3). We may assume
+that K* contains the group ixn of n-th roots of unity. For if it does not, we
+put K\ = K(jjLn). If K*n contains a group of norms Nlx\kxL\, and L\K is
+a Galois extension containing L \, then
+NL\kL* = NKllK(NLlKlL*) c NKllK(NLllKlL\)
+<ZNKl\K(K*n)<ZK*n.
+So let /jin c K, and let L = K(\fW*) be the maximal abelian extension of
+exponent n. Then by chap. IV, §3, we have
+(*) Hom(G(L|^),/xw) = K*/K*n.
+By chap. II, (5.8), K*/K*n is finite, and then so is G(L\K). Since K*/NL{KL*
+is isomorphic to G(L\K) and has exponent n, we have that K*n c Nl\kL*,
+and (*) yields
+#K*/K*n = #G(L\K) = #K*/NL{KL*,
+and therefore K*n = NL{KL*.
+The case chzr(K) = p\n. In this case the proof will follow from Lubin-Tate
+theory which we will develop in §4. But it is also possible to do without this
+theory, at the expense of ad hoc arguments which turn out to be somewhat
+elaborate. Since the result has no further use in the remainder of this book,
+we simply refer the reader to the beautiful treatment in [122], chap. XI, §5,and chap. XIV, §6. □
+The proof also shows the following
+(1.5) Proposition. If K contains the n-th roots of unity, and if the
+characteristic ofK does not divide n, then the extension L = K(*/~K*)\K is finite, and
+one has
+NL{KL* = K*n and G(L\K) = K*/K*n.
+Theorem (1.4) is called the existence theorem, because its essential
+statement is that, for every open subgroup J\f of finite index in K*, there
+exists an abelian extension L\K such that Nl\kL* = J\f. This is the
+"class field" of J\f. (Incidentally, when char(jRT) = 0, every subgroup of
+finite index is automatically open - see chap. II, (5.7).) Every open subgroup
+of K* contains some higher unit group U% , as these form a basis of
+neighbourhoods of 1 in K*. We put U^ = Uk and define:
+
+===== PDF PAGE 339 =====
+
+§ 1. The Local Reciprocity Law 323
+(1.6) Definition. Let L\K be a finite abelian extension, and n the smallest
+number > 0 such that U^ c NL\KL*. Then the ideal
+f = PnK
+is called the conductor of L \K.
+(1.7) Proposition. A finite abelian extension L\K is unramified if and only
+if its conductor is f = 1.
+Proof: If L\K is unramified, then Uk = Nl\kUl by (1.2), so that
+f = 1. If conversely f = 1, then UK ^ NL\KUL and nnK e NL\KL*,
+for n = (K* : Nl\kL*). If M\K is the unramified extension of degree n,
+then NM\kM* = (n%) x UK ^ NL]KL*, and then M 2 L, i.e., L\K isunramified. □
+Every open subgroup J\f of finite index in K* contains a group of the
+form (nf) x u£ . This is again open and of finite index. Hence every
+finite abelian extension L\K is contained in the class field of such a
+group (7T-0 x U^. Therefore the class fields for the groups (n?) x U^
+are particularly important. We will characterize them explicitly in §5, as
+immediate analogues of the cyclotomic fields over On. In the case of the
+ground field K = Qp, the class field of the group (p) x U% is precisely
+the field Qp(/jlpi) of pn-th roots of unity:
+(1.8) Proposition. The group of norms of the extension Qp(/JLpn)\Qp is the
+group (p) xU$\
+Proof: Let K = Qp and L = Qp(fipn). By chap. II, (7.13), the extension
+L\K is totally ramified of degree pn~l(p — 1), and if f is a primitive pn-th
+root of unity, then 1 — f is a prime element of L of norm Nl\k(\ — O = P­
+We now consider the exponential map of Qp. By chap. II, (5.5), it gives an
+isomorphism
+exp:p£ —£/?>
+for v > 1, provided p ^ 2, and for v > 2, even if p = 2. It
+transforms the isomorphism pvK -> p^+5_1 given by « h> ps~l(p — l)<z,
+into the isomorphism E/j^ -> [/^v+5_1) given byi h> jt^~ O*-1), so that
+([/ay*-i(p-i) = pW tf p # 2, and (Uf Y1'1 = U^ if p = 2, n > 1
+
+===== PDF PAGE 340 =====
+
+324 Chapter V. Local Class Field Theory
+(the case p = 2, n = 1 is trivial). Consequently, we have U^} c Nl\kL*
+if p ^ 2. For /? = 2 we note that
+t/f = i/f U5J7® = {Uf )2U5(t/f )2,
+because a number that is congruent to 1 mod 4 is congruent to 1 or 5 mod 8.
+Hence
+It is easy to show that 52" = Nl\k(2 + 1), so £/^ QNl\kL* holds also in
+case /? = 2. Since p = NL\K(l - f), we have (p) x C/£° c NL\KL*,
+and since both groups have index pn~l(p — 1) in AT*, we do find that
+NLlKL* = (p) x C/£° as claimed. □
+As an immediate consequence of this last proposition, we obtain a local
+version of the famous theorem of Kronecker-Weber, to the effect that every
+finite abelian extension of Q is contained in a cyclotomic field.
+(1.9) Corollary. Every finite abelian extension ofL \ Qp is contained in a field
+Qp(£), where £ is a root of unity. In other words:
+The maximal abelian extension Q^lQp is generated by adjoining all roots
+of unity.
+Proof: For suitable / and n, we have (pf) x U^ c NL\KL*. Therefore L
+is contained in the class field M of the group
+{pf) x u$l = ((Pf) x uQp) n ((/>) x {/<£).
+By (1.4), M is the composite of the class field for {pf) x C/q — this being
+the unramified extension of degree / — and the class field for (p) x C/q .
+M is therefore generated by the (pf — l)pn-th roots of unity. □
+From the local Kronecker-Weber theorem, one may readily deduce the
+global, classical Theorem of Kronecker-Weber.
+(1.10) Theorem. Every finite abelian extension L\Q is contained in a field
+Q (£) generated by a root of unity f.
+
+===== PDF PAGE 341 =====
+
+§ 1. The Local Reciprocity Law 325
+Proof: Let S be the set of all prime numbers p that are ramified in L, and
+let Lp be the completion of L with respect to some prime lying above p.
+Then Lp\Qp is abelian, and therefore Lp c Qp(/jLnp), for a suitable np.
+Let peP be the precise power of p dividing np, and let
+n= \\peP.
+peS
+We will show that L c Q(/z„). For this let M = L(/z„). Then Af |Q is
+abelian, and if p is ramified in M|Q, then /? must lie in S. If Mp is the
+completion with respect to a prime of M above /? whose restriction to L
+gives the completion Lp, then
+Afp = Lp(/z„) = Qp(/v/v) = Qp(vpep)Qp(vn>),
+with (n',p) = 1. QpOxflOIQp is the maximal unramified subextension of
+Qp(v*pePn')\Qp' The inertia group /p of Mp\Qp is therefore isomorphic to
+the group G(Qp(/jLpeP)\Qp), and consequently has order cp(pep), where <p
+is Euler's function. Let / be the subgroup of G(M\Q) generated by all Ip,
+p e S. The fixed field of / is then unramified, and hence by Minkowski's
+theorem from chap. Ill, (2.18), it equals Q, i.e., / = G(M\Q). On the other
+hand we have
+#/ < n #ip = n <P(Pep) = <PW = [Q(/z„) : Q],peS peS
+and therefore [M : <Q>] = [Q(/xw) : Q], so that M = Q(/z„). This shows thatL C Q(itn). D
+The following exercises 1-3 presuppose exercises 4—8 of chap. IV, §3.
+Exercise 1. For the Galois group r — G(K\K), one has canonically
+Hl(r,Z/nZ) = Z/nZ and Hl(r,fin) = UKK*n/K*\
+the latter provided that n is not divisible by the residue characteristic.
+Exercise 2. For an arbitrary field K and a GK-module A, put
+Hl(K,A) = Hl(GK,A).
+If K is a p-adic number field and n a natural number, then there exists a nondegen­
+erate pairing
+Hl(K,Z/nZ) x Hl(K,iin) —» Z/nZ
+of finite groups given by
+(X,*)H>x((*,£iff)).
+If n is not divisible by the residue characteristic p, then the orthogonal complement of
+H*r(K,Z/n) := Hl(G(K\K),Z/nZ) c Hl(K,Z/nZ)
+is the group
+
+===== PDF PAGE 342 =====
+
+326 Chapter V. Local Class Field Theory
+Exercise 3. If L\K is a finite extension of p-adic number fields, then one has a
+commutative diagram
+Hl(L,Z/nZ) x Hl(L,fjin) -> Z/nZ
+T I"*, i* II
+Hl(K,Z/nZ) x Hl(K,fin) -> Z/nZ.
+Exercise 4 (Local Tate Duality). Show that the statements of exercises 2 and
+3 generalize to an arbitrary finite GK -module A instead of Z/wZ, and A! =
+Hom(A,K*) instead of fin.
+Hint: Use exercises 4-8 of chap. IV, §3.
+Exercise 5. Let L\K be the composite of all Zp-extensions of a p-adic number field
+K (i.e., extensions with Galois group isomorphic to Zp). Show that the Galois group
+G(L\K) is a free, finitely generated Zp-module and determine its rank.
+Hint: Use chap. II, (5.7).
+Exercise 6. There is only one unramified Zp -extension of K. Generate it by roots of
+unity.
+Exercise 7. Let p be the residue characteristic of K, and let L be the field generated
+by all roots of unity of p -power order. The fixed field of the torsion subgroup of
+G(L |K) is a Zp-extension. It is called the cyclotomic Zp-extension.
+Exercise 8. Let QP\QP be the cyclotomic Zp-extension of Qp, let G(Qp\Qp) = Zp
+be a chosen isomorphism, and let d : Gq -> Zp be the induced homomorphism of
+the absolute Galois group. Show:
+For a suitable topological generator u of the group of principal units of Qp,
+v:Q; -> ZP9 v(a) = ^,y log u
+defines a henselian valuation with respect to d, in the sense of abstract p -class field
+theory (see chap. IV, §5, exercise 2).
+Exercise 9. Determine all p-class field theories (d :GK -> Zp, v : K* -> Zp) over
+a p-adic number field K.
+Exercise 10. Determine all class field theories (d : Gk -> Z, v : K* -> Z) over a
+p-adic number field #\
+Exercise 11. The Weil group of a local field K is the preimage WK of Z under the
+mapping d^ : GK -> Z. Show:
+The norm residue symbol ( ,Kab\K) of the maximal abelian extension Kab\K
+yields an isomorphism
+( 9Kab\K) :/T —^> Wf,
+which maps the unit group Uk onto the inertia group I(Kab\K), and the group of
+principal units UKl) onto the ramification group R(Kab\K).
+
+===== PDF PAGE 343 =====
+
+§ 2. The Norm Residue Symbol over Qp 327
+§ 2. The Norm Residue Symbol over Q^
+If £ is a primitive m-th root of unity, with (m,p) = 1, then Qp(£)IQp
+is unramified, and the norm residue symbol is obviously given by
+(a,Qp(0\QP)^ = ^pVp(a).
+But if £ is a primitive pn-th root of unity, then we obtain the norm residue
+symbol for the extension Qp(£)IQp explicitly in the simple form
+(a,Qp(?)IQp)? = ?""\
+where a = upvP^a\ and fw is the power fr with any rational integer
+r == u~l mod pn. This result is important, not only in the local situation, but
+it will play an essential role when we develop global class field theory (see
+chap. VI, §5). Unfortunately, there is no direct algebraic proof of this fact
+known to date. We have to invoke a transcendental method which makes
+use of the completion K of the maximal unramified extension K of a. local
+field K. We extend the Frobenius cp e G(K\K) to K by continuity. First we
+prove the
+(2.1) Lemma. For every c e og, resp. every c e U^, the equation
+x^ — x = c, resp. x^~x = c,
+admits a solution in eg, resp. in U^. Ifx^ = x forx e 0£, then x e Ok­
+Proof: Let n be a prime element of K. Then n is also a prime element
+of K, and we have the <p-invariant isomorphisms
+Ug/Up = ic*, Uin)/Uj?+1) = k
+(see chap. II, (3.10)). Let c e U^ and c = c mod pg. Since the residue class
+field k of K is algebraically closed, the equation x^ = xq = x • c (q = qic)
+has a solution ^ 0 in k = og/p^, i.e.,
+c = x\~xa\, x\ e Ug, ax e Ug .
+For similar reasons, we find that a\ = x\~ #2, for some X2 € Ug and
+(32 € Ug\ so that c = (x\xif~xa2. Indeed, putting ax = 1 + b\n,
+x2 = 1 + yin, gives <zix2~^ = 1 — {y\ — yi — b\)n mod 7r2, i.e., we
+have to solve the congruence y\ — y2 — b\ = 0 mod n, or equivalently the
+
+===== PDF PAGE 344 =====
+
+328 Chapter V. Local Class Field Theory
+equation y\ — yi — b\ = 0 in k. This is possible because k is algebraically
+closed. Continuing in this way, we get
+c = (xxx2 • • -xny-lan, xn e U{fx), an e uf,
+and passing to the limit finally gives c = x^_1, where x = YYZLi xn G U%.
+The solvability of the equation x^ — x = c follows analogously, using the
+isomorphisms pp/pp+1 = ic.
+Now let x e og and x^ = x. Then, for every n > 1, one has
+(*) x = xn + 7Tnyn with xn e ok and yn e og.
+Indeed, for n = 1 we have x = a + 7rfe, with (3 G o^, fc G e>£, and x^ = x
+implies av = a mod n. Hence a = x\ + nc, with X\ e Ok, c € og, and
+therefore x = x\ +n(b+c) = X\ +iry\ ,y\ G og. The equation x = xn+ixnyn
+implies furthermore that yi = yn, so that we get as above yn = cn + ndn,
+with cn e ok, dn G og9 and therefore x = (xn + cnixn) + nn+ldn =
+xn+\ +7tn+lyn+i> for some xn+\ e Ok, yn+\ G og. Now passing to the limit
+in the equation (*) gives x = lim^oo jtw G Ok, because K is complete. D
+For a power series F(X\, ...,Xn) e o^[[Xu ...,Xn]], let F^ be the
+power series in og[[Xi, ...,Xn]] which arises from F by applying cp to the
+coefficients of F. A Lubin-Tate series for a prime element n of K is by
+definition a power series e(X) G o/r[[X]] with the properties
+e(X) = nX mod deg2 and e(X) = Xq mod n,
+where q = qK denotes, as always, the number of elements in the residue
+class field of K. The totality of all Lubin-Tate series is denoted by £n. In
+£n there are in particular the polynomials
+e(X) = uXq + n(aq-XXq-x + • • • + a2X2) + nX,
+where w,<zz G Ok and u = 1 mod it. These are called the Lubin-Tate
+polynomials. The simplest one among them is the polynomial Xq + nX.
+In the case K = Qp for example, e(X) = (1 + X)p — 1 is a Lubin-Tate
+polynomial for the prime element p.
+(2.2) Proposition. Let7r andW be prime elements ofK, andlete(X) e £n,
+e(X) G £j? be Lubin-Tate series. LetL(X\, .. .,Xn) = YTi=\ ai^i bealinear
+form with coefficients <z; G og such that
+jrL(Xu...9Xn)=WL*(Xl9...9Xn).
+
+===== PDF PAGE 345 =====
+
+2. The Norm Residue Symbol over Qp 329
+Then there is a uniquely determined power series F(X\,...,Xn)
+e og[[Xu . • •, Xn]] satisfying
+F(XU • • •,Xn) = L(XU ...,Xn) moddeg2,
+e(F(Xu ...,Xn)) = F*(e(Xi), .. . ,*(X„)) •
+If the coefficients ofe, e, L liein a complete subringo ofog such thato^ = o,
+then F has coefficients in o as well
+Proof: Let o be a complete subring of og such that 0^ = 0, which
+contains the coefficients of e,e,L. We put X = (Xi, ... ,Xn) and e(X) =
+{e{Xx\ ...,^Xw)).Let
+00
+F{X) = E EV{X) € o[[X]]
+be a power series, EV(X) its homogeneous part of degree v, and let
+Fr(X)= J2EV(X).
+v=l
+Clearly, F(X) is a solution of the above problem if and only if Fi(X) =
+L(X) and
+(1) e(Fr(X)) = F?(e(X)) mod deg(r + 1)
+for every r > 1. We determine the polynomials EV(X) inductively. For
+v = 1 we are forced to take £i(X) = L(X). Condition (1) is then satisfied
+for r = 1 by hypothesis. Assume that the EV(X), for v = 1, ... ,r, have
+already been found, and that they are uniquely determined by condition (1).
+We then put Fr+\(X) = Fr(X) + Er+\(X) with a homogeneous polynomial
+Er+i(X) e o[X] of degree r + 1 which has yet to be determined. The
+congruences
+e(Fr+x{X)) =e(Fr(X)) +7zEr+l(X) mod deg(r +2),
+F?+l(e(X)) = F?{e{X)) +nr+xE«+l(X) mod deg(r +2)
+show that Er+\(X) has to satisfy the congruence
+(2) Gr+1(X) + 7r£r+1(X) - 7fr+1£f+1(X) = 0 mod deg(r + 2)
+with Gr+i(X) = e(Fr(X)) - F?(e(X)) e o[[X]]. We have Gr+i(X) = 0
+mod deg(r + 1) and
+(3) Gr+i(X) = Fr(X)q - F?(Xq) = 0 mod 7T
+
+===== PDF PAGE 346 =====
+
+330 Chapter V. Local Class Field Theory
+because e(X) = e(X) = Xq mod n and a? = aq mod n for a e o.
+Now let X1 = Xj1 • • • Xlnn be a monomial of degree r + 1 in o[X]. By (3),
+the coefficient of X1 in Gr+\ is of the form -7t/*, with ft e o. Let a be
+the coefficient of the same monomial X1 in Er+\. Then it a — Wa^ is the
+coefficient of X1 in nEr+\ — nE^+v Since Gr+i(X) = 0 mod deg(r + 1),
+(2) holds if and only if the coefficient a of X1 in Er+\ satisfies the equation
+(4) -7TP + 7Ta-nr+la(p =0
+for every monomial X1 of degree r + l. This equation has a unique solution a
+in o^, which actually belongs to o. For if we put y = n~xnr+l, we obtain
+the equation
+a-yoP = j8,
+which is clearly solved by the series
+(the series converges because vg(y) > 1). If a' is another solution,
+then a — a' = y(a? — af<p), hence v^(a - a') = vg(y) + vg((a —
+a')^) = vg(y) + vg(a — a'), i.e., vg(a — af) = oo because vg(y) > 1,
+and therefore a = a'. As a consequence, for every monomial X1 of
+degree r + l, equation (4) has a unique solution a in o, i.e., there
+exists a unique £r+i(X) G o[X] satisfying (2). This finishes the proof.
+□
+(2.3) Corollary. Let n and W be prime elements of K, and let e e £„,
+e e % be Lubin-Tate series with coefficients in Ok . Let n = uW,u e Uk,
+and u = £^_1, s e Ug. Then there is a uniquely determined power series
+9(X) e og[[X]\ such that9(X) = eX mod deg2 and
+eo6 = 6* oe.
+Furthermore, there is a uniquely determined power series [u](X) e Ok[[X]]
+such that [u](X) = uX mod deg 2 and
+e o [u] = [u] o e .
+They satisfy
+0<p = 0o[u].
+Proof: Putting L(X) = eX, we have nL(X) = nL^iX) and the first
+claim follows immediately from (2.2). In the same way, with the linear
+form L(X) = uX, one obtains the existence and uniqueness of the power
+series [u](X) e Ok[[X]]. Finally, defining 6\ =6(p o [w], we get
+eo9l = (eo 9)^ o [u] = (0* o ef1 o [u] = (9^ o [u\f o e = 9* o e,
+and thus 9\—9 because of uniqueness. Hence 9^ = 9 o [u]. D
+
+===== PDF PAGE 347 =====
+
+§ 2. The Norm Residue Symbol over Qp 331
+(2.4) Theorem. Let a = upvp^a) e Q*, and let f be a primitive pn -th root of
+unity. Then one has
+(fl,QP(?)IQp)? = r"1.
+Proof: As N is dense in Zp, we may assume that u e N, (u,p) = 1.
+Let if = Qp, L = Qp(f), and let a e G(L|iO be the automorphism
+defined by
+4-or 4.W-1
+Since QP(?)|QP is totally ramified, we have G(L|iO = G(L|£), and
+we view a as an element of G(L\K). Then a = a^ e Frob(L|Ar) is an
+element such that die (5") = 1 and a |l = or. The fixed field £ of a is totally
+ramified because fjj\K = cLk{c>) = 1 by chap.IV, (4.5). The proof of the
+theorem is based on the fact that the field £ can be explicitly generated by
+a prime element n^ which is given by the power series 0 of (2.3).
+In order to do this, assume a and cp = cpi have been extended continuously
+to the completion L of L, and consider the two Lubin-Tate polynomials
+e(X) = upX + Xp and e(X) = (1 + X)p - 1
+as well as the polynomial [u](X) = (1 + X)u - 1. Then e([u](X)) =
+(1 +X)up - 1 = [u](e(X)). By (2.3), there is a power series 0(X) G og[[X]]
+such that
+eo9 = 6(poe and 0*=0o[k].
+Substituting the prime element A. = f — 1 of L, we obtain a prime element
+of £ by
+Indeed, [wRA/7) = (1 + Xa)u - 1 = fau - 1 = f - 1 = A, and therefore
+7r| = 0*(A.a) = 9([u](Xa)) = 0(A) = 7TZ,
+i.e., itz € X1. We will show that
+F(X) = A1(Xr1+^eZ/7[X]
+is the minimal polynomial of 7r^, where el (X) is defined by e°(X) = X and
+e((X) = eiJ-^X)). P(X) is monic of degree pn~\p - 1) and irreducible
+by Eisenstein's criterion, as e(X) = Xp mod /?, and so en~l(X)p~l =
+X^_1(p-0 mod p. Finally, en(X) = en~l(X) • (up + ^(X)'-1) =
+en~l(X)P(X), so that
+Since ^(ttj;) = ez"(0(A)) = 0*'"(?(*)) = 0^((1 + A)*7'" - 1) - 0^(f ^ - 1),
+we have en(nE) = 0, en-x{iiE) ^ 0, and thus P(nE) = 0.
+
+===== PDF PAGE 348 =====
+
+332 Chapter V. Local Class Field Theory
+Observing that JVL|ff (? -1) = (-l)V d = [L : K] (see chap. II, (7.13)),
+we obtain
+Ne\k(*e) = (-D^(O) = (-Ddpu = u mod NL]KL*
+and therefore ri\k(a) = u mod Nl\kL*, i.e., (k,L|AT) = (a,L\K) = a, asrequired. □
+In order to really understand this proof of theorem (2.4), one has to
+read §4. Let us note that one would get a direct, purely algebraic proof, if
+one could show without using the power series 9 that the splitting field of
+the polynomial en(X) is abelian, and that its elements are all fixed under
+a = acpi. This splitting field would then have to be equal to the field E
+and every zero of P(X) = en(X)/en~l(X) would have to be a prime
+element nz e E such that Nz\k(^e) = u mod Nl\kL*, in which case
+rL\K(o) = u mod Nl\kL*9 and so (u,L\K) = a.
+Exercise 1. The p-class field theory (d : Gq -> Zp, v : Q* ->- Z) for the unramified
+Zp-extension of Qp, and the p-class field theory (d : Gqp -> Zp, v : Q* -> Zp) for
+the cyclotomic Zp -extension of Qp (see § 1, exercise 7) yield the same norm residue
+symbol ( ,L\K).
+Hint: Show that this statement is equivalent to formula (2.4): (w, Qp(f) |Qp)f = fB_1.
+Exercise 2. Let L|^T be a totally ramified Galois extension, andjet L (resp. £) be
+the completion of the maximal unramified extension L (resp. K) of L (resp. ^T).
+Show that N^gL* — K*, and that every y e L* with N^g(y) = 1 is of the form
+y = YliZ?~\*ieG(L\K).
+Exercise 3 (Theorem of Dwork). Let L \ K be a totally ramified abelian extensionjof
+p-adic number fields. Let x e K* and y e L* such that N^giy) — x. Let z, e L*
+and choose at e G(L\K) such that
+i
+Putting a = f]/ ai> one has (*, £|^) = °r_1­
+Hint: See chap. IV, §5, exercise 1.
+Exercise 4. Deduce from exercises 2 and 3 the formula (u,Qp(£)\QP)£ — ?" , for
+some p* -th root of unity f.
+
+===== PDF PAGE 349 =====
+
+§3. The Hilbert Symbol 333
+§ 3. The Hilbert Symbol
+Let K be a local field, or K = R, K = C. We assume that K contains
+the group jjin of n-th roots of unity, where n is a natural number which
+is relatively prime to the characteristic of K (i.e., n can be arbitrary if
+char(Ar) = 0). Over such a field K we then have at our disposal, on the
+one hand, Kummer theory (see chap. IV, §3), and on the other, class field
+theory. It is the interplay between both theories, which gives rise to the
+"Hilbert symbol". This is a highly remarkable phenomenon which will lead
+us to a generalization of the classical reciprocity law of Gauss, to rc-th power
+residues.
+Let L = K(*J~K*) be the maximal abelian extension of exponent n.
+By (1.5), we then haveAT T * ]T*n
+and class field theory gives us the canonical isomorphism
+G(L\K) = K*/K*n.
+On the other hand, Kummer theory gives the canonical isomorphism
+Hom(G(L\K),iin) = K*/K*n.
+The bilinear map
+G(L\K) x Hom(G(L\K)^n) —> /z„, (a,X) h^ X(a),
+therefore defines a nondegenerate bilinear pairing
+( —) : K*/K*n x K*/K*n —> /z„
+(bilinear in the multiplicative sense). This pairing is called the Hilbert
+symbol. Its relation to the norm residue symbol is described explicitly in
+the following proposition.
+a,b
+^ / __ .nr.. r_ x nrr /d,b\n
+(3.1) Proposition. Fora.b e K*, the Hilbert symbol (—) e ixn is givenr
+(a,K(7b)\K)7b={^)7b.
+Proof: The image of a under the isomorphism K*/K*n = G(L \K) of class
+field theory is the norm residue symbol a = (a,L\K). The image of b under
+the isomorphism K*/K*n = Hom(G(L\K),/jin) of Kummer theory is the
+character Xb • G(L\K) -> [in given by Xbij) = ty/b/y/b. By definition of
+the Hilbert symbol, we have
+(^) = »(a) = a^/^,
+hence {a,K{^/b)\K)^/b = {a,L\K)^/b= (*£■)>&. □r
+
+===== PDF PAGE 350 =====
+
+334 Chapter V. Local Class Field Theory
+The Hilbert symbol has the following fundamental properties:
+(3.2) Proposition.
+x-x /aa!\b\ _ /a,b\(a!\b\W \ P ) ~\ p )\ p )'
+,... (a,bb'\ (a,b\(a,b'\(11) \—) = \t)vv)'
+(iii) (^—) = 1 ^====^ a is a norm from the extension K{^/b)\K,
+«v) (?) - (!?)-'■
+W (Siz-).,.,,^).,,
+(vi) If (^) = 1 for all b e K\ then a e K*n.
+Proof: (i) and (ii) are clear from the definition, (iii) follows from (3.1), and
+(vi) reformulates the nondegenerateness of the Hilbert symbol.
+If b e K* and x e K such that xn - b ^ 0, then
+xw-6=n1(x-fl>), Pn=b,
+for some primitive n-th root of unity f. Let d be the greatest divisor of n such
+that yd = b has a solution in jRT , and let n = dm. Then the extension K(f))\K
+is cyclic of degree m, and the conjugates of x — t;1 ft are the elements x — ^p
+such that 7 = / mod d. We may therefore write
+xn-b= U^KmKix-^p).
+i=0
+Hence xn — b is a norm from jRT(Vfe)|jRT, i.e.,
+Choosing x = 1, b = 1 — a, and x = 0, 6 = -(3 then yield (v). (iv) finally
+follows from
+/a, —ab\/b, —ab\ /ab, — ab\
+
+===== PDF PAGE 351 =====
+
+§3. The Hilbert Symbol 335
+In the case K = R we have n = 1 or n = 2. For n = 1 one finds, of
+course, (——) = 1, and for n = 2 we have
+/a,b\ sgng-l m sgnfr-l(-) = (-!) 2 2 ,
+because (a,R(Vfe)|R) = 1 for b > 0, and = (-l)S~mr- for 6 < 0. Here
+the letter p symbolically stands for an infinite place.
+Next we determine the Hilbert symbol explicitly in the case where K is
+a local field (^ R, C) whose residue characteristic p does not divide n. We
+call this the case of the tame Hilbert symbol. Since jjin c iLq-\ one has
+n | q — 1 in that case. First we establish the
+(3.3) Lemma. Let (n,p) = 1 and x e K*. The extension K(HJx)\K is
+unramified if and only if x e UkK*h.
+Proof: Let x = uyn with u e UK, y e K*, so that K(tyx) = K{^/u). Let
+Kf be the splitting field of the polynomial Xn — u mod p over the residue
+class field /c, and let K'\K be the unramified extension with residue class
+field k' (see chap. II, §9, p. 173). By Hensel's lemma, Xn — u splits over K'
+into linear factors, so K(OJu) c K' is unramified. Assume conversely that
+L = K(^/x) is unramified over K, and let x = unr, where u e Uk and
+n is a prime element of K. Then VL{\fu7tr) = ^vlW) = \ € Z, hencen|r, i.e., ;rr e if*'2, and thus jc e t//^**. □
+Since [/# = /x^-i x [/^ , every unit u e Uk has a unique decomposition
+w = co(u)(u)
+with o>(k) e /x^-i and (u) e UK, w = &>(w) mod p. With this notation we
+will now prove the
+(3.4) Proposition. If(n,p) = l anda,b e K*, then
+where a = vk(o),I5 = VK(b).
+
+===== PDF PAGE 352 =====
+
+336 Chapter V. Local Class Field Theory
+Proof: The function
+at<*,6> :=*>((-!)«* j£)(
+is obviously bilinear (in the multiplicative sense). We may therefore assume
+that a and b are prime elements: a = n, b = —nu, u e Uk- Since clearly
+(7T, — 7T> = (7r> ~7r) = 1, we may restrict to the case a = n, b = u. Let
+y = v^w and K' = K(y). Then we have
+(n,u) =a)(u){q-x),n and (n9K'\K)y = ( —)?•
+By (3.3), we see that if'|if is unramified and by chap. IV, (5.7), (n, Kf\K)
+is the Frobenius automorphism cp = (Pk'\k- Consequently,
+/tt^x = <p_y_^ , ^ h(?_1)/w ^ ^^jto-o/n = (jrM) modV p / j
+hence (^z^) = {n,u), because /z9_i is mapped isomorphically onto k* by
+The proposition shows in particular that the Hilbert symbol
+(in the case (n,p) = 1) is independent of the choice of the prime element
+n. We may therefore put
+(;)-(?) ta "<*■
+(^) is the root of unity determined by
+(-^^-^modp*.
+We call it the Legendre symbol, or the n-th power residue symbol. Both
+names are justified by the
+(3.5) Proposition. Let(n, p) = 1 andu e Uk> Then one has
+f — J = 1 <£=$> u is an n -th power mod pK
+
+===== PDF PAGE 353 =====
+
+§3. The Hilbert Symbol 337
+Proof: Let f be a primitive (q — l)-th root of unity, and let m = n .
+Then fn is a primitive m-th root of unity, and
+(-) = co(u)m = 1 <=* co(u) e /zm « co(u) = (J*)'"
+u = co(u) = (t;l)n mod Pa: . □
+It is an important, but in general difficult, problem to find explicit formulae
+for the Hilbert symbol (^—) also in the case p\n. Let us look at the caser
+' a,bT
+where n = 2 and K = Qp. If a € Z2, then (-l)a means
+i-if = (-iy,
+where r is a rational integer = a mod 2.
+(3.6) Theorem. Letn = 2. Fora,b e Q* we write
+a = paa\ b = pPb', a', b' e UQp .
+Ifp ^ 2, then
+In particular, one has (^) = (-1)^"1)/2 and (^) = (J), if u is a unit.
+If p = 2 and a, b e C/q2 , then
+(^) = (-1)<«2-'V,
+Proof: The claim for the case p ^ 2 is an immediate consequence of (3.4),
+a2 - 1and will be left to the reader. So let p = 2. We put 77(0) = —-— ando
+s(a) = a ~ . An elementary computation shows that
+rj(a\a2) = rj(a\) + 77(02) moc* 2 and £(0102) = £(#1) + £(#2) mod 2.
+Thus both sides of the equations we have to prove are multiplicative and it
+is enough to check the claim for a set of generators of Uq2/Uq . {5, — 1}
+is such a set. We postpone this for the moment and define (a, b) = (^-).
+
+===== PDF PAGE 354 =====
+
+338 Chapter V. Local Class Field Theory
+We have (—l,x) = 1 if and only if x is a norm from Q2(\/-^l )|Q2,
+i.e., x = y2 + z2, y,z e Q2. Since 5 = 4+1 and 2 = 1 + 1, we find that
+(-1,2) = (-1,5) = 1. If we had (-1, - 1) = 1, then it would follow that
+(—l,x) = 1 for all x, i.e., —1 would be a square in Q2, which is not the
+case. Therefore we have (—1, —1) = —1.
+We have (2,2) = (2, - 1) = 1 and (5,5) = (5, - 1) = 1. It remains
+therefore to determine (2,5). (2,5) = 1 would imply (2,x) = 1 for all x,
+i.e., 2 would be a square in Q2, which is not the case. Hence (2,5) = —1.
+By direct verification one sees that the values we just found coincide with
+those of (—l)1^, resp. (—i)fi(fl)fi(W, in the respective cases.
+It remains to show that Uq2/Uq2 is generated by {5, - 1}. We set U =
+U®2, Uw = UJg. By chap. II, (5.5), exp : 2*Z2 -> U{n) is an isomorphism
+for n > 1. Since a \-> 2a defines an isomorphism 22Z2 -> 23Z2, x h-> x2
+defines an isomorphism t/® -> U^. It follows that U^ c U2. Since
+{1, — 1,5, — 5} is a system of representatives of U/U^3\ U/U2 is generatedby —1 and 5. □
+It is much more difficult to determine the n-th Hilbert symbol in the
+general case. It was discovered only in 1964 by the mathematician Helmut
+Bruckner. Since the result has not previously been published in an easily
+accessible place, we state it here without proof for the case n = pv of odd
+residue characteristic p of K.
+So let /jipv c K, choose a prime element n of K, and let W be the ring
+of integers of the maximal unramified subextension T of K\Qp (i.e., the
+ring of Witt vectors over the residue class field of K). Then every element
+x e K can be written in the form
+x = f(n),
+with a Laurent series f(X) e W((X)).
+For an arbitrary Laurent series f(X) = J2i>-mai^1 e W(C3Q)> let
+fv(X) denote the series
+i
+where (p is the Frobenius automorphism of W. Further, let Res( fdX) € W
+denote the residue of the differential fdX,
+dlogf:=l-dX,
+and
+log/:=E(-1>
+if / € 1 + pW[[X]].
+,-+i (/-!)'
+
+===== PDF PAGE 355 =====
+
+§3. The Hilbert Symbol 339
+Now let f be a primitive pv-th root of unity. Then 1 — £ is a prime
+element of Qp(£), and thus
+1-j =jr*e,
+for some unit e of K, where e is the ramification index of K\Qp(£). Let
+rj(X) e W[[X]] be a power series such that
+e = rj(n),
+and let h(X) be the series
+= i i + (i-xw>; = £ ,2 1 - (1 - X'r,(X))Pv ^
+With this notation we can now state Bruckner's formula for the pv-th Hilbert
+symbol (-^-), p = charge) ^ 2.
+(3.7) Theorem. Ifx,y eK*andf,ge W((X))* such that f(n) = x and
+g(jt) = y, then
+(x'y) = ^(x>y)
+where
+w(x,;y) = Tr^iz Res/zl - log —-dlogg- - log — -dlogfv ) mod//.
+For the proof of this theorem, we have to refer to [20] (see also
+[69] and [135]). Bruckner has also deduced an explicit formula for the
+case n = 2V, but it is much more complicated. A more recent treatment
+of the theorem, which also includes the case n = 2V, has been given by
+G. Henniart [69].
+It would be interesting to deduce from these formulae the following
+classical result of Iwasawa [80], Artin and Hasse (see [9]) relative to the
+field
+®v = Qp(f),
+where £ is a primitive pv-th root of unity (p ^ 2). Putting n = 1 — £ and
+denoting by S the trace map from &v to Qp, we obtain for the pv-th Hilbert
+symbol (^) of the field <PV the
+
+===== PDF PAGE 356 =====
+
+340 Chapter V. Local Class Field Theory
+(3.8) Proposition. For a eU$ and b e 0* one has
+(J) ( —) = ^S^\ogaD\ogb)/pv ^
+where D log b denotes the formal logarithmic derivative in it of an arbitrary
+representation ofb as an integral power series in it with coefficients in Zp.
+For a e U$ one has furthermore the two supplementary theorems
+(2) (Ll^^SOogayp^
+(3) ( —) = ^((c/jr)logfl)/pV.
+The supplementary theorems (2) and (3) go back to Artin and Hasse [9].
+The formula (1) was proved independently by Artin [10] and Hasse [61]
+in the case v = 1, and by Iwasawa [80] in general. In the case v = 1, for
+instance, one can indeed obtain the formulae from Bruckner's theorem (3.7).
+Since
+1 . f 1 mod p, / = p — 1,-S(Sitl) = \ and logtf = 0modp2,p [ 0 mod p, i^p-1,
+one may also interpret the f -exponent in the formulae (l)-(3) as the (p — 1)­
+st coefficient of a it -adic expansion of log a D log b. In this way it appears as
+a formal residue Res^ — log a D logb. As to the supplementary theorems,
+one has to define also D logf = —f"1, Dlogit = it~l.
+Exercise 1. For n = 2 the Hilbert symbol has the following concrete meaning:
+( ——) — 1 <=$> ax2 + by2 — z2 — 0 has a nontrivial solution in K.
+P
+Exercise 2. Deduce proposition (3.8) from theorem (3.7).
+Exercise 3. Let K be a local field of characteristic p, let K be its separable
+closure, and let Wn(K) be the ring of Witt vectors of length n, with the operator
+p : Wn(K) —► Wn(K), pa — Fa — a (see chap. IV, §3, exercises 2 and 3). Show
+that one has ker(p) = Wn(¥p).
+Exercise 4. Abstract Kummer theory (chap. IV, (3.3)) yields for the maximal abelian
+extension L | K of exponent n a surjective homomorphism
+Wn(K)-+Hom(G(L\K),Wn(Fp)), x h* Xx ,
+where one has Xx(&) — &% — % for all a e G(L\K), with an arbitrary £ e Wn(L)
+such that p% — x. Show that x h> Xx has kernel pWn(K).
+
+===== PDF PAGE 357 =====
+
+§4. Formal Groups 341
+Exercise 5. Define, for x G Wn(K) and a G £*, the symbol [x,a) g Wn(¥p) by
+[x,a):=Xx((a,L\K)),
+where ( ,L|^T) is the norm residue symbol. Show:
+(i) [x,a) = (a,£(§)|/0? -£, if? € Wn(K) with p§ = x.
+(ii) [x + y,a) = [x,a) + [y,a).
+(iii) |>,afr) = [x,a) + |>,fr).
+(iv) [x,a) = 0 <^=> a G NKg)\KK(i;)*, where § g WW(AT) is an element such
+that p§ = x.
+(v) [jt,a) = 0 for all a e K* <^=> x g pWn(K).
+(vi) [x,a) = 0 for all x G W„(AT) 4=> a G ^*^.
+Exercise 6. Let k be the residue class field of K and tz a. prime element such that
+K = k«jz)). Let
+d:K-+&K{K, fHKlf,
+be the canonical map to the differential module of K\k (see chap. Ill, §2, p. 200).
+For every / G K one has
+where f'n is the formal derivative of / in the expansion according to powers of n
+with coefficients in k. Show that for co — (^i>_OQdi^l)d7z, the residue
+Res&> := a_i
+does not depend on the choice of the prime element n.
+Exercise 7. Show that in the case n — 1 the symbol \x,d) is given by
+/ da x
+[jc,fl) = 7rlf,FpRes(jc —).
+Remark: Such a formula can also be given for n > 1 (/\ Kolcze [88]).
+§ 4. Formal Groups
+The most explicit realization of local class field theory we have
+encountered for the case of cyclotomic fields over the field Qp, i.e., with the
+extensions Qp(f )|Qp, where f is a pn-th root of unity. The notion of formal
+group allows us to construct such an explicit cyclotomic theory over an
+arbitrary local field K by introducing a new kind of roots of unity which are
+"division points" that do the same for the field K as the pn-th roots of unity
+do for the field Qp.
+
+===== PDF PAGE 358 =====
+
+342 Chapter V. Local Class Field Theory
+(4.1) Definiton. A (1 -dimensional, commutative) formal group over a ring o
+is a formal power series F(X, Y) e o[[X, Y]] with the following properties:
+(i) F(X,Y) = X + Y moddeg2,
+(ii) F(X, Y) = F(Y, X) "commutativity",
+(iii) F(X, F(Y, Z)) = F(F(X, Y), Z) "associativity".
+From a formal group one gets an ordinary group by evaluating in a domain
+where the power series converge. If for instance o is a complete valuation
+ring and p its maximal ideal, then the operation
+x + y :=F(x,y)F
+defines a new structure of abelian group on the set p.
+Examples:
+1. Gfl(X, Y) = X + Y (the formal additive group).
+2. Gm(X, Y) = X + Y + XY (the formal multiplicative group). Since
+X + Y +XY = (1+X)(1 +Y)- 1,
+we have
+(x + y) + l = (x + l).(y + l).
+So the new operation + is obtained from multiplication • via the translation
+Gm
+X H> X + 1.
+3. A power series f(X) = a{X + aiX1 + ••• e o[[X]] whose first
+coefficient a\ is a unit admits an "inverse", i.e., there exists a power series
+ri(x) = flrix + ...6o[[x]]f
+such that f~l(f(X)) = f(f~l(X)) = X. For every such power series,
+F(X,Y) = f-l(f(X) + f(Y))
+is a formal group.
+(4.2) Definition. A homomorphism / : F -> G between two formal groups
+is a power series f(X) = a{X + aiX2 H e o[[X]] such that
+f(F(X,Y)) = G(f(X),f(Y)).
+
+===== PDF PAGE 359 =====
+
+§4. Formal Groups 343
+In example 3, for instance, the power series / is a homomorphism of the
+formal group F to the additive group Ga. It is called the logarithm of F.
+A homomorphism / : F -> G is an isomorphism if a\ = f'(0) is a unit,
+i.e., if there is a homomorphism g = f~l : G -> F such that
+/(g(X))=g(/(X))=X.
+If the power series /(X) = #iX + #2^2 + ••• satisfies the equation
+f(F(X,Y)) = G(f(X),f(Y)), but its coefficients belong to an extension
+ring o\ then we call this a homomorphism defined over o'. The following
+proposition is immediately evident.
+(4.3) Proposition. The homomorphisms f : F -> F of a formal group F
+over o form a ring End0(F) in which addition and multiplication are defined
+by
+(f + g)(X) = F(f(X),g(X)), (fog)(X) = f(g(X)).F
+(4.4) Definition. A formal o -module is a formal group F over o together
+with a ring homomorphism
+o —► Endo(F), a i—► [a]F(X)9
+such that [a]f(X) = aX mod deg 2.
+A homomorphism (over d 2 o) between formal o-modules F,G is a
+homomorphism f : F -> G of formal groups (over or) in the sense of (4.2)
+such that
+f([a]F(X)) = [a]G(f(X)) for all aeo.
+Now let o = Ok be the valuation ring of a local field K, and write
+q = (oK : pK). We consider the following special formal Ok -modules.
+(4.5) Definition. A Lubin-Tate module over Ok for the prime element n is
+a formal Ok -module F such that
+[n]F(X)==Xq modn.
+
+===== PDF PAGE 360 =====
+
+344 Chapter V. Local Class Field Theory
+This definition reflects once more the dominating principle of class field
+theory, to the effect that prime elements correspond to Frobenius elements. In
+fact, if we reduce the coefficients of some formal o -module F modulo it, we
+obtain a formal group F(X, Y) over the residue class field F^. The reduction
+mod it of [it]f(X) is an endomorphism of F. But on the other hand,
+f(X) = Xq is clearly an endomorphism of F, its Frobenius endomorphism.
+Thus F is a Lubin-Tate module if the endomorphism defined by a prime
+element it gives via reduction the Frobenius endomorphism of F.
+Example: The formal multiplicative group Gm is a formal Zp-module with
+respect to the mapping
+oo
+Zp -> EndZp(Gm), a h> [a]Gm(X) = (1 + X)a - 1 = £ QXV.
+Gm is a Lubin-Tate module for the prime element p because
+[p]om(X) = (1+X)P-1=XP mod p.
+The following theorem gives a complete and explicit overall view of the
+totality of all Lubin-Tate modules. Let e(X), e(X) e Ok[[X]] be Lubin-Tate
+series for the prime element it of K, and let
+Fe(X,Y)eoK[[X,Y]] and [a]eJ(X) e oK[[X]]
+(a e Ok) be the power series (uniquely determined according to (2.2)) such
+that
+Fe(X,Y) = X + Y mod deg2, e(Fe(X9Y)) = Fe(e(X),e(Y)) ,
+[a]€ie(X) = aX mod deg2, e([a]eJ(X)) = [a]e^(e(X)) .
+If e(X) = e(X) we simply write [a]e^(X) = [a]e(X).
+(4.6) Theorem, (i) The Lubin-Tate modules for it are precisely the series
+Fe(X,Y), with the formal Ok -module structure given by
+oK —► End^(Fe), a i—► [a]e(X).
+(ii) For every a e Ok the power series [a]e ^(X) is a homomorphism
+[a]e e : Fe —> Fe
+of formal o-modules, and it is an isomorphism if a is a unit.
+
+===== PDF PAGE 361 =====
+
+§4. Formal Groups 345
+Proof: If F is any Lubin-Tate module, then e(X) := [7t]f(X) g £„
+and F = Fe because e(F(X,Y)) = F(e(X),e(Y)), and because of the
+uniqueness statement of (2.2). For the other claims of the theorem one has
+to show the following formulae.
+(l)Fe(X9Y) = Fe(Y9X)9
+(2) Fe(X9Fe(Y9Z)) = Fe(Fe(X9Y),Z)9
+(3) [a\re(F-e(X,Y)) = Fe([a]eJ(X),[a]eJ(Y))9
+(4) [a + b]e,e(X) = Fe([a]e,e(X)9 [b]e,e(X))9
+(5) [ab]e,(X) = [a]eJ([b]-,(X))9
+(6)[n]e(X) = e(X).
+(1) and (2) show that Fe is a formal group. (3), (4), and (5) show that
+ok —> End0^ (Fe), a i—> [a]e,
+is a homomorphism of rings, i.e., that Fe is a formal Ok -module, and that
+[a]e i is a homomorphism of formal Ok -modules from F^ to Fe. Finally,
+(6) shows that Fe is a Lubin-Tate module.
+The proofs of these formulae all follow the same pattern. One checks
+that both sides of each formula are solutions of the same problem of (2.2),
+and then deduces their equality from the uniqueness statement. In (6) for
+instance, both power series commence with the linear form nX and satisfy
+the condition e([n]e(X)) = [7t]e(e(X))9 resp. e(e(X)) = e(e(X)). □
+Exercise 1. End0(Ga) consists of all aX such that a £ o.
+Exercise 2. Let R be a commutative Q-algebra. Then for every formal group F(X, Y)
+over R, there exists a unique isomorphism
+logF : F ► Ga,
+such that logF(X) == X mod deg 2, the logarithm of F.
+Hint: Let Fx = dF/dY. Differentiating F(F(X,Y),Z) = F(X,F(Y,Z)) yields
+FX(X, 0) == 1 mod deg 1. Let f(X) = 1 + J^7=i anXn e R[[X]] be the power series
+such that ir(X)Fl(X,0) = 1. Then logF(X) = X + ^i ^Xn does what we want.
+OO yn
+Exercise 3. logG/w(X) = E(-Dn+1 ir = lo&1 + X)«n=\
+Exercise 4. Let n be a prime element of the local field K, and let f(X) —
+X + 7i-lX« + 7i-2X«2 + • • • Then
+F(X,Y) = r](f(X) + f(Y)), [a]F(X) = f~\af(X)), a € oK ,
+defines a Lubin-Tate module with logarithm logF = /.
+
+===== PDF PAGE 362 =====
+
+346 Chapter V. Local Class Field Theory
+Exercise 5. Two Lubin-Tate modules over the valuation ring Ok of a local field K,
+but for different prime elements tz and tz, are never isomorphic.
+Exercise 6. Two Lubin-Tate modules^Fe and Fg for prime elements tz and tz always
+become isomorphic over 0£, where K is the completion of the maximal unramified
+extension K\K.
+Hint: The power series 0 of (2.3) yields an isomorphism 0 : Fg —> Fe.
+§ 5. Generalized Cyclotomic Theory
+Formal groups are relevant for local class field theory in that they allow
+us to construct a perfect analogue of the theory of the pn-\h cyclotomic
+field Qp(£) over Qp, with its fundamental isomorphism
+G(Qp(f)|Qp) -^ (Z/pnZT
+(see chap. II (7.13)), replacing Qp by an arbitrary local ground field K.
+The formal groups furnish a generalization of the notion of pn-\h root of
+unity, and provide an explicit version of the local reciprocity law in the
+corresponding extensions.
+A formal Ok -module gives rise to an ordinary Ok -module if we read
+the power series over a domain in which they converge. We now choose for
+this the maximal ideal p of the valuation ring of the algebraic closure K of
+the given local field K. If G(XU • • • ,Xn) e oK[[Xu ... ,Xn]] is a power
+series with constant coefficient 0, and if x\, ...,xn e p, then the series
+G(xi, ... ,xn) converges in the complete field K(x\, ... ,xn) to an element
+in p. From the definition of the formal o-modules and their homomorphisms
+we therefore obtain immediately the
+(5.1) Proposition. Let F be a formal Ok -module. Then the set p with the
+operations
+x + y = F(x,y) and a • x = [a]p(x),
+F
+x,y ep,a e OK,isanOK -module in the usual sense. We denote it by pF.
+
+===== PDF PAGE 363 =====
+
+§5. Generalized Cyclotomic Theory 347
+If / : F —> G is a homomorphism (isomorphism) of formal Ok -modules,
+then
+f :pF —> pG, x\—* /(*),
+is a homomorphism (isomorphism) of ordinary ok -modules.
+The operations in pF, and particularly scalar multiplication a • x =
+[a]F(x), must of course not be confused with the usual operations in the
+field K.
+We now consider a Lubin-Tate module F for the prime element n of ok •
+We define the group of nn -division points by
+F(n) = {lepF\nn -X = 0] = ker([nn]F) .
+This is an Ok -module, and an ok/^Ok -module because it is killed
+by nnOK.
+(5.2) Proposition. F(n) is a free Ok/^Ok -module of rank 1.
+Proof: An isomorphism / : F —> G of Lubin-Tate modules obviously
+induces isomorphisms / : pF —> pG and / : F(n) —> G(n) of O/j:­
+modules. By (4.6), Lubin-Tate modules for the same prime element n are all
+isomorphic. We may therefore assume that F = Fe, with e(X) = Xq+nX =
+[n]F(X). F(n) then consists of the qn zeroes of the iterated polynomial
+en(X) = (e o • • • o e)(X) = [jTn]F(X), which is easily shown, by induction
+on n, to be separable. Now if Xn e F(n) \ F(n — 1), then
+oK—>F(n), a\—>a*\n,
+is a homomorphism of Ok -modules with kernel nnOK- It induces a bijective
+homomorphism Ok/^Ok —> F(n) because both sides are of order qn. □
+(5.3) Corollary. Associating a \-+ [a]F we obtain canonical isomorphisms
+oK/7znoK—>EndOK(F(n)) and UK/uf —> Aut0jc(F(/i)) .
+Proof: The map on the left is an isomorphism since Ok/^Ok = F(/i)
+and EndOA: (oa:/tt^oa:) = Ok/^Ok- The one on the right is obtained by
+taking the unit groups of these rings. □
+
+===== PDF PAGE 364 =====
+
+348 Chapter V. Local Class Field Theory
+Given a Lubin-Tate module F for the prime element n, we now define
+the field of izn -division points by
+Ln = K(F(n)).
+Since F(n) c F(n + 1) we get a tower of fields
+oo
+K£Li CL2C...CL, := \J Ln.
+n=\
+These fields are also called the Lubin-Tate extensions. They only depend
+on the prime element n, not on the Lubin-Tate module F. For if G is
+another Lubin-Tate module for n, then by (4.6), there is an isomorphism
+/ : F -► G, / e oK[[X]] such that G(n) = f(F(n)) c K(F(n)), and
+hence K(G(n)) = K(F(n)). If F is the Lubin-Tate module Fe belonging to
+a Lubin-Tate polynomial e(X) e £„9 then e(X) = [n]f(X) and Ln\K is the
+splitting field of the n-fold iteration
+^(X) = (^o...o^)(X) = [7Tw]F(X).
+Example: If Ok = ^p and F is the Lubin-Tate module Gm, then
+en(X) = [pn]Gm(X) = (l+X)Pn -I.
+So Gm(/2) consists of the elements £ — 1, where £ varies over the /?w-th roots
+of unity. Ln \K is therefore the /?w-th cyclotomic extension Qp(/xp")|Qp. The
+following theorem shows the complete analogy of Lubin-Tate extensions with
+cyclotomic fields.
+(5.4) Theorem. Ln\K is a totally ramified abelian extension ofdegreeqn~l (q —
+1) with Galois group
+G(Ln\K) =AutOK(F(n)) ^UK/U%\
+i.e., for every a e G(Ln\K) there is a unique class u mod Uj£\ with u e Uk
+such that
+Xa = [u]F(X) for XeF(n).
+Furthermore the following is true: let F be the Lubin-Tate module Fe associated
+to the polynomial e(X) e £„, and letXn e F(n) \ F(n — 1). Then Xn is a
+prime element ofLn, i.e., Ln = K(Xn), and
+en-l(X)
+is its minimal polynomial. In particular one has Nin\K (—Xn) = n.
+
+===== PDF PAGE 365 =====
+
+§5. Generalized Cyclotomic Theory 349
+Proof: If
+e(X) = Xq + n{aq-xXq-x + • • • + a2X2) + nX
+is a Lubin-Tate polynomial, then
+= en-\Xf-x +n(aq-Xen-\Xf-2 + • • • + a2en-\XJ) + tt
+is an Eisenstein polynomial of degree qn~l(q - 1). If F is the Lubin-Tate
+module associated to e, and Xn e F(n) \ F(/i - 1), then Xn is clearly a zero
+of this Eisenstein polynomial, and is therefore a prime element of the totally
+ramified extension K(Xn)\K of degree qn~l(q — 1). Each a e G(L\K)
+induces an automorphism of F(n). We therefore obtain a homomorphism
+G(Ln\K)—>AutOK(F(n)) =UK/U%\
+It is injective because Ln is generated by F(n), and it is surjective because
+#G(Ln\K) > [K(Xn) : K] = qn~\q - 1) = #UK/U^.
+This proves the theorem. □
+Generalizing the explicit norm residue symbol of the cyclotomic fields
+QP(l^pn)\Qp (see (2.4)), we obtain the following explicit formula for the
+norm residue symbol of the Lubin-Tate extensions.
+(5.5) Theorem. For the field Ln\K of nn-division points and for a =
+unvK(a) eK*,ue UK> onehas
+(a,Ln\K)X = [u~l]F(X), XeF(n).
+Proof: The proof is the same as that of (2.4). Let a e G(Ln\K) be the
+automorphism such that
+Xa = [U-1]F(X), XeF(n).
+Let a be an element in Frob(L„ \K) such that a = a \in and ^(a) = 1. We
+view a as an automorphism of the completion Ln = LnK of Ln. Let U be
+the fixed field of a. Since fz\K =j}k(&) = 1, E\K is totally ramified. It has
+degree qn~l(g- 1) because EDK = K and £ = EK = Ln. Consequently
+[S:K] = [Ln : K] = [Ln : K].
+
+===== PDF PAGE 366 =====
+
+350 Chapter V. Local Class Field Theory
+Now let e € Sn, e e E^ be Lubin-Tate series over Ok , where n = uW,
+and let F = F^. By (2.3), there exists a power series 0(X) = sX H e
+og[[^l], with e eUg, such that
+0?=0o[w1f and O^oe^eod (<p = (pK).
+Let A„ € F(w) \ F(/i — 1). A.w is a prime element of Ln, and
+^ = 0(*«)
+is a prime element of £ because
+7t% = 6V(kan) = d*([u-l]F(kn)) = 6{kn) = ns.
+f Since e'(0(A„)) = ^(?(A.„)) = 0 for i = n, and # 0 for i = n - 1,
+we have ttx1 € Fe(n) % /v(n — 1). Hence I! = K(tie) is the field of nn­
+division points of Fe, and Nj:\k{—^s) = n = uW by (5.4). Since W =
+Nl„\k(-K) e NLn\KL*, we get
+^iatCc) = NS\K(.-nz) = n = u mod NLn{KL*n,
+and thus
+(a,L„|/0 = (7ru*(a),L„|/0(M,L„|/0 = («,Ln|/sT) = a. D
+(5.6) Corollary. The fieldLn | /ST of 7Tn -divisionpoints is the class field relative
+to the group (jr) x £/<?> c /T.
+Proof: For a = unVK^ we have
+a € iVL„,^L: <^» (a.LbIAT) = 1 <=» [«"']?(!) = A for all k e F(n)
+<=^ [u~l]P = idF(„) <=!> h_i € J7^B) <=* a € (jt) x {/£°.
+a
+For the maximal abelian extension Kab\K, this gives the following
+generalization of the local Kronecker-Weber theorem (1.9):
+(5.7) Corollary. The maximal abelian extension ofK is the composite
+Kab = KLn,
+where Ln is the union (J^Li Ln of the fields Ln of jt"-division points.
+
+===== PDF PAGE 367 =====
+
+§5. Generalized Cyclotomic Theory 351
+Proof: Let L\K be a finite abelian extension. Then we have it? € Nl\kL*
+for suitable /. Since Nl\kL* is open in K*, and since the U£ form a basis
+of neighbourhoods of 1, we have (n?) x C/^1 c Nl\kL* for a suitable
+n. Hence L is contained in the class field of the group (n?) x C/^1 =
+((n) x t/£°) n ((nf) x [/*). The class field of (n) x f/£° is Ln, and that
+of (n?) x [/# is the unramified extension Kf of degree /. It follows thatL c AT/Lh c ATL* = Kab. D
+Exercise 1. Let F — Fe be the Lubin-Tate module for the Lubin-Tate series e e £n,
+with the endomorphisms [a] = [a]e. Let 5 = c?a-[[X]] and S* = {g e 5 | g(0) e £/#}.
+Show:
+(i) If g e S is a power series such that g(F(l)) = 0, then g is divisible by [tz], i.e.,
+g(X) = [tt](X)/*(X), h{X) e S.
+(ii) Let g e S be a power series such that
+g(X+A)=g(X) for all XeF(l),
+F
+where we write X + X = F(X,X). Then there exists a unique power series h{X) inF
+S such that
+g = h O 7T .
+Exercise 2. If /*(X) is a power series in 5, then the power series
+A,(X)= n *(*+*)AeF(l) F
+also belongs to S, and one has h\(X + X) — h\(X) for all X e F(l).F
+Exercise 3. Let N(h) e S be the power series (uniquely determined by exercise 1
+and exercise 2) such that
+N(h)o[n]= n h(X + \).XeF(l) F
+The mapping N : S -> S is called Coleman's norm operator. Show:
+(i) tf(A,A2) = tf (A,)tf (A2).
+(ii) N{h) = h mod p.
+(iii) A e X'S* for i > 0 => A^(/z) e X'S*.
+(iv) h = 1 mod p' for i > 1 => #(/*) = 1 mod p/+1.
+(v) For the operators N°(h) = h, Nn(h) = N(Nn~l(h))9 one has
+Nn(h)o[jin]= n h(X+k), n>0.XeF(n) F
+(vi) If h e XlS\ i > 0, then Nn+\h)/Nn(h) e S* and
+Nn+1 (h) = AT (/*) mod p"+1, n > 0.
+
+===== PDF PAGE 368 =====
+
+352 Chapter V. Local Class Field Theory
+Exercise 4. Let X e F(n + 1) \ F(n), n > 0, and A.,- = [7tn-i](k) e F(i + 1) for 0 <
+i < n. Then Xt is a prime element of the Lubin-Tate extension Li+i — K{F{i + 1)),
+and Oj+i — Ok[X[] is the valuation ring of L,+i, with maximal ideal p/+i = XiOi+\.
+Show:
+let # e 7zn~lpiOi+i, 0 < i < n. Then there exists a power series h(X) e S such
+that
+h(Xi) = pi for 0<i<n.
+Hint: Write ft = 71"-%/*,-(A,), with Af-(X) e o[X] and put, for 0 < i < n:
+gi(X) = [7r"+1][7T/]/[7T/+1]. Then h = £?=0/*/g/ is a solution.
+Exercise 5. Let A e F(n + 1) \ F(n) and A.f- = frr""'"]^), 0 < i < n. For every
+u e Ul„+1 , there exists a power series h(X) e o[[X]] such that
+NnJ(u) = h(Xi) for 0<i<n,
+where Nnj is the norm from Ln+\ to L/+i.
+Hint: Write u = h^X), hx(X) e o[X], and put h2 = N"^) e S*. Show that
+ft = Nnj(u) — h2(Xi) e 7tn~lpiOi+i. Then by exercise 4 there is a power series
+h3(X) e o[[X]] such that ft == M*/), 0 < i < n. Show that h = h2 + h3 works.
+Remark: The solutions of these exercises are discussed in detail in [79], 5.2.
+§ 6. Higher Ramification Groups
+Considering the homomorphism
+( ,L\K):K*^G(L\K)
+defined for an abelian extension L\K of local fields by the norm residue
+symbol, it is striking that both groups are equipped with a canonical filtration:
+in the group K* on the left we have the descending chain
+(*) K*^UK=uf ^U{^uf D...
+of higher unit groups Ujp9 and on the right there is the descending chain
+(**) G(L\K) ^G°(L\K) ^G\L\K) ^G2(L\K) D-.
+of ramification groups Gl (L\K) in the upper numbering (see chap. II, § 10).
+The latter arose from the ramification groups in the lower numbering
+Gt(L\K) = [a eG(L\K)\ vL(aa-a) >i + l for all a e oL)
+via the strictly increasing function
+fs dx
+Jo tVO ■ <-rx)
+
+===== PDF PAGE 369 =====
+
+§ 6. Higher Ramification Groups 353
+by the rule
+Gl(L\K) = G+L]K(f)(L\K),
+where V is the inverse function of rj. We will now prove the remarkable
+arithmetic fact that the norm residue symbol ( , L \K) relates both filiations
+(*) and (**) in a precise way. To this end we determine (generalizing chap. II,
+§ 10, exercise 1) the higher ramification groups of the Lubin-Tate extensions.
+(6.1) Proposition. LetLn\K be the field ofnn-division points of a Lubin-Tate
+module for the prime element n. Then
+Gi(Ln\K) = G(Ln\Lk) for qk-l<i<qk-l.
+Proof: By (5.4) and (5.5), the norm residue symbol gives an isomorphism
+UK/Uf -* G(Lk\K)fort
+therefore have to show that
+Uk/U^ -» G(Lk\K) for every Jfc. Hence G(Ln\Lk) = (U{k\Ln\K). We
+Gi(Ln\K) = (U$\Ln\K) for ?h</<?*-1.
+Let o e G\(Ln\K) and a = (u~l,Ln\K). Then we have necessarily
+u e U^ because (,Ln\K) : UK/U{^ -^ G(Ln\K) maps the p-Sylow
+subgroup U^/UJp onto the p-Sylow subgroup Gx(Ln\K) of G(Ln\K).
+Let u = 1 + S7zm, s e Uk, and X e F(n) \ F(n — 1). Then X is a prime
+element of Ln and from (5.4) we get that
+X* = [u]F(X) = F(X,[s7Tm]F(X)),
+If m > ft, then a = 1, so that VLn(Xa — X) = oo. If m < n, then A,„_m =
+[^rm]/r(A) is a prime element of Ln-m and therefore also [£7rm]/r(A) =
+[s]f(Xn-m). As Ln\Ln-m is totally ramified of degree #m we may write
+[snm]F(X) = e0X<*m for some s0 G ULn. Since F(X,0) = X, F(0,7) = 7,
+we have F(X, 7) = X + y +3TG(X, y) with G(X, y) G o^[[X, y]]. Thus
+Xa -X = F(X,e0X<im) -X = e0X<im + aXqm+x, a G oL||,
+i.e., I qm, if m < n,
+iLn\K(o):=vLn{X°-X) = \H[oo, if m > n.
+By chap. II, §10, we have Gi(Ln\K) = {a e G(Ln\K) \ iLn\K(cr) >
+/ + 1}. Now let qk~l < i < qk - 1. If u G U{^\ then m > jfc, i.e.,
+^Lnl/r^) >#*>* + 1, and so a G G,-(LW|AT). This proves the inclusion
+{U{k\Ln\K) c G/(L„|iO. If conversely a G G/(L„|iO and a # 1, then
+iLn\K(<r) = qm > i > qk~l, i.e., m > k. Consequently u G £/^ , and this
+shows the inclusion G;(Ln \K) c (£/£*}, Lw |AT). D
+
+===== PDF PAGE 370 =====
+
+354 Chapter V. Local Class Field Theory
+From this proposition we get the following result, which may be
+considered the main theorem of higher ramification theory.
+(6.2) Theorem. If L\K is a finite abelian extension, then the norm residue
+symbol
+( ,L\K) :K* —> G(L\K)
+maps the group U^ onto the group Gn(L\K), torn > 0.
+Proof: We may assume that L\K is totally ramified. For if L°\K is
+the maximal unramified subextension of L\K, then we have on the one
+hand Gn(L\K) = Gn(L\L°) because ^Lo{K(s) = s and fL\K{s) =
+V^liloCV^lOia:^)) — V^lil0^) (see chap.II, (10.8)). On the other hand, by
+chap. IV, (6.4), and chap. V, (1.2), we have
+(U<$,L\L°) = (NLolKU$,L\K) = (U<?\L\K) ,
+so we may replace L\K by L|L°.
+If now L | K is totally ramified and tcl is a prime element of L, then
+n = Nl\k(ttl) is a prime element of K and (n) x U^ c Nl\kL* for m
+sufficiently big. Therefore L \K is contained in the class field of (jt) x U^1 ,
+which, by (5.6), is equal to the field Lm of nm-division points of some
+Lubin-Tate module for jt. In view of chap. II, (10.9), and chap. IV, (6.4), we
+may even assume that L = Lm. By (6.1), the norm residue symbol maps the
+group Ug? onto the group
+G(Lm\Ln) = Gi(Lm\K) for qn-l<i<qn-l.
+But we have (see chap. II, § 10)
+rjL\K(qn ~ 1) = — (gi +'- + gqn-\)go
+with gi = #Gi(L\K) = #G(Lm\Ln) = (qm~l -qn~l)(q - 1) for q"~l < i <
+qn-\. This yields rjL\K(qn-l) = n and thus (U$\l\K) = Gqn_x(L\K) =Gn(L\K). D
+Higher ramification groups G{(L\K) were introduced for arbitrary real
+numbers t > — 1. Thus we may ask for which numbers they change. We
+call these numbers the jumps of the filtration {Gf(L \K)}t>-\ of G(L\K). In
+other words, t is a jump if for all s > 0, one has
+G'(L|iO^G'+£(L|iO.
+
+===== PDF PAGE 371 =====
+
+§ 6. Higher Ramification Groups 355
+(6.3) Proposition (Hasse -Arf). For a finite abelian extension L\K, the jumps
+of the filtration [G* (L\K)}t>-\ ofG(L\K) are rational integers.
+Proof: As in the proof of (6.2), we may assume (since Gf(L\K) =
+G((L\L0)) that L\K is totally ramified and contained in a Lubin-Tate
+extension Lm \K. If now t is a jump of {G((L\K)}, then by chap. II (10.9),
+t is also a jump of {Gt(Lm\K)}. Since by (6.1), the jumps of {Gs(Lm\K)}
+are the numbers qn — 1, for n = 0, ... ,m — 1 (q = 2 is an exception: 0 is
+not a jump), the jumps of {Gf(Lm\K)} are the numbers rjLm\K(qn -1) = n,for n = 0, ... ,m — 1. □
+The theorem of Hasse-Arf has an important application to Artin L-series,
+which we will study in chap. VII (see chap. VII, (11.4)).
+
+===== PDF PAGE 372 =====
+

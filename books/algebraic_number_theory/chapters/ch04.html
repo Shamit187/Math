@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ch 04 — Abstract Class Field Theory · Algebraic Number Theory</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/><link href="/css/tts.css" rel="stylesheet"/>
+</head>
+<body data-book="algebraic_number_theory" data-page="ch04">
+<header class="site-header">
+<a class="home-btn" href="/">Home</a>
+<a class="brand" href="/books/algebraic_number_theory/">Algebraic Number Theory <small>a slow reading guide</small></a>
+<nav>
+<button aria-label="toggle theme" class="theme-toggle">Dark</button>
+</nav>
+</header>
+<main class="layout">
+<aside class="sidebar">
+<h4>Chapter 04</h4>
+<ol>
+<li><a href="#why">Why an abstract theory?</a></li>
+<li><a href="#s4-1">4.1 Infinite Galois Theory</a></li>
+<li><a href="#s4-2">4.2 Projective &amp; Inductive Limits</a></li>
+<li><a href="#s4-3">4.3 Abstract Galois Theory</a></li>
+<li><a href="#s4-4">4.4 Abstract Valuation Theory</a></li>
+<li><a href="#s4-5">4.5 The Reciprocity Map</a></li>
+<li><a href="#s4-6">4.6 The General Reciprocity Law</a></li>
+<li><a href="#s4-7">4.7 The Herbrand Quotient</a></li>
+<li><a href="#summary">Summary</a></li>
+</ol>
+</aside>
+<article class="content">
+<section class="hero">
+<div class="kicker">Chapter 04</div>
+<h1>Abstract Class Field Theory</h1>
+<p class="subtitle" data-cid="ch04-010">Build the reciprocity machine once, from nothing but a profinite group with a Frobenius and a henselian valuation — then bolt it onto local and global number theory and watch class field theory fall out twice.</p>
+<div class="meta">
+<span>Neukirch Chapter IV</span>
+<span>~55 min reading time</span>
+<span>Prereqs: finite Galois theory, p-adic fields (ch. II), basic group cohomology vocabulary</span>
+</div>
+</section>
+
+<h2 data-cid="ch04-020" id="why">Why an abstract theory at all?</h2>
+<p data-cid="ch04-030">
+Class field theory is the crown of algebraic number theory. Its central statement is a single, almost mystical isomorphism: for an abelian extension <span class="tts-math" data-tts="L over K">$L\mid K$</span>,
+</p>
+<span class="tts-math" data-tts="the Galois group of L over K is isomorphic to A sub K modulo the norm group of A sub L">
+$$G(L\mid K) \;\xrightarrow{\sim}\; A_K / N_{L\mid K}A_L.$$
+</span>
+<p data-cid="ch04-035">
+Read aloud, this says: <em>the symmetry group of the extension <span class="tts-math" data-tts="L over K">$L\mid K$</span> equals the group <span class="tts-math" data-tts="A sub K">$A_K$</span> of the base field, divided out by the image of the norm map coming down from <span class="tts-math" data-tts="A sub L">$A_L$</span>.</em> A few words first. An <strong>abelian extension</strong> is a Galois extension whose Galois group is commutative. The <strong>norm</strong> <span class="tts-math" data-tts="N sub L over K">$N_{L\mid K}$</span> takes an element upstairs and multiplies together all of its Galois conjugates — a single number "averaged" down to the base; its image <span class="tts-math" data-tts="N sub L over K of A sub L">$N_{L\mid K}A_L$</span> is the <strong>norm group</strong>, and the quotient by it is the <strong>norm residue group</strong>. (We make the norm precise in §4.3.)
+</p>
+<p data-cid="ch04-040">
+Here <span class="tts-math" data-tts="A sub K">$A_K$</span> is a group attached to the base field <span class="tts-math" data-tts="K">$K$</span>. In the <em>local</em> case it is the multiplicative group <span class="tts-math" data-tts="K star, the units of the local field">$K^\times$</span> (the nonzero elements of <span class="tts-math" data-tts="K">$K$</span> under multiplication); in the <em>global</em> case it is (a modification of) the <strong>idele class group</strong> — for now, treat this as a black box, a single global gadget that packages the arithmetic at every place of a number field at once. It is constructed in Chapter VI; you lose nothing by carrying it as a name. The remarkable thing Neukirch noticed — following Hazewinkel and Dwork — is that this isomorphism does not depend on fields at all. It can be proved for any profinite group equipped with two extra pieces of data. Prove it once in the abstract; instantiate it twice.
+</p>
+<div class="box intuition" data-cid="ch04-050">
+<span class="box-label">The whole chapter in one paragraph</span>
+<p data-cid="ch04-060">
+Start with a profinite group <span class="tts-math" data-tts="G">$G$</span> (think: an absolute Galois group). Add a surjection <span class="tts-math" data-tts="d from G onto Z hat">$d\colon G \twoheadrightarrow \widehat{\mathbb{Z}}$</span> onto <span class="tts-math" data-tts="Z hat, read zed-hat">$\widehat{\mathbb{Z}}$</span> (the <em>profinite completion of <span class="tts-math" data-tts="Z">$\mathbb{Z}$</span></em>, built in §4.2 — picture it as "all congruence information about an integer at once") — this is the abstract "Frobenius / unramified" datum that mimics the residue-field arithmetic. Add a <span class="tts-math" data-tts="G-module A">$G$</span>-module <span class="tts-math" data-tts="A">$A$</span> (an abelian group on which <span class="tts-math" data-tts="G">$G$</span> acts — made precise below) with a "henselian valuation" <span class="tts-math" data-tts="v from A sub k onto Z hat">$v\colon A_k \to \widehat{\mathbb{Z}}$</span> (a size-measuring map that survives up every extension — also made precise below). Impose one cohomological axiom (the <em>class field axiom</em>). Out comes a canonical reciprocity isomorphism for every finite Galois extension. That is the entire architecture, and it is genuinely elementary — no cohomological dimension theory required.
+</p>
+</div>
+<p data-cid="ch04-070">
+Before we can even state the abstract setup, we need three pieces of background machinery: how Galois theory works for <em>infinite</em> extensions (§4.1), the language of <em>projective and inductive limits</em> (§4.2), and the dictionary that lets us treat a bare profinite group <em>as if</em> it were a Galois group (§4.3). Then comes the payoff: valuations (§4.4), the reciprocity map (§4.5), the reciprocity law (§4.6), and the computational tool — the Herbrand quotient — that makes the axiom checkable in practice (§4.7).
+</p>
+
+<!-- ================= 4.1 ================= -->
+<h2 data-cid="ch04-080" id="s4-1">4.1 Infinite Galois Theory</h2>
+<p data-cid="ch04-090">
+Every field <span class="tts-math" data-tts="k">$k$</span> comes with one distinguished Galois extension: its separable closure <span class="tts-math" data-tts="k bar over k">$\bar{k}\mid k$</span>. The group <span class="tts-math" data-tts="G sub k equals the Galois group of k bar over k">$G_k = G(\bar{k}\mid k)$</span> is the <strong>absolute Galois group</strong>. It bundles together <em>all</em> finite Galois extensions of <span class="tts-math" data-tts="k">$k$</span> at once, which is exactly why we want to give it center stage. But there is a catch.
+</p>
+<div class="box warn" data-cid="ch04-100">
+<span class="box-label">The main theorem of Galois theory fails for infinite extensions</span>
+<p data-cid="ch04-110">
+Naively, subgroups of <span class="tts-math" data-tts="G sub k">$G_k$</span> should correspond to intermediate fields. For infinite extensions this is false: there are far more subgroups than fields. The fix is topological — only the <em>closed</em> subgroups correspond to fields.
+</p>
+</div>
+<div class="box example" data-cid="ch04-120">
+<span class="box-label">The motivating example — the absolute Galois group of <span class="tts-math" data-tts="F sub p">$\mathbb{F}_p$</span></span>
+<p data-cid="ch04-130">
+Let <span class="tts-math" data-tts="G equals the Galois group of F p bar over F p">$G = G(\overline{\mathbb{F}}_p \mid \mathbb{F}_p)$</span>. It contains the <strong>Frobenius</strong> <span class="tts-math" data-tts="phi">$\varphi$</span>, defined by <span class="tts-math" data-tts="x to the phi equals x to the p, for all x in F p bar">$x^{\varphi} = x^{p}$</span> for all <span class="tts-math" data-tts="x in F p bar">$x \in \overline{\mathbb{F}}_p$</span>. The cyclic group <span class="tts-math" data-tts="open angle phi close angle, equal to the set of phi to the n for n in Z">$\langle\varphi\rangle = \{\varphi^n \mid n \in \mathbb{Z}\}$</span> has the <em>same</em> fixed field — namely <span class="tts-math" data-tts="F p">$\mathbb{F}_p$</span> — as the whole group <span class="tts-math" data-tts="G">$G$</span>. Yet <span class="tts-math" data-tts="open angle phi close angle is not equal to G">$\langle\varphi\rangle \neq G$</span>.
+</p>
+<p data-cid="ch04-140">
+Why not? One constructs an automorphism <span class="tts-math" data-tts="psi">$\psi$</span> that agrees with some power of Frobenius on each finite layer <span class="tts-math" data-tts="F p to the n">$\mathbb{F}_{p^n}$</span> but for which no single integer exponent works simultaneously for all <span class="tts-math" data-tts="n">$n$</span>. Concretely, pick integers <span class="tts-math" data-tts="a sub n">$a_n$</span> with <span class="tts-math" data-tts="a sub n congruent to a sub m mod m whenever m divides n">$a_n \equiv a_m \ (\mathrm{mod}\ m)$</span> whenever <span class="tts-math" data-tts="m divides n">$m \mid n$</span>, but with no global integer <span class="tts-math" data-tts="a">$a$</span> satisfying <span class="tts-math" data-tts="a sub n congruent to a mod n for all n">$a_n \equiv a \ (\mathrm{mod}\ n)$</span> for all <span class="tts-math" data-tts="n">$n$</span>. Setting <span class="tts-math" data-tts="psi restricted to F p to the n equals phi to the a sub n">$\psi|_{\mathbb{F}_{p^n}} = \varphi^{a_n}$</span> glues to a genuine automorphism of <span class="tts-math" data-tts="F p bar">$\overline{\mathbb{F}}_p$</span> that lives outside <span class="tts-math" data-tts="open angle phi close angle">$\langle\varphi\rangle$</span>. The coherent system <span class="tts-math" data-tts="a sub n">$(a_n)$</span> is exactly an element of <span class="tts-math" data-tts="Z hat">$\widehat{\mathbb{Z}}$</span> that is not an ordinary integer — we will name this object in §4.2.
+</p>
+</div>
+<div class="box intuition" data-cid="ch04-145">
+<span class="box-label">The picture — Frobenius to a "limit exponent"</span>
+<p data-cid="ch04-147">
+Here is the honest mental image. The new automorphism <span class="tts-math" data-tts="psi">$\psi$</span> behaves like "Frobenius raised to some exponent," except the exponent is not any whole number. On the layer <span class="tts-math" data-tts="F p to the n">$\mathbb{F}_{p^n}$</span> only the exponent <em>modulo <span class="tts-math" data-tts="n">$n$</span></em> matters (because <span class="tts-math" data-tts="phi to the n equals the identity there">$\varphi^n$</span> is the identity on that layer). So we get to pick a residue mod 2, a compatible residue mod 3, mod 4, and so on — a tower of choices that agree wherever they overlap, yet correspond to <em>no single integer</em>. That coherent-but-rootless choice of exponent is precisely an element of <span class="tts-math" data-tts="Z hat">$\widehat{\mathbb{Z}}$</span> that lies outside the ordinary integers <span class="tts-math" data-tts="Z">$\mathbb{Z}$</span>. The Frobenius <span class="tts-math" data-tts="phi">$\varphi$</span> is exponent <span class="tts-math" data-tts="1">$1$</span>; <span class="tts-math" data-tts="psi">$\psi$</span> is a "limit exponent" that no integer reaches — which is exactly why <span class="tts-math" data-tts="open angle phi close angle is strictly smaller than G">$\langle\varphi\rangle \subsetneq G$</span>. Keep this in mind: in §4.2 we will see <span class="tts-math" data-tts="G is isomorphic to Z hat">$G\cong\widehat{\mathbb{Z}}$</span> and these limit exponents become literal elements of <span class="tts-math" data-tts="Z hat">$\widehat{\mathbb{Z}}$</span>.
+</p>
+</div>
+<p data-cid="ch04-150">
+The repair is to put a topology on the Galois group. For a (finite or infinite) Galois extension <span class="tts-math" data-tts="Omega over k">$\Omega\mid k$</span> with group <span class="tts-math" data-tts="G equals the Galois group of Omega over k">$G = G(\Omega\mid k)$</span>, the <strong>Krull topology</strong> declares the cosets
+</p>
+<span class="tts-math" data-tts="sigma times the Galois group of Omega over K">
+$$\sigma\, G(\Omega\mid K)$$
+</span>
+<p data-cid="ch04-160">
+to be a basis of neighbourhoods of <span class="tts-math" data-tts="sigma">$\sigma$</span>, as <span class="tts-math" data-tts="K over k">$K\mid k$</span> ranges over the <em>finite</em> Galois subextensions. In words: two automorphisms are "close" if they agree on a large finite subextension. Multiplication and inversion are continuous, so <span class="tts-math" data-tts="G">$G$</span> is a topological group.
+</p>
+<div class="box definition" data-cid="ch04-170">
+<span class="box-label">Proposition 4.1.1 — the Galois group is compact Hausdorff</span>
+<p data-cid="ch04-180">
+For every Galois extension <span class="tts-math" data-tts="Omega over k">$\Omega\mid k$</span>, the group <span class="tts-math" data-tts="G equals the Galois group of Omega over k">$G = G(\Omega\mid k)$</span> is <strong>compact and Hausdorff</strong> in the Krull topology.
+</p>
+</div>
+<div class="box intuition" data-cid="ch04-190">
+<span class="box-label">How the proof goes</span>
+<p data-cid="ch04-200">
+Hausdorff is easy: if <span class="tts-math" data-tts="sigma is not equal to tau">$\sigma \neq \tau$</span>, they already disagree on some finite Galois <span class="tts-math" data-tts="K over k">$K\mid k$</span>, and then their basic neighbourhoods are disjoint. Compactness comes from embedding <span class="tts-math" data-tts="G">$G$</span> as a <em>closed</em> subgroup of the product <span class="tts-math" data-tts="the product over K of the finite Galois groups G of K over k">$\prod_K G(K\mid k)$</span> of the finite Galois groups (each given the discrete topology). The product is compact by Tychonoff's theorem; the embedding <span class="tts-math" data-tts="sigma maps to the tuple of its restrictions sigma restricted to K">$\sigma \mapsto (\sigma|_K)_K$</span> is a homeomorphism onto a closed subset, namely the tuples that are <em>compatible</em> under restriction. That compatibility condition is what cuts the full product down to <span class="tts-math" data-tts="G">$G$</span>.
+</p>
+</div>
+<div class="box definition" data-cid="ch04-210">
+<span class="box-label">Theorem 4.1.2 — main theorem, infinite version</span>
+<p data-cid="ch04-220">
+Let <span class="tts-math" data-tts="Omega over k">$\Omega\mid k$</span> be Galois. The assignment <span class="tts-math" data-tts="K maps to the Galois group of Omega over K">$K \mapsto G(\Omega\mid K)$</span> is a bijection between intermediate fields <span class="tts-math" data-tts="K">$K$</span> and <strong>closed</strong> subgroups of <span class="tts-math" data-tts="G">$G$</span>. Under it, the <strong>open</strong> subgroups correspond precisely to the <strong>finite</strong> subextensions.
+</p>
+</div>
+<p data-cid="ch04-230">
+Two facts power the proof. Every open subgroup is automatically closed (it is the complement of the union of its other cosets). And a closed subgroup <span class="tts-math" data-tts="H">$H$</span> equals <span class="tts-math" data-tts="the Galois group of Omega over K">$G(\Omega\mid K)$</span> for <span class="tts-math" data-tts="K">$K$</span> its fixed field, because the finite-Galois theorem makes <span class="tts-math" data-tts="H">$H$</span> dense in <span class="tts-math" data-tts="the Galois group of Omega over K">$G(\Omega\mid K)$</span>, and a closed dense subgroup is everything. The "open <span class="tts-math" data-tts="if and only if">$\Leftrightarrow$</span> finite" part uses compactness: only finitely many cosets can cover a compact group.
+</p>
+<div class="box definition" data-cid="ch04-240">
+<span class="box-label">Definition 4.1.3 — profinite group</span>
+<p data-cid="ch04-250">
+A <strong>profinite group</strong> is a topological group <span class="tts-math" data-tts="G">$G$</span> that is Hausdorff, compact, and has a basis of neighbourhoods of the identity <span class="tts-math" data-tts="1">$1$</span> consisting of <em>normal</em> subgroups.
+</p>
+</div>
+<p data-cid="ch04-260">
+The last condition is equivalent to <span class="tts-math" data-tts="G">$G$</span> being <strong>totally disconnected</strong> — meaning the only connected pieces of the space are single points; equivalently, the finite quotients chop <span class="tts-math" data-tts="G">$G$</span> into small clopen (closed-and-open) chunks, with no continuous "lumps" left to bridge them. Every Galois group is profinite, and a closed subgroup <span class="tts-math" data-tts="H">$H$</span> is open exactly when its index <span class="tts-math" data-tts="the index of H in G">$(G:H)$</span> is finite. The slogan is: <strong>profinite groups are the compact, totally-disconnected limits of finite groups</strong>, and we can reconstruct them from their finite quotients. To make "reconstruct from finite quotients" precise we need limits — next section.
+</p>
+
+<!-- ================= 4.2 ================= -->
+<h2 data-cid="ch04-270" id="s4-2">4.2 Projective and Inductive Limits</h2>
+<p data-cid="ch04-280">
+Projective ("inverse") and inductive ("direct") limits generalize <em>intersection</em> and <em>union</em>. If <span class="tts-math" data-tts="X sub i">$\{X_i\}$</span> is a family of subsets closed under intersections, then <span class="tts-math" data-tts="the projective limit of the X sub i equals their intersection">$\varprojlim X_i = \bigcap_i X_i$</span>; if it is closed under unions, the inductive limit is <span class="tts-math" data-tts="the inductive limit of the X sub i equals their union">$\varinjlim X_i = \bigcup_i X_i$</span>. The indexing set becomes a <strong>directed system</strong>: a partial order where any two indices have a common upper bound.
+</p>
+<div class="box definition" data-cid="ch04-290">
+<span class="box-label">Definition 4.2.1 — projective / inductive system</span>
+<p data-cid="ch04-300">
+Over a directed set <span class="tts-math" data-tts="I">$I$</span>, a <strong>projective system</strong> is a family <span class="tts-math" data-tts="X sub i with transition maps f sub i j">$\{X_i, f_{ij}\}$</span> of spaces with continuous maps <span class="tts-math" data-tts="f sub i j from X sub j to X sub i, for i less than or equal to j">$f_{ij}\colon X_j \to X_i$</span> (arrows point <em>down</em>) satisfying <span class="tts-math" data-tts="f sub i i is the identity">$f_{ii} = \mathrm{id}$</span> and the cocycle rule <span class="tts-math" data-tts="f sub i k equals f sub i j composed with f sub j k">$f_{ik} = f_{ij}\circ f_{jk}$</span>. An <strong>inductive system</strong> reverses the arrows: <span class="tts-math" data-tts="f sub i j from X sub i to X sub j">$f_{ij}\colon X_i \to X_j$</span>.
+</p>
+</div>
+<div class="box definition" data-cid="ch04-310">
+<span class="box-label">Definition 4.2.2 — the limits</span>
+<p data-cid="ch04-320">
+The <strong>projective limit</strong> is the subspace of the product consisting of <em>compatible threads</em>:
+</p>
+<span class="tts-math" data-tts="the projective limit of X sub i is the set of tuples x sub i in the product such that f sub i j of x sub j equals x sub i whenever i is less than or equal to j">
+$$\varprojlim_{i} X_i = \Big\{ (x_i)_i \in \prod_i X_i \ \Big|\ f_{ij}(x_j) = x_i \text{ for } i \le j \Big\}.$$
+</span>
+<p data-cid="ch04-330">
+The <strong>inductive limit</strong> is the disjoint union <span class="tts-math" data-tts="the disjoint union of the X sub i">$\coprod_i X_i$</span> modulo the relation that identifies <span class="tts-math" data-tts="x sub i">$x_i$</span> and <span class="tts-math" data-tts="x sub j">$x_j$</span> once they become equal somewhere downstream: <span class="tts-math" data-tts="there exists k with f sub i k of x sub i equals f sub j k of x sub j">$\exists\, k\colon f_{ik}(x_i) = f_{jk}(x_j)$</span>.
+</p>
+</div>
+<div class="box intuition" data-cid="ch04-340">
+<span class="box-label">Mental picture</span>
+<p data-cid="ch04-350">
+A projective limit is a "coherent infinite memory": an element is a choice at every stage that is consistent under the bonding maps — like a decimal expansion, where each truncation determines the shorter ones. An inductive limit is a "growing union": an element lives at <em>some</em> finite stage and you forget where it came from once two stages agree.
+</p>
+</div>
+<div class="box pause" data-cid="ch04-360">
+<span class="box-label">Pause — compactness is the key feature</span>
+<p data-cid="ch04-370">
+<strong>Proposition 4.2.3.</strong> The projective limit of <em>nonempty compact</em> spaces is nonempty and compact. Nonemptiness is the subtle half: it is exactly the finite-intersection-property argument inside the compact product. This is the technical heart that makes profinite groups behave well, and it is why §4.5–§4.6 can solve infinitely many equations "at once" by solving them at each finite layer.
+</p>
+</div>
+<p data-cid="ch04-380">
+For systems of <em>groups</em> (or rings, modules) with continuous homomorphisms, both limits are again topological groups, and they satisfy the expected <strong>universal properties</strong> (Prop. 4.2.5): a compatible family of maps <span class="tts-math" data-tts="from H to each G sub i">$H \to G_i$</span> factors uniquely through <span class="tts-math" data-tts="the projective limit">$\varprojlim G_i$</span>, and dually for <span class="tts-math" data-tts="the inductive limit">$\varinjlim$</span>. So these are categorical limits — they are <em>the</em> universal solutions, not ad hoc constructions.
+</p>
+<div class="box warn" data-cid="ch04-390">
+<span class="box-label">Exactness — and its one restriction</span>
+<p data-cid="ch04-400">
+The inductive limit functor is <strong>always exact</strong> (Prop. 4.2.6): a short exact sequence at each level gives an exact sequence of limits, full stop. The projective limit is <strong>exact only for compact groups</strong> (Prop. 4.2.7). This asymmetry is not pedantry — it is precisely why the compactness baked into "profinite" matters, and why we keep insisting our groups be compact.
+</p>
+</div>
+<div class="box definition" data-cid="ch04-410">
+<span class="box-label">Proposition 4.2.8 — profinite = projective limit of finite</span>
+<p data-cid="ch04-420">
+If <span class="tts-math" data-tts="G">$G$</span> is profinite and <span class="tts-math" data-tts="N">$N$</span> ranges over its open normal subgroups, then topologically and algebraically
+</p>
+<span class="tts-math" data-tts="G equals the projective limit over N of G modulo N">
+$$G \;=\; \varprojlim_{N} G/N.$$
+</span>
+<p data-cid="ch04-430">
+Conversely, every projective limit of finite (or profinite) groups is profinite.
+</p>
+</div>
+<p data-cid="ch04-440">
+This is the structural theorem promised in §4.1. It packages a profinite group as the totality of its finite quotients, stitched together compatibly. Now the examples — these are the objects you will meet again and again.
+</p>
+<div class="box example" data-cid="ch04-450">
+<span class="box-label">Example — the absolute Galois group as a limit</span>
+<p data-cid="ch04-460">
+For Galois <span class="tts-math" data-tts="Omega over k">$\Omega\mid k$</span>, the open normal subgroups are the <span class="tts-math" data-tts="G of Omega over K">$G(\Omega\mid K)$</span> for finite Galois <span class="tts-math" data-tts="K over k">$K\mid k$</span>, and <span class="tts-math" data-tts="G of K over k equals G of Omega over k modulo G of Omega over K">$G(K\mid k) = G(\Omega\mid k)/G(\Omega\mid K)$</span>. Hence
+</p>
+<span class="tts-math" data-tts="the Galois group of Omega over k equals the projective limit over K of the finite Galois groups G of K over k">
+$$G(\Omega\mid k) = \varprojlim_{K} G(K\mid k).$$
+</span>
+</div>
+<div class="box example" data-cid="ch04-470">
+<span class="box-label">Example — the <span class="tts-math" data-tts="p-adic">$p$</span>-adic integers and <span class="tts-math" data-tts="Z hat">$\widehat{\mathbb{Z}}$</span></span>
+<p data-cid="ch04-480">
+The rings <span class="tts-math" data-tts="Z mod p to the n">$\mathbb{Z}/p^n\mathbb{Z}$</span> form a projective system under reduction; their limit is the ring of <span class="tts-math" data-tts="p-adic">$p$</span>-adic integers,
+</p>
+<span class="tts-math" data-tts="Z sub p equals the projective limit over n of Z mod p to the n">
+$$\mathbb{Z}_p = \varprojlim_{n} \mathbb{Z}/p^n\mathbb{Z}.$$
+</span>
+<p data-cid="ch04-490">
+Taking instead all <span class="tts-math" data-tts="Z mod n">$\mathbb{Z}/n\mathbb{Z}$</span> ordered by divisibility gives the <strong>Prüfer ring</strong> <span class="tts-math" data-tts="Z hat, read zed-hat">$\widehat{\mathbb{Z}}$</span>:
+</p>
+<span class="tts-math" data-tts="Z hat equals the projective limit over n of Z mod n, which equals the product over all primes p of Z sub p">
+$$\widehat{\mathbb{Z}} = \varprojlim_{n} \mathbb{Z}/n\mathbb{Z} \;=\; \prod_{p} \mathbb{Z}_p,$$
+</span>
+<p data-cid="ch04-500">
+the last equality by the Chinese remainder theorem passed to the limit. The ordinary integers <span class="tts-math" data-tts="Z">$\mathbb{Z}$</span> sit inside <span class="tts-math" data-tts="Z hat">$\widehat{\mathbb{Z}}$</span> as a <em>dense</em> subring via the diagonal <span class="tts-math" data-tts="a maps to the tuple a, a, a, and so on">$a \mapsto (a,a,a,\dots)$</span> — dense but not equal, which is the abstract shadow of "<span class="tts-math" data-tts="open angle phi close angle is not equal to G">$\langle\varphi\rangle \neq G$</span>".
+</p>
+</div>
+<div class="box example" data-cid="ch04-510">
+<span class="box-label">Example — Frobenius generates <span class="tts-math" data-tts="Z hat">$\widehat{\mathbb{Z}}$</span></span>
+<p data-cid="ch04-520">
+For <span class="tts-math" data-tts="F sub q">$\mathbb{F}_q$</span> we have <span class="tts-math" data-tts="G of F q to the n over F q is isomorphic to Z mod n">$G(\mathbb{F}_{q^n}\mid\mathbb{F}_q) \cong \mathbb{Z}/n\mathbb{Z}$</span>, sending <span class="tts-math" data-tts="phi to the n">$\varphi^n$</span>... more precisely sending Frobenius to <span class="tts-math" data-tts="1 mod n">$1$</span>. Passing to the limit,
+</p>
+<span class="tts-math" data-tts="the Galois group of F q bar over F q is isomorphic to Z hat">
+$$G(\overline{\mathbb{F}}_q\mid\mathbb{F}_q) \cong \widehat{\mathbb{Z}},$$
+</span>
+<p data-cid="ch04-530">
+with Frobenius <span class="tts-math" data-tts="phi">$\varphi$</span> mapping to <span class="tts-math" data-tts="1 in Z hat">$1 \in \widehat{\mathbb{Z}}$</span> and the cyclic subgroup <span class="tts-math" data-tts="open angle phi close angle">$\langle\varphi\rangle$</span> onto the dense subgroup <span class="tts-math" data-tts="Z inside Z hat">$\mathbb{Z}\subset\widehat{\mathbb{Z}}$</span>. The mysterious <span class="tts-math" data-tts="psi">$\psi$</span> from §4.1 is now just some element of <span class="tts-math" data-tts="Z hat minus Z">$\widehat{\mathbb{Z}}\smallsetminus\mathbb{Z}$</span>, e.g. <span class="tts-math" data-tts="the tuple that is 1 in the p-component and 0 elsewhere">$(\dots,0,1_p,0,\dots) \in \prod_\ell \mathbb{Z}_\ell$</span>.
+</p>
+</div>
+<div class="box example" data-cid="ch04-540">
+<span class="box-label">Example — cyclotomic <span class="tts-math" data-tts="Z hat star">$\widehat{\mathbb{Z}}^\times$</span> and procyclic groups</span>
+<p data-cid="ch04-550">
+Adjoining all roots of unity to <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span> gives <span class="tts-math" data-tts="the Galois group is isomorphic to Z hat star, the units of Z hat">$G(\mathbb{Q}(\mu_\infty)\mid\mathbb{Q}) \cong \widehat{\mathbb{Z}}^\times$</span>, from the limit of <span class="tts-math" data-tts="G of Q adjoin mu sub n over Q is isomorphic to Z mod n star">$G(\mathbb{Q}(\mu_n)\mid\mathbb{Q})\cong(\mathbb{Z}/n\mathbb{Z})^\times$</span>. A <strong>procyclic</strong> group is one topologically generated by a single element; <span class="tts-math" data-tts="Z hat">$\widehat{\mathbb{Z}}$</span> and <span class="tts-math" data-tts="Z sub p">$\mathbb{Z}_p$</span> are the basic examples, and every procyclic group is a quotient of <span class="tts-math" data-tts="Z hat">$\widehat{\mathbb{Z}}$</span>. Its open subgroups are exactly the <span class="tts-math" data-tts="G to the n">$G^n$</span>.
+</p>
+</div>
+
+<!-- ================= 4.3 ================= -->
+<h2 data-cid="ch04-560" id="s4-3">4.3 Abstract Galois Theory</h2>
+<p data-cid="ch04-570">
+Now the bold move. We discard fields and keep only a profinite group <span class="tts-math" data-tts="G">$G$</span>, but we keep <em>speaking</em> the language of fields. Every profinite group really is some Galois group <span class="tts-math" data-tts="G of k bar over k">$G(\bar k\mid k)$</span>, so the dictionary below is not a metaphor — it is a faithful translation that lets you reuse all your Galois intuition.
+</p>
+<div class="box definition" data-cid="ch04-580">
+<span class="box-label">The dictionary</span>
+<ul data-cid="ch04-590">
+<li>Closed subgroups <span class="tts-math" data-tts="G sub K">$G_K$</span> are indexed by symbols <span class="tts-math" data-tts="K">$K$</span> we call <strong>"fields"</strong>; <span class="tts-math" data-tts="K">$K$</span> is the fixed field of <span class="tts-math" data-tts="G sub K">$G_K$</span>.</li>
+<li>The <strong>base field</strong> <span class="tts-math" data-tts="k">$k$</span> has <span class="tts-math" data-tts="G sub k equals G">$G_k = G$</span>; the top field <span class="tts-math" data-tts="k bar">$\bar k$</span> has <span class="tts-math" data-tts="G sub k bar equals the trivial group">$G_{\bar k} = \{1\}$</span>.</li>
+<li>We write <span class="tts-math" data-tts="L over K">$L\mid K$</span> (an <strong>extension</strong>) when <span class="tts-math" data-tts="G sub L is contained in G sub K">$G_L \subseteq G_K$</span>. It is <strong>finite</strong> if <span class="tts-math" data-tts="G sub L">$G_L$</span> is open, with degree <span class="tts-math" data-tts="the degree of L over K equals the index of G sub L in G sub K">$[L:K] = (G_K : G_L)$</span>.</li>
+<li>It is <strong>Galois</strong> if <span class="tts-math" data-tts="G sub L">$G_L$</span> is normal in <span class="tts-math" data-tts="G sub K">$G_K$</span>, and then <span class="tts-math" data-tts="the Galois group of L over K equals G sub K modulo G sub L">$G(L\mid K) = G_K/G_L$</span>.</li>
+</ul>
+<div class="box example" data-cid="ch04-595">
+<span class="box-label">A worked anchor — running the dictionary on <span class="tts-math" data-tts="Z hat">$\widehat{\mathbb{Z}}$</span></span>
+<p data-cid="ch04-597">
+Take the bare group <span class="tts-math" data-tts="G equals Z hat">$G = \widehat{\mathbb{Z}}$</span>. The dictionary says: <em>pretend</em> it is a Galois group — and indeed it is the genuine one <span class="tts-math" data-tts="the Galois group of F p bar over F p">$G(\overline{\mathbb{F}}_p\mid\mathbb{F}_p)$</span>, with base "field" <span class="tts-math" data-tts="F p">$\mathbb{F}_p$</span>. The open subgroups of <span class="tts-math" data-tts="Z hat">$\widehat{\mathbb{Z}}$</span> are the <span class="tts-math" data-tts="n times Z hat">$n\widehat{\mathbb{Z}}$</span>; under the dictionary the subgroup <span class="tts-math" data-tts="n times Z hat">$n\widehat{\mathbb{Z}}$</span> is the "field" <span class="tts-math" data-tts="F p to the n">$\mathbb{F}_{p^n}$</span>. Its degree over the base is the index, and the two agree on the nose:
+</p>
+<span class="tts-math" data-tts="the degree of F p to the n over F p equals n equals the index of n Z hat in Z hat">
+$$[\mathbb{F}_{p^n}:\mathbb{F}_p] = n = (\widehat{\mathbb{Z}} : n\widehat{\mathbb{Z}}).$$
+</span>
+<p data-cid="ch04-599">
+So "treat <span class="tts-math" data-tts="G">$G$</span> as a Galois group" is not a figure of speech — every line of the dictionary checks out against a familiar finite-field tower.
+</p>
+</div>
+</div>
+<p data-cid="ch04-600">
+Next we need objects for the Galois group to <em>act on</em>. A <strong>continuous (multiplicative) <span class="tts-math" data-tts="G-module">$G$</span>-module</strong> <span class="tts-math" data-tts="A">$A$</span> is an abelian group on which <span class="tts-math" data-tts="G">$G$</span> acts (written exponentially, on the right: <span class="tts-math" data-tts="a to the sigma">$a^\sigma$</span>) satisfying the module axioms plus a <strong>continuity</strong> condition: every element is fixed by some open subgroup, i.e.
+</p>
+<span class="tts-math" data-tts="A equals the union over all finite K of A sub K, where A sub K is the fixed submodule under G sub K">
+$$A = \bigcup_{[K:k]&lt;\infty} A_K, \qquad A_K = \{ a \in A \mid a^\sigma = a \ \forall\, \sigma \in G_K\}.$$
+</span>
+<div class="box intuition" data-cid="ch04-610">
+<span class="box-label">Why right action and exponential notation</span>
+<p data-cid="ch04-620">
+Writing <span class="tts-math" data-tts="a to the sigma">$a^\sigma$</span> makes expressions like <span class="tts-math" data-tts="a to the sigma minus 1, meaning a to the sigma times a inverse">$a^{\sigma-1} := a^\sigma a^{-1}$</span> read like ordinary exponent arithmetic, which is enormously convenient in the cocycle computations to come. Mentally, <span class="tts-math" data-tts="A sub K equals the K-rational points">$A_K$</span> is "the <span class="tts-math" data-tts="K">$K$</span>-rational points" — when <span class="tts-math" data-tts="A equals k bar star">$A = \bar k^\times$</span>, this is literally <span class="tts-math" data-tts="K star">$K^\times$</span>.
+</p>
+</div>
+<p data-cid="ch04-630">
+For a finite extension <span class="tts-math" data-tts="L over K">$L\mid K$</span> there is a <strong>norm map</strong> <span class="tts-math" data-tts="N sub L over K from A sub L to A sub K">$N_{L\mid K}\colon A_L \to A_K$</span>, defined by <span class="tts-math" data-tts="the product over a system of representatives sigma of G sub L backslash G sub K of a to the sigma">$a \mapsto \prod_{\sigma} a^\sigma$</span> — exactly the "multiply all the Galois conjugates together" operation promised in §4.1. Before naming the two stars of the theory we need one auxiliary gadget. The <strong>augmentation ideal action</strong> <span class="tts-math" data-tts="I sub G applied to A sub L">$I_{G}A_L$</span> (with <span class="tts-math" data-tts="G equals the Galois group of L over K">$G = G(L\mid K)$</span>) is the subgroup of <span class="tts-math" data-tts="A sub L">$A_L$</span> generated by all the elements <span class="tts-math" data-tts="a to the sigma minus 1, meaning a to the sigma times a inverse">$a^{\sigma-1} = a^{\sigma}a^{-1}$</span> as <span class="tts-math" data-tts="sigma">$\sigma$</span> runs over <span class="tts-math" data-tts="G">$G$</span> and <span class="tts-math" data-tts="a">$a$</span> over <span class="tts-math" data-tts="A sub L">$A_L$</span> — think "everything you can build out of conjugate-ratios." When <span class="tts-math" data-tts="the Galois group">$G(L\mid K)$</span> is cyclic with generator <span class="tts-math" data-tts="sigma">$\sigma$</span>, it simplifies to <span class="tts-math" data-tts="A sub L to the sigma minus 1">$I_{G}A_L = A_L^{\sigma-1}$</span>. With that in hand, the two stars are the <strong>norm residue group</strong> and its companion:
+</p>
+<span class="tts-math" data-tts="H zero of the Galois group with coefficients in A sub L equals A sub K modulo the norm group of A sub L">
+$$H^0\big(G(L\mid K), A_L\big) = A_K / N_{L\mid K}A_L,$$
+</span>
+<span class="tts-math" data-tts="H minus one equals the norm-one group of A sub L modulo the augmentation ideal applied to A sub L">
+$$H^{-1}\big(G(L\mid K), A_L\big) = {}_{N}A_L \big/ I_{G(L\mid K)}A_L.$$
+</span>
+<p data-cid="ch04-640">
+Here <span class="tts-math" data-tts="the norm-one group, the set of a in A sub L with norm equal to 1">${}_{N}A_L = \{a \in A_L : N_{L\mid K}(a)=1\}$</span> is the group of <strong>norm-one elements</strong>.
+</p>
+<div class="box intuition" data-cid="ch04-645">
+<span class="box-label">What these two groups actually measure</span>
+<p data-cid="ch04-647">
+Do not be put off by the superscripts. The slogan is simple. <span class="tts-math" data-tts="H zero">$H^0 = A_K/N_{L\mid K}A_L$</span> measures <strong>how far the norm map is from being surjective</strong>: it is trivial exactly when every element of the base is a norm from upstairs. <span class="tts-math" data-tts="H minus one">$H^{-1} = {}_{N}A_L/I_G A_L$</span> measures <strong>how far the norm is from being injective</strong> in the relevant sense: it is trivial exactly when the only norm-one elements are the "obvious" conjugate-ratios <span class="tts-math" data-tts="a to the sigma minus 1">$a^{\sigma-1}$</span>. The strange superscripts <span class="tts-math" data-tts="0 and minus 1">$0$</span> and <span class="tts-math" data-tts="minus 1">$-1$</span> come from <strong>Tate cohomology</strong>, a bookkeeping device that strings these groups into a doubly-infinite sequence — but for this entire chapter <em>you only ever need these two</em>. Treat <span class="tts-math" data-tts="H zero and H minus one">$H^0$</span> and <span class="tts-math" data-tts="H minus one">$H^{-1}$</span> as names for "norm-cokernel" and "norm-one-kernel" and you will not miss anything.
+</p>
+</div>
+<div class="box example" data-cid="ch04-650">
+<span class="box-label">Worked example — Kummer theory <em>(optional aside — safe to skip on a first pass)</em></span>
+<p data-cid="ch04-660">
+Suppose <span class="tts-math" data-tts="p, an operator">$\wp\colon A \to A$</span> is a surjective <span class="tts-math" data-tts="G-homomorphism">$G$</span>-homomorphism with finite cyclic kernel <span class="tts-math" data-tts="mu sub p">$\mu_\wp$</span> of order <span class="tts-math" data-tts="n">$n$</span> — the case to keep in mind is the <span class="tts-math" data-tts="n-th power map">$n$</span>-th power map <span class="tts-math" data-tts="a maps to a to the n">$a \mapsto a^n$</span> with kernel the <span class="tts-math" data-tts="n-th roots of unity mu sub n">$\mu_n$</span>. Write <span class="tts-math" data-tts="A sub K to the p">$A_K^\wp$</span> for the image <span class="tts-math" data-tts="p of A sub K">$\wp(A_K)$</span> of the base group under this operator (for the power map, the <span class="tts-math" data-tts="n-th powers in A sub K">$n$</span>-th powers in <span class="tts-math" data-tts="A sub K">$A_K$</span>). Assume <span class="tts-math" data-tts="mu sub p is contained in A sub K">$\mu_\wp \subseteq A_K$</span> and impose <strong>Axiom (3.1):</strong> <span class="tts-math" data-tts="H minus one of the Galois group with coefficients in A sub L equals 1, for all finite cyclic extensions">$H^{-1}(G(L\mid K), A_L)=1$</span> for all finite cyclic <span class="tts-math" data-tts="L over K">$L\mid K$</span>.
+</p>
+<p data-cid="ch04-670">
+The <strong>Kummer correspondence</strong> (Thm. 4.3.3) is then a bijection
+</p>
+<span class="tts-math" data-tts="A maps to L equals K with the preimage of A under p adjoined">
+$$\Delta \ \longleftrightarrow\ L = K(\wp^{-1}(\Delta))$$
+</span>
+<p data-cid="ch04-680">
+between groups <span class="tts-math" data-tts="Delta with A sub K to the p contained in Delta contained in A sub K">$A_K^\wp \subseteq \Delta \subseteq A_K$</span> and abelian extensions <span class="tts-math" data-tts="L over K">$L\mid K$</span> of <strong>exponent <span class="tts-math" data-tts="n">$n$</span></strong> (meaning every element of the Galois group satisfies <span class="tts-math" data-tts="sigma to the n equals the identity">$\sigma^n = 1$</span> — the group is killed by <span class="tts-math" data-tts="n">$n$</span>), with the <strong>perfect pairing</strong> (a duality that is nondegenerate on <em>both</em> sides — neither factor has a nonzero element pairing trivially with everything)
+</p>
+<span class="tts-math" data-tts="Delta modulo A sub K to the p is isomorphic to the group of homomorphisms from the Galois group of L over K to mu sub p">
+$$\Delta / A_K^{\wp} \;\xrightarrow{\sim}\; \mathrm{Hom}\big(G(L\mid K), \mu_\wp\big), \qquad a \mapsto \chi_a,\ \ \chi_a(\sigma)=\alpha^{\sigma-1}.$$
+</span>
+<p data-cid="ch04-690">
+With <span class="tts-math" data-tts="A equals k bar star">$A = \bar k^\times$</span> and <span class="tts-math" data-tts="mu sub n contained in K">$\mu_n\subseteq K$</span> this is the classical statement: abelian extensions of exponent <span class="tts-math" data-tts="n">$n$</span> are exactly the <span class="tts-math" data-tts="K with n-th roots of A adjoined">$K(\sqrt[n]{\Delta})$</span>. The whole thing rests on Axiom (3.1), which in this case is <strong>Hilbert 90</strong>.
+</p>
+</div>
+<div class="box definition" data-cid="ch04-700">
+<span class="box-label">Theorem 4.3.5 — Hilbert 90</span>
+<p data-cid="ch04-710">
+For a cyclic field extension <span class="tts-math" data-tts="L over K">$L\mid K$</span> one always has <span class="tts-math" data-tts="H minus one of the Galois group with coefficients in L star equals 1">$H^{-1}(G(L\mid K), L^\times)=1$</span>. Equivalently: every <span class="tts-math" data-tts="a in L star">$a\in L^\times$</span> of norm <span class="tts-math" data-tts="norm of a equals 1">$N_{L\mid K}(a)=1$</span> has the form <span class="tts-math" data-tts="a equals beta to the sigma minus 1, for some beta and sigma a generator">$a = \beta^{\sigma-1}$</span>, <span class="tts-math" data-tts="sigma a generator of the Galois group">$\sigma$</span> a generator.
+</p>
+</div>
+<div class="box intuition" data-cid="ch04-720">
+<span class="box-label">Hilbert 90 in one line, and Noether's upgrade</span>
+<p data-cid="ch04-730">
+The proof is a clever averaging: linear independence of the automorphisms <span class="tts-math" data-tts="1, sigma, up to sigma to the n minus 1">$1,\sigma,\dots,\sigma^{n-1}$</span> lets you build a <span class="tts-math" data-tts="beta">$\beta$</span> that works. Emmy Noether generalized this to arbitrary finite Galois <span class="tts-math" data-tts="L over K">$L\mid K$</span> via cohomology: <span class="tts-math" data-tts="H one of the Galois group with coefficients in L star equals 1">$H^1(G(L\mid K), L^\times)=1$</span> (Prop. 4.3.8). For cyclic groups, <span class="tts-math" data-tts="H one is isomorphic to H minus one">$H^1(G,A)\cong H^{-1}(G,A)$</span>, which links the two formulations. In characteristic <span class="tts-math" data-tts="p">$p$</span> the additive analogue with operator <span class="tts-math" data-tts="p of a equals a to the p minus a">$\wp(a)=a^p-a$</span> gives <strong>Artin–Schreier theory</strong>.
+</p>
+</div>
+
+<!-- ================= 4.4 ================= -->
+<h2 data-cid="ch04-740" id="s4-4">4.4 Abstract Valuation Theory</h2>
+<p data-cid="ch04-750">
+Here we add the first of the two extra data. Fix a <strong>surjective continuous homomorphism</strong>
+</p>
+<span class="tts-math" data-tts="d from G onto Z hat">
+$$d\colon G \twoheadrightarrow \widehat{\mathbb{Z}}.$$
+</span>
+<p data-cid="ch04-760">
+This is the abstract version of "read off the residue field." In the model case where <span class="tts-math" data-tts="G">$G$</span> is the absolute Galois group of a <span class="tts-math" data-tts="p-adic">$p$</span>-adic field <span class="tts-math" data-tts="k">$k$</span> with residue field <span class="tts-math" data-tts="F sub q">$\mathbb{F}_q$</span>, the maximal unramified extension <span class="tts-math" data-tts="k tilde over k">$\tilde k\mid k$</span> has <span class="tts-math" data-tts="G of k tilde over k is isomorphic to G of F q bar over F q is isomorphic to Z hat">$G(\tilde k\mid k)\cong G(\overline{\mathbb{F}}_q\mid\mathbb{F}_q)\cong\widehat{\mathbb{Z}}$</span>, and <span class="tts-math" data-tts="d">$d$</span> is "restrict to <span class="tts-math" data-tts="k tilde">$\tilde k$</span>, then apply that isomorphism." The element of <span class="tts-math" data-tts="G of k tilde over k">$G(\tilde k\mid k)$</span> mapping to <span class="tts-math" data-tts="1">$1$</span> is the Frobenius.
+</p>
+<div class="box definition" data-cid="ch04-770">
+<span class="box-label">Inertia, unramified extensions, Frobenius</span>
+<ul data-cid="ch04-780">
+<li>The <strong>inertia group</strong> over <span class="tts-math" data-tts="K">$K$</span> is <span class="tts-math" data-tts="I sub K equals the kernel of d restricted to G sub K">$I_K = \ker(d|_{G_K})$</span>. Its fixed field <span class="tts-math" data-tts="K tilde">$\tilde K$</span> is the <strong>maximal unramified extension</strong> of <span class="tts-math" data-tts="K">$K$</span>, equal to the composite <span class="tts-math" data-tts="K times k tilde">$K\tilde k$</span>.</li>
+<li>Set <span class="tts-math" data-tts="f sub K equals the index of d of G sub K in Z hat">$f_K = (\widehat{\mathbb{Z}} : d(G_K))$</span> and <span class="tts-math" data-tts="e sub K equals the index of I sub K in I">$e_K = (I : I_K)$</span>. When <span class="tts-math" data-tts="f sub K">$f_K$</span> is finite, <span class="tts-math" data-tts="d sub K equals 1 over f sub K times d, giving an isomorphism from G of K tilde over K to Z hat">$d_K = \tfrac{1}{f_K} d$</span> induces <span class="tts-math" data-tts="an isomorphism from the Galois group of K tilde over K to Z hat">$G(\tilde K\mid K)\xrightarrow{\sim}\widehat{\mathbb{Z}}$</span>.</li>
+<li><strong>Definition 4.4.1.</strong> The <strong>Frobenius over <span class="tts-math" data-tts="K">$K$</span></strong> is the element <span class="tts-math" data-tts="phi sub K in the Galois group of K tilde over K">$\varphi_K \in G(\tilde K\mid K)$</span> with <span class="tts-math" data-tts="d sub K of phi sub K equals 1">$d_K(\varphi_K)=1$</span>.</li>
+</ul>
+</div>
+<p data-cid="ch04-790">
+Inertia degree <span class="tts-math" data-tts="f sub L over K">$f_{L\mid K}$</span> and ramification index <span class="tts-math" data-tts="e sub L over K">$e_{L\mid K}$</span> are defined by the obvious index formulas, are multiplicative in towers, and obey the
+</p>
+<div class="box definition" data-cid="ch04-800">
+<span class="box-label">Proposition 4.4.2 — the fundamental identity</span>
+<span class="tts-math" data-tts="the degree of L over K equals f sub L over K times e sub L over K">
+$$[L:K] = f_{L\mid K}\, e_{L\mid K}.$$
+</span>
+</div>
+<p data-cid="ch04-810">
+The extension is <strong>unramified</strong> if <span class="tts-math" data-tts="e sub L over K equals 1">$e_{L\mid K}=1$</span> (so <span class="tts-math" data-tts="L is contained in K tilde">$L\subseteq\tilde K$</span>), <strong>totally ramified</strong> if <span class="tts-math" data-tts="f sub L over K equals 1">$f_{L\mid K}=1$</span>. Every extension factors: the maximal unramified subextension is <span class="tts-math" data-tts="L intersect K tilde over K">$L\cap\tilde K\mid K$</span>, of degree <span class="tts-math" data-tts="f sub L over K">$f_{L\mid K}$</span>.
+</p>
+<div class="box pause" data-cid="ch04-820">
+<span class="box-label">Pause — the Frobenius lift (this is the engine)</span>
+<p data-cid="ch04-830">
+"The Frobenius governs the entire theory like a king." The crucial, non-obvious fact: <em>in a finite Galois <span class="tts-math" data-tts="L over K">$L\mid K$</span>, every element of <span class="tts-math" data-tts="the Galois group">$G(L\mid K)$</span> can be turned into a Frobenius</em> by lifting it to the right enlarged extension. Concretely, work inside <span class="tts-math" data-tts="L tilde over K">$\tilde L\mid K$</span> and consider the semigroup
+</p>
+<span class="tts-math" data-tts="Frob of L tilde over K, the set of sigma in the Galois group of L tilde over K with d sub K of sigma a positive integer">
+$$\mathrm{Frob}(\tilde L\mid K) = \{\sigma \in G(\tilde L\mid K) \mid d_K(\sigma)\in\mathbb{N}\}.$$
+</span>
+</div>
+<div class="box example" data-cid="ch04-835">
+<span class="box-label">A concrete instance — lifting in the <span class="tts-math" data-tts="p-adic">$p$</span>-adic model</span>
+<p data-cid="ch04-837">
+Make this tangible in the model case <span class="tts-math" data-tts="G of k tilde over k is isomorphic to Z hat">$G(\tilde k\mid k)\cong\widehat{\mathbb{Z}}$</span> for a <span class="tts-math" data-tts="p-adic">$p$</span>-adic base <span class="tts-math" data-tts="k">$k$</span>. Suppose <span class="tts-math" data-tts="L over K">$L\mid K$</span> is <em>ramified</em>, so an automorphism <span class="tts-math" data-tts="sigma">$\sigma\in G(L\mid K)$</span> need not be a Frobenius on its own — say <span class="tts-math" data-tts="sigma">$\sigma$</span> generates the inertia, with <span class="tts-math" data-tts="d sub K of sigma equals 0">$d_K(\sigma)=0$</span>. There is no Frobenius down at this level: <span class="tts-math" data-tts="0">$0$</span> is not a positive integer. The repair is to climb one notch into <span class="tts-math" data-tts="L tilde">$\tilde L$</span> and pick the enlarged element <span class="tts-math" data-tts="sigma tilde">$\tilde\sigma$</span> that restricts to <span class="tts-math" data-tts="sigma">$\sigma$</span> on <span class="tts-math" data-tts="L">$L$</span> and to the Frobenius on the unramified part <span class="tts-math" data-tts="k tilde">$\tilde k$</span> — i.e. whose <span class="tts-math" data-tts="d-value">$d_K$</span> on the unramified coordinate is <span class="tts-math" data-tts="1">$1$</span>. Now <span class="tts-math" data-tts="d sub K of sigma tilde equals 1, a positive integer">$d_K(\tilde\sigma)=1\in\mathbb{N}$</span>, so <span class="tts-math" data-tts="sigma tilde is in Frob">$\tilde\sigma\in\mathrm{Frob}(\tilde L\mid K)$</span>, and over its own fixed field <span class="tts-math" data-tts="Sigma">$\Sigma$</span> it literally <em>is</em> the Frobenius. The point of the positive-integer condition is exactly this: <span class="tts-math" data-tts="d sub K of sigma tilde">$d_K(\tilde\sigma)$</span> counts how many genuine unramified layers the lift advances, and that count is a positive integer (here <span class="tts-math" data-tts="1">$1$</span>) — never a fractional or limit exponent.
+</p>
+</div>
+<div class="box definition" data-cid="ch04-840">
+<span class="box-label">Propositions 4.4.4–4.4.5 — lifting to Frobenius</span>
+<p data-cid="ch04-850">
+The restriction <span class="tts-math" data-tts="Frob of L tilde over K maps onto the Galois group of L over K">$\mathrm{Frob}(\tilde L\mid K)\to G(L\mid K)$</span>, <span class="tts-math" data-tts="sigma maps to sigma restricted to L">$\sigma\mapsto\sigma|_L$</span>, is <strong>surjective</strong> (4.4.4). And if <span class="tts-math" data-tts="sigma">$\sigma\in\mathrm{Frob}(\tilde L\mid K)$</span> has fixed field <span class="tts-math" data-tts="Sigma">$\Sigma$</span>, then (4.4.5):
+</p>
+<ul data-cid="ch04-860">
+<li><span class="tts-math" data-tts="f sub Sigma over K equals d sub K of sigma">$f_{\Sigma\mid K} = d_K(\sigma)$</span>, and <span class="tts-math" data-tts="Sigma over K is finite">$[\Sigma:K]&lt;\infty$</span>;</li>
+<li><span class="tts-math" data-tts="Sigma tilde equals L tilde">$\tilde\Sigma = \tilde L$</span> — lifting one notch up makes <span class="tts-math" data-tts="L tilde">$\tilde L$</span> the unramified closure of <span class="tts-math" data-tts="Sigma">$\Sigma$</span>;</li>
+<li><span class="tts-math" data-tts="sigma equals phi sub Sigma, the Frobenius over Sigma">$\sigma = \varphi_\Sigma$</span> — over its own fixed field, the lift literally <em>is</em> the Frobenius.</li>
+</ul>
+</div>
+<div class="box intuition" data-cid="ch04-870">
+<span class="box-label">Why this matters so much</span>
+<p data-cid="ch04-880">
+This is the secret behind the whole reciprocity construction. The reciprocity map will be <em>defined</em> on Frobenius elements (where there is an obvious right answer: Frobenius corresponds to a prime element). Proposition 4.4.4 says every Galois automorphism is the restriction of <em>some</em> Frobenius, so the definition reaches everyone; Proposition 4.4.5 says the construction is forced and consistent. Hold the diagram in your head: a tower <span class="tts-math" data-tts="K, then Sigma equals L, then L tilde equals Sigma tilde">$K \subseteq \Sigma,\ L \subseteq \tilde L = \tilde\Sigma$</span> with <span class="tts-math" data-tts="sigma equal to the Frobenius over Sigma at the top">$\sigma=\varphi_\Sigma$</span> on top.
+</p>
+</div>
+<p data-cid="ch04-890">
+The second new datum is a <strong>henselian valuation</strong>, the abstract version of a discrete valuation that "reproduces itself" up every finite extension.
+</p>
+<div class="box definition" data-cid="ch04-900">
+<span class="box-label">Definition 4.4.6 — henselian valuation</span>
+<p data-cid="ch04-910">
+A homomorphism <span class="tts-math" data-tts="v from A sub k to Z hat">$v\colon A_k \to \widehat{\mathbb{Z}}$</span> is a <strong>henselian valuation</strong> with respect to <span class="tts-math" data-tts="d">$d$</span> if:
+</p>
+<ul data-cid="ch04-920">
+<li><span class="tts-math" data-tts="v of A sub k equals a subgroup Z that contains Z and satisfies Z modulo n Z equals Z hat modulo n Z hat for all n">$v(A_k) = Z \supseteq \mathbb{Z}$</span> with <span class="tts-math" data-tts="Z modulo n Z equals Z hat modulo n Z hat for all natural numbers n">$Z/nZ = \widehat{\mathbb{Z}}/n\widehat{\mathbb{Z}}$</span> for all <span class="tts-math" data-tts="n">$n$</span>;</li>
+<li><span class="tts-math" data-tts="v of the norm group N of K over k of A sub K equals f sub K times Z, for all finite K over k">$v(N_{K\mid k}A_K) = f_K\, Z$</span> for all finite <span class="tts-math" data-tts="K over k">$K\mid k$</span>.</li>
+</ul>
+</div>
+<div class="box example" data-cid="ch04-922">
+<span class="box-label">In the model case — this is just the <span class="tts-math" data-tts="p-adic">$p$</span>-adic valuation</span>
+<p data-cid="ch04-924">
+The definition reads abstractly, but it is modelled on one familiar object. Let <span class="tts-math" data-tts="k">$k$</span> be a <span class="tts-math" data-tts="p-adic">$p$</span>-adic field with <span class="tts-math" data-tts="A equals k bar star">$A = \bar k^\times$</span>, so <span class="tts-math" data-tts="A sub k equals k star">$A_k = k^\times$</span>. Then <span class="tts-math" data-tts="v">$v$</span> is the ordinary normalized valuation <span class="tts-math" data-tts="v from k star onto Z">$v\colon k^\times \twoheadrightarrow \mathbb{Z}$</span> that counts the power of the prime — "how many times <span class="tts-math" data-tts="p">$p$</span> divides." A <strong>prime element</strong> is a <strong>uniformizer</strong> <span class="tts-math" data-tts="pi">$\pi$</span> with <span class="tts-math" data-tts="v of pi equals 1">$v(\pi)=1$</span>; the <strong>units</strong> <span class="tts-math" data-tts="U sub k equals the kernel of v, the ring of integers units O sub k star">$U_k = \ker v = \mathcal{O}_k^\times$</span> are exactly the invertible elements of the ring of integers. And the second axiom is concrete: passing to a finite extension <span class="tts-math" data-tts="K over k">$K\mid k$</span>, the value group of the norms scales by the residue degree — <span class="tts-math" data-tts="v of the norm group equals f sub K times Z">$v(N_{K\mid k}A_K) = f_K\,\mathbb{Z}$</span> — which is the classical fact that taking a norm down to <span class="tts-math" data-tts="k">$k$</span> multiplies valuations by <span class="tts-math" data-tts="f sub K">$f_K$</span>. Everything below is this picture, stripped of the field.
+</p>
+</div>
+<p data-cid="ch04-930">
+Just like <span class="tts-math" data-tts="d">$d$</span>, the valuation propagates: over any finite <span class="tts-math" data-tts="K over k">$K\mid k$</span> one gets <span class="tts-math" data-tts="v sub K equals 1 over f sub K times v composed with the norm">$v_K = \tfrac{1}{f_K}\, v\circ N_{K\mid k}$</span>, surjective onto <span class="tts-math" data-tts="Z">$Z$</span>, compatible with conjugation and with norms in towers (Prop. 4.4.7). An element <span class="tts-math" data-tts="pi sub K">$\pi_K$</span> with <span class="tts-math" data-tts="v sub K of pi sub K equals 1">$v_K(\pi_K)=1$</span> is a <strong>prime element</strong>, and <span class="tts-math" data-tts="U sub K equals the kernel of v sub K, the units">$U_K = \ker v_K$</span> the <strong>units</strong>. In the unramified case prime elements survive upward; in the totally ramified case norms of prime elements are prime elements.
+</p>
+
+<!-- ================= 4.5 ================= -->
+<h2 data-cid="ch04-940" id="s4-5">4.5 The Reciprocity Map</h2>
+<p data-cid="ch04-950">
+We now assemble the pieces. The data: a profinite <span class="tts-math" data-tts="G">$G$</span>, a continuous <span class="tts-math" data-tts="G-module">$G$</span>-module <span class="tts-math" data-tts="A">$A$</span>, a surjection <span class="tts-math" data-tts="d from G to Z hat">$d\colon G\to\widehat{\mathbb{Z}}$</span>, and a henselian valuation <span class="tts-math" data-tts="v">$v$</span>. One axiom is in force throughout:
+</p>
+<div class="box definition" data-cid="ch04-960">
+<span class="box-label">Axiom 5.1 — the unramified cohomology vanishes</span>
+<p data-cid="ch04-970">
+For every <em>unramified</em> finite extension <span class="tts-math" data-tts="L over K">$L\mid K$</span>,
+</p>
+<span class="tts-math" data-tts="H to the i of the Galois group of L over K with coefficients in the units U sub L equals 1, for i equal to 0 and minus 1">
+$$H^i\big(G(L\mid K), U_L\big) = 1 \quad\text{for } i = 0, -1.$$
+</span>
+<p data-cid="ch04-975">
+In plain words (recall the slogan from §4.3): the <span class="tts-math" data-tts="i equals 0">$i=0$</span> half says <strong>every unit downstairs is the norm of some unit upstairs</strong> (the norm map on units is onto), and the <span class="tts-math" data-tts="i equals minus 1">$i=-1$</span> half says <strong>the only units of norm one are the obvious conjugate-ratios</strong> — together an <em>unramified analogue of Hilbert 90</em>. This is the <em>weak</em> axiom: it only constrains the unramified extensions and is just enough to build the reciprocity map. The strong version, Axiom 6.1 in §4.6, will constrain <em>all</em> cyclic extensions and is what upgrades that map to an isomorphism.
+</p>
+</div>
+<p data-cid="ch04-980">
+<strong>Goal:</strong> a canonical homomorphism <span class="tts-math" data-tts="r sub L over K from the Galois group of L over K to A sub K modulo the norm group of A sub L">$r_{L\mid K}\colon G(L\mid K)\to A_K/N_{L\mid K}A_L$</span> for every finite Galois <span class="tts-math" data-tts="L over K">$L\mid K$</span>. The construction follows the §4.4 strategy exactly.
+</p>
+<div class="box definition" data-cid="ch04-990">
+<span class="box-label">Definition 5.2 — reciprocity on Frobenius elements</span>
+<p data-cid="ch04-1000">
+First define a map on the semigroup <span class="tts-math" data-tts="Frob of L tilde over K">$\mathrm{Frob}(\tilde L\mid K)$</span>. For <span class="tts-math" data-tts="sigma">$\sigma\in\mathrm{Frob}(\tilde L\mid K)$</span> with fixed field <span class="tts-math" data-tts="Sigma">$\Sigma$</span> and prime element <span class="tts-math" data-tts="pi sub Sigma">$\pi_\Sigma\in A_\Sigma$</span>, set
+</p>
+<span class="tts-math" data-tts="r of sigma equals the norm from Sigma to K of pi sub Sigma, modulo the norm group of A sub L">
+$$r_{\tilde L\mid K}(\sigma) = N_{\Sigma\mid K}(\pi_\Sigma) \ \bmod\ N_{L\mid K}A_{\tilde L}.$$
+</span>
+</div>
+<div class="box intuition" data-cid="ch04-1010">
+<span class="box-label">Read the definition slowly — it is forced</span>
+<p data-cid="ch04-1020">
+The guiding principle of all of class field theory: <strong>Frobenius automorphisms correspond to prime elements.</strong> Over its fixed field <span class="tts-math" data-tts="Sigma">$\Sigma$</span>, the element <span class="tts-math" data-tts="sigma">$\sigma$</span> <em>is</em> the Frobenius <span class="tts-math" data-tts="phi sub Sigma">$\varphi_\Sigma$</span> (Prop. 4.4.5), so it should map to a prime element <span class="tts-math" data-tts="pi sub Sigma">$\pi_\Sigma$</span>. To push that down to the base <span class="tts-math" data-tts="K">$K$</span>, functoriality demands the norm <span class="tts-math" data-tts="N from Sigma to K">$N_{\Sigma\mid K}$</span>. Here is why it <em>has</em> to be the norm and not some other map. On the group side, enlarging the base from <span class="tts-math" data-tts="K">$K$</span> to <span class="tts-math" data-tts="Sigma">$\Sigma$</span> is an <em>inclusion</em> of Galois groups <span class="tts-math" data-tts="G sub Sigma inside G sub K">$G_\Sigma \hookrightarrow G_K$</span>. When you dualize that inclusion over to the module side, an inclusion of subgroups turns into the operation "multiply over all the cosets" — and multiplying an element by all its conjugates is precisely the norm. So the map down to the base is forced to be <span class="tts-math" data-tts="N from Sigma to K">$N_{\Sigma\mid K}$</span>; the formula writes itself. <strong>Sanity check:</strong> for an unramified extension of finite fields, <span class="tts-math" data-tts="G of L over K">$G(L\mid K)$</span> is cyclic generated by Frobenius, and the norm <span class="tts-math" data-tts="a maps to the product of a, a to the q, up to a to the q to the n minus 1">$a\mapsto a\cdot a^{q}\cdots a^{q^{n-1}}$</span> is exactly the classical field norm — the recipe above reproduces what you already know. <strong>Independence of <span class="tts-math" data-tts="pi sub Sigma">$\pi_\Sigma$</span>:</strong> a different prime differs by a unit, and Axiom 5.1 ensures the unit's norm lands in the norm group, killing it modulo <span class="tts-math" data-tts="the norm group">$N_{L\mid K}A_{\tilde L}$</span>.
+</p>
+</div>
+<p data-cid="ch04-1030">
+The hard part is that this map is <strong>multiplicative</strong> (Prop. 5.5). The proof manipulates the endomorphisms <span class="tts-math" data-tts="sigma minus 1">$\sigma-1$</span> and <span class="tts-math" data-tts="the sum 1 plus sigma up to sigma to the n minus 1, written sigma sub n">$\sigma_n = \tfrac{\sigma^n-1}{\sigma-1}$</span> of <span class="tts-math" data-tts="A sub L tilde">$A_{\tilde L}$</span> and rests on two lemmas about the norm <span class="tts-math" data-tts="N equals the norm from L tilde to k tilde">$N = N_{\tilde L\mid \tilde k}$</span>: a computation of <span class="tts-math" data-tts="N composed with phi to the n">$N_{\Sigma\mid K}(a) = (N\circ\varphi^n)(a)$</span> (Lemma 5.3), and a criterion (Lemma 5.4) that an element fixed by Frobenius has norm in <span class="tts-math" data-tts="the norm group of the units N of L over K of U sub L">$N_{L\mid K}U_L$</span>. Both lemmas are pure §4.2 compactness plus Axiom 5.1.
+</p>
+<div class="box definition" data-cid="ch04-1040">
+<span class="box-label">Proposition 5.6 — the reciprocity homomorphism</span>
+<p data-cid="ch04-1050">
+Because <span class="tts-math" data-tts="Frob of L tilde over K maps onto the Galois group of L over K">$\mathrm{Frob}(\tilde L\mid K)\to G(L\mid K)$</span> is surjective and the map kills the ambiguity, it descends to a canonical homomorphism
+</p>
+<span class="tts-math" data-tts="r sub L over K from the Galois group of L over K to A sub K modulo the norm group of A sub L">
+$$r_{L\mid K}\colon G(L\mid K) \longrightarrow A_K / N_{L\mid K}A_L,$$
+</span>
+<p data-cid="ch04-1060">
+the <strong>reciprocity homomorphism</strong>: <span class="tts-math" data-tts="r of sigma equals the norm from Sigma to K of a prime element pi sub Sigma, where sigma is any Frobenius lift of sigma">$r_{L\mid K}(\sigma) = N_{\Sigma\mid K}(\pi_\Sigma) \bmod N_{L\mid K}A_L$</span> for any Frobenius lift.
+</p>
+</div>
+<div class="box example" data-cid="ch04-1070">
+<span class="box-label">The cleanest case — Proposition 5.7, unramified extensions</span>
+<p data-cid="ch04-1080">
+If <span class="tts-math" data-tts="L over K">$L\mid K$</span> is unramified, then <span class="tts-math" data-tts="L equals K tilde, well, L is contained in K tilde and the Frobenius over K is the lift">$\varphi_K$</span> lifts the Frobenius automorphism, its fixed field is just <span class="tts-math" data-tts="K">$K$</span>, and
+</p>
+<span class="tts-math" data-tts="r of L over K applied to the Frobenius of L over K equals pi sub K modulo the norm group">
+$$r_{L\mid K}(\varphi_{L\mid K}) = \pi_K \ \bmod\ N_{L\mid K}A_L.$$
+</span>
+<p data-cid="ch04-1090">
+Moreover <span class="tts-math" data-tts="r sub L over K">$r_{L\mid K}$</span> is an <strong>isomorphism</strong> here. The check uses the valuation: <span class="tts-math" data-tts="v sub K induces an isomorphism from A sub K modulo the norm group to Z mod n Z">$v_K$</span> induces <span class="tts-math" data-tts="A sub K modulo the norm group is isomorphic to Z mod n">$A_K/N_{L\mid K}A_L \cong \mathbb{Z}/n\mathbb{Z}$</span> (with <span class="tts-math" data-tts="n equals the degree of L over K">$n=[L:K]$</span>), matching <span class="tts-math" data-tts="the Galois group of L over K which is cyclic of order n">$G(L\mid K)\cong\mathbb{Z}/n\mathbb{Z}$</span>, and Frobenius <span class="tts-math" data-tts="maps to 1">$\mapsto 1$</span> on both sides.
+</p>
+</div>
+<div class="box example" data-cid="ch04-1095">
+<span class="box-label">The whole story in one concrete case — unramified <span class="tts-math" data-tts="p-adic">$p$</span>-adic fields</span>
+<p data-cid="ch04-1097">
+Let <span class="tts-math" data-tts="K">$K$</span> be a <span class="tts-math" data-tts="p-adic">$p$</span>-adic field and <span class="tts-math" data-tts="L over K">$L\mid K$</span> the unramified extension of degree <span class="tts-math" data-tts="n">$n$</span>, with <span class="tts-math" data-tts="A equals K bar star">$A = \bar K^\times$</span> so that <span class="tts-math" data-tts="A sub K equals K star">$A_K = K^\times$</span>. The Galois group is cyclic, generated by Frobenius: <span class="tts-math" data-tts="G of L over K is isomorphic to Z mod n">$G(L\mid K)\cong\mathbb{Z}/n\mathbb{Z}$</span>. The reciprocity map <span class="tts-math" data-tts="r">$r$</span> sends Frobenius to a prime element <span class="tts-math" data-tts="pi">$\pi$</span> of <span class="tts-math" data-tts="K">$K$</span>, read modulo the norm group <span class="tts-math" data-tts="N of L star">$N_{L\mid K}L^\times$</span>. Trace the three groups around:
+</p>
+<span class="tts-math" data-tts="the Galois group of L over K is isomorphic to K star modulo the norm of L star is isomorphic to Z mod n, with Frobenius mapping to pi mapping to 1">
+$$G(L\mid K) \;\xrightarrow[\ \pi\,\mathrm{mod}\,N\ ]{\ \varphi\,\mapsto\,}\; K^\times/N_{L\mid K}L^\times \;\xrightarrow[\ \sim\ ]{\ v_K\ }\; \mathbb{Z}/n\mathbb{Z}.$$
+</span>
+<p data-cid="ch04-1099">
+The right-hand isomorphism is just the valuation <span class="tts-math" data-tts="v sub K">$v_K$</span>: an element's class in <span class="tts-math" data-tts="K star modulo the norm group">$K^\times/N_{L\mid K}L^\times$</span> is pinned down entirely by its valuation modulo <span class="tts-math" data-tts="n">$n$</span>, because norms from the unramified <span class="tts-math" data-tts="L">$L$</span> have valuation divisible by <span class="tts-math" data-tts="n">$n$</span>. So the valuation <em>is</em> the isomorphism, and the chain <span class="tts-math" data-tts="Frobenius maps to pi maps to 1">$\varphi \mapsto \pi \mapsto 1$</span> reads: "Frobenius corresponds to a prime element, whose valuation is <span class="tts-math" data-tts="1">$1$</span>." This single line is local class field theory for unramified extensions, and it is the seed that the abstract machine waters into the general statement.
+</p>
+</div>
+<div class="box pause" data-cid="ch04-1100">
+<span class="box-label">Functoriality — the two diagrams you will reuse</span>
+<p data-cid="ch04-1110">
+Proposition 5.8 records how <span class="tts-math" data-tts="r">$r_{L\mid K}$</span> behaves under enlarging the base (left diagram: restriction <span class="tts-math" data-tts="versus">$\leftrightarrow$</span> norm <span class="tts-math" data-tts="N of K prime over K">$N_{K'\mid K}$</span>) and under conjugation by <span class="tts-math" data-tts="sigma in G">$\sigma\in G$</span> (right diagram). Proposition 5.9 adds a subtler one via the group-theoretic <strong>transfer</strong> (Verlagerung) <span class="tts-math" data-tts="Ver from G abelianized to H abelianized">$\mathrm{Ver}\colon G^{\mathrm{ab}}\to H^{\mathrm{ab}}$</span>: enlarging the base to an intermediate field corresponds to the transfer on the Galois side. These compatibilities are what let the abstract map specialize correctly to both local and global theory.
+</p>
+</div>
+
+<!-- ================= 4.6 ================= -->
+<h2 data-cid="ch04-1120" id="s4-6">4.6 The General Reciprocity Law</h2>
+<p data-cid="ch04-1130">
+Everything so far used only the weak Axiom 5.1 (unramified vanishing). To upgrade <span class="tts-math" data-tts="r sub L over K">$r_{L\mid K}$</span> from a homomorphism to an <em>isomorphism</em> we strengthen it to a statement about <strong>all</strong> cyclic extensions.
+</p>
+<div class="box definition" data-cid="ch04-1140">
+<span class="box-label">Axiom 6.1 — the Class Field Axiom</span>
+<p data-cid="ch04-1150">
+For every <strong>cyclic</strong> extension <span class="tts-math" data-tts="L over K">$L\mid K$</span>,
+</p>
+<span class="tts-math" data-tts="the order of H to the i of the Galois group with coefficients in A sub L equals the degree of L over K if i is 0, and equals 1 if i is minus 1">
+$$\#H^i\big(G(L\mid K), A_L\big) = \begin{cases} [L:K], & i = 0,\\ 1, & i = -1.\end{cases}$$
+</span>
+</div>
+<div class="box intuition" data-cid="ch04-1160">
+<span class="box-label">What the axiom buys you</span>
+<p data-cid="ch04-1170">
+The <span class="tts-math" data-tts="i equals minus 1">$i=-1$</span> half is Hilbert-90-style (norm-one elements are "trivial"); the <span class="tts-math" data-tts="i equals 0">$i=0$</span> half pins the <em>size</em> of the norm residue group at exactly <span class="tts-math" data-tts="the degree of L over K">$[L:K]$</span>. Since the unramified extensions are among the cyclic ones, Axiom 6.1 implies Axiom 5.1 (Prop. 6.2), so the reciprocity map of §4.5 already exists. A <strong>class field theory</strong> is precisely a pair <span class="tts-math" data-tts="d from G to Z hat, v from A to Z hat">$(d\colon G\to\widehat{\mathbb{Z}},\ v\colon A\to\widehat{\mathbb{Z}})$</span> with <span class="tts-math" data-tts="A">$A$</span> satisfying Axiom 6.1.
+</p>
+</div>
+<div class="box definition" data-cid="ch04-1180">
+<span class="box-label">Theorem 6.3 — the General Reciprocity Law</span>
+<p data-cid="ch04-1190">
+For every finite Galois extension <span class="tts-math" data-tts="L over K">$L\mid K$</span>, the reciprocity homomorphism
+</p>
+<span class="tts-math" data-tts="r sub L over K from the abelianized Galois group of L over K to A sub K modulo the norm group of A sub L is an isomorphism">
+$$r_{L\mid K}\colon G(L\mid K)^{\mathrm{ab}} \;\xrightarrow{\ \sim\ }\; A_K / N_{L\mid K}A_L$$
+</span>
+<p data-cid="ch04-1200">
+is an <strong>isomorphism</strong>. This is the main theorem of the chapter — proved once, abstractly.
+</p>
+</div>
+<div class="box intuition" data-cid="ch04-1210">
+<span class="box-label">The proof in three reductions</span>
+<p data-cid="ch04-1220">
+The strategy is a beautiful cascade of reductions, all driven by the exact commutative diagram (from Prop. 5.8) relating <span class="tts-math" data-tts="r sub L over M, r sub L over K, and r sub M over K">$r_{L\mid M}, r_{L\mid K}, r_{M\mid K}$</span> for a Galois subextension <span class="tts-math" data-tts="M over K">$M\mid K$</span>:
+</p>
+<ul data-cid="ch04-1230">
+<li><strong>Reduce to abelian:</strong> the commutator subgroup is exactly the kernel, and a <strong>Sylow argument</strong> — which lets you verify surjectivity one prime at a time, on each <span class="tts-math" data-tts="p-Sylow">$p$</span>-Sylow piece separately — handles surjectivity, so it suffices to treat <span class="tts-math" data-tts="G of L over K abelian">$G(L\mid K)$</span> abelian.</li>
+<li><strong>Reduce to cyclic:</strong> an abelian group <strong>injects into the product of its cyclic quotients</strong> — so to prove an isomorphism it is enough to test it on each cyclic piece — and thus injectivity (and, by induction on degree, surjectivity) reduces to cyclic <span class="tts-math" data-tts="L over K">$L\mid K$</span>.</li>
+<li><strong>Reduce to totally ramified:</strong> peel off the maximal unramified part, where Prop. 5.7 already gave an isomorphism; the remaining <span class="tts-math" data-tts="f sub L over K equals 1">$f_{L\mid K}=1$</span> case is settled by a direct computation with prime elements that uses Axiom 6.1 to force <span class="tts-math" data-tts="the exponent k equals 0">$k=0$</span> in <span class="tts-math" data-tts="r of sigma to the k equals 1">$r_{L\mid K}(\sigma^k)=1$</span>.</li>
+</ul>
+</div>
+<p data-cid="ch04-1240">
+Inverting <span class="tts-math" data-tts="r sub L over K">$r_{L\mid K}$</span> gives the <strong>norm residue symbol</strong>
+</p>
+<span class="tts-math" data-tts="open paren a comma L over K close paren, a surjection from A sub K onto the abelianized Galois group of L over K with kernel the norm group">
+$$(\,\cdot\,, L\mid K)\colon A_K \twoheadrightarrow G(L\mid K)^{\mathrm{ab}}, \qquad \ker = N_{L\mid K}A_L.$$
+</span>
+<p data-cid="ch04-1250">
+For the special extension <span class="tts-math" data-tts="K tilde over K">$\tilde K\mid K$</span> it reads off the valuation cleanly (Prop. 6.5): <span class="tts-math" data-tts="open paren a comma K tilde over K close paren equals the Frobenius over K raised to the v sub K of a">$(a, \tilde K\mid K) = \varphi_K^{\,v_K(a)}$</span>, so <span class="tts-math" data-tts="d sub K composed with the norm residue symbol equals v sub K">$d_K\circ(\,\cdot\,,\tilde K\mid K)=v_K$</span>. This is the precise sense in which "the valuation tells you which power of Frobenius you get."
+</p>
+<div class="box definition" data-cid="ch04-1260">
+<span class="box-label">Theorem 6.7 — the existence theorem / class field correspondence</span>
+<p data-cid="ch04-1270">
+Give <span class="tts-math" data-tts="A sub K">$A_K$</span> the <strong>norm topology</strong> (basic neighbourhoods <span class="tts-math" data-tts="a times the norm group of A sub L">$a\,N_{L\mid K}A_L$</span>). Then
+</p>
+<span class="tts-math" data-tts="L maps to the norm group script N sub L equals the norm of A sub L">
+$$L \ \longmapsto\ \mathcal{N}_L = N_{L\mid K}A_L$$
+</span>
+<p data-cid="ch04-1280">
+is an inclusion-reversing bijection between finite abelian extensions <span class="tts-math" data-tts="L over K">$L\mid K$</span> and open subgroups <span class="tts-math" data-tts="script N">$\mathcal{N}$</span> of <span class="tts-math" data-tts="A sub K">$A_K$</span>, with
+</p>
+<span class="tts-math" data-tts="the norm group of L sub 1 times L sub 2 equals the intersection of the two norm groups, and the norm group of L sub 1 intersect L sub 2 equals the product">
+$$\mathcal{N}_{L_1 L_2} = \mathcal{N}_{L_1}\cap\mathcal{N}_{L_2}, \qquad \mathcal{N}_{L_1\cap L_2} = \mathcal{N}_{L_1}\mathcal{N}_{L_2}.$$
+</span>
+<p data-cid="ch04-1290">
+The field <span class="tts-math" data-tts="L">$L$</span> matching <span class="tts-math" data-tts="script N">$\mathcal{N}$</span> is the <strong>class field</strong> of <span class="tts-math" data-tts="script N">$\mathcal{N}$</span>, and <span class="tts-math" data-tts="the Galois group of L over K is isomorphic to A sub K modulo script N">$G(L\mid K)\cong A_K/\mathcal{N}$</span>.
+</p>
+</div>
+<div class="box intuition" data-cid="ch04-1300">
+<span class="box-label">The punchline — abelian extensions live inside the base field</span>
+<p data-cid="ch04-1310">
+This is the deepest dividend: the abelian extensions of <span class="tts-math" data-tts="K">$K$</span> are catalogued by subgroups of <span class="tts-math" data-tts="A sub K">$A_K$</span>, an object built purely from <span class="tts-math" data-tts="K">$K$</span> itself. You never have to leave the base field to know its abelian world. In the local case <span class="tts-math" data-tts="A sub K equals K star">$A_K = K^\times$</span>, this becomes <span class="tts-math" data-tts="the Galois group of L over K is isomorphic to K star modulo the norm group of L star">$G(L\mid K)\cong K^\times/N_{L\mid K}L^\times$</span> — exactly the local class field theory of chapter V. The same abstract theorem, fed the global module, yields global class field theory in chapter VI.
+</p>
+</div>
+
+<!-- ================= 4.7 ================= -->
+<h2 data-cid="ch04-1320" id="s4-7">4.7 The Herbrand Quotient</h2>
+<p data-cid="ch04-1330">
+The abstract theory is complete — but it is useless until you can <em>verify Axiom 6.1</em> in a concrete situation. Checking <span class="tts-math" data-tts="the order of H zero equals the degree and the order of H minus one equals 1">$\#H^0 = [L:K]$</span> and <span class="tts-math" data-tts="H minus one equals 1">$\#H^{-1}=1$</span> directly is painful. The <strong>Herbrand quotient</strong> is the tool that makes it tractable, by trading the two orders for a single, beautifully multiplicative invariant.
+</p>
+<div class="box definition" data-cid="ch04-1340">
+<span class="box-label">Definition 7.2 — the Herbrand quotient</span>
+<p data-cid="ch04-1350">
+Let <span class="tts-math" data-tts="G">$G$</span> be finite cyclic and <span class="tts-math" data-tts="A">$A$</span> a <span class="tts-math" data-tts="G-module">$G$</span>-module with both <span class="tts-math" data-tts="H zero and H minus one">$H^0(G,A), H^{-1}(G,A)$</span> finite. The Herbrand quotient is
+</p>
+<span class="tts-math" data-tts="h of G comma A equals the order of H zero of G comma A divided by the order of H minus one of G comma A">
+$$h(G,A) = \frac{\#H^0(G,A)}{\#H^{-1}(G,A)}.$$
+</span>
+</div>
+<div class="box definition" data-cid="ch04-1360">
+<span class="box-label">Proposition 7.1 — the exact hexagon</span>
+<p data-cid="ch04-1370">
+A short exact sequence <span class="tts-math" data-tts="1 to A to B to C to 1">$1\to A\to B\to C\to 1$</span> of <span class="tts-math" data-tts="G-modules">$G$</span>-modules induces a cyclic <strong>six-term exact sequence</strong>
+</p>
+<span class="tts-math" data-tts="H zero of A to H zero of B to H zero of C to H minus one of A to H minus one of B to H minus one of C and back to H zero of A">
+$$H^0(A)\to H^0(B)\to H^0(C)\to H^{-1}(A)\to H^{-1}(B)\to H^{-1}(C)\to H^0(A)$$
+</span>
+<p data-cid="ch04-1380">
+that closes up into a hexagon, using the cyclicity of <span class="tts-math" data-tts="G">$G$</span> (which makes the cohomology 2-periodic).
+</p>
+</div>
+<div class="box pause" data-cid="ch04-1390">
+<span class="box-label">Proposition 7.3 — multiplicativity, the whole point</span>
+<p data-cid="ch04-1400">
+From the hexagon, for an exact sequence <span class="tts-math" data-tts="1 to A to B to C to 1">$1\to A\to B\to C\to 1$</span>,
+</p>
+<span class="tts-math" data-tts="h of G comma B equals h of G comma A times h of G comma C">
+$$h(G,B) = h(G,A)\, h(G,C),$$
+</span>
+<p data-cid="ch04-1410">
+whenever any two of the three are defined (then so is the third). And for any <strong>finite</strong> <span class="tts-math" data-tts="G-module">$G$</span>-module <span class="tts-math" data-tts="A">$A$</span>, <span class="tts-math" data-tts="h of G comma A equals 1">$h(G,A)=1$</span>.
+</p>
+</div>
+<div class="box intuition" data-cid="ch04-1420">
+<span class="box-label">Why these two properties are exactly what you want</span>
+<p data-cid="ch04-1430">
+The Herbrand quotient is <em>insensitive to finite pieces</em> and <em>multiplicative across exact sequences</em>. So to compute it for a complicated module — say the units <span class="tts-math" data-tts="o sub L star">$\mathcal{O}_L^\times$</span> of a number field — you may freely replace the module by any finite-index sub- or super-module, and break it apart along exact sequences, because all the finite "noise" cancels. This is precisely how the global class field axiom gets verified in chapter VI: compute <span class="tts-math" data-tts="h of the idele class group">$h$</span> of the idele class group by dismantling it into manageable lattice pieces. The quotient sees only the "rank," never the torsion.
+</p>
+</div>
+<p data-cid="ch04-1440">
+The other workhorse is the behaviour of <strong>induced modules</strong>. For a subgroup <span class="tts-math" data-tts="g">$g\subseteq G$</span> and a <span class="tts-math" data-tts="g-module">$g$</span>-module <span class="tts-math" data-tts="B">$B$</span>, the induced module <span class="tts-math" data-tts="A equals the induced module from g to G of B">$A = \mathrm{Ind}_g^G(B)$</span> consists of functions <span class="tts-math" data-tts="f from G to B with f of x tau equals f of x to the tau">$f\colon G\to B$</span> with <span class="tts-math" data-tts="f of x tau equals f of x to the tau, for tau in g">$f(x\tau)=f(x)^\tau$</span>; when <span class="tts-math" data-tts="g has finite index">$g$</span> has finite index it splits as <span class="tts-math" data-tts="A equals the product over coset representatives of B to the sigma">$A = \prod_{\sigma\in G/g} B^\sigma$</span>.
+</p>
+<div class="box definition" data-cid="ch04-1450">
+<span class="box-label">Proposition 7.4 — Shapiro's lemma</span>
+<p data-cid="ch04-1460">
+For <span class="tts-math" data-tts="G">$G$</span> finite cyclic, <span class="tts-math" data-tts="g a subgroup">$g\subseteq G$</span>, and a <span class="tts-math" data-tts="g-module B">$g$</span>-module <span class="tts-math" data-tts="B">$B$</span>,
+</p>
+<span class="tts-math" data-tts="H to the i of G with coefficients in the induced module equals H to the i of g with coefficients in B, for i equal to 0 and minus 1">
+$$H^i\big(G, \mathrm{Ind}_g^G(B)\big) \;\cong\; H^i(g, B), \qquad i = 0, -1.$$
+</span>
+</div>
+<div class="box intuition" data-cid="ch04-1470">
+<span class="box-label">What Shapiro does for you</span>
+<p data-cid="ch04-1480">
+First, the one-line picture of an <strong>induced module</strong> <span class="tts-math" data-tts="the induced module from g to G of B">$\mathrm{Ind}_g^G(B)$</span>: it is assembled from a smaller <span class="tts-math" data-tts="g-module">$g$</span>-module <span class="tts-math" data-tts="B">$B$</span> by laying down one copy of <span class="tts-math" data-tts="B">$B$</span> over each coset of <span class="tts-math" data-tts="g">$g$</span> in <span class="tts-math" data-tts="G">$G$</span> and letting <span class="tts-math" data-tts="G">$G$</span> shuffle the copies. Shapiro's lemma says the slogan exactly: <em>the <span class="tts-math" data-tts="G">$G$</span>-cohomology of the inflated module equals the <span class="tts-math" data-tts="g">$g$</span>-cohomology of the original seed <span class="tts-math" data-tts="B">$B$</span>.</em> So induced modules compute cohomology of the <em>subgroup</em>. In number theory the units or ideles of <span class="tts-math" data-tts="L">$L$</span>, viewed as a module over <span class="tts-math" data-tts="the Galois group of L over K">$G(L\mid K)$</span>, decompose locally as induced modules from <strong>decomposition groups</strong> (the subgroup of automorphisms fixing a chosen prime above — the "local Galois group at that place") — and Shapiro reduces a global cohomology computation to a sum of local ones. Combined with multiplicativity and the finite-module triviality, this is the entire toolkit needed to land the class field axiom in practice. Hilbert 90 itself (Prop. 4.3.4, additive case) is "<span class="tts-math" data-tts="L is an induced module via the normal basis theorem">$L$</span> is induced, by the normal basis theorem."
+</p>
+</div>
+
+<!-- ================= SUMMARY ================= -->
+<h2 data-cid="ch04-1490" id="summary">Summary — the machine, and why it runs twice</h2>
+<p data-cid="ch04-1500">
+This chapter built an axiomatic engine and proved its central theorem once and for all. Here is the assembly order:
+</p>
+<ul data-cid="ch04-1510">
+<li><strong>§4.1 Infinite Galois theory.</strong> Galois groups are <em>profinite</em> — compact, Hausdorff, totally disconnected. The main theorem survives if you restrict to <em>closed</em> subgroups. The <span class="tts-math" data-tts="F sub p">$\mathbb{F}_p$</span> example shows <span class="tts-math" data-tts="open angle Frobenius close angle is dense but not all of the Galois group">$\langle\varphi\rangle \subsetneq G$</span>.</li>
+<li><strong>§4.2 Limits.</strong> Projective limits generalize intersection (compactness gives nonemptiness and exactness for compact groups); inductive limits generalize union (always exact). Profinite <span class="tts-math" data-tts="equals">$=$</span> projective limit of finite. Meet <span class="tts-math" data-tts="Z sub p, Z hat, and Z hat star">$\mathbb{Z}_p$</span>, <span class="tts-math" data-tts="Z hat">$\widehat{\mathbb{Z}}$</span>, <span class="tts-math" data-tts="Z hat star">$\widehat{\mathbb{Z}}^\times$</span>.</li>
+<li><strong>§4.3 Abstract Galois theory.</strong> Treat a bare profinite <span class="tts-math" data-tts="G">$G$</span> as a Galois group; act on a continuous <span class="tts-math" data-tts="G-module">$G$</span>-module <span class="tts-math" data-tts="A">$A$</span>. The groups <span class="tts-math" data-tts="H zero and H minus one">$H^0, H^{-1}$</span>, Kummer theory, Hilbert 90.</li>
+<li><strong>§4.4 Abstract valuation theory.</strong> Add <span class="tts-math" data-tts="d from G to Z hat">$d\colon G\to\widehat{\mathbb{Z}}$</span> and a henselian valuation <span class="tts-math" data-tts="v">$v$</span>. The <strong>Frobenius lift</strong>: every Galois element restricts from a Frobenius — the structural engine.</li>
+<li><strong>§4.5 The reciprocity map.</strong> Under Axiom 5.1, define <span class="tts-math" data-tts="r sub L over K">$r_{L\mid K}$</span> by sending Frobenius to a prime element, then norming down. It is a canonical homomorphism, an isomorphism in the unramified case.</li>
+<li><strong>§4.6 The reciprocity law.</strong> Under the Class Field Axiom 6.1, <span class="tts-math" data-tts="r sub L over K is an isomorphism">$r_{L\mid K}$</span> is an isomorphism; the norm residue symbol and the class field correspondence classify abelian extensions by subgroups of <span class="tts-math" data-tts="A sub K">$A_K$</span>.</li>
+<li><strong>§4.7 The Herbrand quotient.</strong> The multiplicative, finite-blind invariant <span class="tts-math" data-tts="h of G comma A">$h(G,A)$</span> that makes Axiom 6.1 verifiable; Shapiro's lemma localizes the computation.</li>
+</ul>
+<div class="box intuition" data-cid="ch04-1520">
+<span class="box-label">The dividend</span>
+<p data-cid="ch04-1530">
+The abstraction pays off exactly as promised. Chapter V instantiates <span class="tts-math" data-tts="A equals K star">$A = \bar k^\times$</span> over a <span class="tts-math" data-tts="p-adic">$p$</span>-adic base and recovers <strong>local</strong> class field theory: <span class="tts-math" data-tts="the Galois group of L over K is isomorphic to K star modulo the norm of L star">$G(L\mid K)^{\mathrm{ab}}\cong K^\times/N_{L\mid K}L^\times$</span>. Chapter VI instantiates the idele class module and recovers <strong>global</strong> class field theory. Same theorem, two faces. Verifying Axiom 6.1 in each — the only real work left — is what the Herbrand quotient was built for.
+</p>
+</div>
+
+<nav class="chapter-nav">
+<a href="ch03.html"><span class="label">← Previous</span><span class="title">III. Riemann–Roch Theory</span></a>
+<a class="next" href="ch05.html"><span class="label">Next →</span><span class="title">V. Local Class Field Theory</span></a>
+</nav>
+</article>
+</main>
+<script src="/js/main.js"></script><script src="/js/comments.js"></script><script src="/js/tts.js"></script>
+</body>
+</html>

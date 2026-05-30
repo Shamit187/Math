@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ch 03 — Riemann–Roch Theory · Algebraic Number Theory</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/><link href="/css/tts.css" rel="stylesheet"/>
+</head>
+<body data-book="algebraic_number_theory" data-page="ch03">
+<header class="site-header">
+<a class="home-btn" href="/">Home</a>
+<a class="brand" href="/books/algebraic_number_theory/">Algebraic Number Theory <small>a slow reading guide</small></a>
+<nav>
+<button aria-label="toggle theme" class="theme-toggle">Dark</button>
+</nav>
+</header>
+<main class="layout">
+<aside class="sidebar">
+<h4>Chapter 03</h4>
+<ol>
+<li><a href="#intro">The big analogy</a></li>
+<li><a href="#s3-1">3.1 Primes</a></li>
+<li><a href="#s3-2">3.2 Different &amp; Discriminant</a></li>
+<li><a href="#s3-3">3.3 Riemann–Roch</a></li>
+<li><a href="#s3-4">3.4 Metrized o-Modules</a></li>
+<li><a href="#s3-5">3.5 Grothendieck Groups</a></li>
+<li><a href="#s3-6">3.6 The Chern Character</a></li>
+<li><a href="#s3-7">3.7 Grothendieck–Riemann–Roch</a></li>
+<li><a href="#s3-8">3.8 The Euler–Minkowski Characteristic</a></li>
+<li><a href="#summary">Summary</a></li>
+</ol>
+</aside>
+<article class="content">
+<section class="hero">
+<div class="kicker">Chapter 03</div>
+<h1>Riemann–Roch Theory</h1>
+<p class="subtitle" data-cid="ch03-010">Neukirch's "Arakelov chapter": treat a number field as a compact curve, the infinite primes as its points at infinity, and watch the classical Riemann–Roch theorem reappear as a statement about lattices in Minkowski space.</p>
+<div class="meta">
+<span>Neukirch Chapter III</span>
+<span>~75 min reading time</span>
+<span>Prereqs: Ch. I (ideals, Minkowski theory), Ch. II (valuations, completions)</span>
+</div>
+</section>
+
+<h2 data-cid="ch03-020" id="intro">The big analogy you should keep in your head</h2>
+<p data-cid="ch03-030">
+This chapter is dominated by a single guiding picture. In the geometry of compact Riemann surfaces (or smooth projective curves), a divisor is a finite formal combination of points, a meromorphic function has zeros and poles, and the celebrated <strong>Riemann–Roch theorem</strong> relates the dimension of the space of functions with prescribed pole behaviour to the degree of a divisor and the genus of the surface. Neukirch's goal is to set up number theory so that <em>exactly the same theorems</em> hold, with the number field <span class="tts-math" data-tts="K">$K$</span> playing the role of the curve.
+</p>
+<div class="box intuition" data-cid="ch03-040">
+<span class="box-label">Intuition</span>
+<p data-cid="ch03-050">Think of <span class="tts-math" data-tts="the spectrum of the ring of integers o">$\mathrm{Spec}(\mathcal{O})$</span> as a curve. Here <span class="tts-math" data-tts="the spectrum of o">$\mathrm{Spec}(\mathcal{O})$</span> just means the <em>set of prime ideals</em> of <span class="tts-math" data-tts="o">$\mathcal{O}$</span>, pictured as the points of a geometric space — so the dictionary "points of the curve = prime ideals" is literally the definition, not a metaphor. Its "points" are exactly those prime ideals — but a finite curve has no points at infinity, and that is what makes <span class="tts-math" data-tts="the spectrum of o">$\mathrm{Spec}(\mathcal{O})$</span> feel non-compact. The fix is to throw in the <em>archimedean</em> (infinite) primes, coming from the embeddings <span class="tts-math" data-tts="K into the complex numbers">$K \hookrightarrow \mathbb{C}$</span>. These behave like points at infinity, and adding them "compactifies" the curve. That single move is the heart of Arakelov's idea.</p>
+</div>
+<p data-cid="ch03-060">
+The price of admission is that the infinite primes carry <em>real</em> data, not integer data. So divisors will have real coefficients at infinity, dimensions of "spaces of sections" become real-valued logarithms of point counts, and the genus becomes a real number. Once you accept that, every classical formula survives. Let us build the dictionary carefully.
+</p>
+
+<!-- ============================ 3.1 ============================ -->
+<h2 data-cid="ch03-070" id="s3-1">3.1 Primes</h2>
+<p data-cid="ch03-080">
+We start over from the valuation-theoretic viewpoint of Chapter II. A <strong>prime</strong> (or <strong>place</strong>) <span class="tts-math" data-tts="p">$\mathfrak{p}$</span> of a number field <span class="tts-math" data-tts="K">$K$</span> is an equivalence class of valuations. The nonarchimedean classes are the <strong>finite primes</strong> (the usual prime ideals of <span class="tts-math" data-tts="the ring of integers o">$\mathcal{O}$</span>); the archimedean ones are the <strong>infinite primes</strong>.
+</p>
+<div class="box definition" data-cid="ch03-090">
+<span class="box-label">Definition</span>
+<p data-cid="ch03-100">An infinite prime comes from an embedding <span class="tts-math" data-tts="tau from K to the complex numbers">$\tau : K \to \mathbb{C}$</span>. It is <strong>real</strong> if the image lies in <span class="tts-math" data-tts="the real numbers">$\mathbb{R}$</span> (so the completion <span class="tts-math" data-tts="K sub p">$K_\mathfrak{p}$</span> is <span class="tts-math" data-tts="the real numbers">$\mathbb{R}$</span>), and <strong>complex</strong> if it comes from a conjugate pair of non-real embeddings (so <span class="tts-math" data-tts="K sub p">$K_\mathfrak{p}$</span> is <span class="tts-math" data-tts="the complex numbers">$\mathbb{C}$</span>). We write <span class="tts-math" data-tts="p divides infinity">$\mathfrak{p} \mid \infty$</span> for infinite primes and <span class="tts-math" data-tts="p does not divide infinity">$\mathfrak{p} \nmid \infty$</span> for finite ones.</p>
+</div>
+<p data-cid="ch03-110">
+To every prime we attach a normalized homomorphism <span class="tts-math" data-tts="v sub p from K-star to the reals">$v_\mathfrak{p} : K^* \to \mathbb{R}$</span>. For a finite prime it is the usual exponential valuation normalized so that <span class="tts-math" data-tts="v sub p of K-star equals the integers">$v_\mathfrak{p}(K^*) = \mathbb{Z}$</span>. For an infinite prime defined by <span class="tts-math" data-tts="tau">$\tau$</span> we set
+</p>
+<span class="tts-math" data-tts="v sub p of a equals minus the logarithm of the absolute value of tau of a">
+$$v_\mathfrak{p}(a) = -\log|\tau a|.$$
+</span>
+<p data-cid="ch03-120">
+The genius of the normalization is uniformity. Define the <strong>absolute value</strong> <span class="tts-math" data-tts="the absolute value sub p">$|\cdot|_\mathfrak{p}$</span> by <span class="tts-math" data-tts="the absolute value of a sub p equals the absolute norm of p to the power minus v sub p of a">$|a|_\mathfrak{p} = \mathfrak{N}(\mathfrak{p})^{-v_\mathfrak{p}(a)}$</span>. Then for a real prime <span class="tts-math" data-tts="the absolute value of a sub p equals the absolute value of tau a">$|a|_\mathfrak{p} = |\tau a|$</span>, while for a complex prime <span class="tts-math" data-tts="the absolute value of a sub p equals the absolute value of tau a squared">$|a|_\mathfrak{p} = |\tau a|^2$</span> — the square is deliberate, and it is exactly what makes the product formula clean.
+</p>
+<div class="box intuition" data-cid="ch03-125">
+<span class="box-label">Intuition — why the complex place counts twice</span>
+<p data-cid="ch03-126">A complex place is a single place, but it secretly <em>packages two embeddings</em> — a conjugate pair <span class="tts-math" data-tts="tau and tau-bar">$\tau,\bar\tau$</span> that give the same absolute value. The square <span class="tts-math" data-tts="the absolute value of tau a squared">$|\tau a|^2$</span> is really <span class="tts-math" data-tts="the absolute value of tau a, times the absolute value of tau-bar a">$|\tau a|\cdot|\bar\tau a|$</span>, one factor per hidden embedding. So when the product formula sums "zeros minus poles" over all places, a complex place automatically contributes its fair share of two. Concretely on <span class="tts-math" data-tts="the rationals">$\mathbb{Q}$</span> every infinite place is real (just <span class="tts-math" data-tts="the ordinary absolute value">$|\cdot|_\infty$</span>, no square), which is why the bookkeeping in the example below is so simple; a field like <span class="tts-math" data-tts="Q of i">$\mathbb{Q}(i)$</span> with a complex place would carry the square.</p>
+</div>
+<div class="box pause" data-cid="ch03-130">
+<span class="box-label">Pause</span>
+<p data-cid="ch03-140">Neukirch suggests we picture <span class="tts-math" data-tts="e, Euler's number">$e$</span> as an "infinite prime number": the residue degree of <span class="tts-math" data-tts="the complex numbers over the real numbers">$\mathbb{C}\mid\mathbb{R}$</span> is set to <span class="tts-math" data-tts="2">$2$</span> and the extension is declared <em>unramified</em>. Recall the vocabulary from Chapters I–II: an <em>infinite prime</em> is one of the archimedean places coming from an embedding into <span class="tts-math" data-tts="the complex numbers">$\mathbb{C}$</span> (as opposed to a finite prime ideal); the <em>residue degree</em> measures how much the residue field grows, here the degree of <span class="tts-math" data-tts="the complex numbers over the real numbers">$\mathbb{C}$</span> over <span class="tts-math" data-tts="the real numbers">$\mathbb{R}$</span>; and a prime is <em>ramified</em> if it "thickens" in the extension (ramification index above 1) and <em>unramified</em> otherwise. Do not over-interpret these labels at infinity — they are pure bookkeeping, chosen so the later formulas come out right; in §3.3 we will see the choice is forced on us by the Riemann–Hurwitz formula.</p>
+</div>
+<div class="box example" data-cid="ch03-150">
+<span class="box-label">Example — the product formula on Q</span>
+<p data-cid="ch03-160">Take <span class="tts-math" data-tts="K equals the rationals">$K = \mathbb{Q}$</span> and the number <span class="tts-math" data-tts="a equals 12">$a = 12 = 2^2 \cdot 3$</span>. Then <span class="tts-math" data-tts="the absolute value of 12 at 2 equals one fourth">$|12|_2 = \tfrac14$</span>, <span class="tts-math" data-tts="the absolute value of 12 at 3 equals one third">$|12|_3 = \tfrac13$</span>, the ordinary absolute value <span class="tts-math" data-tts="the absolute value of 12 at infinity equals 12">$|12|_\infty = 12$</span>, and every other place gives <span class="tts-math" data-tts="1">$1$</span>. The product is <span class="tts-math" data-tts="one fourth times one third times 12 equals 1">$\tfrac14 \cdot \tfrac13 \cdot 12 = 1$</span>. The finite primes record the "zeros and poles", the infinite prime balances the books.</p>
+</div>
+<div class="box definition" data-cid="ch03-170">
+<span class="box-label">Definition — Product formula (1.3)</span>
+<p data-cid="ch03-180">For every <span class="tts-math" data-tts="a in K-star">$a \in K^*$</span> one has <span class="tts-math" data-tts="the absolute value of a sub p equals 1">$|a|_\mathfrak{p} = 1$</span> for almost all <span class="tts-math" data-tts="p">$\mathfrak{p}$</span>, and</p>
+<span class="tts-math" data-tts="the product over all primes p of the absolute value of a sub p equals 1">
+$$\prod_{\mathfrak{p}} |a|_\mathfrak{p} = 1.$$
+</span>
+<p data-cid="ch03-190">It says: a nonzero number has, counted correctly across all places including infinity, "as many zeros as poles". This is the arithmetic shadow of the fact that a meromorphic function on a <em>compact</em> surface has equal numbers of zeros and poles.</p>
+</div>
+
+<h3 data-cid="ch03-200">Replete ideals and replete divisors</h3>
+<p data-cid="ch03-210">
+To do geometry we must enlarge fractional ideals to include the infinite primes. A <strong>replete ideal</strong> (Neukirch's term; others say <em>Arakelov divisor</em> in multiplicative form) is an element of
+</p>
+<span class="tts-math" data-tts="the group J-hat of o equals J of o times the product over p dividing infinity of the positive reals">
+$$\widehat{J}(\mathcal{O}) = J(\mathcal{O}) \times \prod_{\mathfrak{p}\mid\infty} \mathbb{R}_+^{*}.$$
+</span>
+<p data-cid="ch03-215">Here <span class="tts-math" data-tts="J of o">$J(\mathcal{O})$</span> is the group of <em>fractional ideals</em> of <span class="tts-math" data-tts="o">$\mathcal{O}$</span> — recall a fractional ideal is just an ordinary ideal allowed to have denominators (like <span class="tts-math" data-tts="one half times the integers">$\tfrac12\mathbb{Z}$</span> inside <span class="tts-math" data-tts="the rationals">$\mathbb{Q}$</span>), and these form a group under multiplication. And <span class="tts-math" data-tts="the positive reals">$\mathbb{R}_+^{*}$</span> denotes the multiplicative group of positive real numbers, one copy for each infinite place. So <span class="tts-math" data-tts="J-hat of o">$\widehat{J}(\mathcal{O})$</span> is "finite ideals, decorated with a positive real at each place at infinity."</p>
+<p data-cid="ch03-220">
+So a replete ideal is an ordinary fractional ideal <span class="tts-math" data-tts="a sub f, the finite part">$\mathfrak{a}_f$</span> together with a choice of positive real number at each infinite place — the "archimedean component" <span class="tts-math" data-tts="a sub infinity">$\mathfrak{a}_\infty$</span>. Writing <span class="tts-math" data-tts="p to the v as e to the v at an infinite prime">$\mathfrak{p}^v := e^v$</span>, every replete ideal has a unique product representation
+</p>
+<span class="tts-math" data-tts="a equals the product over all p of p to the v sub p, with v sub p an integer at finite primes and real at infinite primes">
+$$\mathfrak{a} = \prod_{\mathfrak{p}} \mathfrak{p}^{v_\mathfrak{p}}, \qquad v_\mathfrak{p}\in\mathbb{Z}\ (\mathfrak{p}\nmid\infty),\quad v_\mathfrak{p}\in\mathbb{R}\ (\mathfrak{p}\mid\infty).$$
+</span>
+<p data-cid="ch03-230">
+The additive version is the <strong>replete divisor</strong> (or <strong>Arakelov divisor</strong>): a formal sum <span class="tts-math" data-tts="D equals the sum over p of v sub p times p">$D = \sum_\mathfrak{p} v_\mathfrak{p}\,\mathfrak{p}$</span> with integer coefficients at finite primes and real coefficients at infinite primes, almost all zero. These form the group
+</p>
+<span class="tts-math" data-tts="the divisor-hat group of o equals the ordinary divisor group of o, direct sum the product over p at infinity of the reals at p">
+$$\widehat{\mathrm{Div}}(\mathcal{O}) = \mathrm{Div}(\mathcal{O}) \oplus \bigoplus_{\mathfrak{p}\mid\infty}\mathbb{R}\mathfrak{p},$$
+</span>
+<p data-cid="ch03-240">
+which carries a natural topology (discrete on the finite part, real on the infinite part) making it a <em>locally compact</em> group — a crucial improvement over the purely discrete classical divisor group.
+</p>
+<div class="box intuition" data-cid="ch03-250">
+<span class="box-label">Intuition</span>
+<p data-cid="ch03-260">Why allow <em>real</em> coefficients at infinity? Because the archimedean "order of vanishing" <span class="tts-math" data-tts="minus the logarithm of the absolute value of tau f">$-\log|\tau f|$</span> of a function is a real number, not an integer. The space of divisors must be large enough to contain all principal divisors <span class="tts-math" data-tts="div of f">$\mathrm{div}(f)$</span>, and those have real archimedean parts. Allowing real coefficients is the cost of compactification.</p>
+</div>
+<p data-cid="ch03-270">
+The map <span class="tts-math" data-tts="div from K-star to the divisor-hat group">$\mathrm{div}: K^* \to \widehat{\mathrm{Div}}(\mathcal{O})$</span>, <span class="tts-math" data-tts="div of f equals the sum of v sub p of f times p">$\mathrm{div}(f) = \sum_\mathfrak{p} v_\mathfrak{p}(f)\,\mathfrak{p}$</span>, has kernel exactly the roots of unity <span class="tts-math" data-tts="mu of K">$\mu(K)$</span>, and its image <span class="tts-math" data-tts="P-hat of o, the principal replete divisors">$\widehat{P}(\mathcal{O})$</span> is a <em>discrete</em> subgroup. The proof is precisely Dirichlet's unit theorem in disguise: the image of the units lands in the trace-zero hyperplane as a complete lattice.
+</p>
+<div class="box definition" data-cid="ch03-280">
+<span class="box-label">Definition — replete (Arakelov) class group (1.10)</span>
+<p data-cid="ch03-290">The quotient <span class="tts-math" data-tts="C H one-hat of o equals the divisor-hat group modulo principal replete divisors">$\widehat{\mathrm{CH}}^1(\mathcal{O}) = \widehat{\mathrm{Div}}(\mathcal{O})/\widehat{P}(\mathcal{O})$</span> is the <strong>replete divisor class group</strong> (Arakelov class group). It is a locally compact Hausdorff group — the correct analogue of the divisor class group of a function field.</p>
+</div>
+<p data-cid="ch03-300">
+On a function field the divisor class group maps onto <span class="tts-math" data-tts="the integers">$\mathbb{Z}$</span> by the degree. Here we get a <strong>degree map onto</strong> <span class="tts-math" data-tts="the real numbers">$\mathbb{R}$</span>:
+</p>
+<span class="tts-math" data-tts="the degree of D equals the sum over p of v sub p times the logarithm of the absolute norm of p">
+$$\deg(D) = \sum_\mathfrak{p} v_\mathfrak{p}\,\log\mathfrak{N}(\mathfrak{p}) = \log\Big(\textstyle\prod_\mathfrak{p}\mathfrak{N}(\mathfrak{p})^{v_\mathfrak{p}}\Big).$$
+</span>
+<p data-cid="ch03-310">
+By the product formula, <span class="tts-math" data-tts="the degree of a principal replete divisor is 0">$\deg(\mathrm{div}(f)) = 0$</span>, so the degree descends to <span class="tts-math" data-tts="the Arakelov class group">$\widehat{\mathrm{CH}}^1(\mathcal{O}) \to \mathbb{R}$</span>. Its kernel <span class="tts-math" data-tts="C H one-hat of o, degree zero">$\widehat{\mathrm{CH}}^1(\mathcal{O})^0$</span> sits in an exact sequence built from the unit lattice and the ideal class group.
+</p>
+<div class="box definition" data-cid="ch03-320">
+<span class="box-label">Theorem (1.12) — compactness</span>
+<p data-cid="ch03-330">The degree-zero part <span class="tts-math" data-tts="C H one-hat of o, degree zero">$\widehat{\mathrm{CH}}^1(\mathcal{O})^0$</span> is <strong>compact</strong>.</p>
+<p data-cid="ch03-335">If this looks abstract, anchor it on <span class="tts-math" data-tts="the spectrum of the integers">$\mathrm{Spec}(\mathbb{Z})$</span> (worked out in the example just below): for <span class="tts-math" data-tts="K equals the rationals">$K=\mathbb{Q}$</span> there are no nontrivial units and class number one, so this compact kernel collapses to a <em>single point</em>. The content of the theorem is that for a general number field the kernel stays compact even though it is now a genuine torus times a finite group.</p>
+</div>
+<div class="box pause" data-cid="ch03-340">
+<span class="box-label">Pause — why this is profound</span>
+<p data-cid="ch03-350">This single compactness statement <em>contains</em> the two pillars of classical algebraic number theory. The exact sequence is</p>
+<span class="tts-math" data-tts="0 to H mod Gamma to C H one-hat degree zero to C H one to 0">
+$$0 \to H/\Gamma \to \widehat{\mathrm{CH}}^1(\mathcal{O})^0 \to \mathrm{CH}^1(\mathcal{O}) \to 0.$$
+</span>
+<p data-cid="ch03-360">Let us unpack the two ends. The <strong>unit lattice</strong> <span class="tts-math" data-tts="Gamma">$\Gamma$</span> is the image of the units <span class="tts-math" data-tts="o-star, the units of o">$\mathcal{O}^*$</span> under the logarithmic embedding <span class="tts-math" data-tts="u maps to the tuple of log absolute value of sigma of u">$u\mapsto(\log|\sigma u|)_\sigma$</span> — taking logs turns the multiplicative units into a genuine lattice (a grid of points) sitting inside the real vector space <span class="tts-math" data-tts="H">$H$</span>, which is the trace-zero hyperplane. Dirichlet's unit theorem says this lattice is <em>complete</em>: it spans <span class="tts-math" data-tts="H">$H$</span> with finite covolume, leaving no direction unfilled. Now the quotient <span class="tts-math" data-tts="H mod Gamma">$H/\Gamma$</span> is "the plane modulo a full grid", and quotienting a real vector space by a complete lattice always yields a <strong>compact torus</strong> (the way <span class="tts-math" data-tts="the reals modulo the integers">$\mathbb{R}/\mathbb{Z}$</span> is a circle, or <span class="tts-math" data-tts="the plane modulo the integer lattice">$\mathbb{R}^2/\mathbb{Z}^2$</span> a doughnut) — so its compactness <em>is</em> Dirichlet's theorem. At the other end, the finiteness of <span class="tts-math" data-tts="C H one of o, the ideal class group">$\mathrm{CH}^1(\mathcal{O})$</span> (the ideal class group) is <strong>finiteness of the class number</strong>. A compact torus extended by a finite group is compact, so both classical theorems merge into "the kernel of the degree map is compact".</p>
+</div>
+<div class="box example" data-cid="ch03-370">
+<span class="box-label">Example — the curve <span class="tts-math" data-tts="the spectrum of the integers Z">$\mathrm{Spec}(\mathbb{Z})$</span></span>
+<p data-cid="ch03-380">For <span class="tts-math" data-tts="K equals the rationals">$K = \mathbb{Q}$</span> there is one infinite prime and class number one. A replete divisor is <span class="tts-math" data-tts="the sum over finite primes of n sub p times p, plus x times the infinite prime">$\sum_{p} n_p\,p + x\,\infty$</span> with <span class="tts-math" data-tts="n sub p integers, x real">$n_p\in\mathbb{Z}$</span>, <span class="tts-math" data-tts="x real">$x\in\mathbb{R}$</span>. The degree-zero condition cuts out a copy of <span class="tts-math" data-tts="the reals modulo the unit lattice">$\mathbb{R}/0$</span> after killing principal divisors, and the Arakelov class group is just <span class="tts-math" data-tts="the reals">$\mathbb{R}$</span> via the degree — Neukirch's Exercise 3 says <span class="tts-math" data-tts="the absolute norm gives an isomorphism Pic-hat of Z onto the positive reals">$\mathfrak{N}: \widehat{\mathrm{Pic}}(\mathbb{Z}) \xrightarrow{\sim} \mathbb{R}_+^*$</span>.</p>
+</div>
+
+<!-- ============================ 3.2 ============================ -->
+<h2 data-cid="ch03-390" id="s3-2">3.2 Different and Discriminant</h2>
+<p data-cid="ch03-400">
+Before pushing the analogy further we need the two invariants that measure <em>ramification</em> in an extension <span class="tts-math" data-tts="L over K">$L\mid K$</span>: the <strong>different</strong> (an ideal of <span class="tts-math" data-tts="the big ring O">$\mathcal{O}$</span> upstairs) and the <strong>discriminant</strong> (an ideal of <span class="tts-math" data-tts="the small ring o">$\mathcal{o}$</span> downstairs). Geometrically the different will be the "ramification divisor" of the covering of curves, the analogue of the branch locus.
+</p>
+<p data-cid="ch03-410">
+Everything flows from the <strong>trace form</strong> <span class="tts-math" data-tts="T of x and y equals the trace of x y">$T(x,y) = \mathrm{Tr}_{L\mid K}(xy)$</span>, a nondegenerate symmetric bilinear form on <span class="tts-math" data-tts="L as a K vector space">$L$</span>. To any fractional ideal <span class="tts-math" data-tts="script A">$\mathfrak{A}$</span> of <span class="tts-math" data-tts="L">$L$</span> it associates the dual module
+</p>
+<span class="tts-math" data-tts="the dual of script A equals the set of x in L such that the trace of x times script A lands in o">
+$$\mathfrak{A}^{*} = \{\, x \in L \mid \mathrm{Tr}_{L\mid K}(x\mathfrak{A}) \subseteq \mathcal{o} \,\}.$$
+</span>
+<div class="box definition" data-cid="ch03-420">
+<span class="box-label">Definition (2.1) — the different</span>
+<p data-cid="ch03-430">The dual of the whole ring, <span class="tts-math" data-tts="the codifferent equals the dual of O equals the set of x in L with trace of x O in o">$\mathfrak{C}_{\mathcal{O}\mid\mathcal{o}} = \mathcal{O}^{*} = \{x\in L : \mathrm{Tr}(x\mathcal{O})\subseteq\mathcal{o}\}$</span>, is <strong>Dedekind's complementary module</strong> (the <em>inverse different</em>). Its inverse</p>
+<span class="tts-math" data-tts="the different D of L over K equals the inverse of the codifferent">
+$$\mathfrak{D}_{L\mid K} = \mathfrak{C}_{\mathcal{O}\mid\mathcal{o}}^{-1}$$
+</span>
+<p data-cid="ch03-440">is the <strong>different</strong> of <span class="tts-math" data-tts="O over o">$\mathcal{O}\mid\mathcal{o}$</span>. Since <span class="tts-math" data-tts="the codifferent contains O">$\mathfrak{C}_{\mathcal{O}\mid\mathcal{o}}\supseteq\mathcal{O}$</span>, the different is an honest <em>integral</em> ideal of <span class="tts-math" data-tts="O">$\mathcal{O}$</span>.</p>
+</div>
+<p data-cid="ch03-450">
+The different is well-behaved: it is multiplicative in towers (<span class="tts-math" data-tts="the different of M over K equals the different of M over L times the inertial image of the different of L over K">$\mathfrak{D}_{M\mid K} = \mathfrak{D}_{M\mid L}\,\mathfrak{D}_{L\mid K}$</span>), it localizes, and it is compatible with completion, so it can be computed prime by prime: <span class="tts-math" data-tts="the different is the product over P of the local differents D sub P">$\mathfrak{D} = \prod_{\mathfrak{P}}\mathfrak{D}_\mathfrak{P}$</span>.
+</p>
+<div class="box definition" data-cid="ch03-460">
+<span class="box-label">Definition — Dedekind's element-different</span>
+<p data-cid="ch03-470">If <span class="tts-math" data-tts="alpha is in O and L equals K adjoin alpha">$\alpha\in\mathcal{O}$</span> with <span class="tts-math" data-tts="L equals K adjoin alpha">$L = K(\alpha)$</span> and minimal polynomial <span class="tts-math" data-tts="f">$f$</span>, define the different of the element by <span class="tts-math" data-tts="delta of alpha equals f prime of alpha">$\delta_{L\mid K}(\alpha) = f'(\alpha)$</span>. In the monogenic case <span class="tts-math" data-tts="O equals o adjoin alpha">$\mathcal{O} = \mathcal{o}[\alpha]$</span> one has the clean formula <span class="tts-math" data-tts="the different equals the principal ideal generated by f prime of alpha">$\mathfrak{D}_{L\mid K} = (f'(\alpha))$</span> (2.4). In general (2.5) the different is the gcd of all element-differents <span class="tts-math" data-tts="f prime of alpha">$f'(\alpha)$</span>.</p>
+</div>
+<div class="box example" data-cid="ch03-480">
+<span class="box-label">Example — <span class="tts-math" data-tts="the Gaussian integers Z adjoin i">$\mathbb{Z}[i]$</span></span>
+<p data-cid="ch03-490">Here <span class="tts-math" data-tts="alpha equals i">$\alpha = i$</span> has minimal polynomial <span class="tts-math" data-tts="X squared plus 1">$X^2+1$</span>, so <span class="tts-math" data-tts="f prime of i equals 2 i">$f'(i) = 2i$</span> and the different is <span class="tts-math" data-tts="the principal ideal generated by 2 i, which equals the ideal generated by 2">$\mathfrak{D} = (2i) = (2) = (1+i)^2$</span>. The only ramified prime is <span class="tts-math" data-tts="the prime 1 plus i above 2">$(1+i)$</span> above <span class="tts-math" data-tts="2">$2$</span>, exactly as expected — <span class="tts-math" data-tts="2 ramifies in the Gaussian integers">$2$</span> is the unique ramified prime. The discriminant <em>ideal</em> is the norm of the different: <span class="tts-math" data-tts="the discriminant ideal equals the norm of the different equals the norm of the ideal generated by 2 i, which is the absolute value of the norm of 2 i, equal to 4, generating the ideal 4 times the integers">$\mathfrak{d} = N_{\mathbb{Q}(i)\mid\mathbb{Q}}\big((2i)\big) = \big(|N(2i)|\big) = (4)$</span> — a one-line computation, since <span class="tts-math" data-tts="the norm of 2 i equals 2 i times minus 2 i equals 4">$N(2i)=(2i)(\overline{2i})=(2i)(-2i)=4$</span>. So the discriminant <em>ideal</em> has norm <span class="tts-math" data-tts="4">$4$</span> (it carries no sign — an ideal is just <span class="tts-math" data-tts="4 times the integers">$(4)$</span>). The classical <em>signed</em> discriminant <span class="tts-math" data-tts="d sub Q of i equals minus 4">$d_{\mathbb{Q}(i)} = -4$</span> is a different gadget: a genuine integer whose sign records the number of complex places, and whose absolute value <span class="tts-math" data-tts="the absolute value of minus 4 equals 4">$|{-4}| = 4$</span> is exactly the norm of the ideal. So "4" and "<span class="tts-math" data-tts="minus 4">$-4$</span>" are not in conflict — one is <span class="tts-math" data-tts="the norm of the ideal">$\mathfrak{N}(\mathfrak{d})$</span>, the other the signed integer.</p>
+</div>
+<div class="box definition" data-cid="ch03-500">
+<span class="box-label">Theorem (2.6) — different detects ramification</span>
+<p data-cid="ch03-510">A prime <span class="tts-math" data-tts="P">$\mathfrak{P}$</span> of <span class="tts-math" data-tts="L">$L$</span> is ramified over <span class="tts-math" data-tts="K">$K$</span> iff <span class="tts-math" data-tts="P divides the different">$\mathfrak{P}\mid\mathfrak{D}_{L\mid K}$</span>. If <span class="tts-math" data-tts="P to the s exactly divides the different">$\mathfrak{P}^s\,\|\,\mathfrak{D}_{L\mid K}$</span> and <span class="tts-math" data-tts="e is the ramification index">$e$</span> is the ramification index, then <span class="tts-math" data-tts="s equals e minus 1">$s = e-1$</span> when <span class="tts-math" data-tts="P">$\mathfrak{P}$</span> is <em>tamely</em> ramified, and <span class="tts-math" data-tts="e is at most s, which is at most e minus 1 plus v sub P of e">$e \le s \le e-1+v_\mathfrak{P}(e)$</span> when <em>wildly</em> ramified.</p>
+</div>
+<div class="box intuition" data-cid="ch03-520">
+<span class="box-label">Intuition — the Kähler differentials picture (2.7)</span>
+<p data-cid="ch03-530">The different equals the annihilator of the module of differentials <span class="tts-math" data-tts="big Omega of O over o">$\Omega_{\mathcal{O}\mid\mathcal{o}}$</span>. (Optional/advanced — you may skip the homological details on a first pass.) In plain terms, <span class="tts-math" data-tts="big Omega">$\Omega$</span> is an algebraic gadget built from formal symbols <span class="tts-math" data-tts="d x">$dx$</span>, one for each element <span class="tts-math" data-tts="x">$x$</span>, subject to the usual rules of calculus (<span class="tts-math" data-tts="d of x plus y equals d x plus d y">$d(x+y)=dx+dy$</span>, the product rule, and <span class="tts-math" data-tts="d of a constant is zero">$dc=0$</span> for constants): it records "infinitesimal variation" purely algebraically, with no limits. That is the bridge to geometry: differentials measure how the covering bends, and their "support" is precisely the ramification divisor. In a curve, that support is the branch locus; the different is its arithmetic incarnation.</p>
+</div>
+<div class="box definition" data-cid="ch03-540">
+<span class="box-label">Definition (2.8) &amp; Theorem (2.9) — the discriminant</span>
+<p data-cid="ch03-550">The <strong>discriminant</strong> <span class="tts-math" data-tts="the discriminant d of L over K">$\mathfrak{d}_{L\mid K}$</span> is the ideal of <span class="tts-math" data-tts="o">$\mathcal{o}$</span> generated by the discriminants <span class="tts-math" data-tts="d of a basis alpha 1 through alpha n">$d(\alpha_1,\dots,\alpha_n)$</span> of all integral bases. It is the <strong>norm of the different</strong>:</p>
+<span class="tts-math" data-tts="the discriminant of L over K equals the norm from L to K of the different of L over K">
+$$\mathfrak{d}_{L\mid K} = N_{L\mid K}(\mathfrak{D}_{L\mid K}).$$
+</span>
+<p data-cid="ch03-560">Consequently (2.12) a prime <span class="tts-math" data-tts="p">$\mathfrak{p}$</span> ramifies in <span class="tts-math" data-tts="L">$L$</span> iff <span class="tts-math" data-tts="p divides the discriminant">$\mathfrak{p}\mid\mathfrak{d}$</span>; the extension is unramified iff <span class="tts-math" data-tts="the discriminant equals the unit ideal">$\mathfrak{d} = (1)$</span>.</p>
+</div>
+<p data-cid="ch03-570">
+Combining the discriminant with Minkowski's lattice-point theorem yields two jewels of classical theory, both about the impossibility of "too little" ramification.
+</p>
+<div class="box definition" data-cid="ch03-580">
+<span class="box-label">Two classical consequences</span>
+<p data-cid="ch03-590"><strong>Hermite (2.16):</strong> there are only finitely many number fields with bounded discriminant. <strong>Minkowski (2.17):</strong> every number field <span class="tts-math" data-tts="K not equal to the rationals">$K\ne\mathbb{Q}$</span> has <span class="tts-math" data-tts="the absolute value of the discriminant greater than 1">$|d_K| &gt; 1$</span>. Hence <strong>(2.18)</strong>: <span class="tts-math" data-tts="the rationals admit no unramified extension">$\mathbb{Q}$</span> admits <em>no</em> nontrivial unramified extension at all.</p>
+</div>
+<div class="box intuition" data-cid="ch03-600">
+<span class="box-label">Intuition</span>
+<p data-cid="ch03-610">The bound underlying these is <span class="tts-math" data-tts="the square root of the absolute value of d sub K is at least, n to the n over n factorial, times pi over 4 to the s">$\sqrt{|d_K|} \ge \frac{n^n}{n!}\left(\frac{\pi}{4}\right)^s$</span>, and by Stirling the right side grows with the degree <span class="tts-math" data-tts="n">$n$</span>. So a field of large degree is <em>forced</em> to ramify a lot — there is no room for an everywhere-unramified cover of <span class="tts-math" data-tts="the spectrum of the integers">$\mathrm{Spec}(\mathbb{Z})$</span>. This is the arithmetic version of "the projective line is simply connected" and was the model for Fontaine's and Faltings's higher-dimensional theorems.</p>
+</div>
+
+<!-- ============================ 3.3 ============================ -->
+<h2 data-cid="ch03-620" id="s3-3">3.3 Riemann–Roch</h2>
+<p data-cid="ch03-630">
+Now the payoff. Recall the classical setup: on a compact Riemann surface <span class="tts-math" data-tts="X">$X$</span> a divisor <span class="tts-math" data-tts="D">$D$</span> gives a line bundle <span class="tts-math" data-tts="O of D">$\mathcal{O}(D)$</span> whose global sections form <span class="tts-math" data-tts="H zero of X with coefficients in O of D">$H^0(X,\mathcal{O}(D)) = \{f : \mathrm{ord}_P(f)\ge -v_P\}$</span>. Riemann–Roch computes the Euler characteristic
+</p>
+<span class="tts-math" data-tts="chi of O of D equals the dimension of H zero minus the dimension of H one equals the degree of D plus 1 minus g">
+$$\chi(\mathcal{O}(D)) = \dim H^0(X,\mathcal{O}(D)) - \dim H^1(X,\mathcal{O}(D)) = \deg(D) + 1 - g.$$
+</span>
+<p data-cid="ch03-640">
+We want the arithmetic mirror. To a replete divisor <span class="tts-math" data-tts="D">$D$</span> with replete ideal <span class="tts-math" data-tts="a equals O of D">$\mathfrak{a} = \mathcal{O}(D)$</span> we attach the finite set of "global sections"
+</p>
+<span class="tts-math" data-tts="H zero of a equals the set of f in K-star with v sub p of f at least v sub p for all p">
+$$H^0(\mathfrak{a}) = \{\, f \in K^* \mid v_\mathfrak{p}(f) \ge v_\mathfrak{p}\ \text{for all }\mathfrak{p} \,\}.$$
+</span>
+<div class="box warn" data-cid="ch03-650">
+<span class="box-label">Warning</span>
+<p data-cid="ch03-660"><span class="tts-math" data-tts="H zero of a">$H^0(\mathfrak{a})$</span> is <em>not</em> a vector space — it is a finite <em>set</em> (lattice points inside a box), and there is no honest <span class="tts-math" data-tts="H one">$H^1$</span> at all in arithmetic. (Why not? On a curve, <span class="tts-math" data-tts="H one">$H^1$</span> measures higher-dimensional cohomology, but <span class="tts-math" data-tts="the spectrum of o">$\mathrm{Spec}(\mathcal{O})$</span> is <em>0-dimensional and affine</em> — it is just a discrete set of primes — so there is simply no room for a nonzero <span class="tts-math" data-tts="H one">$H^1$</span> to live.) The whole trick of this section is to <em>not</em> attack <span class="tts-math" data-tts="H zero">$H^0$</span> directly, but to define a Euler characteristic by measuring <em>volumes of lattices</em>, where everything still makes sense.</p>
+</div>
+
+<h3 data-cid="ch03-670">The Euler–Minkowski characteristic</h3>
+<div class="box intuition" data-cid="ch03-675">
+<span class="box-label">Refresher — Minkowski space and covolume</span>
+<p data-cid="ch03-676">From Chapter I: <strong>Minkowski space</strong> <span class="tts-math" data-tts="K sub R">$K_\mathbb{R}$</span> is the real vector space <span class="tts-math" data-tts="the real numbers to the r times the complex numbers to the s">$\mathbb{R}^r\times\mathbb{C}^s$</span> into which <span class="tts-math" data-tts="K">$K$</span> is embedded by sending each element to the tuple of all its real and complex embeddings <span class="tts-math" data-tts="x maps to the tuple of sigma of x over all sigma">$x\mapsto(\sigma x)_\sigma$</span>. Under this embedding the ring of integers (and any ideal) lands as a <strong>complete lattice</strong> — a regular grid of points that spans the whole space. The <strong>covolume</strong> is the volume of one fundamental cell of that grid (the "mesh"): roughly, how much room each lattice point occupies. <em>Baby case:</em> for <span class="tts-math" data-tts="K equals the rationals">$K=\mathbb{Q}$</span> there is one real embedding, Minkowski space is just <span class="tts-math" data-tts="the real line">$\mathbb{R}$</span>, and <span class="tts-math" data-tts="the integers">$\mathbb{Z}\subset\mathbb{R}$</span> is the lattice of integer points with covolume <span class="tts-math" data-tts="1">$1$</span> (each integer "owns" a unit interval).</p>
+</div>
+<p data-cid="ch03-680">
+Each replete ideal <span class="tts-math" data-tts="a">$\mathfrak{a}$</span> determines a complete lattice in Minkowski space <span class="tts-math" data-tts="K sub R">$K_\mathbb{R}$</span>: take the lattice of the finite ideal <span class="tts-math" data-tts="a sub f">$\mathfrak{a}_f$</span> and scale each archimedean coordinate by the factor coming from <span class="tts-math" data-tts="a sub infinity">$\mathfrak{a}_\infty$</span>. Let <span class="tts-math" data-tts="vol of a">$\mathrm{vol}(\mathfrak{a})$</span> be the covolume of a fundamental mesh.
+</p>
+<div class="box definition" data-cid="ch03-690">
+<span class="box-label">Definition (3.1)</span>
+<p data-cid="ch03-700">The <strong>Euler–Minkowski characteristic</strong> of <span class="tts-math" data-tts="a">$\mathfrak{a}$</span> is</p>
+<span class="tts-math" data-tts="chi of a equals minus the logarithm of the volume of a">
+$$\chi(\mathfrak{a}) = -\log\,\mathrm{vol}(\mathfrak{a}).$$
+</span>
+<p data-cid="ch03-710">It depends only on the class of <span class="tts-math" data-tts="a">$\mathfrak{a}$</span> in <span class="tts-math" data-tts="Pic-hat of o">$\widehat{\mathrm{Pic}}(\mathcal{O})$</span> (proof: a principal ideal scales the lattice by a map of determinant <span class="tts-math" data-tts="1">$1$</span>, by the product formula).</p>
+</div>
+<p data-cid="ch03-720">
+The key computation comes from Chapter I's volume formula <span class="tts-math" data-tts="vol of a equals the square root of the absolute value of d sub K times the absolute norm of a">$\mathrm{vol}(\mathfrak{a}) = \sqrt{|d_K|}\,\mathfrak{N}(\mathfrak{a})$</span> (3.3). Writing the degree as <span class="tts-math" data-tts="the degree of a equals minus the logarithm of the absolute norm of a">$\deg(\mathfrak{a}) = -\log\mathfrak{N}(\mathfrak{a})$</span> and <span class="tts-math" data-tts="chi of o equals minus the logarithm of the square root of the absolute value of d sub K">$\chi(\mathcal{O}) = -\log\sqrt{|d_K|}$</span>, we immediately get the <strong>first Riemann–Roch formula</strong>:
+</p>
+<span class="tts-math" data-tts="chi of a equals the degree of a plus chi of o">
+$$\chi(\mathfrak{a}) = \deg(\mathfrak{a}) + \chi(\mathcal{O}).$$
+</span>
+<div class="box pause" data-cid="ch03-730">
+<span class="box-label">Pause — compare line by line</span>
+<p data-cid="ch03-740">Function field: <span class="tts-math" data-tts="chi of O of D equals the degree of D plus chi of O sub X">$\chi(\mathcal{O}(D)) = \deg(D) + \chi(\mathcal{O}_X)$</span> with <span class="tts-math" data-tts="chi of O sub X equals 1 minus g">$\chi(\mathcal{O}_X) = 1-g$</span>. Number field: <span class="tts-math" data-tts="chi of a equals the degree of a plus chi of o">$\chi(\mathfrak{a}) = \deg(\mathfrak{a}) + \chi(\mathcal{O})$</span> with <span class="tts-math" data-tts="chi of o equals minus log the square root of the absolute value of the discriminant">$\chi(\mathcal{O}) = -\log\sqrt{|d_K|}$</span>. The discriminant plays the role of the genus.</p>
+</div>
+
+<h3 data-cid="ch03-750">The genus of a number field</h3>
+<p data-cid="ch03-760">
+To split <span class="tts-math" data-tts="chi of o">$\chi(\mathcal{O})$</span> into "<span class="tts-math" data-tts="1 minus g">$1-g$</span>" we need an arithmetic analogue of <span class="tts-math" data-tts="the dimension of H zero">$\dim H^0$</span>. Since <span class="tts-math" data-tts="H zero of a">$H^0(\mathfrak{a})$</span> is finite, count it: set <span class="tts-math" data-tts="little l of a equals zero">$\ell(\mathfrak{a}) = 0$</span> if empty, and otherwise
+</p>
+<span class="tts-math" data-tts="little l of a equals the logarithm of the number of elements of H zero of a, divided by the volume of W">
+$$\ell(\mathfrak{a}) = \log\frac{\#H^0(\mathfrak{a})}{\mathrm{vol}(W)},$$
+</span>
+<p data-cid="ch03-770">
+where <span class="tts-math" data-tts="vol of W equals 2 to the r times 2 pi to the s">$\mathrm{vol}(W) = 2^r(2\pi)^s$</span> is the normalizing volume of the unit polydisc. With this normalization <span class="tts-math" data-tts="H zero of o equals mu of K, the roots of unity">$H^0(\mathcal{O}) = \mu(K)$</span> and one defines:
+</p>
+<div class="box definition" data-cid="ch03-780">
+<span class="box-label">Definition (3.5) — genus (after Weil, 1939)</span>
+<p data-cid="ch03-790">The <strong>genus</strong> of a number field <span class="tts-math" data-tts="K">$K$</span> is</p>
+<span class="tts-math" data-tts="g equals little l of o minus chi of o equals the logarithm of, the number of roots of unity divided by 2 to the r times 2 pi to the s, plus the logarithm of the square root of the absolute value of the discriminant">
+$$g = \ell(\mathcal{O}) - \chi(\mathcal{O}) = \log\frac{\#\mu(K)}{2^r(2\pi)^s} + \log\sqrt{|d_K|}.$$
+</span>
+<p data-cid="ch03-800">One checks <span class="tts-math" data-tts="the genus of the rationals is 0">$g_{\mathbb{Q}} = 0$</span>, mirroring the genus-zero projective line. Let us actually verify it: for <span class="tts-math" data-tts="the rationals">$\mathbb{Q}$</span> there is one real place and no complex places, so <span class="tts-math" data-tts="r equals 1 and s equals 0">$r=1,\,s=0$</span>; the roots of unity are just <span class="tts-math" data-tts="plus and minus 1">$\pm1$</span>, so <span class="tts-math" data-tts="the number of roots of unity equals 2">$\#\mu(\mathbb{Q})=2$</span>; and the discriminant is <span class="tts-math" data-tts="d sub Q equals 1">$d_{\mathbb{Q}}=1$</span>. Plugging in,</p>
+<span class="tts-math" data-tts="g sub Q equals the logarithm of 2, divided by 2 to the 1 times 2 pi to the 0, plus the logarithm of the square root of 1, which equals the logarithm of 2 over 2, plus 0, which equals the logarithm of 1, which is 0">
+$$g_{\mathbb{Q}} = \log\frac{2}{2^1(2\pi)^0} + \log\sqrt{1} = \log\frac{2}{2} + 0 = \log 1 = 0.$$
+</span>
+<p data-cid="ch03-805">The normalizing factor <span class="tts-math" data-tts="2 to the r times 2 pi to the s">$2^r(2\pi)^s$</span> is engineered precisely so this comes out to <span class="tts-math" data-tts="0">$0$</span>. The Riemann–Roch formula then reads <span class="tts-math" data-tts="chi of a equals the degree of a plus little l of o minus g">$\chi(\mathfrak{a}) = \deg(\mathfrak{a}) + \ell(\mathcal{O}) - g$</span> (3.6).</p>
+</div>
+
+<h3 data-cid="ch03-810">The strong Riemann–Roch theorem</h3>
+<p data-cid="ch03-820">
+The classical <em>strong</em> form, <span class="tts-math" data-tts="little l of D minus little l of K minus D equals the degree of D plus 1 minus g">$\ell(D) - \ell(\mathcal{K}-D) = \deg(D) + 1 - g$</span>, uses Serre duality to identify <span class="tts-math" data-tts="H one">$H^1$</span> with sections of the canonical bundle. The arithmetic analogue rests on a deep counting theorem of Serge Lang, an asymptotic Serre duality.
+</p>
+<div class="box definition" data-cid="ch03-830">
+<span class="box-label">Theorem (3.7, S. Lang)</span>
+<p data-cid="ch03-840">As <span class="tts-math" data-tts="the absolute norm of a goes to infinity">$\mathfrak{N}(\mathfrak{a})\to\infty$</span>,</p>
+<span class="tts-math" data-tts="the number of elements of H zero of a inverse equals 2 to the r times 2 pi to the s, over the square root of the absolute value of the discriminant, times the absolute norm of a, plus a term that is big-O of the absolute norm of a to the power 1 minus 1 over n">
+$$\#H^0(\mathfrak{a}^{-1}) = \frac{2^r(2\pi)^s}{\sqrt{|d_K|}}\,\mathfrak{N}(\mathfrak{a}) + O\!\big(\mathfrak{N}(\mathfrak{a})^{1-1/n}\big).$$
+</span>
+<p data-cid="ch03-850">The proof is a careful lattice-point count: the leading term is "volume of the box / covolume of the lattice", and the error is bounded by counting boundary cells, using the mean value theorem to control how the parametrizing map distorts diameters.</p>
+</div>
+<div class="box definition" data-cid="ch03-860">
+<span class="box-label">Theorem (3.9) — Riemann–Roch</span>
+<p data-cid="ch03-870">For every replete divisor <span class="tts-math" data-tts="D">$D$</span>, with index of specialty <span class="tts-math" data-tts="i of D equals little l of D minus chi of D">$i(D) = \ell(D) - \chi(D)$</span>,</p>
+<span class="tts-math" data-tts="little l of D equals the degree of D plus little l of o minus g plus i of D">
+$$\ell(D) = \deg(D) + \ell(\mathcal{O}) - g + i(D),$$
+</span>
+<p data-cid="ch03-880">and the correction is exponentially small: <span class="tts-math" data-tts="i of D is big-O of e to the minus one over n times the degree of D">$i(D) = O\big(e^{-\frac{1}{n}\deg(D)}\big)$</span>, so <span class="tts-math" data-tts="i of D tends to 0 as the degree of D tends to infinity">$i(D)\to 0$</span> as <span class="tts-math" data-tts="the degree of D goes to infinity">$\deg(D)\to\infty$</span>.</p>
+</div>
+<div class="box intuition" data-cid="ch03-890">
+<span class="box-label">Intuition</span>
+<p data-cid="ch03-900">In the curve case the "index of specialty" <span class="tts-math" data-tts="little l of K minus D">$\ell(\mathcal{K}-D)$</span> vanishes once <span class="tts-math" data-tts="the degree of D exceeds 2 g minus 2">$\deg D &gt; 2g-2$</span>. Here it does not vanish exactly but decays exponentially — a genuinely analytic flavor that has no counterpart over a finite field. This is the "approximate" nature of arithmetic Serre duality.</p>
+</div>
+
+<h3 data-cid="ch03-910">Canonical module and Riemann–Hurwitz</h3>
+<div class="box definition" data-cid="ch03-920">
+<span class="box-label">Definition (3.10) — canonical module</span>
+<p data-cid="ch03-930">The <strong>canonical module</strong> of <span class="tts-math" data-tts="K">$K$</span> is <span class="tts-math" data-tts="omega sub K equals the codifferent of K over the rationals equals the Z-dual hom of o to Z">$\omega_K = \mathfrak{C}_{K\mid\mathbb{Q}} = \mathrm{Hom}_\mathbb{Z}(\mathcal{O},\mathbb{Z})$</span> — the inverse different of <span class="tts-math" data-tts="K over the rationals">$K\mid\mathbb{Q}$</span>. It is the dualizing object, playing the role of the canonical line bundle <span class="tts-math" data-tts="omega equals the sheaf of differentials">$\omega = \Omega^1_X$</span>.</p>
+</div>
+<div class="box definition" data-cid="ch03-940">
+<span class="box-label">Proposition (3.12)</span>
+<p data-cid="ch03-950">Its degree is <span class="tts-math" data-tts="the degree of omega sub K equals minus 2 chi of o equals 2 g minus 2 little l of o, and equals the logarithm of the absolute value of the discriminant">$\deg\omega_K = -2\chi(\mathcal{O}) = 2g - 2\ell(\mathcal{O}) = \log|d_K|$</span>. The degree of the canonical bundle is the logarithm of the discriminant — the cleanest possible statement of "discriminant = genus".</p>
+</div>
+<div class="box definition" data-cid="ch03-960">
+<span class="box-label">Proposition (3.13) — Riemann–Hurwitz</span>
+<p data-cid="ch03-970">For a finite extension <span class="tts-math" data-tts="L over K">$L\mid K$</span>, since <span class="tts-math" data-tts="omega sub L equals the different of L over K times the inertial image of omega sub K">$\omega_L = \mathfrak{D}_{L\mid K}\,\omega_K$</span>,</p>
+<span class="tts-math" data-tts="g sub L minus little l of o sub L equals the degree of L over K times, g sub K minus little l of o sub K, plus one half the degree of the different of L over K">
+$$g_L - \ell(\mathcal{O}_L) = [L\!:\!K]\big(g_K - \ell(\mathcal{O}_K)\big) + \tfrac12\deg\mathfrak{D}_{L\mid K}.$$
+</span>
+<p data-cid="ch03-980">The different appears as the ramification term — precisely as the branch divisor enters the Riemann–Hurwitz formula for a covering of Riemann surfaces.</p>
+</div>
+<div class="box pause" data-cid="ch03-990">
+<span class="box-label">Pause — why <span class="tts-math" data-tts="C over R">$\mathbb{C}\mid\mathbb{R}$</span> "must" be unramified</span>
+<p data-cid="ch03-1000">Riemann–Hurwitz keeps its shape <em>only</em> if the infinite primes contribute nothing to the different — forcing us to declare <span class="tts-math" data-tts="C over R">$\mathbb{C}\mid\mathbb{R}$</span> unramified. Neukirch then shows this was secretly a choice of <em>metric</em> on Minkowski space. With the "Minkowski metric" instead of the "canonical metric", <span class="tts-math" data-tts="C over R">$\mathbb{C}\mid\mathbb{R}$</span> becomes ramified with <span class="tts-math" data-tts="e sub p equals the degree of K sub p over R">$e_\mathfrak{p}=[K_\mathfrak{p}:\mathbb{R}]$</span>. This leads to <strong>metrized number fields</strong> <span class="tts-math" data-tts="K-bar equals K together with a metric">$\overline{K}=(K,\langle\,,\rangle_K)$</span>, and Q is replaced by a whole continuous family <span class="tts-math" data-tts="the rationals with the metric alpha x y">$(\mathbb{Q},\alpha xy)$</span>, all of genus 0 (3.14).</p>
+</div>
+
+<!-- ============================ 3.4 ============================ -->
+<h2 data-cid="ch03-1010" id="s3-4">3.4 Metrized o-Modules</h2>
+<p data-cid="ch03-1020">
+The replete-ideal theory of §3.3 is rank-1. To see its true nature — and to reach Grothendieck–Riemann–Roch — we promote everything to finitely generated modules carrying metrics. This is linear algebra over <span class="tts-math" data-tts="o">$\mathcal{o}$</span> "compactified at infinity".
+</p>
+<p data-cid="ch03-1030">
+The basic object is the complexification ring <span class="tts-math" data-tts="K sub C equals K tensor over the rationals with the complex numbers">$K_\mathbb{C} = K\otimes_\mathbb{Q}\mathbb{C}$</span>. Writing <span class="tts-math" data-tts="X of C equals the set of homomorphisms from K to the complex numbers">$X(\mathbb{C}) = \mathrm{Hom}(K,\mathbb{C})$</span>, it decomposes as
+</p>
+<span class="tts-math" data-tts="K sub C equals the direct sum over sigma in X of C of the complex numbers, which equals functions from X of C to the complex numbers">
+$$K_\mathbb{C} = \bigoplus_{\sigma\in X(\mathbb{C})}\mathbb{C} \;=\; \mathrm{Hom}(X(\mathbb{C}),\mathbb{C}).$$
+</span>
+<div class="box intuition" data-cid="ch03-1035">
+<span class="box-label">Intuition — what tensoring with ℂ does</span>
+<p data-cid="ch03-1036">Tensoring with <span class="tts-math" data-tts="the complex numbers">$\mathbb{C}$</span> takes the single field <span class="tts-math" data-tts="K">$K$</span> and <em>splits it into one copy of <span class="tts-math" data-tts="the complex numbers">$\mathbb{C}$</span> per embedding</em>. Concretely <span class="tts-math" data-tts="Q of i tensor C equals C times C">$\mathbb{Q}(i)\otimes_\mathbb{Q}\mathbb{C}\cong\mathbb{C}\times\mathbb{C}$</span> — the two factors are the two embeddings <span class="tts-math" data-tts="i goes to plus i and i goes to minus i">$i\mapsto+i$</span> and <span class="tts-math" data-tts="i goes to minus i">$i\mapsto-i$</span>. (The minimal polynomial <span class="tts-math" data-tts="X squared plus 1">$X^2+1$</span> factors over <span class="tts-math" data-tts="the complex numbers">$\mathbb{C}$</span> as <span class="tts-math" data-tts="X minus i times X plus i">$(X-i)(X+i)$</span>, and each linear factor is one copy of <span class="tts-math" data-tts="the complex numbers">$\mathbb{C}$</span>.) That is exactly the direct sum <span class="tts-math" data-tts="the sum over sigma of a copy of the complex numbers">$\bigoplus_\sigma\mathbb{C}$</span>: coordinates indexed by the embeddings <span class="tts-math" data-tts="sigma">$\sigma$</span>.</p>
+</div>
+<p data-cid="ch03-1040">
+The complex conjugation <span class="tts-math" data-tts="F infinity">$F_\infty$</span> on the embeddings induces an involution <span class="tts-math" data-tts="F">$F$</span> on <span class="tts-math" data-tts="K sub C">$K_\mathbb{C}$</span>, given by <span class="tts-math" data-tts="F x of sigma equals the complex conjugate of x of sigma-bar">$(Fx)(\sigma)=\overline{x(\bar\sigma)}$</span>. Neukirch calls <span class="tts-math" data-tts="F">$F$</span> the <strong>Frobenius correspondence</strong> — the name comes from the analogy that at a finite prime the Frobenius generates the decomposition group, and here complex conjugation <em>is</em> the decomposition group of the place at infinity (the Galois group of <span class="tts-math" data-tts="the complex numbers over the real numbers">$\mathbb{C}\mid\mathbb{R}$</span>, which is exactly <span class="tts-math" data-tts="the group of order 2 generated by conjugation">$\{1,\text{conjugation}\}$</span>). So <span class="tts-math" data-tts="F">$F$</span> is the avatar at infinity of the Frobenius, consistent with treating <span class="tts-math" data-tts="C over R">$\mathbb{C}\mid\mathbb{R}$</span> as unramified.
+</p>
+<div class="box definition" data-cid="ch03-1050">
+<span class="box-label">Definition (4.1 &amp; 4.2) — metrized o-module</span>
+<p data-cid="ch03-1060">For a finitely generated <span class="tts-math" data-tts="o">$\mathcal{o}$</span>-module <span class="tts-math" data-tts="M">$M$</span>, put <span class="tts-math" data-tts="M sub C equals M tensor o with K sub C">$M_\mathbb{C} = M\otimes_\mathcal{o}K_\mathbb{C}$</span>. A <strong>hermitian metric</strong> on <span class="tts-math" data-tts="M sub C">$M_\mathbb{C}$</span> is a sesquilinear positive-definite form <span class="tts-math" data-tts="the metric, valued in K sub C">$\langle\,,\rangle_M : M_\mathbb{C}\times M_\mathbb{C}\to K_\mathbb{C}$</span>; it is <strong>F-invariant</strong> if <span class="tts-math" data-tts="F of the inner product of x and y equals the inner product of F x and F y">$F\langle x,y\rangle_M = \langle Fx,Fy\rangle_M$</span>. A <strong>metrized o-module</strong> <span class="tts-math" data-tts="M-bar">$\overline{M}$</span> is such an <span class="tts-math" data-tts="M">$M$</span> with an F-invariant hermitian metric. Equivalently, a hermitian inner product on each complex piece <span class="tts-math" data-tts="M sub sigma">$M_\sigma$</span>, compatible under conjugation.</p>
+</div>
+<div class="box example" data-cid="ch03-1070">
+<span class="box-label">Example — replete ideals are metrized modules</span>
+<p data-cid="ch03-1080">A fractional ideal <span class="tts-math" data-tts="a">$\mathfrak{a}$</span> with the trivial metric <span class="tts-math" data-tts="the inner product of x and y equals x times the conjugate of y">$\langle x,y\rangle = x\bar y$</span> is metrized. More generally, a replete ideal <span class="tts-math" data-tts="a equals a sub f times a sub infinity">$\mathfrak{a}=\mathfrak{a}_f\cdot\mathfrak{a}_\infty$</span> with <span class="tts-math" data-tts="a sub infinity equals the product of p to the v sub p">$\mathfrak{a}_\infty=\prod\mathfrak{p}^{v_\mathfrak{p}}$</span> defines the function <span class="tts-math" data-tts="alpha of sigma equals e to the 2 v sub p sigma">$\alpha(\sigma)=e^{2v_{\mathfrak{p}_\sigma}}$</span> and the metric <span class="tts-math" data-tts="the inner product equals the direct sum of e to the 2 v sub p, times x sub sigma times the conjugate of y sub sigma">$\langle x,y\rangle_\alpha = \bigoplus e^{2v_{\mathfrak{p}_\sigma}}x_\sigma\bar y_\sigma$</span>. The resulting rank-1 metrized module is written <span class="tts-math" data-tts="L of a">$L(\mathfrak{a})$</span>. So the rank-1 metrized modules <em>are exactly the replete ideals</em>.</p>
+</div>
+<div class="box definition" data-cid="ch03-1090">
+<span class="box-label">Proposition (4.5) — dictionary</span>
+<ul data-cid="ch03-1100">
+<li><span class="tts-math" data-tts="L of a is isometric to L of b">$L(\mathfrak{a})\cong L(\mathfrak{b})$</span> iff <span class="tts-math" data-tts="a equals b times a replete principal ideal">$\mathfrak{a}=\mathfrak{b}[a]$</span> for a replete principal ideal;</li>
+<li>every invertible metrized <span class="tts-math" data-tts="o">$\mathcal{o}$</span>-module is some <span class="tts-math" data-tts="L of a">$L(\mathfrak{a})$</span>;</li>
+<li><span class="tts-math" data-tts="L of a b equals L of a tensor L of b, and L of a inverse equals the dual of L of a">$L(\mathfrak{ab})=L(\mathfrak{a})\otimes L(\mathfrak{b})$</span>, <span class="tts-math" data-tts="L of a inverse equals the dual of L of a">$L(\mathfrak{a}^{-1})=\overline{L(\mathfrak{a})}$</span>.</li>
+</ul>
+</div>
+<p data-cid="ch03-1110">
+Metrized modules form a category closed under <span class="tts-math" data-tts="direct sum, tensor product, dual, and exterior power">$\oplus,\otimes,(\cdot)^\vee,\bigwedge^n$</span>, with the natural induced metrics (e.g. <span class="tts-math" data-tts="the metric on the n-th exterior power is the determinant of the matrix of inner products">$\langle x_1\wedge\cdots,y_1\wedge\cdots\rangle = \det(\langle x_i,y_j\rangle)$</span>). The <strong>projective</strong> metrized modules are the analogue of vector bundles; over a Dedekind domain projective = torsion-free = locally free, and every projective module is <span class="tts-math" data-tts="a fractional ideal direct sum o to the n">$\mathfrak{a}\oplus\mathcal{o}^n$</span> (4.3).
+</p>
+<div class="box definition" data-cid="ch03-1120">
+<span class="box-label">Definition (4.6) — admissible exact sequence &amp; determinant</span>
+<p data-cid="ch03-1130">A short exact sequence of metrized modules must split <em>isometrically</em> after complexifying. The <strong>determinant</strong> of a projective metrized module of rank <span class="tts-math" data-tts="n">$n$</span> is its top exterior power <span class="tts-math" data-tts="det M equals the n-th exterior power of M">$\det\overline{M}=\bigwedge^n\overline{M}$</span>, an invertible metrized module. Crucially (4.7), for an admissible <span class="tts-math" data-tts="0 to M prime to M to M double prime to 0">$0\to\overline{M}'\to\overline{M}\to\overline{M}''\to 0$</span> there is a canonical <em>isometry</em></p>
+<span class="tts-math" data-tts="the determinant of M prime tensor the determinant of M double prime is isometric to the determinant of M">
+$$\det\overline{M}'\otimes\det\overline{M}'' \;\cong\; \det\overline{M}.$$
+</span>
+<p data-cid="ch03-1140">This determinant-is-multiplicative property is the technical engine for everything that follows.</p>
+</div>
+
+<!-- ============================ 3.5 ============================ -->
+<h2 data-cid="ch03-1150" id="s3-5">3.5 Grothendieck Groups</h2>
+<p data-cid="ch03-1160">
+We now manufacture an abelian group (in fact a ring) that records all metrized modules up to the relation "the middle is the sum of the ends". This is Grothendieck's universal construction.
+</p>
+<div class="box definition" data-cid="ch03-1170">
+<span class="box-label">Definition (5.1) — replete Grothendieck groups</span>
+<p data-cid="ch03-1180">Let <span class="tts-math" data-tts="F sub 0 of o">$F_0(\mathcal{o})$</span> (resp. <span class="tts-math" data-tts="F upper 0 of o">$F^0(\mathcal{o})$</span>) be the free abelian group on isometry classes of <em>projective</em> (resp. <em>coherent</em>, i.e. arbitrary f.g.) metrized modules. Quotient by the subgroup generated by <span class="tts-math" data-tts="the class of M prime minus the class of M plus the class of M double prime">$\{M'\}-\{M\}+\{M''\}$</span> from admissible exact sequences. The results</p>
+<span class="tts-math" data-tts="K sub 0 of o and K upper 0 of o">
+$$\widehat{K}_0(\mathcal{o}),\qquad \widehat{K}^0(\mathcal{o})$$
+</span>
+<p data-cid="ch03-1190">are the <strong>replete (compactified) Grothendieck groups</strong>. In them, an exact sequence becomes the additive relation <span class="tts-math" data-tts="the class of M equals the class of M prime plus the class of M double prime">$[\overline{M}]=[\overline{M}']+[\overline{M}'']$</span>.</p>
+</div>
+<p data-cid="ch03-1200">
+Tensor product makes <span class="tts-math" data-tts="K sub 0 of o">$\widehat{K}_0(\mathcal{o})$</span> a commutative <em>ring</em> (unit <span class="tts-math" data-tts="the class of o with its trivial metric">$[\mathcal{O}]$</span>), and <span class="tts-math" data-tts="K upper 0 of o">$\widehat{K}^0(\mathcal{o})$</span> a module over it. The natural map <span class="tts-math" data-tts="K sub 0 to K upper 0">$\widehat{K}_0\to\widehat{K}^0$</span> — including projectives into all coherent modules — is the <strong>Poincaré homomorphism</strong>.
+</p>
+<div class="box definition" data-cid="ch03-1210">
+<span class="box-label">Theorem (5.4)</span>
+<p data-cid="ch03-1220">The Poincaré homomorphism <span class="tts-math" data-tts="K sub 0 of o to K upper 0 of o">$\widehat{K}_0(\mathcal{o})\xrightarrow{\sim}\widehat{K}^0(\mathcal{o})$</span> is an <strong>isomorphism</strong>.</p>
+</div>
+<div class="box intuition" data-cid="ch03-1230">
+<span class="box-label">Intuition</span>
+<p data-cid="ch03-1240">Why care? Because the moment you do real work — quotients like <span class="tts-math" data-tts="o modulo an ideal a">$\mathcal{o}/\mathfrak{a}$</span> — you leave the projective world. The theorem says every coherent module already has a class in the <em>ring</em> <span class="tts-math" data-tts="K sub 0">$\widehat{K}_0$</span>, computed from a "metrized projective resolution" <span class="tts-math" data-tts="0 to E to F to M to 0">$0\to\overline{E}\to\overline{F}\to\overline{M}\to 0$</span> via <span class="tts-math" data-tts="the class of M equals the class of F minus the class of E">$[\overline{M}]=[\overline{F}]-[\overline{E}]$</span>. A <em>projective resolution</em> is just the standard move of <strong>approximating an awkward module by a difference of two nice (projective) ones</strong>: write the bad module <span class="tts-math" data-tts="M">$\overline{M}$</span> as "a big nice module <span class="tts-math" data-tts="F">$\overline{F}$</span> minus the relations <span class="tts-math" data-tts="E">$\overline{E}$</span> among its generators," so its class becomes <span class="tts-math" data-tts="the class of F minus the class of E">$[\overline{F}]-[\overline{E}]$</span>. The two lemmas (5.2, 5.3) build such resolutions and show the recipe is well-defined by dominating any two resolutions with a fibre-product third.</p>
+</div>
+<div class="box definition" data-cid="ch03-1250">
+<span class="box-label">Propositions (5.5–5.6) — connection to the Picard group</span>
+<p data-cid="ch03-1260"><span class="tts-math" data-tts="the class of a maps to the class of L of a">$[\mathfrak{a}]\mapsto[L(\mathfrak{a})]$</span> gives a homomorphism <span class="tts-math" data-tts="Pic-hat of o into the unit group of K sub 0 of o">$\widehat{\mathrm{Pic}}(\mathcal{o})\to\widehat{K}_0(\mathcal{o})^*$</span>, and <span class="tts-math" data-tts="K sub 0 of o">$\widehat{K}_0(\mathcal{o})$</span> is generated as an additive group by the classes <span class="tts-math" data-tts="the class of a">$[\mathfrak{a}]$</span>. So the whole ring is built from line bundles.</p>
+</div>
+<div class="box definition" data-cid="ch03-1270">
+<span class="box-label">Proposition (5.7) — the key relation (Tamme)</span>
+<p data-cid="ch03-1280">For any two replete ideals,</p>
+<span class="tts-math" data-tts="the quantity, the class of a minus 1, times the quantity, the class of b minus 1, equals 0">
+$$([\mathfrak{a}]-1)\,([\mathfrak{b}]-1) = 0.$$
+</span>
+<p data-cid="ch03-1290">Equivalently <span class="tts-math" data-tts="the class of a plus the class of b equals the class of a b plus 1">$[\mathfrak{a}]+[\mathfrak{b}]=[\mathfrak{ab}]+1$</span>. This is the metrized analogue of the fact that line bundles on a curve satisfy <span class="tts-math" data-tts="the first Chern class is additive and second Chern classes vanish in dimension one">$c_1$</span>-additivity with vanishing higher products — it makes the Chern theory of §3.6 completely explicit.</p>
+</div>
+
+<!-- ============================ 3.6 ============================ -->
+<h2 data-cid="ch03-1300" id="s3-6">3.6 The Chern Character</h2>
+<p data-cid="ch03-1310">
+Two homomorphisms organize <span class="tts-math" data-tts="K sub 0 of o">$\widehat{K}_0(\mathcal{o})$</span>. First the <strong>rank</strong> (augmentation) <span class="tts-math" data-tts="r k from K sub 0 of o to the integers">$\mathrm{rk}:\widehat{K}_0(\mathcal{o})\to\mathbb{Z}$</span>, whose kernel <span class="tts-math" data-tts="I, the augmentation ideal">$I=\ker(\mathrm{rk})$</span> is the augmentation ideal. By (5.7),
+</p>
+<span class="tts-math" data-tts="I squared equals 0">
+$$I^2 = 0 \qquad\text{(6.2)}.$$
+</span>
+<div class="box definition" data-cid="ch03-1320">
+<span class="box-label">Definition (6.3) — Chern character</span>
+<p data-cid="ch03-1330">Set <span class="tts-math" data-tts="the graded K-zero equals Z direct sum I">$\mathrm{gr}\,\widehat{K}_0(\mathcal{o}) = \mathbb{Z}\oplus I$</span> with <span class="tts-math" data-tts="the product of any two elements of I is zero">$I\cdot I=0$</span>. The <strong>first Chern class</strong> is <span class="tts-math" data-tts="c 1 of xi equals xi minus the rank of xi">$c_1(\xi)=\xi-\mathrm{rk}(\xi)$</span>, and the <strong>Chern character</strong> is</p>
+<span class="tts-math" data-tts="c h of xi equals the rank of xi plus c 1 of xi">
+$$\mathrm{ch}(\xi) = \mathrm{rk}(\xi) + c_1(\xi).$$
+</span>
+</div>
+<div class="box definition" data-cid="ch03-1340">
+<span class="box-label">Theorem (6.4 &amp; 6.6) — explicit structure</span>
+<p data-cid="ch03-1350">The Chern character is a <strong>ring isomorphism</strong>. Why is <span class="tts-math" data-tts="the determinant map from I onto Pic-hat of o is an isomorphism">$\det: I\xrightarrow{\sim}\widehat{\mathrm{Pic}}(\mathcal{o})$</span> (6.5) an isomorphism? Because <span class="tts-math" data-tts="I squared equals 0">$I^2=0$</span>: once products of augmentation-ideal classes vanish, a bundle has no invariants beyond its rank except its top exterior power — the <em>determinant line</em>. There is simply nothing else left to remember, so the augmentation ideal <span class="tts-math" data-tts="I">$I$</span> and the Picard group <span class="tts-math" data-tts="Pic-hat of o">$\widehat{\mathrm{Pic}}(\mathcal{o})$</span> of line bundles must coincide. Using this,</p>
+<span class="tts-math" data-tts="c h gives an isomorphism from K sub 0 of o to Z direct sum Pic-hat of o, sending xi to its rank direct sum its determinant">
+$$\mathrm{ch}: \widehat{K}_0(\mathcal{o}) \xrightarrow{\sim} \mathbb{Z}\oplus\widehat{\mathrm{Pic}}(\mathcal{o}),\qquad \mathrm{ch}(\xi)=\mathrm{rk}(\xi)\oplus\det(\xi).$$
+</span>
+</div>
+<div class="box intuition" data-cid="ch03-1360">
+<span class="box-label">Intuition — what we've actually proved</span>
+<p data-cid="ch03-1370">A metrized vector bundle on <span class="tts-math" data-tts="the spectrum of o">$\mathrm{Spec}(\mathcal{o})$</span> is, up to <span class="tts-math" data-tts="K-theory">$K$</span>-theory, determined by exactly two invariants: its <strong>rank</strong> and its <strong>determinant line bundle</strong>. The right-hand side <span class="tts-math" data-tts="Z direct sum Pic-hat of o">$\mathbb{Z}\oplus\widehat{\mathrm{Pic}}(\mathcal{o})$</span> is the "replete Chow ring" <span class="tts-math" data-tts="C H-hat of o">$\widehat{\mathrm{CH}}(\mathcal{o})$</span>, and <span class="tts-math" data-tts="c h">$\mathrm{ch}$</span> is the realization map from <span class="tts-math" data-tts="K-theory">$K$</span>-theory to Chow theory — the very bridge Neukirch hinted at in §3.1's philosophical aside about <span class="tts-math" data-tts="K sub i of X">$K_i(X)$</span> versus <span class="tts-math" data-tts="C H i of X">$\mathrm{CH}^i(X)$</span>.</p>
+</div>
+
+<!-- ============================ 3.7 ============================ -->
+<h2 data-cid="ch03-1380" id="s3-7">3.7 Grothendieck–Riemann–Roch</h2>
+<p data-cid="ch03-1390">
+Finally we compare the Grothendieck groups of <span class="tts-math" data-tts="K">$K$</span> and a finite extension <span class="tts-math" data-tts="L">$L$</span>, with rings of integers <span class="tts-math" data-tts="o and O">$\mathcal{o}\subset\mathcal{O}$</span>. The inclusion <span class="tts-math" data-tts="i from o to O">$i:\mathcal{o}\hookrightarrow\mathcal{O}$</span> gives two maps:
+</p>
+<ul data-cid="ch03-1400">
+<li><strong>Pullback</strong> <span class="tts-math" data-tts="i upper star from K sub 0 of o to K sub 0 of O">$i^*:\widehat{K}_0(\mathcal{o})\to\widehat{K}_0(\mathcal{O})$</span>, <span class="tts-math" data-tts="M maps to M tensor o with O">$\overline{M}\mapsto\overline{M}\otimes_\mathcal{o}\mathcal{O}$</span> (extend scalars; the metric extends sesquilinearly). A ring homomorphism.</li>
+<li><strong>Pushforward</strong> <span class="tts-math" data-tts="i lower star from K sub 0 of O to K sub 0 of o">$i_*:\widehat{K}_0(\mathcal{O})\to\widehat{K}_0(\mathcal{o})$</span>, restrict a metrized <span class="tts-math" data-tts="O">$\mathcal{O}$</span>-module to an <span class="tts-math" data-tts="o">$\mathcal{o}$</span>-module, taking orthogonal sums of metrics over <span class="tts-math" data-tts="tau dividing sigma">$\tau\mid\sigma$</span>. Only additive.</li>
+</ul>
+<p data-cid="ch03-1410">
+They satisfy the <strong>projection formula</strong> (7.1): <span class="tts-math" data-tts="i lower star of, the pullback of x times y, equals x times i lower star of y">$i_*(i^*x\cdot y)=x\cdot i_*y$</span>. The Riemann–Roch problem is to compute <span class="tts-math" data-tts="c h of i lower star M">$\mathrm{ch}(i_*\overline{M})$</span> from <span class="tts-math" data-tts="c h of M">$\mathrm{ch}(\overline{M})$</span> — by (6.6) this means computing <span class="tts-math" data-tts="the determinant of i lower star M">$\det(i_*\overline{M})$</span>.
+</p>
+<div class="box definition" data-cid="ch03-1420">
+<span class="box-label">Theorem (7.2)</span>
+<p data-cid="ch03-1430">For a projective metrized <span class="tts-math" data-tts="O">$\mathcal{O}$</span>-module <span class="tts-math" data-tts="M">$\overline{M}$</span>:</p>
+<span class="tts-math" data-tts="the rank of i lower star M equals the rank of M times the degree of L over K; and the determinant of i lower star M equals the norm from L to K of the determinant of M, tensor, the determinant of i lower star O, to the power rank of M">
+$$\mathrm{rk}(i_*\overline{M}) = \mathrm{rk}(\overline{M})\,[L\!:\!K],\quad \det(i_*\overline{M}) = N_{L\mid K}(\det\overline{M})\otimes(\det i_*\mathcal{O})^{\mathrm{rk}(\overline{M})}.$$
+</span>
+</div>
+<div class="box definition" data-cid="ch03-1440">
+<span class="box-label">Proposition (7.4) — the determinant of the trace</span>
+<p data-cid="ch03-1450">The mysterious correction term squares to the discriminant: there is a canonical isometry</p>
+<span class="tts-math" data-tts="the determinant of i lower star O, tensor squared, equals the discriminant d of L over K, with trivial metric">
+$$(\det i_*\mathcal{O})^{\otimes 2} \cong \mathfrak{d}_{L\mid K},$$
+</span>
+<p data-cid="ch03-1460">via the trace pairing <span class="tts-math" data-tts="x y maps to the trace of x y">$(x,y)\mapsto\mathrm{Tr}_{L\mid K}(xy)$</span>, whose image is by definition the discriminant ideal.</p>
+</div>
+<p data-cid="ch03-1470">
+Reformulating in Grothendieck's language: <span class="tts-math" data-tts="i lower star">$i_*$</span> induces a <strong>Gysin map</strong> <span class="tts-math" data-tts="i lower star on graded K-zero">$i_*:\mathrm{gr}\,\widehat{K}_0(\mathcal{O})\to\mathrm{gr}\,\widehat{K}_0(\mathcal{o})$</span>, which on <span class="tts-math" data-tts="Z direct sum Pic-hat">$\mathbb{Z}\oplus\widehat{\mathrm{Pic}}$</span> is just <span class="tts-math" data-tts="multiply the rank by the degree of L over K, and apply the norm on Picard">$[L\!:\!K]\oplus N_{L\mid K}$</span> (7.5). The diagram relating <span class="tts-math" data-tts="c h after i lower star">$\mathrm{ch}\circ i_*$</span> and <span class="tts-math" data-tts="i lower star after c h">$i_*\circ\mathrm{ch}$</span> does <em>not</em> commute — and the failure is measured by the <strong>Todd class</strong>.
+</p>
+<div class="box intuition" data-cid="ch03-1475">
+<span class="box-label">The moral, before the jargon</span>
+<p data-cid="ch03-1476">Strip away the vocabulary (<em>Gysin map</em>, <em>Todd class</em>, <span class="tts-math" data-tts="f lower-shriek">$f_!$</span>, "categorified") and the idea is simple. We have the big curve <span class="tts-math" data-tts="the spectrum of O">$\mathrm{Spec}(\mathcal{O})$</span> sitting over the small one <span class="tts-math" data-tts="the spectrum of o">$\mathrm{Spec}(\mathcal{o})$</span>, and we want to <strong>push a bundle down</strong> from big to small (that "pushing down" is the Gysin map, also written <span class="tts-math" data-tts="f lower-shriek">$f_!$</span>). Pushing down <em>distorts the invariants</em>: the rank and determinant of the pushed-down bundle are not simply the images of the originals. The remarkable fact is that the distortion is <em>universal</em> — it does not depend on which bundle you push — and the single correction factor that fixes it is the <strong>Todd class</strong>. Even better, here that universal correction turns out to be nothing new: it is the <em>different</em> (the ramification of the covering) reappearing in yet another guise. Everything below just makes this precise.</p>
+</div>
+<div class="box definition" data-cid="ch03-1480">
+<span class="box-label">Definition (7.6) — Todd class</span>
+<p data-cid="ch03-1490">Using the (coherent) module of differentials <span class="tts-math" data-tts="big Omega of O over o">$\Omega_{\mathcal{O}\mid\mathcal{o}}$</span>, whose class lies in <span class="tts-math" data-tts="I">$I$</span>,</p>
+<span class="tts-math" data-tts="the Todd class of O over o equals 1 minus one half the class of Omega, which equals one half times 1 plus the class of the different">
+$$\mathrm{Td}(\mathcal{O}\mid\mathcal{o}) = 1 - \tfrac12[\Omega_{\mathcal{O}\mid\mathcal{o}}] = \tfrac12\big(1+[\mathfrak{D}_{L\mid K}]\big) \in \mathrm{gr}\,\widehat{K}_0(\mathcal{O})\otimes\mathbb{Z}[\tfrac12].$$
+</span>
+<p data-cid="ch03-1500">The factor <span class="tts-math" data-tts="one half">$\tfrac12$</span> is exactly the <span class="tts-math" data-tts="one half degree of the different">$\tfrac12\deg\mathfrak{D}$</span> that appeared in Riemann–Hurwitz (3.13) — the Todd class is Riemann–Hurwitz, categorified.</p>
+</div>
+<div class="box definition" data-cid="ch03-1510">
+<span class="box-label">Theorem (7.7) — Grothendieck–Riemann–Roch</span>
+<p data-cid="ch03-1520">The corrected diagram commutes: for every <span class="tts-math" data-tts="xi in K-zero of O">$\xi\in\widehat{K}_0(\mathcal{O})$</span>,</p>
+<span class="tts-math" data-tts="c h of i lower star xi equals i lower star of, the Todd class of O over o, times c h of xi">
+$$\mathrm{ch}(i_*\xi) = i_*\big(\mathrm{Td}(\mathcal{O}\mid\mathcal{o})\cdot\mathrm{ch}(\xi)\big).$$
+</span>
+</div>
+<div class="box pause" data-cid="ch03-1530">
+<span class="box-label">Pause — read the formula geometrically</span>
+<p data-cid="ch03-1540">This is <em>literally</em> Grothendieck's <span class="tts-math" data-tts="c h of f lower star equals f lower star of Todd times c h">$\mathrm{ch}(f_!\,\cdot) = f_*(\mathrm{Td}_f\cdot\mathrm{ch}(\cdot))$</span> for the morphism of "curves" <span class="tts-math" data-tts="f from the spectrum of O to the spectrum of o">$f:\mathrm{Spec}(\mathcal{O})\to\mathrm{Spec}(\mathcal{o})$</span>. The "<span class="tts-math" data-tts="Chern character commutes with pushforward up to the Todd class of the relative tangent">$\mathrm{ch}$</span> doesn't commute with pushforward; the discrepancy is the relative Todd class" — and here the relative tangent / cotangent is the different. Number theory has been swallowed whole by algebraic geometry.</p>
+</div>
+
+<!-- ============================ 3.8 ============================ -->
+<h2 data-cid="ch03-1550" id="s3-8">3.8 The Euler–Minkowski Characteristic</h2>
+<p data-cid="ch03-1560">
+The last section closes the loop: it shows the ad-hoc <span class="tts-math" data-tts="chi of a equals minus log the volume of a">$\chi(\mathfrak{a})=-\log\mathrm{vol}(\mathfrak{a})$</span> of §3.3 is the special case <span class="tts-math" data-tts="K over the rationals">$K\mid\mathbb{Q}$</span> of GRR, by viewing a rank-1 <span class="tts-math" data-tts="o">$\mathcal{o}$</span>-module as a rank-<span class="tts-math" data-tts="the degree of K over the rationals">$[K\!:\!\mathbb{Q}]$</span> metrized <span class="tts-math" data-tts="Z-module">$\mathbb{Z}$</span>-module.
+</p>
+<div class="box definition" data-cid="ch03-1570">
+<span class="box-label">Proposition / Definition (8.1)</span>
+<p data-cid="ch03-1580">The degree map <span class="tts-math" data-tts="degree sub K of the class of a equals minus log the absolute norm of a">$\deg_K([\mathfrak{a}])=-\log\mathfrak{N}(\mathfrak{a})$</span> on <span class="tts-math" data-tts="Pic-hat of o">$\widehat{\mathrm{Pic}}(\mathcal{o})$</span> extends uniquely to the <strong>Euler–Minkowski characteristic</strong></p>
+<span class="tts-math" data-tts="chi sub K equals degree after determinant, from K-zero of o to the reals">
+$$\chi_K = \deg\circ\det : \widehat{K}_0(\mathcal{o}) \to \mathbb{R}.$$
+</span>
+</div>
+<div class="box definition" data-cid="ch03-1590">
+<span class="box-label">Theorem (8.2) — Riemann–Roch via GRR</span>
+<p data-cid="ch03-1600">Applying <span class="tts-math" data-tts="degree sub K">$\deg_K$</span> to (7.2), for every coherent <span class="tts-math" data-tts="O">$\mathcal{O}$</span>-module <span class="tts-math" data-tts="M">$\overline{M}$</span>:</p>
+<span class="tts-math" data-tts="chi sub K of i lower star M equals the degree over L of the determinant of M, plus the rank of M times chi sub K of i lower star O">
+$$\chi_K(i_*\overline{M}) = \deg_L(\det\overline{M}) + \mathrm{rk}(\overline{M})\,\chi_K(i_*\mathcal{O}),$$
+</span>
+<p data-cid="ch03-1610">and for invertible <span class="tts-math" data-tts="M">$\overline{M}$</span> this is exactly <span class="tts-math" data-tts="chi sub K of i lower star M equals the degree over L of M plus chi sub K of i lower star O">$\chi_K(i_*\overline{M}) = \deg_L(\overline{M}) + \chi_K(i_*\mathcal{O})$</span> — Riemann–Roch for the covering.</p>
+</div>
+<p data-cid="ch03-1620">
+Specializing to <span class="tts-math" data-tts="the base field is the rationals">$K=\mathbb{Q}$</span>: a metrized <span class="tts-math" data-tts="Z-module">$\mathbb{Z}$</span>-module is just a finitely generated abelian group with a euclidean metric on <span class="tts-math" data-tts="M tensor R">$M\otimes\mathbb{R}$</span>. Since <span class="tts-math" data-tts="the degree map on Pic of Z is an isomorphism onto the reals">$\deg:\widehat{\mathrm{Pic}}(\mathbb{Z})\xrightarrow{\sim}\mathbb{R}$</span>, the Euler–Minkowski characteristic <span class="tts-math" data-tts="chi equals degree after determinant">$\chi=\deg\circ\det$</span> is fully explicit.
+</p>
+<div class="box definition" data-cid="ch03-1630">
+<span class="box-label">Proposition (8.3) — the master formula</span>
+<p data-cid="ch03-1640">For a coherent metrized <span class="tts-math" data-tts="Z-module">$\mathbb{Z}$</span>-module <span class="tts-math" data-tts="M">$M$</span>,</p>
+<span class="tts-math" data-tts="chi of M equals the logarithm of the number of torsion elements, minus the logarithm of the covolume of M modulo its torsion">
+$$\chi(M) = \log\#M_{\mathrm{tor}} - \log\mathrm{vol}(M/M_{\mathrm{tor}}).$$
+</span>
+</div>
+<div class="box intuition" data-cid="ch03-1650">
+<span class="box-label">Intuition — torsion vs covolume</span>
+<p data-cid="ch03-1660">Read this as the arithmetic Euler characteristic: a <em>finite</em> group contributes <span class="tts-math" data-tts="plus the logarithm of its order">$+\log\#$</span> (like an <span class="tts-math" data-tts="H zero">$H^0$</span>), while the <em>lattice</em> part contributes <span class="tts-math" data-tts="minus the logarithm of its covolume">$-\log\mathrm{vol}$</span> (like an <span class="tts-math" data-tts="H one">$H^1$</span> defect). The two pieces are the arithmetic <span class="tts-math" data-tts="h zero minus h one">$h^0-h^1$</span>.</p>
+</div>
+<div class="box definition" data-cid="ch03-1670">
+<span class="box-label">Proposition (8.4) — it all reconciles</span>
+<p data-cid="ch03-1680">Viewing the rank-1 metrized <span class="tts-math" data-tts="o">$\mathcal{o}$</span>-module <span class="tts-math" data-tts="L of a">$L(\mathfrak{a})$</span> as a rank-<span class="tts-math" data-tts="the degree of K over the rationals">$[K\!:\!\mathbb{Q}]$</span> metrized <span class="tts-math" data-tts="Z-module">$\mathbb{Z}$</span>-module <span class="tts-math" data-tts="i lower star L of a">$i_*L(\mathfrak{a})$</span>,</p>
+<span class="tts-math" data-tts="chi of a equals chi of i lower star L of a">
+$$\chi(\mathfrak{a}) = \chi(i_*L(\mathfrak{a})).$$
+</span>
+<p data-cid="ch03-1690">So the volume-defined Euler–Minkowski characteristic of §3.3 is precisely the determinant-degree of the pushed-forward <span class="tts-math" data-tts="Z-module">$\mathbb{Z}$</span>-module. The first Riemann–Roch formula <span class="tts-math" data-tts="chi of a equals the degree of a plus chi of o">$\chi(\mathfrak{a})=\deg(\mathfrak{a})+\chi(\mathcal{O})$</span> is the case <span class="tts-math" data-tts="K over the rationals">$K\mid\mathbb{Q}$</span> of (8.2). The circle is closed.</p>
+</div>
+
+<!-- ============================ SUMMARY ============================ -->
+<h2 data-cid="ch03-1700" id="summary">Summary</h2>
+<p data-cid="ch03-1710">
+This chapter built, brick by brick, a dictionary in which a number field is a compact curve and Riemann–Roch holds.
+</p>
+<ul data-cid="ch03-1720">
+<li><strong>§3.1</strong> Adjoin the infinite primes; replete ideals/divisors and the Arakelov class group <span class="tts-math" data-tts="C H one-hat of o">$\widehat{\mathrm{CH}}^1(\mathcal{o})$</span>, whose degree-zero part is compact — encoding both the unit theorem and finiteness of the class number.</li>
+<li><strong>§3.2</strong> The different and discriminant measure ramification (<span class="tts-math" data-tts="the discriminant equals the norm of the different">$\mathfrak{d}=N(\mathfrak{D})$</span>); Minkowski/Hermite show <span class="tts-math" data-tts="the rationals">$\mathbb{Q}$</span> has no unramified extension.</li>
+<li><strong>§3.3</strong> The Euler–Minkowski characteristic <span class="tts-math" data-tts="chi of a equals minus log volume of a">$\chi(\mathfrak{a})=-\log\mathrm{vol}(\mathfrak{a})$</span> gives <span class="tts-math" data-tts="chi of a equals degree of a plus chi of o">$\chi(\mathfrak{a})=\deg(\mathfrak{a})+\chi(\mathcal{O})$</span>; the discriminant is the genus, and Lang's lattice count gives the strong theorem.</li>
+<li><strong>§3.4–3.5</strong> Metrized modules = vector bundles with metrics at infinity; their Grothendieck ring <span class="tts-math" data-tts="K sub 0 of o">$\widehat{K}_0(\mathcal{o})$</span>, with the structural relation <span class="tts-math" data-tts="the class of a minus 1 times the class of b minus 1 equals 0">$([\mathfrak{a}]-1)([\mathfrak{b}]-1)=0$</span>.</li>
+<li><strong>§3.6</strong> The Chern character <span class="tts-math" data-tts="K sub 0 of o isomorphic to Z direct sum Pic-hat of o">$\widehat{K}_0(\mathcal{o})\cong\mathbb{Z}\oplus\widehat{\mathrm{Pic}}(\mathcal{o})$</span>: a bundle is its rank and its determinant.</li>
+<li><strong>§3.7</strong> Grothendieck–Riemann–Roch <span class="tts-math" data-tts="c h of i lower star xi equals i lower star of Todd times c h of xi">$\mathrm{ch}(i_*\xi)=i_*(\mathrm{Td}\cdot\mathrm{ch}\,\xi)$</span>, with the Todd class built from the different — Riemann–Hurwitz categorified.</li>
+<li><strong>§3.8</strong> Everything reduces over <span class="tts-math" data-tts="the rationals">$\mathbb{Q}$</span> to <span class="tts-math" data-tts="chi of M equals log of the torsion minus log of the covolume">$\chi(M)=\log\#M_{\mathrm{tor}}-\log\mathrm{vol}(M/M_{\mathrm{tor}})$</span>, recovering §3.3.</li>
+</ul>
+<div class="box intuition" data-cid="ch03-1730">
+<span class="box-label">The one thing to remember</span>
+<p data-cid="ch03-1740">Add the archimedean places, replace integers by real volumes, and the geometry of curves becomes the arithmetic of number fields — letter for letter. The discriminant is the genus, the different is the ramification divisor, and Riemann–Roch counts lattice points.</p>
+</div>
+
+<nav class="chapter-nav">
+<a href="ch02.html"><span class="label">← Previous</span><span class="title">II. The Theory of Valuations</span></a>
+<a class="next" href="ch04.html"><span class="label">Next →</span><span class="title">IV. Abstract Class Field Theory</span></a>
+</nav>
+</article>
+</main>
+<script src="/js/main.js"></script><script src="/js/comments.js"></script><script src="/js/tts.js"></script>
+</body>
+</html>

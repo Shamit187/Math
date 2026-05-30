@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ch 05 — Local Class Field Theory · Algebraic Number Theory</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/><link href="/css/tts.css" rel="stylesheet"/>
+</head>
+<body data-book="algebraic_number_theory" data-page="ch05">
+<header class="site-header">
+<a class="home-btn" href="/">Home</a>
+<a class="brand" href="/books/algebraic_number_theory/">Algebraic Number Theory <small>a slow reading guide</small></a>
+<nav>
+<button aria-label="toggle theme" class="theme-toggle">Dark</button>
+</nav>
+</header>
+<main class="layout">
+<aside class="sidebar">
+<h4>Chapter 05</h4>
+<ol>
+<li><a href="#intro">Orientation</a></li>
+<li><a href="#s5-1">5.1 The Local Reciprocity Law</a></li>
+<li><a href="#s5-2">5.2 The Norm Residue Symbol over Q_p</a></li>
+<li><a href="#s5-3">5.3 The Hilbert Symbol</a></li>
+<li><a href="#s5-4">5.4 Formal Groups</a></li>
+<li><a href="#s5-5">5.5 Generalized Cyclotomic Theory</a></li>
+<li><a href="#s5-6">5.6 Higher Ramification Groups</a></li>
+<li><a href="#summary">Summary</a></li>
+</ol>
+</aside>
+<article class="content">
+<section class="hero">
+<div class="kicker">Chapter 05</div>
+<h1>Local Class Field Theory</h1>
+<p class="subtitle" data-cid="ch05-010">The abstract machinery of Chapter IV becomes concrete: every abelian extension of <span class="tts-math" data-tts="the p-adic numbers Q sub p">$\mathbb{Q}_p$</span> is named, computed, and built by hand.</p>
+<div class="meta">
+<span>Neukirch Chapter V</span>
+<span>~55 min reading time</span>
+<span>Prereqs: Ch. II (local fields), Ch. IV (abstract CFT), Galois cohomology</span>
+</div>
+</section>
+
+<h2 data-cid="ch05-020" id="intro">Orientation: what this chapter is for</h2>
+<p data-cid="ch05-030">
+  Chapter IV built a machine. Given a profinite group <span class="tts-math" data-tts="G">$G$</span>, a <span class="tts-math" data-tts="G-module A">$G$</span>-module <span class="tts-math" data-tts="A">$A$</span>, and a surjection <span class="tts-math" data-tts="d from G onto Z hat">$d\colon G \to \hat{\mathbb{Z}}$</span> satisfying a short list of axioms (the "class field axiom" and a henselian valuation), it produced for every finite Galois extension a canonical reciprocity isomorphism. That was abstract: it never looked at a single number.
+</p>
+<p data-cid="ch05-040">
+  This chapter feeds a <em>local field</em> into that machine and watches the abstract objects turn into things you can hold. The group <span class="tts-math" data-tts="G">$G$</span> becomes the absolute Galois group of a <span class="tts-math" data-tts="p-adic">$p$</span>-adic field; the module <span class="tts-math" data-tts="A">$A$</span> becomes the multiplicative group of the separable closure; the abstract reciprocity map becomes the <strong>local norm residue symbol</strong>. And then the chapter does something the abstract theory never could: it computes. Over <span class="tts-math" data-tts="Q sub p">$\mathbb{Q}_p$</span> the symbol has an explicit closed form; the Hilbert symbol reduces to congruences mod <span class="tts-math" data-tts="p">$p$</span>; and Lubin–Tate formal groups manufacture the abelian extensions out of "division points" the way roots of unity manufacture cyclotomic fields.
+</p>
+<div class="box intuition" data-cid="ch05-050">
+<span class="box-label">Intuition</span>
+<p data-cid="ch05-060">
+  Keep one analogy in your pocket for the whole chapter: <strong>prime elements correspond to Frobenius</strong>. In the abstract theory a uniformizer <span class="tts-math" data-tts="pi">$\pi$</span> of <span class="tts-math" data-tts="K">$K$</span> is sent by the reciprocity map to something acting like the Frobenius on the unramified tower. Almost every explicit formula in this chapter — the Lubin–Tate condition <span class="tts-math" data-tts="bracket pi of X is congruent to X to the q mod pi">$[\pi]_F(X)\equiv X^q \bmod \pi$</span>, the value of the norm residue symbol on a uniformizer — is just this slogan made precise.
+</p>
+</div>
+<div class="box definition" data-cid="ch05-070">
+<span class="box-label">Notation for the whole chapter</span>
+<p data-cid="ch05-080">
+  Let <span class="tts-math" data-tts="K">$K$</span> be a local field — complete with respect to a discrete valuation, with finite residue field. By Chapter II these are exactly the finite extensions of <span class="tts-math" data-tts="Q sub p">$\mathbb{Q}_p$</span> or <span class="tts-math" data-tts="F sub p of t">$\mathbb{F}_p((t))$</span>. We write:
+</p>
+<ul data-cid="ch05-090">
+<li><span class="tts-math" data-tts="v sub K">$v_K$</span> — the normalized valuation with <span class="tts-math" data-tts="v sub K of K star equals Z">$v_K(K^\times)=\mathbb{Z}$</span>;</li>
+<li><span class="tts-math" data-tts="O sub K">$\mathcal{O}_K$</span> — the valuation ring, <span class="tts-math" data-tts="p sub K">$\mathfrak{p}_K$</span> its maximal ideal, <span class="tts-math" data-tts="kappa equals O sub K mod p sub K">$\kappa=\mathcal{O}_K/\mathfrak{p}_K$</span> the residue field with <span class="tts-math" data-tts="q equals the number of elements of kappa">$q=\#\kappa$</span>;</li>
+<li><span class="tts-math" data-tts="U sub K">$U_K$</span> — the units <span class="tts-math" data-tts="the set of a with v sub K of a equals 0">$\{a\in K^\times \mid v_K(a)=0\}$</span>, and <span class="tts-math" data-tts="U sub K to the n">$U_K^{(n)}=1+\mathfrak{p}_K^n$</span> the <span class="tts-math" data-tts="n-th">$n$</span>-th higher units (with <span class="tts-math" data-tts="U sub K to the 0 equals U sub K">$U_K^{(0)}=U_K$</span>);</li>
+<li><span class="tts-math" data-tts="pi sub K, or just pi">$\pi_K$</span> (or <span class="tts-math" data-tts="pi">$\pi$</span>) — a prime element, so <span class="tts-math" data-tts="p sub K equals pi O sub K">$\mathfrak{p}_K=\pi\mathcal{O}_K$</span>;</li>
+<li><span class="tts-math" data-tts="mu sub n">$\mu_n$</span> — the <span class="tts-math" data-tts="n-th">$n$</span>-th roots of unity, <span class="tts-math" data-tts="mu sub n of K equals mu sub n intersect K star">$\mu_n(K)=\mu_n\cap K^\times$</span>.</li>
+</ul>
+</div>
+
+<!-- ===================== 5.1 ===================== -->
+<h2 data-cid="ch05-100" id="s5-1">5.1 The Local Reciprocity Law</h2>
+<p data-cid="ch05-110">
+  To turn the crank of Chapter IV we must check that the multiplicative group of a local field satisfies the <strong>class field axiom</strong>. Everything in this section is in service of that one verification, after which the abstract theorems apply for free.
+</p>
+<div class="box definition" data-cid="ch05-120">
+<span class="box-label">Theorem (1.1) — the class field axiom</span>
+<p data-cid="ch05-130">
+  For a cyclic extension <span class="tts-math" data-tts="L over K">$L\mid K$</span> of local fields,
+</p>
+<span class="tts-math" data-tts="the order of the i-th Tate cohomology group H to the i of G with coefficients in L star equals the degree of L over K when i is zero, and equals one when i is minus one">
+$$\#\widehat{H}^{i}\big(G(L\mid K),\,L^\times\big)=\begin{cases}[L:K] & i=0,\\[2pt] 1 & i=-1.\end{cases}$$
+</span>
+</div>
+<div class="box intuition" data-cid="ch05-135">
+<span class="box-label">Reminder — what <span class="tts-math" data-tts="H hat to the i">$\widehat{H}^i$</span> means</span>
+<p data-cid="ch05-136">
+  The hat marks <strong>Tate cohomology</strong>: it splices ordinary homology (in the negative degrees) and cohomology (in the non-negative degrees) into one sequence <span class="tts-math" data-tts="H hat to the i for all integers i">$\widehat{H}^i$</span> indexed by <em>all</em> integers <span class="tts-math" data-tts="i">$i$</span>, so that a long exact sequence runs in both directions. For a finite group <span class="tts-math" data-tts="G">$G$</span> the two degrees we use are concrete: <span class="tts-math" data-tts="H hat to the zero of G with coefficients in L star equals K star modulo the norms of L star">$\widehat{H}^0(G,L^\times)=K^\times/N_{L\mid K}L^\times$</span> (the cokernel of the norm map), and <span class="tts-math" data-tts="H hat to the minus one">$\widehat{H}^{-1}(G,L^\times)$</span> is the kernel of the norm modulo the augmentation ideal (the elements killed by the norm, up to <span class="tts-math" data-tts="sigma x over x">$\sigma x/x$</span> terms). So the theorem says exactly two things: <span class="tts-math" data-tts="K star mod norms has order the degree L over K">$K^\times/N L^\times$</span> has order <span class="tts-math" data-tts="the degree L over K">$[L:K]$</span>, and the norm-one elements are all of the trivial form.
+</p>
+</div>
+<p data-cid="ch05-140">
+  The case <span class="tts-math" data-tts="i equals minus one">$i=-1$</span> is Hilbert 90 (Chapter IV). The content is the case <span class="tts-math" data-tts="i equals zero">$i=0$</span>, which is equivalent to saying the <strong>Herbrand quotient</strong> <span class="tts-math" data-tts="h of G and L star">$h(G,L^\times)$</span> equals <span class="tts-math" data-tts="the degree L over K">$[L:K]$</span>. Here is the strategy in plain language.
+</p>
+<div class="box definition" data-cid="ch05-145">
+<span class="box-label">Definition — the Herbrand quotient</span>
+<p data-cid="ch05-146">
+  For a cyclic group <span class="tts-math" data-tts="G">$G$</span> and a <span class="tts-math" data-tts="G-module A">$G$</span>-module <span class="tts-math" data-tts="A">$A$</span> whose two Tate groups are finite, the <strong>Herbrand quotient</strong> is the ratio of their orders,
+  <span class="tts-math" data-tts="h of G and A equals the order of H hat to the zero divided by the order of H hat to the minus one">$h(G,A)=\dfrac{\#\widehat{H}^0(G,A)}{\#\widehat{H}^{-1}(G,A)}.$</span>
+  Two properties do all the work. It is <strong>multiplicative</strong> in short exact sequences: if <span class="tts-math" data-tts="zero to A to B to C to zero is exact">$0\to A\to B\to C\to 0$</span> then <span class="tts-math" data-tts="h of B equals h of A times h of C">$h(G,B)=h(G,A)\,h(G,C)$</span> (whenever any two are defined). And it is <strong>invariant under finite modules</strong>: <span class="tts-math" data-tts="h of G and A equals one whenever A is finite">$h(G,A)=1$</span> if <span class="tts-math" data-tts="A">$A$</span> is finite. So <span class="tts-math" data-tts="h">$h$</span> ignores finite pieces and only sees the "size" of the infinite part — which is why the unit count below comes out to exactly <span class="tts-math" data-tts="one">$1$</span>.
+</p>
+</div>
+<div class="box pause" data-cid="ch05-150">
+<span class="box-label">How the proof goes</span>
+<p data-cid="ch05-160">
+  Break <span class="tts-math" data-tts="L star">$L^\times$</span> apart with the exact sequence
+  <span class="tts-math" data-tts="one to U sub L to L star to Z to zero">$1\to U_L\to L^\times \xrightarrow{v_L} \mathbb{Z}\to 0$</span>.
+  Herbrand quotients are multiplicative, and <span class="tts-math" data-tts="h of G and Z equals the degree L over K">$h(G,\mathbb{Z})=[L:K]$</span> (the trivial module). So it suffices to show the units contribute nothing: <span class="tts-math" data-tts="h of G and U sub L equals 1">$h(G,U_L)=1$</span>.
+</p>
+<p data-cid="ch05-170">
+  For the units one uses a <strong>normal basis</strong> of <span class="tts-math" data-tts="L over K">$L\mid K$</span> to find a <span class="tts-math" data-tts="G">$G$</span>-stable open lattice <span class="tts-math" data-tts="M">$M$</span> in <span class="tts-math" data-tts="O sub L">$\mathcal{O}_L$</span>. The neighbourhoods <span class="tts-math" data-tts="V sub n equals 1 plus pi to the n times M">$V_n=1+\pi_K^n M$</span> are, for large <span class="tts-math" data-tts="n">$n$</span>, subgroups of <span class="tts-math" data-tts="U sub L">$U_L$</span> with successive quotients <span class="tts-math" data-tts="V sub n over V sub n plus one">$V_n/V_{n+1}\cong M/\pi_K M$</span> — an <em>induced</em> module (an induced module has the shape <span class="tts-math" data-tts="Z of G tensor M naught">$\mathbb{Z}[G]\otimes M_0$</span>: one copy of a base module <span class="tts-math" data-tts="M naught">$M_0$</span> for each group element, permuted by <span class="tts-math" data-tts="G">$G$</span>). By <strong>Shapiro's lemma</strong> the cohomology of an induced module collapses to that of the trivial group — i.e. it vanishes in every nonzero Tate degree — so such a module is <strong>cohomologically trivial</strong> and its Herbrand quotient is <span class="tts-math" data-tts="one">$1$</span>. Hence <span class="tts-math" data-tts="all the V sub n have trivial cohomology">$h(G,V_n)=1$</span>, and since <span class="tts-math" data-tts="U sub L over V sub n">$U_L/V_n$</span> is finite the unit Herbrand quotient is <span class="tts-math" data-tts="one">$1$</span>.
+</p>
+</div>
+<div class="box example" data-cid="ch05-180">
+<span class="box-label">Corollary (1.2) — the unramified case is trivial</span>
+<p data-cid="ch05-190">
+  If <span class="tts-math" data-tts="L over K">$L\mid K$</span> is <em>unramified</em>, then for <span class="tts-math" data-tts="i equals zero or minus one">$i=0,-1$</span> all the unit cohomology vanishes, and consequently
+  <span class="tts-math" data-tts="the norm of U sub L equals U sub K and the norm of U sub L to the n equals U sub K to the n">$N_{L\mid K}U_L = U_K, \qquad N_{L\mid K}U_L^{(n)}=U_K^{(n)}.$</span>
+  In words: over an unramified extension <em>every</em> unit of the base is a norm. This is the technical fact that makes "unramified <span class="tts-math" data-tts="if and only if">$\Leftrightarrow$</span> conductor 1" work later.
+</p>
+</div>
+<div class="box pause" data-cid="ch05-195">
+<span class="box-label">Reminder — the Chapter IV axioms we are about to feed</span>
+<p data-cid="ch05-196">
+  The abstract machine of Chapter IV runs on three ingredients, and "satisfies every axiom" below means exactly these:
+</p>
+<ul data-cid="ch05-197">
+<li>a <strong>surjection</strong> <span class="tts-math" data-tts="d from G onto Z hat">$d\colon G\to\hat{\mathbb{Z}}$</span> picking out a Frobenius direction (here: reduction to the Galois group of the residue field);</li>
+<li>a <strong>henselian valuation</strong> <span class="tts-math" data-tts="v">$v$</span> with respect to <span class="tts-math" data-tts="d">$d$</span>, normalized so that <span class="tts-math" data-tts="v of K star equals Z">$v(K^\times)=\mathbb{Z}$</span> (here: the usual <span class="tts-math" data-tts="p-adic">$p$</span>-adic valuation <span class="tts-math" data-tts="v sub K">$v_K$</span>);</li>
+<li>the <strong>class field axiom (1.1)</strong> just proved — the Tate-cohomology counts <span class="tts-math" data-tts="the order of H hat to the zero equals the degree, and H hat to the minus one is trivial">$\#\widehat{H}^0=[L:K]$, $\widehat{H}^{-1}=1$</span> for cyclic <span class="tts-math" data-tts="L over K">$L\mid K$</span>.</li>
+</ul>
+<p data-cid="ch05-198">
+  With these three in hand, Chapter IV hands back the reciprocity isomorphism with no further work.
+</p>
+</div>
+<p data-cid="ch05-200">
+  Now assemble the inputs the abstract theory wants. Over the maximal unramified extension <span class="tts-math" data-tts="K tilde over K">$\tilde{K}\mid K$</span> the residue field becomes the algebraic closure <span class="tts-math" data-tts="kappa bar">$\bar\kappa$</span>, and Chapter II gives a canonical isomorphism <span class="tts-math" data-tts="the Galois group of K tilde over K is isomorphic to the Galois group of kappa bar over kappa, which is Z hat">$G(\tilde K\mid K)\cong G(\bar\kappa\mid\kappa)\cong\hat{\mathbb{Z}}$</span>, sending <span class="tts-math" data-tts="one">$1$</span> to the Frobenius <span class="tts-math" data-tts="x maps to x to the q">$x\mapsto x^q$</span>. This is the surjection <span class="tts-math" data-tts="d from G onto Z hat">$d\colon G\to\hat{\mathbb{Z}}$</span>. Together with the valuation <span class="tts-math" data-tts="v sub K">$v_K$</span> (which is henselian with respect to <span class="tts-math" data-tts="d">$d$</span>), the pair <span class="tts-math" data-tts="d and v sub K">$(d, v_K)$</span> satisfies every axiom of a class field theory.
+</p>
+<div class="box definition" data-cid="ch05-210">
+<span class="box-label">Theorem (1.3) — Local Reciprocity Law</span>
+<p data-cid="ch05-220">
+  For every finite Galois extension <span class="tts-math" data-tts="L over K">$L\mid K$</span> of local fields there is a canonical isomorphism
+</p>
+<span class="tts-math" data-tts="r sub L over K from the abelianized Galois group of L over K onto K star modulo the norms of L star">
+$$r_{L\mid K}\colon G(L\mid K)^{\mathrm{ab}} \;\xrightarrow{\ \sim\ }\; K^\times / N_{L\mid K}L^\times.$$
+</span>
+<p data-cid="ch05-230">
+  Its inverse is the <strong>norm residue symbol</strong>
+  <span class="tts-math" data-tts="the symbol parenthesis comma L over K from K star to the abelianized Galois group of L over K">$(\,\cdot\,,L\mid K)\colon K^\times \to G(L\mid K)^{\mathrm{ab}}$</span>,
+  which is surjective with kernel exactly <span class="tts-math" data-tts="the norms N sub L over K of L star">$N_{L\mid K}L^\times$</span>.
+</p>
+</div>
+<div class="box intuition" data-cid="ch05-240">
+<span class="box-label">What the symbol does, concretely</span>
+<p data-cid="ch05-250">
+  The local theory is where the abstract definition of the reciprocity map becomes transparent. Given <span class="tts-math" data-tts="sigma in the Galois group of L over K">$\sigma\in G(L\mid K)$</span>, lift it to <span class="tts-math" data-tts="sigma tilde">$\tilde\sigma$</span> on the maximal unramified extension with <span class="tts-math" data-tts="d of sigma tilde a positive integer n">$d(\tilde\sigma)\in\mathbb{N}$</span>. Let <span class="tts-math" data-tts="E">$E$</span> be the fixed field of <span class="tts-math" data-tts="sigma tilde">$\tilde\sigma$</span> and <span class="tts-math" data-tts="pi sub E">$\pi_E$</span> a prime element of <span class="tts-math" data-tts="E">$E$</span>. Then
+  <span class="tts-math" data-tts="r sub L over K of sigma equals the norm from E to K of pi sub E, modulo norms">$r_{L\mid K}(\sigma)=N_{E\mid K}(\pi_E)\bmod N_{L\mid K}L^\times$</span>.
+  Prime elements of cleverly chosen fixed fields <em>are</em> the reciprocity map.
+</p>
+<p data-cid="ch05-255">
+  Micro-example to ground it. Let <span class="tts-math" data-tts="L over K">$L\mid K$</span> be <em>unramified</em> of degree <span class="tts-math" data-tts="f">$f$</span> and take <span class="tts-math" data-tts="sigma equals the Frobenius">$\sigma=\mathrm{Frob}$</span>, so <span class="tts-math" data-tts="d of sigma tilde equals one">$d(\tilde\sigma)=1$</span>. Its fixed field on the unramified tower is just the base, <span class="tts-math" data-tts="E equals K">$E=K$</span>, so a prime element of <span class="tts-math" data-tts="E">$E$</span> is a prime element of <span class="tts-math" data-tts="K">$K$</span>: <span class="tts-math" data-tts="pi sub E equals pi sub K">$\pi_E=\pi_K$</span>. The formula then reads <span class="tts-math" data-tts="r of Frobenius equals pi sub K modulo norms">$r_{L\mid K}(\mathrm{Frob})=\pi_K\bmod N_{L\mid K}L^\times$</span>. In a slogan: <strong>Frobenius maps to a uniformizer</strong> — the abstract reciprocity map, made fully explicit in the simplest case.
+</p>
+</div>
+<div class="box example" data-cid="ch05-260">
+<span class="box-label">The archimedean place</span>
+<p data-cid="ch05-270">
+  Global theory later needs <span class="tts-math" data-tts="R and C">$\mathbb{R}$</span> and <span class="tts-math" data-tts="C">$\mathbb{C}$</span> too. For the unique nontrivial extension <span class="tts-math" data-tts="C over R">$\mathbb{C}\mid\mathbb{R}$</span> the norm residue symbol is
+  <span class="tts-math" data-tts="a comma C over R acts on the square root of minus one by sending it to the sign of a times the square root of minus one">$(a,\mathbb{C}\mid\mathbb{R})\sqrt{-1}=\operatorname{sgn}(a)\sqrt{-1}$</span>,
+  with kernel <span class="tts-math" data-tts="the positive reals">$\mathbb{R}_+ = N_{\mathbb{C}\mid\mathbb{R}}\mathbb{C}^\times$</span>. A real number is a norm from <span class="tts-math" data-tts="C">$\mathbb{C}$</span> exactly when it is positive.
+</p>
+</div>
+<p data-cid="ch05-280">
+  The reciprocity isomorphism instantly classifies abelian extensions. This is the heart of the local theory.
+</p>
+<div class="box definition" data-cid="ch05-290">
+<span class="box-label">Theorem (1.4) — Existence Theorem</span>
+<p data-cid="ch05-300">
+  The rule <span class="tts-math" data-tts="L maps to the norm group N sub L equals N sub L over K of L star">$L\mapsto \mathcal{N}_L=N_{L\mid K}L^\times$</span> is a bijection between the finite abelian extensions of <span class="tts-math" data-tts="K">$K$</span> and the open subgroups of finite index in <span class="tts-math" data-tts="K star">$K^\times$</span>. It is inclusion-reversing and intertwines compositum/intersection with intersection/product of norm groups:
+</p>
+<span class="tts-math" data-tts="L sub 1 contained in L sub 2 if and only if the norm group of L sub 2 is contained in that of L sub 1; the norm group of the compositum is the intersection of the norm groups; and the norm group of the intersection is the product of the norm groups">
+$$L_1\subseteq L_2 \iff \mathcal{N}_{L_2}\subseteq\mathcal{N}_{L_1},\qquad \mathcal{N}_{L_1 L_2}=\mathcal{N}_{L_1}\cap\mathcal{N}_{L_2},\qquad \mathcal{N}_{L_1\cap L_2}=\mathcal{N}_{L_1}\mathcal{N}_{L_2}.$$
+</span>
+</div>
+<p data-cid="ch05-310">
+  The word "existence" refers to the surjectivity: for <em>every</em> open finite-index subgroup <span class="tts-math" data-tts="script N">$\mathcal{N}$</span> there is an abelian "class field" <span class="tts-math" data-tts="L">$L$</span> with that exact norm group. The hard half is showing open finite-index subgroups are precisely the norm groups; for <span class="tts-math" data-tts="n">$n$</span> prime to the residue characteristic this is pure Kummer theory, and when <span class="tts-math" data-tts="p divides n">$p\mid n$</span> it is exactly what §4's Lubin–Tate theory will supply.
+</p>
+<div class="box definition" data-cid="ch05-320">
+<span class="box-label">Definition (1.6) — conductor</span>
+<p data-cid="ch05-330">
+  For a finite abelian <span class="tts-math" data-tts="L over K">$L\mid K$</span>, let <span class="tts-math" data-tts="n">$n$</span> be the smallest integer <span class="tts-math" data-tts="n greater than or equal to zero">$n\ge 0$</span> with <span class="tts-math" data-tts="U sub K to the n contained in the norms of L star">$U_K^{(n)}\subseteq N_{L\mid K}L^\times$</span>. The ideal <span class="tts-math" data-tts="f equals p sub K to the n">$\mathfrak{f}=\mathfrak{p}_K^{\,n}$</span> is the <strong>conductor</strong> of <span class="tts-math" data-tts="L over K">$L\mid K$</span>.
+</p>
+</div>
+<div class="box pause" data-cid="ch05-340">
+<span class="box-label">Proposition (1.7) — conductor detects ramification</span>
+<p data-cid="ch05-350">
+  <span class="tts-math" data-tts="L over K">$L\mid K$</span> is unramified <span class="tts-math" data-tts="if and only if">$\iff$</span> its conductor is <span class="tts-math" data-tts="f equals 1">$\mathfrak{f}=1$</span>. One direction is Corollary (1.2): unramified means <span class="tts-math" data-tts="U sub K equals the norms of U sub L">$U_K=N_{L\mid K}U_L$</span>, so already <span class="tts-math" data-tts="n equals zero">$n=0$</span> works.
+</p>
+</div>
+<div class="box example" data-cid="ch05-360">
+<span class="box-label">Worked example (1.8) — cyclotomic norm groups over Q_p</span>
+<p data-cid="ch05-370">
+  Take <span class="tts-math" data-tts="K equals Q sub p">$K=\mathbb{Q}_p$</span> and <span class="tts-math" data-tts="L equals Q sub p adjoin the p to the n-th roots of unity">$L=\mathbb{Q}_p(\mu_{p^n})$</span>. The norm group is
+  <span class="tts-math" data-tts="N sub L over K of L star equals the subgroup generated by p, times U sub K to the n">$N_{L\mid K}L^\times = \langle p\rangle \times U_K^{(n)}.$</span>
+  Why: by Chapter II this extension is totally ramified of degree <span class="tts-math" data-tts="p to the n minus one times p minus one">$p^{n-1}(p-1)$</span>, and if <span class="tts-math" data-tts="zeta">$\zeta$</span> is a primitive <span class="tts-math" data-tts="p to the n-th">$p^n$</span>-th root of unity then <span class="tts-math" data-tts="one minus zeta">$1-\zeta$</span> is a prime element of <span class="tts-math" data-tts="L">$L$</span> with <span class="tts-math" data-tts="norm of one minus zeta equals p">$N_{L\mid K}(1-\zeta)=p$</span>. So <span class="tts-math" data-tts="p">$p$</span> is a norm. To see the norm computation in the cleanest case <span class="tts-math" data-tts="n equals one">$n=1$</span>, recall the cyclotomic polynomial factors as <span class="tts-math" data-tts="Phi sub p of X equals X to the p minus one over X minus one, equals the product from j equals one to p minus one of X minus zeta to the j">$\Phi_p(X)=\frac{X^p-1}{X-1}=\prod_{j=1}^{p-1}(X-\zeta^j)$</span>. The conjugates of <span class="tts-math" data-tts="one minus zeta">$1-\zeta$</span> over <span class="tts-math" data-tts="Q sub p">$\mathbb{Q}_p$</span> are exactly the <span class="tts-math" data-tts="one minus zeta to the j">$1-\zeta^j$</span>, so
+  <span class="tts-math" data-tts="the norm of one minus zeta equals the product from j equals one to p minus one of one minus zeta to the j, which equals Phi sub p of one, which equals p">$N_{L\mid K}(1-\zeta)=\prod_{j=1}^{p-1}(1-\zeta^j)=\Phi_p(1)=p$</span>,
+  the last step because <span class="tts-math" data-tts="Phi sub p of one equals one plus one plus dot dot dot plus one, p terms, equals p">$\Phi_p(1)=1+1+\cdots+1=p$</span> (substitute <span class="tts-math" data-tts="X equals one">$X=1$</span> into <span class="tts-math" data-tts="one plus X plus dot dot dot plus X to the p minus one">$1+X+\cdots+X^{p-1}$</span>). The exponential map identifies the higher units, and a count of indices (both sides have index <span class="tts-math" data-tts="p to the n minus one times p minus one">$p^{n-1}(p-1)$</span>) forces equality. The conductor of <span class="tts-math" data-tts="Q sub p adjoin the p to the n-th roots of unity">$\mathbb{Q}_p(\mu_{p^n})$</span> is therefore <span class="tts-math" data-tts="p to the n">$\mathfrak{p}^n=(p^n)$</span>.
+</p>
+</div>
+<div class="box example" data-cid="ch05-380">
+<span class="box-label">Corollary (1.9) — local Kronecker–Weber</span>
+<p data-cid="ch05-390">
+  Every finite abelian extension <span class="tts-math" data-tts="L over Q sub p">$L\mid\mathbb{Q}_p$</span> sits inside some <span class="tts-math" data-tts="Q sub p adjoin a root of unity zeta">$\mathbb{Q}_p(\zeta)$</span> with <span class="tts-math" data-tts="zeta">$\zeta$</span> a root of unity. Equivalently, <span class="tts-math" data-tts="the maximal abelian extension of Q sub p">$\mathbb{Q}_p^{\mathrm{ab}}$</span> is generated by all roots of unity. The proof just decomposes the relevant norm group <span class="tts-math" data-tts="the group generated by p to the f, times U sub K to the n">$\langle p^f\rangle\times U_K^{(n)}$</span> into an unramified part (giving the prime-to-<span class="tts-math" data-tts="p">$p$</span> roots of unity) and a ramified part (giving the <span class="tts-math" data-tts="p to the n-th">$p^n$</span>-th roots of unity).
+</p>
+</div>
+<p data-cid="ch05-400">
+  From the local statement one even recovers the <em>global</em> Kronecker–Weber theorem (1.10): every finite abelian <span class="tts-math" data-tts="L over Q">$L\mid\mathbb{Q}$</span> lies in a cyclotomic field <span class="tts-math" data-tts="Q adjoin a root of unity">$\mathbb{Q}(\zeta_n)$</span>. The argument completes each ramified prime locally, builds <span class="tts-math" data-tts="n">$n$</span> from the local conductors, and uses Minkowski's theorem (no unramified-everywhere extension of <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span> exists) to pin the inertia groups exactly.
+</p>
+
+<!-- ===================== 5.2 ===================== -->
+<h2 data-cid="ch05-410" id="s5-2">5.2 The Norm Residue Symbol over Q_p</h2>
+<p data-cid="ch05-420">
+  Existence and uniqueness are nice, but we want a <em>formula</em>. Over <span class="tts-math" data-tts="Q sub p">$\mathbb{Q}_p$</span> the norm residue symbol can be written down explicitly. This is the single most important computation in the chapter, and it feeds directly into global class field theory.
+</p>
+<div class="box example" data-cid="ch05-430">
+<span class="box-label">The unramified piece</span>
+<p data-cid="ch05-440">
+  If <span class="tts-math" data-tts="zeta">$\zeta$</span> is a primitive <span class="tts-math" data-tts="m-th">$m$</span>-th root of unity with <span class="tts-math" data-tts="m prime to p">$(m,p)=1$</span>, then <span class="tts-math" data-tts="Q sub p adjoin zeta over Q sub p">$\mathbb{Q}_p(\zeta)\mid\mathbb{Q}_p$</span> is unramified, and the symbol is just a power of Frobenius:
+  <span class="tts-math" data-tts="a comma Q sub p adjoin zeta over Q sub p applied to zeta equals zeta to the p to the power v sub p of a">$(a,\mathbb{Q}_p(\zeta)\mid\mathbb{Q}_p)\,\zeta=\zeta^{\,p^{v_p(a)}}.$</span>
+  The valuation of <span class="tts-math" data-tts="a">$a$</span> tells you how many times to apply Frobenius.
+</p>
+</div>
+<div class="box definition" data-cid="ch05-450">
+<span class="box-label">Theorem (2.4) — the ramified formula</span>
+<p data-cid="ch05-460">
+  Write <span class="tts-math" data-tts="a equals u times p to the v sub p of a">$a=u\,p^{v_p(a)}\in\mathbb{Q}_p^\times$</span> with <span class="tts-math" data-tts="u a unit">$u\in\mathbb{Z}_p^\times$</span>, and let <span class="tts-math" data-tts="zeta">$\zeta$</span> be a primitive <span class="tts-math" data-tts="p to the n-th">$p^n$</span>-th root of unity. Read the exponent <span class="tts-math" data-tts="u inverse">$u^{-1}$</span> below as an inverse taken <strong>mod <span class="tts-math" data-tts="p to the n">$p^n$</span></strong>: since <span class="tts-math" data-tts="zeta">$\zeta$</span> has order <span class="tts-math" data-tts="p to the n">$p^n$</span>, only the residue of <span class="tts-math" data-tts="u inverse mod p to the n">$u^{-1}\bmod p^n$</span> affects <span class="tts-math" data-tts="zeta to the u inverse">$\zeta^{u^{-1}}$</span>. Then
+</p>
+<span class="tts-math" data-tts="a comma Q sub p adjoin zeta over Q sub p applied to zeta equals zeta to the u inverse">
+$$(a,\mathbb{Q}_p(\zeta)\mid\mathbb{Q}_p)\,\zeta=\zeta^{\,u^{-1}},$$
+</span>
+<p data-cid="ch05-470">
+  where <span class="tts-math" data-tts="zeta to the u inverse">$\zeta^{u^{-1}}$</span> means <span class="tts-math" data-tts="zeta to the r">$\zeta^r$</span> for any integer <span class="tts-math" data-tts="r congruent to u inverse mod p to the n">$r\equiv u^{-1}\bmod p^n$</span>.
+</p>
+</div>
+<div class="box intuition" data-cid="ch05-480">
+<span class="box-label">Read the two formulas together</span>
+<p data-cid="ch05-490">
+  Identify <span class="tts-math" data-tts="the Galois group of Q sub p adjoin the p to the n-th roots of unity over Q sub p with the units mod p to the n">$G(\mathbb{Q}_p(\mu_{p^n})\mid\mathbb{Q}_p)\cong(\mathbb{Z}/p^n\mathbb{Z})^\times$</span> via <span class="tts-math" data-tts="sigma sub c sends zeta to zeta to the c">$\sigma_c\colon\zeta\mapsto\zeta^c$</span>. Then the symbol sends the unit part <span class="tts-math" data-tts="u">$u$</span> of <span class="tts-math" data-tts="a">$a$</span> to the <em>inverse</em> automorphism <span class="tts-math" data-tts="sigma sub u inverse">$\sigma_{u^{-1}}$</span>, while the <span class="tts-math" data-tts="p">$p$</span>-part of <span class="tts-math" data-tts="a">$a$</span> contributes Frobenius on the unramified side. The minus-one exponent is not a typo — it is the same inversion that makes the norm group come out right (the symbol's kernel is the norms, and <span class="tts-math" data-tts="p">$p$</span> must be a norm).
+</p>
+</div>
+<div class="box example" data-cid="ch05-500">
+<span class="box-label">A fully numeric instance</span>
+<p data-cid="ch05-510">
+  Let <span class="tts-math" data-tts="p equals 5, n equals 1">$p=5,\ n=1$</span>, so <span class="tts-math" data-tts="L equals Q sub 5 adjoin a primitive fifth root of unity">$L=\mathbb{Q}_5(\zeta_5)$</span> with group <span class="tts-math" data-tts="Z mod 5 Z star, of order four">$(\mathbb{Z}/5\mathbb{Z})^\times$</span>. Take <span class="tts-math" data-tts="a equals 2">$a=2$</span> (a unit, <span class="tts-math" data-tts="v sub 5 of 2 equals zero">$v_5(2)=0$</span>). Since <span class="tts-math" data-tts="2 times 3 equals 6 congruent to 1 mod 5">$2\cdot 3\equiv 1$</span>, <span class="tts-math" data-tts="2 inverse is congruent to 3 mod 5">$2^{-1}\equiv 3\bmod 5$</span>, so
+  <span class="tts-math" data-tts="2 comma L over Q sub 5 applied to zeta sub 5 equals zeta sub 5 cubed">$(2,L\mid\mathbb{Q}_5)\,\zeta_5=\zeta_5^{\,3}$</span>.
+  And <span class="tts-math" data-tts="the symbol on 5">$(5,L\mid\mathbb{Q}_5)$</span> acts trivially on <span class="tts-math" data-tts="zeta sub 5">$\zeta_5$</span> because <span class="tts-math" data-tts="5">$5$</span> is a norm — consistent with the norm group <span class="tts-math" data-tts="the group generated by 5, times U sub one">$\langle 5\rangle\times U^{(1)}$</span>.
+</p>
+</div>
+<div class="box warn" data-cid="ch05-520">
+<span class="box-label">Caveat — no elementary proof</span>
+<p data-cid="ch05-530">
+  Strikingly, there is no purely algebraic proof of Theorem (2.4) known. Neukirch proves it by a <em>transcendental</em> method using the completion <span class="tts-math" data-tts="K hat">$\hat{K}$</span> of the maximal unramified extension and explicit power series — the very Lubin–Tate series that §4 makes systematic. The technical engine is the following lemma.
+</p>
+</div>
+<div class="box definition" data-cid="ch05-540">
+<span class="box-label">Lemma (2.1) — solving Frobenius equations in the completion</span>
+<p data-cid="ch05-550">
+  Here <span class="tts-math" data-tts="K hat">$\hat K$</span> is the <strong>completion of the maximal unramified extension</strong> <span class="tts-math" data-tts="K nr equals K tilde">$K^{\mathrm{nr}}=\tilde K$</span> of <span class="tts-math" data-tts="K">$K$</span>; its residue field is the algebraic closure <span class="tts-math" data-tts="kappa bar">$\bar\kappa$</span>, which is what makes the residue-level equations solvable. Extend Frobenius <span class="tts-math" data-tts="phi">$\varphi$</span> continuously to <span class="tts-math" data-tts="K hat">$\hat{K}$</span>. For every <span class="tts-math" data-tts="c in O sub K hat">$c\in\mathcal{O}_{\hat K}$</span> (resp. <span class="tts-math" data-tts="c in U sub K hat to the n">$c\in U_{\hat K}^{(n)}$</span>) the equation
+  <span class="tts-math" data-tts="x to the phi minus x equals c">$x^\varphi-x=c$</span> (resp. <span class="tts-math" data-tts="x to the phi over x equals c">$x^\varphi/x=c$</span>) has a solution there; and if <span class="tts-math" data-tts="x to the phi equals x">$x^\varphi=x$</span> then <span class="tts-math" data-tts="x lies in O sub K">$x\in\mathcal{O}_K$</span>. The proof solves the congruence one residue-degree at a time, using that the residue field of <span class="tts-math" data-tts="K hat">$\hat K$</span> is algebraically closed, then passes to the limit.
+</p>
+<p data-cid="ch05-555">
+  Why these two equations? The additive <span class="tts-math" data-tts="x to the phi minus x equals c">$x^\varphi-x=c$</span> and multiplicative <span class="tts-math" data-tts="x to the phi over x equals c">$x^\varphi/x=c$</span> Frobenius equations are the <em>engine</em> that builds the Lubin–Tate power series coefficient by coefficient: each new coefficient of the series is precisely the solution <span class="tts-math" data-tts="x">$x$</span> of one such equation. Being able to solve them in <span class="tts-math" data-tts="K hat">$\hat K$</span> is the entire transcendental content behind theorem (2.4) — there is no algebraic shortcut, which is why we pass to the completion at all.
+</p>
+</div>
+<div class="box definition" data-cid="ch05-560">
+<span class="box-label">Lubin–Tate series, first appearance</span>
+<p data-cid="ch05-570">
+  A <strong>Lubin–Tate series</strong> for a prime element <span class="tts-math" data-tts="pi">$\pi$</span> of <span class="tts-math" data-tts="K">$K$</span> is a power series <span class="tts-math" data-tts="e of X in O sub K of X">$e(X)\in\mathcal{O}_K[[X]]$</span> with
+  <span class="tts-math" data-tts="e of X is congruent to pi X mod degree two, and e of X is congruent to X to the q mod pi">$e(X)\equiv \pi X \bmod \deg 2$ and $e(X)\equiv X^q \bmod \pi.$</span>
+  The collection is written <span class="tts-math" data-tts="script E sub pi">$\mathcal{E}_\pi$</span>; the polynomials <span class="tts-math" data-tts="e of X equals X to the q plus pi X">$e(X)=X^q+\pi X$</span> are the simplest examples. Over <span class="tts-math" data-tts="K equals Q sub p">$K=\mathbb{Q}_p$</span> with <span class="tts-math" data-tts="pi equals p">$\pi=p$</span>, the polynomial
+  <span class="tts-math" data-tts="e of X equals open paren one plus X close paren to the p, minus one">$e(X)=(1+X)^p-1$</span> is a Lubin–Tate polynomial. Already you can see roots of unity hiding inside it.
+</p>
+</div>
+<div class="box pause" data-cid="ch05-580">
+<span class="box-label">The functional equation that pins down everything (2.2)–(2.3)</span>
+<p data-cid="ch05-590">
+  The key existence/uniqueness statement: given Lubin–Tate series <span class="tts-math" data-tts="e and e prime">$e,\tilde e$</span> and a linear form <span class="tts-math" data-tts="L">$L$</span> with <span class="tts-math" data-tts="pi L equals pi prime L applied to phi">$\pi L = \tilde\pi\, L^\varphi$</span>, there is a <em>unique</em> power series <span class="tts-math" data-tts="F">$F$</span> with <span class="tts-math" data-tts="F congruent to L mod degree two">$F\equiv L\bmod\deg 2$</span> and <span class="tts-math" data-tts="e of F equals F applied to phi of e">$e(F)=F^\varphi(\tilde e)$</span>. The proof builds <span class="tts-math" data-tts="F">$F$</span> degree by degree, at each step solving an equation of the form <span class="tts-math" data-tts="alpha minus gamma alpha to the phi equals beta">$\alpha-\gamma\alpha^\varphi=\beta$</span> (with <span class="tts-math" data-tts="v of gamma at least one">$v(\gamma)\ge 1$</span>) by a convergent geometric series. Out of this come the series <span class="tts-math" data-tts="theta">$\theta$</span> intertwining two Lubin–Tate setups (2.3), which is exactly the tool that proves (2.4).
+</p>
+<p data-cid="ch05-595">
+  What this buys us: because <span class="tts-math" data-tts="F">$F$</span> is <em>unique</em>, the series <span class="tts-math" data-tts="theta">$\theta$</span> lets you swap one uniformizer or one Lubin–Tate series for another <em>without changing the field</em> they generate — the two setups are formally isomorphic. That independence is precisely why the extension <span class="tts-math" data-tts="L sub n">$L_n$</span> in §5.5 turns out to depend only on the prime <span class="tts-math" data-tts="pi">$\pi$</span> and not on the particular series <span class="tts-math" data-tts="e">$e$</span> you chose to define the formal group.
+</p>
+</div>
+
+<!-- ===================== 5.3 ===================== -->
+<h2 data-cid="ch05-600" id="s5-3">5.3 The Hilbert Symbol</h2>
+<p data-cid="ch05-610">
+  Now suppose <span class="tts-math" data-tts="K">$K$</span> contains the <span class="tts-math" data-tts="n-th">$n$</span>-th roots of unity <span class="tts-math" data-tts="mu sub n">$\mu_n$</span>, with <span class="tts-math" data-tts="n">$n$</span> prime to <span class="tts-math" data-tts="char K">$\operatorname{char}K$</span>. Two theories now apply to <span class="tts-math" data-tts="K">$K$</span> at once: <strong>Kummer theory</strong> and <strong>class field theory</strong>. The Hilbert symbol is their interaction, and it generalizes Gauss's reciprocity to <span class="tts-math" data-tts="n-th">$n$</span>-th power residues.
+</p>
+<div class="box definition" data-cid="ch05-620">
+<span class="box-label">Definition — the Hilbert symbol</span>
+<p data-cid="ch05-630">
+  <em>Kummer reminder.</em> When <span class="tts-math" data-tts="K">$K$</span> contains <span class="tts-math" data-tts="mu sub n">$\mu_n$</span>, Kummer theory says every cyclic degree-<span class="tts-math" data-tts="n">$n$</span> extension is <span class="tts-math" data-tts="K adjoin the n-th root of b">$K(\sqrt[n]{b})$</span> for some <span class="tts-math" data-tts="b in K star">$b\in K^\times$</span>, and abelian extensions of exponent <span class="tts-math" data-tts="n">$n$</span> correspond bijectively to subgroups of <span class="tts-math" data-tts="K star mod K star to the n">$K^\times/K^{\times n}$</span> — i.e. choosing a radicand mod <span class="tts-math" data-tts="n-th">$n$</span>-th powers is the same as choosing the extension. Now let <span class="tts-math" data-tts="L equals K adjoin the n-th roots of all elements of K star">$L=K(\sqrt[n]{K^\times})$</span> be the maximal abelian extension of exponent <span class="tts-math" data-tts="n">$n$</span>. Class field theory gives <span class="tts-math" data-tts="the Galois group of L over K is isomorphic to K star mod K star to the n">$G(L\mid K)\cong K^\times/K^{\times n}$</span>; Kummer theory gives <span class="tts-math" data-tts="the homomorphisms from the Galois group into mu sub n are isomorphic to K star mod K star to the n">$\operatorname{Hom}(G(L\mid K),\mu_n)\cong K^\times/K^{\times n}$</span>. Pairing them yields the nondegenerate
+  <span class="tts-math" data-tts="the Hilbert symbol from K star mod K star to the n, cross itself, into mu sub n">$\left(\tfrac{\,\cdot,\cdot\,}{\mathfrak{p}}\right)\colon K^\times/K^{\times n}\times K^\times/K^{\times n}\to\mu_n.$</span>
+  Explicitly, writing <span class="tts-math" data-tts="sigma sub a">$\sigma_a$</span> for the image of <span class="tts-math" data-tts="a">$a$</span> under the reciprocity map in <span class="tts-math" data-tts="the Galois group">$G(L\mid K)$</span>, the symbol is the ratio by which <span class="tts-math" data-tts="sigma sub a">$\sigma_a$</span> moves a chosen radical:
+  <span class="tts-math" data-tts="the pair a b maps to sigma sub a of the n-th root of b, divided by the n-th root of b">$(a,b)\ \longmapsto\ \dfrac{\sigma_a\!\left(\sqrt[n]{b}\right)}{\sqrt[n]{b}}\in\mu_n.$</span>
+</p>
+</div>
+<div class="box pause" data-cid="ch05-640">
+<span class="box-label">Proposition (3.1) — the bridge to the norm residue symbol</span>
+<p data-cid="ch05-650">
+  For <span class="tts-math" data-tts="a and b in K star">$a,b\in K^\times$</span>,
+  <span class="tts-math" data-tts="a comma K adjoin the n-th root of b, over K, applied to the n-th root of b equals the Hilbert symbol of a and b times the n-th root of b">$(a,K(\sqrt[n]{b})\mid K)\,\sqrt[n]{b}=\left(\tfrac{a,b}{\mathfrak{p}}\right)\sqrt[n]{b}.$</span>
+  In words: the Hilbert symbol <em>is</em> the norm residue symbol acting on a chosen <span class="tts-math" data-tts="n-th">$n$</span>-th root. Everything about it follows from this and the properties of <span class="tts-math" data-tts="the norm residue symbol">$(\,\cdot\,,L\mid K)$</span>.
+</p>
+</div>
+<div class="box definition" data-cid="ch05-660">
+<span class="box-label">Proposition (3.2) — the calculus of the symbol</span>
+<ul data-cid="ch05-670">
+<li>Bilinearity: <span class="tts-math" data-tts="the symbol of a a prime and b equals the product of the symbols">$\left(\tfrac{aa',b}{\mathfrak{p}}\right)=\left(\tfrac{a,b}{\mathfrak{p}}\right)\left(\tfrac{a',b}{\mathfrak{p}}\right)$</span> and likewise in the second slot.</li>
+<li>Norm criterion: <span class="tts-math" data-tts="the symbol of a and b equals one if and only if a is a norm from K adjoin the n-th root of b">$\left(\tfrac{a,b}{\mathfrak{p}}\right)=1 \iff a$</span> is a norm from <span class="tts-math" data-tts="K adjoin the n-th root of b">$K(\sqrt[n]{b})\mid K$</span>.</li>
+<li>Skew-symmetry: <span class="tts-math" data-tts="the symbol of a and b equals the symbol of b and a, inverted">$\left(\tfrac{a,b}{\mathfrak{p}}\right)=\left(\tfrac{b,a}{\mathfrak{p}}\right)^{-1}$</span>.</li>
+<li>Steinberg relations: <span class="tts-math" data-tts="the symbol of a and one minus a equals one, and the symbol of a and minus a equals one">$\left(\tfrac{a,1-a}{\mathfrak{p}}\right)=1$ and $\left(\tfrac{a,-a}{\mathfrak{p}}\right)=1.$</span></li>
+<li>Nondegeneracy: if <span class="tts-math" data-tts="the symbol of a and b equals one for all b">$\left(\tfrac{a,b}{\mathfrak{p}}\right)=1$ for all $b$</span>, then <span class="tts-math" data-tts="a is an n-th power">$a\in K^{\times n}$</span>.</li>
+</ul>
+</div>
+<div class="box example" data-cid="ch05-680">
+<span class="box-label">The real symbol</span>
+<p data-cid="ch05-690">
+  For <span class="tts-math" data-tts="K equals R">$K=\mathbb{R}$</span> we have <span class="tts-math" data-tts="n equals 1 or 2">$n=1$ or $2$</span>, and for <span class="tts-math" data-tts="n equals 2">$n=2$</span>
+  <span class="tts-math" data-tts="the symbol of a and b equals minus one to the power sign of a minus one over two, times sign of b minus one over two">$\left(\tfrac{a,b}{\mathfrak{p}}\right)=(-1)^{\frac{\operatorname{sgn}a-1}{2}\cdot\frac{\operatorname{sgn}b-1}{2}}.$</span>
+  It is <span class="tts-math" data-tts="minus one">$-1$</span> exactly when <span class="tts-math" data-tts="a and b are both negative">$a$ and $b$</span> are both negative — i.e. when <span class="tts-math" data-tts="a x squared plus b y squared equals z squared">$ax^2+by^2=z^2$</span> has no nontrivial real solution.
+</p>
+</div>
+<div class="box definition" data-cid="ch05-700">
+<span class="box-label">Proposition (3.4) — the tame symbol</span>
+<p data-cid="ch05-710">
+  Suppose <span class="tts-math" data-tts="n prime to p">$(n,p)=1$</span> (so <span class="tts-math" data-tts="n divides q minus one">$n\mid q-1$</span>). Write <span class="tts-math" data-tts="alpha equals v of a, beta equals v of b">$\alpha=v_K(a),\ \beta=v_K(b)$</span>. Then the Hilbert symbol is given by a single congruence mod <span class="tts-math" data-tts="p sub K">$\mathfrak{p}_K$</span>:
+</p>
+<span class="tts-math" data-tts="the symbol of a and b is the q minus one over n power of minus one to the alpha beta, times a to the beta over b to the alpha, reduced mod p">
+$$\left(\tfrac{a,b}{\mathfrak{p}}\right)\equiv\left((-1)^{\alpha\beta}\,\frac{a^{\beta}}{b^{\alpha}}\right)^{\!(q-1)/n}\!\!\!\!\pmod{\mathfrak{p}_K}.$$
+</span>
+<p data-cid="ch05-720">
+  The symbol depends only on residues, and (Lemma 3.3) <span class="tts-math" data-tts="K adjoin the n-th root of x is unramified if and only if x lies in U sub K times K star to the n">$K(\sqrt[n]{x})\mid K$</span> is unramified iff <span class="tts-math" data-tts="x in U sub K times K star to the n">$x\in U_K K^{\times n}$</span>.
+</p>
+<p data-cid="ch05-725">
+  Run it concretely. Take <span class="tts-math" data-tts="K equals Q sub p with p odd">$K=\mathbb{Q}_p$</span> (<span class="tts-math" data-tts="p odd">$p$</span> odd), <span class="tts-math" data-tts="n equals 2">$n=2$</span> — allowed since <span class="tts-math" data-tts="mu sub 2 contained in Q sub p forces 2 divides q minus one">$\mu_2\subseteq\mathbb{Q}_p$</span> and indeed <span class="tts-math" data-tts="2 divides p minus one">$2\mid p-1$</span> — with <span class="tts-math" data-tts="a equals p">$a=p$</span> (so <span class="tts-math" data-tts="alpha equals one">$\alpha=v_p(p)=1$</span>) and <span class="tts-math" data-tts="b equals u a unit">$b=u$</span> a unit (so <span class="tts-math" data-tts="beta equals zero">$\beta=v_p(u)=0$</span>). The formula collapses: the <span class="tts-math" data-tts="minus one to the alpha beta">$(-1)^{\alpha\beta}$</span> factor is <span class="tts-math" data-tts="one">$1$</span>, <span class="tts-math" data-tts="a to the beta equals one">$a^{\beta}=p^0=1$</span>, and what remains is
+  <span class="tts-math" data-tts="the symbol of p and u is u to the q minus one over n, which is u to the p minus one over two mod p, which is the Legendre symbol u over p">$\left(\tfrac{p,u}{\mathfrak{p}}\right)\equiv u^{-(q-1)/2}\equiv u^{(p-1)/2}\equiv\left(\tfrac{u}{p}\right)\pmod{p}$</span>
+  — exactly the Legendre symbol <span class="tts-math" data-tts="u over p">$\left(\tfrac{u}{p}\right)$</span>, by Euler's criterion. The tame Hilbert symbol literally <em>is</em> quadratic residue theory.
+</p>
+</div>
+<div class="box example" data-cid="ch05-730">
+<span class="box-label">The n-th power residue symbol (3.5)</span>
+<p data-cid="ch05-740">
+  Because the tame symbol is independent of the choice of prime, for a unit <span class="tts-math" data-tts="u">$u$</span> one defines the <strong>power residue symbol</strong> <span class="tts-math" data-tts="u over p sub n">$\left(\tfrac{u}{\mathfrak{p}}\right)_n=\left(\tfrac{\pi,u}{\mathfrak{p}}\right)$</span>, the root of unity with
+  <span class="tts-math" data-tts="u over p to the n is congruent to u to the q minus one over n, mod p">$\left(\tfrac{u}{\mathfrak{p}}\right)_n\equiv u^{(q-1)/n}\bmod\mathfrak{p}_K.$</span>
+  And <span class="tts-math" data-tts="the power residue symbol equals one if and only if u is an n-th power mod p">$\left(\tfrac{u}{\mathfrak{p}}\right)_n=1 \iff u$</span> is an <span class="tts-math" data-tts="n-th">$n$</span>-th power mod <span class="tts-math" data-tts="p sub K">$\mathfrak{p}_K$</span> — exactly Euler's criterion when <span class="tts-math" data-tts="n equals 2">$n=2$</span>. This is the genuine generalization of the Legendre symbol.
+</p>
+</div>
+<div class="box example" data-cid="ch05-750">
+<span class="box-label">Theorem (3.6) — the wild case n = 2 over Q_p, with all values</span>
+<p data-cid="ch05-760">
+  Write <span class="tts-math" data-tts="a equals p to the alpha a prime, b equals p to the beta b prime">$a=p^{\alpha}a',\ b=p^{\beta}b'$</span> with <span class="tts-math" data-tts="a prime, b prime units">$a',b'$</span> units. If <span class="tts-math" data-tts="p is odd">$p\neq 2$</span>,
+  <span class="tts-math" data-tts="the quadratic Hilbert symbol of a and b equals minus one to the alpha beta times the Legendre symbol p minus one over two, times the Legendre symbol of a prime to the beta times b prime to the alpha over p">$\left(\tfrac{a,b}{p}\right)=(-1)^{\alpha\beta\frac{p-1}{2}}\left(\tfrac{a'^{\beta}b'^{\alpha}}{p}\right).$</span>
+  If <span class="tts-math" data-tts="p equals 2">$p=2$</span> and <span class="tts-math" data-tts="a and b units">$a,b\in U_{\mathbb{Q}_2}$</span>,
+  <span class="tts-math" data-tts="the symbol of a and b equals minus one to the power epsilon of a times epsilon of b, where epsilon of x is x minus one over two">$\left(\tfrac{a,b}{2}\right)=(-1)^{\varepsilon(a)\varepsilon(b)},\quad \varepsilon(x)=\tfrac{x-1}{2}\bmod 2,$</span>
+  and in general one also needs <span class="tts-math" data-tts="omega of x equals x squared minus one over eight">$\omega(x)=\tfrac{x^2-1}{8}\bmod 2$</span> for the factors of <span class="tts-math" data-tts="2">$2$</span>.
+</p>
+</div>
+<div class="box pause" data-cid="ch05-770">
+<span class="box-label">The 2-adic computation, by hand</span>
+<p data-cid="ch05-780">
+  The proof for <span class="tts-math" data-tts="p equals 2">$p=2$</span> is wonderfully concrete. Both <span class="tts-math" data-tts="eta of x equals x squared minus one over eight">$\eta$</span> and <span class="tts-math" data-tts="epsilon">$\varepsilon$</span> are additive mod <span class="tts-math" data-tts="2">$2$</span>, so the symbol is bilinear and you only need it on generators of <span class="tts-math" data-tts="U sub Q 2 mod squares, which is generated by 5 and minus one">$U_{\mathbb{Q}_2}/U_{\mathbb{Q}_2}^2=\{\pm 1,\pm 5\}$</span>. Check by hand: <span class="tts-math" data-tts="the symbol of minus one and minus one equals minus one">$\left(\tfrac{-1,-1}{2}\right)=-1$</span> (since <span class="tts-math" data-tts="minus one is not a sum of two squares in Q 2">$-1$</span> is not a sum of two squares in <span class="tts-math" data-tts="Q 2">$\mathbb{Q}_2$</span>), <span class="tts-math" data-tts="the symbol of minus one with 2 or 5 equals one">$\left(\tfrac{-1,2}{2}\right)=\left(\tfrac{-1,5}{2}\right)=1$</span>, and <span class="tts-math" data-tts="the symbol of 2 and 5 equals minus one">$\left(\tfrac{2,5}{2}\right)=-1$</span> (else <span class="tts-math" data-tts="2 would be a square in Q 2">$2$</span> would be a square). These four values match the formula exactly.
+</p>
+</div>
+<div class="box warn" data-cid="ch05-790">
+<span class="box-label">The general wild symbol (3.7) — Brückner's formula</span>
+<p data-cid="ch05-800">
+  For <span class="tts-math" data-tts="n equals p to the v">$n=p^v$</span> with odd residue characteristic, the explicit symbol was only found in 1964 (Brückner). Writing elements as Laurent series <span class="tts-math" data-tts="x equals f of pi">$x=f(\pi)$</span> over the Witt ring <span class="tts-math" data-tts="W">$W$</span>, the symbol becomes a trace of a residue of differentials:
+  <span class="tts-math" data-tts="the symbol of x and y equals zeta to the omega of x y, where omega is a trace of a residue involving log f, d log g, and the Frobenius-twisted series">$\left(\tfrac{x,y}{\mathfrak{p}}\right)=\zeta^{\,\omega(x,y)}$</span> with
+  <span class="tts-math" data-tts="omega of x y equals the trace from W to Z sub p of the residue of the quantity h, times log f over p, d log g, minus log g over p, d log f to the phi, mod p to the v">$\omega(x,y)=\operatorname{Tr}_{W\mid\mathbb{Z}_p}\operatorname{Res}\!\Big(h\big(\tfrac{1}{p}\log f\,d\log g-\tfrac{1}{p}\log g\,d\log f^\varphi\big)\Big).$</span>
+  You do not need the details — note only that the wild symbol is genuinely transcendental, built from formal logarithms and residues. Treat this as a "look but don't touch" landmark. Two glosses for the unfamiliar symbols: <span class="tts-math" data-tts="W">$W$</span> is the <strong>ring of Witt vectors</strong>, the natural unramified coefficient ring (over <span class="tts-math" data-tts="Q sub p">$\mathbb{Q}_p$</span> it is the ring of integers of the unramified part, lifting the residue field); and <span class="tts-math" data-tts="Res">$\operatorname{Res}$</span> is the <strong>formal residue</strong> of a differential — the coefficient of <span class="tts-math" data-tts="d pi over pi">$d\pi/\pi$</span>, i.e. the <span class="tts-math" data-tts="minus one coefficient">$-1$</span> term of the Laurent expansion, just as in complex analysis. The <span class="tts-math" data-tts="d log">$d\log$</span> is the formal logarithmic derivative <span class="tts-math" data-tts="d log g equals g prime over g d pi">$\frac{g'}{g}\,d\pi$</span>.
+</p>
+</div>
+<div class="box example" data-cid="ch05-810">
+<span class="box-label">Artin–Hasse / Iwasawa (3.8)</span>
+<p data-cid="ch05-820">
+  Over <span class="tts-math" data-tts="Phi sub v equals Q sub p adjoin a primitive p to the v-th root of unity">$\Phi_v=\mathbb{Q}_p(\zeta_{p^v})$</span> with <span class="tts-math" data-tts="pi equals one minus zeta">$\pi=1-\zeta$</span> and trace <span class="tts-math" data-tts="S">$S$</span> to <span class="tts-math" data-tts="Q sub p">$\mathbb{Q}_p$</span>, the symbol has the clean shape
+  <span class="tts-math" data-tts="the symbol of a and b equals zeta to the trace of log a times D log b, divided by p to the v">$\left(\tfrac{a,b}{\mathfrak{p}}\right)=\zeta^{\,S(\log a\, D\log b)/p^v},$</span>
+  with supplementary laws <span class="tts-math" data-tts="the symbol of a and pi equals zeta to minus the trace of log a over p to the v">$\left(\tfrac{a,\pi}{\mathfrak{p}}\right)=\zeta^{-S(\log a)/p^v}$</span> and <span class="tts-math" data-tts="the symbol of a and zeta equals zeta to the trace of zeta over pi times log a, over p to the v">$\left(\tfrac{a,\zeta}{\mathfrak{p}}\right)=\zeta^{S((\zeta/\pi)\log a)/p^v}$</span>. These are the explicit reciprocity laws of Artin, Hasse, and Iwasawa.
+</p>
+</div>
+
+<!-- ===================== 5.4 ===================== -->
+<h2 data-cid="ch05-830" id="s5-4">5.4 Formal Groups</h2>
+<p data-cid="ch05-840">
+  The cyclotomic story over <span class="tts-math" data-tts="Q sub p">$\mathbb{Q}_p$</span> was so explicit because roots of unity are concrete. Over a general <span class="tts-math" data-tts="K">$K$</span> there is no obvious supply of "extra" roots of unity. <strong>Formal groups</strong> manufacture a substitute: a new kind of root of unity, the "division points" of a formal group, that does for <span class="tts-math" data-tts="K">$K$</span> what <span class="tts-math" data-tts="p to the n-th">$p^n$</span>-th roots of unity do for <span class="tts-math" data-tts="Q sub p">$\mathbb{Q}_p$</span>.
+</p>
+<div class="box definition" data-cid="ch05-850">
+<span class="box-label">Definition (4.1) — formal group</span>
+<p data-cid="ch05-860">
+  A (one-dimensional, commutative) <strong>formal group</strong> over a ring <span class="tts-math" data-tts="o">$o$</span> is a power series <span class="tts-math" data-tts="F of X Y in o of X Y">$F(X,Y)\in o[[X,Y]]$</span> with
+</p>
+<ul data-cid="ch05-870">
+<li><span class="tts-math" data-tts="F of X Y is congruent to X plus Y mod degree two">$F(X,Y)\equiv X+Y\bmod\deg 2$</span> (it looks like addition to first order),</li>
+<li><span class="tts-math" data-tts="F of X Y equals F of Y X">$F(X,Y)=F(Y,X)$</span> (commutativity),</li>
+<li><span class="tts-math" data-tts="F of X comma F of Y Z equals F of, F of X Y, comma Z">$F(X,F(Y,Z))=F(F(X,Y),Z)$</span> (associativity).</li>
+</ul>
+<p data-cid="ch05-880">
+  If <span class="tts-math" data-tts="o">$o$</span> is a complete valuation ring with maximal ideal <span class="tts-math" data-tts="p">$\mathfrak{p}$</span>, then <span class="tts-math" data-tts="x plus sub F y equals F of x y">$x+_F y := F(x,y)$</span> turns <span class="tts-math" data-tts="p">$\mathfrak{p}$</span> into an honest abelian group (the series converge).
+</p>
+<p data-cid="ch05-885">
+  Why a power-series group <em>law</em> rather than an honest group, and why only on <span class="tts-math" data-tts="p">$\mathfrak{p}$</span>? The object <span class="tts-math" data-tts="F">$F$</span> is a recipe — a formula <span class="tts-math" data-tts="F of x y">$F(x,y)$</span> — not a set with an operation. Because <span class="tts-math" data-tts="F">$F$</span> has <strong>no constant term</strong> (it starts at <span class="tts-math" data-tts="X plus Y">$X+Y$</span>), the infinite series <span class="tts-math" data-tts="F of x y">$F(x,y)$</span> converges precisely when <span class="tts-math" data-tts="x and y">$x,y$</span> are small — topologically nilpotent, i.e. in the maximal ideal <span class="tts-math" data-tts="p">$\mathfrak{p}$</span>, where high powers tend to <span class="tts-math" data-tts="zero">$0$</span>. So the group law is one you can only <em>evaluate</em> on those small elements; on all of <span class="tts-math" data-tts="o">$o$</span> the sum would diverge. The formal group is the law; <span class="tts-math" data-tts="p">$\mathfrak{p}$</span> is where you may legally plug in numbers.
+</p>
+</div>
+<div class="box example" data-cid="ch05-890">
+<span class="box-label">The two basic examples</span>
+<ul data-cid="ch05-900">
+<li><strong>Additive:</strong> <span class="tts-math" data-tts="G sub a of X Y equals X plus Y">$\widehat{\mathbb{G}}_a(X,Y)=X+Y$</span>.</li>
+<li><strong>Multiplicative:</strong> <span class="tts-math" data-tts="G sub m of X Y equals X plus Y plus X Y">$\widehat{\mathbb{G}}_m(X,Y)=X+Y+XY$</span>. Since <span class="tts-math" data-tts="X plus Y plus X Y equals open paren one plus X close paren times open paren one plus Y close paren minus one">$X+Y+XY=(1+X)(1+Y)-1$</span>, the new addition <span class="tts-math" data-tts="plus sub G m">$+_{\widehat{\mathbb{G}}_m}$</span> is ordinary multiplication under the translation <span class="tts-math" data-tts="x maps to x plus one">$x\mapsto x+1$</span>. This is the formal shadow of "roots of unity".</li>
+</ul>
+</div>
+<div class="box definition" data-cid="ch05-910">
+<span class="box-label">Definitions (4.2)–(4.4) — homomorphisms and formal modules</span>
+<p data-cid="ch05-920">
+  A <strong>homomorphism</strong> <span class="tts-math" data-tts="f from F to G">$f\colon F\to G$</span> is a series <span class="tts-math" data-tts="f of X equals a one X plus a two X squared plus dot dot dot">$f(X)=a_1 X+a_2X^2+\cdots$</span> with <span class="tts-math" data-tts="f of F of X Y equals G of f of X, f of Y">$f(F(X,Y))=G(f(X),f(Y))$</span>; an isomorphism when <span class="tts-math" data-tts="a one is a unit">$a_1$</span> is a unit. The endomorphisms of <span class="tts-math" data-tts="F">$F$</span> form a ring <span class="tts-math" data-tts="End of F">$\operatorname{End}_o(F)$</span> under <span class="tts-math" data-tts="addition through F and composition">$(f+g)(X)=F(f(X),g(X))$</span> and <span class="tts-math" data-tts="multiplication by composition">$f\circ g$</span>. A <strong>formal <span class="tts-math" data-tts="o-module">$o$</span>-module</strong> is a formal group together with a ring map <span class="tts-math" data-tts="o to End of F sending a to bracket a of X, with bracket a congruent to a X mod degree two">$o\to\operatorname{End}_o(F),\ a\mapsto[a]_F(X)$</span> where <span class="tts-math" data-tts="bracket a of X is congruent to a X mod degree two">$[a]_F(X)\equiv aX\bmod\deg 2$</span>.
+</p>
+</div>
+<div class="box definition" data-cid="ch05-930">
+<span class="box-label">Definition (4.5) — Lubin–Tate module</span>
+<p data-cid="ch05-940">
+  A <strong>Lubin–Tate module</strong> over <span class="tts-math" data-tts="O sub K">$\mathcal{O}_K$</span> for the prime <span class="tts-math" data-tts="pi">$\pi$</span> is a formal <span class="tts-math" data-tts="O sub K">$\mathcal{O}_K$</span>-module <span class="tts-math" data-tts="F">$F$</span> with
+  <span class="tts-math" data-tts="bracket pi of F of X is congruent to X to the q mod pi">$[\pi]_F(X)\equiv X^q\bmod\pi.$</span>
+  This is the slogan again: the endomorphism by the prime element <span class="tts-math" data-tts="pi">$\pi$</span> reduces to the Frobenius <span class="tts-math" data-tts="X to the q">$X^q$</span> on the residue field.
+</p>
+</div>
+<div class="box example" data-cid="ch05-950">
+<span class="box-label">The model example</span>
+<p data-cid="ch05-960">
+  <span class="tts-math" data-tts="G sub m">$\widehat{\mathbb{G}}_m$</span> is a formal <span class="tts-math" data-tts="Z sub p">$\mathbb{Z}_p$</span>-module via <span class="tts-math" data-tts="bracket a of X equals one plus X to the a minus one">$[a](X)=(1+X)^a-1$</span>, and it is Lubin–Tate for <span class="tts-math" data-tts="pi equals p">$\pi=p$</span> because
+  <span class="tts-math" data-tts="bracket p of X equals one plus X to the p minus one, congruent to X to the p mod p">$[p](X)=(1+X)^p-1\equiv X^p\bmod p.$</span>
+  Its division points will be precisely <span class="tts-math" data-tts="zeta minus one">$\zeta-1$</span> for roots of unity <span class="tts-math" data-tts="zeta">$\zeta$</span>. The whole point of §5 is to do this over any <span class="tts-math" data-tts="K">$K$</span>.
+</p>
+</div>
+<div class="box definition" data-cid="ch05-970">
+<span class="box-label">Theorem (4.6) — classification</span>
+<p data-cid="ch05-980">
+  For each Lubin–Tate series <span class="tts-math" data-tts="e in script E sub pi">$e\in\mathcal{E}_\pi$</span> the functional equation (2.2) produces a unique formal group <span class="tts-math" data-tts="F sub e">$F_e$</span> with <span class="tts-math" data-tts="e of F sub e of X Y equals F sub e of e of X, e of Y">$e(F_e(X,Y))=F_e(e(X),e(Y))$</span> and endomorphisms <span class="tts-math" data-tts="bracket a sub e">$[a]_e$</span>. Then:
+</p>
+<ul data-cid="ch05-990">
+<li>The Lubin–Tate modules for <span class="tts-math" data-tts="pi">$\pi$</span> are <em>exactly</em> the <span class="tts-math" data-tts="F sub e">$F_e$</span>, with structure <span class="tts-math" data-tts="a maps to bracket a sub e">$a\mapsto[a]_e$</span>.</li>
+<li>Each <span class="tts-math" data-tts="bracket a sub e e prime">$[a]_{e,\tilde e}$</span> is a homomorphism <span class="tts-math" data-tts="F sub e prime to F sub e">$F_{\tilde e}\to F_e$</span>, an isomorphism when <span class="tts-math" data-tts="a is a unit">$a$</span> is a unit.</li>
+</ul>
+<p data-cid="ch05-1000">
+  Consequence: up to isomorphism the Lubin–Tate module for <span class="tts-math" data-tts="pi">$\pi$</span> is unique, and one may always work with the convenient model <span class="tts-math" data-tts="e of X equals X to the q plus pi X">$e(X)=X^q+\pi X$</span>.
+</p>
+</div>
+
+<!-- ===================== 5.5 ===================== -->
+<h2 data-cid="ch05-1010" id="s5-5">5.5 Generalized Cyclotomic Theory</h2>
+<p data-cid="ch05-1020">
+  We now harvest the formal groups. Evaluating a Lubin–Tate module on the maximal ideal of <span class="tts-math" data-tts="the algebraic closure K bar">$\bar K$</span> turns its "torsion" into an explicit tower of abelian extensions — the exact analogue of the cyclotomic tower, but over any local field.
+</p>
+<div class="box definition" data-cid="ch05-1030">
+<span class="box-label">Proposition (5.1)–(5.2) — division points</span>
+<p data-cid="ch05-1040">
+  For a formal <span class="tts-math" data-tts="O sub K">$\mathcal{O}_K$</span>-module <span class="tts-math" data-tts="F">$F$</span>, the maximal ideal <span class="tts-math" data-tts="p of K bar">$\mathfrak{p}$</span> of <span class="tts-math" data-tts="K bar">$\bar K$</span> becomes a genuine <span class="tts-math" data-tts="O sub K">$\mathcal{O}_K$</span>-module <span class="tts-math" data-tts="p sub F">$\mathfrak{p}_F$</span> under <span class="tts-math" data-tts="x plus y equals F of x y and a times x equals bracket a of F of x">$x+y=F(x,y),\ a\cdot x=[a]_F(x)$</span>. For a Lubin–Tate module, the <strong><span class="tts-math" data-tts="pi to the n">$\pi^n$</span>-division points</strong> are
+  <span class="tts-math" data-tts="F of n equals the kernel of bracket pi to the n on F, the set of lambda with pi to the n times lambda equals zero">$F(n)=\ker[\pi^n]_F=\{\lambda\in\mathfrak{p}_F \mid \pi^n\cdot\lambda=0\}.$</span>
+  Crucially, <span class="tts-math" data-tts="F of n is a free O sub K mod pi to the n module of rank one">$F(n)$ is a free $\mathcal{O}_K/\pi^n\mathcal{O}_K$-module of rank $1$</span> — just like <span class="tts-math" data-tts="the p to the n-th roots of unity form a cyclic group of order p to the n">$\mu_{p^n}\cong\mathbb{Z}/p^n\mathbb{Z}$</span>.
+</p>
+</div>
+<div class="box pause" data-cid="ch05-1050">
+<span class="box-label">Corollary (5.3) — the automorphism dictionary</span>
+<p data-cid="ch05-1060">
+  Sending <span class="tts-math" data-tts="a to bracket a of F">$a\mapsto[a]_F$</span> gives
+  <span class="tts-math" data-tts="O sub K mod pi to the n is isomorphic to the endomorphisms of F of n, and U sub K mod U sub K to the n is isomorphic to the automorphisms of F of n">$\mathcal{O}_K/\pi^n\mathcal{O}_K\cong\operatorname{End}_{\mathcal{O}_K}(F(n))$ and $U_K/U_K^{(n)}\cong\operatorname{Aut}_{\mathcal{O}_K}(F(n)).$</span>
+  Compare <span class="tts-math" data-tts="the units mod p to the n equal the automorphisms of the p to the n-th roots of unity">$(\mathbb{Z}/p^n)^\times\cong\operatorname{Aut}(\mu_{p^n})$</span> — same shape, with <span class="tts-math" data-tts="U sub K mod U sub K to the n">$U_K/U_K^{(n)}$</span> in place of <span class="tts-math" data-tts="the units mod p to the n">$(\mathbb{Z}/p^n)^\times$</span>.
+</p>
+</div>
+<div class="box definition" data-cid="ch05-1070">
+<span class="box-label">Theorem (5.4) — Lubin–Tate extensions</span>
+<p data-cid="ch05-1080">
+  Define <span class="tts-math" data-tts="L sub n equals K adjoin F of n">$L_n=K(F(n))$</span>, the field of <span class="tts-math" data-tts="pi to the n">$\pi^n$</span>-division points. It depends only on <span class="tts-math" data-tts="pi">$\pi$</span>, not on the chosen module. Then <span class="tts-math" data-tts="L sub n over K">$L_n\mid K$</span> is totally ramified abelian of degree <span class="tts-math" data-tts="q to the n minus one times q minus one">$q^{n-1}(q-1)$</span> with
+  <span class="tts-math" data-tts="the Galois group of L sub n over K is isomorphic to the automorphisms of F of n, which is U sub K mod U sub K to the n">$G(L_n\mid K)\cong\operatorname{Aut}_{\mathcal{O}_K}(F(n))\cong U_K/U_K^{(n)}.$</span>
+  Concretely, for <span class="tts-math" data-tts="sigma in the Galois group">$\sigma\in G(L_n\mid K)$</span> there is a unique unit class <span class="tts-math" data-tts="u">$u$</span> with <span class="tts-math" data-tts="lambda to the sigma equals bracket u of F of lambda">$\lambda^\sigma=[u]_F(\lambda)$</span>. A division point <span class="tts-math" data-tts="lambda sub n in F of n but not F of n minus one">$\lambda_n\in F(n)\setminus F(n-1)$</span> is a prime element of <span class="tts-math" data-tts="L sub n">$L_n$</span> (Eisenstein!), and <span class="tts-math" data-tts="the norm from L sub n to K of minus lambda sub n equals pi">$N_{L_n\mid K}(-\lambda_n)=\pi.$</span>
+</p>
+</div>
+<div class="box example" data-cid="ch05-1090">
+<span class="box-label">It really is cyclotomic over Q_p</span>
+<p data-cid="ch05-1100">
+  Take <span class="tts-math" data-tts="K equals Q sub p, F equals G sub m">$K=\mathbb{Q}_p,\ F=\widehat{\mathbb{G}}_m$</span>. Then <span class="tts-math" data-tts="e of X equals one plus X to the p to the n, minus one">$e_n(X)=(1+X)^{p^n}-1$</span>, whose roots are <span class="tts-math" data-tts="zeta minus one">$\zeta-1$</span> for <span class="tts-math" data-tts="p to the n-th">$p^n$</span>-th roots of unity <span class="tts-math" data-tts="zeta">$\zeta$</span>. So <span class="tts-math" data-tts="F of n equals zeta minus one for the p to the n-th roots of unity">$F(n)=\{\zeta-1\}$</span> and <span class="tts-math" data-tts="L sub n equals Q sub p adjoin the p to the n-th roots of unity">$L_n=\mathbb{Q}_p(\mu_{p^n})$</span> exactly. Lubin–Tate theory <em>is</em> cyclotomic theory in this case, and a fresh, axiomatic theory everywhere else.
+</p>
+</div>
+<div class="box definition" data-cid="ch05-1110">
+<span class="box-label">Theorem (5.5) — explicit norm residue symbol</span>
+<p data-cid="ch05-1120">
+  For <span class="tts-math" data-tts="a equals u times pi to the v of a">$a=u\,\pi^{v_K(a)}\in K^\times$</span> with <span class="tts-math" data-tts="u a unit">$u\in U_K$</span>, the norm residue symbol on division points is
+</p>
+<span class="tts-math" data-tts="a comma L sub n over K applied to lambda equals bracket u inverse of F of lambda, for lambda in F of n">
+$$(a,L_n\mid K)\,\lambda=[u^{-1}]_F(\lambda),\qquad \lambda\in F(n).$$
+</span>
+<p data-cid="ch05-1130">
+  This is theorem (2.4) reborn in full generality: the unit part acts through its inverse <span class="tts-math" data-tts="bracket u inverse">$[u^{-1}]$</span>, the prime-element part contributes Frobenius on the unramified side. Over <span class="tts-math" data-tts="Q sub p">$\mathbb{Q}_p$</span> it collapses back to <span class="tts-math" data-tts="zeta maps to zeta to the u inverse">$\zeta\mapsto\zeta^{u^{-1}}$</span>.
+</p>
+</div>
+<div class="box pause" data-cid="ch05-1140">
+<span class="box-label">Corollaries (5.6)–(5.7) — class fields and local Kronecker–Weber, generalized</span>
+<p data-cid="ch05-1150">
+  <span class="tts-math" data-tts="L sub n">$L_n$</span> is the class field of the group <span class="tts-math" data-tts="the group generated by pi, times U sub K to the n">$\langle\pi\rangle\times U_K^{(n)}$</span>. Taking the union <span class="tts-math" data-tts="L sub pi equals the union of the L sub n">$L_\pi=\bigcup_n L_n$</span> and combining with the maximal unramified extension <span class="tts-math" data-tts="K nr">$K^{\mathrm{nr}}$</span>,
+  <span class="tts-math" data-tts="K abelian equals K nr times L sub pi">$K^{\mathrm{ab}}=K^{\mathrm{nr}}\cdot L_\pi.$</span>
+  Every finite abelian extension of <span class="tts-math" data-tts="K">$K$</span> is the unramified part times a Lubin–Tate part — the exact analogue of "all abelian extensions of <span class="tts-math" data-tts="Q sub p">$\mathbb{Q}_p$</span> come from roots of unity". (One subtlety: <span class="tts-math" data-tts="L sub pi">$L_\pi$</span> depends on <span class="tts-math" data-tts="pi">$\pi$</span>, but the compositum <span class="tts-math" data-tts="K abelian">$K^{\mathrm{ab}}$</span> does not.)
+</p>
+</div>
+
+<!-- ===================== 5.6 ===================== -->
+<h2 data-cid="ch05-1160" id="s5-6">5.6 Higher Ramification Groups</h2>
+<p data-cid="ch05-1170">
+  The norm residue symbol relates two filtered groups. On the left, <span class="tts-math" data-tts="K star">$K^\times$</span> carries the chain of higher unit groups; on the right, <span class="tts-math" data-tts="the Galois group">$G(L\mid K)$</span> carries the chain of ramification groups. The main theorem of this section says the symbol matches the two filtrations <em>exactly</em>.
+</p>
+<div class="box definition" data-cid="ch05-1180">
+<span class="box-label">The two filtrations</span>
+<p data-cid="ch05-1190">
+  On the unit side:
+  <span class="tts-math" data-tts="K star contains U sub K equals U to the zero, contains U to the one, contains U to the two, and so on">$K^\times\supseteq U_K=U_K^{(0)}\supseteq U_K^{(1)}\supseteq U_K^{(2)}\supseteq\cdots$</span>.
+  On the Galois side, the <strong>upper-numbering ramification groups</strong>:
+  <span class="tts-math" data-tts="G of L over K contains G to the zero, contains G to the one, and so on">$G(L\mid K)\supseteq G^0\supseteq G^1\supseteq G^2\supseteq\cdots$</span>.
+  Recall lower numbering <span class="tts-math" data-tts="G sub i equals the sigma with v sub L of sigma alpha minus alpha at least i plus one for all alpha">$G_i=\{\sigma\mid v_L(\sigma\alpha-\alpha)\ge i+1\ \forall\alpha\in\mathcal{O}_L\}$</span>, converted to upper numbering by the Herbrand function <span class="tts-math" data-tts="psi, the inverse of eta of s equals the integral from zero to s of d x over the index of G zero in G x">$\psi=\eta^{-1}$</span>.
+</p>
+</div>
+<div class="box example" data-cid="ch05-1192">
+<span class="box-label">Worked instance — the Herbrand function for one Lubin–Tate <span class="tts-math" data-tts="L sub n over K">$L_n\mid K$</span></span>
+<p data-cid="ch05-1194">
+  The Herbrand function is the integral <span class="tts-math" data-tts="eta of s equals the integral from zero to s of d x over the index of G zero in G x">$\eta(s)=\int_0^s \frac{dx}{[G_0:G_x]}$</span> — it averages the "size" of the ramification groups as you walk up. Let us integrate it for the staircase that Proposition (6.1) below produces. There the lower-numbering groups are constant on the blocks <span class="tts-math" data-tts="q to the k minus one minus one, up to q to the k minus one">$q^{k-1}-1\le x\le q^k-1$</span>, with index <span class="tts-math" data-tts="the index of G zero in G x equals q to the k">$[G_0:G_x]=q^k$</span> there. So on the <span class="tts-math" data-tts="k-th">$k$</span>-th block (of length <span class="tts-math" data-tts="q to the k minus q to the k minus one">$q^k-q^{k-1}$</span>) the integrand is the constant <span class="tts-math" data-tts="one over q to the k">$1/q^k$</span>, contributing
+  <span class="tts-math" data-tts="q to the k minus q to the k minus one, over q to the k, equals one minus one over q">$\dfrac{q^k-q^{k-1}}{q^k}=1-\tfrac{1}{q}$</span>
+  on the first block and <span class="tts-math" data-tts="one minus one over q, all over q to the k minus one">$\tfrac{1}{q^{k-1}}\big(1-\tfrac1q\big)$</span> on later ones. Summing the geometric pieces up to <span class="tts-math" data-tts="s equals q to the n minus one">$s=q^n-1$</span> telescopes to exactly
+  <span class="tts-math" data-tts="eta of q to the n minus one equals n">$\eta(q^n-1)=n.$</span>
+  That is the whole point: a <strong>lower</strong> jump sitting at the awkward value <span class="tts-math" data-tts="q to the k minus one">$q^k-1$</span> is carried by <span class="tts-math" data-tts="eta">$\eta$</span> to the clean <strong>upper</strong> jump at the integer <span class="tts-math" data-tts="k">$k$</span>. Integrating the staircase straightens the jumps onto the integers — which is exactly what Hasse–Arf will need.
+</p>
+</div>
+<div class="box example" data-cid="ch05-1200">
+<span class="box-label">Proposition (6.1) — ramification of Lubin–Tate extensions</span>
+<p data-cid="ch05-1210">
+  For the field <span class="tts-math" data-tts="L sub n">$L_n$</span> of <span class="tts-math" data-tts="pi to the n">$\pi^n$</span>-division points, the lower-numbering groups are a clean staircase:
+  <span class="tts-math" data-tts="G sub i of L sub n over K equals the Galois group of L sub n over L sub k, for q to the k minus one minus one, less than or equal to i, less than or equal to q to the k minus one">$G_i(L_n\mid K)=G(L_n\mid L_k)\quad\text{for}\quad q^{k-1}-1\le i\le q^k-1.$</span>
+  The proof computes <span class="tts-math" data-tts="v sub L sub n of lambda to the sigma minus lambda">$v_{L_n}(\lambda^\sigma-\lambda)$</span> directly using the explicit symbol (5.5). The bridge to ramification is the definition of the <strong>ramification number</strong>
+  <span class="tts-math" data-tts="i sub L n over K of sigma equals v sub L n of sigma lambda minus lambda">$i_{L_n\mid K}(\sigma)=v_{L_n}(\sigma\lambda-\lambda),$</span>
+  and because the division point <span class="tts-math" data-tts="lambda">$\lambda$</span> is itself a <em>uniformizer</em> of <span class="tts-math" data-tts="L sub n">$L_n$</span>, this single valuation already computes the lower numbering (no need to range over all of <span class="tts-math" data-tts="O sub L n">$\mathcal{O}_{L_n}$</span> — a uniformizer generates everything). Concretely: if <span class="tts-math" data-tts="sigma corresponds to u equals one plus s pi to the m">$\sigma\leftrightarrow u=1+s\pi^m$</span>, then <span class="tts-math" data-tts="i sub L n over K of sigma equals q to the m">$i_{L_n\mid K}(\sigma)=q^m$</span> when <span class="tts-math" data-tts="m less than n">$m&lt;n$</span>. The jumps sit at <span class="tts-math" data-tts="i equals q to the k minus one">$i=q^k-1$</span>.
+</p>
+</div>
+<div class="box definition" data-cid="ch05-1220">
+<span class="box-label">Theorem (6.2) — the main theorem of higher ramification theory</span>
+<p data-cid="ch05-1230">
+  For a finite abelian <span class="tts-math" data-tts="L over K">$L\mid K$</span>, the norm residue symbol maps the higher unit group onto the upper-numbering ramification group:
+</p>
+<span class="tts-math" data-tts="the symbol on K star sends U sub K to the n onto G to the n of L over K, for n at least zero">
+$$(\,\cdot\,,L\mid K)\colon\quad U_K^{(n)}\ \twoheadrightarrow\ G^n(L\mid K),\qquad n\ge 0.$$
+</span>
+<p data-cid="ch05-1240">
+  So the symbol is not just an isomorphism of groups — it is an isomorphism of <em>filtered</em> groups. The proof reduces to the totally ramified case, embeds <span class="tts-math" data-tts="L">$L$</span> into a Lubin–Tate extension <span class="tts-math" data-tts="L sub m">$L_m$</span>, and reads off the answer from (6.1) after converting lower to upper numbering via <span class="tts-math" data-tts="eta of L over K of q to the n minus one equals n">$\eta_{L\mid K}(q^n-1)=n$</span>.
+</p>
+</div>
+<div class="box intuition" data-cid="ch05-1250">
+<span class="box-label">Why upper numbering</span>
+<p data-cid="ch05-1260">
+  Upper numbering is the "right" indexing because it is compatible with quotients: it survives passage to subextensions, where lower numbering does not. That compatibility is exactly what lets the symbol — which is functorial in <span class="tts-math" data-tts="L">$L$</span> — line up with the <em>upper</em> filtration rather than the lower one. The unit filtration <span class="tts-math" data-tts="U sub K to the n">$U_K^{(n)}$</span> "speaks upper numbering" natively.
+</p>
+</div>
+<div class="box definition" data-cid="ch05-1270">
+<span class="box-label">Proposition (6.3) — Hasse–Arf</span>
+<p data-cid="ch05-1280">
+  For a finite <em>abelian</em> extension <span class="tts-math" data-tts="L over K">$L\mid K$</span>, the jumps of the upper-numbering filtration <span class="tts-math" data-tts="G to the t of L over K">$\{G^t(L\mid K)\}_{t\ge -1}$</span> occur at <strong>integers</strong>. (A "jump" at <span class="tts-math" data-tts="t">$t$</span> means <span class="tts-math" data-tts="G to the t is strictly bigger than G to the t plus epsilon for all positive epsilon">$G^t\neq G^{t+\varepsilon}$</span> for every <span class="tts-math" data-tts="epsilon greater than zero">$\varepsilon&gt;0$</span>.)
+</p>
+</div>
+<div class="box pause" data-cid="ch05-1290">
+<span class="box-label">Why Hasse–Arf falls out for free</span>
+<p data-cid="ch05-1300">
+  Theorem (6.2) makes Hasse–Arf almost a corollary. Reduce to a Lubin–Tate extension <span class="tts-math" data-tts="L sub m">$L_m$</span>; by (6.1) its lower-numbering jumps are <span class="tts-math" data-tts="q to the n minus one">$q^n-1$</span>, and the Herbrand function sends these to the <em>integers</em> <span class="tts-math" data-tts="eta of q to the n minus one equals n">$\eta(q^n-1)=n$</span>. Since upper-numbering jumps are preserved under the abelian quotient <span class="tts-math" data-tts="L sub m to L">$L_m\to L$</span>, the jumps of <span class="tts-math" data-tts="L over K">$L\mid K$</span> are integers too. (The lone exception is <span class="tts-math" data-tts="q equals 2">$q=2$</span>, where <span class="tts-math" data-tts="zero">$0$</span> is not a jump.)
+</p>
+</div>
+<p data-cid="ch05-1310">
+  Hasse–Arf is not a curiosity: it is the input that makes the Artin conductor of an abelian character an integer, and so underwrites the theory of Artin <span class="tts-math" data-tts="L-functions">$L$</span>-functions in Chapter VII. The explicit Lubin–Tate computation of ramification is the cleanest route to it.
+</p>
+
+<!-- ===================== SUMMARY ===================== -->
+<h2 data-cid="ch05-1320" id="summary">Summary</h2>
+<p data-cid="ch05-1330">
+  This chapter turned the abstract class field theory of Chapter IV into explicit local arithmetic. The thread:
+</p>
+<ul data-cid="ch05-1340">
+<li><strong>5.1</strong> — The multiplicative group of a local field satisfies the class field axiom (via the Herbrand quotient of the units), so the abstract machine applies: a canonical <span class="tts-math" data-tts="r sub L over K from the abelianized Galois group onto K star mod norms">$G(L\mid K)^{\mathrm{ab}}\cong K^\times/N_{L\mid K}L^\times$</span>, the existence theorem, and the conductor detecting ramification.</li>
+<li><strong>5.2</strong> — Over <span class="tts-math" data-tts="Q sub p">$\mathbb{Q}_p$</span> the norm residue symbol is explicit: <span class="tts-math" data-tts="a comma Q sub p adjoin zeta applied to zeta equals zeta to the u inverse">$(a,\mathbb{Q}_p(\zeta))\,\zeta=\zeta^{u^{-1}}$</span> on the ramified part, Frobenius powers on the unramified part. Proved transcendentally with Lubin–Tate series.</li>
+<li><strong>5.3</strong> — The Hilbert symbol pairs Kummer and class field theory. Tame case: a congruence mod <span class="tts-math" data-tts="p">$\mathfrak{p}$</span> generalizing Legendre/Euler. Wild case: explicit but transcendental (Brückner, Artin–Hasse, Iwasawa). The <span class="tts-math" data-tts="2-adic, n equals 2">$n=2$ over $\mathbb{Q}_2$</span> case computed fully on four generators.</li>
+<li><strong>5.4</strong> — Formal groups and Lubin–Tate modules: <span class="tts-math" data-tts="bracket pi congruent to X to the q mod pi">$[\pi]\equiv X^q\bmod\pi$</span>, classified up to isomorphism by their prime element.</li>
+<li><strong>5.5</strong> — Division points <span class="tts-math" data-tts="F of n">$F(n)$</span> generate totally ramified abelian extensions <span class="tts-math" data-tts="L sub n over K">$L_n\mid K$</span> with <span class="tts-math" data-tts="Galois group U sub K mod U sub K to the n">$G(L_n\mid K)\cong U_K/U_K^{(n)}$</span>, explicit symbol <span class="tts-math" data-tts="bracket u inverse on F">$[u^{-1}]_F$</span>, and <span class="tts-math" data-tts="K abelian equals K nr times L sub pi">$K^{\mathrm{ab}}=K^{\mathrm{nr}}L_\pi$</span> — a Kronecker–Weber theorem for every local field.</li>
+<li><strong>5.6</strong> — The symbol is a filtration isomorphism: <span class="tts-math" data-tts="U sub K to the n maps onto G to the n">$U_K^{(n)}\twoheadrightarrow G^n(L\mid K)$</span>, from which Hasse–Arf (integer jumps for abelian extensions) follows.</li>
+</ul>
+<div class="box intuition" data-cid="ch05-1350">
+<span class="box-label">The one slogan</span>
+<p data-cid="ch05-1360">
+  If you remember one thing: <strong>prime elements correspond to Frobenius, and the unit part of <span class="tts-math" data-tts="K star">$K^\times$</span> acts by its inverse</strong>. Every explicit formula in this chapter — the cyclotomic symbol <span class="tts-math" data-tts="zeta to the u inverse">$\zeta^{u^{-1}}$</span>, the Lubin–Tate symbol <span class="tts-math" data-tts="bracket u inverse of F">$[u^{-1}]_F$</span>, the matching of filtrations — is that single principle, written out.
+</p>
+</div>
+
+<nav class="chapter-nav">
+<a href="ch04.html"><span class="label">← Previous</span><span class="title">IV. Abstract Class Field Theory</span></a>
+<a class="next" href="ch06.html"><span class="label">Next →</span><span class="title">VI. Global Class Field Theory</span></a>
+</nav>
+</article>
+</main>
+<script src="/js/main.js"></script><script src="/js/comments.js"></script><script src="/js/tts.js"></script>
+</body>
+</html>

@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ch 02 — The Theory of Valuations · Algebraic Number Theory</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/><link href="/css/tts.css" rel="stylesheet"/>
+</head>
+<body data-book="algebraic_number_theory" data-page="ch02">
+<header class="site-header">
+<a class="home-btn" href="/">Home</a>
+<a class="brand" href="/books/algebraic_number_theory/">Algebraic Number Theory <small>a slow reading guide</small></a>
+<nav>
+<button aria-label="toggle theme" class="theme-toggle">Dark</button>
+</nav>
+</header>
+<main class="layout">
+<aside class="sidebar">
+<h4>Chapter 02</h4>
+<ol>
+<li><a href="#intro">Introduction</a></li>
+<li><a href="#s2-1">2.1 The p-adic Numbers</a></li>
+<li><a href="#s2-2">2.2 The p-adic Absolute Value</a></li>
+<li><a href="#s2-3">2.3 Valuations</a></li>
+<li><a href="#s2-4">2.4 Completions</a></li>
+<li><a href="#s2-5">2.5 Local Fields</a></li>
+<li><a href="#s2-6">2.6 Henselian Fields</a></li>
+<li><a href="#s2-7">2.7 Unramified &amp; Tamely Ramified</a></li>
+<li><a href="#s2-8">2.8 Extensions of Valuations</a></li>
+<li><a href="#s2-9">2.9 Galois Theory of Valuations</a></li>
+<li><a href="#s2-10">2.10 Higher Ramification Groups</a></li>
+<li><a href="#summary">Summary</a></li>
+</ol>
+</aside>
+<article class="content">
+<section class="hero">
+<div class="kicker">Chapter 02</div>
+<h1>The Theory of Valuations</h1>
+<p class="subtitle" data-cid="ch02-010">Primes are points, integers are functions on those points — and to read off a function's behaviour at a point we need a notion of "size near p." That notion is a valuation, and pursuing it builds the entire local world: <span class="tts-math" data-tts="the p-adic numbers Q sub p">$\mathbb{Q}_p$</span>, completions, Hensel's lemma, local fields, and ramification.</p>
+<div class="meta">
+<span>Neukirch Chapter II</span>
+<span>~70 min reading time</span>
+<span>Prereqs: Ch. I (Dedekind domains, prime decomposition, norm &amp; trace, ramification)</span>
+</div>
+</section>
+
+<h2 id="intro" data-cid="ch02-020">Why localize? The big picture before the machinery</h2>
+<p data-cid="ch02-030">Chapter I taught us to think of an integer <span class="tts-math" data-tts="f in the integers Z">$f \in \mathbb{Z}$</span> as a <em>function</em> on the space of primes: its "value" at the prime <span class="tts-math" data-tts="p">$p$</span> is the residue class <span class="tts-math" data-tts="f mod p in the field Z mod p Z">$f \bmod p \in \mathbb{Z}/p\mathbb{Z}$</span>. The analogy is with a polynomial <span class="tts-math" data-tts="f of z in C of z">$f(z) \in \mathbb{C}[z]$</span> evaluated at a point. But a polynomial has more than a value at a point — it has a whole Taylor expansion, recording all its derivatives. This chapter asks: what is the arithmetic analogue of the Taylor expansion of an integer at a prime?</p>
+<p data-cid="ch02-040">The answer is the <strong>p-adic expansion</strong>, and chasing it forces us to complete <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span> in a brand-new way — not with the familiar absolute value but with a "p-adic" one. The completion is the field <span class="tts-math" data-tts="Q sub p">$\mathbb{Q}_p$</span>. Doing this for every prime, plus the usual <span class="tts-math" data-tts="absolute value at infinity">$|\cdot|_\infty$</span>, scatters <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span> into a whole family of local fields, each one simple enough to compute in.</p>
+<div class="box intuition" data-cid="ch02-050">
+<span class="box-label">Intuition</span>
+<p data-cid="ch02-060">A single hard global object (a Diophantine equation, a number field) gets pried apart into many easy local objects (one per prime). Solve the easy problems, then try to glue back. The phrase for this strategy — which dominates the whole subject — is the <strong>local-to-global principle</strong>. This chapter builds the local pieces.</p>
+</div>
+<p data-cid="ch02-070">Throughout, keep one concrete picture in mind: the prime <span class="tts-math" data-tts="p">$p$</span> in <span class="tts-math" data-tts="Z">$\mathbb{Z}$</span>, the ring of p-adic integers <span class="tts-math" data-tts="Z sub p">$\mathbb{Z}_p$</span>, and its fraction field <span class="tts-math" data-tts="Q sub p">$\mathbb{Q}_p$</span>. Everything general in this chapter has its first instance here.</p>
+
+<!-- ============================ 2.1 ============================ -->
+<h2 id="s2-1" data-cid="ch02-080">2.1 The p-adic Numbers</h2>
+<p data-cid="ch02-090">Hensel's idea (c. 1900): import power-series methods into number theory. A complex rational function <span class="tts-math" data-tts="f of z">$f(z)$</span> with no pole at <span class="tts-math" data-tts="z equals a">$z=a$</span> has a Taylor expansion in powers of <span class="tts-math" data-tts="z minus a">$(z-a)$</span>. The arithmetic analogue replaces the "point" <span class="tts-math" data-tts="a">$a$</span> by a prime <span class="tts-math" data-tts="p">$p$</span> and the local variable <span class="tts-math" data-tts="z minus a">$(z-a)$</span> by <span class="tts-math" data-tts="p">$p$</span> itself.</p>
+
+<h3 data-cid="ch02-100">The expansion of a positive integer</h3>
+<p data-cid="ch02-110">Every positive integer can be written in base <span class="tts-math" data-tts="p">$p$</span>:</p>
+<span class="tts-math" data-tts="f equals a sub 0 plus a sub 1 times p plus a sub 2 times p squared, up to a sub n times p to the n, with each digit between 0 and p minus 1">
+$$f = a_0 + a_1 p + a_2 p^2 + \cdots + a_n p^n, \qquad 0 \le a_i &lt; p.$$
+</span>
+<p data-cid="ch02-120">The digits are found by repeated division: <span class="tts-math" data-tts="f equals a sub 0 plus p times f sub 1">$f = a_0 + p f_1$</span>, then <span class="tts-math" data-tts="f sub 1 equals a sub 1 plus p times f sub 2">$f_1 = a_1 + p f_2$</span>, and so on. For example <span class="tts-math" data-tts="216 equals 1 3 3 1 in base 5">$216 = 1{\cdot}5^3 + 3{\cdot}5^2 + 3{\cdot}5 + 1$</span>, i.e. <span class="tts-math" data-tts="1 3 3 1 5-adically">$\,1331$</span> in base 5.</p>
+<div class="box pause" data-cid="ch02-130">
+<span class="box-label">Pause</span>
+<p data-cid="ch02-140">The crucial difference from decimals: the digits run off to the <em>right</em> toward higher powers of <span class="tts-math" data-tts="p">$p$</span>. Negative numbers and fractions force us to allow <em>infinitely many</em> digits — but still only finitely many <em>negative</em> powers of <span class="tts-math" data-tts="p">$p$</span>. That asymmetry (terminate on the left, run forever on the right) is the whole flavour of p-adic numbers.</p>
+</div>
+
+<div class="box definition" data-cid="ch02-150">
+<span class="box-label">Definition (1.1) — p-adic integer</span>
+<p data-cid="ch02-160">Fix a prime <span class="tts-math" data-tts="p">$p$</span>. A <strong>p-adic integer</strong> is a formal series</p>
+<span class="tts-math" data-tts="a sub 0 plus a sub 1 times p plus a sub 2 times p squared, and so on, with each digit between 0 and p minus 1">
+$$a_0 + a_1 p + a_2 p^2 + \cdots, \qquad 0 \le a_i &lt; p.$$
+</span>
+<p data-cid="ch02-170">The set of all p-adic integers is denoted <span class="tts-math" data-tts="Z sub p">$\mathbb{Z}_p$</span>.</p>
+</div>
+
+<p data-cid="ch02-180">To make sense of the infinite series we read it through its partial sums. By the proposition that residue classes mod <span class="tts-math" data-tts="p to the n">$p^n$</span> have a unique base-p representation up to length <span class="tts-math" data-tts="n">$n$</span> (Prop. 1.2), any <span class="tts-math" data-tts="f in Z localized at p">$f \in \mathbb{Z}_{(p)}$</span> (a rational whose denominator is prime to <span class="tts-math" data-tts="p">$p$</span>) produces a coherent sequence of residues</p>
+<span class="tts-math" data-tts="s sub n equals f mod p to the n, an element of Z mod p to the n Z">
+$$s_n = f \bmod p^n \in \mathbb{Z}/p^n\mathbb{Z},$$
+</span>
+<p data-cid="ch02-190">whose digits agree from one <span class="tts-math" data-tts="n">$n$</span> to the next, assembling into the p-adic expansion of <span class="tts-math" data-tts="f">$f$</span>.</p>
+
+<div class="box warn" data-cid="ch02-194">
+<span class="box-label">Watch out — two look-alike symbols</span>
+<p data-cid="ch02-196">Do not confuse the <strong>localization</strong> <span class="tts-math" data-tts="Z localized at p">$\mathbb{Z}_{(p)}$</span> (subscript in parentheses) with the <strong>p-adic integers</strong> <span class="tts-math" data-tts="Z sub p">$\mathbb{Z}_p$</span> (bare subscript). The first is small: it is just the rationals <span class="tts-math" data-tts="a over b">$a/b$</span> whose denominator <span class="tts-math" data-tts="b">$b$</span> is prime to <span class="tts-math" data-tts="p">$p$</span>, a subring of <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span>. The second is much bigger — the full ring of infinite p-adic series — and <span class="tts-math" data-tts="Z localized at p sits inside Z sub p">$\mathbb{Z}_{(p)} \subset \mathbb{Z}_p$</span>. The point of the construction above is that a fraction in <span class="tts-math" data-tts="Z localized at p">$\mathbb{Z}_{(p)}$</span> acquires an honest p-adic expansion in <span class="tts-math" data-tts="Z sub p">$\mathbb{Z}_p$</span>.</p>
+<p data-cid="ch02-198">Concretely, expand <span class="tts-math" data-tts="one half">$\tfrac{1}{2}$</span> in <span class="tts-math" data-tts="Z sub 3">$\mathbb{Z}_3$</span> digit by digit. We need <span class="tts-math" data-tts="a sub 0 plus a sub 1 times 3 plus a sub 2 times 9, and so on, equal to one half">$a_0 + a_1{\cdot}3 + a_2{\cdot}9 + \cdots = \tfrac{1}{2}$</span> with digits in <span class="tts-math" data-tts="0, 1, 2">$\{0,1,2\}$</span>. Mod <span class="tts-math" data-tts="3">$3$</span>: <span class="tts-math" data-tts="2 times a sub 0 congruent to 1 mod 3 gives a sub 0 equals 2">$2a_0 \equiv 1 \pmod 3 \Rightarrow a_0 = 2$</span>. Subtract: <span class="tts-math" data-tts="one half minus 2 equals negative three halves equals 3 times negative one half">$\tfrac{1}{2} - 2 = -\tfrac{3}{2} = 3{\cdot}(-\tfrac{1}{2})$</span>, so the next digits repeat the expansion of <span class="tts-math" data-tts="negative one half">$-\tfrac{1}{2}$</span>. One finds the eventually-periodic string <span class="tts-math" data-tts="one half equals 2 plus 1 times 3 plus 1 times 9 plus 1 times 27, and so on">$\tfrac{1}{2} = 2 + 1{\cdot}3 + 1{\cdot}3^2 + 1{\cdot}3^3 + \cdots$</span> (digits <span class="tts-math" data-tts="2 then 1 repeating">$2,1,1,1,\dots$</span>) — check: <span class="tts-math" data-tts="2 plus 3 plus 9 plus 27, and so on, equals 2 plus 3 over 1 minus 3 equals 2 minus three halves equals one half">$2 + (3+9+27+\cdots) = 2 + \tfrac{3}{1-3} = 2 - \tfrac{3}{2} = \tfrac{1}{2}$</span> p-adically.</p>
+</div>
+
+<div class="box example" data-cid="ch02-200">
+<span class="box-label">Example — the two expansions everyone should know</span>
+<p data-cid="ch02-210">Minus one: <span class="tts-math" data-tts="negative 1 equals p minus 1 plus p minus 1 times p plus p minus 1 times p squared and so on">$-1 = (p-1) + (p-1)p + (p-1)p^2 + \cdots$</span>, because the partial sum is <span class="tts-math" data-tts="p to the n minus 1">$p^n - 1 \equiv -1 \pmod{p^n}$</span>.</p>
+<p data-cid="ch02-220">Geometric: <span class="tts-math" data-tts="1 over 1 minus p equals 1 plus p plus p squared and so on">$\dfrac{1}{1-p} = 1 + p + p^2 + \cdots$</span>, the honest geometric series — which converges p-adically precisely because <span class="tts-math" data-tts="p">$p$</span> is "small."</p>
+</div>
+<div class="box pause" data-cid="ch02-225">
+<span class="box-label">Pause — but isn't p a big number?</span>
+<p data-cid="ch02-227">A geometric series <span class="tts-math" data-tts="1 plus r plus r squared and so on">$1 + r + r^2 + \cdots$</span> only converges when the ratio <span class="tts-math" data-tts="r">$r$</span> is "small," and here <span class="tts-math" data-tts="r equals p">$r = p$</span> — an ordinary integer like <span class="tts-math" data-tts="2 or 3 or 5">$2,3,5$</span> — which certainly is not small in the everyday sense. The resolution is that we are about to change what "small" means. Provisionally, take it on faith that <span class="tts-math" data-tts="p">$p$</span> counts as <em>small</em> precisely because it is highly divisible by <span class="tts-math" data-tts="p">$p$</span>; its powers <span class="tts-math" data-tts="p, p squared, p cubed">$p, p^2, p^3,\dots$</span> are getting ever <em>more</em> divisible, hence ever smaller, so the tail of the series shrinks to <span class="tts-math" data-tts="0">$0$</span>. Made precise in §2.2: the p-adic size <span class="tts-math" data-tts="the p-adic absolute value of p equals 1 over p, which is less than 1">$|p|_p = 1/p &lt; 1$</span>, so <span class="tts-math" data-tts="p to the n">$p^n$</span> has size <span class="tts-math" data-tts="1 over p to the n">$1/p^n \to 0$</span>. With <em>that</em> notion of size the series converges honestly.</p>
+</div>
+
+<h3 data-cid="ch02-230">p-adic numbers and the projective limit</h3>
+<p data-cid="ch02-240">Allowing finitely many negative powers gives the <strong>p-adic numbers</strong></p>
+<span class="tts-math" data-tts="the sum from v equals negative m to infinity of a sub v times p to the v">
+$$\sum_{v=-m}^{\infty} a_v p^v = a_{-m}p^{-m} + \cdots + a_{-1}p^{-1} + a_0 + a_1 p + \cdots,$$
+</span>
+<p data-cid="ch02-250">whose set is <span class="tts-math" data-tts="Q sub p">$\mathbb{Q}_p$</span>. The map <span class="tts-math" data-tts="Q into Q sub p">$\mathbb{Q} \hookrightarrow \mathbb{Q}_p$</span> is injective and takes <span class="tts-math" data-tts="Z into Z sub p">$\mathbb{Z} \hookrightarrow \mathbb{Z}_p$</span>; we henceforth view <span class="tts-math" data-tts="Q inside Q sub p and Z inside Z sub p">$\mathbb{Q} \subset \mathbb{Q}_p$</span>, <span class="tts-math" data-tts="Z inside Z sub p">$\mathbb{Z} \subset \mathbb{Z}_p$</span>.</p>
+<p data-cid="ch02-260">Adding and multiplying these series directly (with carrying) is a nuisance. The clean way is to view a p-adic integer not as a sequence of integer partial sums but as a coherent system of residues. The rings <span class="tts-math" data-tts="Z mod p to the n Z">$\mathbb{Z}/p^n\mathbb{Z}$</span> are tied together by the natural projections</p>
+<span class="tts-math" data-tts="Z mod p Z, comes from Z mod p squared Z, comes from Z mod p cubed Z, and so on">
+$$\mathbb{Z}/p\mathbb{Z} \;\longleftarrow\; \mathbb{Z}/p^2\mathbb{Z} \;\longleftarrow\; \mathbb{Z}/p^3\mathbb{Z} \;\longleftarrow\; \cdots$$
+</span>
+<p data-cid="ch02-270">and we keep exactly the coherent tuples.</p>
+
+<div class="box definition" data-cid="ch02-280">
+<span class="box-label">Definition — projective limit (1.3)</span>
+<p data-cid="ch02-290">The <strong>projective limit</strong> is</p>
+<span class="tts-math" data-tts="the inverse limit of Z mod p to the n Z equals the set of coherent tuples x sub n in the product of Z mod p to the n Z, such that the projection of x sub n plus 1 equals x sub n">
+$$\varprojlim_n \mathbb{Z}/p^n\mathbb{Z} = \Big\{ (x_n)_n \in \prod_{n} \mathbb{Z}/p^n\mathbb{Z} \;\Big|\; \pi_n(x_{n+1}) = x_n \Big\}.$$
+</span>
+<p data-cid="ch02-300">Associating to <span class="tts-math" data-tts="the sum of a sub v times p to the v">$\sum a_v p^v$</span> the sequence of its partial-sum residues gives a bijection — in fact a ring isomorphism — <span class="tts-math" data-tts="Z sub p is isomorphic to the inverse limit of Z mod p to the n Z">$\mathbb{Z}_p \;\cong\; \varprojlim_n \mathbb{Z}/p^n\mathbb{Z}$</span>.</p>
+</div>
+
+<div class="box intuition" data-cid="ch02-305">
+<span class="box-label">Intuition — a p-adic integer is a stack of compatible snapshots</span>
+<p data-cid="ch02-307">Think of a p-adic integer as an infinite stack of photographs of the same number taken at coarser and coarser resolution: its residue mod <span class="tts-math" data-tts="p">$p$</span>, then mod <span class="tts-math" data-tts="p squared">$p^2$</span>, then mod <span class="tts-math" data-tts="p cubed">$p^3$</span>, and so on. The map <span class="tts-math" data-tts="pi sub n">$\pi_n$</span> appearing in the definition is simply <strong>reduction mod <span class="tts-math" data-tts="p to the n">$p^n$</span></strong>: it takes a class mod <span class="tts-math" data-tts="p to the n plus 1">$p^{n+1}$</span> and forgets the extra precision to land in <span class="tts-math" data-tts="Z mod p to the n Z">$\mathbb{Z}/p^n\mathbb{Z}$</span>. The coherence condition <span class="tts-math" data-tts="pi sub n of x sub n plus 1 equals x sub n">$\pi_n(x_{n+1}) = x_n$</span> just says: blurring the sharper snapshot must reproduce the blurrier one — every photo in the stack agrees with the next.</p>
+<p data-cid="ch02-309">Concretely, take <span class="tts-math" data-tts="p equals 3">$p=3$</span> and the number <span class="tts-math" data-tts="negative 1">$-1$</span>. Its snapshots are <span class="tts-math" data-tts="2 mod 3, then 8 mod 9, then 26 mod 27, and so on">$(2 \bmod 3,\ 8 \bmod 9,\ 26 \bmod 27,\ 80 \bmod 81,\ \dots)$</span>, since each entry is <span class="tts-math" data-tts="3 to the n minus 1">$3^n - 1$</span>. Check coherence: reducing <span class="tts-math" data-tts="8 mod 9">$8 \bmod 9$</span> down to mod <span class="tts-math" data-tts="3">$3$</span> gives <span class="tts-math" data-tts="8 equals 2 mod 3">$8 \equiv 2$</span>, matching the first entry; reducing <span class="tts-math" data-tts="26 mod 27">$26 \bmod 27$</span> to mod <span class="tts-math" data-tts="9">$9$</span> gives <span class="tts-math" data-tts="26 equals 8 mod 9">$26 \equiv 8$</span>, matching the second. The whole coherent tuple <em>is</em> the p-adic integer <span class="tts-math" data-tts="negative 1">$-1$</span>.</p>
+</div>
+
+<p data-cid="ch02-310">The point of the projective-limit description: it is <em>visibly</em> a ring (it is a subring of a product, with componentwise operations). This <em>defines</em> the ring structure on <span class="tts-math" data-tts="Z sub p">$\mathbb{Z}_p$</span> for free, and <span class="tts-math" data-tts="Q sub p">$\mathbb{Q}_p$</span> becomes its field of fractions since every element is <span class="tts-math" data-tts="p to the negative m times g, with g in Z sub p">$p^{-m}g$</span> with <span class="tts-math" data-tts="g in Z sub p">$g \in \mathbb{Z}_p$</span>.</p>
+
+<h3 data-cid="ch02-320">The payoff: Diophantine equations</h3>
+<div class="box example" data-cid="ch02-330">
+<span class="box-label">Why we built this (1.4)</span>
+<p data-cid="ch02-340">Let <span class="tts-math" data-tts="F a polynomial in x sub 1 through x sub n with integer coefficients">$F(x_1,\dots,x_n) \in \mathbb{Z}[x_1,\dots,x_n]$</span>. Then the congruence <span class="tts-math" data-tts="F congruent to 0 mod p to the v">$F \equiv 0 \pmod{p^v}$</span> is solvable for every <span class="tts-math" data-tts="v at least 1">$v \ge 1$</span> <strong>if and only if</strong> <span class="tts-math" data-tts="F equals 0">$F = 0$</span> has a solution in p-adic integers.</p>
+<p data-cid="ch02-350">So an infinite tower of congruences mod <span class="tts-math" data-tts="p, p squared, p cubed">$p, p^2, p^3, \dots$</span> is packaged into one single equation over <span class="tts-math" data-tts="Z sub p">$\mathbb{Z}_p$</span>. The proof is a compactness/diagonal argument: since each <span class="tts-math" data-tts="Z mod p Z">$\mathbb{Z}/p\mathbb{Z}$</span> is finite, you extract a coherent subsequence of approximate solutions that converges to a genuine p-adic solution. No real analysis is needed: the approximate solutions form an <em>infinite, finitely-branching tree</em> (each solution mod <span class="tts-math" data-tts="p to the v">$p^v$</span> has finitely many liftings mod <span class="tts-math" data-tts="p to the v plus 1">$p^{v+1}$</span>), and an infinite path through that tree — guaranteed by König's lemma, essentially the pigeonhole principle — is exactly the p-adic solution.</p>
+</div>
+<div class="box warn" data-cid="ch02-360">
+<span class="box-label">Watch out</span>
+<p data-cid="ch02-370">Solvability in <span class="tts-math" data-tts="Z sub p">$\mathbb{Z}_p$</span> for all <span class="tts-math" data-tts="p">$p$</span> (and in <span class="tts-math" data-tts="R">$\mathbb{R}$</span>) does <em>not</em> guarantee a solution in <span class="tts-math" data-tts="Z">$\mathbb{Z}$</span>; that stronger statement (the Hasse principle) holds for quadratic forms but fails in general. p-adic solvability is a powerful necessary test, not always sufficient.</p>
+</div>
+<p data-cid="ch02-380">Two facts worth filing away (chapter exercises): a p-adic number is <em>rational</em> iff its digit sequence is eventually periodic; and <span class="tts-math" data-tts="a equals the sum of a sub v times p to the v">$a = \sum a_v p^v$</span> is a <em>unit</em> in <span class="tts-math" data-tts="Z sub p">$\mathbb{Z}_p$</span> iff <span class="tts-math" data-tts="a sub 0 is not 0">$a_0 \ne 0$</span> (its leading digit is nonzero).</p>
+
+<!-- ============================ 2.2 ============================ -->
+<h2 id="s2-2" data-cid="ch02-390">2.2 The p-adic Absolute Value</h2>
+<p data-cid="ch02-400">The series <span class="tts-math" data-tts="a sub 0 plus a sub 1 p plus a sub 2 p squared">$a_0 + a_1 p + a_2 p^2 + \cdots$</span> looks like a decimal expansion but it does <em>not</em> converge in the ordinary sense. To make it converge we change the meaning of "small": a number is small when it is divisible by a <em>high</em> power of <span class="tts-math" data-tts="p">$p$</span>.</p>
+
+<div class="box definition" data-cid="ch02-410">
+<span class="box-label">Definition — p-adic valuation and absolute value</span>
+<p data-cid="ch02-420">For a nonzero rational <span class="tts-math" data-tts="a equals p to the m times b over c, with b and c prime to p">$a = p^m \tfrac{b}{c}$</span> (with <span class="tts-math" data-tts="b and c prime to p">$b,c$</span> prime to <span class="tts-math" data-tts="p">$p$</span>), set the <strong>exponential valuation</strong> <span class="tts-math" data-tts="v sub p of a equals m">$v_p(a) = m$</span>, with <span class="tts-math" data-tts="v sub p of 0 equals infinity">$v_p(0) = \infty$</span>. The <strong>p-adic absolute value</strong> is</p>
+<span class="tts-math" data-tts="the p-adic absolute value of a equals p to the minus v sub p of a">
+$$|a|_p = p^{-v_p(a)}.$$
+</span>
+</div>
+<p data-cid="ch02-430">So <span class="tts-math" data-tts="the p-adic absolute value of p to the m">$|p^m|_p = p^{-m}$</span> is small when <span class="tts-math" data-tts="m">$m$</span> is large. The valuation obeys, for all <span class="tts-math" data-tts="a and b">$a,b$</span>:</p>
+<span class="tts-math" data-tts="v sub p of a b equals v sub p of a plus v sub p of b; and v sub p of a plus b is at least the minimum of v sub p of a and v sub p of b">
+$$v_p(ab) = v_p(a) + v_p(b), \qquad v_p(a+b) \ge \min\{v_p(a),\, v_p(b)\}.$$
+</span>
+<p data-cid="ch02-440">In multiplicative form these say <span class="tts-math" data-tts="the absolute value of a b equals the product of the absolute values">$|ab|_p = |a|_p|b|_p$</span> and the <strong>strong (ultrametric) triangle inequality</strong></p>
+<span class="tts-math" data-tts="the absolute value of a plus b is at most the maximum of the absolute value of a and the absolute value of b">
+$$|a+b|_p \le \max\{|a|_p,\, |b|_p\} \;\le\; |a|_p + |b|_p.$$
+</span>
+
+<div class="box intuition" data-cid="ch02-450">
+<span class="box-label">Intuition — primes as points, valuations as order of vanishing</span>
+<p data-cid="ch02-460">For the function field <span class="tts-math" data-tts="k of t">$k(t)$</span>, a monic irreducible <span class="tts-math" data-tts="p of t">$p(t)$</span> is a "point," and <span class="tts-math" data-tts="v sub p of f">$v_p(f)$</span> is literally the order of the zero (or pole) of <span class="tts-math" data-tts="f">$f$</span> at that point. For <span class="tts-math" data-tts="p equals t minus a">$p = (t-a)$</span> this is the order of vanishing at <span class="tts-math" data-tts="t equals a">$t = a$</span>. The prime <span class="tts-math" data-tts="p">$p$</span> in <span class="tts-math" data-tts="Z">$\mathbb{Z}$</span> plays exactly the role of a point, and <span class="tts-math" data-tts="v sub p">$v_p$</span> measures "order of vanishing at the point p." This is the leitmotiv of the whole book: numbers behave like functions on the space of primes.</p>
+</div>
+
+<div class="box pause" data-cid="ch02-470">
+<span class="box-label">Pause — the product formula (2.1)</span>
+<p data-cid="ch02-480">For every nonzero rational <span class="tts-math" data-tts="a">$a$</span>,</p>
+<span class="tts-math" data-tts="the product over all p, including infinity, of the absolute value of a at p, equals 1">
+$$\prod_{p \le \infty} |a|_p = 1,$$
+</span>
+<p data-cid="ch02-490">where <span class="tts-math" data-tts="p">$p$</span> ranges over all primes <em>and</em> the symbol <span class="tts-math" data-tts="infinity">$\infty$</span>, with <span class="tts-math" data-tts="the absolute value at infinity">$|\cdot|_\infty$</span> the ordinary absolute value. It is just the prime factorization of <span class="tts-math" data-tts="a">$a$</span> read multiplicatively. This is the arithmetic shadow of "the sum of the orders of zeros and poles of a rational function is zero." It hints that <span class="tts-math" data-tts="the absolute value at infinity">$|\cdot|_\infty$</span> deserves to be thought of as a "point at infinity."</p>
+</div>
+
+<div class="box example" data-cid="ch02-500">
+<span class="box-label">Example — Ostrowski's classification of norms on Q (3.7)</span>
+<p data-cid="ch02-510">Every nontrivial absolute value on <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span> is <em>equivalent</em> (induces the same topology — made precise in §2.3) to exactly one of: the ordinary <span class="tts-math" data-tts="absolute value at infinity">$|\cdot|_\infty$</span>, or a p-adic <span class="tts-math" data-tts="absolute value at p">$|\cdot|_p$</span>. So the "points" of <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span> are precisely the primes together with one <em>archimedean</em> point at infinity — "archimedean" meaning the absolute value of the integers <span class="tts-math" data-tts="1, 2, 3, and so on">$1,2,3,\dots$</span> is unbounded, the usual feature of <span class="tts-math" data-tts="the absolute value at infinity">$|\cdot|_\infty$</span> that the p-adic ones lack (also §2.3). There are no surprises hiding.</p>
+</div>
+
+<h3 data-cid="ch02-520">Rebuilding Q_p analytically</h3>
+<p data-cid="ch02-530">Now complete <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span> with respect to <span class="tts-math" data-tts="absolute value at p">$|\cdot|_p$</span> exactly as one builds <span class="tts-math" data-tts="R">$\mathbb{R}$</span> from <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span>. Take the ring <span class="tts-math" data-tts="R">$R$</span> of Cauchy sequences, the maximal ideal <span class="tts-math" data-tts="m">$\mathfrak{m}$</span> of nullsequences, and define</p>
+<span class="tts-math" data-tts="Q sub p equals R mod m">
+$$\mathbb{Q}_p := R/\mathfrak{m}.$$
+</span>
+<p data-cid="ch02-540">The series <span class="tts-math" data-tts="the sum of a sub v p to the v">$\sum a_v p^v$</span> now <em>literally converges</em>, because <span class="tts-math" data-tts="a sub v p to the v has absolute value at most p to the minus v">$|a_v p^v|_p \le p^{-v} \to 0$</span>. One checks <span class="tts-math" data-tts="Q sub p">$\mathbb{Q}_p$</span> is complete (Prop. 2.2). The two key consequences of the ultrametric inequality:</p>
+<ul data-cid="ch02-550">
+<li><span class="tts-math" data-tts="Z sub p equals the set of x in Q sub p with absolute value at most 1">$\mathbb{Z}_p = \{x \in \mathbb{Q}_p : |x|_p \le 1\}$</span> is a subring — the closure of <span class="tts-math" data-tts="Z">$\mathbb{Z}$</span> in <span class="tts-math" data-tts="Q sub p">$\mathbb{Q}_p$</span> (Prop. 2.3).</li>
+<li>Its units are <span class="tts-math" data-tts="Z sub p star equals the set of x with absolute value exactly 1">$\mathbb{Z}_p^* = \{x : |x|_p = 1\}$</span>, and every nonzero <span class="tts-math" data-tts="x in Q sub p">$x \in \mathbb{Q}_p$</span> is uniquely <span class="tts-math" data-tts="p to the m times u, with u a unit">$x = p^m u$</span>, <span class="tts-math" data-tts="u in Z sub p star">$u \in \mathbb{Z}_p^*$</span>.</li>
+</ul>
+<p data-cid="ch02-560">The nonzero ideals of <span class="tts-math" data-tts="Z sub p">$\mathbb{Z}_p$</span> are exactly the principal ideals <span class="tts-math" data-tts="p to the n times Z sub p">$p^n\mathbb{Z}_p$</span>, and <span class="tts-math" data-tts="Z sub p mod p to the n Z sub p is isomorphic to Z mod p to the n Z">$\mathbb{Z}_p/p^n\mathbb{Z}_p \cong \mathbb{Z}/p^n\mathbb{Z}$</span> (Prop. 2.4). Taking the inverse limit recovers Hensel's definition: the analytic <span class="tts-math" data-tts="Z sub p">$\mathbb{Z}_p$</span> and the algebraic <span class="tts-math" data-tts="inverse limit of Z mod p to the n Z">$\varprojlim \mathbb{Z}/p^n\mathbb{Z}$</span> agree (Prop. 2.5). A third elegant description: <span class="tts-math" data-tts="Z sub p is isomorphic to Z double bracket X, modulo X minus p">$\mathbb{Z}_p \cong \mathbb{Z}[[X]]/(X-p)$</span> — "substitute <span class="tts-math" data-tts="X equals p">$X = p$</span> into a power series" (Prop. 2.6).</p>
+<div class="box warn" data-cid="ch02-570">
+<span class="box-label">Watch out — geometry of an ultrametric space</span>
+<p data-cid="ch02-580">In an ultrametric world every triangle is isosceles, every point of a ball is its center, and two balls are either nested or disjoint. The closed unit ball <span class="tts-math" data-tts="Z sub p">$\mathbb{Z}_p$</span> is <em>both</em> open and closed. Your Euclidean intuition about "size" must be retrained.</p>
+</div>
+
+<!-- ============================ 2.3 ============================ -->
+<h2 id="s2-3" data-cid="ch02-590">2.3 Valuations</h2>
+<p data-cid="ch02-600">Now abstract the construction away from <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span>: do it for any field.</p>
+<div class="box definition" data-cid="ch02-610">
+<span class="box-label">Definition (3.1) — valuation</span>
+<p data-cid="ch02-620">A <strong>valuation</strong> of a field <span class="tts-math" data-tts="K">$K$</span> is a map <span class="tts-math" data-tts="the absolute value, from K to the non-negative reals">$|\cdot| : K \to \mathbb{R}_{\ge 0}$</span> with <span class="tts-math" data-tts="absolute value of x is 0 if and only if x is 0">$|x|=0 \Leftrightarrow x=0$</span>, <span class="tts-math" data-tts="absolute value of x y equals absolute value of x times absolute value of y">$|xy|=|x||y|$</span>, and the triangle inequality <span class="tts-math" data-tts="absolute value of x plus y is at most absolute value of x plus absolute value of y">$|x+y| \le |x|+|y|$</span>. (We exclude the trivial valuation.) It makes <span class="tts-math" data-tts="K">$K$</span> a metric space via <span class="tts-math" data-tts="d of x y equals absolute value of x minus y">$d(x,y)=|x-y|$</span>.</p>
+</div>
+<p data-cid="ch02-630">Two valuations are <strong>equivalent</strong> if they induce the same topology; equivalently (Prop. 3.3) iff <span class="tts-math" data-tts="absolute value one equals absolute value two to the power s">$|\cdot|_1 = |\cdot|_2^{\,s}$</span> for some <span class="tts-math" data-tts="s greater than 0">$s&gt;0$</span>.</p>
+
+<div class="box pause" data-cid="ch02-640">
+<span class="box-label">Pause — Approximation Theorem (3.4)</span>
+<p data-cid="ch02-650">Given pairwise inequivalent valuations <span class="tts-math" data-tts="absolute value one through absolute value n">$|\cdot|_1,\dots,|\cdot|_n$</span> and targets <span class="tts-math" data-tts="a sub 1 through a sub n">$a_1,\dots,a_n \in K$</span>, for every <span class="tts-math" data-tts="epsilon greater than 0">$\varepsilon&gt;0$</span> there is an <span class="tts-math" data-tts="x in K">$x\in K$</span> with <span class="tts-math" data-tts="absolute value of x minus a sub i, at i, less than epsilon, for all i">$|x-a_i|_i &lt; \varepsilon$</span> for all <span class="tts-math" data-tts="i">$i$</span>. This is a topological cousin of the Chinese Remainder Theorem: distinct valuations are "independent," so you can prescribe behaviour at each one simultaneously.</p>
+</div>
+
+<h3 data-cid="ch02-660">Archimedean vs. nonarchimedean</h3>
+<div class="box definition" data-cid="ch02-670">
+<span class="box-label">Definition (3.5)–(3.6)</span>
+<p data-cid="ch02-680"><span class="tts-math" data-tts="the absolute value">$|\cdot|$</span> is <strong>nonarchimedean</strong> if <span class="tts-math" data-tts="the absolute value of n stays bounded for all natural numbers n">$|n|$</span> stays bounded over <span class="tts-math" data-tts="n in N">$n \in \mathbb{N}$</span>; otherwise <strong>archimedean</strong>. Equivalently, nonarchimedean iff the strong triangle inequality holds: <span class="tts-math" data-tts="absolute value of x plus y at most the max of absolute value x and absolute value y">$|x+y| \le \max\{|x|,|y|\}$</span>.</p>
+</div>
+<p data-cid="ch02-690">For nonarchimedean valuations, set <span class="tts-math" data-tts="v of x equals minus log of absolute value of x">$v(x) = -\log|x|$</span> to get an <strong>exponential valuation</strong> <span class="tts-math" data-tts="v from K to R union infinity">$v: K \to \mathbb{R}\cup\{\infty\}$</span> with <span class="tts-math" data-tts="v of x y equals v of x plus v of y">$v(xy)=v(x)+v(y)$</span> and <span class="tts-math" data-tts="v of x plus y at least the min of v of x and v of y">$v(x+y) \ge \min\{v(x),v(y)\}$</span>. (The two languages, <span class="tts-math" data-tts="absolute value">$|\cdot|$</span> and <span class="tts-math" data-tts="v">$v$</span>, carry the same information; <span class="tts-math" data-tts="v">$v$</span> is usually more convenient.)</p>
+<div class="box warn" data-cid="ch02-700">
+<span class="box-label">Useful reflex</span>
+<p data-cid="ch02-710">The strong inequality gives the "isosceles" rule: if <span class="tts-math" data-tts="absolute value of x is not equal to absolute value of y">$|x| \ne |y|$</span> then <span class="tts-math" data-tts="absolute value of x plus y equals the max of absolute value x and absolute value y">$|x+y| = \max\{|x|,|y|\}$</span>. Equality, not just inequality. You will use this constantly.</p>
+</div>
+
+<h3 data-cid="ch02-720">The valuation ring</h3>
+<div class="box definition" data-cid="ch02-730">
+<span class="box-label">Definition (3.8) — valuation ring</span>
+<p data-cid="ch02-740">For an exponential valuation <span class="tts-math" data-tts="v">$v$</span>, the set</p>
+<span class="tts-math" data-tts="o equals the set of x in K with v of x at least 0, equivalently absolute value of x at most 1">
+$$\mathfrak{o} = \{x \in K : v(x) \ge 0\} = \{x : |x| \le 1\}$$
+</span>
+<p data-cid="ch02-750">is a ring (the <strong>valuation ring</strong>) with unit group <span class="tts-math" data-tts="o star equals the set where v of x equals 0">$\mathfrak{o}^* = \{v(x)=0\}$</span> and a <em>unique</em> maximal ideal <span class="tts-math" data-tts="p equals the set where v of x is greater than 0">$\mathfrak{p} = \{v(x)&gt;0\}$</span>. The quotient <span class="tts-math" data-tts="o mod p">$\mathfrak{o}/\mathfrak{p}$</span> is the <strong>residue class field</strong>.</p>
+</div>
+<p data-cid="ch02-760">A valuation ring is a local, integrally closed domain with fraction field <span class="tts-math" data-tts="K">$K$</span>; for every <span class="tts-math" data-tts="x in K">$x\in K$</span> either <span class="tts-math" data-tts="x or its inverse lies in o">$x \in \mathfrak{o}$</span> or <span class="tts-math" data-tts="x inverse in o">$x^{-1}\in\mathfrak{o}$</span>. The valuation is <strong>discrete</strong> if <span class="tts-math" data-tts="v">$v$</span> has a smallest positive value; <strong>normalized</strong> if that value is <span class="tts-math" data-tts="1">$1$</span>. Then a <strong>prime element</strong> <span class="tts-math" data-tts="pi">$\pi$</span> satisfies <span class="tts-math" data-tts="v of pi equals 1">$v(\pi)=1$</span>, every nonzero <span class="tts-math" data-tts="x">$x$</span> is uniquely <span class="tts-math" data-tts="x equals u times pi to the m">$x = u\pi^m$</span> with <span class="tts-math" data-tts="u a unit">$u\in\mathfrak{o}^*$</span>, and <span class="tts-math" data-tts="o">$\mathfrak{o}$</span> is a discrete valuation ring (a PID with ideals <span class="tts-math" data-tts="p to the n">$\mathfrak{p}^n = \pi^n\mathfrak{o}$</span>; Prop. 3.9).</p>
+
+<div class="box example" data-cid="ch02-770">
+<span class="box-label">Example — the running model</span>
+<p data-cid="ch02-780">For <span class="tts-math" data-tts="K equals Q sub p">$K=\mathbb{Q}_p$</span> with <span class="tts-math" data-tts="v sub p">$v_p$</span>: the valuation ring is <span class="tts-math" data-tts="Z sub p">$\mathbb{Z}_p$</span>, the maximal ideal is <span class="tts-math" data-tts="p Z sub p">$p\mathbb{Z}_p$</span>, the prime element is <span class="tts-math" data-tts="p">$p$</span>, and the residue field is the finite field <span class="tts-math" data-tts="F sub p">$\mathbb{F}_p$</span>. Every statement above specializes to a familiar fact about <span class="tts-math" data-tts="Z sub p">$\mathbb{Z}_p$</span>.</p>
+</div>
+
+<h3 data-cid="ch02-790">Higher unit groups</h3>
+<p data-cid="ch02-800">The ideals <span class="tts-math" data-tts="o contains p contains p squared and so on">$\mathfrak{o} \supset \mathfrak{p} \supset \mathfrak{p}^2 \supset \cdots$</span> form a neighbourhood basis of <span class="tts-math" data-tts="0">$0$</span>. Around <span class="tts-math" data-tts="1">$1$</span> we get the <strong>higher unit groups</strong> <span class="tts-math" data-tts="U to the n equals 1 plus p to the n">$U^{(n)} = 1 + \mathfrak{p}^n$</span> (with <span class="tts-math" data-tts="U to the 0 equals o star">$U^{(0)}=\mathfrak{o}^*$</span>), and (Prop. 3.10):</p>
+<span class="tts-math" data-tts="o star mod U to the n is isomorphic to the units of o mod p to the n; and U to the n mod U to the n plus 1 is isomorphic to o mod p, the additive residue field">
+$$\mathfrak{o}^*/U^{(n)} \cong (\mathfrak{o}/\mathfrak{p}^n)^*, \qquad U^{(n)}/U^{(n+1)} \cong \mathfrak{o}/\mathfrak{p}.$$
+</span>
+<p data-cid="ch02-810">Read the second one as: stepping one level deeper in the unit filtration is "the same as" the additive residue field. This calibrates the multiplicative group level-by-level against the additive structure — a tool we will reuse for local fields and ramification.</p>
+
+<!-- ============================ 2.4 ============================ -->
+<h2 id="s2-4" data-cid="ch02-820">2.4 Completions</h2>
+<p data-cid="ch02-830">The <span class="tts-math" data-tts="Q to Q sub p">$\mathbb{Q}\to\mathbb{Q}_p$</span> construction generalizes verbatim.</p>
+<div class="box definition" data-cid="ch02-840">
+<span class="box-label">Definition (4.1) — completion</span>
+<p data-cid="ch02-850"><span class="tts-math" data-tts="K with absolute value">$(K,|\cdot|)$</span> is <strong>complete</strong> if every Cauchy sequence converges. From any valued field one forms its <strong>completion</strong> <span class="tts-math" data-tts="K hat">$\hat{K}$</span> as Cauchy sequences modulo nullsequences; it is complete, contains <span class="tts-math" data-tts="K">$K$</span> as a dense subfield, and is unique up to canonical isomorphism.</p>
+</div>
+
+<div class="box pause" data-cid="ch02-860">
+<span class="box-label">Pause — Ostrowski's theorem (4.2)</span>
+<p data-cid="ch02-870">A field complete with respect to an <em>archimedean</em> valuation is isomorphic to <span class="tts-math" data-tts="R or C">$\mathbb{R}$ or $\mathbb{C}$</span> (with <span class="tts-math" data-tts="absolute value equal to a power of the usual one">$|\cdot| = |\cdot|_{\text{usual}}^{\,s}$</span>, <span class="tts-math" data-tts="s in 0 to 1">$s\in(0,1]$</span>). Raising an absolute value to a power <span class="tts-math" data-tts="s">$s$</span> just rescales all distances (it gives an equivalent valuation, same topology); the restriction <span class="tts-math" data-tts="s at most 1">$s \le 1$</span> is there because the <em>ordinary</em> triangle inequality <span class="tts-math" data-tts="absolute value of x plus y at most absolute value of x plus absolute value of y">$|x+y| \le |x|+|y|$</span> survives the rescaling only for <span class="tts-math" data-tts="s at most 1">$s \le 1$</span>. There are no exotic archimedean complete fields. <strong>Consequence:</strong> all the genuinely new local fields are <em>nonarchimedean</em>, so from here on we focus on those.</p>
+</div>
+
+<p data-cid="ch02-880">For a nonarchimedean <span class="tts-math" data-tts="v">$v$</span>, the completion's valuation ring <span class="tts-math" data-tts="o hat">$\hat{\mathfrak{o}}$</span> has the <em>same</em> residue field and (if discrete) same value group: <span class="tts-math" data-tts="o hat mod p hat equals o mod p">$\hat{\mathfrak{o}}/\hat{\mathfrak{p}} = \mathfrak{o}/\mathfrak{p}$</span> and <span class="tts-math" data-tts="o hat mod p hat to the n equals o mod p to the n">$\hat{\mathfrak{o}}/\hat{\mathfrak{p}}^n = \mathfrak{o}/\mathfrak{p}^n$</span> (Prop. 4.3). A pleasant nonarchimedean bonus: a series <span class="tts-math" data-tts="the sum of a sub v">$\sum a_v$</span> converges iff its terms form a nullsequence — no delicate convergence tests, just <span class="tts-math" data-tts="a sub v goes to 0">$a_v \to 0$</span>.</p>
+
+<div class="box definition" data-cid="ch02-890">
+<span class="box-label">Theorem (4.4) — canonical expansion</span>
+<p data-cid="ch02-900">Let <span class="tts-math" data-tts="K">$K$</span> be complete with discrete valuation, <span class="tts-math" data-tts="R">$R$</span> a set of representatives for the residue field <span class="tts-math" data-tts="o mod p">$\mathfrak{o}/\mathfrak{p}$</span> with <span class="tts-math" data-tts="0 in R">$0\in R$</span>, and <span class="tts-math" data-tts="pi">$\pi$</span> a prime element. Every nonzero <span class="tts-math" data-tts="x">$x$</span> has a unique convergent expansion</p>
+<span class="tts-math" data-tts="x equals pi to the m times the quantity a sub 0 plus a sub 1 pi plus a sub 2 pi squared and so on, with a sub i in R and a sub 0 nonzero">
+$$x = \pi^m\big(a_0 + a_1\pi + a_2\pi^2 + \cdots\big), \qquad a_i \in R,\ a_0 \ne 0,\ m \in \mathbb{Z}.$$
+</span>
+</div>
+<div class="box example" data-cid="ch02-910">
+<span class="box-label">Example — two faces of one theorem</span>
+<p data-cid="ch02-920">For <span class="tts-math" data-tts="Q sub p">$\mathbb{Q}_p$</span>: take <span class="tts-math" data-tts="pi equals p">$\pi = p$</span>, <span class="tts-math" data-tts="R equals 0 through p minus 1">$R = \{0,\dots,p-1\}$</span>, and you recover the p-adic digit expansion. For the function field <span class="tts-math" data-tts="k of t">$k(t)$</span> at <span class="tts-math" data-tts="p equals t minus a">$p=(t-a)$</span>: take <span class="tts-math" data-tts="pi equals t minus a">$\pi = t-a$</span>, <span class="tts-math" data-tts="R equals k">$R=k$</span>, and the completion is the Laurent series field <span class="tts-math" data-tts="k double parenthesis t minus a">$k((t-a))$</span>. The power-series/p-adic analogy that opened the chapter is now literally <em>one theorem</em>.</p>
+</div>
+
+<p data-cid="ch02-930">Completeness also revives the projective-limit picture: <span class="tts-math" data-tts="o is isomorphic to the inverse limit of o mod p to the n, as topological rings">$\mathfrak{o} \cong \varprojlim_n \mathfrak{o}/\mathfrak{p}^n$</span> algebraically and topologically (Prop. 4.5), and likewise <span class="tts-math" data-tts="o star is isomorphic to the inverse limit of o star mod U to the n">$\mathfrak{o}^* \cong \varprojlim_n \mathfrak{o}^*/U^{(n)}$</span>.</p>
+
+<h3 data-cid="ch02-940">Hensel's Lemma — the workhorse</h3>
+<div class="box definition" data-cid="ch02-950">
+<span class="box-label">Hensel's Lemma (4.6)</span>
+<p data-cid="ch02-960">Let <span class="tts-math" data-tts="K">$K$</span> be complete nonarchimedean with residue field <span class="tts-math" data-tts="k">$k=\mathfrak{o}/\mathfrak{p}$</span>. If a <em>primitive</em> <span class="tts-math" data-tts="f in o of x">$f(x)\in\mathfrak{o}[x]$</span> (i.e. <span class="tts-math" data-tts="absolute value of f equals 1">$|f|=1$</span>) factors modulo <span class="tts-math" data-tts="p">$\mathfrak{p}$</span> as <span class="tts-math" data-tts="f bar equals g bar times h bar">$\bar f = \bar g\,\bar h$</span> into <em>coprime</em> factors in <span class="tts-math" data-tts="k of x">$k[x]$</span>, then <span class="tts-math" data-tts="f">$f$</span> factors over <span class="tts-math" data-tts="o">$\mathfrak{o}$</span> as <span class="tts-math" data-tts="f equals g times h">$f = gh$</span> lifting the factorization, with <span class="tts-math" data-tts="degree of g equals degree of g bar">$\deg g = \deg\bar g$</span>.</p>
+</div>
+<div class="box intuition" data-cid="ch02-970">
+<span class="box-label">Intuition</span>
+<p data-cid="ch02-980">Hensel's lemma is the p-adic Newton's method: a "simple" (coprime/derivative-nonvanishing) approximate factorization or root mod <span class="tts-math" data-tts="p">$\mathfrak{p}$</span> can be refined to an exact one, the corrections shrinking p-adically at each step. It is the single most-used tool in the chapter.</p>
+</div>
+<div class="box example" data-cid="ch02-990">
+<span class="box-label">Example — roots of unity in Q_p</span>
+<p data-cid="ch02-1000"><span class="tts-math" data-tts="x to the p minus 1, minus 1">$x^{p-1}-1$</span> splits into distinct linear factors over <span class="tts-math" data-tts="F sub p">$\mathbb{F}_p$</span> (every nonzero residue is a root). Hensel lifts these, so <span class="tts-math" data-tts="Q sub p">$\mathbb{Q}_p$</span> contains all <span class="tts-math" data-tts="p minus 1 th roots of unity">$(p-1)$</span>-th roots of unity. Together with <span class="tts-math" data-tts="0">$0$</span> these form a multiplicatively-closed set of representatives for <span class="tts-math" data-tts="F sub p">$\mathbb{F}_p$</span> (the Teichmüller representatives).</p>
+</div>
+<p data-cid="ch02-1010">Two corollaries that power the rest of the chapter. <strong>(4.7):</strong> for an irreducible <span class="tts-math" data-tts="f equals a sub 0 plus dot dot dot plus a sub n x to the n">$f$</span> with <span class="tts-math" data-tts="a sub 0 a sub n nonzero">$a_0 a_n \ne 0$</span>, one has <span class="tts-math" data-tts="the absolute value of f equals the max of the absolute value of a sub 0 and the absolute value of a sub n">$|f| = \max\{|a_0|,|a_n|\}$</span>; so monic with <span class="tts-math" data-tts="a sub 0 in o">$a_0\in\mathfrak{o}$</span> forces <span class="tts-math" data-tts="f in o of x">$f\in\mathfrak{o}[x]$</span>. <strong>(4.8) Extension of valuations:</strong> over a complete <span class="tts-math" data-tts="K">$K$</span>, the valuation extends <em>uniquely</em> to any algebraic <span class="tts-math" data-tts="L over K">$L|K$</span> by</p>
+<span class="tts-math" data-tts="the absolute value of alpha equals the n-th root of the absolute value of the norm from L to K of alpha">
+$$|\alpha| = \sqrt[n]{\,|N_{L|K}(\alpha)|\,}, \qquad n = [L:K],$$
+</span>
+<p data-cid="ch02-1015">Recall <span class="tts-math" data-tts="the norm from L to K of alpha">$N_{L|K}(\alpha)$</span> from Chapter I: it is the product of the conjugates of <span class="tts-math" data-tts="alpha">$\alpha$</span> (equivalently, the determinant of the <span class="tts-math" data-tts="K">$K$</span>-linear "multiply by <span class="tts-math" data-tts="alpha">$\alpha$</span>" map on <span class="tts-math" data-tts="L">$L$</span>), an element of <span class="tts-math" data-tts="K">$K$</span>. So the formula extends the absolute value by averaging it over all conjugates of <span class="tts-math" data-tts="alpha">$\alpha$</span>.</p>
+<div class="box warn" data-cid="ch02-1017">
+<span class="box-label">Watch out — two meanings of "norm"</span>
+<p data-cid="ch02-1018">The word <strong>norm</strong> is doing double duty here. The <em>field norm</em> <span class="tts-math" data-tts="the norm from L to K">$N_{L|K}$</span> is the multiplicative map just recalled. A <em>vector-space norm</em> (as in the next sentence, and in Prop. 4.9) is a notion of length on <span class="tts-math" data-tts="L">$L$</span> regarded as a <span class="tts-math" data-tts="K">$K$</span>-vector space. They are unrelated concepts that happen to share a name; context tells you which is meant.</p>
+<p data-cid="ch02-1019">Example: extend <span class="tts-math" data-tts="v sub p">$v_p$</span> from <span class="tts-math" data-tts="Q sub p">$\mathbb{Q}_p$</span> to <span class="tts-math" data-tts="Q sub p adjoin the square root of p">$\mathbb{Q}_p(\sqrt{p})$</span>, a degree-2 extension. Take <span class="tts-math" data-tts="alpha equals the square root of p">$\alpha = \sqrt{p}$</span>; its conjugates are <span class="tts-math" data-tts="plus and minus the square root of p">$\pm\sqrt{p}$</span>, so the field norm is <span class="tts-math" data-tts="the norm of the square root of p equals negative p">$N_{L|K}(\sqrt{p}) = -p$</span>. Then <span class="tts-math" data-tts="the absolute value of the square root of p equals the square root of the absolute value of negative p equals the square root of 1 over p">$|\sqrt{p}| = \sqrt{\,|{-}p|\,} = \sqrt{1/p}$</span>. So <span class="tts-math" data-tts="the square root of p has valuation one half">$\sqrt{p}$</span> has valuation <span class="tts-math" data-tts="one half">$\tfrac{1}{2}$</span> — the value group has grown, the first sign of ramification (this extension has <span class="tts-math" data-tts="e equals 2">$e=2$</span>).</p>
+</div>
+<p data-cid="ch02-1020">and <span class="tts-math" data-tts="L">$L$</span> is again complete. The proof rests on a clean linear-algebra fact (Prop. 4.9): over a complete field, all <em>vector-space</em> norms on a finite-dimensional space are equivalent to the max-norm — so finite extensions inherit completeness automatically.</p>
+
+<!-- ============================ 2.5 ============================ -->
+<h2 id="s2-5" data-cid="ch02-1030">2.5 Local Fields</h2>
+<div class="box definition" data-cid="ch02-1040">
+<span class="box-label">Definition — local field</span>
+<p data-cid="ch02-1050">A <strong>local field</strong> is a field complete with respect to a <em>discrete</em> valuation and with <em>finite</em> residue field. The normalized valuation is written <span class="tts-math" data-tts="v sub p">$v_\mathfrak{p}$</span> and the normalized absolute value is <span class="tts-math" data-tts="absolute value of x equals q to the minus v sub p of x, where q is the size of the residue field">$|x| = q^{-v_\mathfrak{p}(x)}$</span> with <span class="tts-math" data-tts="q equals the cardinality of the residue field">$q = \#(\mathfrak{o}/\mathfrak{p})$</span>.</p>
+</div>
+<p data-cid="ch02-1060">Local fields are the completions of global fields (finite extensions of <span class="tts-math" data-tts="Q or F sub p of t">$\mathbb{Q}$ or $\mathbb{F}_p(t)$</span>). Two structural facts:</p>
+<ul data-cid="ch02-1070">
+<li><strong>(5.1)</strong> A local field is locally compact, and its valuation ring <span class="tts-math" data-tts="o">$\mathfrak{o}$</span> is compact (it is <span class="tts-math" data-tts="the inverse limit of finite rings o mod p to the n">$\varprojlim \mathfrak{o}/\mathfrak{p}^n$</span>, an inverse limit of finite rings).</li>
+<li><strong>(5.2)</strong> The local fields are <em>exactly</em> the finite extensions of <span class="tts-math" data-tts="Q sub p">$\mathbb{Q}_p$</span> (characteristic 0, the <strong>p-adic number fields</strong>) and of <span class="tts-math" data-tts="F sub p double parenthesis t">$\mathbb{F}_p((t))$</span> (characteristic <span class="tts-math" data-tts="p">$p$</span>).</li>
+</ul>
+<div class="box intuition" data-cid="ch02-1080">
+<span class="box-label">Intuition</span>
+<p data-cid="ch02-1090">Local fields are the "small" arenas of number theory: each is locally compact, carries a Haar measure, and has a single prime to worry about. The global object <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span> (or a number field) sits inside all of its completions at once, and most arithmetic questions become tractable one completion at a time.</p>
+</div>
+
+<h3 data-cid="ch02-1100">Structure of the multiplicative group</h3>
+<p data-cid="ch02-1110">Choosing a prime <span class="tts-math" data-tts="pi">$\pi$</span> and using the Teichmüller lift of the residue field, one decomposes (Prop. 5.3)</p>
+<span class="tts-math" data-tts="K star is isomorphic to the integers, times the q minus 1 roots of unity, times the principal units U to the 1">
+$$K^* \;\cong\; \pi^{\mathbb{Z}} \times \mu_{q-1} \times U^{(1)},$$
+</span>
+<p data-cid="ch02-1120">i.e. <span class="tts-math" data-tts="K star equals (pi) times o star, and o star equals mu sub q minus 1 times U to the 1">$K^* = \langle\pi\rangle \times \mathfrak{o}^*$</span> with <span class="tts-math" data-tts="o star equals mu sub q minus 1 times U to the 1">$\mathfrak{o}^* = \mu_{q-1}\times U^{(1)}$</span>. The "valuation part" <span class="tts-math" data-tts="pi to the Z">$\pi^{\mathbb{Z}}$</span>, the "Teichmüller part" <span class="tts-math" data-tts="the q minus 1 roots of unity">$\mu_{q-1}$</span>, and the "principal units" <span class="tts-math" data-tts="U to the 1">$U^{(1)}$</span> are three independent coordinates on <span class="tts-math" data-tts="K star">$K^*$</span>.</p>
+
+<p data-cid="ch02-1130">For a p-adic number field one has a genuine <strong>logarithm</strong> <span class="tts-math" data-tts="log from K star to K">$\log: K^* \to K$</span> with <span class="tts-math" data-tts="log of p equals 0">$\log p = 0$</span>, given on principal units by the usual series <span class="tts-math" data-tts="log of 1 plus x equals x minus x squared over 2 plus x cubed over 3 and so on">$\log(1+x) = x - \tfrac{x^2}{2} + \tfrac{x^3}{3} - \cdots$</span> (Prop. 5.4), and a partially-defined <strong>exponential</strong> <span class="tts-math" data-tts="exp of x equals 1 plus x plus x squared over 2 factorial and so on">$\exp(x)$</span>. They are mutually inverse isomorphisms (and homeomorphisms)</p>
+<span class="tts-math" data-tts="exp and log give inverse isomorphisms between p to the n and U to the n, for n big enough">
+$$\exp : \mathfrak{p}^n \;\xrightarrow{\;\sim\;}\; U^{(n)} \;:\; \log \qquad (n &gt; \tfrac{e}{p-1})$$
+</span>
+<p data-cid="ch02-1140">(Prop. 5.5). Here <span class="tts-math" data-tts="e">$e$</span> is the <strong>ramification index</strong> of <span class="tts-math" data-tts="K over Q sub p">$K|\mathbb{Q}_p$</span> (formally defined in §2.6) — a positive <em>integer</em> invariant of the field, not Euler's number and not a free variable; it records how much the prime <span class="tts-math" data-tts="p">$p$</span> "stretches" in <span class="tts-math" data-tts="K">$K$</span>, with <span class="tts-math" data-tts="e equals 1">$e=1$</span> for <span class="tts-math" data-tts="K equals Q sub p">$K=\mathbb{Q}_p$</span> itself. The threshold <span class="tts-math" data-tts="n greater than e over p minus 1">$n &gt; e/(p-1)$</span> is forced by the denominators <span class="tts-math" data-tts="v factorial">$v!$</span> in the exponential series, which carry powers of <span class="tts-math" data-tts="p">$p$</span>; below it the series misbehaves.</p>
+<div class="box warn" data-cid="ch02-1150">
+<span class="box-label">Watch out</span>
+<p data-cid="ch02-1160">Unlike the real/complex case, the p-adic <span class="tts-math" data-tts="exp">$\exp$</span> is <em>not</em> defined on all of <span class="tts-math" data-tts="K">$K$</span> — only near <span class="tts-math" data-tts="0">$0$</span>. But <span class="tts-math" data-tts="log">$\log$</span> extends to the entire group <span class="tts-math" data-tts="K star">$K^*$</span>. The asymmetry comes entirely from those factorial denominators.</p>
+</div>
+
+<div class="box example" data-cid="ch02-1170">
+<span class="box-label">Example — explicit structure of K* (5.7)</span>
+<p data-cid="ch02-1180">For a p-adic field <span class="tts-math" data-tts="K of degree d over Q sub p">$K$</span> of degree <span class="tts-math" data-tts="d">$d=[K:\mathbb{Q}_p]$</span> with residue field of size <span class="tts-math" data-tts="q equals p to the f">$q=p^f$</span>:</p>
+<span class="tts-math" data-tts="K star is isomorphic to Z, direct sum Z mod q minus 1 Z, direct sum Z mod p to the a Z, direct sum Z sub p to the d">
+$$K^* \;\cong\; \mathbb{Z} \oplus \mathbb{Z}/(q-1)\mathbb{Z} \oplus \mathbb{Z}/p^{a}\mathbb{Z} \oplus \mathbb{Z}_p^{\,d},$$
+</span>
+<p data-cid="ch02-1190">where <span class="tts-math" data-tts="p to the a">$p^a$</span> is the number of p-power roots of unity in <span class="tts-math" data-tts="K">$K$</span>. The principal units <span class="tts-math" data-tts="U to the 1">$U^{(1)}$</span> are, up to finite torsion, a free <span class="tts-math" data-tts="Z sub p">$\mathbb{Z}_p$</span>-module of rank <span class="tts-math" data-tts="d">$d$</span> — visible through the log isomorphism <span class="tts-math" data-tts="U to the n isomorphic to p to the n isomorphic to o isomorphic to Z sub p to the d">$U^{(n)} \cong \mathfrak{p}^n \cong \mathfrak{o} \cong \mathbb{Z}_p^d$</span>.</p>
+</div>
+
+<!-- ============================ 2.6 ============================ -->
+<h2 id="s2-6" data-cid="ch02-1200">2.6 Henselian Fields</h2>
+<p data-cid="ch02-1210">Most theorems above used <em>completeness</em> only through Hensel's lemma. So we isolate exactly that.</p>
+<div class="box definition" data-cid="ch02-1220">
+<span class="box-label">Definition (6.1) — henselian field</span>
+<p data-cid="ch02-1230">A <strong>henselian field</strong> is a nonarchimedean valued field whose valuation ring satisfies Hensel's lemma (4.6). Every complete field is henselian, but so is the <strong>henselization</strong> <span class="tts-math" data-tts="K sub v">$K_v$</span>: intuitively, the <em>smallest</em> field containing <span class="tts-math" data-tts="K">$K$</span> in which Hensel's lemma already works — you keep only the elements of the completion that are <em>algebraic</em> over <span class="tts-math" data-tts="K">$K$</span> and throw away the transcendental bulk. Technically this is the separable closure of <span class="tts-math" data-tts="K">$K$</span> inside its completion; it is an <em>algebraic</em> extension of <span class="tts-math" data-tts="K">$K$</span> and usually much smaller than the completion.</p>
+</div>
+<div class="box intuition" data-cid="ch02-1240">
+<span class="box-label">Intuition</span>
+<p data-cid="ch02-1250">The henselization keeps everything algebraic. Completion drags in transcendental elements (most p-adic numbers are transcendental over <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span>); the henselization is the smallest henselian field containing <span class="tts-math" data-tts="K">$K$</span> and shares its residue field and value group. For algebraic purposes you can usually replace "completion" by "henselization."</p>
+</div>
+
+<div class="box pause" data-cid="ch02-1260">
+<span class="box-label">Pause — the defining characterization (6.6)</span>
+<p data-cid="ch02-1270">A nonarchimedean valued field is henselian <strong>if and only if</strong> the valuation extends <em>uniquely</em> to every algebraic extension. Henselian = Hensel's lemma = unique extension of the valuation. These three are the same condition wearing different clothes.</p>
+</div>
+
+<h3 data-cid="ch02-1280">The Newton polygon</h3>
+<p data-cid="ch02-1290">The tool linking "valuations of roots" to "valuations of coefficients." For <span class="tts-math" data-tts="f equals a sub 0 plus a sub 1 x plus dot dot dot plus a sub n x to the n">$f = a_0 + a_1 x + \cdots + a_n x^n$</span>, plot the points <span class="tts-math" data-tts="i comma v of a sub i">$(i, v(a_i))$</span> and take their <em>lower convex hull</em>: the <strong>Newton polygon</strong>.</p>
+<div class="box definition" data-cid="ch02-1300">
+<span class="box-label">Proposition (6.3)</span>
+<p data-cid="ch02-1310">A segment of slope <span class="tts-math" data-tts="minus m">$-m$</span> running from <span class="tts-math" data-tts="r to s">$x=r$ to $x=s$</span> means: <span class="tts-math" data-tts="f">$f$</span> has exactly <span class="tts-math" data-tts="s minus r">$s-r$</span> roots (counted with multiplicity, in a splitting field) of valuation <span class="tts-math" data-tts="exactly m">$w(\alpha) = m$</span>.</p>
+</div>
+<div class="box example" data-cid="ch02-1320">
+<span class="box-label">Example — reading off valuations</span>
+<p data-cid="ch02-1330">The slopes of the Newton polygon <em>are</em> (minus) the valuations of the roots, and the horizontal length of each segment counts how many roots have that valuation. An irreducible polynomial has a <em>single</em> segment — all its roots share one valuation. This recovers corollary (6.5): <span class="tts-math" data-tts="the absolute value of f equals the max of the absolute value of a sub 0 and the absolute value of a sub n">$|f| = \max\{|a_0|,|a_n|\}$</span> for irreducible <span class="tts-math" data-tts="f">$f$</span> — here derived from <em>uniqueness</em> of the extension rather than from Hensel directly.</p>
+</div>
+<div class="box example" data-cid="ch02-1332">
+<span class="box-label">Example — a worked Newton polygon over Q_p</span>
+<p data-cid="ch02-1333">Take <span class="tts-math" data-tts="f of x equals x squared plus p x plus p cubed">$f(x) = x^2 + p\,x + p^3$</span> over <span class="tts-math" data-tts="Q sub p">$\mathbb{Q}_p$</span>, so <span class="tts-math" data-tts="a sub 0 equals p cubed, a sub 1 equals p, a sub 2 equals 1">$a_0 = p^3,\ a_1 = p,\ a_2 = 1$</span>. Using <span class="tts-math" data-tts="v sub p">$v_p$</span>, plot the points <span class="tts-math" data-tts="i comma v of a sub i">$(i, v_p(a_i))$</span>:</p>
+<span class="tts-math" data-tts="the point 0 comma 3, the point 1 comma 1, and the point 2 comma 0">
+$$(0,\,3), \qquad (1,\,1), \qquad (2,\,0).$$
+</span>
+<p data-cid="ch02-1334">The <em>lower convex hull</em> — imagine a string pulled taut underneath the three dots from <span class="tts-math" data-tts="x equals 0">$x=0$</span> to <span class="tts-math" data-tts="x equals 2">$x=2$</span> — does <em>not</em> pass through the middle point <span class="tts-math" data-tts="1 comma 1">$(1,1)$</span> (which sits above the line). Instead it consists of two segments:</p>
+<ul data-cid="ch02-1335">
+<li>From <span class="tts-math" data-tts="0 comma 3">$(0,3)$</span> to <span class="tts-math" data-tts="1 comma 1">$(1,1)$</span>: slope <span class="tts-math" data-tts="1 minus 3 over 1 minus 0 equals negative 2">$\tfrac{1-3}{1-0} = -2$</span>, horizontal length <span class="tts-math" data-tts="1">$1$</span> — so <strong>one</strong> root of valuation <span class="tts-math" data-tts="2">$2$</span>.</li>
+<li>From <span class="tts-math" data-tts="1 comma 1">$(1,1)$</span> to <span class="tts-math" data-tts="2 comma 0">$(2,0)$</span>: slope <span class="tts-math" data-tts="0 minus 1 over 2 minus 1 equals negative 1">$\tfrac{0-1}{2-1} = -1$</span>, horizontal length <span class="tts-math" data-tts="1">$1$</span> — so <strong>one</strong> root of valuation <span class="tts-math" data-tts="1">$1$</span>.</li>
+</ul>
+<p data-cid="ch02-1338">Reading off: <span class="tts-math" data-tts="f">$f$</span> has one root <span class="tts-math" data-tts="alpha">$\alpha$</span> with <span class="tts-math" data-tts="w of alpha equals 2">$w(\alpha)=2$</span> and one root <span class="tts-math" data-tts="beta">$\beta$</span> with <span class="tts-math" data-tts="w of beta equals 1">$w(\beta)=1$</span> — different valuations, so <span class="tts-math" data-tts="f">$f$</span> is reducible over <span class="tts-math" data-tts="Q sub p">$\mathbb{Q}_p$</span>. Sanity check via the coefficients: <span class="tts-math" data-tts="w of alpha plus w of beta equals v of a sub 0 equals 3">$w(\alpha)+w(\beta) = v_p(a_0) = 3$</span> (product of roots is <span class="tts-math" data-tts="a sub 0">$a_0$</span>), matching <span class="tts-math" data-tts="2 plus 1">$2+1$</span>.</p>
+</div>
+
+<h3 data-cid="ch02-1340">Ramification index and inertia degree</h3>
+<p data-cid="ch02-1350">Let <span class="tts-math" data-tts="L over K">$L|K$</span> be finite, <span class="tts-math" data-tts="K">$K$</span> henselian, <span class="tts-math" data-tts="w">$w$</span> the unique extension of <span class="tts-math" data-tts="v">$v$</span>. Two invariants compare <span class="tts-math" data-tts="L">$L$</span> to <span class="tts-math" data-tts="K">$K$</span>:</p>
+<span class="tts-math" data-tts="e equals the index of the value group of K inside the value group of L; f equals the degree of the residue field extension lambda over k">
+$$e = (w(L^*) : v(K^*)), \qquad f = [\lambda : k].$$
+</span>
+<p data-cid="ch02-1360">Here <span class="tts-math" data-tts="e">$e$</span> is the <strong>ramification index</strong> and <span class="tts-math" data-tts="f">$f$</span> the <strong>inertia degree</strong>. They factor the prime: <span class="tts-math" data-tts="p O equals capital P to the e">$\mathfrak{p}\mathcal{O} = \mathfrak{P}^e$</span>, matching the ideal-theoretic picture from Chapter I.</p>
+<div class="box warn" data-cid="ch02-1362">
+<span class="box-label">Symbol legend — downstairs vs. upstairs</span>
+<p data-cid="ch02-1363">Two parallel sets of symbols, one for the base field <span class="tts-math" data-tts="K">$K$</span> ("downstairs," lowercase) and one for the extension <span class="tts-math" data-tts="L">$L$</span> ("upstairs," uppercase):</p>
+<ul data-cid="ch02-1364">
+<li><strong>Downstairs <span class="tts-math" data-tts="K">$K$</span>:</strong> valuation ring <span class="tts-math" data-tts="o">$\mathfrak{o}$</span>, maximal ideal <span class="tts-math" data-tts="p">$\mathfrak{p}$</span>, residue field <span class="tts-math" data-tts="k equals o mod p">$k = \mathfrak{o}/\mathfrak{p}$</span>, value group <span class="tts-math" data-tts="v of K star">$v(K^*)$</span>.</li>
+<li><strong>Upstairs <span class="tts-math" data-tts="L">$L$</span>:</strong> valuation ring <span class="tts-math" data-tts="capital O">$\mathcal{O}$</span>, maximal ideal <span class="tts-math" data-tts="capital P">$\mathfrak{P}$</span>, residue field <span class="tts-math" data-tts="lambda equals capital O mod capital P">$\lambda = \mathcal{O}/\mathfrak{P}$</span>, value group <span class="tts-math" data-tts="w of L star">$w(L^*)$</span>.</li>
+</ul>
+<p data-cid="ch02-1365">So <span class="tts-math" data-tts="e equals the index of v of K star inside w of L star">$e = (w(L^*):v(K^*))$</span> compares the value groups and <span class="tts-math" data-tts="f equals the degree of lambda over k">$f = [\lambda:k]$</span> compares the residue fields.</p>
+</div>
+<div class="box example" data-cid="ch02-1366">
+<span class="box-label">Example — computing e and f</span>
+<p data-cid="ch02-1367"><strong>Ramified:</strong> <span class="tts-math" data-tts="Q sub p adjoin the square root of p over Q sub p">$\mathbb{Q}_p(\sqrt{p})\,|\,\mathbb{Q}_p$</span>. We saw <span class="tts-math" data-tts="the square root of p has valuation one half">$w(\sqrt{p}) = \tfrac{1}{2}$</span>, so the value group grows from <span class="tts-math" data-tts="the integers">$\mathbb{Z}$</span> to <span class="tts-math" data-tts="one half times the integers">$\tfrac{1}{2}\mathbb{Z}$</span>: index <span class="tts-math" data-tts="e equals 2">$e=2$</span>. The residue field stays <span class="tts-math" data-tts="F sub p">$\mathbb{F}_p$</span>, so <span class="tts-math" data-tts="f equals 1">$f=1$</span>. Check: <span class="tts-math" data-tts="e times f equals 2 equals the degree">$ef = 2 = [L:K]$</span>.</p>
+<p data-cid="ch02-1368"><strong>Unramified:</strong> <span class="tts-math" data-tts="Q sub p adjoin a primitive ell-th root of unity over Q sub p">$\mathbb{Q}_p(\zeta_\ell)\,|\,\mathbb{Q}_p$</span> for a prime <span class="tts-math" data-tts="ell different from p">$\ell \ne p$</span>. No new valuations appear, so <span class="tts-math" data-tts="e equals 1">$e=1$</span>; instead the residue field grows to <span class="tts-math" data-tts="F sub p adjoin a primitive ell-th root of unity">$\mathbb{F}_p(\zeta_\ell)$</span>, and <span class="tts-math" data-tts="f">$f$</span> equals the multiplicative order of <span class="tts-math" data-tts="p mod ell">$p \bmod \ell$</span> (the least <span class="tts-math" data-tts="f">$f$</span> with <span class="tts-math" data-tts="p to the f congruent to 1 mod ell">$p^f \equiv 1 \pmod \ell$</span>).</p>
+</div>
+<div class="box definition" data-cid="ch02-1370">
+<span class="box-label">Proposition (6.8) — the fundamental identity</span>
+<p data-cid="ch02-1380">Always <span class="tts-math" data-tts="the degree of L over K is at least e times f">$[L:K] \ge ef$</span>, and if <span class="tts-math" data-tts="v">$v$</span> is discrete with <span class="tts-math" data-tts="L over K separable">$L|K$</span> separable,</p>
+<span class="tts-math" data-tts="the degree of L over K equals e times f">
+$$[L:K] = e\,f.$$
+</span>
+<p data-cid="ch02-1390">For a <em>single</em> prime there is just one term — no sum — because the valuation extends uniquely. (Globally, summing <span class="tts-math" data-tts="e sub i f sub i">$e_i f_i$</span> over the primes above <span class="tts-math" data-tts="p">$p$</span> gives <span class="tts-math" data-tts="the degree">$[L:K]$</span>, as in §8.)</p>
+</div>
+
+<!-- ============================ 2.7 ============================ -->
+<h2 id="s2-7" data-cid="ch02-1400">2.7 Unramified and Tamely Ramified Extensions</h2>
+<p data-cid="ch02-1410">Fix <span class="tts-math" data-tts="K">$K$</span> henselian with residue field <span class="tts-math" data-tts="k">$k$</span> of characteristic <span class="tts-math" data-tts="p">$p$</span>. Extensions <span class="tts-math" data-tts="L over K">$L|K$</span> come in three flavours according to how the prime behaves.</p>
+<div class="box definition" data-cid="ch02-1420">
+<span class="box-label">Definition (7.1) — unramified</span>
+<p data-cid="ch02-1430"><span class="tts-math" data-tts="L over K">$L|K$</span> is <strong>unramified</strong> if the residue extension <span class="tts-math" data-tts="lambda over k">$\lambda|k$</span> is separable and <span class="tts-math" data-tts="the degree of L over K equals the degree of lambda over k">$[L:K] = [\lambda:k]$</span> — equivalently <span class="tts-math" data-tts="e equals 1">$e=1$</span> and <span class="tts-math" data-tts="f equals the degree">$f=[L:K]$</span>. All of the extension "happens in the residue field"; the prime stays prime.</p>
+</div>
+<p data-cid="ch02-1440">Unramified extensions are well-behaved: they are preserved under base change and composites (Prop. 7.2, Cor. 7.3). The composite of <em>all</em> unramified subextensions is the <strong>maximal unramified subextension</strong> <span class="tts-math" data-tts="T">$T$</span> (Def. 7.4); its residue field is the separable closure <span class="tts-math" data-tts="lambda sub s">$\lambda_s$</span> of <span class="tts-math" data-tts="k">$k$</span> inside <span class="tts-math" data-tts="lambda">$\lambda$</span>, and its value group equals that of <span class="tts-math" data-tts="K">$K$</span> (Prop. 7.5). Punchline:</p>
+<div class="box pause" data-cid="ch02-1450">
+<span class="box-label">Pause — unramified = residue-field extension</span>
+<p data-cid="ch02-1460">Over a henselian field, <strong>unramified extensions of <span class="tts-math" data-tts="K">$K$</span> correspond bijectively to separable extensions of the residue field <span class="tts-math" data-tts="k">$k$</span></strong>. The maximal unramified extension <span class="tts-math" data-tts="K nr">$K^{nr}$</span> has residue field the separable closure <span class="tts-math" data-tts="k separable">$k_s$</span>, and for finite residue fields it is generated by all roots of unity of order prime to <span class="tts-math" data-tts="p">$p$</span>.</p>
+</div>
+
+<div class="box definition" data-cid="ch02-1470">
+<span class="box-label">Definition (7.6) — tamely ramified</span>
+<p data-cid="ch02-1480"><span class="tts-math" data-tts="L over K">$L|K$</span> is <strong>tamely ramified</strong> if <span class="tts-math" data-tts="lambda over k">$\lambda|k$</span> is separable and <span class="tts-math" data-tts="the degree of L over T is prime to p">$([L:T],p)=1$</span>. When the fundamental identity holds this just means <span class="tts-math" data-tts="e is prime to p">$(e,p)=1$</span>: the ramification is not divisible by the residue characteristic.</p>
+</div>
+<p data-cid="ch02-1490">Tamely ramified extensions are exactly those built by adjoining radicals <span class="tts-math" data-tts="the m sub i th root of a sub i">$\sqrt[m_i]{a_i}$</span> with <span class="tts-math" data-tts="each m sub i prime to p">$(m_i,p)=1$</span> over <span class="tts-math" data-tts="T">$T$</span> (Prop. 7.7), and for them the identity <span class="tts-math" data-tts="the degree equals e f">$[L:K]=ef$</span> always holds. They too are stable under base change and composites. An extension is <strong>wildly ramified</strong> when it is not tame (so <span class="tts-math" data-tts="p divides e">$p \mid e$</span>) and <strong>totally ramified</strong> when <span class="tts-math" data-tts="T equals K">$T=K$</span> (so <span class="tts-math" data-tts="f equals 1">$f=1$</span>).</p>
+
+<div class="box example" data-cid="ch02-1500">
+<span class="box-label">Example — cyclotomic extensions of Q_p (the two cases)</span>
+<p data-cid="ch02-1510"><strong>Prime-to-p roots of unity (7.12).</strong> If <span class="tts-math" data-tts="zeta">$\zeta$</span> is a primitive <span class="tts-math" data-tts="n th">$n$</span>-th root of unity with <span class="tts-math" data-tts="n prime to p">$(n,p)=1$</span>, then <span class="tts-math" data-tts="K of zeta over K">$K(\zeta)|K$</span> is <em>unramified</em> of degree <span class="tts-math" data-tts="f">$f$</span>, where <span class="tts-math" data-tts="f">$f$</span> is the least integer with <span class="tts-math" data-tts="q to the f congruent to 1 mod n">$q^f \equiv 1 \pmod n$</span>; the Galois group is generated by Frobenius <span class="tts-math" data-tts="phi sending zeta to zeta to the q">$\varphi: \zeta \mapsto \zeta^q$</span>.</p>
+<p data-cid="ch02-1520"><strong>p-power roots of unity (7.13).</strong> If <span class="tts-math" data-tts="zeta">$\zeta$</span> is a primitive <span class="tts-math" data-tts="p to the m th">$p^m$</span>-th root of unity, then <span class="tts-math" data-tts="Q sub p of zeta over Q sub p">$\mathbb{Q}_p(\zeta)|\mathbb{Q}_p$</span> is <em>totally ramified</em> of degree <span class="tts-math" data-tts="phi of p to the m equals p minus 1 times p to the m minus 1">$\varphi(p^m) = (p-1)p^{m-1}$</span>, with <span class="tts-math" data-tts="Galois group the units of Z mod p to the m Z">$\mathrm{Gal} \cong (\mathbb{Z}/p^m\mathbb{Z})^*$</span>; here <span class="tts-math" data-tts="1 minus zeta">$1-\zeta$</span> is a prime element of <span class="tts-math" data-tts="Z sub p of zeta">$\mathbb{Z}_p[\zeta]$</span> with norm <span class="tts-math" data-tts="p">$p$</span>, and (for <span class="tts-math" data-tts="m at least 1">$m\ge1$</span>) this extension is <em>wildly</em> ramified.</p>
+</div>
+<div class="box intuition" data-cid="ch02-1530">
+<span class="box-label">Intuition — tame vs. wild</span>
+<p data-cid="ch02-1540">Adjoining roots of unity of order prime to <span class="tts-math" data-tts="p">$p$</span> only enlarges the residue field — unramified. Adjoining <span class="tts-math" data-tts="p">$p$</span>-power roots of unity instead bends the prime itself — totally, and wildly, ramified. The residue characteristic <span class="tts-math" data-tts="p">$p$</span> is the watershed: ramification coprime to <span class="tts-math" data-tts="p">$p$</span> is gentle ("tame"); ramification divisible by <span class="tts-math" data-tts="p">$p$</span> is the genuinely hard ("wild") part.</p>
+</div>
+
+<!-- ============================ 2.8 ============================ -->
+<h2 id="s2-8" data-cid="ch02-1550">2.8 Extensions of Valuations</h2>
+<p data-cid="ch02-1560">Henselian valuations extend uniquely. But how does a valuation <span class="tts-math" data-tts="v">$v$</span> of a general <span class="tts-math" data-tts="K">$K$</span> extend to an algebraic <span class="tts-math" data-tts="L over K">$L|K$</span>? Pass to the completion <span class="tts-math" data-tts="K sub v">$K_v$</span> and an algebraic closure <span class="tts-math" data-tts="K sub v bar">$\overline{K_v}$</span>; each <span class="tts-math" data-tts="K">$K$</span>-embedding <span class="tts-math" data-tts="tau from L to K sub v bar">$\tau: L \to \overline{K_v}$</span> restricts to give an extension <span class="tts-math" data-tts="w equals v composed with tau">$w = v\circ\tau$</span>.</p>
+<div class="box definition" data-cid="ch02-1570">
+<span class="box-label">Extension Theorem (8.1)</span>
+<p data-cid="ch02-1580">Every extension <span class="tts-math" data-tts="w of v">$w$ of $v$</span> arises as <span class="tts-math" data-tts="v composed with tau">$v\circ\tau$</span> for some <span class="tts-math" data-tts="K">$K$</span>-embedding <span class="tts-math" data-tts="tau">$\tau$</span>; and two embeddings give the <em>same</em> <span class="tts-math" data-tts="w">$w$</span> iff they are conjugate over <span class="tts-math" data-tts="K sub v">$K_v$</span>.</p>
+</div>
+<p data-cid="ch02-1590">Concretely (Prop. 8.2), if <span class="tts-math" data-tts="L equals K of alpha">$L = K(\alpha)$</span> with minimal polynomial <span class="tts-math" data-tts="f">$f$</span>, and <span class="tts-math" data-tts="f factors over K sub v as f sub 1 to f sub r">$f = f_1\cdots f_r$</span> over the completion <span class="tts-math" data-tts="K sub v">$K_v$</span>, then the extensions <span class="tts-math" data-tts="w sub 1 through w sub r">$w_1,\dots,w_r$</span> of <span class="tts-math" data-tts="v">$v$</span> correspond bijectively to the irreducible factors <span class="tts-math" data-tts="f sub i">$f_i$</span>. The completion <span class="tts-math" data-tts="L sub w sub i">$L_{w_i}$</span> is <span class="tts-math" data-tts="K sub v adjoined a root of f sub i">$K_v(\alpha_i)$</span>.</p>
+<div class="box intuition" data-cid="ch02-1600">
+<span class="box-label">Intuition — local-to-global diagram</span>
+<p data-cid="ch02-1610">Factoring the minimal polynomial <em>over the completion</em> tells you exactly how the prime splits. Each local factor is one prime above <span class="tts-math" data-tts="p">$\mathfrak{p}$</span>. The global extension <span class="tts-math" data-tts="L over K">$L|K$</span> dissolves into the local extensions <span class="tts-math" data-tts="L sub w over K sub v">$L_w|K_v$</span> — the heart of the <strong>local-to-global principle</strong>.</p>
+</div>
+<div class="box definition" data-cid="ch02-1620">
+<span class="box-label">Proposition (8.3) — tensor decomposition</span>
+<p data-cid="ch02-1630">If <span class="tts-math" data-tts="L over K">$L|K$</span> is separable, then</p>
+<span class="tts-math" data-tts="L tensor K with K sub v is isomorphic to the product over w dividing v of L sub w">
+$$L \otimes_K K_v \;\cong\; \prod_{w \mid v} L_w.$$
+</span>
+<p data-cid="ch02-1640">The proof is the Chinese Remainder Theorem applied to <span class="tts-math" data-tts="K sub v of X mod f">$K_v[X]/(f) \cong \prod K_v[X]/(f_w)$</span>.</p>
+</div>
+<p data-cid="ch02-1650">This decomposition immediately gives the local-global formulas (Cor. 8.4): <span class="tts-math" data-tts="the degree of L over K equals the sum over w dividing v of the local degrees">$[L:K] = \sum_{w\mid v}[L_w:K_v]$</span>, and norm and trace factor as products and sums over <span class="tts-math" data-tts="w dividing v">$w\mid v$</span>:</p>
+<span class="tts-math" data-tts="the norm from L to K of alpha equals the product over w dividing v of the local norms; the trace is the sum of the local traces">
+$$N_{L|K}(\alpha) = \prod_{w\mid v} N_{L_w|K_v}(\alpha), \qquad \mathrm{Tr}_{L|K}(\alpha) = \sum_{w\mid v} \mathrm{Tr}_{L_w|K_v}(\alpha).$$
+</span>
+<div class="box pause" data-cid="ch02-1660">
+<span class="box-label">Pause — the fundamental identity, summed (8.5)</span>
+<p data-cid="ch02-1670">With ramification index <span class="tts-math" data-tts="e sub w">$e_w$</span> and inertia degree <span class="tts-math" data-tts="f sub w">$f_w$</span> at each <span class="tts-math" data-tts="w">$w$</span>,</p>
+<span class="tts-math" data-tts="the sum over w dividing v of e sub w times f sub w equals the degree of L over K">
+$$\sum_{w \mid v} e_w f_w = [L:K] \qquad (v \text{ discrete},\ L|K \text{ separable}).$$
+</span>
+<p data-cid="ch02-1680">This is exactly the Chapter I identity <span class="tts-math" data-tts="the sum of e sub i f sub i equals the degree">$\sum e_i f_i = [L:K]$</span> for <span class="tts-math" data-tts="p O equals the product of capital P sub i to the e sub i">$\mathfrak{p}\mathcal{O} = \prod \mathfrak{P}_i^{e_i}$</span>, now proved through valuations and completions.</p>
+</div>
+
+<!-- ============================ 2.9 ============================ -->
+<h2 id="s2-9" data-cid="ch02-1690">2.9 Galois Theory of Valuations</h2>
+<p data-cid="ch02-1700">Let <span class="tts-math" data-tts="L over K">$L|K$</span> be Galois with group <span class="tts-math" data-tts="G">$G$</span>. If <span class="tts-math" data-tts="w">$w$</span> extends <span class="tts-math" data-tts="v">$v$</span>, then so does <span class="tts-math" data-tts="w composed with sigma">$w\circ\sigma$</span> for any <span class="tts-math" data-tts="sigma in G">$\sigma\in G$</span>, so <span class="tts-math" data-tts="G">$G$</span> acts on the set of extensions. This is the local face of Hilbert's ramification theory.</p>
+<div class="box definition" data-cid="ch02-1710">
+<span class="box-label">Proposition (9.1) + the three groups</span>
+<p data-cid="ch02-1720"><span class="tts-math" data-tts="G">$G$</span> acts <strong>transitively</strong> on the extensions <span class="tts-math" data-tts="w dividing v">$w\mid v$</span> (all are conjugate). The stabilizer of <span class="tts-math" data-tts="w">$w$</span> is the <strong>decomposition group</strong></p>
+<span class="tts-math" data-tts="G sub w equals the set of sigma in G with w composed with sigma equals w">
+$$G_w = \{\sigma \in G : w\circ\sigma = w\},$$
+</span>
+<p data-cid="ch02-1730">and inside it sit the <strong>inertia group</strong> <span class="tts-math" data-tts="I sub w">$I_w$</span> and <strong>ramification group</strong> <span class="tts-math" data-tts="R sub w">$R_w$</span>:</p>
+<span class="tts-math" data-tts="G sub w contains I sub w contains R sub w">
+$$G_w \supseteq I_w \supseteq R_w,$$
+</span>
+<p data-cid="ch02-1740">where <span class="tts-math" data-tts="I sub w">$I_w = \{\sigma: \sigma x \equiv x \bmod \mathfrak{P}\ \forall x\in\mathcal{O}\}$</span> (acts trivially on the residue field) and <span class="tts-math" data-tts="R sub w">$R_w = \{\sigma: \sigma x/x \equiv 1 \bmod \mathfrak{P}\ \forall x\in L^*\}$</span> (acts trivially one level deeper).</p>
+</div>
+<div class="box example" data-cid="ch02-1745">
+<span class="box-label">Example — the unramified case is the cleanest</span>
+<p data-cid="ch02-1746">Take <span class="tts-math" data-tts="L equals Q sub p adjoin a primitive n-th root of unity, with n prime to p, over K equals Q sub p">$L = \mathbb{Q}_p(\zeta_n)\,|\,\mathbb{Q}_p = K$</span> with <span class="tts-math" data-tts="n prime to p">$(n,p)=1$</span> (so the extension is unramified, <span class="tts-math" data-tts="e equals 1">$e=1$</span>). Since no ramification occurs, the inertia group is trivial, <span class="tts-math" data-tts="I sub w equals 1">$I_w = 1$</span>, and therefore <span class="tts-math" data-tts="R sub w equals 1">$R_w = 1$</span> as well. The decomposition group is the whole Galois group, <span class="tts-math" data-tts="G sub w equals G">$G_w = G$</span>, which is cyclic generated by the <strong>Frobenius</strong> <span class="tts-math" data-tts="phi sending zeta to zeta to the p">$\varphi:\zeta\mapsto\zeta^p$</span>. So here the whole tower <span class="tts-math" data-tts="G sub w contains I sub w contains R sub w">$G_w \supseteq I_w \supseteq R_w$</span> collapses to <span class="tts-math" data-tts="cyclic group, then trivial, then trivial">$\langle\varphi\rangle \supseteq 1 \supseteq 1$</span> — all the action sits in the residue field. (The contrasting wildly-ramified case <span class="tts-math" data-tts="Q sub p adjoin a p-power root of unity">$\mathbb{Q}_p(\zeta_{p^m})$</span> is worked out at ch02-1840 below.)</p>
+</div>
+
+<p data-cid="ch02-1750">The number of extensions of <span class="tts-math" data-tts="v">$v$</span> is the index <span class="tts-math" data-tts="G colon G sub w">$(G:G_w)$</span>. Crucially (Prop. 9.6), localization identifies these global groups with honest <em>local</em> Galois groups:</p>
+<span class="tts-math" data-tts="G sub w of L over K equals G of L sub w over K sub v; same for inertia I and ramification R">
+$$G_w(L|K) = G(L_w|K_v), \quad I_w(L|K) = I(L_w|K_v), \quad R_w(L|K) = R(L_w|K_v).$$
+</span>
+<div class="box intuition" data-cid="ch02-1760">
+<span class="box-label">Intuition — the tower of fixed fields</span>
+<p data-cid="ch02-1770">The chain <span class="tts-math" data-tts="G sub w contains I sub w contains R sub w">$G_w \supseteq I_w \supseteq R_w$</span> has fixed fields <span class="tts-math" data-tts="Z sub w contained in T sub w contained in V sub w">$Z_w \subseteq T_w \subseteq V_w \subseteq L$</span> — the <strong>decomposition</strong>, <strong>inertia</strong>, and <strong>ramification</strong> fields. Climbing the tower peels off the splitting (how many primes), then the unramified part (the residue extension), then the tame part — leaving the wild ramification at the top.</p>
+</div>
+
+<div class="box definition" data-cid="ch02-1780">
+<span class="box-label">The three quotients</span>
+<ul data-cid="ch02-1790">
+<li><strong>Decomposition field</strong> <span class="tts-math" data-tts="Z sub w">$Z_w$</span> (9.8): <span class="tts-math" data-tts="w restricted to Z sub w">$w|_{Z_w}$</span> has the same residue field and value group as <span class="tts-math" data-tts="v">$v$</span>; in fact <span class="tts-math" data-tts="Z sub w equals L intersect K sub v">$Z_w = L \cap K_v$</span>. It "sees" the splitting of <span class="tts-math" data-tts="p">$\mathfrak{p}$</span> only.</li>
+<li><strong>Inertia field</strong> <span class="tts-math" data-tts="T sub w">$T_w$</span> (9.9, 9.11): <span class="tts-math" data-tts="T sub w over Z sub w">$T_w|Z_w$</span> is the maximal unramified subextension, with exact sequence <span class="tts-math" data-tts="1 to I sub w to G sub w to the Galois group of lambda over k to 1">$1 \to I_w \to G_w \to G(\lambda|k) \to 1$</span>.</li>
+<li><strong>Ramification field</strong> <span class="tts-math" data-tts="V sub w">$V_w$</span> (9.14): <span class="tts-math" data-tts="V sub w over Z sub w">$V_w|Z_w$</span> is the maximal tamely ramified subextension.</li>
+</ul>
+</div>
+
+<div class="box pause" data-cid="ch02-1800">
+<span class="box-label">Pause — R_w is the wild part (9.12)</span>
+<p data-cid="ch02-1810"><span class="tts-math" data-tts="R sub w">$R_w$</span> is the unique <span class="tts-math" data-tts="p">$p$</span>-Sylow subgroup of the inertia group <span class="tts-math" data-tts="I sub w">$I_w$</span>, and the quotient is cyclic of order prime to <span class="tts-math" data-tts="p">$p$</span> via</p>
+<span class="tts-math" data-tts="1 to R sub w to I sub w to the character group chi of L over K to 1">
+$$1 \to R_w \to I_w \to \chi(L|K) \to 1, \qquad \chi(L|K) = \mathrm{Hom}(\Lambda/\Gamma,\, k^*)$$
+</span>
+<p data-cid="ch02-1820">(Cor. 9.15), where <span class="tts-math" data-tts="capital lambda equals w of L star and capital gamma equals v of K star">$\Lambda = w(L^*)$, $\Gamma = v(K^*)$</span>. So inertia <span class="tts-math" data-tts="equals">$=$</span> tame (the prime-to-<span class="tts-math" data-tts="p">$p$</span> quotient) <span class="tts-math" data-tts="times">$\times$</span> wild (the <span class="tts-math" data-tts="p">$p$</span>-group <span class="tts-math" data-tts="R sub w">$R_w$</span>). The wild ramification is exactly the <span class="tts-math" data-tts="p">$p$</span>-part.</p>
+</div>
+
+<div class="box example" data-cid="ch02-1830">
+<span class="box-label">Example — back to Q_p(ζ)</span>
+<p data-cid="ch02-1840">For <span class="tts-math" data-tts="Q sub p adjoin a prime-to-p root of unity">$\mathbb{Q}_p(\zeta_n)$</span> with <span class="tts-math" data-tts="n prime to p">$(n,p)=1$</span>: the extension is unramified, so <span class="tts-math" data-tts="I sub w is trivial">$I_w = 1$</span> and <span class="tts-math" data-tts="G sub w equals the Galois group of the residue field, cyclic generated by Frobenius">$G_w$</span> is cyclic, generated by Frobenius. For <span class="tts-math" data-tts="Q sub p adjoin a p-power root of unity">$\mathbb{Q}_p(\zeta_{p^m})$</span>: the extension is totally and (for <span class="tts-math" data-tts="m at least 1">$m\ge1$</span>) wildly ramified, so <span class="tts-math" data-tts="G sub w equals I sub w">$G_w = I_w$</span> and <span class="tts-math" data-tts="R sub w">$R_w$</span> is large — the <span class="tts-math" data-tts="p">$p$</span>-part of <span class="tts-math" data-tts="the units of Z mod p to the m Z">$(\mathbb{Z}/p^m\mathbb{Z})^*$</span>.</p>
+</div>
+
+<!-- ============================ 2.10 ============================ -->
+<h2 id="s2-10" data-cid="ch02-1850">2.10 Higher Ramification Groups</h2>
+<p data-cid="ch02-1860">Inertia and ramification groups are only the first two terms of a finer filtration that measures wild ramification in detail. Let <span class="tts-math" data-tts="L over K">$L|K$</span> be a finite Galois extension of local-type fields, <span class="tts-math" data-tts="v sub L">$v_L$</span> the normalized valuation of <span class="tts-math" data-tts="L">$L$</span>.</p>
+<div class="box definition" data-cid="ch02-1870">
+<span class="box-label">Definition (10.1) — ramification groups (lower numbering)</span>
+<p data-cid="ch02-1880">For each real <span class="tts-math" data-tts="s at least minus 1">$s \ge -1$</span>,</p>
+<span class="tts-math" data-tts="G sub s equals the set of sigma in G such that the valuation of sigma a minus a is at least s plus 1, for all a in O">
+$$G_s = \{\sigma \in G : v_L(\sigma a - a) \ge s+1 \text{ for all } a \in \mathcal{O}\}.$$
+</span>
+<p data-cid="ch02-1890">Then <span class="tts-math" data-tts="G sub minus 1 equals G">$G_{-1} = G$</span>, <span class="tts-math" data-tts="G sub 0 equals the inertia group I">$G_0 = I$</span>, <span class="tts-math" data-tts="G sub 1 equals the ramification group R">$G_1 = R$</span>, giving a descending chain of normal subgroups <span class="tts-math" data-tts="G contains G sub 0 contains G sub 1 contains G sub 2 and so on">$G \supseteq G_0 \supseteq G_1 \supseteq G_2 \supseteq \cdots$</span>.</p>
+</div>
+<div class="box intuition" data-cid="ch02-1900">
+<span class="box-label">Intuition</span>
+<p data-cid="ch02-1910"><span class="tts-math" data-tts="sigma is in G sub s">$\sigma \in G_s$</span> means <span class="tts-math" data-tts="sigma">$\sigma$</span> moves every element of <span class="tts-math" data-tts="O">$\mathcal{O}$</span> by something divisible by <span class="tts-math" data-tts="pi sub L to the s plus 1">$\pi_L^{s+1}$</span> — the bigger <span class="tts-math" data-tts="s">$s$</span>, the closer <span class="tts-math" data-tts="sigma">$\sigma$</span> is to the identity. The chain measures <em>how nearly</em> each automorphism fixes things, p-adically. Wild ramification lives where the chain stays nontrivial for large <span class="tts-math" data-tts="s">$s$</span>.</p>
+</div>
+<p data-cid="ch02-1920">The successive quotients embed into unit-group quotients (Prop. 10.2): via <span class="tts-math" data-tts="sigma maps to sigma of pi sub L over pi sub L">$\sigma \mapsto \sigma(\pi_L)/\pi_L$</span>,</p>
+<span class="tts-math" data-tts="G sub 0 mod G sub 1 injects into lambda star, the residue field units; and for s at least 1, G sub s mod G sub s plus 1 injects into the additive residue field lambda">
+$$G_0/G_1 \hookrightarrow \lambda^*, \qquad G_s/G_{s+1} \hookrightarrow \lambda \quad (s \ge 1).$$
+</span>
+<p data-cid="ch02-1930">So the top quotient <span class="tts-math" data-tts="G sub 0 over G sub 1">$G_0/G_1$</span> has order prime to <span class="tts-math" data-tts="p">$p$</span> (the tame part), while every deeper quotient <span class="tts-math" data-tts="G sub s over G sub s plus 1">$G_s/G_{s+1}$</span> is an elementary abelian <span class="tts-math" data-tts="p">$p$</span>-group — confirming again that <span class="tts-math" data-tts="R equals G sub 1">$R = G_1$</span> is the <span class="tts-math" data-tts="p">$p$</span>-Sylow of <span class="tts-math" data-tts="I equals G sub 0">$I = G_0$</span>.</p>
+
+<h3 data-cid="ch02-1940">Changing fields: the Herbrand function</h3>
+<p data-cid="ch02-1950">The lower numbering behaves well under <span class="tts-math" data-tts="L over K prime">$L|K'$</span> (Prop. 10.3: <span class="tts-math" data-tts="G sub s of L over K prime equals G sub s of L over K intersect G of L over K prime">$G_s(L|K') = G_s(L|K)\cap G(L|K')$</span>) but <em>badly</em> when passing to a quotient <span class="tts-math" data-tts="L prime over K">$L'|K$</span>. To fix the indexing one introduces the <strong>Herbrand function</strong></p>
+<span class="tts-math" data-tts="eta sub L over K of s equals the integral from 0 to s of dx over the index G sub 0 to G sub x">
+$$\eta_{L|K}(s) = \int_0^s \frac{dx}{(G_0 : G_x)},$$
+</span>
+<p data-cid="ch02-1960">a continuous, piecewise-linear, increasing bijection of <span class="tts-math" data-tts="the interval from minus 1 to infinity">$[-1,\infty)$</span>. It can be written <span class="tts-math" data-tts="eta sub L over K of s equals one over g sub 0 times the sum over sigma in G of the minimum of i of sigma and s plus 1, minus 1">$\eta_{L|K}(s) = \tfrac{1}{g_0}\sum_{\sigma\in G}\min\{i(\sigma), s+1\} - 1$</span> (Prop. 10.6).</p>
+<div class="box intuition" data-cid="ch02-1962">
+<span class="box-label">Intuition — the integral is just a weighted sum of segment lengths</span>
+<p data-cid="ch02-1964">Do not let the integral sign alarm you. The integrand <span class="tts-math" data-tts="1 over the index G sub 0 to G sub x">$1/(G_0:G_x)$</span> is <em>piecewise constant</em> in <span class="tts-math" data-tts="x">$x$</span> — it only changes at the finitely many <span class="tts-math" data-tts="x">$x$</span> where the chain <span class="tts-math" data-tts="G sub x">$G_x$</span> drops to a smaller group. So the "integral" is really a finite sum: each flat stretch contributes (its length) times (its constant height <span class="tts-math" data-tts="1 over the index">$1/$index). The effect is to <em>rescale the s-axis</em>, stretching it where the ramification groups are large and compressing it where they are small — exactly the bookkeeping needed to translate between the two field's numberings.</p>
+<p data-cid="ch02-1966">Tiny example. Suppose <span class="tts-math" data-tts="G sub 0 has order 6 and G sub 1 equals G sub 2 has order 2, then drops to trivial after 2">$G_0$</span> has order <span class="tts-math" data-tts="6">$6$</span>, <span class="tts-math" data-tts="G sub x equals G sub 1">$G_x = G_1$</span> of order <span class="tts-math" data-tts="2">$2$</span> for <span class="tts-math" data-tts="0 less than x at most 2">$0 &lt; x \le 2$</span>, and <span class="tts-math" data-tts="G sub x trivial">$G_x = 1$</span> for <span class="tts-math" data-tts="x greater than 2">$x &gt; 2$</span>. Then on <span class="tts-math" data-tts="the interval 0 to 1">$[0,1]$</span> the integrand is <span class="tts-math" data-tts="1 over the index G sub 0 to G sub 0 equals 1">$1/(G_0:G_0) = 1$</span>, and on <span class="tts-math" data-tts="the interval 1 to 2">$[1,2]$</span> wait — let us index from the jumps: for <span class="tts-math" data-tts="x in 0 to 2">$0 &lt; x \le 2$</span> the index is <span class="tts-math" data-tts="G sub 0 to G sub 1 equals 6 over 2 equals 3">$(G_0:G_1) = 6/2 = 3$</span>, so the height is <span class="tts-math" data-tts="one third">$\tfrac{1}{3}$</span>. Hence <span class="tts-math" data-tts="eta of 2 equals the integral from 0 to 2 of one third equals two thirds">$\eta(2) = \int_0^2 \tfrac{1}{3}\,dx = \tfrac{2}{3}$</span> — a single rectangle of width <span class="tts-math" data-tts="2">$2$</span> and height <span class="tts-math" data-tts="one third">$\tfrac{1}{3}$</span>. The startling integral was nothing but the area of one rectangle.</p>
+</div>
+<div class="box definition" data-cid="ch02-1970">
+<span class="box-label">Theorem (10.7) — Herbrand</span>
+<p data-cid="ch02-1980">For a Galois subextension <span class="tts-math" data-tts="L prime over K">$L'|K$</span> with <span class="tts-math" data-tts="H equals G of L over L prime">$H = G(L|L')$</span>,</p>
+<span class="tts-math" data-tts="G sub s of L over K, times H, mod H, equals G sub t of L prime over K, where t equals eta of L over L prime of s">
+$$G_s(L|K)\,H/H = G_t(L'|K), \qquad t = \eta_{L|L'}(s).$$
+</span>
+</div>
+<div class="box pause" data-cid="ch02-1990">
+<span class="box-label">Pause — upper numbering</span>
+<p data-cid="ch02-1995">Why bother re-indexing at all? We just saw that the lower numbering <span class="tts-math" data-tts="G sub s">$G_s$</span> behaves well when we go <em>down</em> to a subfield but scrambles when we pass to a <em>quotient</em> <span class="tts-math" data-tts="L prime over K">$L'|K$</span>. Yet for the long game — descending the filtration all the way to the <em>infinite</em> Galois group (the absolute Galois group of a local field), which is an inverse limit of quotients — we need an indexing that survives quotients cleanly. That is exactly what the upper numbering is engineered to do.</p>
+<p data-cid="ch02-2000">Define the <strong>upper numbering</strong> by <span class="tts-math" data-tts="G upper t equals G sub s where s equals psi of t, the inverse of eta">$G^t = G_s$</span> with <span class="tts-math" data-tts="s equals psi of L over K of t">$s = \psi_{L|K}(t)$</span> (<span class="tts-math" data-tts="psi">$\psi$</span> the inverse of <span class="tts-math" data-tts="eta">$\eta$</span>) — using the Herbrand function to absorb the scrambling. The payoff is that the upper numbering is <strong>invariant under quotients</strong> (Prop. 10.9):</p>
+<span class="tts-math" data-tts="G upper t of L over K, times H, mod H, equals G upper t of L prime over K">
+$$G^t(L|K)\,H/H = G^t(L'|K).$$
+</span>
+<p data-cid="ch02-2010">Lower numbering passes nicely to <em>sub</em>fields; upper numbering passes nicely to <em>quotient</em> fields. This is precisely what lets ramification filtrations be defined on infinite Galois groups (the absolute Galois group of a local field) — the foundation of local class field theory in later chapters.</p>
+</div>
+<div class="box example" data-cid="ch02-2020">
+<span class="box-label">Example — the cyclotomic tower (chapter exercise)</span>
+<p data-cid="ch02-2030">For <span class="tts-math" data-tts="K sub n equals Q sub p adjoin a primitive p to the n root of unity">$K_n = \mathbb{Q}_p(\zeta_{p^n})$</span> over <span class="tts-math" data-tts="K equals Q sub p">$K = \mathbb{Q}_p$</span>, the lower-numbered ramification groups jump at <span class="tts-math" data-tts="s equals 0, p minus 1, p squared minus 1, and so on">$s = 0,\ p-1,\ p^2-1,\dots$</span>: <span class="tts-math" data-tts="G sub s equals the Galois group of K sub n over K sub i on the i-th block">$G_s = G(K_n|K_i)$</span> for <span class="tts-math" data-tts="p to the i minus 1 to p to the i plus 1 minus 1">$p^{i}-1 \le s &lt; p^{i+1}-1$</span>, and <span class="tts-math" data-tts="G sub s is trivial for s at least p to the n minus 1">$G_s = 1$</span> once <span class="tts-math" data-tts="s is at least p to the n minus 1">$s \ge p^{n-1}$</span>. A clean, fully computable instance of the whole machine.</p>
+</div>
+
+<!-- ============================ Summary ============================ -->
+<h2 id="summary" data-cid="ch02-2040">Summary</h2>
+<p data-cid="ch02-2050">This chapter built the local world of number theory from one idea — measure size "near a prime" — and followed it relentlessly:</p>
+<ul data-cid="ch02-2060">
+<li><strong>2.1–2.2 p-adics.</strong> An integer has a Taylor-like expansion at <span class="tts-math" data-tts="p">$p$</span>; completing <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span> in the p-adic absolute value <span class="tts-math" data-tts="absolute value at p equals p to the minus v sub p">$|\cdot|_p = p^{-v_p}$</span> gives <span class="tts-math" data-tts="Q sub p">$\mathbb{Q}_p$</span>, with <span class="tts-math" data-tts="Z sub p">$\mathbb{Z}_p = \varprojlim \mathbb{Z}/p^n\mathbb{Z}$</span>. The product formula <span class="tts-math" data-tts="the product over all p of the absolute value at p equals 1">$\prod_p |a|_p = 1$</span> makes primes-as-points precise.</li>
+<li><strong>2.3–2.4 Valuations &amp; completions.</strong> Abstract valuations, their valuation rings <span class="tts-math" data-tts="o">$\mathfrak{o}$</span>, residue fields, and completions. Ostrowski isolates the nonarchimedean case; Hensel's lemma is the local Newton's method.</li>
+<li><strong>2.5 Local fields.</strong> Complete, discretely valued, finite residue field = finite extensions of <span class="tts-math" data-tts="Q sub p or F sub p of t double parenthesis">$\mathbb{Q}_p$ or $\mathbb{F}_p((t))$</span>; locally compact, with an explicit structure of <span class="tts-math" data-tts="K star">$K^*$</span> via <span class="tts-math" data-tts="log and exp">$\log/\exp$</span>.</li>
+<li><strong>2.6 Henselian fields.</strong> Hensel's lemma <span class="tts-math" data-tts="equivalent to">$\Leftrightarrow$</span> unique extension of valuations; the Newton polygon reads root-valuations off coefficients; the fundamental identity <span class="tts-math" data-tts="the degree equals e f">$[L:K]=ef$</span>.</li>
+<li><strong>2.7 Unramified/tame.</strong> Unramified <span class="tts-math" data-tts="equals">$=$</span> separable residue extension (<span class="tts-math" data-tts="e equals 1">$e=1$</span>); tame <span class="tts-math" data-tts="equals">$=$</span> radicals of degree prime to <span class="tts-math" data-tts="p">$p$</span> (<span class="tts-math" data-tts="e prime to p">$(e,p)=1$</span>); wild <span class="tts-math" data-tts="equals">$=$</span> <span class="tts-math" data-tts="p divides e">$p\mid e$</span>. Cyclotomic <span class="tts-math" data-tts="Q sub p of zeta">$\mathbb{Q}_p(\zeta)$</span> illustrates all three.</li>
+<li><strong>2.8 Extensions.</strong> Extensions of <span class="tts-math" data-tts="v">$v$</span> <span class="tts-math" data-tts="correspond to">$\leftrightarrow$</span> factors of the minimal polynomial over <span class="tts-math" data-tts="K sub v">$K_v$</span>; <span class="tts-math" data-tts="L tensor K sub v equals the product of L sub w">$L\otimes_K K_v = \prod L_w$</span>; <span class="tts-math" data-tts="the sum of e sub w f sub w equals the degree">$\sum e_w f_w = [L:K]$</span>.</li>
+<li><strong>2.9 Galois.</strong> Decomposition <span class="tts-math" data-tts="contains">$\supseteq$</span> inertia <span class="tts-math" data-tts="contains">$\supseteq$</span> ramification groups, with fixed-field tower splitting <span class="tts-math" data-tts="goes to">$\to$</span> unramified <span class="tts-math" data-tts="goes to">$\to$</span> tame <span class="tts-math" data-tts="goes to">$\to$</span> wild; <span class="tts-math" data-tts="R sub w">$R_w$</span> is the <span class="tts-math" data-tts="p">$p$</span>-Sylow of <span class="tts-math" data-tts="I sub w">$I_w$</span>.</li>
+<li><strong>2.10 Higher ramification.</strong> The filtration <span class="tts-math" data-tts="G sub s">$G_s$</span>, the Herbrand function <span class="tts-math" data-tts="eta">$\eta$</span>, and the quotient-invariant upper numbering <span class="tts-math" data-tts="G upper t">$G^t$</span> — the gateway to local class field theory.</li>
+</ul>
+<div class="box intuition" data-cid="ch02-2070">
+<span class="box-label">The one-sentence takeaway</span>
+<p data-cid="ch02-2080">Every prime <span class="tts-math" data-tts="p">$p$</span> gives a magnifying glass — the completion <span class="tts-math" data-tts="K sub v">$K_v$</span> — through which a global field's arithmetic near that prime becomes a clean, almost-geometric local theory; ramification groups measure exactly how violently an extension distorts the picture under that magnifying glass.</p>
+</div>
+
+<nav class="chapter-nav">
+<a href="ch01.html"><span class="label">← Previous</span><span class="title">I. Algebraic Integers</span></a>
+<a class="next" href="ch03.html"><span class="label">Next →</span><span class="title">III. Riemann–Roch Theory</span></a>
+</nav>
+</article>
+</main>
+<script src="/js/main.js"></script><script src="/js/comments.js"></script><script src="/js/tts.js"></script>
+</body>
+</html>

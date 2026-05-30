@@ -1,0 +1,2908 @@
+
+===== PDF PAGE 115 =====
+
+Chapter II
+The Theory of Valuations
+§ 1. The p-adic Numbers
+The p-adic numbers were invented at the beginning of the twentieth
+century by the mathematician Kurt Hensel (1861-1941) with a view to
+introduce into number theory the powerful method of power series expansion
+which plays such a predominant role in function theory. The idea originated
+from the observation made in the last chapter that the numbers / e Z may
+be viewed in analogy with the polynomials f(z) e C[z] as functions on the
+space X of prime numbers in Z, associating to them their "value" at the
+point p e X, i.e., the element
+f(p) := / mod p
+in the residue class field ic(p) = Z/pZ.
+This point of view suggests the further question: whether not only the
+"value" of the integer / e Z at p, but also the higher derivatives of / can be
+reasonably defined. In the case of the polynomials /(z) G C[z], the higher
+derivatives at the point z = a are given by the coefficients of the expansion
+f(z) = a0 + ai(z -a)-\ V an(z -a)n,
+and more generally, for rational functions /(z) — jfp- e C(z), withrl\Z)
+g, h e C[z], they are defined by the Taylor expansion
+oo
+/(z)=£av(z-a)\
+provided there is no pole at z = a, i.e., as long as (z — a)^ h(z). The fact that
+such an expansion can also be written down, relative to a prime number p
+in Z, for any rational number / e Q as long as it lies in the local ring
+Z(p) = {||gf/i€Z, p\h),
+leads us to the notion of p-adic number. First, every positive integer / e N
+admits ap-adic expansion
+/ = a0 + aipJi \-anpn,
+J. Neukirch, Algebraic Number Theory
+© Springer-Verlag Berlin Heidelberg 1999
+
+===== PDF PAGE 116 =====
+
+100 Chapter II. The Theory of Valuations
+with coefficients at in {0,1, ..., p — 1}, i.e., in a fixed system of
+representatives of the "field of values" k(p) = ¥p. This representation is clearly
+unique. It is computed explicitly by successively dividing by p, forming the
+following system of equations:
+f = a0 + pfu
+fx=ax+ pf2,
+fn-\ = Q>n-\ + Pfn,
+fn=an.
+Here at e {0,1, ..., p — 1} denotes the representative of ft mod p e Z/pZ.
+In concrete cases, one sometimes writes the number / simply as the sequence
+of digits ao, a\a2 ... an, for instance
+216 = 0,0011011 (2-adic),
+216 = 0,0022 (3-adic),
+216= 1,331 (5-adic).
+As soon as one tries to write down such p-adic expansions also for negative
+integers, let alone for fractions, one is forced to allow infinite series
+00
+J2 avpv = a0 + a\p + a2p2 H .
+v=0
+This notation should at first be understood in a purely formal sense, i.e.,
+12™=oavPV simply stands for the sequence of partial sums
+n — \
+Sn = E^vPV, n = 1,2, ...
+v=0
+(1.1) Definition. Fix a prime number p. A />adic integer is a formal infinite
+series
+cio +a\p + a2P H ,
+where 0 < 0; < p, for all i = 0,1,2, ... The set of all p-adic integers is
+denoted byZp.
+The p-adic expansion of an arbitrary number / e Z^p) results from the
+following proposition about the residue classes in Z/pnZ.
+(1.2) Proposition. The residue classes a mod pn e Z/pnZ can be uniquely
+represented in the form
+a=a0 + a\p + a2p2 H h an-\pn~~l mod pn
+where 0 < a\ < p for i = 0, ..., n — 1.
+
+===== PDF PAGE 117 =====
+
+§ 1. The p-adic Numbers 101
+Proof (induction on n): This is clear for n = 1. Assume the statement is
+proved for n — 1. Then we have a unique representation
+a = a0 + a\p + tf2jp2 H H an^iPn"2 + gp71"1,
+for some integer g. If g == aw_i mod p such that 0 < an-\ < p, then aw_i
+is uniquely determined by a, and the congruence of the proposition holds.
+□
+Every integer / and, more generally, every rational number / e Z^ the
+denominator of which is not divisible by p, defines a sequence of residue
+classes
+sn = f moipn eZ/pnZ, n = 1,2, ... ,
+for which we find, by the preceding proposition,
+s\ = ao mod p,
+s2 = tfo + fliP m°d P2>
+si = ao + a\p -\- a,2p2 mod p3, etc.,
+with uniquely determined coefficients ao, a\, 02, ... G {0,1, ..., p — 1} which
+keep their meaning from one line to the next. The sequence of numbers
+sn=a0 + a\P + a2P2 H h an-\pn~~l, n = 1,2, ... ,
+defines a p-adic integer
+00
+v=0
+We call it the p-adic expansion of /.
+In analogy with the Laurent series /(z) = 5Zvl-m a^z ~~ a^v> we now
+extend the domain of p-adic integers into that of the formal series
+00
+£ avpv = a-mp~m H h a-ip"1 + a0 + flip H ,
+v=—m
+where ra e Z and 0 < <zv < p. Such series we call simply p-adic numbers
+and we write Q^ for the set of all these p-adic numbers. If / e Q is any
+rational number, then we write
+f={p-m where g,/*eZ, (gA,p) = l,
+and if
+a0 + aip + ^2p2H
+
+===== PDF PAGE 118 =====
+
+102 Chapter II. The Theory of Valuations
+is the p-adic expansion of |, then we attach to / the p-adic number
+a0p'm + axp-m+x + • • • + am + am+xp + • • • € Qp
+as its p-adic expansion.
+In this way we obtain a canonical mapping
+Q-^Qp,
+which takes Z into Zp and is injective. For if a, b e Z have the same p-adic
+expansion, then a — b is divisible by pn for every n, and hence a — b. We
+now identify Q with its image in Qp9 so that we may write QCQp and
+ZCZp. Thus, for every rational number / e Q, we obtain an identity
+oo
+/= E avPv■
+v=—m
+This establishes the arithmetic analogue of the function-theoretic power series
+expansion for which we were looking.
+Examples: a) -1 = (p - 1) + (p - \)p + (p - \)p2 + • • •.
+In fact, we have
+-1 = (p - 1) + (p - l)p + • • • + (p - l)pn-1 - p\
+hence -ls(p-l) + (p-l)p + - + (p- l)pn~l mod pn.
+b)T^ = l + p + p2 + ....
+In fact,
+1 = (1 + p + • • • + p"-l)(l -p) + p\
+hence = 1 + p + • • • + pn~~l mod pn.\-p
+One can define addition and multiplication of p-adic numbers which
+turn Zp into a ring, and Qp into its field of fractions. However, the direct
+approach, defining sum and product via the usual carry-over rules for digits,
+as one does it when dealing with real numbers as decimal fractions, leads
+into complications. They disappear once we use another representation of the
+p-adic numbers / = XlvLo avPv, viewing them not as sequences of sums of
+integers n-\
+Sn = E avPV € Z,
+v=0
+
+===== PDF PAGE 119 =====
+
+§ 1. The p-adic Numbers 103
+but rather as sequences of residue classes
+sn = sn mod pn e Z/pnZ.
+The terms of such a sequence lie in different rings Z/pnZ, but these are
+related by the canonical projections
+Z/pZ <£- Z/p2Z <^- Z/p3Z <^
+and we find
+In the direct product
+oo
+PI %lpnZ = {(xn)neN | xn e Z/pnZ},n=\
+we now consider all elements (xn)ne^ with the property that
+kn(xn+i) = xn for all n = 1,2, ...
+This set is called the projective limit of the rings Z/pnZ and is denoted
+by Um Z/pnZ. In other words, we have
+n
+oo
+l£m Z/p^Z = {(jc^gN € ]1Z/P^|^fe+1)=^, /i = l,2, ...}.n n=\
+The modified representation of the /?-adic numbers alluded to above now
+follows from the
+(1.3) Proposition. Associating to every p-adic integer
+oo
+/ = £ "vpv
+v=0
+the sequence (sn)n(Efq of residue classes
+n-\
+sn = Y. avPv mod pn e Z/pnZ,
+yields a bijection
+Zp -^ ^m Z/pnZ.
+n
+
+===== PDF PAGE 120 =====
+
+104 Chapter II. The Theory of Valuations
+The proof is an immediate consequence of proposition (1.2). The projective
+limit Hm Z/pnZ offers the advantage of being clearly a ring. In fact, it is a
+subring of the direct product fl«li ^//^Z where addition and multiplication
+are defined componentwise. We identify Zp with ljm Z/pnZ and obtain the
+ring of p-adic integers Zp.
+Since every element / e Qp admits a representation
+f = P~m8
+with g e Zp, addition and multiplication extend from Zp to Qp and Qp
+becomes the field of fractions of Zp.
+In Zp, we found the rational integers a e Z which were determined by
+the congruences
+a == ao + a\p H h an-\pn~~x mod pn ,
+0 < ai < p. Making the identification
+Zp = ljm Z/pwZ
+the subset Z is taken to the set of tuples
+oo
+(a mod p, a mod p2, a mod p3, ...) e Y[ Z/pnZn=\
+and thereby is realized as a subring of Zp. We obtain Q as a subfield of the
+field Qp of p-adic numbers in the same way.
+Despite their origin in function-theoretic ideas, the p-adic numbers live
+up to their destiny entirely within arithmetic, more precisely at its classical
+heart, the Diophantine equations. Such an equation
+F{xx, ..., xn) =0
+is given by a polynomial F e Z[x\, ..., xn], and the question is whether
+it admits solutions in integers. This difficult problem can be weakened by
+considering, instead of the equation, all the congruences
+F(x\, ..., xn) == 0 mod m.
+By the Chinese remainder theorem, this amounts to considering the
+congruences
+F(x\, ..., xn) == 0 mod pv
+modulo all prime powers. The hope is to obtain in this way information about
+the original equation. This plethora of congruences is now synthesized again
+into a single equation by means of the p-adic numbers. In fact, one has the
+
+===== PDF PAGE 121 =====
+
+§ 1. The p-adic Numbers 105
+(1.4) Proposition. Let F(x\, ..., xn) be a polynomial with integer
+coefficients, and fix a prime number p. The congruence
+F(x\, ..., xn) == 0 mod pv
+is solvable for arbitrary v > 1 if and only if the equation
+F{xx, ...,*„) =0
+is solvable in p-adic integers.
+Proof: As established above, we view the ring 7Lp as the projective limit
+oo
+Zp = ^m Z/pvZ c fl Z/pvZ.v v=l
+Viewed over the ring on the right, the equation F = 0 splits up into
+components over the individual rings Z/pvZ, namely, the congruences
+F(x\, ..., xn) == 0 mod pv.
+If now
+(xu...,xn) = (x[v\...,x^)vmeZ"p,
+with (Jtj- )veN £ %p — U^ Z/pvZ, is a p-adic solution of the equation
+F(jci, ... ,xn) = 0, then the congruences are solved by
+F(x[v\ ... ,4V)) ss 0 mod pv, v = 1,2, ...
+Conversely, let a solution (x\v\ ..., jc^ ) of the congruence
+F(x\, ..., xn) == 0 mod pv
+be given for every v > 1. If the elements (^v))V€n € \\™=xZ/pvZ are
+already in Hm Z/pvZ, for all i = 1, ..., /i, then we have a p-adic solution
+of the equation F = 0. But this is not automatically the case. We will
+therefore extract a subsequence from the sequence (jcJ[ , ..., x„) which
+fits our needs. For simplicity of notation we only carry this out in the case
+n = 1, writing xv = xj[ . The general case follows exactly the same pattern.
+In what follows, we view (xv) as a sequence in Z. Since Z/pZ is finite,
+there are infinitely many terms xv which mod p are congruent to the same
+element y\ e Z/pZ. Hence we may choose a subsequence {xy } of {xv}
+such that
+jc^ = y\ mod p and F(x$p) == 0 mod p.
+
+===== PDF PAGE 122 =====
+
+106 Chapter II. The Theory of Valuations
+Likewise, we may extract from [xy] a subsequence {xv }} such that
+x{2) = yi mod p2 and F(x{2)) == 0 mod p2,
+where yi e Z/p2Z evidently satisfies ;y2 = y\ mod p. Continuing in this
+way, we obtain for each k > 1 a subsequence {xv '} of {x[ _1)} the terms of
+which satisfy the congruences
+4*} = y* mod / and F{x{k)) == 0 mod /
+for some yk e Z/pkZ such that
+yk = yk-\ mod/"1.
+The yk define a p-adic integer y = Cy*)*€N € ljm ZjpkZ — Zp satisfying
+k
+F(yk)E=0modpk
+for all £ > 1. In other words, F(y) =0. O
+Exercise 1. A p-adic number a = YlT=-mavPv e Qp is a rational number if and
+only if the sequence of digits is periodic (possibly with a finite string before the first
+period).
+Hint: Write pma = b + c x?_ w, 0 < b < pl, 0 < c < pn.
+Exercise 2. A p-adic integer a = ao + axp + a2p2 H is a unit in the ring Zp if
+and only if ao ^ 0.
+Exercise 3. Show that the equation x2 = 2 has a solution in Z7.
+Exercise 4. Write the numbers | and — | as 5-adic numbers.
+Exercise 5. The field Qp of p-adic numbers has no automorphisms except the
+identity.
+Exercise 6. How is the addition, subtraction, multiplication and division of rational
+numbers reflected in the representation by /7-adic digits?
+§ 2. The/?-adic Absolute Value
+The representation of a p-adic integer
+(1) a0 + aip + a2p2 H , 0<at<p,
+
+===== PDF PAGE 123 =====
+
+§ 2. The p-adic Absolute Value 107
+resembles very much the decimal fraction representation
+1 1 2
+*0+*l(jQ) + ^( —) +••■, 0<fl/<10,
+of a real number between 0 and 10. But it does not converge as the
+decimal fraction does. Nonetheless, the field Qp of p-adic numbers can
+be constructed from the field Q in the same fashion as the field of real
+numbers R. The key to this is to replace the ordinary absolute value by
+a new "p-adic" absolute value | \p with respect to which the series (1)
+converge so that the p-adic numbers appear in the usual manner as limits
+of Cauchy sequences of rational numbers. This approach was proposed by
+the Hungarian mathematician /. Kurschak. The p-adic absolute value | \p is
+defined as follows.
+Let a = -,ft,cGZbea nonzero rational number. We extract from b and
+from c as high a power of the prime number p as possible,
+(2) a = pm~, (fcV,p) = l,d
+and we put
+1
+\a\p =1 p pm
+Thus the p-adic value no longer measures the size of a number a e N.
+Instead it becomes small if the number is divisible by a high power of p.
+This elaborates on the idea suggested in (1.4) that an integer has to be 0 if it
+is infinitely divisible by p. In particular, the summands of a p-adic series
+#o + a\P + a2P2 H fQrm a sequence converging to 0 with respect to | \p.
+The exponent m in the representation (2) of the number a is denoted
+by vp(a), and one puts formally vp(0) = oo. This gives the function
+vP • Q —^ZU {oo},
+which is easily checked to satisfy the properties
+1) vp{a) = oo ^=^a = 0,
+2) vp(ab) = vp(a) + vp(b),
+3) vp{a + b) > m\n{vp(a), vp(b)},
+where x + oo = oo, 00 + 00 = 00 and 00 > jc, for all x e Z. The function
+1^ is called the p-adic exponential valuation of Q. The p-adic absolute
+value is given by
+In view of 1), 2), 3), it satisfies the conditions of a norm on Q:
+
+===== PDF PAGE 124 =====
+
+108 Chapter II. The Theory of Valuations
+1) \a\p=0^=>a = 0,
+2) \ab\p = \a\p\b\p,
+3) \a + b\p <max{|fl|p,|6|p} < \a\p+\b\p.
+One can show that the absolute values | \p and | | essentially exhaust
+all norms on Q: any further norm is a power | |* or | \s, for some real
+number s > 0 (see (3.7)). The usual absolute value | | is denoted in this
+context by | l^. The good reason for this will be explained in due course. In
+conjunction with the absolute values | \p, it satisfies the following important
+product formula:
+(2.1) Proposition. For every rational number a / 0, one has
+p
+where p varies over all prime numbers as well as the symbol oo.
+Proof: In the prime factorization
+a = ± PI Pv"
+of a, the exponent vp of p is precisely the exponential valuation vp(a) and
+the sign equals 7-7—. The equation therefore readsa
+a „ 1
+l^loo pj^oo \a\p
+so that one has indeed \\p \a\p=z\. D
+The notation | | ^ for the ordinary absolute value is motivated by the
+analogy of the field of rational numbers Q with the rational function field
+k(t) over a finite field k, with which we started our considerations. Instead
+of Z, we have inside k{t) the polynomial ring k[t], the prime ideals p / 0 of
+which are given by the monic irreducible polynomials p(t) e k[t]. For every
+such p, one defines an absolute value
+I |p : kit) —► R
+as follows. Let fit) = |^, g(t),h(t) e k[t] be a nonzero rational function.H\t)
+We extract from g(t) and h(t) the highest possible power of the irreducible
+polynomial p(t),
+h(t)
+
+===== PDF PAGE 125 =====
+
+§ 2. The p-adic Absolute Value 109
+and put
+vp{f)=m9 \f\p=q;v»(f\
+where qp = #^p, dp being the degree of the residue class field of p over k
+and q a fixed real number > 1. Furthermore we put vp(0) = oo and |0|p = 0,
+and obtain for vp and | |p the same conditions 1), 2), 3) as for vp and | \p
+above. In the case p = (t — a) for a e k, the valuation vp(f) is clearly the
+order of the zero, resp. pole, of the function / = f(t) dXt = a.
+But for the function field k(t), there is one more exponential valuation
+Uoo : k(t) —> ZU {oo},
+namely
+Voo(f) = deg(A) - deg(g),
+where / = | / 0, g,h e k[t]. It describes the order of zero, resp. pole,
+of fit) at the point at infinity oo, i.e., the order of zero, resp. pole, of
+the function /(I/O at the point t = 0. It is associated to the prime ideal
+p = (1/0 of the ring k[l/t] c kit) in the same way as the exponential
+valuations vp are associated to the prime ideals p of k[t]. Putting
+the unique factorization in k(t) yields, as in (2.1) above, the formula
+m/ip = i.
+p
+where p varies over the prime ideals of k[t] as well as the symbol oo, which
+now denotes the point at infinity (see chap. I, § 14, p. 95).
+In view of the product formula (2.1), the above consideration shows that
+the ordinary absolute value | | of Q should be thought of as being associated
+to a virtual point at infinity. This point of view justifies the notation | |oo,
+obeys our constant leitmotiv to study numbers as functions from a geometric
+perspective, and it will fulfill the expectations thus raised in an ever growing
+and amazing manner. The decisive difference between the absolute value
+| |oo of Q and the absolute value | |oo of k(t) is, however, that the former
+is not derived from any exponential valuation vp attached to a prime ideal.
+Having introduced the p-adic absolute value | \p on the field Q, let us
+now give a new definition of the field Qp of /7-adic numbers, imitating the
+construction of the field of real numbers. We will verify afterwards that this
+new, analytic construction does agree with Hensel's definition, which was
+motivated by function theory.
+
+===== PDF PAGE 126 =====
+
+110 Chapter II. The Theory of Valuations
+A Cauchy sequence with respect to | (^ is by definition a sequence
+{xn} of rational numbers such that for every s > 0, there exists a positive
+integer no satisfying
+\xn — *m\p < £ for all n,m > no.
+Example: Every formal series
+oo
+J2avPV•> 0<av < p,
+provides a Cauchy sequence via its partial sums
+n-\
+because forn>m one hasn-\ l
+\xn -xm\p = \ E avPv\D < max {|^ypy|^} < — •
+A sequence {xn} in Q is called a nullsequence with respect to | \p if
+|jcw |p is a sequence converging to 0 in the usual sense.
+Example: l,/?,/?2,/?3, ...
+The Cauchy sequences form a ring R, the nullsequences form a maximal
+ideal m, and we define afresh the field of p-adic numbers to be the residue
+class field
+Qp:=R/ra.
+We embed Q in Qp by associating to every element a e Q the residue
+class of the constant sequence (a, a, a, ...). The p-adic absolute value | \p
+on Q is extended to Qp by giving the element x = {xn} mod m e R/m the
+absolute value
+\x\p := lim \xn\p e R.
+This limit exists because {1^1^} is a Cauchy sequence in R, and it is
+independent of the choice of the sequence {xn} within its class mod m
+because any p-adic nullsequence {yn} em satisfies of course lim \yn L = 0.
+The p-adic exponential valuation vp on Q extends to an exponential
+valuation
+vP : Qp —► Z U {oo}.
+
+===== PDF PAGE 127 =====
+
+§ 2. The p-adic Absolute Value 111
+In fact, if x e Qp is the class of the Cauchy sequence {xn} where xn / 0,
+then
+vP(xn) = -log^ \xn\p
+either diverges to oo or is a Cauchy sequence in Z which eventually must
+become constant for large n because Z is discrete. We put
+vp(x) = lim Unfc) = vp(xn) for n >n0.
+Again we find for all x eQp that
+As for the field of real numbers one proves the
+(2.2) Proposition. The field Qp of p-adic numbers is complete with respect
+to the absolute value | \p, i.e., every Cauchy sequence in Qp converges with
+respect to \ \p.
+As well as the field K, we thus obtain for each prime number p a new
+field Qp with equal rights and standing, so that Q has given rise to the
+infinite family of fields
+Q2, Q3> Qs> Q?> Qn Qoo = R­
+An important special property of the p-adic absolute values | \p lies in
+the fact that they do not only satisfy the usual triangle inequality, but also
+the stronger version
+\x + y\p <max{|x|p, \y\p) .
+This yields the following remarkable proposition, which gives us a new
+definition of the p-adic integers.
+(2.3) Proposition. The set
+Zp:={*€Qp| |*|P<1}
+is a subring ofQp. It is the closure with respect to \ \p of the ring Z in the
+field Qp.
+
+===== PDF PAGE 128 =====
+
+112 Chapter II. The Theory of Valuations
+Proof: That Zp is closed under addition and multiplication follows from
+\x + y\p <max{\x\p,\y\p] and \xy\p = \x\p\y\p.
+If {xn} is a Cauchy sequence in Z and x = lim xn, then \xn\p < 1 implies
+also \x\p < 1, hence x e Z». Conversely, let x = lim xn e Z», for a
+Cauchy sequence {*„} in Q. We saw above that one has \x\p = IjcJ^ < 1
+for /i > no, i.e., xw = ^, with tf^,^ g Z, (bn,p) = 1. Choosing for each
+n > no & solution yw g Z of the congruence b^ == an mod p" yields
+\xn — yn\p < —^ an(l hence x = lim yn, so that x belongs to the closure
+ofZ. □
+The group of units of Zp is obviously
+Z*p = {xeZp\ |*|p = l}.
+Every element x e Q* admits a unique representation
+x = pmw with m G Z and w G Z*.
+For if f^(x) = ra g Z, then vp(xp~m) = 0, hence |xp~m|/? = 1, i.e.,
+w = jcp"m G Z*. Furthermore we have the
+(2.4) Proposition. The nonzero ideals of the ring Zp are the principal ideals
+pnZp = {x eQp\ vp(x) >n},
+with n > 0, and one has
+Zp/pnZp = Z/pnZ.
+Proof: Let a ^ (0) be an ideal of Zp and x = pmu, u e Z*, an element
+of a with smallest possible m (since \x\p < 1, one has m > 0). Then
+a = pmZp because y = pnu' e a, u' e Z*, implies n > ra, hence
+j = {pn-mu')pm G pmZp. The homomorphism
+Z —> ZplpnZp, £2i—> a mod //^,
+has kernel pnZ and is surjective. Indeed, for every x e Zp, there exists
+by (2.3) an a e Z such that
+\x-a\p< —,
+
+===== PDF PAGE 129 =====
+
+2. The p-adic Absolute Value 113
+i.e., vp(x — a)>n, therefore x — a e pnZp and hence x == a mod pnZp. So
+we obtain an isomorphism
+Zp/pnZp = Z/pnZ. D
+We now want to establish the link with Hensel's definition of the ring Zp
+and the field Qp which was given in § 1. There we defined the p-adic integers
+as formal series
+oo
+Y.avPv\ 0 <av < p,
+which we identified with sequences
+sn = sn mod pn e Z/pnZ, n = 1,2, ...,
+where sn was the partial sum
+n — \
+Sn = Y,avPV­
+These sequences constituted the projective limit
+oo
+ljm Z/pnZ = {fe)WGN € [I %/Pn% I ^+i »*n}­n n=\
+We viewed the p-adic integers as elements of this ring. Since
+Zp/pnZp ^ Z/pnZ,
+we obtain, for every n > 1, a surjective homomorphism
+Zp-^ZIpnZ.
+It is clear that the family of these homomorphisms yields a homomorphism
+Zp —> ^m Z/pnZ.
+n
+It is now possible to identify both definitions given for Zp (and therefore
+also for Qp) via the
+(2.5) Proposition. The homomorphism
+Zp —> ^m Z/pnZ
+n
+is an isomorphism.
+
+===== PDF PAGE 130 =====
+
+114 Chapter II. The Theory of Valuations
+Proof: If x eZp is mapped to zero, this means that x e pnrLp for all n > 1,
+i.e., \x\p < — for all n > 1, so that \x\p = 0 and thus x = 0. This shows
+injectivity.
+An element of Hm Z/p^Z is given by a sequence of partial sums
+n
+n — \
+Sn = Y,avPV\ 0<av < p.
+We saw above that this sequence is a Cauchy sequence in Zp, and thus
+converges to an element
+oo
+X = £ tfy/7y € Zp.
+Since
+oo
+x - sn = J2 avPV e Vnr^p,
+v—n
+one has x == sn mod pn for all /i, i.e., x is mapped to the element of
+lim Z/p^Z which is defined by the given sequence (sn)ne®. This shows
+nsurjectivity. D
+We emphasize that the elements on the right hand side of the isomorphism
+Zp -^> lim Z/pnZ
+n
+are given formally by sequences of partial sums
+n-\
+Sn= E avPV •> « = 1,2, ...
+v=0
+On the left, however, these sequences converge with respect to the absolute
+value and yield the elements of Z^ in the familiar way, as convergent infinite
+series oo
+X = J2avPV •
+v=0
+Yet another, very elegant method to introduce the p-adic numbers comes
+about as follows. Let Z[[X]] denote the ring of all formal power series
+YliLo ai%1 wim integer coefficients. Then one has the
+(2.6) Proposition. There is a canonical isomorphism
+^P = Z[[X]]/(X - p).
+
+===== PDF PAGE 131 =====
+
+2. The p-adic Absolute Value 115
+Proof: Consider the visibly surjective homomorphism Z[[X]] -> Zp which
+to every formal power series Y^=oavXv associates the convergent series
+Yl<vLoavPv- The principal ideal (X — p) clearly belongs to the kernel
+of this mapping. In order to show that it is the whole kernel, let
+f(X) = Y^Loav^v be a power series such that f(p) = Y^LoavPv = 0.
+Since ZpjpnZp = Z/p"Z, this means that
+#o + cl\P H h o,n-\pn~x == 0 mod p"
+for all /i. We put, for /z > 1,
+6/1-1 = - —(flo + fliP + '-' + fl/i-ip'1"1).
+Then we obtain successively
+a\=bo — pb\,
+a2 = b\ — pb2, etc.
+But this amounts to the equality
+(a0 + fliX + a2X2 + ---) = (X-p)(b0 + blX + b2X2 + •••),
+i.e., /(X) belongs to the principal ideal (X — p). □
+Exercise 1. \x - y\p > \ \x\p - \y\p |.
+Exercise 2. Let n be a natural number, n = a0 + axp H + tfr_ipr_1 its p-adic
+expansion, with 0 < at < p, and s = a§-\-a\ -\ har-i- Show that up(« !) = r
+Exercise 3. The sequence 1, ttt, tt>j, ttjj, • • • does not converge in Qp, for any p.
+Exercise 4. Let s e 1 + pZp, and let a = ao + a\p + a2p2 -\ be a p-adic integer,
+and write s„ = a0 + ^ip + • • • + an-\pn~x. Show that the sequence sSn converges
+to a number ea in 1 + pZp. Show furthermore that 1 + pZp is thus turned into a
+multiplicative Zp-module.
+Exercise 5. For every a e Z, (a, p) = 1, the sequence [apn]ne^ converges in Qp.
+Exercise 6. The fields Qp and Qq are not isomorphic, unless p = q.
+Exercise 7. The algebraic closure of Qp has infinite degree.
+Exercise 8. In the ring ZP[[X]] of formal power series X^o^Xv over Zp,
+one has the following division with remainder. Let f,g € ZP[[X]] and let
+f(X) = a0 + a\X H such that p|av for v = 0, ..., n — 1, but p \ an. Then one
+may write in a unique way
+g = qf + r,
+where (7 e ZP[[X]], and r e Zp[X] is a polynomial of degree < n — 1.
+
+===== PDF PAGE 132 =====
+
+116 Chapter II. The Theory of Valuations
+Hint: Let r be the operator r(XX06yXv) = E^^yX"-'1. show that U(X) =
+an+an+lX + - • • = t(/(X)) is a unit in ZP[[X]] and write f(X) = pP(X)+XnU(X)
+with a polynomial P(X) of degree < n — 1. Show that1 °° P
+^X) = THT)U-l)ipi{rouYor{8)
+is a well-defined power series in Zp[[X]] such that r(#/) = r(g).
+Exercise 9 (p-adic Weierstrass Preparation Theorem). Every nonzero power series
+oo
+/(x) = j:^xvgzp[[x]]
+admits a unique representation
+nx) = P"P(x)u(x),
+where U(X) is a unit in ZP[[X]] and P(X) e Zp[X] is a monic polynomial
+satisfying P(X) = Xn mod p.
+§ 3. Valuations
+The procedure we performed in the previous section with the field Q in
+order to obtain the p-adic numbers can be generalized to arbitrary fields
+using the concept of (multiplicative) valuation.
+(3.1) Definition. A valuation of a field K is a function
+enjoying the properties
+(i) |jc| > 0, and \x\ = 0 «=» jc = 0,
+(ii) |*y| = |*||y|f
+(iii) \x + y\ < \x\ + \y\ "triangle inequality".
+We tacitly exclude in the sequel the case where | | is the trivial valuation
+of K which satisfies |jc| = 1 for all x ^ 0. Defining the distance between
+two points x, y e K by
+d(x,y) = \x -y\
+makes K into a metric space, and hence in particular a topological space.
+(3.2) Definition. Two valuations of K are called equivalent if they define
+the same topology on K.
+
+===== PDF PAGE 133 =====
+
+§3. Valuations 117
+(3.3) Proposition. Two valuations \ \\ and \ \2 on K are equivalent if and
+only if there exists a real number s > 0 such that one has
+\x\i = \x\s2
+for all x e K.
+Proof: If I 11 = I I2, with s > 0, then | 11 and | \2 are obviously equivalent.
+For an arbitrary valuation | | on K, the inequality |jc| < 1 is tantamount to
+the condition that {xn}ne^ converges to zero in the topology defined by | |.
+Therefore if | |i and | b are equivalent, one has the implication
+(*) \x\\ < 1 =» \x\2 < 1.
+Now let y e K be a fixed element satisfying \y\i > 1. Let x e K, x ^ 0.
+Then |jc|i = \y\* for some a G 1. Let mi/nt be a sequence of rational
+numbers (with nt > 0) which converges to a from above. Then we have
+l*li = M? <|jirM,hence
+X"'
+ytn;
+< 1 =►
+1
+x"'
+ymi
+so that |jcI2 < \y\™ , and thus \x\2 < \y\*. Using a sequence m,7«i
+which converges to a from below (*) tells us that \x\2 > \y\%. So we have
+\x\2 = \y\2. For all x e K, x ^ 0, we therefore get
+log 1*11 = loglyli =.
+log|x|2 log|j|2
+hence |jc|i = Ijc^. But |y|i > 1 implies \y\2 > 1, hence s > 0. □
+The proof shows that the equivalence of | |i and | \2 is also equivalent
+to the condition
+|*li < 1 =» \x\2 < 1.
+We use this for the proof of the following approximation theorem, which
+may be considered a variant of the Chinese remainder theorem.
+(3.4) Approximation Theorem. Let | |i, ..., | \n he pairwise inequivalent
+valuations of the field K and let a\, ..., an e K be given elements. Then
+for every s > 0 there exists anx e K such that
+\x — &i \i < £ for alii = 1, ..., n.
+
+===== PDF PAGE 134 =====
+
+118 Chapter II. The Theory of Valuations
+Proof: By the above remark, since | |i and | \n are inequivalent, there
+exists a e K such that |or|i < 1 and \a\n > 1. By the same token, there
+exists ft e K such that \p\n < 1 and \p\\ > 1. Putting y = p/a, one finds
+|y|i > 1 and \y\n < 1.
+We now prove by induction on n that there exists z e K such that
+|z|i > 1 and \z\j < 1 for j = 2, ..., n.
+We have just done this for n — 2. Assume we have found z e K satisfying
+|z|i > 1 and \z\j < 1 for j = 2, ... ,n — 1.
+If |z|fl < 1, then zmy will do, for ra large. If however \z\n > 1, the sequence
+tm = zm/(l + zm) will converge to 1 with respect to | |i and | |„, and to 0
+with respect to | I2, ..., | U-i- Hence, for m large, tmy will suffice.
+The sequence zm/(l + zm) converges to 1 with respect to | |i and to 0
+with respect to | I2, ..., | |w. For every / we may construct in this way a z/
+which is very close to 1 with respect to | |,-, and very close to 0 with respect
+to I \j for j y£i. The element
+x —a\z\ H \-anzn
+then satisfies the statement of the approximation theorem. □
+(3.5) Definition. The valuation \ | is called nonarchimedean if \n\ stays
+bounded, for alln e N. Otherwise it is called archimedean.
+(3.6) Proposition. The valuation \ \ is nonarchimedean if and only if it
+satisfies the strong triangle inequality
+|* + ;y| <max{|x|,|;y|}.
+Proof: If the strong triangle inequality holds, then one has
+|„| = |l + ... + l| <1.
+Conversely, let \n\ < N for all n eN. Let x,y e K and suppose |*| > \y\.
+Then |jc|v|jr~v < \x\n for v > 0 and one gets
+\x + y\n<t\(nv)\Mv\yrv<N(n + l)\x\\
+v=0
+hence
+\x + y\< Nx/n(\ + n)x/n\x\ = Nl/n(l + n)l/n max{ |jc|, |y|},
+and thus \x + y\ < max{|jc|, \y\} by letting n -> 00. D
+
+===== PDF PAGE 135 =====
+
+§3. Valuations 119
+Remark: The strong triangle inequality immediately implies that
+1*1 #M => |*+y|=max{|*|,|y|}.
+One may extend the nonarchimedean valuation | | of K to a valuation of
+the function field K(t) in a canonical way by setting, for a polynomial
+f(t) = ao + ait + -- + antn9
+|/| =max{|flol, •••, Kl}«
+The triangle inequality \f + g\ < max{|/|,|g|} is immediate. The proof
+that | fg | = | /11 g | is the same as the proof of Gauss's lemma for polynomials
+over factorial rings once we replace the content of / in this lemma by the
+absolute value | /1.
+For the field Q, we have the usual absolute value | |oo = I l» this being
+the archimedean valuation, and for each prime number p the nonarchimedean
+valuation | \p. As a matter of fact:
+(3.7) Proposition. Every valuation of Q is equivalent to one of the
+valuations | |p or | |oo.
+Proof: Let || || be a nonarchimedean valuation of Q. Then ||n|| =
+|| H h 11| < 1, and there is a prime number p such that \\p\\ < 1 because,
+if not, unique prime factorization would imply ||jc|| = 1 for all x e Q*. The
+set
+a={aeZ\ \\a\\ < 1}
+is an ideal of Z satisfying pZ c a / Z, and since pZ is a maximal ideal,
+we have a = pZ. If now a e Z and a = bpm with p \ b, so that b g a, then
+||b || = 1 and hence
+INI = llpllm = Wp
+where s = — log ||p||/logp. Consequently || || is equivalent to | \p.
+Now let || || be archimedean. Then one has, for every two natural numbers
+n,m > 1,
+(*) ||m||1/logm = ||/i||1/logw.
+In fact, we may write
+m = ao + a\n H h arnr
+where at e {0,1, ..., n — 1} and nr < m. Hence, observing that
+r < logmjlogn and \\at\\ = ||1 + ••• + 1|| < a,- ||1|| < n, one gets the
+inequality
+INI < E Nil • ll«ll' < E IMill • ll«llr < (l + ^)n ■ \\ntgmlv*n.\ log n /
+
+===== PDF PAGE 136 =====
+
+120 Chapter II. The Theory of Valuations
+Substituting here mr for m, taking k-th roots on both sides, and letting k
+tend to oo, one finally obtains
+IM| < ||/i||logm/Iogw, or ||m||1/Iogm < ||fl||1/log\
+Swapping m with n gives the identity (*). Putting c = ||/2||1/Iogw we have
+||n || = clogn, and putting c = es yields, for every positive rational number
+x — alb,
+||jc|| = ^Iog* = |jt|5.
+Therefore || || is equivalent to the usual absolute value | | on Q. D
+Let | | be a nonarchimedean valuation of the field K. Putting
+v(x) = — log \x | for x ^ 0, and v(0) = oo,
+we obtain a function
+v : K —> R U {oo}
+verifying the properties
+(i) v(x) = oo 4=^ x = 0,
+(ii) v(xy) = v(x) + v(y),
+(iii) v(x + y) > min{i;(x), v(y)},
+where we fix the following conventions regarding elements a e R and the
+symbol oo: a < oo, a + oo = oo, oo + oo = oo.
+A function v on K with these properties is called an exponential
+valuation of K. We exclude the case of the trivial function v(x) = 0
+for x ^ 0, v(0) = oo. Two exponential valuations v\ and V2 of K are called
+equivalent if v i = SV2, for some real number s > 0. For every exponential
+valuation i; we obtain a valuation in the sense of (3.1) by putting
+|jci = <rww,
+for some fixed real number q > 1. To distinguish it from v, we call | |
+an associated multiplicative valuation, or absolute value. Replacing v by
+an equivalent valuation sv (i.e., replacing q by q' = qs) changes | | into
+the equivalent multiplicative valuation | \s. The conditions (i), (ii), (iii)
+immediately imply the
+(3.8) Proposition. The subset
+o = [x e K | v(x) > 0} = {x e K \ \x\ < 1}
+is a ring with group of units
+o* = {x e K | u(jc) = 0} ={jce^T| |jc| = 1}
+and the unique maximal ideal
+p = {jc € K | u(jc) > 0} = {jc € ^ | |jc| < 1} .
+
+===== PDF PAGE 137 =====
+
+§3. Valuations 121
+o is an integral domain with field of fractions K and has the property that,
+for every x e K, either x e o or x~l e o. Such a ring is called a valuation
+ring. Its only maximal ideal is p = {x e o \ x~~l <£ o). The field o/p is called
+the residue class field of o. A valuation ring is always integrally closed. For
+if x e K is integral over o, then there is an equation
+xn +axxn~x + -- + an = 0
+with at e o and the hypothesis x & o, so that x~~l e o, would imply the
+contradiction x = —a\ — aix~x — • • • — an(x~~1)n~~l e o.
+An exponential valuation v is called discrete if it admits a smallest
+positive value s. In this case, one finds
+It is called normalized if s — 1. Dividing by s we may always pass to a
+normalized valuation without changing the invariants o, o*,p. Having done
+so, an element
+n e o such that v(n) = 1
+is a prime element, and every element x e K* admits a unique representation
+X = UTtm
+with m e Z and u e o*. For if v(x) = m, then t»(x7T"m) = 0, hence
+u —X7t~m e o*.
+(3.9) Proposition. Ifv is a discrete exponential valuation of K, then
+o = [x e K | v(x) > 0}
+is a principal ideal domain, hence a discrete valuation ring (see I, (11.3)).
+Suppose v is normalized. Then the nonzero ideals of o are given by
+pn = nno = {x e K | v(x) >n], n>0,
+where tv is a prime element, i.e., v(n) = 1. One has
+Proof: Let a ^ 0 be an ideal of o and i / 0 an element in a with
+smallest possible value v(x) = n. Then x = u nn, u e o*, so that 7tno c. a.
+If y = S7tm e a is arbitrary with £ e o*9 then m = t»(j) > n, hence
+j = (s7tm~n)7tn e nno, so that a = nno. The isomorphism
+p7pw+1 ^ o/p
+results from the correspondence ann h-> a mod p. □
+
+===== PDF PAGE 138 =====
+
+122 Chapter II. The Theory of Valuations
+In a discretely valued field K the chain
+o 2 P 2 P2 2 P3 2 • • •
+consisting of the ideals of the valuation ring o forms a basis of
+neighbourhoods of the zero element. Indeed, if i; is a normalized exponential
+valuation and | | = q"v (q > 1) an associated multiplicative valuation, then
+p" = {xeK\\x\<-^}.
+As a basis of neighbourhoods of the element 1 of K*, we obtain in the
+same way the descending chain
+o* = [/(0)2£/(1)2£/(2)2--­
+of subgroups
+uW = l+pn = [xeK*\\l-x\<-^}, n>0,
+of o*. (Observe that 1+pw is closed under multiplication and that, if x e U^n\
+then so is x~l because |1 -x~l\ = IjcT^jc- 1| = |1 — jc| < -ij.) U(n)
+is called the n-th higher unit group and U^ the group of principal units.
+Regarding the successive quotients of the chain of higher unit groups, we
+have the
+(3.10) Proposition. o*/UM = (o/pn)* and U{n)/Uin+l) = o/p, for
+n > 1.
+Proof: The first isomorphism is induced by the canonical and obviously
+surjective homomorphism
+o* —> (o/pn)*, u i—> u mod pn,
+the kernel of which is U^n\ The second isomorphism is given, once we
+choose a prime element n9 by the surjective homomorphism
+JJ{n) = 1 + 7Tno —> o/p, 1 + nna i—> a mod p,
+which has kernel U{n+X\ □
+
+===== PDF PAGE 139 =====
+
+§4. Completions 123
+Exercise 1. Show that \z\ = (zz)l/2 — v/|A/'cir(^)| is the only valuation of C which
+extends the absolute value | | of R.
+Exercise 2. What is the relation between the Chinese remainder theorem and the
+approximation theorem (3.4)?
+Exercise 3. Let k be a field and K — k(t) the function field in one variable. Show that
+the valuations vp associated to the prime ideals p = (p(t)) of k[t], together with the
+degree valuation Uoo, are the only valuations of K, up to equivalence. What are the
+residue class fields?
+Exercise 4. Let O be an arbitrary valuation ring with field of fractions K,
+and let r = K*/0*. Then r becomes a totally ordered group if we define
+x mod o* > y mod O* to mean x/y e O.
+Write r additively and show that the function
+v:K —> TU{oo},
+v(0) = oo, v(x) = x mod O* for x € K*, satisfies the conditions
+1) v(x) = oo =>► x = 0,
+2)v(xy) = v(x) + v(y),
+3) v(x + y) > min{i;(x), v(y)}.
+v is called a Krull valuation.
+§ 4. Completions
+(4.1) Definition. A valued field (K,\ \) is called complete if every Cauchy
+sequence {an}n^ in K converges to an element a e K, i.e.,
+lim \an — a\ =0.
+Here, as usual, we call {an}nG^ a Cauchy sequence if for every s > 0
+there exists JVgN such that
+\<*n — Qm\ < £ f°r aU n,m > N.
+From any valued field (K,\ |) we get a complete valued field (K,\ |) by
+the process of completion. This completion is obtained in the same way as
+the field of real numbers is constructed from the field of rational numbers.
+Take the ring R of all Cauchy sequences of (K, \ |), consider therein the
+maximal ideal m of all nullsequences with respect to | |, and define
+K = R/m.
+
+===== PDF PAGE 140 =====
+
+124 Chapter II. The Theory of Valuations
+One embeds the field K into K by sending every a e K to the class of the
+constant Cauchy sequence (a, a, a, ... )• The valuation | | is extended from
+K to K by giving the element a e K which is represented by the Cauchy
+sequence {an}n€^ the absolute value
+\a\ = lim \an\.
+This limit exists because | \an\ — \am\ | < \an — am\ implies that \an\ is a
+Cauchy sequence of real numbers. As in the case of the field of real numbers,
+one proves that K is complete with respect to the extended | |, and that each
+a e K is a limit of a sequence {an} in K. Finally one proves the uniqueness
+of the completion (K,\ |): if (K', | |7) is another complete valued field that
+contains (K,\ |) as a dense subfield, then mapping
+| |-lim an i—> | f-lim an
+gives a K-isomorphism a : K -> K' such that \a\ = \aa\.
+The fields E and C are the most familiar examples of complete fields.
+They are complete with respect to an archimedean valuation. Amazingly
+enough, there are no others of this type. More precisely we have the
+(4.2) Theorem (Ostrowski). Let K be a field which is complete with respect
+to an archimedean valuation | |. Then there is an isomorphism a from K
+onto RorC satisfying
+\a\ = \aa\s for all a e K,
+for some fixed s e (0,1].
+Proof: We may assume without loss of generality that 8Cf and that the
+valuation | | of K is an extension of the usual absolute value of R. In fact,
+replacing | | by | \s for a suitable s > 0, we may assume by (3.7) that the
+restriction of | | to Q is equal to the usual absolute value. Then taking the
+closure Q in K we find that Q is complete with respect to the restriction
+of | | to Q, in other words, it is a completion of (Q, | |). In view of the
+uniqueness of completions, there is an isomorphism a : R -> Q such that
+\a\ = \aa\ as required.
+In order to prove that K = R or = C we show that each % e K satisfies
+a quadratic equation over R. For this, consider the continuous function
+/ : C -> R defined by
+f(Z) = \t;2-(z + z)t;+Zz\.
+
+===== PDF PAGE 141 =====
+
+§4. Completions 125
+Note here that z + z, zz e R £ K. Since lim f(z) = oo, f(z) has az->-oo
+minimum m. The set
+S = {zeC\f(z)=m}
+is therefore nonempty, bounded, and closed, and there is a zo € S such that
+|zo| > |z| for all z e 5. It suffices to show that m = 0, because then one has
+the equation £2 - (z0 + z0)£ + z0zo = 0.
+Assume m > 0. Consider the real polynomial
+g(x) =x2 - (z0 + z0)* + z0z0 + £,
+where 0 < s < ra, with the roots zi,zi e C. We have ziZi = zozo + s,
+hence \z\\ > |zo| and thus
+/(zi) > m.
+For fixed neN, consider on the other hand the real polynomial
+In In
+G(x) = [g(x) -e]n- (s)n = II(* -«/) = Il(* -«/)/=i i=i
+with roots a\, ..., otin £ C. It follows that G(zi) = 0; say, zi = ot\. We
+may substitute § e K into the polynomial
+2/1
+GC*)2 = Ft (*2 - («i + «/)* + aWi)i=\
+and get « In
+\G<g)\ =n /(««■) >/(ai)«2B-1 •
+From this and the inequality
+| G(f )| < |£2 - (zo + z0)$ + zozol" + I - e|" = f(zQ)n + sn=mn + e\
+it follows that f(a\)rnLn~x < (mn + s")2 and hence
+*(' + (£))
+For /i -> oo we have f(ct\) < ra, which contradicts the inequality f(a\) > mproved before. □
+In view of Ostrowski 's theorem, we will henceforth restrict attention to
+the case of nonarchimedean valuations. In this case it is usually expedient —
+both with regard to the substance and to practical technique — to work with
+the exponential valuations v rather than the multiplicative valuations. So let v
+
+===== PDF PAGE 142 =====
+
+126 Chapter II. The Theory of Valuations
+be an exponential valuation of the field K.Jt is canonically continued to an
+exponential valuation v of the completion K by setting
+v (a) = lim v(an),
+where a = lim an e K, an e K. Observe here that the sequence v{an)
+has to become stationary (provided a / 0) because, for n > no, one
+has v(a — an) > v{a), so that it follows from the remark on p. 119
+v(an) = v(an — a + a) = min{ v(an — a), v(a)} = 0((2).
+Therefore it follows that
+and if v is discrete and normalized, then so is the extension 0. In the
+nonarchimedean case, for a sequence {an}ne^ to be a Cauchy sequence,
+it suffices that an+\ — an be a nullsequence. In fact, v{an — am) >
+minm<i<n{v(ai+i —at)}. By the same token an infinite series Y^Loav
+converges in K if and only if the sequence of its terms av is a nullsequence.
+The following proposition is proved exactly as its analogue, proposition (2.4),
+in the special case (Q,vp).
+(4.3) Proposition. Ifo c K9 resp. oC K, is the valuation ring of v, resp.
+of v, and p, resp. p^, is the maximal ideal, then one has
+o/p = o/p
+and, if v is discrete, one has furthermore
+ofpn = o/pn for n > 1.
+Generalizing the p-adic expansion to the case of an arbitrary discrete
+valuation i; of the field K, we have the
+(4.4) Proposition. Let R c o be a system of representatives for k — o/p
+such that 0 e R, and let n e o be a prime element. Then every x / 0 in K
+admits a unique representation as a convergent series
+x = 7tm(ao + a\7t + a2n2 H )
+where a[ e R, ao # 0, m e Z.
+
+===== PDF PAGE 143 =====
+
+§4. Completions 127
+Proof: Let x = nmu with u e 3*. Since ofp = o/p, the class u mod p^
+has a unique representative ao e R, ao ^ 0. We thus have w = ao + 7rfoi,
+for some 6i e 3. Assume now that ao, ...,an-\ e R have been found,
+satisfying
+u = a0 + a\7t H h an-\7tn~~l + 7rw^
+for some bn e 3, and that the at are uniquely determined by this equation.
+Then the representative an e R of bn mod 7r3 eo/p = o/p is also
+uniquely determined by u and we have bn = an + nbn+i,for some ftw+i go.
+Hence
+u = a0 + tfi7T H h an-i7tn~~l + ^7rw + 7rw+1^+i.
+In this way we find an infinite series J]vlo av^v which is uniquely determined
+by u. It converges to u because the remainder term 7in+xbn+\ tends to zero. □
+In the case of the field of rational numbers Q and the p-adic valuation vp
+with its completion Qp, the numbers 0,1, ..., p — 1 form a system of
+representatives R for the residue class field Z/pZ of the valuation, and
+we get back the representation of p-adic numbers which has already been
+discussed in §2:
+x = pm(a0 + a\p + a2p2 H ),
+where 0 < at < p and m e Z.
+In the case of the rational function field k(t) and the valuation vp attached
+to a prime ideal p = (t — a) of k[t] (see §2), we may take as a system of
+representatives R the field of coefficients k itself. The completion then turns
+out to be the field of formal power series k((x)), x = t — a, consisting of
+all formal Laurent series
+f{t) = (t- a)m(ao + ai(t-a) + a2(t - a)2 + • • •),
+with at e k and m e Z. The motivating analogy of the beginning of this
+chapter, between power series and p-adic numbers, thus appears as two
+special instances of the same concrete mathematical situation.
+In § 1 we identified the ring Zp of p-adic integers as being the projective
+limit lim Z/pnZ. We obtain a similar result in the general setting of
+n
+valuation theory. To explain this, let K be complete with respect to a discrete
+valuation. Let o be the valuation ring with the maximal ideal p. We then
+have for every n > 1 the canonical homomorphisms
+o —> o/pn
+
+===== PDF PAGE 144 =====
+
+128 Chapter II. The Theory of Valuations
+and
+o/p *^— o/p2 <^— o/p3 <3 .
+This gives us a homomorphism
+o —> ^m o/pn
+n
+into the projective limit
+oo
+Urn o/pn = {(xn) e n o/pn \ Xn(xn+l) = xn] .n n=\
+Considering the rings o/pn as topological rings, for the discrete topology,
+gives us the product topology on n«li 0/Pn* ^d the projective limit
+lim o/pn becomes a topological ring in a canonical way, being a closed
+n
+subset of the product (see chap. IV, §2).
+(4.5) Proposition. The canonical mapping
+o —> lim o/pn
+n
+is an isomorphism and a homeomorphism. The same is true for the mapping
+o* —► ljm o*/U(n).
+n
+Proof: The map is injective since its kernel is H«li Pn — (0)- To prove
+surjectivity, let p = no and let R c o, R 3 0, be a system of representatives
+of o/p. We saw in the proof of (4.4) (and in fact already in (1.2)) that the
+elements a mod pn e o/pn can be given uniquely in the form
+a == ao + a\7t H h an-\7tn~~x mod pn,
+where at e R. Each element s e Hm o/pn is therefore given by a sequenceof sums n
+sn=a0 + axn H h aw_i7rw_1, n = 1,2, ...,
+with fixed coefficients ai e R, and it is thus the image of the element
+x = lim sn = D^Loav^v € o.
+The sets P« = Wv>n °/PV ^orm a hasis °f neighbourhoods of the zero
+element of ]~[^=i C>/Pv- Under the bijection
+o —> ljm o/pv
+V
+
+===== PDF PAGE 145 =====
+
+§4. Completions 129
+the basis of neighbourhoods pn of zero in o is mapped onto the basis of
+neighbourhoods Pn n Um o/pv of zero in ljm o/pv. Thus the bijection isV V
+a homeomorphism. It induces an isomorphism and homeomorphism on the
+group of units
+o* = (ljm o/fY S ^m(o/pw)* = ]£m o*/UM. D
+One of our chief concerns will be to study the finite extensions L | K of a
+complete valued field K. This means that we have to turn to the question of
+factoring algebraic equations
+f(x) = anxn + flu-uc""1 + • • • + tf0 = 0
+over complete valued fields. For this, Hensel's seminal "lemma" is of
+fundamental importance. Let K again be a field which is complete with
+respect to a nonarchimedean valuation | |. Let o be the corresponding
+valuation ring with maximal ideal p and residue class field k — o/p.
+We call a polynomial f(x) = ao + a\x + • • • + anxn e o[x] primitive
+if f(x) f£ 0 mod p, i.e., if
+|/| =max{|flo|, ..., \an\] = 1.
+(4.6) Hensel's Lemma. If a primitive polynomial f{x) e o[x] admits
+modulo p a factorization
+/(*) = g(x)h(x) mod p
+into relatively prime polynomials g,h e k[x], then f(x) admits a
+factorization
+f(x) = g(x)h(x)
+into polynomials g,h e o[x] such thatdeg(g) = deg(g) and
+g(x) = g(x) mod p and h(x) == A (x) mod p.
+Proof: Let d = deg(/), m = deg(g), hence d - ra > deg(A). Let g0>
+Ao € o[x] be polynomials such that go == g mod p, A0 = h mod p and
+deg(go) = m> deg(Ao) < d — m. Since (g, A) = 1, there exist polynomials
+a(x), b(x) e o[x] satisfying ago + bho = 1 mod p. Among the coefficients
+of the two polynomials / - goho and ago + bho - 1 € p[x] we pick one with
+minimum value and call it tv.
+
+===== PDF PAGE 146 =====
+
+130 Chapter II. The Theory of Valuations
+Let us look for the polynomials g and h in the following form:
+g = go + Pi* + Pi*1 H ,
+h = h0 + q\Tt + q2n2 H ,
+where pt, qi e o[x] are polynomials of degree < ra, resp. < d — m. We then
+determine successively the polynomials
+gn-l = g0 + Pl^T + 1" Pn-\Kn~~X ,
+Aw_i = h0 + <7i7T H h ^-itt"""1 ,
+in such a way that one has
+f = gn-ihn-i mod7Tw.
+Passing to the limit as n -> oo, we will finally obtain the identity f — gh.
+For /i = 1 the congruence is satisfied in view of our choice of n. Let us
+assume that it is already established for some n > 1. Then, in view of the
+relation
+gn = gn-l + PnTCH , hn = A„_i + ^TT^,
+the condition on gn,hn reduces to
+/ - gn-lhn-l = (g«-l<7« + hn-ipn)7tn mod 7TW+1.
+Dividing by 7tn, this means
+g^-i^ + hn-ipn == g0<7« + ^oP« = //i mod 7T,
+where fn = n~n(f — gn-\hn-\) e o[x]. Since go# + ^o^ = 1 mod it, one
+has
+gotf/* + h0bfn = /„ mod tt .
+At this point we would like to put qn = afn and pn = &/„, but the degrees
+might be too big. For this reason, we write
+b(x)fn(x) = q{x)go{x) + /?„(*),
+where Atg{pn) < deg(g0) = "*. Since g0 = g mod p and deg(g0) = deg(g),
+the highest coefficient of go is a unit; hence g(x) € o[x] and we obtain the
+congruence
+goWn + M) + hoPn = //i mod Tt.
+Omitting now from the polynomial afn + /*o# all coefficients divisible by n,
+we get a polynomial #„ such that g0qn + ^oP« = fn mod 7T and which, in
+view of deg(/„) < d, deg(go) = w and deg(hopn) < (d — m) + m = d, has
+degree < d — m as required. □
+
+===== PDF PAGE 147 =====
+
+§4. Completions 131
+Example: The polynomial xp~~x — 1 e Zp[x] splits over the residue class field
+Zp/pZp = ¥p into distinct linear factors. Applying (repeatedly) Hensel's
+lemma, we see that it also splits into linear factors over Zp. We thus obtain the
+astonishing result that the field Qp of p-adic numbers contains the (p — l)-th
+roots of unity. These, together with 0, even form a system of representatives
+for the residue class field, which is closed under multiplication.
+(4.7) Corollary. Let the field K be complete with respect to the nonar­
+chimedean valuation | |. Then, for every irreducible polynomial f{x) =
+ao + a\x H h anxn e K[x] such that a§an ^ 0, one has
+|/| =max{|a0|,K|} •
+In particular, an — \ and a$ e o imply that f e o[x].
+Proof: After multiplying by a suitable element of K we may assume that
+/ e o[x] and |/| = 1. Let ar be the first one among the coefficients
+ao, ..., an such that \ar \ — 1. In other words, we have
+fix) == xr (ar + ar+\x H h anxn~r) mod p.
+If one had max{|ao|, \a>n\} < 1> then 0 < r < n and the congruence wouldcontradict Hensel's lemma. □
+From this corollary we can now deduce the following theorem on
+extensions of valuations.
+(4.8) Theorem. Let K be complete with respect to the valuation \ |.
+Then \ \ may be extended in a unique way to a valuation of any given
+algebraic extension L\K. This extension is given by the formula
+l«| = ?I\Nl\k(ol)\,
+when L\K has finite degree n. In this case L is again complete.
+Proof: If the valuation | | is archimedean, then by Ostrowski's theorem,
+K = R or C. We have Nc\r(z) — zz — \z\2 and the theorem is part
+of classical analysis. So let | | be nonarchimedean. Since every algebraic
+extension L\K is the union of its finite subextensions, we may assume that
+the degree n = [L : K] is finite.
+
+===== PDF PAGE 148 =====
+
+132 Chapter II. The Theory of Valuations
+Existence of the extended valuation: let o be the valuation ring of K and O
+its integral closure in L. Then one has
+(*) 0={aeL\NLlK(a)eo}.
+The implication a e O => Nl\k(&) € o is evident (see chap. I, § 2, p. 12).
+Conversely, let a e L* and Nl\k(u) e o. Let
+f(x) = xd + ad-ixd~l + • • • + a0 e K[x]
+be the minimal polynomial of or over K. Then Nl\k{ci) = ±a™ e o, so that
+l^ol < 1, i.e., a0 e o. By (4.7) this gives fix) e o[x]9 i.e., a e O.
+For the function |a| = ^/\Nl\k{ol)\, the conditions |a| = 0 <$=$ a = 0
+and |a/J| = | or 11)61 are obvious. The strong triangle inequality
+|a + 01 <max{|c* 1,101}
+reduces, after dividing by or or 0, to the implication
+|a| < 1 =» |of + l| < 1,
+and then, by (*), toae(9=^a + le(!?, which is trivially true. Thus
+the formula |a| = ^/\Nl\kM\ does define a valuation of L and, restricted
+to K, it clearly gives back the given valuation. Equally obviously it has O
+as its valuation ring.
+Uniqueness of the extended valuation: let | |' be another extension with
+valuation ring O'. Let ^3, resp. $J3', be the maximal ideal of (9, resp. Or. We
+show that O c CK. Let a e O \ 0' and let
+be the minimal polynomial of or over K. Then one has a\, ..., ad € o and
+or"1 e ty\ hence 1 = -a\a~~l — ••• — ad(a~~l)d e ^, a contradiction.
+This shows the inclusion (9 c O'. In other words, we have that
+I a I < 1 => I of I7 < 1 and this implies that the valuations | | and | \'
+are equivalent. For if they were not, then the approximation theorem (3.4)
+would allow us to find an a e L such that \a | < 1 => \a \' > 1. Thus | | and
+| |7 are equal because they agree on K.
+The fact that L is again complete with respect to the extended valuation
+is deduced from the following general result. □
+(4.9) Proposition. Let K be complete with respect to the valuation \ \ and
+let V be an n-dimensional normed vector space over K. Then, for any basis
+v\,...,vnofVthe maximum norm
+||*iui + '"+xnvn\\ =max{|*i|, ..., \xn\}
+
+===== PDF PAGE 149 =====
+
+§4. Completions 133
+is equivalent to the given norm on V. In particular, V is complete and the
+isomorphism
+Kn —> V, Oi, ...,*„) i—> x\V\ H hxnvn,
+is a homeomorphism.
+Proof: Let v\9 ..., vn be a basis and || || be the corresponding maximum
+norm on V. It suffices to show that, for every norm | | on V, there exist
+constants p9 p' > 0 such that
+p||*|| < 1*1 <p'\\x\\ for all xeV.
+Then the norm | | defines the same topology on V as the norm || ||,
+and we obtain the topological isomorphism Kn -> V, (x\9 ...9 xn) \->
+x\V\-\ \-xnvn. In fact, || || is transformed into the maximum norm on Kn.
+For p' we may obviously take \v\\ + • • • + \vn\. The existence of p is
+proved by induction on n. For n = 1 we may take p = \v\\. Suppose that
+everything is proved for {n — 1)-dimensional vector spaces. Let
+Vt = Kvi + • • • + Kvi-i + Kvi+i + --- + Kvn9
+so that V = V,- + Kvt. Then V/ is complete with respect to the restriction
+of | | by induction, hence it is closed in V. Thus V/ + vt is also closed.
+Since 0 £ (J"=1 (V,- + f,•), there exists a neighbourhood of 0 which is disjoint
+from U1=l(Vi + vi)9 i.e., there exists p > 0 such that
+\u>i +Vi\ > p for all Wi e V,- and all i = 1, ..., n.
+For x = x\V\ -\ h xwfw 7^ 0 and \xr \ = max{|^,-1}, one finds
+so that one has |jc| > p\xr\ = /o||^||. □
+I*-1*!
+X\ Xyi— vi-\ h vr H 1 u„
+The fact that an exponential valuation u on K associated with | | extends
+uniquely to L is a trivial consequence of theorem (4.8). The extension w is
+given by the formula
+w(ot) = -v(Nl\k(<x))
+if n = [L : K] < oo.
+
+===== PDF PAGE 150 =====
+
+134 Chapter II. The Theory of Valuations
+Exercise 1. An infinite algebraic extension of a complete field K is never complete.
+Exercise 2. Let X0,Xi, ... be an infinite sequence of unknowns, p a fixed prime
+number and Wn = Xff + pXf + ••• + pnXn, n > 0. Show that there exist
+polynomials S0,SU ... ; P0, Pu ... G Z[X0, Xi, ... ; y0» ^i» • • • ] such that
+Wn(So,Su...) = Wn(Xo9Xu...) + Wn<y09Yu...)9
+Wn(P0, Pu • • •) = Wn(X0,Xu ...) • Wn(Y0, Yu...).
+Exercise 3. Let A be a commutative ring. For a = (a0,au ...), b = (£0,£i, • • •)>
+ai,bj € A, put
+a + b = (50(fl,^),5i(a,^), ...), a-b = (P0(a9b), Pda,b), ...).
+Show that with these operations the vectors a = (tfo»0i» • • •) form a commutative
+ring W(A) with 1. It is called the ring of Witt vectors over A.
+Exercise 4. Assume pA = 0. For every Witt vector a = (a0,au ...) e W(A)
+consider the "ghost components"
+a(n) = Wn(a) = a( + paf' + • • • + pnan
+as well as the mappings V, F : W(A) —► W(A) defined by
+Va = (0,(20,(2i, ...) and Fa = (a^af, ...),
+called respectively "transfer" ("Verschiebung" in German) and "Frobenius". Show
+that
+(Va)(n) = pa(n~l) and a(n) = (Fa)(n) + pnan .
+Exercise 5. Let & be a field of characteristic /?. Then V is a homomorphism of the
+additive group of W(k) and F is a ring homomorphism, and one has
+VFa = FVa = pa.
+Exercise 6. If A: is a perfect field of characteristic /?, then W{k) is a complete
+discrete valuation ring with residue class field k.
+§ 5. Local Fields
+Among all complete (nonarchimedean) valued fields, those arising as
+completions of a global field, i.e., of a finite extension of either Q or Fp(t),
+have the most eminent relevance for number theory. The valuation on such
+a completion is discrete and has a finite residue class field, as we shall see
+shortly. In contrast to the global fields, all fields which are complete with
+respect to a discrete valuation and have a finite residue class field are called
+local fields. For such a local field, the normalized exponential valuation is
+denoted by vp, and | \p denotes the absolute value normalized by
+\x\v=q~v^\
+where q is the cardinality of the residue class field.
+
+===== PDF PAGE 151 =====
+
+§5. Local Fields 135
+(5.1) Proposition. A local field K is locally compact. Its valuation ring o
+is compact.
+Proof: By (4.5) we have o = Hm o/pn, both algebraically and topo­
+logically. Since pv/py+1 = o/p (see (3.9)), the rings o/pn are finite,
+hence compact. Being a closed subset of the compact product Y\™=\ °l)?n •>
+it follows that the projective limit Um o/pn, and thus o, is also compact.
+For every a e K, the set a + o is an open, and at the same time compact
+neighbourhood, so that K is locally compact. □
+In happy concord with the definition of global fields as the finite extensions
+of Q and ¥p(t), we now obtain the following characterization of local fields.
+(5.2) Proposition. The local fields are precisely the finite extensions of the
+fields Qp and¥p{{t)).
+Proof: A finite extension K of k = Qp or k = ¥p((t)) is again complete,
+by (4.8), with respect to the extended valuation |a| = v^|Njci*(a)l,
+which itself is obviously again discrete. Since K\k is of finite degree,
+so is the residue class field extension k\¥p, for if x\, ...,xn e k
+are linearly independent, then any choice of preimages x\, ...,xn e K
+is linearly independent over k. Indeed, dividing any nontrivial ^-linear
+relation k\X\ + • • • + knxn = 0, A.,- e k, by the coefficient A.,- with biggest
+absolute value, yields a linear combination with coefficients in the valuation
+ring of k with 1 as / -th coefficient, from which we obtain a nontrivial relation
+\\X\ H +knxn = 0 by reducing to k. Therefore K is a local field.
+Conversely, let K be a local field, v its discrete exponential valuation,
+and p the characteristic of its residue class field k. If K has characteristic 0,
+then the restriction of v to Q is equivalent to the p-adic valuation vp of Q
+because v(p) > 0. In view of the completeness of K, the closure of Q in K
+is the completion of Q with respect to vp, in other words Qp c K. The
+fact that K\Qp is of finite degree results from the local compactness of the
+vector space A', by a general theorem of topological linear algebra (see [18],
+chap. I, §2, n° 4, th. 3), but it also follows from (6.8) below. If on the other
+hand the characteristic of K is not equal to zero, then it has to equal p.
+In this case we find K = k((0)> f°r a prime element t of K (see p. 127),
+hence Fp((0) Q K. In fact, if k = Fp(a) and p(X) e ¥P[X] c K[X] is
+the minimal polynomial of or over F^, then, by Hensel's lemma, p(X) splits
+over K into linear factors. We may therefore view /casa subfield of K, and
+then the elements of K turn out to be, by (4.4), the Laurent series in t withcoefficients in k. □
+
+===== PDF PAGE 152 =====
+
+136 Chapter II. The Theory of Valuations
+Remark: One can show that a field K which is locally compact with respect
+to a nondiscrete topology is isomorphic either to K or C, or to a finite
+extension of Qp or ¥p((t)), i.e., to a local field (see [137], chap. I, §3).
+We have just seen that the local fields of characteristic p are the power
+series fields ¥q((t)), with q = pf. The local fields of characteristic 0, i.e.,
+the finite extensions K\Qp of the fields of p-adic numbers Qp, are called
+p-adic number fields. For them one has an exponential function and a
+logarithm function. In contrast to the real and complex case, however, the
+former is not defined on all of K, whereas the latter is given on the whole
+multiplicative group K*. For the definition of the logarithm we make use of
+the following fact.
+(5.3) Proposition. TTie multiplicative group of a local Geld K admits the
+decomposition
+Here n is a prime element, (n) = {jik \ k e Z}, q = #k is the number of
+elements in the residue class field k — o/p, and U^l>} — 1 + p is the group
+of principal units.
+Proof: For every a e K*, one has a unique representation a — nnu with
+n e Z, u e o* so that K* — (it) x o*. Since the polynomial Xq~~x - 1 splits
+into linear factors over K by Hensel's lemma, o* contains the group ixq-\ of
+(q — l)-th roots of unity. The homomorphism o* -> /c*, u h> u mod p, has
+kernel U^ and maps ixq-\ bijectively onto /c*. Hence o* — iiq-\ x U^\ □
+(5.4) Proposition. For a p-adic number field K there is a uniquely
+determined continuous homomorphism
+log :K* -* K
+such that log/? = 0 which on principal units (1 + x) e U^ is given by the
+series
+x2 x3log(l+x) =x- — + — .
+Proof: By §4, we can think of the p-adic valuation vp of Qp as extended
+to K. Observing that vp(x) > 0, so that c = pvP{x) > 1, and pvP{v) < v,
+
+===== PDF PAGE 153 =====
+
+§5. Local Fields 137
+giving vp(v) < p^ (with the usual logarithm), we compute the valuation of
+the terms xv/v of the series,
+lnc lnv ln(cv/v)
+up(v) = VVp(x)"Vp(v) ~ V^pIn p In p
+This shows that xv /v is a nullsequence, i.e., the logarithm series converges.
+It defines a homomorphism because
+log( (1 + x)(l + y)) = log(l + x) + log(l + y)
+is an identity of formal power series and all series in it converge provided
+1+jc, l+y ef/(1).
+For every a e K*, choosing a prime element it9 we have a unique
+representation
+a=7TvP(a)a)(a)(a),
+where vp — evp is the normalized valuation of K, co(a) e fiq-\, (a) e U^\
+As suggested by the equation p — 7Teco(p){p),wt define log7r = — - log (p)
+and thus obtain the homomorphism log : K* -> K by
+log or = vp(a) log7r + log (a).
+It is obviously continuous and has the property that log p = 0. If k : K* -> AT
+is any continuation of log : [/^ -> ^ such that A.(p) = 0, then we
+find that A.(£) = —^-rM^"1) = 0 for each £ e /^_i. It follows that
+0 = ek(n) + A.((p)) = ek(n) + log(p), so that k(n) — log7r, and thus
+X(a) = vp(a)k(7r) + k((a)) = vp (a) log tt H-log (a) = logo?, for alia € AT*,
+log is therefore uniquely determined and independent of the choice of n.
+D
+(5.5) Proposition. Let K\Qp be a p-adic number Geld with valuation ring
+o and maximal ideal p, and let po — pe. Then the power series2 3 2 3X X Z Z
+exp(x) = 1 +x + — + — + • • • and log(l +z) = z - — + — ,
+yield, for n > ., two mutually inverse isomorphisms (and homeomor­P~ I
+phisms)
+exp
+pn ^=± U(n).
+log
+We prepare the proof by the following elementary lemma.
+
+===== PDF PAGE 154 =====
+
+138 Chapter II. The Theory of Valuations
+(5.6) Lemma. Let v — Y^i=oaiPl> 0 < fl* < p, be the p-adic expansion of
+the natural number v eN. Then
+P ~ l i=o
+Proof: Let [c] signify the biggest integer < c. Then we have
+[v/p] = a\ + a2p + • • • + arpr~l,
+[v/p2] = a2 +--+arpr-2,
+[v/pr] = ar.
+Now we count how many numbers 1,2, ..., v are divisible by p, and then
+by p2, etc. We find
+vp(v!) - [v/p] + • • • + [v/pr] = ax + (p + \)a2 + • • • + (/_1 + • • • + IK
+and hence
+(p- l)vp(v \) = (p-l)ai + (p2-l)a2 + - •• + (/- IK = X>V-1).
+D
+Proof of (5.5): We again think of the p-adic valuation vp of Qp as being
+extended to K. Then up = ei^ is the normalized valuation of K. For every
+natural number y > 1, one has the estimate
+ifr(v) < 1v-1 - p- l'
+for if v = pavo, with (vo, p) = 1 and a > 0, then^(y) a a 1 a 1
+y - 1 ~ pflv0 - 1 " pa - 1 ~~ p - 1 pa_1 + • • • + p + 1 " p-11 e
+For u»(z) > r, z^O, i.e., up(z) > -, this yieldsy P — \ p — 1/zv\ / 1 vD(v)\
+vP{-) - vP(z) = (v - l)vp(z) - vp(v) > (y - D^-^ " -f^) > 0,
+and thus t>p(log(l + z)) = vp(z). For /i > —^—-, log therefore maps U^intop". P~
+For the exponential series ]Cv=oJcV/v'» we comPute the valuations
+vp(xv/y!) as follows. Writing, for y > 0,
+y = ao + a\p H V arpr , 0 < at < p,
+
+===== PDF PAGE 155 =====
+
+§5. Local Fields 139
+we get from (5.6) that1 r 1
+Vy!) = T T,ai(Pl - 1) = r(v-(tfo+tfi +"'+ar)).P — A /=0 P ~~ l
+Putting sv = ao H h tfr this becomes
+M — ) = vvp(x) f = v(vp(x) ) + —v— •\v\J p — 1 V p —1/ p — 1
+For Vq(x) > e 1, i.e., fn(jc) > r, this implies the convergence of thev p — l F p — l
+exponential series. If furthermore i^O and v > 1, then one has
+/xv\ v — 1 sv — 1 5y — 1\v\/ p — 1 p — 1 p — 1
+Therefore vp(txp(x) — 1) = vp(x)9 i.e., for /i > —^—, exp maps the group pn
+into [/^. Furthermore, one has for v*(x), Vp(z) > thatr r p — l
+exp log(l + z) = 1 + z and log exp x = x,
+for these are identities of formal power series and all of the series converge.
+This proves the proposition. □
+For an arbitrary local field K, the group of principal units U^ isaZn­
+module (where p — char(/c)) in a canonical way, i.e., for every 1 + x e U^
+and every z e Zp, one has the power (1 + x)z e f/(1\ This is a consequence
+of the fact that [/(1)/f/(w+1) has order qn for all n (where q = #o/p - the
+reason for this is that [/«/£/(/+1) = o/p9 by (3.10), so that [/(D/f/^+D
+is a Z/qnZ -module) and of the formulas
+f/(1) = ljm U{x)/U{n+X) and Zp = \jm Z/qnZ.
+n n
+This obviously extends the Z-module structure of f/(1\ The function
+/(z) = (l+x)z
+is continuous because the congruence z = z' mod qnZp implies (1 + x)z =
+(1 + x)z mod [/^+1\ so that the neighbourhood z + g^Z^ of z is mapped
+to the neighbourhood (1 + x)zU^n+^ of /(z). In particular, (1 + x)z may be
+expressed as the limit
+(1 +jc)z = lim(l+jt)z<
+of ordinary powers (1 + x)Zi, z,- G Z, if z = lim z,-.
+After this discussion we can now determine explicitly the structure of the
+locally compact multiplicative group A'* of a local field K.
+
+===== PDF PAGE 156 =====
+
+140 Chapter II. The Theory of Valuations
+(5.7) Proposition. Let K be a local Geld and q = pf the number of
+elements in the residue class Geld. Then the following hold.
+(i) If K has characteristic 0, then one has (both algebraically and
+topologically)
+k* = z e z/(q - i)z e z/Paz © zdp,
+where a>0 andd = [K : Qp].
+(ii) If K has characteristic p, then one has (both algebraically and
+topologically)
+K* = Z@Z/(q-\)Z@Z^.
+Proof: By (5.3) we have (both algebraically and topologically)
+K* = (tt) x /x^_i x f/(1) = Z © Z/(q - 1)Z © f/(1).
+This reduces us to the computation of the Z^-module f/(1\
+(i) Assume char(iT) = 0. For n sufficiently big, (5.5) gives us the
+isomorphism
+log :U(n) -^pn =7tno = o.
+Since log, exp, and f(z) — (1 + x)z are continuous, this is a topological
+isomorphism of Zp -modules. By chap. I, (2.9), o admits an integral basis
+ofi, ..., ad over Zp, i.e., o = Zpot\ © • • • © Zpotd = Zdp. Therefore
+jj{n) - z^ Since ±Q index ([/(l) . V(n)) is finite and jj&i) is a finitdy
+generated Z^-module of rank d, so is U^\ The torsion subgroup of U^ is
+the group fipa of roots of unity in K of p-power order. By the main theorem
+on modules over principal ideal domains, there exists in U^l>} a free, finitely
+generated, and therefore closed, Zp -submodule V of rank d such that
+Uil) =fJipaXV = Z/paZ © Zdp ,
+both algebraically and topologically.
+(ii) If char(/0 = p, we have K = F^((f)) (see p. 127) and
+U(l) = l+p = l + tFq[[t]].
+The following argument is taken from the book [79] of K. Iwasawa.
+Let co\, ..., cof be a basis of F^ |Fp. For every natural number n relatively
+prime to p we consider the continuous homomorphism
+gn:Zfp-+ Uin), gn(au ..., a/) = rid + 0HtH)a' •
+/ = 1
+
+===== PDF PAGE 157 =====
+
+5. Local Fields 141
+This function has the following properties. If m = nps, s > 0, then
+(1) f/(m) = gn(pSZfp)U(m+»
+fand, for a = (a\, ..., a/) e Zp,
+(2) a£PZfp <=» gn{psa)iU{m+x).
+Indeed, for co — J2i=\ bi^i e¥q,bt eZ, 6,- = a,- mod p, we have
+f
+gn(a) = n (1 + ^V< = 1 + cot" mod p*+1
+*=i
+and hence, since we are in characteristic p,
+gn(psa) = gn(a)Ps = 1 + a/V mod pm+1.f s
+As a varies over the elements ofZp,a), and thus also cop , varies over the
+elements of F^, and we get (1). Furthermore one has gn (psa) = 1 mod pm+1 4=^
+co — 0 <<=£► 6/ = 0 mod p, for / = 1, ..., / 4=>- 0; = 0 mod p, for
+/ = 1, ..., / <!==> a e pZp, and this amounts to (2).
+We now consider the continuous homomorphism of Zp -modules
+*= n a.: a= n z^—►t/w,
+where the product ]!(/!,p)=i p *s ta^en over all ^ > 1 such that (n, p) — 1,
+each factor being a copy of ZjJ. Observe that the product g(£) = ]~[ gn{otn)
+converges because gn{otn) e U^n\ Let m — nps, with (/i,p) = 1, be any
+natural number. As gn(Zp) c g(A), it follows from (1) that each coset
+of f/(m)/[/(m+1) is represented by an element of g(A). This means that g(A)
+is dense in U^\ Since A is compact and g is continuous, g is actually
+surjective.
+On the other hand, let § = (...,«„,...) € A, § 7^ 0, i.e., «„ ^ 0 for
+some /i. Such an an is of the form an — psfin with s — s(an) > 0, and
+pn e Zfp \ pZ^. It now follows from (2) that
+gn{otn)eU{m\ gn{otn)iU{m+x) for m = m(an) = nps.
+Since the n are prime to p, all the m(an) have to be distinct, for all an ^ 0.
+Let n be the natural number, prime to p and such that an / 0, which
+satisfies m(an) < m(an'), for all n' / n such that cv / 0. Then one has, for
+all n' 7^ n, that
+gn'(uri) £ f/(m+1) where ra = m(an) < m(anr).
+Consequently , 11X
+g(£)^(cx„)#lmod[/(m+1\
+and so g(£) / 1. This shows the injectivity of g. Since A = z£, this provesthe claim (ii). □
+
+===== PDF PAGE 158 =====
+
+142 Chapter II. The Theory of Valuations
+(5.8) Corollary. If the natural number n is not divisible by the characteristic
+of K, then one finds the following indices for the subgroups of n-th
+powers K*n and Un in the multiplicative group K* and in the unit group U:
+(K* : K*n) = n(U : Un) = — #fin(K).
+Proof: The first equality is a consequence of K* = (n) x U. By (5.7), we
+have
+U = ii(K) x zj, resp. U = /i(K) x Zj,
+when char(K) = 0, resp. p > 0. From the exact sequence
+1 —► M„(tf) —► fji(K) -=-> /x(/0 —► fi(K)/fi(K)n —► 1,
+one has #/in(K) = #ii(K)/ijL(K)n. When char(^T) = 0, this gives:
+(J7 : 17") = #fin(K)#(Zp/nZp)d = #fjin(K)pdvPM = #/x„(/0/Hp,
+and when char(AT) = p one gets simply ([/ : [/") = #/JLn(K) = #/xw(^r)/|/i|p
+because (n, p) = 1, i.e., raZ^ = Z^. D
+Exercise 1. The logarithm function can be continued to a continuous homomorphism
+log : Qp —> Q, and the exponential function to a continuous homomorphismi_ —* L. — i
+exp : pi-p -► Qp, where p l~p = {x g Qp \ vp(x) > j^} and vp is the unique
+extension of the normalized valuation ontP­
+Exercise 2. Let K\Qp be a p-adic number field. For 1 + x g U(l) and z g Zp one
+has
+oo
+e
+The series converges even for jc G K such that up(jc) > 1 .
+Exercise 3. Under the above hypotheses one has
+(1 + x)z = exp(z log(l + jc)) and log(l + x)z = z log(l + jc) .
+Exercise 4. For a p-adic number field K, every subgroup of finite index in AT* is
+both open and closed.
+Exercise 5. If AT is a p-adic number field, then the groups K*n, for n g N, form a
+basis of neighbourhoods of 1 in AT*.
+Exercise 6. Let AT be a p-adic number field, vp the normalized exponential valuation
+of K, and dx the Haar measure on the locally compact additive group K, scaled so
+that f0 dx = 1. Then one has vp(a) = fa0 dx. Furthermore,
+/(/)=/ m-£­Jk\{0} \x\p
+is a Haar measure on the locally compact group K*.
+
+===== PDF PAGE 159 =====
+
+§ 6. Henselian Fields 143
+§ 6. Henselian Fields
+Most results on complete valued fields can be derived from Hensel's
+lemma alone, without the full strength of completeness. This lemma is valid
+in a much bigger class of nonarchimedean valued fields than the complete
+ones. For example, let (K, v) be a nonarchimedean valued field and (K, v)
+its completion. Let o, resp. 3, be the valuation rings of K, resp. K. We then
+consider the separable closure Kv of K in K, and the valuation ring ov c Kv
+with maximal ideal pv, which is associated to the restriction of v to Kv,
+Then Hensel's lemma holds in the ring ov as well as in the ring o even
+though Kv will not, as a rule, be complete. When Kv is algebraically closed
+in K — hence in particular chax(K) = 0 — this is immediately obvious
+(otherwise it follows from (6.6) and §6, exercise 3 below). Indeed, by (4.3)
+we have
+o/p = ov/pv =3/?,
+and if a primitive polynomial fix) e ov[x] splits over ov/pv into
+relatively prime factors g(x), h(x), then we have by Hensel's lemma (4.6) a
+factorization in o
+fix) = g(x)h(x)
+such that g == g modp^, h == h modp^, deg(g) = deg(g). But this factorization
+already takes place over ov once the highest coefficient of g is chosen to be
+in o*, because the coefficients of /, and therefore also those of g and h are
+algebraic over K.
+The valued field Kv is called the henselization of the field K with respect
+to v. It enjoys all the relevant algebraic properties of the completion K, but
+offers the advantage of being itself an algebraic extension of K which can
+also be obtained in a purely algebraic manner, without the analytic recourse
+to the completion (see §9, exercise 4). The consequence is that taking the
+henselization of an infinite algebraic extension L\K is possible within the
+category of algebraic extensions. Let us define in general:
+(6.1) Definition. A henselian field is a field with a nonarchimedean
+valuation v whose valuation ring o satisfies HenseVs lemma in the sense
+of (4.6). One also calls the valuation v or the valuation ring o henselian.
+
+===== PDF PAGE 160 =====
+
+144 Chapter II. The Theory of Valuations
+(6.2) Theorem. Let K be a henselian field with respect to the
+valuation | |. Then \ \ admits one and only one extension to any given algebraic
+extension L\K.Itis given by
+if L\K has finite degree n. In any case, the valuation ring of the extended
+valuation is the integral closure of the valuation ring ofK in L.
+The proof of this theorem is verbatim the same as in the case of a
+complete field (see (4.8)). What is remarkable about our current setting is
+that, conversely, the unique extendability also characterizes henselian fields.
+In order to prove this, we appeal to a method which allows us to express
+the valuations of the roots of a polynomial in terms of the valuations of
+the coefficients. It relies on the notion of Newton polygon, which arises as
+follows.
+Let v be an arbitrary exponential valuation of the field K and let
+f(x) = ao + a\x H h anxn e K[x]
+be a polynomial satisfying a§an / 0. To each term a[Xl we associate a point
+(/, v(a,i)) e R2, ignoring however the point (/, oo) if at = 0. We now take
+the lower convex envelope of the set of points
+{(0,v(flo)),(l,v(fli)), ...,(/i, v(fl„))}.
+This produces a polygonal chain which is called the Newton polygon of
+fix).
+(n,v(an))
+(0,v(oo))
+(JMa>j))
+{i,v(a,i))
+The polygon consists of a sequence of line segments S\,S2, ... whose
+slopes are strictly increasing, and which are subject to the following
+
+===== PDF PAGE 161 =====
+
+§ 6. Henselian Fields 145
+(6.3) Proposition. Let f(x) = a^ + ai* + • • • + fl/i*71, a^an ^ 0, be a
+polynomial over the field K, v an exponential valuation of K, and w an
+extension to the splitting field L of f.
+If (r, v{ar)) «» (51, f (as)) is a iine segment of slope —m occurring in the
+Newton polygon of /, then f{x) has precisely s — r roots <x\, ..., <xs-r of
+value
+wiptx) = • • • = w(a5_r) = rn.
+Proof: Dividing by an only shifts the polygon up or down. Thus we may
+assume that an = 1. We number the roots ot\, ..., an e L of / in such a
+way that
+tu(ofi) = ... = tufej) = mi,
+u;(aJl+i) =... = u;(aJ2) = m2,
+w{aSt+\) =... = w(a„) = m,+i,
+where mi < m2 < • • • < mr+i. Viewing the coefficients <z; as elementary
+symmetric functions of the roots otj, we immediately find
+v(an) = v(l) = 0,
+u(^/i-i) > min{w(a;)} = mi,
+v{an-2) > min{ u;(of/Ofy)} = 2mi,
+v(an-Sl) = . min {uKo^ ...%)} = Si/wi,q,..., /5j
+the latter because the value of the term ct\... aSl is smaller than that of all
+the others,
+v(an-Sl-i) > min {w(ah .. .a( )} = Simi+m2,
+*i,..., *5l+i
+u(fl„_Jl_2) > min {tyCof/j ...a,- 2)} = Simi+2m2,
+u(fl„_52) = min [w(ail...ai )} =simx + (s2-si)m2,
+and so on. From this result one concludes that the vertices of the Newton
+polygon, from right to left, are given by
+(zi,0), (n — si,simi), (n — S2,simi + (s2 — si)m2), ...
+
+===== PDF PAGE 162 =====
+
+146 Chapter II. The Theory of Valuations
+The slope of the extreme right-hand line segment is
+0 — s\m\
+n — (n — S\)
+and, proceeding further to the left,
+{s\m\ + • • • + (Sj - Sj-i)ntj) - (si/wi + • • • + C?y+i - Sj)mj+i)= —fw/+i •
+(n-Sj) -{n -sy+i)
+D
+We emphasize that, according to the preceding proposition, the Newton
+polygon consists of precisely one segment if and only if the roots a\, ..., an
+of / all have the same value. In general, f(x) factors into a product according
+to the slopes — mr < • • • < — m\,
+r
+/oo=fl» n fjW>
+where
+/;W = 11 (*-<*/).
+Here the factor fj corresponds to the (r — j + l)-th segment of the Newton
+polygon, whose slope equals minus the value of the roots of fj.
+(6.4) Proposition. If the valuation v admits a unique extension w to the
+splitting held L of /, then the factorization
+r
+f(x) =anl\ fj(x)
+7=1
+is dehned already over K, i.e., fj(x) = Y[w(ai)=m (x ~~ ai) e KM­
+Proof: We may clearly assume that an = 1. The statement is obvious when
+f(x) is irreducible because then one has a\ = 07ai for some <j[ e G(L\K),
+and since, for any extension w of v, w o <j/ is another one, the uniqueness
+implies that w(a;) = w(aia\) = mi, hence /i(x) = /(^).
+The general case follows by induction on n. For n — \ there is nothing to
+show. Let p{x) be the minimal polynomial of a\ and g(x) = f(x)/p(x) e
+K[x]. Since all roots of /?(*) have the same value m\, p(x) is a divisor
+of f\(x). Let gi(jc) = fi(x)/p(x). The factorization of g(x) according to
+the slopes is
+g(x) = gdx)Y\fj(x).
+Since deg(g) < deg(/), it follows that fj(x) e K[x] for all j = 1, ..., r. D
+
+===== PDF PAGE 163 =====
+
+§ 6. Henselian Fields 147
+If the polynomial / is irreducible, then, by the above factorization result,
+there is only one slope, i.e., the Newton polygon consists of a single segment.
+The values of all coefficients lie on or above this line segment and we get the
+(6.5) Corollary. Let f(x) — a§ + a\x -\ Yanxn e K[x] be an irreducible
+polynomial with an ^ 0. Then, if \ \ is a nonarchimedean valuation of K
+with a unique extension to the splitting Geld, one has
+|/| =max{|tfoUtfj} .
+In (4.7) we deduced this result for complete fields from Hensel's lemma
+and thus obtained the uniqueness of the extended valuation. Here we obtain
+it, by contrast, as a consequence of the uniqueness of the extended valuation.
+We now proceed to deduce Hensel's lemma from the unique extendability.
+(6.6) Theorem. A nonarchimedean valued Geld (K,\ \) is henselian if and
+only if the valuation \ \ can be uniquely extended to any algebraic extension.
+Proof: The fact that a henselian valuation | | extends uniquely was dealt
+with in (6.2). Let us assume conversely that | | admits one and only one
+extension to any given algebraic extension. We first show:
+Let f(x) = <zo + a\x + • • • + anxn e o[x] be a primitive, irreducible
+polynomial such that aoan ^ 0, and let fix) = fix) mod p e k[x]. Then
+we have deg(/) = 0 or deg(/) = deg(/), and we find
+f(x)=ay(x)m,
+for some irreducible polynomial (p(x) e k[x] and a constant a.
+As / is irreducible, the Newton polygon is a single line segment and thus
+|/| = max{|<zo|, \an\}. We may assume that an is a unit, because otherwise
+the Newton polygon is a segment which does not lie on the x-axis and this
+means that f(x) = <zo.
+Let L\K be the splitting field of f(x) over K and O the valuation ring
+of the unique extension | | to L, with maximal ideal ^J. For an arbitrary
+£-automorphism a e G = G(L\K), we have |cra| = | or | for all a e L,
+because | | and the composite | | o a extend the same valuation. This shows
+that aO = O, cr^J = ^3. If a is a zero of fix) and /x its multiplicity, then
+aa e O for all a e G. Indeed, if a tf O, then Y\a \cra\^ = | Y\a aa]* > 1
+would imply that the constant coefficient <zo could not belong to o. Thus
+every a e G induces a k -automorphism a of O/ty, and the zeroes aa = a a
+
+===== PDF PAGE 164 =====
+
+148 Chapter II. The Theory of Valuations
+of f(x) are all conjugate over k. It follows that fix) = a<p(x)m, if <p(x) is
+the minimal polynomial of a over k. Since an e o*, we have furthermore
+that deg(/) = deg(/).
+Let now /(i) g o[i] be an arbitrary primitive polynomial, and let
+be its factorization into irreducibles over K. Since 1 = |/| = \\ |/;|,
+multiplying the f by suitable constants yields \f\ = 1. The fix) are
+therefore primitive, irreducible polynomials in o[x]. It follows that
+where deg(//) = 0 or deg(/;) = deg(/i), and /,- is, up to a constant factor,
+the power of an irreducible polynomial. If / = g h is a factorization into
+relatively prime polynomials g, h e k[x], then we must have
+g=a\[fi, h=b\\f]iel jeJ
+where a,b e k and {1, ..., r) = / U / and deg(/,-) = deg(/i) for i e I.
+We now put
+g = aY\fi, h = b\\fj,
+for a,b e o* such that a == a, b ==b mod p and / = gh. □
+We have introduced henselian fields by a condition of which the reader
+will find weaker versions in the literature, restricted to monic polynomials
+only. Both are equivalent as is shown by the following
+(6.7) Proposition. A nonarchimedean field (K, v) is henselian if any monic
+polynomial fix) e o[x] which splits over the residue class field k = o/p as
+f(x) == g(x)h(x) modp
+with relatively prime monic factors gix),hix) e k[x], admits itself a splitting
+fix) = gix)hix)
+into monic factors g(x), hix) e o[x] such that
+gix) == gix) mod p and hix) == hix) modp.
+
+===== PDF PAGE 165 =====
+
+§ 6. Henselian Fields 149
+Proof (E. Nart): We have just seen that the property of K to be henselian
+follows from the condition that the Newton polygon of every irreducible
+polynomial f(x) = a^ + a\x H + anxn e K[x] is a single line segment.
+It is therefore sufficient to show this. We may assume that an = 1. Let L\K
+be the splitting field of /. Then there is always an extension w of v to L.
+It is obtained for example by taking the completion K of K, extending the
+valuation of K in a unique way to a valuation v of the algebraic closure K
+of ^T, embedding L into ^T, and restricting v to L. It is also possible to get
+the extension w directly, without passing through the completion. For this
+we refer to [93], chap. XII, §4, th. 1.
+Assume now that the Newton polygon of / consists of more than one
+segment:
+m
+e i
+Let the last segment be given by the points (ra, e) and (w, 0). If e = 0, we
+immediately have a contradiction. Because then we have v{a{) > 0, so that
+f{x) e o[x], and <zo = • • • = am-\ == 0 mod p, am ^ 0 mod p. Therefore
+f(x) == (Xn~m H + am)Xm mod p, with m > 0 because there is more
+than one segment. In view of the condition of the proposition this contradicts
+the irreducibility of /.
+We will now reduce to e = 0 by a transformation. Let a, e L be a root
+of f{x) of minimum value w(a) and let a e K such that v(a) = e. We
+consider the characteristic polynomial g(x) of <z_1ar e K(a), r — n — m.
+If /(jc) = n?=i(* - «i), then g(x) = n?=i(* " <^-1)- Proposition (6.3)
+shows that the Newton polygon of g(x) also has more than one segment, the
+last one of slope
+—w(a~lar) = v (a) — rw(a) = e — r- =0.
+Since g(x) is a power of the minimal polynomial of a~lar, hence of an
+irreducible polynomial, this produces the same contradiction as before. □
+Let K be a field which is henselian with respect to the exponential
+valuation v. If L | K is a finite extension of degree n, then v extends uniquely
+to an exponential valuation w of L, namely
+w(a) = -u(Ni|ff(a)) .
+
+===== PDF PAGE 166 =====
+
+150 Chapter II. The Theory of Valuations
+This follows from (6.2) by taking the logarithm. For the value groups and
+residue class fields of v and w, one gets the inclusions
+v(K*)Qw(L*) and irCA..
+The index
+e = e(w\v) = (w(L*) : v(K*))
+is called the ramification index of the extension L\K and the degree
+/ = f(w | v) = [X : K]
+is called the inertia degree. If v, and hence w = „v o Nl\k, is discrete
+and if o, p, 7T, resp. (9, <P, n, are the valuation ring, the maximal ideal and a
+prime element of K, resp. L, then one has
+e=z (w(n)Z : u(tt)Z) ,
+so that v(n) = ew(n), and we find
+TT^eir,
+for some unit s e O*. From this one deduces the familiar (see chap. I)
+interpretation of the ramification index: pO = n O = TleO = tye, or
+(6.8) Proposition. One has [L : K] > ef and the fundamental identity
+[L:K]=ef,
+if v is discrete and L\K is separable.
+Proof: Let o)\, ..., co/ be representatives of a basis of X\k and let
+7To, ..., 7te-\ e L* be elements the values of which represent the various
+cosets in w(L*)/v(K*) (the finiteness of e will be a consequence of what
+follows). If v is discrete, we may choose for instance 7t[ — IT. We show that
+the elements
+cojTti, y = l,...,/, i = 0, ..., e - 1,
+are linearly independent over K, and in the discrete case form even a basis
+ofL|#.Let e-l f
+E E <*ij*>j*i = 0
+i=0; = l
+with <z;; e K. Assume that not all <z;; = 0. Then there exist nonzero sums
+si = ELi^;^;' ^ eac^ ^me ^at ^ /Owe find wfo) e f^*). In
+
+===== PDF PAGE 167 =====
+
+§ 6. Henselian Fields 151
+fact, dividing 57 by the coefficient <z;v of minimum value, we get a linear
+combination of the co\, ..., co/ with coefficients in the valuation ring o c K
+one of which equals 1. This linear combination is ^ 0 mod ^3, hence a unit,
+so that w(S() = w(aiv) e v(K*).
+In the sum Ef=o stTtt, two nonzero summands must have the same value,
+say w(siTti) = w(Sj7tj), i =£ j, because otherwise it could not be zero
+(observe that w(x) ^ w(y) => w(x + y) = min{u?(x), w(y)}). It follows that
+u>(7T;) = w(7tj) + uj(s/) — w(si) == uj(7T/) mod u(*T*),
+a contradiction. This shows the linear independence of the cojitt. In particular,
+we have ef < [L : K].
+Assume now that v, and thus also w, is discrete and let n be a prime
+element in the valuation ring O of w. We consider the o -module
+e-l f
+M = E £c>w
+i=oy=i
+where 717 = IT1 and show that M = (9, i.e., {<w/7T,-} is even an integral basis
+of O over o. We put ,
+so that M = AT + FIAT + • • • + IT^iV. We find that
+o = n + tio,
+because, for a e O, we have a = a\(0\-\ h 0/<w/ mod TIO, ai e o. This
+implies
+o = iv + n(iv + ne>) = ... = iv + niv + ...+ n'-1^ + rre>,
+so that O = M + <J3* = M + pO. Since L\K is separable, (9 is a finitely
+generated 0-module (see chap. I, (2.11)), and we conclude O — M from
+Nakayama's lemma (chap. I, § 11, exercise 7). □
+Remark: We had already proved the identity [L : K] = ef in a somewhat
+different way in chap. I, (8.2), also in the case where v was discrete and
+L\K separable. Both hypotheses are actually needed. But, strangely enough,
+the separability condition can be dropped once K is complete with respect
+to the discrete valuation. In this case, one deduces the equality O = M in
+the above proof from O = M + pO, not by means of Nakayama's lemma,
+but rather like this: as plM c M, we get successively
+O = M + p(M + p(9) = M + p20 = • • • = M + pvO
+for all v > 1, and since {pyC)}v€N is a basis of neighbourhoods of zero in O,
+M is dense in O. Since o is closed in K, (4.9) implies that M is closed in O,
+so that Af = O.
+
+===== PDF PAGE 168 =====
+
+152 Chapter II. The Theory of Valuations
+Exercise 1. In a henselian field the zeroes of a polynomial are continuous functions
+of its coefficients. More precisely, one has: let f(x) e K[x] be a monic polynomial
+of degree n and
+f(x) = f\(x-air>
+i=\
+its decomposition into linear factors, with /wz- > 1, at ^ «/ for / ^ j. If the monic
+polynomial g(x) of degree n has all coefficients sufficiently close to those of f(x),
+then it has r roots fi\, ..., /3r which approximate the ct\, ..., ar to any previously
+given precision.
+Exercise 2 (Krasner's Lemma). Let a e K be separable over AT and let a =
+ot\, ...,an be its conjugates over K. If ft £ K is such that
+l# — /* I < \a ~ ai I f°r / = 2, . . . , W ,
+then one has K (a) QK(fi).
+Exercise 3. A field which is henselian with respect to two inequivalent valuations is
+separably closed (Theorem of F.K. Schmidt).
+Exercise 4. A separably closed field K is henselian with respect to any
+nonarchimedean valuation.
+More generally, every valuation of K admits a unique extension to any purely
+inseparable extension L\K.
+Hint: If ap = a € K, one is forced to put w(a) = -^v(a).
+Exercise 5. Let AT be a nonarchimedean valued field, o the valuation ring,
+and p the maximal ideal. K is henselian if and only if every polynomial
+f(x) = xn + an-\xn~x + • • • + a0 G o[x] such that ao € p and a\ £ p has a
+zero a € p.
+Hint: The Newton polygon.
+Remark: A local ring o with maximal ideal p is called henselian if Hensel's lemma
+in the sense of (6.7) holds for it. A characterization of these rings which is important
+in algebraic geometry is the following:
+A local ring o is henselian if and only if every finite commutative o-algebra A
+splits into a direct product A = YYi=\ ^ of local rings At.
+The proof is not straightforward, we refer to [103], chap. I, §4, th. 4.2.
+§ 7. Unramified and Tamely Ramified Extensions
+In this section we fix a base field K which is henselian with respect to
+a nonarchimedean valuation v or | |. As before, we denote the valuation
+ring, the maximal ideal and the residue class field by o,p,/c, respectively.
+If L\K is an algebraic extension, then the corresponding invariants are
+labelled w,0,ty, X, respectively. An especially important role among these
+extensions is played by the unramified extensions, which are defined as
+follows.
+
+===== PDF PAGE 169 =====
+
+§7. Unramified and Tamely Ramified Extensions153
+(7.1) Definition. A finite extension L\K is called unramified if the
+extension X\k of the residue class field is separable and one has
+[L:K] = [X : *].
+An arbitrary algebraic extension L\K is called unramified if it is a union of
+finite unramified subextensions.
+Remark: This definition does not require K to be henselian; it applies in
+all cases where v extends uniquely to L.
+(7.2) Proposition. Let L \K and K'\K be two extensions inside an algebraic
+closure K\K and let V = LK'. Then one has
+L\K unramified =$ L'\K' unramified.
+Each subextension of an unramified extension is unramified.
+Proof: The notations o,p,/c; o\p,,K,\ 09ty9k; 0\y\k' are self­
+explanatory. We may assume that L\K is finite. Then X\k is also finite
+and, being separable, is therefore generated by a primitive element a,
+X = K(a). Let a e O be a lifting, f(x) e o[x] the minimal polynomial of a
+and f(x) = f(x) mod p e k[x]. Since
+[X:k]< deg(/) = deg(/) = [K(a) : K] < [L : K] = [X : k]9
+one has L = K(a) and J(x) is the minimal polynomial of a over k.
+We thus have L' = K'(a). In order to prove that L'\K' is unramified,
+let g{x) e or[x] be the minimal polynomial of a over K' and ~g(x) =
+g(x) mod p; e k;[x]. Being a factor of f(x), g(x) is separable and hence
+irreducible over k\ because otherwise g(x) is reducible by Hensel's lemma.
+We obtain
+[k' : *'] < [Lf : K'] = deg(g) = deg(g) = [^(a) : *'] < [X' : ic'].
+This implies [V : K'] = [A.7 : /c'], i.e., L'\K' is unramified.
+If L | ^ is a subextension of the unramified extension V \ K, then it follows
+from what we have just proved that L'\L is unramified. Hence so is L \K, by
+the formula for the degree. □
+(7.3) Corollary. The composite of two unramified extensions of K is again
+unramified.
+
+===== PDF PAGE 170 =====
+
+154 Chapter II. The Theory of Valuations
+Proof: It suffices to show this for two finite extensions L\K and L'\K.
+L\K is unramified, hence so is LL'\L\ by (7.2). This implies that LL'\K is
+unramified as well because separability is transitive and the degrees of field
+(and residue field) extensions are multiplicative. □
+(7.4) Definition. Let L\K be an algebraic extension. Then the composite
+T\K of all unramified subextensions is called the maximal unramified
+subextension of L \ K.
+(7.5) Proposition. The residue class field of T is the separable closure Xs
+of k in the residue class field extension X\k of L\K, whereas the value
+group ofT equals that of K.
+Proof: Let Xq be the residue class field of T and assume a e A. is
+separable over k. We have to show that a e \$. Let f(x) e k[x] be the
+minimal polynomial of a and f(x) e o[x] a monic polynomial such that
+f = / mod p. Then f(x) is irreducible and by Hensel's lemma has a root a
+in L such that a = a mod ^3, i.e., [K(a) : K] = [k{ol) : k]. This implies
+that K(a)\K is unramified, so that K(a) c 7\ and thus a e X0.
+In order to prove w(T*) = v(K*) we may suppose L\K to be finite. The
+claim then follows from
+[T :K]> (w(T*) : v(K*))[ko : k] = (w(T*) : v(K*))[T : K]. D
+The composite of all unramified extensions inside the algebraic closure K
+of K is simply called the maximal unramified extension Knr\K of K
+(nr = 'non ramifiee'). Its residue class field is the separable closure ks\k.
+Knr contains all roots of unity of order m not divisible by the characteristic
+of k because the separable polynomial xm — 1 splits over ics and hence also
+over Knr, by Hensel's lemma. If k is a finite field, then the extension Knr\K
+is even generated by these roots of unity because they generate ks\k.
+If the characteristic p = char(/c) of the residue class field is positive, then
+one has the following weaker notion accompanying that of an unramified
+extension.
+(7.6) Definition. An algebraic extension L\K is called tamely ramified
+if the extension X\k of the residue class fields is separable and one has
+([L : T], p) = 1. In the infinite case this latter condition is taken to mean
+that the degree of each finite subextension of L\T is prime to p.
+
+===== PDF PAGE 171 =====
+
+§ 7. Unramified and Tamely Ramified Extensions155
+As before, in this definition K need not be henselian. We apply it whenever
+the valuation v of K has a unique extension to L. When the fundamental
+identity ef = [L : K] holds and A.|/c is separable, to say that the extension
+is unramified, resp. tamely ramified, simply amounts to saying that e — 1,
+resp. (e, p) = 1.
+(7.7) Proposition. A finite extension L\K is tamely ramified if and only if
+the extension L\T is generated by radicals
+such that (mi, p) = 1. In this case the fundamental identity always holds:
+[L:K] = ef.
+Proof: We may assume that K = T because L\K is obviously tamely
+ramified if and only if L\T is tamely ramified, and if this is the case, then
+[T : K] = [k : k] = /. Let L\K be tamely ramified, so that k = k and
+([L : K], p) = 1. We first show that e = 1 implies L = /£. Let or g L \ /£.
+Writing a = a\, ..., am for the conjugates and a = 7r(o0 = $Zi=iai>
+the element /3 = a - ±a e L\K has trace Tr(p) = £Xi A = 0- Since
+v(K*) = w(L*)9 we may choose a b e K* such that v(b) = w(/J) and obtain
+a unit £ = j8/6 G L\K with trace £]/li ei — 0- But the conjugates e,- have
+the same residue classes S[ in A., because k = /c. Hence 0 = ]C/Li £/ = ms,
+and thus ra == 0 mod p, which contradicts p { [L : ^] and ra|[L : /ST].
+Now let co\, ..., cor e w(L*) be a system of representatives for the
+quotient w(L*)/v(K*) and raz the order of a>i mod v(K*). Since
+w(L*) = j;v(NL\k(L*)) c iu(X"*), where n = [L : K]9 we have m,-|/i, so
+that (mi,p) = 1. Let y,- g L* be an element such that u>(y,-) = &>;. Then
+w(y™1) — v(ct), with c/ € ^, so that y™1 = q£; for some unit £/ in L.
+As A = /c we may write £/ = 6/w/, where 6/ g ^ and «; is a unit in L
+which tends to 1 in k. By Hensel's lemma the equation xm'1 — U( = 0 has a
+solution /J; G L. Putting or; = y//^"1 G L, we find u;(a,-) = &>; and
+m; . 1OLi =di , 1 = 1 r,
+where a,- = c,-6,- G /£, i.e., we have K(m^/a^, ..., m^/57) c L. By
+construction, both fields have the same value group and the same residue
+class field. So, by what we proved first, we have
+The inequality [L : K] < e and thus, in view of (6.8), the equality
+[L : K] = e, now follows by induction on r. If L\ — K{m^/a\)9 then
+
+===== PDF PAGE 172 =====
+
+156 Chapter II. The Theory of Valuations
+o)\ e w(L*) yields
+e(Lx\K) = (w(L*) : v(K*)) >mx> \LX : K].
+Also e(L\L\) > [L : L\]9 because w(L*)/w(L*) is generated by the residue
+classes of C02, • • •, cor. Thus
+e = «(L|Li)«(Li|^) > [L : Li]^ : K] = [L : *].
+In order to prove that an extension L = K(mJ/a\, ..., m^/5T) is tamely
+ramified, it suffices to look at the case r = 1, i.e., L = K(r!^a),
+where (m,p) = 1. The general case then follows by induction. We may
+assume without loss of generality that k is separably closed. This is seen
+by passing to the maximal unramified extension K\ = Knr, which has the
+separable closure k\ = ks of k as its residue class field. We obtain the
+following diagram L LiI IK Ku
+where L n Kx = T = AT and Lx = Kx("t/a). If now LX\KX is tamely
+ramified, then k\\K\ is separable; hence A4 = k\ and /? { [L\ : ATi] =
+[L : K] = [L : T], i.e., L|^ is also tamely ramified.
+Let a = v^- We maY assume that [L : K] = [K^t/a) : K] = m.
+In fact, if J is the greatest divisor of m such that a = 0"* for some
+a' G AT*, and if ra' = m/d9 then or = "Vtf7 and [KCl/a7) : AT] = m!. Now
+let /I = ord(u;(a) mod f (AT*)). Since mw(a) = u(a) e f (AT*), we have
+ra = J/i. Consequently w(an) = u(6), ft e AT*, and u(6d) = w(am) = v(a)\
+thus ofm = a = sbd for some unit e in ^. As (d,p) = 1, the equation
+jcrf — £ = 0 splits over the separably closed residue field k into distinct linear
+factors, hence also over K by Hensel's lemma. Therefore am — bd — a
+for some new b e K*. Since xm — a is irreducible, we have d = 1, and
+hence m — n. Thus
+e > /i = [L : AT] > e/ > e,
+in other words / = 1, and so k = /c and p {/i = e. This shows that L\K istamely ramified. □
+(7.8) Corollary. Let L\K and K'\K be two extensions inside the algebraic
+closure K\K, and V = LK'. Then we have:
+L\K tamely ramified => L'\K' tamely ramified.
+Every subextension of a tamely ramified extension is tamely ramified.
+
+===== PDF PAGE 173 =====
+
+§ 7. Unramified and Tamely Ramified Extensions157
+Proof: We may assume without loss of generality that L\K is finite and
+consider the diagram
+L L'I It rI iK K'.
+The inclusion T c V follows from (7.2). If L\K is tamely ramified,
+then L = T{ml/a~u ...,my^), (mi9p) = 1; hence V = L/T = IT' =
+T'Cyai* • • •, "V^7), so that Z/|/T is also tamely ramified, by (7.7).
+The claim concerning the subextensions follows exactly as in theunramified case. □
+(7.9) Corollary. The composite of tamely ramified extensions is tamely
+ramified.
+Proof: This follows from (7.8), exactly as (7.3) followed from (7.2) in theunramified case. □
+(7.10) Definition. Let L\K be an algebraic extension. Then the
+composite V\K of all tamely ramified subextensions is called the maximal tamely
+ramified subextension ofL\K.
+Let w(L*)(/7) denote the subgroup of all elements co e w(L*) such
+that mco e v(K*) for some m satisfying (m,p) = 1. The quotient group
+w(L*)(p)/v(K*) then consists of all elements of w(L*)/v(K*) whose order
+is prime to p.
+(7.11) Proposition. The maximal tamely ramified subextension V\K of
+L\K has value group w(V*) = w(L*)(p"> and residue class field equal to the
+separable closure Xs of k in X\k.
+Proof: We may restrict to the case of a finite extension L\K. By
+passing from K to the maximal unramified subextension, we may assume
+by (7.5) that Xs = k. As p \ e(V\K) = #w(V*)/v(K*)9 we certainly
+have w(V*) c w(L*)(p\ Conversely we find, as in the proof of (7.7), for
+every co e w(L*)^ a radical a = "Ifa e L such that a e K, (m, p) = 1 and
+w(a) = co, so that one has a e V, and co e w(V*). □
+
+===== PDF PAGE 174 =====
+
+158 Chapter II. The Theory of Valuations
+The results obtained in this section may be summarized in the following
+picture:K c T c V c L
+K ^r: A'S ~~ ^*s _ A.
+v(ff*) = W(T*) c w(L*)^ c w(L*).
+If L|# is finite and e = e' pa where (e',p) = 1, then [V : T] = e'. The
+extension L|^T is called totally (or purely) ramified if 7" = AT, and wildly
+ramified if it is not tamely ramified, i.e., if V ^ L.
+Important Example: Consider the extension Q^COIQ/? f°r a primitive
+/i-th root of unity f. In the two cases (/i, p) = 1 and n = ps, this extension
+behaves completely differently. Let us first look at the case (n,p) = 1 and
+choose as our base field, instead of Qp, any discretely valued complete field
+K with finite residue class field k =¥q, with q — pr.
+(7.12) Proposition. LetL = K(t;), andletO\o, resp. k\ic, be the extension
+of valuation rings, resp. residue class fields, ofL\K. Suppose that (n, p) = 1.
+Then one has:
+(i) The extension L\K is unramified of degree /, where / is the smallest
+natural number such that qf == 1 mod n.
+(ii) The Galois group G(L\K) is canonically isomorphic to G(X\k) and is
+generated by the automorphism (p : t; \-> t;q.
+(m) o = o[a
+Proof: (i) If (f)(X) is the minimal polynomial of f over K, then the
+reduction 0(X) is the minimal polynomial of f = f mod ^3 over /c.
+Indeed, being a divisor of X" — T, 0(X) is separable and by Hensel's
+lemma cannot split into factors. 0 and 0 have the same degree, so that
+[L : K] = [*:(?) : /c] = [A. : /c] =: /. L\K is therefore unramified. The
+polynomial Xn — 1 splits over (9 and thus (because (n, p) — 1) over k into
+distinct linear factors, so that k — ¥qf contains the group \in of /i-th roots
+of unity and is generated by it. Consequently / is the smallest number such
+that \xn c W*f, i.e., such that n \qf — 1. This shows (i). (ii) results trivially
+from this.
+(iii) Since L\K is unramified, we have pO — <]3, and since 1, f, ..., f ^_1
+represents a basis of A|/c, we have O — o[t;] + p(9, and (9 = o[f ] byNakayama's lemma. □
+
+===== PDF PAGE 175 =====
+
+§ 7. Unramified and Tamely Ramified Extensions159
+(7.13) Proposition. Let f be a primitive pm -th root of unity. Then one has:
+(i) Qp(0\QP is totally ramified of degree (p(pm) = (p - l)pm~\
+(ii) G(Qp(?)|Qp) = (Z///*Z)*.
+(iii) Zp[f 1 is the valuation ring of Qp(t;).
+(iv) 1 — f is a prime element ofZp[^] with norm p.
+Proof: i= = £Pm is a primitive p-th root of unity, i.e.,
+5P-i+5P-2 + ... + 1=0> hence
+fCp-Dp""1 + £(P-2)Pm~l + ... + ! = o.
+Denoting by 0 the polynomial on the left, f - 1 is a root of the equation
+0(X +1) = 0. But this is irreducible because it satisfies Eisenstein's criterion:
+0(1) - p and 0(X) = (XPm - 1)/(X^_1 - I) = (X - l)Pm~l(P-V mod p.
+It follows that [Qp(0 : Qp] = <p(pm). The canonical injection G(Q/?(0 |Qp)
+-> (Z/pmZ)*, cr f-> /i(cr), where erf = f1^), is therefore bijective, since
+both groups have order (p(pm). Thus
+tfQptt)IQptt " ?) = Fid - *?) = 0(D = P­o
+Writing w for the extension of the normalized valuation vp of Qp, we find
+furthermore that (p(pm)w(£ - 1) = i^Q?) = 1, i.e., Q/?(OIQ/7 is totally
+ramified and f — 1 is a prime element of Q/?(0- As in the proof of (6.8),
+it follows that Zp[£ - 1] = Zp[£] is the valuation ring of Q/?(0- Thisconcludes the proof. □
+If £w is a primitive /i-th root of unity and n — n'pm, with (ra',/?) = 1,
+then propositions (7.12) and (7.13) yield the following result for the maximal
+unramified and the maximal tamely ramified extension:
+Q,^- Qp(Sn>) ^V = T{sp) c Qp(u) •
+Exercise 1. The maximal unramified extension of Qp is obtained by adjoining all
+roots of unity of order prime to p.
+Exercise 2. Let K be henselian and Knr\K the maximal unramified extension.
+Show that the subextensions of Knr\K correspond 1-1 to the subextensions of the
+separable closure ks\k.
+Exercise 3. Let L\K be totally and tamely ramified, and let A, resp. r, be the value
+group of L, resp. K. Show that the intermediate fields of L\K correspond 1-1 to
+the subgroups of A/T.
+
+===== PDF PAGE 176 =====
+
+160 Chapter II. The Theory of Valuations
+§ 8. Extensions of Valuations
+Having seen that the henselian valuations extend uniquely to algebraic
+extensions we will now study the question of how a valuation i; of a
+field K extends to an algebraic extension in general. So let v be an arbitrary
+archimedean or nonarchimedean valuation. There is a little discrepancy in
+notation here, because archimedean valuations manifest themselves only as
+absolute values while the letter v has hitherto been used for nonarchimedean
+exponential valuations. In spite of this, it will prove advantageous, and agrees
+with current usage, to employ the letter v simultaneously for both types of
+valuations, to denote the corresponding multiplicative valuation in both cases
+by | 1^ and the completion by Kv. Where confusion lurks, we will supply
+clarifying remarks.
+For every valuation v of K we consider the completion Kv and an
+algebraic closure Kv of Kv. The canonical extension of v to Kv is again
+denoted by v and the unique extension of this latter valuation to Kv by v.
+Let L | K be an algebraic extension. Choosing a K -embedding
+r : L —► Kv,
+we obtain by restriction of v to xL an extension
+w — v o x
+of the valuation v to L. In other words, if v, resp. v, are given by the absolute
+values | \v, resp. | |jj, on K, Kv, resp. Kv, where | |jj extends precisely the
+absolute value | \v of Kv, then we obtain on L the multiplicative valuation
+\x\w = |r*|ij.
+The mapping r : L -> Kv is obviously continuous with respect to this
+valuation. It extends in a unique way to a continuous K -embedding
+X '. L/W y K v,
+where, in the case of an infinite extension L\K, Lw does not mean the
+completion of L with respect to w, but the union Lw — |J- Llw of the
+completions Llw of all finite subextensions L[\K of L\K. This union
+will be henceforth called the localization of L with respect to w. When
+[L : K] < oo, r is given by the rule
+x — w -lim xn i—> xx := iJ-lim xxn,
+
+===== PDF PAGE 177 =====
+
+§ 8. Extensions of Valuations 161
+where {xn}n€^ is a w-Cauchy sequence in L, and hence {xxn}n€^ a iJ-Cauchy
+sequence in Kv. Note here that the sequence xxn converges in the finite
+complete extension xL • Kv of Kv. We consider the diagram of fields
+The canonical extension of the valuation w from L to Lw is precisely the
+unique extension of the valuation v from Kv to the extension LW\KV. We
+have
+Lyj = LKy ,
+because if L|^ is finite, then the field LKV c Lw is complete by (4.8),
+contains the field L and therefore has to be its completion. If LW\KV has
+degree n < oo, then, by (4.8), the absolute values corresponding to v and w
+satisfy the relation
+\x\w = y\NLw\KV(x)\v­
+The field diagram (*) is of central importance for algebraic number theory. It
+shows the passage from the "global extension" L\K to the "local extension"
+LW\KV and thus represents one of the most important methods of algebraic
+number theory, the so-called local-to-global principle. This terminology
+arises from the case of a function field K, for example K =C(t), where the
+elements of the extension L art algebraic functions on a Riemann surface,
+hence on a global object, whereas passing to Kv and Lw signifies looking at
+power series expansions, i.e., the local study of functions. The diagram (*)
+thus expresses in an abstract manner our original goal, to provide methods
+of function theory for use in the theory of numbers by means of valuations.
+We saw that every ^-embedding r : L -> Kv gave us an extension
+w = v o r of v. For every automorphism a e G(KV\KV) of Kv over Kv, we
+obtain with the composite
+L —> Kv —> Kv
+a new K -embedding x' — a o r of L. It will be said to be conjugate to x
+over Kv. The following result gives us a complete description of the possible
+extensions of v to L.
+(8.1) Extension Theorem. Let L\K be an algebraic field extension and v a
+valuation of K. Then one has:
+
+===== PDF PAGE 178 =====
+
+162 Chapter II. The Theory of Valuations
+(i) Every extension w of the valuation v arises as the composite w = v o r
+for some K -embedding r : L -> Kv.
+(ii) Two extensions vox and vox' are equal if and only if r and x' are
+conjugate over Kv.
+Proof: (i) Let w be an extension of v to L and Lw the localization of
+the canonical valuation, which is again denoted by w. This is the unique
+extension of the valuation v from Kv to Lw. Choosing any Kv-embedding
+x : Lw -> Kv, the valuation v o x has to coincide with w. The restriction
+of x to L is therefore a ^-embedding r : L -> Kv such that w — v o r.
+(ii) Let r and <jor, with a e G(Kv\Kv),bt two embeddings of L conjugate
+over Kv. Since v is the only extension of the valuation v from Kv to Kv,
+one has v — v o a, and thus i;or = i;o(<jor). The extensions induced to L
+by r and by a o r are therefore the same.
+Conversely, let r,r' : L -> A^ be two ^-embeddings such that
+v o x — v o xf. Let a : rL -> r;L be the ^-isomorphism <j = xf o r_1.
+We can extend a to a Kv -isomorphism
+cr : rL • Kv —> x L • Kv.
+Indeed, rL is dense in rL • Kv, so every element x e xL • Kv can be written
+as a limit
+x = lim xxn
+for some sequence xn which belongs to a finite subextension of L. As
+v o r = v o r;, the sequence r^ = crrx« converges to an element
+ax := lim axxn
+in r;L • Kv. Clearly the correspondence x h> ax does not depend on the
+choice of a sequence {xn}, and yields an isomorphism rL • Kv —> x'L • Kv
+which leaves Kv fixed. Extending cr to a Kv-automorphism a e G(KV\KV)
+gives r' = aor,so that r and x' are indeed conjugate over Kv. D
+Those who prefer to be given an extension L\K by an algebraic equation
+/(X) = 0 will appreciate the following concrete variant of the above
+extension theorem.
+Let L = K(a) be generated by the zero a of an irreducible polynomial
+f(X) e TO] and let
+f(X) = Mxr^-.fr (xy
+
+===== PDF PAGE 179 =====
+
+§ 8. Extensions of Valuations 163
+be the decomposition of f(X) into irreducible factors /i(X), ..., fr{X) over
+the completion Kv. Of course, the m, are one if / is separable. The K­
+embeddings r : L -> Kv are then given by the zeroes /? of f(X) which lieinKv: _
+x :L —> Kv, r(a) = j8.
+Two embeddings r and r' are conjugate over Kv if and only if the zeroes r (or)
+and r'(a) are conjugate over Kv, i.e., if they are zeroes of the same irreducible
+factor ft. With (8.1), this gives the
+(8.2) Proposition. Suppose the extension L\K is generated by the zero a
+of the irreducible polynomial f(X)eK[X].
+Then the valuations w\, ..., wr extending v to L correspond 1-1 to the
+irreducible factors f\, ..., fr in the decomposition
+/(X) = /i(X)mi.../r(X)m'
+of f over the completion Kv.
+The extended valuation wi is explicitly obtained from the factor ft as
+follows: let a,- e Kv be a zero of ft and let
+ti : L -+ Kv, a \-> c^,
+be the corresponding ^-embedding of L into Kv. Then one has
+w i — v o r/.
+t; extends to an isomorphism
+xt : Lw. -^ *:„(«,•)
+on the completion LWi of L with respect to W(.
+Let L\K be again an arbitrary finite extension. We will write w\v to
+indicate that w is an extension of the valuation v of K to L. The inclusions
+L c-^ Lw induce homomorphisms L ®k Kv —► ^w via (2 ® b h> ab, and
+hence a canonical homomorphism
+(p\L®K Kv —> n ^w
+u;|u
+To begin with, the tensor product is taken in the sense of vector spaces, i.e., the
+^-vector space L is lifted to a Kv-vector space L®k Kv. This latter, however,
+is in fact a Kv-algebra, with the multiplication {a (g) b)(af (g) b') — aa! ® bb'',
+and ^ is a homomorphism of Kv -algebras. This homomorphism is the subject
+of the
+
+===== PDF PAGE 180 =====
+
+164 Chapter II. The Theory of Valuations
+(8.3) Proposition. IfL\K is separable, then L ®k Kv = Y\w\v Lw
+Proof: Let or be a primitive element for L\K, so that L — K(a), and let
+f(X) e K[X] be its minimal polynomial. To every w \ v, there corresponds an
+irreducible factor fw(X) e KV[X] of f(X), and in view of the separability,
+we have f{X) — Y[w\v fw(X). Consider all the Lw as embedded into an
+algebraic closure Kv of Kv and denote by aw the image of a under L -» Lw.
+Then we find Lw — Kv(aw) and fw(X) is the minimal polynomial of aw
+over Kv. We now get a commutative diagram
+Kv[X]/(f) ► n Kv[X]/(fw)I w\v I
+l ®K kv —> n lw,
+w\v
+where the top arrow is an isomorphism by the Chinese remainder theorem.
+The arrow on the left is induced by X h-> a ® 1 and is an isomorphism because
+K[X]/(f) = K(a) — L. The arrow on the right is induced by X \-^ aw
+and is an isomorphism because Kv[X]/(fw) = Kv(aw) — Lw. Hence the
+bottom arrow is an isomorphism as well. □
+(8.4) Corollary. If L\K is separable, then one has
+[L:K] = Y\Lm ■■ Kv]
+w\v
+and
+Nl\k(ol) = n NLwlKv(a), TrLlK(a) = Y,TrLw\KM)­w\v w\v
+Proof: The first equation results from (8.3) since [L : K] = dim^(L) =
+dimKv(L ®k Kv). On both sides of the isomorphism
+L ®K Kv = Y\LW
+w\v
+let us consider the endomorphism: multiplication by a. The characteristic
+polynomial of a on the Kv -vector space L ®k Kv is the same as that on the
+K -vector space L. Therefore
+char, polynomial,K (a) = f\ char, polynomia^^^^of).
+w\v
+This implies immediately the identities for the norm and the trace. □
+
+===== PDF PAGE 181 =====
+
+§ 8. Extensions of Valuations 165
+If v is a nonarchimedean valuation, then we define, as in the henselian
+case, the ramification index of an extension w\v by
+ew = (w{L*) : v{K*))
+and the inertia degree by
+Jw — [A-w - K\,
+where Xw, resp. /c, is the residue class field of w, resp. v. From (8.4)
+and (6.8), we obtain the fundamental identity of valuation theory:
+(8.5) Proposition. If v is discrete and L\K separable, then
+£ ewfw = [L:K].
+w\v
+This proposition repeats what we have already seen in chap. I, (8.2),
+working with the prime decomposition. If K is the field of fractions of a
+Dedekind domain o, then to every nonzero prime ideal p of o is associated
+the p-adic valuation vp of K, defined by vp(a) = vp, where (a) = ["[p Pvp
+(see chap. I, § 11, p. 67). The valuation ring of vp is the localization op. If O
+is the integral closure of o in L and if
+pO = qjj1 • • • %r
+is the prime decomposition of p in L, then the valuations wt = j:v*#i->
+i = 1, ..., r, are precisely the extensions of v = t»p to L, e; are the
+corresponding ramification indices and ft — [O/^t : o/p] the inertia
+degrees. The fundamental identity
+J2eifi = [L:K]
+i=\
+has thus been established in two different ways. The raison d'etre of valuation
+theory, however, is not to reformulate ideal-theoretic knowledge, but rather,
+as has been stressed earlier, to provide the possibility of passing from
+the extension L\K to the various completions LW\KV where much simpler
+arithmetic laws apply. Let us also emphasize once more that completions
+may always be replaced with henselizations.
+Exercise 1. Up to equivalence, the valuations of the field Q(\/5) are given as
+follows.
+1) \a + bV5\{ = \a + bV5\ and \a + b^\2 = \a - b^5\ are the archimedean
+valuations.
+
+===== PDF PAGE 182 =====
+
+166 Chapter II. The Theory of Valuations
+2) If p = 2 or 5 or a prime number ^2,5 such that ( ^) = — 1, then there is
+exactly one extension of | \p to Q(\/5), namely
+\a + bV5\p = \a2-5b2\lJ2.
+3) If p is a prime number ^2,5 such that (^) = 1, then there are two
+extensions of | \p to Q(V5), namely
+|<z + bV5\Pl = \a + by\p, resp. |<z + bV5\P2 = \a - by\p,
+where y is a solution of x2 — 5 = 0 in Qp.
+Exercise 2. Determine the valuations of the field Q(z) of the Gaussian numbers.
+Exercise 3. How many extensions to Q(\/2) does the archimedean absolute value | |
+of Q admit?
+Exercise 4. Let L\K be a finite separable extension, o the valuation ring of a
+discrete valuation v andO its integral closure in L. If w\v varies over the extensions
+of v to L and o„, resp. Ow, are the valuation rings of the completions Kv, resp. Lw,
+then one has
+o®0ov = Y\dw.
+w\v
+Exercise 5. How does proposition (8.2) relate to Dedekind's proposition,
+chap. I, (8.3)?
+Exercise 6. Let L\K be a finite field extension, v a nonarchimedean exponential
+valuation, and w an extension to L. If O is the integral closure of the valuation ring o
+of v in L, then the localization Oy of O at the prime ideal Vp = {a € O \ w(a) > 0}
+is the valuation ring of w.
+§ 9. Galois Theory of Valuations
+We now consider Galois extensions L \ K and study the effect of the Galois
+action on the extended valuations w\v. This leads to a direct generalization of
+"Hilbert's ramification theory" — see chap. I, §9, where we studied, instead
+of valuations v, the prime ideals p and their decomposition p = ^Jj1 • • • ty6/ in
+Galois extensions of algebraic number fields. The arguments stay the same,
+so we may be rather brief here. However, we formulate and prove all results
+for extensions that are not necessarily finite, using infinite Galois theory. The
+reader who happens not to know this theory should feel free to assume all
+extensions in this section to be finite. On the other hand, we treat infinite
+Galois theory also in chap. IV, § 1 below. Its main result can be put in a
+nutshell like this:
+In the case of a Galois extension L \ K of infinite degree, the main theorem
+of ordinary Galois theory, concerning the 1-1 correspondence between
+
+===== PDF PAGE 183 =====
+
+§ 9. Galois Theory of Valuations 167
+the intermediate fields of L\K and the subgroups of the Galois group
+G(L\K) ceases to hold; there are more subgroups than intermediate fields.
+The correspondence can be salvaged, however, by considering a canonical
+topology on the group G(L\K), the Krull topology. It is given by defining,
+for every a e G{L\K), as a basis of neighbourhoods the cosets aG(L\M),
+where M\K varies over the finite Galois subextensions of L\K. G(L\K) is
+thus turned into a compact, Hausdorff topological group. The main theorem
+of Galois theory then has to be modified in the infinite case by the condition
+that the intermediate fields of L\K correspond 1-1 to the closed subgroups
+of G{L |K). Otherwise, everything goes through as in the finite case. So one
+tacitly restricts attention to closed subgroups, and accordingly to continuous
+homomorphisms of G(L \K).
+So let L | K be an arbitrary, finite or infinite, Galois extension with Galois
+group G = G(L |K). If v is an (archimedean or nonarchimedean) valuation
+of K and w an extension to L, then, for every a e G, w o <j also extends v,
+so that the group G acts on the set of extensions w\v.
+(9.1) Proposition. The group G acts transitively on the set of
+extensions w\v, i.e., every two extensions are conjugate.
+Proof: Let w and w' be two extensions of v to L. Suppose L\K is finite.
+If w and w' are not conjugate, then the sets
+{u?ocj|ctgG} and {w' o a \ a e G]
+would be disjoint. By the approximation theorem (3.4), we would be able to
+find an x € L such that
+\ax\w < 1 and Icrxl^/ > 1
+for all a e G. Then one would have for the norm a = Nl\k{x) = YlaeG ax
+that \a\v = Y\a \ax\w < 1 and likewise \a\v > 1, a contradiction.
+If L\K is infinite, then we let M\K vary over all finite Galois
+subextensions and consider the sets Xm = {& € G \ w o o\m = w'\m}- They are
+nonempty, as we have just seen, and also closed because, for a e G \ Xm,
+the whole open neighbourhood aG(L\M) lies in the complement of Xm­
+We have f]M Xm # 0, because otherwise the compactness of G would yield
+a relation f)ri=l Xml = 0 with finitely many M,-, and this is a contradiction
+because if M = Mx • • • Mr, then Xm = HjLi ^M, • □
+(9.2) Definition. The decomposition group of an extension wofvtoL is
+defined by
+Gw = GW(L\K) = {<r e G(L\K) \woa = w}.
+
+===== PDF PAGE 184 =====
+
+168 Chapter II. The Theory of Valuations
+If v is a nonarchimedean valuation, then the decomposition group contains
+two further canonical subgroups
+Gw 5 Iw 5 Rw,
+which are defined as follows. Let o, resp. O, be the valuation ring, p,
+resp. ^J, the maximal ideal, and let k = o/p, resp. k = O/^p, be the residue
+class field of u, resp. w.
+(9.3) Definition. The inertia group of w | v is defined by
+Iw = IW(L\K) = [a eGw \ ax==x mod <£ foraii igO}
+and the ramification group by
+Rw = RW(L\K) = [a eGw\ *f == 1 mod qj for all jcgL*}.
+Observe in this definition that, for a e Gw, the identity w ocr = w implies
+that one always has aO = (9 and crx/x e O, for all x e L*.
+The subgroups GW,IW,RW of G = G(L|^T), and in fact all canonical
+subgroups we will encounter in the sequel, are all closed in the Krull
+topology. The proof of this is routine in all cases. Let us just illustrate the
+model of the argument for the example of the decomposition group.
+Let a e G = G(L |K) be an element which belongs to the closure of Gw.
+This means that, in every neighbourhood <jG(L|M), there is some element
+om of Gw. Here M\K varies over all finite Galois subextensions of L\K.
+Since om € crG(L|M), we have <jm\m = ct|m» and w o <jm = w implies
+that w o a\m = w o om\m — w|m- As L is the union of all the At, we get
+w o a = w, so that a e Gw. This shows that the subgroup Gw is closed
+inG.
+The groups GW,IW,RW carry very significant information about the
+behaviour of the valuation v of K as it is extended to L. But before going
+into this, we will treat the functorial properties of the groups GW,IW,RW.
+Consider two Galois extensions L\K and L'\K' and a commutative
+diagram
+L—^-^L'
+K—^K'
+
+===== PDF PAGE 185 =====
+
+§ 9. Galois Theory of Valuations 169
+with homomorphisms r which will typically be inclusions. They induce a
+homomorphism
+r* : G{L'\K') —► G(L\K), x\a') = ^Vr.
+Observe here that, L\K being normal, the same is true of xL\xK, and thus
+one has a'xL c rL, so that composing with r_1 makes sense.
+Now let w' be a valuation of L\ 1/ = w'Ia:' and w — w' ox,v — w\k­
+Then we have the
+(9.4) Proposition, r* : G(L71^0 -> G(L|^T) induces homomorphisms
+GW>{L'\K')-+GW{L\K),
+Iw,(L'\Kf)-^ IW(L\K),
+Rw,(Lf\Kf)-^Rw(L\K).
+In the latter two cases, v is assumed to be nonarchimedean.
+Proof: Let a' e GW'(L'\K') and a = r*(cr'). If x e L, then one has
+I* Loo- = \crx\w = Ir'VrxU = |or'r*L/ = |r*L/ = \x\w,
+so that cr eGw(L\K). If a' e IW>(L'\K') and x e 0, then
+w(crx — x) = u^t'^ct'tjc — tjc)) = ^'(cr'Orje) — (xx)) > 0,
+and cr € IW(L\K). If a' e Rw>(L'\Kf) and x e L*, then
+/ax \ / */g'tx \\ ,/a'xx \H(__1)_.(t-.(__,))_.'(___,)>o.so that cr g RW(L\K). □
+If the two homomorphisms r : L -> Z/ and r : ^ -> /£' are
+isomorphisms, then the homomorphisms (9.4) are of course isomorphisms.
+In particular, in the case K = K\ L = Z/, we find for each x e G(L\K):
+&WOT — T ^u)7? 'wot — T iwt •> Kwoz ~ ? R\vt •>
+i.e., the decomposition, inertia, and ramification groups of conjugate
+valuations are conjugate.
+Another special case arises from an intermediate field M of L\K by the
+diagram L = L
+K c ► M.
+r* then becomes the inclusion G(L \M) c-> G(L \K), and we trivially get the
+
+===== PDF PAGE 186 =====
+
+170 Chapter II. The Theory of Valuations
+(9.5) Proposition. For the extensions K c M c L, one has
+GW(L\M) = G„,(L|^)nG(L|M),
+/„,(L|M) = /,(L|^)nG(L|M),
+RW(L\M) = ^(L|^)nG(L|M).
+A particularly important special case of (9.4) occurs with the diagram
+L — Lw
+I ^^-KvK ^^
+which can be associated to any extension of valuations w \ v of L | K. If L \ K is
+infinite, then Lw has to be read as the localization in the sense of §8, p. 160.
+(This distinction is rendered superfluous if we consider, as we may perfectly
+well do, the henselization of L\K.) Since in the local extension LW\KV the
+extension of the valuation is unique, we denote the decomposition, inertia,
+and ramification groups simply by G(LW\KV), I(LW\KV), R(LW\KV). In
+this case, the homomorphism r* is the restriction map
+G(LW\KV) —► G(L\K), a h-> ct|l,
+and we have the
+(9.6) Proposition. GW(L\K) = G(LW\KV),
+IW(L\K) = I(LW\KV),
+RW(L\K) = R(LW\KV).
+Proof: The proposition derives from the fact that the decomposition group
+GW(L\K) consists precisely of those automorphisms a e G(L\K) which
+are continuous with respect to the valuation w. Indeed, the continuity of the
+a e GW(L \K) is clear. For an arbitrary continuous automorphism <r, one has
+\X\W < 1 => \<*x\w = \x\woa < 1,
+because \x\w < 1 means that xn and hence also axn is a u?-nullsequence,
+i.e., \ax\w < 1. By §3, p. 117, this implies that w and w o a are equivalent,
+and hence in fact equal because w\k = w oct\k, so that a e GW(L\K).
+Since L is dense in Lw, every a e GW(L\K) extends uniquely to a
+continuous Kv -automorphism a of Lw and it is clear that a e I(LW\KV),
+resp. a e R(LW\KV), if cr e IW(L\K), resp. a e RW(L\K). This proves the
+bijectivity of the mappings in question in all three cases. □
+
+===== PDF PAGE 187 =====
+
+§ 9. Galois Theory of Valuations 171
+The above proposition reduces the problems concerning a single valuation
+of K to the local situation. We identify the decomposition group GW(L\K)
+with the Galois group of Lw \ Kv and write
+GW(L\K) = G(LW\KV),
+and similarly IW(L\K) = I(LW\KV) and RW(L\K) = R(LW\KV).
+We now explain the concrete meaning of the subgroups GW,IW,RW of
+G = G(L \K) for the field extension L \K.
+The decomposition group Gw consists — as was shown in the proof
+of (9.6) — of all automorphisms a e G that are continuous with respect
+to the valuation w. It controls the extension of v to L in a group-theoretic
+manner. Denoting by GW\G the set of all right cosets Gwcr, by Wv the set of
+extensions of v to L and choosing a fixed extension w, we obtain a bijection
+GW\G -A Wv, Gwcr i—> wa.
+In particular, the number #WV of extensions equals the index (G : Gw). As
+mentioned already in chap. I, §9 — and left for the reader to verify - the
+decomposition group also describes the way a valuation i; extends to an
+arbitrary separable extension L\K. For this, we embed L\K into a Galois
+extension N\K, choose an extension w of v to N, and put G = G(N\K),
+H = G(N\L), Gw = GW(N\K), to get a bijection
+GW\G/H -^ Wv, GwaH ^woa\L.
+(9.7) Definition. The fixed field of Gw,
+Zw = ZW(L\K) = [x e L\ ax = x for all a e Gw],
+is called the decomposition field ofw over K.
+The role of the decomposition field in the extension L \ K is described by
+the following proposition.
+(9.8) Proposition.
+(i) The restriction wz ofw to Zw extends uniquely to L.
+(ii) If v is nonarchimedean, wz has the same residue class field and the
+same value group as v.
+(iii) Zw = L fl Kv (the intersection is taken inside Lw).
+
+===== PDF PAGE 188 =====
+
+172 Chapter II. The Theory of Valuations
+Proof: (i) An arbitrary extension w' of wz to L is conjugate to w over Zw;
+thus w' = w o <j, for some a e G(L\ZW) = Gw, i.e., u/ = w.
+(iii) The identity Z^ = L D Kv follows immediately from GW(L\K) =
+G{LW\KV).
+(ii) Since Kv has the same residue class field and the same value group as K,
+the same holds true for Zw = L n Kv. D
+The inertia group Iw is defined only if w is a nonarchimedean valuation
+of L. It is the kernel of a canonical homomorphism of Gw. For if O is
+the valuation ring of w and ty the maximal ideal, then, since aO = O and
+aty = qj, every cr g Gw induces a /c-automorphism
+a : Offl —► <9/qj, jc mod ^ h-> ctjc mod qj,
+of the residue class field A., and we obtain a homomorphism
+Gw —► Au^(A.)
+with kernel Iw.
+(9.9) Proposition. The residue class field extension X\k is normal, and we
+have an exact sequence
+1 —► /„; —► G„, —► G(k\K) -^ 1.
+Proof: In the case of a finite Galois extension, we have proved this already
+in chap. I, (9.4). In the infinite case X\k is normal since L\K, and hence
+also k\K, is the union of the finite normal subextensions. In order to prove
+the surjectivity of / : Gw -> G(X\k) all one has to show is that f(Gw) is
+dense in G(X\k) because f(Gw), being the continuous image of a compact
+set, is compact and hence closed. Let a e G(X.\k) and aG(A|/x) be a
+neighbourhood of a, where ji\k is a finite Galois subextension of X\k. We
+have to show that this neighbourhood contains an element of the image /(r),
+r e Gw. Since Zw has the residue class field /c, there exists a finite Galois
+subextension M\ZW of L\ZW whose residue class field M contains the field
+Ii. As G(M\ZW) -> G(M|/c) is surjective, the composite
+G„ = G(L\ZW) —► G(M|Zu;) —► G(M|/c) -^ G(/x|/c)
+is also surjective, and if r e Gw is mapped to al^, then /(r) E orG(A.|/x),as required. D
+
+===== PDF PAGE 189 =====
+
+§ 9. Galois Theory of Valuations 173
+(9.10) Definition. The fixed field ofIw,
+Tw = TW(L\K) = [x eL \ ax = x for all a e Iw} ,
+is called the inertia field of w over K.
+For the inertia field, (9.9) gives us the isomorphism
+G(TW\ZW) = G(k\K).
+It has the following significance for the extension L\K.
+(9.11) Proposition. Tw \ Zw is the maximal unramified subextension ofL \ Zw.
+Proof: By (9.6), we may assume that K = Zw is henselian. Let T\K be the
+maximal unramified subextension of L\K. It is Galois, since the conjugate
+extensions are also unramified. By (7.5), T has the residue class field Xs, and
+we have an isomorphism
+G(T\K)^G(ks\K).
+Surjectivity follows from (9.9) and the injectivity from the fact that T\K
+is unramified: every finite Galois subextension has the same degree as its
+residue class field extension. An element a e G(L\K) therefore induces the
+identity on Xs, i.e., on A., if and only if it belongs to G(L \T). Consequently,
+G(L\T) = Iw, hence T = TW. D
+If in particular K is a henselian field and KS\K its separable closure, then
+the inertia field of this extension is the maximal unramified extension T \ K
+and has the separable closure ks \k as its residue class field. The isomorphism
+G(T\K) = G(ks\k)
+shows that the unramified extensions of K correspond 1-1 to the separable
+extensions of k.
+Like the inertia group, the ramification group Rw is the kernel of a
+canonical homomorphism
+IW^X(L\K),
+where
+X(L|/0 = Hom(^/r,r),
+
+===== PDF PAGE 190 =====
+
+174 Chapter II. The Theory of Valuations
+where A = w(L*), and r = v(K*). If a € Iw, then the associated
+homomorphism
+Xa: Air -> r
+is given as follows: for 5 = 8 mod r e A/T, choose ani e L* such that
+u;(jc) = 5 and put
+(JJC
+Xa(5)= — mod^J.
+X
+This definition is independent of the choice of the representative 8 e 8 and of
+x e L*. For if x' e L* is an element such that w(x') = w(x) mod r,
+then w(xf) = w(xa), a e K*. Then x' = xau, u e O*, and since
+au/u == 1 mod *P (because o e /<p), one gets ox'jx' = ai/i mod *p.
+One sees immediately that mapping a \-+ Xo is a homomorphism
+/w -> X(^l^) w^h kernel 7?^.
+(9.12) Proposition. Rw is the unique p-Sylow subgroup of Iw.
+Remark: If L \ K is a finite extension, then it is clear what this means. In the
+infinite case it has to be understood in the sense of profinite groups, i.e., all
+finite quotient groups of Rw, resp. Iw/Rw, by closed normal subgroups have
+p-power order, resp. an order prime to p. In order to understand this better,
+we refer the reader to chap. IV, §2, exercise 3-5.
+Proof of (9.12): By (9.6), we may assume that K is henselian. We restrict to
+the case where L \ K is a finite extension. The infinite case of the proposition
+follows formally from this.
+If Rw were not a p-group, then we would find an element a e Rw of
+prime order I / p. Let K' be the fixed field of a and k' its residue class
+field. We show that k' = k. Since Rw c Iw, we have that T c K'. Thus
+ks Cj k\ so that A.I*:' is purely inseparable and of p -power degree. On the
+other hand, the degree has to be a power of I, for if a e A. and if a e L is
+a lifting of a, and f(x) e Kf[x] is the minimal polynomial of a over K\
+then f(x) = g(x)m, where g(x) e Kr[x] is the minimal polynomial of a
+over k\ which has degree either 1 or t, as this is so for f(x). Thus we
+have indeed k' = k, so that L\K' is tamely ramified, and by (7.7) is of the
+form L = K'(a) with a = ^/a, a e K'. It follows that aa = for, with a
+primitive £-\h root of unity f e K'. Since a e Rw,we have on the other hand
+aa/a = f = 1 mod ^J, a contradiction. This proves that Rw is a p-group.
+Since p = char(A.), the elements in k* have order prime to p, provided
+they are of finite order. The group x(^l^) = VLom(A/r, k*) therefore has
+order prime to p. This also applies to the group Iw/Rw c x(L\K), so that
+Rw is indeed the unique p-Sylow subgroup. □
+
+===== PDF PAGE 191 =====
+
+§ 9. Galois Theory of Valuations 175
+(9.13) Definition. The fixed field ofRw,
+Vw = VW(L\K) = [x e L\ax = x for all a e Rw] ,
+is called the ramification field ofw over K.
+(9.14) Proposition. VW\ZW is the maximal tamely ramified subextension
+ofL\Zw.
+Proof: By (9.6) and the fact that the value group and residue class field do
+not change, we may assume that K = Zw is henselian. Let Vw be the fixed
+field of Rw. Since Rw is the p-Sylow subgroup of Iw, Vw is the union of
+all finite Galois subextensions of L\T of degree prime to p. Therefore Vw
+contains the maximal tamely ramified extension V of T (and thus of Zw).
+Since the degree of each finite subextension M\V of Vw\V is not divisible
+by p, the residue field extension of M\V is separable (see the argument in
+the proof of (9.12)). Therefore VW\V is tamely ramified, and Vw = V. □
+(9.15) Corollary. We have the exact sequence
+!—►/?„—►/„—► X(L\K) —> 1.
+Proof: By (9.6) we may assume, as we have already done several times
+before, that K is henselian. We restrict to considering the case of a finite
+extension L\K. In the infinite case the proof follows as in (9.9). We have
+already seen that Rw is the kernel of the arrow on the right. It therefore
+suffices to show that
+(Iw:Rw) = [Vw:Tw]=#x(L\K).
+As TW\K is the maximal unramified subextension of VW\K, VW\TW has
+inertia degree 1. Thus, by (7.7),
+[Vw:Tw] = #(w(Y*)/w(T*)).
+Furthermore, by (7.5), we have w(T£) = v(K*) =: T, and putting
+A = w(L*)9 we see that w(V*)/v(K*) is the subgroup A^/T of A/T
+consisting of all elements of order prime to p, where p = char(/c). Thus
+[Vw:Tw] = #(A^/r).
+Since k* has no elements of order divisible by p, we have on the other hand
+that
+X(L\K) = Hom(A/r, k*) = Uom(A(p)/r, X*).
+
+===== PDF PAGE 192 =====
+
+176 Chapter II. The Theory of Valuations
+But (7.7) implies that k* contains the ra-th roots of unity whenever A^/T
+contains an element of order ra, because then there is a Galois extension
+generated by radicals Tw(%/a)\Tw of degree m. This shows that x(L\K) is
+the Pontryagin dual of the group A^/T so that indeed
+[VW:TW]=#(A^/D=#X(L\K). □
+Exercise 1. Let AT be a henselian field, L\K a tamely ramified Galois extension,
+G = G(L\K), I = I(L\K) and r = G/I = G(k\ic). Then / is abelian and becomes
+a r -module by letting a = a I e r operate on / via x h-» ax a"1.
+Show that there is a canonical isomorphism / = x(L\K) of r-modules. Show
+furthermore that every tamely ramified extension can be embedded into a tamely
+ramified extension L\K, such that G is the semi-direct product of x(L\K) with
+G(k\K): G = x(L\K) x G(k\ic).
+Hint: Use (7.7).
+Exercise 2. The maximal tamely ramified abelian extension V of Qp is finite over
+the maximal unramified abelian extension T of Qp.
+Exercise 3. Show that the maximal unramified extension of the power series field
+K = Fp((f)) is given by T = Fp((/)), where ¥p is the algebraic closure of Fp, and
+the maximal tamely ramified extension by T{[^/t \ m £N,(m,p) = 1}).
+Exercise 4. Let v be a nonarchimedean valuation of the field K and let v be an
+extension to the separable closure K of K. Then the decomposition field Z„ of v
+over K is isomorphic to the henselization of K with respect to v, in the sense of §6,
+p. 143.
+§ l(h Higher Ramification Groups
+The inertia group and the ramification group inside the Galois group of
+valued fields are only the first terms in a whole series of subgroups that we
+are now going to study. We assume that L\K is a finite Galois extension
+and that vk is a discrete normalized valuation of K, with positive residue
+field characteristic p, which admits a unique extension w to L. We denote
+by vi = ew the associated normalized valuation of L.
+(10.1) Definition. For every real number s > — 1 we define the s-th
+ramification group of L\K by
+Gs = GS(L\K) = {a eG\ vL(aa-a) >s + l for all a e O) .
+
+===== PDF PAGE 193 =====
+
+10. Higher Ramification Groups 177
+Clearly, G_i — G, Go is the inertia group / = I(L\K), and G\ the
+ramification group R = R(L\K) which have already been defined in (9.3).
+As
+vi(x~l<jxa — a) — vi^x~x{axa — xa)) = vi^a{ra) — xa)
+and xO — O, the ramification groups form a chain
+G = G_12Go2Gi2G22--­
+of normal subgroups of G. The quotients of this chain satisfy the
+(10.2) Proposition. Let tvl e O be a prime element ofL. For every integer
+s > 0, the mapping
+r /r . TJ{s)ITAs+\) ^_^ °*l(Jsl^s+X > Ul /Ul . or I > 9
+is an injective homomorphism which is independent of the prime element tvl .
+Here U^ denotes the s-th group of principal units of L, i.e., UL = (9*
+anduP = l+nsL0, fors > 1.
+We leave the elementary proof to the reader. Observe that one has
+UJV/U^ = A* and f/P/^?+1) = K for 5 > 1. The factors Gs/Gs+l are
+therefore abelian groups of exponent p, for s > 1, and of order prime to p,
+for s = 0. In particular, we find again that the ramification group R = Gi is
+the unique p-Sylow subgroup in the inertia group / = Go.
+We now study the behaviour of the higher ramification groups under
+change of fields. If only the base field K is changed, then we get directly
+from the definition of the ramification groups the following generalization
+of (9.5).
+(10.3) Proposition. If K' is an intermediate field ofL\K, then one has, for
+alls > -1, that
+Gs(L\K') = Gs(L\K)nG(L\Kf).
+Matters become much more complicated when we pass from L\K to a
+Galois subextension L'\K. It is true that the ramification groups of L\K are
+mapped under G(L\K) -> G(Lf\K) into the ramification groups of V\K,
+but the indexing changes. For the precise description of the situation we
+need some preparation. We will assume for the sequel that the residue field
+extension X\k of L\K is separable.
+
+===== PDF PAGE 194 =====
+
+178 Chapter II. The Theory of Valuations
+(10.4) Lemma. The ring extension O of o is monogenous, i.e., there exists
+anx e O such that O = o[x].
+Proof: As the residue field extension X\k is separable by assumption, it
+admits a primitive element x. Let /(X) G o[I] be a lifting of the minimal
+polynomial f(X) of x. Then there is a representative x e O of x such that
+n = f{x) is a prime element of O. Indeed, if x is an arbitrary representative,
+then we certainly have vi{f{x)) > 1 because f(x) = 0. If x itself is not as
+required, i.e., if vl(/(x)) > 2, the representative x + tvl will do. In fact,
+from Taylor's formula
+f{x + jtL) = f(x) + f\x)itL +bnl, beO,
+we obtain VL(f{x + ni)) = 1 since /'(*) e (9*, because ff(x) / 0. In the
+proof of (6.8), we saw that the
+xJjv1 = xJf(xY , j = 0, ...,/- 1, i = 0, ..., * - 1,
+form an integral basis of O over o. Hence indeed O = o[x]. □
+For every a e G we now put
+iL\K(<r) = ul(<tx -*),
+where (9 = o[jc]. This definition does not depend on the choice of the
+generator x and we may write
+Gs(L\K) = {creG\iLlK(cr)>s + l}.
+Passing to a Galois subextension L'\K of L\K, the numbers il\k(g) obey
+the following rule.
+(10.5) Proposition. Ifef — eL\v is the ramification index of L\L', then
+iu\K(<y') =- E iL\K(v).
+eo\Ll=o<
+Proof: For a' = 1 both sides are infinite. Let a' / 1, and let O = o[jc] and
+<9' = o[j], with Of the valuation ring of V. By definition, we have
+e'iL'\K{<ff) = UL^'y-y). ^L|A:(^) = ul(<™ -*).
+We choose a fixed cr e G = G(L\K) such that <t|// = cr''. The other
+elements of G with image a' in G' = G(L'|^T) are then given by err,
+r e H = G{L \ V). It therefore suffices to show that the elements
+a — ay — y and b = [~[ (crrx — x)re//
+generate the same ideal in O.
+
+===== PDF PAGE 195 =====
+
+10. Higher Ramification Groups 179
+Let f(X) e Of[X] be the minimal polynomial of x over V'. Then
+f(X) = Y\teh(X — rx). Letting a act on the coefficients of /, we get the
+polynomial (af)(X) = FUg//^ — crrx). The coefficients of of — f are all
+divisible by a = ay — y. Hence a divides (af)(x) — fix) = ±b.
+To show that conversely b is a divisor of a, we write y as a polynomial
+in x with coefficients in o, y = g(jc). As x is a zero of the polynomial
+g(X)-y eC>'[X],wehave
+g(X)-y = f(X)h(X), h(X)eOf[X]­
+Letting a operate on the coefficients of both sides and then substituting
+X = x yields y — ay = (ot/)(jc)(otA)(jc) = ±6(crA)(jc), i.e., b divides a. D
+We now want to show that the ramification group GS(L\K) is mapped
+onto the ramification group Gt(L'\K) by the projection
+G(L\K) —► G{L'\K\
+where £ is given by the function tjl\k • [—1, oo) -> [—1, oo),
+fs dxt = rjLlK(s)= / •
+Here (Go : Gx) is meant to denote the inverse (Gx : Go)-1 when
+-1 < x < 0, i.e., simply 1, if -1 < x < 0. For 0<m<s<m + l,meN,
+we have explicitly
+^li/Ks) = — (gi + g2 + • • • + gm + (J - /w)gm+i), &■ = #G/.go
+The function 77^^ can be expressed in terms of the numbers il\k(g) as
+follows:
+(10.6) Proposition. rjLlK(s) = — £a€G min{*L|ff(or),.s + 1} - 1.
+Proof: Let 0(s) be the function on the right-hand side. It is continuous and
+piece wise linear. One has 6(0) = tjl\k(0) = 0, and if m > —1 is an integer
+and m < 5 < m + 1, then
+0'(j) = -#{a e G I iLlK(a) > m + 2} = —— = rj'LlK(s).go (Go : Gm+i)Hence 0 = ?7lja:- □
+
+===== PDF PAGE 196 =====
+
+180 Chapter II. The Theory of Valuations
+(10.7) Theorem (Herbrand). Let Lf\K be a Galois subextension of L\K
+andH = G{L\V). Then one has
+Gs{L\K)H/H = Gt{L'\K) where t = rjLlu(s).
+Proof: Let G = G(L\K), Gf = G(L'\K). For every a' e G', we choose an
+preimage a e G of maximal value il\k(&) and show that
+(*) iv\K(o') - 1 = TlL\L'{iL\K(p) ~ 1) •
+Let m = il\k(g)- If r e H belongs to //m_i = Gm_i(L|Z/), then
+*L|ff(*) > /w, and j'li/Ko^) > m> so that iL|j:(<rr) = m. If r ^ //w_i,
+then iL\K(j) < w and il\k(^^) = *L|irCO. hi both cases we therefore
+find that il\k(^^) = min{i£|£(r),/w}. Applying (10.5), this gives
+iz/iff^') = -E min{/L|A:(r),m} .
+Since i'li^(t) = iL\u(*) and *' = eL\u = ##o, (10.6) gives the formula (*),
+which in turn yields
+af e GSH/H <=> iL\K(a) -l>s <=> rjLlu(iLlK(a) - 1) > u\L<s)
+«=> iu\K(<yf) - 1 > rjL\L'(s)
+<=> cr'eGt(L'\K), t = riL\L<s). □
+The function 77^1 k is by definition strictly increasing. Let the inverse
+function be ^l\k • [—1> 00) -> [—1,00). One defines the upper numbering
+of the ramification groups by
+G\L\K)\=GS(L\K) where s = fL\K(t).
+The functions ttji\k and t/^lia: satisfy the following transitivity condition:
+(10.8) Proposition. IfL'\K is a Galois subextension ofL\K, then
+r}L\K = rjL'\K o t)l\v and \jfL\K = ^LjL/ o ^L/jA:.
+Proof: For the ramification indices of the extensions L\K9 L'\K, L\L'
+we have eL\K = eL>\KeL\L<. From (10.7), we obtain Gs/Hs = (G/H)t,
+t = y/LiL'W; thus
+—#G, = -^—#(G/H)t-^—#Hs.eL\K ev\K cl\v
+
+===== PDF PAGE 197 =====
+
+§10. Higher Ramification Groups 181
+This equation is equivalent to
+As rjL]K(0) = (r)v\K o rjL\L>)(0), it follows that rjL{K = x]V\K o //L,L/ andthe formula for ^ follows. D
+The advantage of the upper numbering of the ramification groups is that
+it is invariant when passing from L\K to a Galois subextension.
+(10.9) Proposition. Let L'\K be a Galois subextension of L\K and
+H = G(L\L'). Then one has
+Gf(L\K)H/H = G'(Z/|iO.
+Proof: We put s = fv\K(t), & = G(L'\K), apply (10.7) and (10.8), and
+get
+GfH/H = G^K{t)H/H = G^|l/(^(0) = G'nLlL,wLlL,(s))= Gfs = Gft. □
+Exercise 1. Let K — Qp and Kn = K(t;), where f is a primitive pn-th root of unity.
+Show that the ramification groups of Kn\K are given as follows:
+Gs = G(Kn\K) for 5 = 0,
+Gs = G(Kn\Kl) foTl<s<p-l,
+Gs = G(Kn\K2) for p<s<p2-l,
+Gs = 1 for pn~l <s.
+Exercise 2. Let K' be an intermediate field of L\K. Describe the relation between
+the ramification groups of L\K and of L\K' in the upper numbering.
+
+===== PDF PAGE 198 =====
+

@@ -1,0 +1,4375 @@
+
+===== PDF PAGE 435 =====
+
+Chapter VII
+Zeta Functions and L-series
+§ 1. The Riemann Zeta Function
+One of the most astounding phenomena in number theory consists in the
+fact that a great number of deep arithmetic properties of a number field are
+hidden within a single analytic function, its zeta function. This function has
+a simple shape, but it is unwilling to yield its mysteries. Each time, however,
+that we succeed in stealing one of these well-guarded truths, we may expect to
+be rewarded by the revelation of some surprising and significant relationship.
+This is why zeta functions, as well as their generalizations, the L-series,
+have increasingly moved to the foreground of the arithmetic scene, and today
+are more than ever the focus of number-theoretic research. The fundamental
+prototype of such a function is Riemann's zeta function
+oo J
+where s is a complex variable. It is to this important function that we turn
+first.
+(1.1) Proposition. The series t;(s) = Y1T=\ ~T 1S absolutely and uniformly
+convergent in the domain Re(s) > 1 + 5, for every 8 > 0. It therefore
+represents an analytic function in the half-plane Re(s) > 1. One has Euler's
+identity
+where p runs through the prime numbers.
+Proof: For Re(s) = a > 1+<5, the series J^i | \/ns | = Y%=\ l/"a admits
+the convergent majorant YlnLi l/^1+<5> i-e., t;(s) is absolutely and uniformly
+convergent in this domain. In order to prove Euler's identity, we remind
+ourselves that an infinite product YlnLi an °f complex numbers an is said to
+converge if the sequence of partial products Pn = a\ - — an has a nonzero
+limit. This is the case if and only if the series Y^=\ l°g^« converges, where
+log denotes the principal branch of the logarithm (see [2], chap. V, 2.2). The
+J. Neukirch, Algebraic Number Theory
+© Springer-Verlag Berlin Heidelberg 1999
+
+===== PDF PAGE 436 =====
+
+420 Chapter VII. Zeta Functions and L -series
+product is called absolutely convergent if the series converges absolutely.
+In this case the product converges to the same limit even after a reordering
+of its terms an.
+Let us now formally take the logarithm of the product
+E(s) = UirJ—j'p 1 - P s
+We obtain the seriesoo llog E(s) = ZJ:
+P n=\ npns
+It converges absolutely for ReO) = a > 1 + 8. In fact, since \pns| = pno >
+p(i+8)n^ one ^g tjie convergent majorant
+00 / 1 \n 1 1
+/? «=1 XP ' p P A PK
+This implies the absolute convergence of the product
+£(5) = nrJ^=exp(n£^7))­p l P y p n=\ nP '
+In this product we now expand the product of the factors1 1 1
+1 + — +1 — p~s ps p2s
+for all prime numbers p\, ..., pr < N, and obtain the equality
+1 52, 1 _, 1
+(*)
+p<JL 1 " P~S v„5r=0 (K1 • • • PrrY ? »*
+where ]T' denotes the sum over all natural numbers which are divisible only
+by prime numbers p < N. Since the sum ]P' contains in particular the terms
+corresponding to all n < N, we may also write
+n 7-^= e 4+ E'4­p<N 1 - P S n<N ns n>N ns
+Comparing now in (*) the sum ]P' with the series £(s), we get
+><N l - P n>N n n>N n
+Pi\">
+where the right hand side goes to zero as N -> oo because it is the remainder
+of a convergent series. This proves Euler's identity. □
+
+===== PDF PAGE 437 =====
+
+1. The Riemann Zeta Function 421
+Euler's identity expresses the law of unique prime factorization of natural
+numbers in a single equation. This already demonstrates the number-theoretic
+significance of the zeta function. It challenges us to study its properties more
+closely. By its definition, the function is only given on the half-plane
+Re(s) > 1. It does, however, admit an analytic continuation to the whole
+complex plane, with the point s = 1 removed, and it satisfies a functional
+equation which relates the argument s to the argument 1 — s. These crucial
+facts will be proved next. The proof hinges on an integral formula for the
+zeta function f (s) which arises from the well-known gamma function. This
+latter is defined for Re(s) > 0 by the absolutely convergent integral
+oo
+r(s)= / <?->/ —
+0
+■/
+0
+and obeys the following rules (see [34], vol. I, chap. I).
+(1.2) Proposition, (i) The gamma function is analytic and admits a
+meromorphic continuation to all of C.
+(ii) It is nowhere zero and has simple poles at s = — n, n = 0,1,2, ..., with
+residues (—l)n/nl. There are no poles anywhere else.
+(iii) It satisfies the functional equations
+i)r(S + i) = sr(s)9
+2) r(s)r(i-s) = -r5—>
+SHUTS
+3) r(s)r(s + £) = ^r(2s) (Legendre's duplication formula).
+(iv) It has the special values T(l/2) = y/n, T(l) = 1, r(k + 1) = *!,
+k = 0,1,2, ....
+To relate the gamma function to the zeta function, start with the substitution
+y \-+ 7tn2y, which gives the equation
+oo
+nls J y
+o
+Now sum over all n e N and get
+oo
+»v * dyn-sr(s)!;(2s)= /"Se-^V­J n=\
+0
+
+===== PDF PAGE 438 =====
+
+422 Chapter VII. Zeta Functions and L -series
+Observe that it is legal to interchange the sum and the integral becauseoo oo
+£ f \e'nn2yys\— = T f e~nn2yyRe(s) —n=\J y n=\J y0 0
+= 7r-Re(5)r(Re(^))f(2Re(5)) < oo.
+Now the series under the integral,
+g(y) = £ e-*n2y,
+n=\
+arises from Jacobi's classical theta series
+0(z)= Y, enin2z = l+2J2 eninl\neZ n=\
+i.e., we have g(y) = \(0(iy) — 1). The function
+Z(s) = 7t-s/2r(s/2)S(s)
+is called the completed zeta function. We obtain the
+(1.3) Proposition. The completed zeta function Z(s) admits the integral
+representation
+oo
+Z(s)=l-j{G(iy)-l)fl^.
+0
+The proof of the functional equation for the function Z(s) is based on the
+following general principle. For a continuous function / : R^ -> C on the
+group ]R+ of positive real numbers, we define the Mellin transform to be
+the improper integral
+oo
+L(f,s) = f(f(y)-f(oo))ys^>
+o
+provided the limit /(oo) = lim^oo f(y) and the integral exist. The
+following theorem is of pivotal importance, also for later applications.
+We will often refer to it as the Mellin principle.
+
+===== PDF PAGE 439 =====
+
+§ 1. The Riemann Zeta Function 423
+(1.4) Theorem. Let f,g:R+-+Cbe continuous functions such that
+f(y) = a0 + 0(e-cya), g(y) = b0 + 0(e~cya\
+for y -> oo, with positive constants c,ot. If these functions satisfy the
+equation
+f(-)=Cykg(y),
+for some real number k > 0 and some complex number C ^ 0, then one has:
+(i) The integrals L(f, s) and L(g, s) converge absolutely and uniformly ifs
+varies in an arbitrary compact domain contained in [s e C | Re(s) > k}.
+They are therefore holomorphic functions on [s e C | Re(s) > k}. They
+admit holomorphic continuations to C \ {0, k}.
+(ii) They have simple poles ats = 0 and s = k with residues
+Ress=0 L(f,s) = -oo, Ress=k L(f,s) = Cb0, resp.
+Res5=0 L(g,s) = -b0, Ress=k L(g,s) = C~xa0.
+(iii) They satisfy the functional equation
+L(f,s) = CL(g,k-s).
+Remark 1: The symbol (p(y) = 0(i//(y)) means, as usual, that one has
+cp(y) = c(y)\/f(y), for some function c(y) which stays bounded under the
+limit in question, so in our case, as y -> oo.
+Remark 2: Condition (ii) is to be understood to say that there is no pole
+if a0 = 0, resp. bo = 0. But there is a pole, which is simple, if a0 ^ 0,
+resp. bo ^ 0.
+Proof: If s varies over a compact subset of C, then the function e~cy<xyG,
+a = Re(s), is bounded for y > 1 by a constant which is independent of a.
+Therefore the condition f(y) = a0 + 0(e~cy<x) gives the following upper
+bound for the integrand of the Mellin integral L(f,s).
+| (f(y) - ao)ys~l\ < Be-^y^y-1 < *'l,
+y2
+for all y > 1, with constants B,Bf. The integral f™(f(y) — a0)ys~ldy
+therefore admits the convergent majorant f™ — dy which is independent
+of s. It therefore converges absolutely and uniformly, for all s in the compact
+subset. The same holds for f™(g(y) — bo)ys~l dy.
+
+===== PDF PAGE 440 =====
+
+424 Chapter VII. Zeta Functions and L -series
+Now let Re(s) > k. We cut the interval of integration (0, oo) into (0,1]
+and (l,oo) and writeOO 1
+L(f,s) = J{f(y)-ao)ys^-+j(f(y)-ao)ys
+dyy J y
+0
+For the second integral, the substitution y h-> \/y and the equation
+f(l/y) = Cykg(y) give:
+M>-«»■?=-^l>/'#>~?
+1
+oo
+= -^+c[(g(y)-b0)/-^dy-^.s J k — s
+l
+By the above, it also converges absolutely and uniformly for Re(s) > k. We
+therefore obtaindo Cbc)£(/,*) = --° + j+F(s),s s — k
+where
+oo
+y
+oo
+F(s) = J[(f(y) - a0)ys + C(g(y) - b0)yk~s]
+Swapping / and g, we see from g(l/y) = C 1ykf(y) that:
+s s — k
+where
+oo
+G(s) = j[(g(y) - b0)ys + C~\f(y) - a0)yk~s] ^ •
+l
+The integrals F(s) and G(s) converge absolutely and locally uniformly on
+the whole complex plane, as we saw above. So they represent holomorphic
+functions, and one obviously has F(s) = CG(k—s). Thus L(/, s) and L(g, s)
+have been continued to all of C \ {0, k] and we have L(/, s) = CL(g,k—s).
+This finishes the proof of the theorem. □
+The result can now be applied to the integral (1.3) representing the
+function Z(s). In fact, Jacobi's theta function 9(z) is characterized by the
+following property.
+
+===== PDF PAGE 441 =====
+
+§ 1. The Riemann Zeta Function 425
+(1.5) Proposition. The series
+9(z) = £ enin2z
+neZ
+converges absolutely and uniformly in the domain {z e C | Im(z) > 5},
+for every 8 > 0. It therefore represents an analytic function on the upper
+half-plane H = {z e C | Im(z) > 0}, and satisfies the transformation formula
+e(-l/z) = y/z/id(z).
+We will prove this proposition in much greater generality in § 3 (see (3.6)),
+so we take it for granted here. Observe that if z lies in H then so does — 1/z.
+The square root ^Jz/i is understood to be the holomorphic function
+h(z)=e?l0*z/\
+where log indicates the principal branch of the logarithm. It is determined
+uniquely by the conditions
+h(z)2 = z/i and h(iy) = ^/y > 0 for y e R^.
+(1.6) Theorem. The completed zeta function
+Z(s) = 7t-^2r(s/2)^s)
+admits an analytic continuation to C \ {0,1}, has simple poles at s = 0
+and s = 1 with residues — 1 and 1, respectively, and satisfies the functional
+equation
+Z(s) = Z(l-s).
+Proof: By (1.3), we have
+oo
+Z(2s)=l-j{d{iy)-\)ys^-,
+0
+i.e., Z(2s) is the Mellin transform
+Z(2s) = L(f,s)
+of the function f(y) = \9{iy). Since
+oo 9
+0(i)O = 1 + 2e~*y( 1 + £ e-"*"2-^),
+n=2
+
+===== PDF PAGE 442 =====
+
+426 Chapter VII. Zeta Functions and L -series
+one has f(y) = \ + 0(e ny). From (1.5), we get the transformation formula
+f(l/y) = l-e(-\/iy) = l-yl/29{iy) = yl/2f(y).
+By (1.4), L(f, s) has a holomorphic continuation to C \ {0,1/2} and simple
+poles at s = 0,1/2 with residues —1/2 and 1/2, respectively, and it satisfies
+the functional equation
+L(f,s) = L(f,X--s).
+Accordingly, Z(s) = L(f, s/2) has a holomorphic continuation to C \ {0,1}
+and simple poles at s = 0,1 with residues — 1 and 1, respectively, and satisfies
+the functional equation
+Z(,) = L(/,i) = L(/,i-i) = Z(l-,). D
+For the Riemann zeta function itself, the theorem gives the
+(1.7) Corollary. The Riemann zeta function f (s) admits an analytic
+continuation to C \ {1}, has a simple pole at s = 1 with residue I and
+satisfies the functional equation
+?(1-*) = 2(2jr)-Jr(j)cos(y)?(j).
+Proof: Z(s) = 7t~s/2r(s/2)t;(s) has a simple pole at s = 0, but so does
+r(s/2). Hence f (s) has no pole. At s = 1, however, Z(s) has a simple pole,
+and so does f (s), as T(l/2) = ^/ifr. The residue comes out to be
+Res5=1 £(*) = nl/2r(l/2)-1 Res5=1 Z(s) = 1.
+The equation Z(l — s) = Z(s) translates into
+(*) ^I-^ttH—* f(s).
+^ 2 '
+Substituting (1 — s)/2, resp. 5/2, into the formulae (1.2), (iii), 2) and 3) gives
+r(-2)r(-2-) = -i-ris)>
+V 2 / V 2 / cos(tt5/2)'
+
+===== PDF PAGE 443 =====
+
+§ 1. The Riemann Zeta Function 427
+and after taking the quotient,
+/s\ / /I — s\ 2 ns
+r(j)A(—) = 2vrosTrw­
+Inserting this into (*) now yields the functional equation claimed. □
+At some point during the first months of studies every mathematics student
+has the suprise to discover the remarkable formula
+oo 1 1
+n=\ n2 6
+It is only the beginning of a sequence:oo 1 1 oo 1 1E1 L 4 v^1 L 6—r = —7T , 2_ —z — 7T , etc.n=\ nA 90 t\ n6 945
+These are explicit evaluations of the special values of the Riemann zeta
+function at the points s = 2k, k eN. The phenomenon is explained via the
+functional equation by the fact that the values of the Riemann zeta function
+at the negative odd integers are given by Bernoulli numbers. These arise
+from the function
+andaredefinedbythe
+F(t) te'
+e' -1
+series expansion
+F(t) =
+oo tk
+■fBkh
+Their relation to the zeta function gives them a special arithmetic significance.
+The first Bernoulli numbers are
+B0 = 1, B\ = -, B2 = ~, #3 = 0, #4 = — —, #5 = 0, Be = —.z o JU 4z
+In general one has i?2v+i = 0 for v > 1, because F(—t) = F(t) — t. In the
+classical literature, it is usually the function ——-, which serves for defining
+the Bernoulli numbers. As F(t) = ——- + t, this does not change anything
+except for B\, where one finds — \ instead of ^. But the above definition is
+more natural and better suited for the further development of the theory. We
+now prove the remarkable
+(1.8) Theorem. For every integer k > 0 one has
+Bk£(1-*) = --*.k
+
+===== PDF PAGE 444 =====
+
+428 Chapter VII. Zeta Functions and L -series
+We prepare the proof proper by a function-theoretic lemma. For e > 0
+and a g [s, oo], we consider the path
+C£,a = (a,e] + Ke + [e,a),
+which first follows the half-line from a to e, then the circumference
+K£ = {z | \z\ = s] in the negative direction, and finally the half-line
+from s to a:
+(1.9) Lemma. Let U be an open subset of C that contains the path C£,a
+and also the interior of Ke. Let G(z) be a holomorphic function onU \ {0}
+with a pole of order m at 0, and let G(t)tns~l (n e N), for ReO) > ^, be
+integrable on (0, (3). Then one has
+/ G(z)zW5-1rfz = (e2nins - 1) f G(t)tns~ldt.
+Proof: The integration does not actually take place in the complex plane but
+on the universal covering of C*,
+X = {(x,a) e C* x R| argx = a mod27r}.
+z and zs~l are holomorphic functions on X, namely
+z(x9a)=x, zs~l(x,a) = eis-1)0°*W+ia\
+and Cs,a is the path
+C£,a = I£,a + ^s + *e,c
+where /-fl = (a,e] x {0}, tfe = [ee^* \ t € [0,2tt]}, /+fl = [e,a) x {2tt}
+in X. We now have
+a
+I G(z)zns~ldz = - I G(t)tns~ldt,
+ls,a
+a
+f G{z)zns-Xdz = e2nins f G(t)tns~l dt,
+
+===== PDF PAGE 445 =====
+
+§ 1. The Riemann Zeta Function 429
+27T
+I G(z)zns~xdz = -i t Giee-^e™-1 e-it{ns-l)ee-u dt
+->f
+o
+In
+ns r< (r. „—it\ „—itnsensG{ee-lt)e-ltnsdt.
+Since ReO) > ^, i.e., Re(ns — m) > 0, the last integral 1(e) tends to zero
+as s -+ 0. In fact, one has lim snsG(se~lt) = 0. This gives
+a
+I G(z)zns-ldz = (e2nins -1) I G(t)tns-ldt + I(e),C£,a '*
+and since the integral on the left is independent of £, the lemma follows by
+passing to the limit as s -+ 0. □
+Proof of (1.8): The function
+oo ^k
+ez-l k=0 k\
+is a meromorphic function of the complex variable z, with poles only at
+z = 2niv, v e Z, v ^ 0. £*/£ is the residue of (k — 1)! F(z)z~k~l at 0,
+and the claim reduces to the identity
+Resz=0 F(z)z-k~l = -L / FC^z-^^z - ?(1 ~ *}
+|z|=e
+for 0 < e < 27T, where the circle \z\ = s is taken in the positive orientation.
+We may replace it with the path — C£ = (—oo, — s] + K£ + [—£, — oo),
+which traces the half-line from — oo to —e, followed by the circumference
+KE = {z | \z\ = s) in the positive direction, from — £ to —e, and finally
+the half-line from — s to —oo. In fact, the integrals over (—oo, — s] and
+[—e, — oo) cancel each other. We now consider on C the function
+H(s)= f F(z)zs~^­
+Here the integrals over (—oo, — s] and [s, — oo) do not cancel each other
+any longer because the function zs~l is multivalued. The integration takes
+place on the universal covering X = {(x,a) eC* xR| argx == a mod 2n}
+
+===== PDF PAGE 446 =====
+
+430 Chapter VII. Zeta Functions and L -series
+of C*, as in (1.9), and z,zs~l are the holomorphic functions z(x,a) = x,
+zs~l(x,a) = ^-iXiogW+fa) ^he integral converges absolutely and locally
+uniformly for all s e C. It thus defines a holomorphic function on C, and we
+find that
+Resz=0 F(z)z~k-1 = _//(l-jfc).
+Now substitute z \-+ —z, or more precisely, apply the biholomorphic
+transformation
+cp : X —> X, (x, a) i—> (—x, a — n).
+Since z ocp = —z and
+(zs~l o<p)(x,a) = zs~l(-x,a - n) = ^-DOog W+/«-/;r)
+we obtain
+where the path Ce = cp~l o (—Ce) follows the half-line from oo to s, then the
+circumference K£ in negative direction from e to £, and finally the half-line
+from e to oo. The function
+p-z 1 oo
+G(z) = F(-z)z-1 = = - - 1 = E e~nz1 - e z 1 - e'z n=i
+has a simple pole at z = 0 so that, for Re(s) > 1, (1.9) yields
+xdz
+— ­
+(s) =
+-e-^'z'-^x,
+-e~ins 1 F(­
+cE
+a),
+-z)zs~_i dz
+z
+H(s) = -e-nis f G(z)zs~lc
+OO
+") f G(t)ts— =-2isinns f G(t)ts — ­
+Ce OO OO
+nnis „-nis= -(enis - e~o o
+The integral on the right will now be related to the zeta function. In the
+gamma integral
+oo
+dt
+we substitute t \-> nt and get
+r(s) . t
+0
+oo
+r(,)l=/V«V*ns J t
+
+===== PDF PAGE 447 =====
+
+§ 1. The Riemann Zeta Function 431
+Summing this over all n g N yields
+oo
+r{s)i;{s) = JG(t)ts^­
+0
+The interchange of summation and integration is again justified^because
+ocoo r
+n=\ J
+\e~ntts\— <oc.
+0
+From this and (1.2), 2), we get
+IniH(s) = -2ismnsr{s)S{s) = - — -?(*).r(i -s)
+Since both sides are holomorphic on all of C, this holds for all s e C. Putting
+s = 1 — /: we obtain, since /"(/:) = (/: — 1)!,
+Resz=0F (z)z-k~l = -LH(l-k) = -J?1"*?, q.e.d. D27T/ (A: — 1)!
+Applying the functional equation (1.7) for £(s) and observing that
+r(2k) = (2/: — 1)!, the preceding theorem gives the following corollary,
+which goes back to Euler.
+(1.10) Corollary. The values of t;(s) at the positive even integers s = 2k,
+k = 1,2,3, ..., are given by
+^>=<-'>'-'§£*­
+The values f (2k — 1), /: > 1, at the positive odd integers have been
+elucidated only recently. Surprisingly enough, it is the higher K -groups
+K((Z) from algebraic K -theory, which take the lead. In fact, one has a
+mysterious canonical isomorphism
+r : #4*-i(Z)®R -^> R.z
+The image /?2£ of a nonzero element in Kw-\(%>) ®z Q is called the 2&-th
+regulator. It is well-determined up to a rational factor, i.e., it is an element
+of R*/Q*,andonehas
+f(2£-l) = /?2*modQ*.
+
+===== PDF PAGE 448 =====
+
+432 Chapter VII. Zeta Functions and L -series
+This discovery of the Swiss mathematician Armand Borel has had a
+tremendous influence on further arithmetical research, and has opened up
+deep insights into the arithmetic nature of zeta functions and L -series of the
+most general kind. These insights are summarized within the comprehensive
+Beilinson conjecture (see [117]). In the meantime, the mathematicians
+Spencer Bloch and Kazuya Kato have found a complete description of the
+special zeta values f (2k — 1) (i.e., not just a description mod Q*) via a new
+theory of the Tamagawa measure.
+The zeroes of the Riemann zeta function command special attention.
+Euler's identity (1.1) shows that one has f (s) ^ 0 for Re(s) > 1. The gamma
+function r(s) is nowhere 0 and has simple poles at s = 0, — 1, — 2, ... The
+functional equation Z(s) = Z(l — s), i.e.,
+jr-s/2r(s/2)s(s) = 7t^-^2r((i - s)/i) f (i - s),
+therefore shows that the only zeroes of f (s) in the domain Re(s) < 0 are
+the poles of r(s/2), i.e., the arguments s = —2, — 4, — 6, ... These are
+called the trivial zeroes of f (s). Other zeroes have to lie in the critical strip
+0 < Re(s) < 1, since f (s) ^ 0 for Re(s) > 1. They are the subject of the
+famous, still unproven
+Riemann Hypothesis: The non-trivial zeroes of t;(s) lie on the line
+i
+2'Re(s) - l
+This conjecture has been verified for 150 million zeroes. It has immediate
+consequences for the problem of the distribution of prime numbers within all
+the natural numbers. The distribution function
+n(x) = #{/? prime number < x)
+may be written, according to Riemann, as the series
+tt(x) = *(*)-£*(*'),
+p
+where p varies over all the zeroes of f (s), and R(x) is the function
+»M-H-g ***?■.» n=\ #!?(#!+ 1) n\
+On a microscopic scale, the function n(x) is a step-function with a highly
+irregular behaviour. But on a large scale it is its astounding smoothness
+
+===== PDF PAGE 449 =====
+
+§ 1. The Riemann Zeta Function 433
+which poses one of the biggest mysteries in mathematics:
+6000
+H > X
+10000 20000 30000 40000 50000
+On this matter, we urge the reader to consult the essay [142] by Don Zagier.
+Exercise 1. Let a,b be positive real numbers. Then the Mellin transforms of the
+functions f(y) and g(y) = f(ayb) satisfy:
+L(f,s/b) = bas/bL(g,s).
+Exercise 2. The Bernoulli polynomials Bk(x) are defined by
+tM+x)t oo A
+_— =F(t)ext = j:Bk(x)-,ef - 1 *=0 k!
+so that Bk = Bk(0). Show that
+m\ n vm—kBm(x) = Y,(")Bkx
+Exercise 3. Bk(x) — Bk(x — 1) = kxk~l.
+Exercise 4. For the power sum
+sk(n) = 1*+ 2*+ 3*+ ••• + «*
+one has
+st(n) = ——(Bk+l(n) - Bk+i(0)).k+ 1
+Exercise 5. Let #(z) = 0(2z) = J^neZ ^^'* Then for a11 matrices Y = (* ^)
+in the group
+r0(4)={(* *) g 5L2(Z) | c = 0 mod 4J
+
+===== PDF PAGE 450 =====
+
+434 Chapter VII. Zeta Functions and L -series
+one has the formula
+where
+/ az + b\
+&(——) = j(y,z)Hz), zeM,\cz + d /
+j{Y,z) = (^)s-d\cz+d)^2.
+The Legendre symbol (3) and the constant s^ are denned by
+0 =
+Sd =
+[-(jj|)> ifc<0,d<0,
+(iJi)' otherwise>
+1, if d = 1 mod 4,
+/, if d = 3 mod 4.
+Jacobi's theta function #(z) is thus an example of a modular form of weight \
+for the group r0 (4). The representation of L -series as Mellin transforms of modular
+forms, which we have introduced in the case of the Riemann zeta function, is one
+of the basic and seminal principles of current number-theoretic research (see [106]).
+§ 2. Dirichlet L-series
+The most immediate relatives of the Riemann zeta function are the
+Dirichlet L -series. They are defined as follows. Let m be a natural number.
+A Dirichlet character mod m is by definition a character
+X :(Z/mZ)* —► Sl = {zgC\ \z\ = 1} .
+It is called primitive if it does not arise as the composite
+(Z/mZ)* —► (Z/m'Z)* -X> Sl
+of a Dirichlet character x' m°d m' f°r anY proper divisor mf \m. In the general
+case, the gcd of all such divisors is called the conductor / of x- So x is
+always induced from a primitive character x! m°d /• Given x> we define
+the multiplicative function x • Z -> C by
+{X(n modra) for (n,m) = 1,
+0 for (>z,ra) ^ 1 .
+The fr/v/<z/ character x° mod m, x°(n) = 1 for («,/w) = 1, x°(/0 = 0 for
+(>z,ra) ^ 1, plays a special role. When read mod 1, we denote it by x = 1­
+
+===== PDF PAGE 451 =====
+
+§2. Dirichlet L -series 435
+It is also called the principal character. Considering it in the theory to be
+developed now has the effect of subsuming here everything we have done in
+the last section. For a Dirichlet character x, we form the Dirichlet L -series
+n=\ ns
+where s is a complex variable with Re(s) > 1. In particular, for the principal
+character x = 1> we get back the Riemann zeta function f (s). All the results
+obtained for this special function in the last section can be transferred to
+the general L-series L(x,s) using the same methods. This is the task of the
+present section.
+(2.1) Proposition. The series L(x,s) converges absolutely and uniformly in
+the domain Re(s) > 1 + <5, for any S > 0. It therefore represents an analytic
+function on the half-plane Re(s) > 1. We have Euler's identity
+L(x,s) = U-, ^"—j­P i-x(p)p s
+In view of the multiplicativity of x and since | x (n) \ < 1, the proof is
+literally the same as for the Riemann zeta function. Since, moreover, we will
+have to give it again in a more general situation in §8 below (see (8.1)), we
+may omit it here.
+Like the Riemann zeta function, Dirichlet L -series also admit an analytic
+continuation to the whole complex plane (with a pole at s = 1 in the case
+X = x°), and they satisfy a functional equation which relates the argument s
+to the argument 1 — s. This particularly important property does in fact hold
+in a larger class of L-series, the Hecke L-series, the treatment of which
+is an essential goal of this chapter. In order to provide some preliminary
+orientation, the proof of the functional equation will be given here in the
+special case of the above L-series L(x,s). We recommend it for careful
+study, also comparing it with the preceding section.
+The proof again hinges on an integral representation of the function
+L(x,s) which has the effect of realizing it as the Mellin transform of a
+theta series. We do, however, have to distinguish now between even and odd
+Dirichlet characters x m°d m- This phenomenon will become increasingly
+important when we generalize further. We define the exponent p G {0,1}
+of x by
+x(-D = (-i)^xd).
+Then the rule
+
+===== PDF PAGE 452 =====
+
+436 Chapter VII. Zeta Functions and L -series
+defines a multiplicative function on the semigroup of all ideals in) which are
+relatively prime to m. This function is called a Grofiencharakter mod m.
+These Grofiencharaktere are capable of substantial generalization and will
+play the leading part when we consider higher algebraic number fields
+(see §7).
+We now consider the gamma integral
+oo
+dy
+r(x,s) = r(s-±P) = fe-yy^^y
+o
+Substituting y (->• nn y/m, we obtain
+s+p
+*1.
+yV n / ns J
+o
+We multiply this by x(n)> sum over all « e N, and get
+s+p °? ^
+(*) (™)^>(x,s)L(x,s) = J £ xinWe-^y^y^'1
+*1.
+y
+Here, swapping the order of summation and integration is again justified,
+because
+oooo r
+£ \x(n)nfn=\J Pe-JTn2y/my(s+p)/2\ Q
+<(-) r(-^)?(Re(,))<oo.
+The series under the integral (*),
+g(j)=Ex(«)»p^"Vra,
+arises from the theta series
+0(x,z)= Ex(»)/«™2z/m,
+where we adopt the convention that 0° = 1 in case n = 0, p = 0. Indeed,
+X(n)np = x(—ri)(—n)p implies that
+0(X,z) = X(0) + 2 E x(n)nPemn Z'm,
+
+===== PDF PAGE 453 =====
+
+2. Dirichlet L -series 437
+so that g(y) = \(9(x,iy) - x(0)) with x(0) = 1, if X is the trivial
+character 1, and x(0) = 0 otherwise. When m — 1, this is Jacobi's theta
+function
+0(z)= £ e™\
+which is associated with Riemann's zeta function as we saw in § 1. We view
+the factor
+/m\s/2
+L00(x,s)={-) r(X,s)
+in (*) as the "Euler factor" at the infinite prime. It joins with the Euler factors
+Lp(s) = 1/(1 — x(p)P~s) °f the product representation (2.1) of L(x,s) to
+define the completed L -series of the character x •
+A(x,s) = Loo(x,s)L(x,s), Re(j) > 1.
+For this function (*) gives us the
+(2.2) Proposition. The function A(x,s) admits the integral representation
+oo
+A(x,s) = —- f(o(xJy) - x(0))y(
+0
+where c(X) = &/2.
+Let us emphasize the fact that the summation in the L -series is only over
+the natural numbers, whereas in the theta series we sum over all integers.
+This is why the factor np had to be included in order to link the L -series to
+the theta series.
+We want to apply the Mellin principle to the above integral representation.
+So we have to show that the theta series O(xJy) satisfies a transformation
+formula as assumed in theorem (1.4). To do this, we use the following
+(2.3) Proposition. Let a,b,jm be real numbers, jul > 0. Then the series
+ge/xZ
+converges absolutely and uniformly in the domain Im(z) > 6, for every 8 > 0,
+and for z e H, one has the transformation formula
+Opfab, - 1/z) = e-2niab^-9l/fM(-b,a,z).
+
+===== PDF PAGE 454 =====
+
+438 Chapter VII. Zeta Functions and L -series
+This proposition will be proved in § 3 in much greater generality (see (3.6)),
+so we take it for granted here. The series 0^{a,b,z) is locally uniformly
+convergent in the variables a, b. This will also be shown in § 3. Differentiating
+p times (p = 0,1) in the variable a, we obtain the function
+0P(a9b9Z)= £ (a + g)Pe"iia+s)2z+2nibs.
+More precisely, we have
+_dP_
+~daP
+and
+dP
+6fJL(a,b,z) = (2ni)pzp9p(a,b,z)
+e-2niab9l/fM(-b,a,z) = (2niye-2nia%(-b,a,z).dap* i/l/MV u^tj-y^j * „1/M
+Applying the differentiation dp/dap to the transformation formula (2.3), we
+get the
+(2.4) Corollary. For a, b, jul e R, jul > 0, one has the transformation
+formula
+9p(a,b, - 1/z) = [iP^iabp]-\z/i)P+h?/fl(-b,a9z).
+This corollary gives us the required transformation formula for the theta
+series 0(x, a), if we introduce the Gauss sums which are defined as follows.
+(2.5) Definition. For n e Z, the Gauss sum r(x,n) associated to the
+Dirichlet character x mod m is defined to be the complex number
+m-\
+r(x,n)= Y,X(v)e27Tim/m.
+v=0
+For n = 1, we write r(x) = t(x, !)•
+(2.6) Proposition. For a primitive Dirichlet character x mod ra, one has
+*(X,*) = X(n)r(x) and \r(x)\ = y/m.
+
+===== PDF PAGE 455 =====
+
+2. Dirichlet L -series 439
+Proof: The first identity in the case (n,m) = 1 follows from x(vn) =
+X(n)x(v)- When d = (n,m) ^ I, both sides are zero. Indeed, since x
+is primitive, we may in this case choose an a = 1 mod m/d such that
+a ^ 1 mod ra and x(tf) ^ 1. Multiplying r(x,n) by x(<s) and observing that
+e2nivan/m = ^ivn/m gives x(fl)r(x>„) = r(x,#l), SO that r(x,#l) = 0.
+Further, we have
+9 m—1 m —1
+|t(x)| =t(x)t(x) = t(x) E X"(v)^2;rn;/m = E r{x,v)e-2niv,m
+m —lm —1 m—1 m—1
+= E E x(lt)<?*ivllime-7*ivlm = E x(m) E e27r/v(/x"1)/m.v=0 /x=0 /x=0 v=0
+The last sum equals m for jjl = 1. For /x ^ 1, it vanishes because then
+£ _ e27zi{n-\)/m js an m_tj1 root 0f unjty -^ J ? hence a root of the polynomial
+Xm — 1
+= xw-1 + ... + x + i.X-l
+Therefore |r(x)|2 = #*x(l) = m- D
+We now obtain the following result for the theta series 0(x, z) •
+(2.7) Proposition. If x is a primitive Dirichlet character mod ra, then we
+have the transformation formula
+0(x, - i/z) = -I^L(z/iy+ie(x,z),
+where x is the complex conjugate character to x, i.e., its inverse.
+Proof: We split up the series 0(x,z) according to the classes a mod ra,
+(3 = 0,1, ..., m — 1, and obtain
+0(X,z) = E X(n)«pe™ z/m = £ X(«) £ (fl+ *)"*sr,'(a+*) r/w,neZ a=0 gemZ
+hence
+m-l
+0(X,*)= Ex(^m(^,0,z/m).
+By (2.4), one has
+^(fl,0, -l//nz) = -i_(mz//)^bf/m(0,^,mz),iPm l/m
+
+===== PDF PAGE 456 =====
+
+440 Chapter VII. Zeta Functions and L -series
+and this gives
+0f, (0,a,mz)= £ gP enig2mz+lniag = — £ e2nian/mnp enin2z/m.gelz rnP neZ
+Multiplying this by x(a)> then summing over a, and observing that
+*(X>") = x Wr(x), we find:
+1 i m_1
+e(x, - i/z) = — (wz/j^+j £ x(fl)ef/m(o,fl,wz)
+1 i m — \ 9
+■(mz/iy+i. £(£ X(a)e27tianlm)npeninzlmipmP+l „eZ a=0
+= -J_(z//)"+^(x) £ X(«)npe™2z/m
+T(X):(Z/l)^+i0(X,Z). □
+iPyfm
+The analytic continuation and functional equation for the function A(x,s)
+now falls out immediately. We may restrict ourselves to the case of a
+primitive character mod m. For x is always induced by a primitive character
+X' mod /, where / is the conductor of x (see P- 434), and we clearly have
+L(x,s)= Yl{l-X(p)p-s)L(X',s),
+p\m
+P\f
+so that the analytic continuation and functional equation of A(x,s) follows
+from the one for A(x\ s). We may further exclude the case m = 1 (this is not
+really necessary, just to make life easy), this being the case of the Riemann
+zeta function which was settled in § 1. The poles in this case are different.
+(2.8) Theorem. If x is a nontrivial primitive Dirichlet character, then the
+completed L-series A(x,s) admits an analytic continuation to the whole
+complex plane C and satisfies the functional equation
+A(X,s) = W(x)A(x,l-s)
+Z(v)with the factor W(x) = .„ >-• This factor has absolute value 1.ip^/m
+
+===== PDF PAGE 457 =====
+
+§2. Dirichlet L -series 441
+Proof: Let f(y) = C-^9(xJy) and g(y) = C-^9(xJy), c(X) = {l)pl\
+We have x(0) = x(0) = 0, so that
+n=\
+and therefore f(y) = 0(e-nylm), and likewise g(y) = 0(e-"y/m).
+By (2.2), one has
+oo
+Mx,s) = —— / 0(x,iy)y^ —2 y j
+o
+We therefore obtain yl(x,s) and similarly also A(x,s) as Mellin transforms
+A(X,s) = L(f,s') and yt(x,j) = L(g,s')
+of the functions f(y) and g(y) at the point s' = . The transformation
+formula (2.7) gives
+'G> -<9(x, — 1/iy) = ——^=-r+2<9(x,/j)= —-7= r + 5 <?()>).^/ 2 ' 2/^V^ /^V"*'
+Theorem (1.4) therefore tells us that A(x,s) admits an analytic continuation
+to all of C and that the equation
+A(X,s) = L(f, '-¥) = W(X)L(g,p+ I - £±£) = W(x)L(g, ^)
+= W(X)A(x,l-s)
+holds with W(x) = ^7=. By (2.6), we have \W(X)\ = 1. □
+The behaviour of the special values at integer arguments of the Riemann
+zeta function generalizes to the Dirichlet L -series L (x, s) if we introduce, for
+nontrivial primitive Dirichlet characters x m°d m, the generalized Bernoulli
+numbers B^, x defined by the formula
+m f g<M oo fk
+Fx(f)=Exia)-^r-x=j:Bk,x-.
+These are algebraic numbers which lie in the field Q(x) generated by the
+values of x • Since
+m te(m-a)t
+^("O = E X(-Vx(m - a)-^—- = x(-l)Fx(r),
+we find (—l)*fi*,x = x(~l)^,x» so ^at
+fi^ x = 0 for /: # /? mod 2,
+if p e {0,1} is defined by x(-l) = (-1)^(1).
+
+===== PDF PAGE 458 =====
+
+442 Chapter VII. Zeta Functions and L -series
+(2.9) Theorem. For any integer k > I, one has
+L(x,l-*) = -*£*.k
+Proof: The proof is the same as for the Riemann zeta function (see (1.8)):
+the meromorphic function
+m Z eaz °° Z^
+0=1 e L k=0 K •
+has poles at most at z = ^p, v e Z. The claim therefore reduces to showing
+that
+(1) —— = residue of Fx (z)z k l at z = 0.
+Multiplying the equationoo
+dt
+ns J t
+o
+by x(w)> ^d summing over all a, yields
+oo
+/sit
+Gx(t)tsT
+o
+with the function
+oo m e~az
+(3) Gx(z) = £ xdi)*-11* = £ XW; - = Fx(-z)z'1.n=\ a=\ 1 - e mZ
+From the equations (2) and (3) one deduces equation (1) in exactly the samemanner as in (1.8). □
+The theorem immediately gives that
+L(x,l-£) = 0 for Jt#/?mod2,
+p G {0,1}, x(— 1) = (— 1)PX(1)> provided that x is not the principal
+character 1. From the functional equation (2.8) and the fact that L(x,k) ^ 0,
+we deduce for k > 1 that
+L(X,l-Jfc) = --^- ^0 for k = pmod2.k
+The functional equation also gives the
+
+===== PDF PAGE 459 =====
+
+3. Theta Series 443
+(2.10) Corollary. For k = p mod 2, k > 1, one has
+1(Xl«_(_,)H<^3£(2»)'*i.2iP \ m / k\
+For the values L(x,k) at positive integer arguments k =£ p mod 2,
+similar remarks apply as the ones we made in § 1 about the Riemann zeta
+function at the points 2k. Up to unknown algebraic factors, these values are
+certain "regulators" defined via canonical maps from higher K -groups into
+Minkowski space. A detailed treatment of this deep result of the Russian
+mathematician A.A. Beilinson can be found in [110].
+te(a+x)t
+Exercise 1. Let Fx{t,x) = 22a=i X(a) mt _ i • The Bernoulli polynomials BktX(x)
+asssociated to the Dirichlet character x are defined by
+OO f*
+W*) = E **.*(*)rr
+Thus BktX(0) = Bkx. Show that
+/=0
+Exercise 2. BktX(x) — BktX(x — m) = k Yla=i X(a^(a + x ~ m)k~l, k >0.
+Exercise 3. For the numbers Sk,x(v) = Y^a=\ X(a)ak:» k > 0, one has
+Sk,x{vm) = ——-(Bk+hx(vm) - Bk+hx(0)).
+Exercise 4. For a primitive odd character x, one has
+m
+Ix(«)fl/o.
+§ 3. Theta Series
+Riemann's zeta function and Dirichlet's L -series are attached to the
+field Q. They have analogues for any algebraic number field K, and the
+results obtained in § 1 and 2 extend to these generalizations in the same way,
+with the same methods. In particular, the Mellin principle applies again,
+which allows us to view the L -series in question as integrals over theta
+series. But now higher dimensional theta series are required which live on
+a higher dimensional analogue of the upper half-plane H. A priori they do
+not have any relation with number fields and deserve to be introduced in
+complete generality.
+
+===== PDF PAGE 460 =====
+
+444 Chapter VII. Zeta Functions and L -series
+The familiar objects C, R, R+, H, | |, log, find their higher dimensional
+analogues as follows. Let X be a finite G(C|R)-set, i.e., a finite set with an
+involution r \-+ f (r g X), and let n —#X. We consider the a-dimensional
+C-algebra
+of all tuples z = (zT)TGx> zT g C, with componentwise addition and
+multiplication. If z = (zT) e C, then the element z e C is defined to have
+the following components:
+(z)T = z?.
+We call the involution z h^ z the conjugation on C. In addition, we have
+the involutions zkz* and zh>*z given by
+z* = Zf, resp. *zT = zT.
+One clearly has z =*z*. The set
+R = [nC]+ = {zeC|z = z}
+forms an a-dimensional commutative R-algebra, and C = R ®r C.
+If K is a number field of degree n and X = Hom(Ar, C), then R is the
+Minkowski space K®> ( = K ®q R) which was introduced in chapter I, §5.
+The number-theoretic applications will occur there. But for the moment we
+leave all number-theoretic aspects aside.
+For the additive, resp. multiplicative, group C, resp. C*, we have the
+homomorphism
+Tr : C -> C, Tr(z) = J^zr, resp.
+T
+iV:C*^C*, JV(z) = nzr.
+Here 7V(z), resp. iV(z), denotes the trace, resp. the determinant, of the
+endomorphism C -> C, x h> zx. Furthermore we have on C the hermitian
+scalar product
+(*>y) = Hxryr = Tr(x*y).
+It is invariant under conjugation, (x,y) = (x,y), and restricting it yields
+a scalar product ( , >, i.e., a euclidean metric, on the R-vector space R.
+If z e C, then *z is the adjoint element with respect to ( , ), i.e.,
+(xz,y) = (x,*zj>.
+
+===== PDF PAGE 461 =====
+
+§ 3. Theta Series 445
+In R, we consider the subspace
+R± = {xeR\x=x*} =[n^] + .
+T
+Thus we find for the components of x = (xT) e R± that ^ = xT € IR.
+If 8 e R, we simply write x > 8 to signify that xT > 8 for all r. The
+multiplicative group
+r; = {x e r± | x > o} = [ n^;]+
+T
+will play a particularly important part. It consists of the tuples x = (xT)
+of positive real numbers xT such that jtf = xT, and it occurs in the two
+homomorphisms
+I |:R*—>R;, x = (Xr)y__+ |x| = (|xT|),
+log : R+ —^> R±, x = (xT) i—► logx = (logxT).
+We finally define the upper half-space associated to the G(C|R)-set X by
+h = r± + /r;.
+Putting Re(z) = -(z + z), Im(z) = — (z — z), we may also write
+H= {z eC|z = z*, Im(z) >0}.
+If z lies in H, then so does — 1/z, because zz e R+, and Im(z) > 0 implies
+Im(—1/z) > 0, since zz Im(—1/z) = — Im(z-1zz) = Im(z) > 0.
+For two tuples z = (zT), p = (pr) € C, the power
+is well-defined by
+7Pz _ ^PrlogZr
+if we agree to take the principal branch of the logarithm and assume that
+the zT move only in the plane cut along the negative real axis. The table
+H c C 2 R = R 5 M+, | | : R* -> R;, log : R^ -^ R ,
+h c c d r 2 r± 5 r;, i i: r* -> r;, log: r; -^ r±,
+shows the analogy of the notions introduced with the familiar ones in the
+case n = 1. We recommend that the reader memorize them well, for they
+will be used constantly in what follows without special cross-reference. This
+also includes the notation
+z, z*, *z, 7V, N, { ,), x>8, zp.
+
+===== PDF PAGE 462 =====
+
+446 Chapter VII. Zeta Functions and L-series
+The functional equations we are envisaging originate in a general formula
+from functional analysis, the Poisson summation formula. It will be proved
+first. A Schwartz function (or rapidly decreasing function) on a euclidean
+vector space R is by definition a C°°-function / : R -> C which tends to
+zero as x -> oo, even if multiplied by an arbitrary power ||x||m, m > 0,
+and which shares this behaviour with all its derivatives. For every Schwartz
+function /, one forms the Fourier transform
+/oo = / me-w-Vdx,
+R
+where dx is the Haar measure on R associated to ( , ) which ascribes
+the volume 1 to the cube spanned by an orthonormal basis, i.e., it is the
+Haar measure which is self dual with respect to ( , ). The improper integral
+converges absolutely and uniformly and gives again a Schwartz function /.
+This is easily proved by elementary analytical techniques; we refer also
+to [98], chap. XIV. The prototype of a Schwartz function is the function
+h(x) = e-n{*>x).
+All functional equations we are going to prove depend, in the final analysis,
+on the special property of this function of being its own Fourier transform:
+(3.1) Proposition, (i) The function h(x) = e~n{x,x) is its own Fourier
+transform.
+(ii) If f is an arbitrary Schwartz function and A is a linear transformation
+of R, then the function /a(x) = f(Ax) has Fourier transform
+^)=TTTTT^('A"1y)»| det AI
+where lA is the adjoint transformation of A.
+Proof: (i) We identify the euclidean vector space R with Rn via some
+isometry. Then the Haar measure dx turns into the Lebesgue measure
+rfjci — dxn. Since h(x) = ]~[j=i e~nxi, we have /T = YYl^ie"***), so we
+may assume n = 1. Differentiating
+oo
+—oo
+
+===== PDF PAGE 463 =====
+
+§3. Theta Series 447
+in y under the integral, we find by partial integration that
+oo
+—h(y) = -2iti / xh(x)e-2nixydx = -2nyh(y).dy J
+—OO
+-"^ 2
+This implies that h(y) = Ce~ny for some constant C. Putting y — 0 yields
+C = 1, since it is well-known that f e~nx dx — 1.
+(ii) Substituting x i-» Ax gives the Fourier transform of /a(x) as:
+/aO0= f f(Ax)e-2ni{x>y)dx= I f(x)e-2ni{A~lx>y)\detA\-ldx
+= —^— [ f(x)e~2ni{xM~ly)dx = —1—fc^"1};). □|detA| iM; |detAr ^
+From the proposition ensues the following result, which will be crucial
+for the sequel.
+(3.2) Poisson Summation Formula. Let F be a complete lattice in R and
+let
+Ff={gfGR\(g,gf)eZforallgGF}
+be the lattice dual to F. Then for any Schwartz function /, one has:
+ger vol(r) g,er,
+where vol(F) is the volume of a fundamental mesh of F.
+Proof: We identify as before R with the euclidean vector space Rn via some
+isometry. This turns the measure dx into the Lebesgue measure dx\ * • • dxn.
+Let A be an invertible n x ^-matrix which maps the lattice Zn onto F. Hence
+F = All1 and vol(F) = | det A|. The lattice Zn is dual to itself, and we get
+F' = A*Zn where A* = tA'\ as
+g' € /"" «=> '(An)#' = 'n V € Z for all neZR
+«=> V gP^/g fA~lZn.
+Substituting the equations
+F = AZn, r' = A*Z», fA(x) = f(Ax), fA(y)=—L—f(A*y)vol(F)
+
+===== PDF PAGE 464 =====
+
+448 Chapter VII. Zeta Functions and L -series
+into the identity we want to prove, gives
+E fA(n)= E /A(n).neZ" neZ"
+In order to prove this, let us write / instead of f& and take the series
+*(*)= E f(x+k).
+keZw
+It converges absolutely and locally uniformly. For since / is a Schwartz
+function, we have, if x varies in a compact domain,
+|/(x + k)| -||k|r+1<C
+for almost all k g Zn. Hence g(x) is majorized by a constant multiple of
+the convergent series Ek#o llkMW+i • This argument works just as well for all
+partial derivatives of /. So g(x) is a C°°-function. It is clearly periodic,
+g(x + n) = g(x) for all n e Zn,
+and therefore admits a Fourier expansion
+neZw
+whose Fourier coefficients are given by the well-known formula
+1 1
+an = /• • • / g(x) e-2nitnx dxx-- dxn.
+0 0
+Swapping summation and integration gives11 11
+an= [•••[ g(x)e-27titnxdx= £ I • • I f(x + k) e^™ dxJ J keZ" ./ J0 0 0 0
+= f(n).
+It follows that
+£ /(n) = g(0) = £ ^n = E /GO. q.e.d. DneZrt neZ" neZ"
+We apply the Poisson summation formula to the functions
+fp(a9b9x) = N((x + a)P) *-*<*+*.a+*>+2**<M>
+with the parameters a,b gR and a tuple /? = (/?T) of nonnegative integers,
+such that px g {0,1} if r = f, and /?T/?^ = 0 if r ^ f. Such an element
+P G fir ^ w^ henceforth be called admissible.
+
+===== PDF PAGE 465 =====
+
+§ 3. Theta Series 449
+(3.3) Proposition. The function f(x) = fp(a,b,x) is a Schwartz function
+on R. Its Fourier transform is
+f(y) = [iTr(p)e2*i^]-1fp(-b,a,y).
+Proof: It is clear that fp(a,b,x) is a Schwartz function, because
+\fp(a,b,x)\=\P(x)\e-^a+x-a+xK
+for some polynomial P(x).
+Let p — 0. By (3.1), the function h(x) = e~n{x,x) equals its own Fourier
+transform and one has
+f(x) = fo(a9b9x) = h(a+x)e2ni{b>x).
+We therefore obtain
+f(y) = f h(a+x)e2ni{b>x)e-2«i{x>y)dxJr
+h(x)e-2ni{y-b>x-a)dxL
+= e2ni{y-b>a)h(y - b)
+_ e-2ni {a, b) e-ti (y-b, y-b)+2ni {y, a)
+= e-2«i{a>b)M-b,a,y).
+For an arbitrary admissible p, we get the formula by differentiating p times
+the identity
+(*) fo(a,b,y) = e-27ti{a>b)f0(-b,a,y)
+in the variable a. Now the functions are neither analytic in the individual
+components aT of a, nor are these independent of each other, when there
+exists a couple r ^ r. We therefore proceed as follows. Let p vary over
+the elements of X such that p = p, and let a run through a system of
+representatives of the conjugation classes {r,r} such that r ^ r. Since
+pTPr = 0, we may choose a in such a way that p^ = 0. Then one has
+(a + x,a + x) = J2(aP + xpf + 2H(a<j +*<j)(aa +*a)­
+We now differentiate pp times both sides of (*) in the real variable ap, for
+all p, and apply p0 times the differential operator
+
+===== PDF PAGE 466 =====
+
+450 Chapter VII. Zeta Functions and L -series
+for all a. Here we consider a^ = ^ + * *?a as a function in the real variables
+§a> *7a ("Wirtinger calculus"). On the left-hand side
+Ma,b9y) = f e-Ma+x%a+x)+2xi(b%x)e-2xi^y)dx^
+we may differentiate under the integral. Then, observing that p^ = 0 and
+<\
+T—((aa + *a)Oa + x-)) = (aa + Xa), we obtain
+y"n(-2w(flp+^))pp
+• \\{-2n(aa + xa)) P° «?-*<"+*."+*>+2*<<M>-2*<<*,>'> dx
+= N((-2n)p) [ N((a + x)p)e-*{a+x'a+x)+27zi{b'x) e-2*i{x'y)dx
+= N{(-2n)P)TP(a,b,y).
+The right-hand side of (*),
+e-27ii(a,b)-n{-b+y,-b+y)+2ni{a,y) _ e2iti(a,-b+y)-n{-b+y,-b+y)
+in view of
+(«, -b + y) = Y.ap{~bP + yp) + H{a<ri-ba + ya) + aai-K + ya)),P o
+and as p^ = 0, becomes accordingly
+N((27Ti)P)N((-b + y)P) e-2ni<"<b) f0(-b,a,y)
+= N((2ni)P) e-2ni^b)fp(-b,a,y).
+Hence
+TP(a,b,y) = N(i-P)e-27zi{a'b)fp(-b,a,y). □
+We now create our general theta series on the upper half-space
+H = {z € C | z = z*, Im(z) > 0} = R± + iR^.
+(3.4) Definition. For every complete lattice r of R, we define the theta
+series
+0r(z)= £ ^'"^.*>, Z€H.
+More generally, fora,b€R and any admissible p e ]~[t ^' we Put
+9Pr{a,b,z) = Y,N((a + g)p) e^((a+g)z,a+g)+2ni(b,g) _
+
+===== PDF PAGE 467 =====
+
+§3. Theta Series 451
+(3.5) Proposition. The series 9p(a,b,z) converges absolutely and uniformly
+on every compact subset of R x R x H.
+Proof: Let 8 e R, 8 > 0. For all z e H such that Im(z) > 5, we find
+Let
+/,(,,) = N((a + g)p) *-*««+*.*+*> (aeR, gcF).
+For K c R compact, put \fg\K = sup \fg(x)\. We have to show thatxeK
+E l/*lK <OQ.g£f
+Let g\, ...,gn be a Z-basis of F, and for g = E/Lim*£* € ^ let
+fxg =max|/w,-|. Furthermore, define ||jc|| = y/(x,x). If ||g|| > 4sup||x||,
+then for all a gK:
+(a + g,a + g)> (||*|| - ||g||)2 > II^H2-2||*|| • ||g||
+>\\\gt>\strn}>\e^g,
+where £ = inf E? y=i (&»8j)yiyj 1S the smallest eigenvalue of the matrix
+#((# + YlmiSi)p) is a polynomial of degree <y in the /w,-, (<y = Tr(p)),
+the coefficients of which are continuous functions of a. It follows that
+\N«a + g)p)\ </4+1 for all a eK,
+provided /Xg is sufficiently big. One therefore finds a subset Ff C. F with
+finite complement such that
+where P(/x) = #{ m € Zw | max |m;1 = n] = (2/x + If - (2/x - If. The
+series on the right is clearly convergent. □
+From the Poisson summation formula we now get the general
+
+===== PDF PAGE 468 =====
+
+452 Chapter VII. Zeta Functions and L -series
+(3.6) Theta Transformation Formula. One has
+Ofa.b, - 1/z) = [iTrip)e2ni{a^b)wol(r)]~lN((z/i)P+^)9^(-b,a,z).
+In particular, one has for the function 9r(z) = 0^(0,0, z):
+M-1A)= ,' ' 0n(z).voi(r)
+Proof: Both sides of the transformation formula are holomorphic in z
+by (3.5). Therefore it suffices to check the identity for z = iy, with y e R^.
+Put t = y~l/2, so that1 9
+z = /— and — 1/z = it .
+Observing that f = f* =*f, so that (£f, 77) = (£, ^77) = (£, trj), we obtain
+0£(fl,fe, - 1/Z) = N(TP) £ # ((** + tg)P) e-**a+tgtta+tg)+1nHt-ibttg) ^
+Let a = ta, ft = t~lb. We consider the function
+fp(a,p,x) = N((a+x)p) e-x{"+x>"+x)+2*i{P.*)9
+and put
+<Pt(ct,p,x) = fp(a,p,tx).
+This gives
+(1) 0£(a,b, -l/z) = N(rp)j:<pt(a,p,g)
+and similarly z = / ^ gives that
+(2) e*f(-b9a,z) = N(tP) £ %-i(-/U,s').
+Now apply the Poisson summation formula
+gGr vol(r) ^,er,
+to the function
+/(*) =<pt(a,p,x) = fp(a,p,tx).
+Its Fourier transform is computed as follows. Let h(x) = fp(a,fi,x), so that
+f(x) = h(tx) = ht(x). The transformation A : x h> tx of R is self-adjoint
+and has determinant iV(f). Thus (3.1), (ii), gives
+
+===== PDF PAGE 469 =====
+
+4. The Higher-dimensional Gamma Function 453
+The Fourier transform h has been computed in (3.3). This yields
+Tiy) = [N(iP)N(t)e27ti{a^]~lfp(-^a9rly)
+= [N(ip)N(t)e2ni^b)] ~ V> (")8, a, y).
+Substituting this into (3) and multiplying by N(t~p) gives, by (1) and (2):
+e]r(a,b9 - 1/z) = [N(ipt2p+x)e2ni{aMvo\(r)YXepr{-b,a,z).
+Since t = (z//)~1/2, i.e., (r2;7+1)-1 = (z/i)p+i, this is indeed thetransformation formula sought. □
+For w = 1, we obtain proposition (2.3), which at the time was used
+without proof for proving the functional equation of the Dirichlet L -series
+(and Riemann's zeta function).
+§ 4. The Higher-dimensional Gamma Function
+The passage from theta series to L -series in § 1 and § 2 was afforded by
+the gamma function
+oo
+r(s)= i *->/—•
+0
+/
+In order to generalize this process, we now introduce a higher-dimensional
+gamma function for every finite G(C |R)-set X, building upon the notation of
+the last section. First we fix a Haar measure on the multiplicative group R^:
+Let p = {r, F} be the conjugation classes in X. We call p real or complex,
+depending whether #p = 1 or #p = 2. We then have
+r+ = n R+p»
+p
+where
+r;„ = r;, resp. r;„ = [r;xe;]+ = {(W)|^i;}.
+We define isomorphisms
+r;p -^ k
+by y \-+ y, resp. (y,y) v-> y2, and obtain an isomorphism
+p
+
+===== PDF PAGE 470 =====
+
+454 Chapter VII. Zeta Functions and L -series
+We now denote by -y the Haar measure on R^ which corresponds to the
+product measure
+nfp I
+where — is the usual Haar measure on R* The Haar measure thus defined
+t +
+is called the canonical measure on R+. Under the logarithm
+log : R; -^ R±,
+it is mapped to the Haar measure dx on R± which under the isomorphism
+p p
+xp \-+ xp, resp. (xp,Xp) h> 2xp, corresponds to the Lebesgue measure
+on rip r.
+(4.1) Definition. For s = (sT) g C such that Re(sT) > 0, we define the
+gamma function associated to the G(C\R)-setX by
+rx(s) = j N(e-yf)^- •r;
+The integrand is well-defined, according to our conventions from p. 445,
+and the convergence of the integral can be reduced to the case of the ordinary
+gamma function as follows.
+(4.2) Proposition. Decomposing the G(C|R)-set X into its conjugation
+classes p, one has
+r*(s) = rKp(sp),
+p
+where sp = sT for p = {r}, resp. sp = (sT,s^) for p = {r, r}, r ^ r. The
+factors are given explicitly by
+rP(sp) =
+T(sp), if p real,
+21-rr^)r(7r(sp)), if p complex,
+where Tr(sp) = sT + s?.
+
+===== PDF PAGE 471 =====
+
+§ 4. The Higher-dimensional Gamma Function 455
+Proof: The first statement is clear in view of the product decomposition
+(Ri.f)-(mc.n^).x y ' vp p yp '
+The second is relative to a G(C|R)-set X which has only one conjugation
+class. If #X = 1, then trivially rx(s) = TO). So let X = {r,f}, r ^ f.
+Mapping
+f :r; -^r;, fh-> (VF.VF),
+one then gets
+oo
+/V^V^y
+0
+and, since d(t/2)2/(t/2)2 = 2dt/t, the substitution ? h+ (//2)2 yields
+/" N(e-yf) — = 21-7>(s)r(7Hs)) . D
+r;
+The proposition shows that the gamma integral r(s) converges for
+s = (sT) with Re(sT) > 0, and admits an analytic continuation to all of C,
+except for poles at points dictated in the obvious way by the ordinary gamma
+function TO).
+We call the function
+Lx(s) = A^(7r-s/2)rx(s/2)
+the X-function of the G(C|R)-set X. Decomposing X into the conjugation
+classes p, yields
+p
+where as before we write sp = sT forp = {r} andsp = (sT,s?) forp = {r,f},
+r^f. The factors Lp(sp) are given explicitly, by (4.2), as
+(7T-s*/2r(sp/2), if p real,
+Lp(Sp) = \
+[ 2(2n)-Tr^/2T(Tr(sp)/2), if p complex.
+For a single complex variable s g C, we put
+rx(s) = rx(si),
+
+===== PDF PAGE 472 =====
+
+456 Chapter VII. Zeta Functions and L -series
+where 1 = (1, ..., 1) is the unit element of C. Denoting r\, resp. r2, the
+number of real, resp. complex, conjugation classes of X, we find
+rx(s) = 2(l-2s)r2r(Syir(2sY2.
+In the same way we put
+Lx(s) = Lx(sl) = 7t-nsl2rx(s/2), n = #X,
+and in particular
+LR(s) = Lx(s) = 7t-s/2r(s/2), if X = {r},
+Lc(s) = Lx(s) = 2(27tysr(s), if 1 = {T,f}, t ^ f.
+Then we have, for an arbitrary G(C|R)-set X:
+Lx(s) = LM(syiLc(sY2.
+With this notation, (1.2) implies the
+(4.3) Proposition, (i) LR(1) = 1, Lc(l) = £.
+(ii) LR(s + 2) = £Lr(j), LC(5 + 1) = ^LC(5).
+(iii) LR(l-s)LR(l+s) = —i—, Lc(j)Lc(l-s)= 2COS7T5/2 SHUTS
+(iv) Lr(s)Lh(s + 1) = LcC?) (Legendre's duplication formula).
+As a consequence we obtain the following functional equation for the
+L -function Lx(s):
+(4.4) Proposition. Lx(s) = A(s)Lx(l — s) with the factor
+A(s) = (cos7r5/2)ri+r2(sin7T5/2)r2Lc(5)w.
+Proof: On the one hand we have
+LR(s) Lr(j)Lr(1 +^)
+£r(1-*) LR(l - s)LR(l + s)
+and on the other
+= COS7T.S/2 Lc(^),
+= - sin^LcC?)Lc(l-J) LC(1-J)LC(J) 2
+= cosns/2 sinns/2 Lc(s)2.
+The proposition therefore results from the identity Lx(s) = L^(s)riLc(sY2.
+D
+
+===== PDF PAGE 473 =====
+
+§5. The Dedekind Zeta Function 457
+This concludes the purely function-theoretic preparations. They will now
+be applied to number theory.
+§ 5. The Dedekind Zeta Function
+The Riemann zeta function f (s) = J2T=\ F *s associated with the field Q
+of rational numbers. It generalizes in the following way to an arbitrary
+number field K of degree n = [K : Q].
+(5.1) Definition. The Dedekind zeta function of the number field K is
+defined by the series
+where a varies over the integral ideals of K, and 9t(a) denotes their absolute
+norm.
+(5.2) Proposition. The series f # (s) converge absolutely and uniformly in
+the domain Re(s) > 1 + 8 for every 8 > 0, and one has
+where p runs through the prime ideals of K.
+The proof proceeds in the same way as for the Riemann zeta function
+(see (1.1)), because the absolute norm 9t(a) is multiplicative. We do not
+go into it here, because it is the same argument that also applies to Hecke
+L-series, which will be introduced in §8 as a common generalization of
+Dirichlet L -series and of the Dedekind zeta function.
+Just like the Riemann zeta function, the Dedekind zeta function also
+admits an analytic continuation to the complex plane with 1 removed, and
+it satisfies a functional equation relating the argument s to 1 — s. This is
+what we are now going to prove. The argument will turn out to be a higher
+dimensional generalization of the one used in §1 for the Riemann zeta
+function.
+
+===== PDF PAGE 474 =====
+
+458 Chapter VII. Zeta Functions and L -series
+at* K(a)s
+First we split up the series ^k(s), according to the classes £ of the usual
+ideal class group CIk = J /P of K, into the partial zeta functions
+c(iU)= £ l
+aefi
+integral
+so that
+The functional equation is then proved for the individual functions f (&,s).
+The integral ideals in £ are described as follows. If a is a fractional ideal,
+then the unit group o* of o operates on the set a* = a \ {0}, and we denote
+by a*/o* the set of orbits, i.e., the set of classes of non-zero associated
+elements in a.
+(5.3) Lemma. Let a be an integral ideal of K and R the class of the ideal
+a"1. Then there is a bijection
+a*/o* —^ { b e & | b integral}, a i—► b =aa-x
+Proof: If a g a*, then avTx = (a)a~l is an integral ideal in £, and if
+aa~l = bar1, then (a) = (b), so that ab~l e o*. This shows the injectivity
+of the mapping. But it is surjective as well, since for every integral be^,one has b = aa~l with a e ab c a. D
+To the G(C|R)-set X = Hom(^f, C) corresponds the Minkowski space
+^ = R = [nc]+.
+T
+The field K may be embedded into K^. Then one finds for a e K* that
+Ol((fl)) = |iVA:,Q(fl)| =|iV(fl)|,
+where N denotes the norm on R* (see chap. I, §5). The lemma therefore
+yields the
+(5.4) Proposition. £(£,*) = W(a)5 £ ^|tf(*)l'
+By chap. I, (5.2), the ideal a forms a complete lattice in R whose
+fundamental mesh has volume
+vol(a) = V^a*
+
+===== PDF PAGE 475 =====
+
+§5. The Dedekind Zeta Function 459
+where da = ^l(a)2\dK | denotes the absolute value of the discriminant of a,
+and dK is the discriminant of K. To the series f (&,s) we associate the theta
+series
+0(a,z) = 9a(z/dlJn) = £ e^(az/dlJnta)maea
+It is related to £(Si,s) via the gamma integral associated to the G(C|R)-set
+X=Hom(£\C),
+where seC, Re(s) > 0 (see (4.1)). In the integral, we substitute
+y^^jt\a\2y/dlJn
+with | | denoting the map R* -> R+, (xT) \-> (|xT|). We then obtain
+|iV(«)P J j
+Summing this over a full system 91 of representatives of a*/o*, yields
+\dK\s7t-nsrK(s)!(&,2s)= I g(y)N(y)s^­/■r;
+with the series
+Swapping summation and integration is legal, for the same reason as in the
+case of the Riemann zeta function (see p. 422). We view the function
+Zoo(s) = \dK\s/27t-ns/2rK(s/2) = \dK\8/2Lx(s)
+as the "Euler factor at infinity" of the zeta function f (&,s) (see §4, p. 455)
+and define
+Z(JU) = Zoo(*)?(iU).
+The desire to realize this function as an integral over the theta series 9 (a, s) is
+frustrated by the fact that in the theta series we sum over all a e a, whereas
+summation in the series g(y) is only over a system of representatives of
+a*/o*. This difficulty — which was already hinted at in the case of the
+Riemann zeta function — will now be overcome in the general case as
+follows.
+
+===== PDF PAGE 476 =====
+
+460 Chapter VII. Zeta Functions and L -series
+The image \o*\ of the unit group o* under the mapping | | : R* -> R+
+is contained in the norm-one hypersurface
+S = {x cRl\N(x) = l}.
+Writing every y G R+ in the form
+y = xtl/n> x = iv(^' t = N(yh
+we obtain a direct decomposition
+r; = sxr*+.
+Let d*x be the unique Haar measure on the multiplicative group S such that
+the canonical Haar measure dy/y on R+ becomes the product measure
+dy dt— = d*x xy t
+We will not need any more explicit description of d*x.
+We now choose a fundamental domain F for the action of the group
+\o*\2 = {\s\2 | e g o*} on S as follows. The logarithm map
+log : R; —► R±, (xT) h-> Gog*T)•
+takes the norm-one hypersurface S to the trace-zero space H = [x g R± |
+Tr(x) = 0}, and the group \o*\ is taken to a complete lattice G in H
+(Dirichlet's unit theorem). Choose F to be the preimage of an arbitrary
+fundamental mesh of the lattice 2G. Any such choice satisfies the
+(5.5) Proposition. The function Z(R,2s) is the Mellin transform
+Z(j*,2j) = L(/,j)
+of the function
+f(t) = fF(a,t) = - / 9(ajxtl/n)d*x,w J
+F
+where w =#/jl(K) denotes the number of roots of unity in K.
+Proof: Decomposing R^ = Sx R^, we find
+oo
+dt
+Z(R,2s)= f I E e-n{axt'>a)d*xts
+
+===== PDF PAGE 477 =====
+
+5. The Dedekind Zeta Function 461
+with tf = (t/da)l/n. The fundamental domain F cuts up the norm-one
+hypersurface S into the disjoint union
+s= U n2F.
+The transformation x h> rj2x of S leaves the Haar measure d*x invariant and
+maps F to rj2F, so that
+I E e-n{axt'>a)d*x= E ( E e-n{axt'*a)d*xS r)2F
+= - I E E *-;r<flfi*','flfi></*jt
+= I j(9{ajxtx'n) - 1) rf*x - /(0 - /(oo).
+F
+Observe here that we have to divide by w = #/n(K), because /n(K) is just
+the kernel of o* -> |o*| (see chap. I, (7.1)), hence E|£| — w Ee- Observe
+furthermore that as runs through the set a* = a \ {0} exactly once, and
+finally that /(oo) = — fF d*x, as 0(a,ixoo) = 1. This result does indeed
+show that
+oo
+/sit
+(f(t)-f(oo))tsT=L(f,s). □
+Using this proposition, the functional equation for the function Z(&,s)
+follows via the Mellin principle from a corresponding transformation formula
+for the function /f(ciJ), which in turn derives from the general theta
+transformation formula (3.6). In order to find the precise equation, we have
+to compute the volume vol(F) of the fundamental domain F with respect
+to d*x, and the lattice which is dual to a in R. This is achieved by the
+following two lemmas.
+(5.6) Lemma. The fundamental domain F of S has the following volume
+with respect to d*x:
+vol(F) = 2r-lR,
+where r is the number of infinite places and R is the regulator of K (see
+chap. I, (7.5)).
+
+===== PDF PAGE 478 =====
+
+462 Chapter VII. Zeta Functions and L-series
+Proof: The canonical measure dy/y on R+ is transformed into the product
+measure d*x x dt/t by the isomorphism
+a :SxR; -^R;, (xj)\—>xtl/n.
+Since / = [t e R+ | 1 < t < e} has measure 1 with respect to dt/t, the
+quantity vol(F) is also the volume of F x / with respect to d*x x dt/t,
+i.e., the volume of a(F x /) with respect to dy/y. The composite ty of the
+isomorphisms
+r; -^> r± -£* n»-Rr
+p|oo
+(see §4, p. 454) transforms dy/y into the Lebesgue measure of Rr,
+vol(F) = wolw(fa(F x /)) .
+Let us compute the image yjra{F x /). Let 1 = (1, ..., 1) e S. Then we find
+fa(il,t)) = t\ogtx,n = -elogf
+with the vector e = (ePl, . ..,ePr) e Rr, ep. = 1, resp. = 2, depending
+whether p; is real or complex. By definition of F, we also have
+fa(F x {1}) =20,
+where 0 denotes a fundamental mesh of the unit lattice G in trace-zero space
+H = {(*/) e Rr | J>,- = 0}. This gives
+1ra(F x /) = 20 + [0, -le,
+the parallelepiped spanned by the vectors 2ei, ..., 2er_i, ^ e, if ei, ..., er_i
+span the fundamental mesh <£. Its volume is ^2r-1 times the absolute value
+of the determinant
+(*n ••• er_i,i ePl: : :
+Adding the first r — 1 lines to the last one, all entries of the last line become
+zero, except the last one, which is n = J2ePi- The matrix above these
+zeroes has the absolute value of its determinant by definition equal to the
+regulator R. Thus we get
+vol(F) = 2r~1rt. O
+
+===== PDF PAGE 479 =====
+
+§5. The Dedekind Zeta Function 463
+(5.7) Lemma. The lattice rf in R which is dual to the lattice r = a is
+given by
+where the asterisk denotes the involution (xT) \-+ (xT) on K^ and d the
+different of K\Q.
+Proof: As (x,y) = Tr(*xy), we have
+T' = {*g € R | (g,a) g Z for all a g a} = {x g R | 7>(xa) c Z} .
+7V (x a) c Z implies immediately x g A', for if (31, ..., an is a Z -basis of a and
+x = jci^i H hx„<2„, with x/ G K, then Tr(xaj) = ]T; x; Tr{aiaj) = rij eZ
+is a system of linear equations with coefficients Tr(ataj) = TrK\<^{ciiCLj) g Q,
+so all x/ g Q, and thus x g A'. It follows that
+T' = {xg£| 7V(xa) c Z} .
+By definition we have D-1 = {x g A' | Tt^iq(xo) c Z}, and we obtain the
+equivalences x g* r" <=> 7}*£|q(x<2C>) c Z for all (3 g a <=>► xa-C d~l«=>x g (aD)-1. D
+(5.8) Proposition. The functions /f (a, 0 satisfy the transformation formula
+fF(ot\) = t1f2fP-i(m-l,t),
+and one has
+or —1
+/f(a,0= /? + 0(e-crl/w) forf-* oo,c>0.
+Proof: We make use of formula (3.6)
+VF(z70
+voi(r)
+for the lattice r = a in R, whose fundamental mesh has volumes
+vol(r) = yi(a)\dK\l/2. The lattice r' dual to r is given by (5J.J
+as *T" = (cu))-1. The compatibility (*gz,*g) = (gz,g) implies thM
+9r'(z) — 0*r>(z). Furthermore we have
+<W' = n(*r2n<pr2\dK\ = i/W(a)2\dK\) = i/</fl.
+The transformation x h^ x-1 of the multiplicative group S fixes the Haar
+measure d*x (in the same way as x \-+ — x fixes a Haar measure onl")
+
+===== PDF PAGE 480 =====
+
+464 Chapter VII. Zeta Functions and L-series
+and maps the fundamental domain F onto the fundamental domain F-1,
+whose image log(F-1) is again a fundamental mesh of the lattice 2 log \o*\.
+Observing that N(x(tda)l/n) = tda for x g S, we obtain
+/>(a, y) = - / 9a(ix/^/tda) d*x
+F
+= - / Oa(-l/ix^td~a)d*xw J '
+w vol (a)
+rV2
+= — J Q(aT»-l(ixyt/d(ad)-i)d*X
+= ^1/2/F-i((d8)-1,0­
+This shows the first formula. To prove the second, we write
+/>(M)=- [ d*x+- [(9(ajxtl/n)-l)d*x=^^+r(t).w J w J w
+The function r{t) satisfies r(t) = 0(e ct "), c > 0, t -> oo, as the
+summands of 0(a, ixtl'n) — 1 are of the form
+e-n(axta)VF9 a e d, a ^ 0, t' = t/da.
+The point x = (xT) varies in the compact closure F c [ J"JT R^] of F.
+Hence xT > 8 > 0 for all r, i.e.,
+(ax,a) = ]T \?a\2Xx > 8(a,a)
+T
+and so
+r(0 < ^V(/S7F) - 1).
+Writing m = min{(a,a> | a e a,a ^ 0} and M = #{<s e a | (<z,<z) = ra}, it
+follows that
+ea(i8V?) - 1 = e^m^(M+ £ e-^««,*>-m)^\ = 0(e-«1/-)(a,a)>m '
+1 /«
+where c = 7tSm/da . We thus get as claimed
+Ma,t) = W) + „.„.,» = 2^ ^ + „. D
+
+===== PDF PAGE 481 =====
+
+§5. The Dedekind Zeta Function 465
+This last proposition now enables us to apply the Mellin principle (1.4) to
+the functions />(<*, 0- F°r the partial zeta functions
+integral
+this yields the following result, where the notations d#, R, w, and r signify
+as before the discriminant, the regulator, the number of roots of unity, and
+the number of infinite places, respectively.
+(5.9) Theorem. The function
+Z(£, s) = Zoo(j)f (£, s), Re(s) > 1,
+ZooC?) = \dK\s/27t~ns/2rf[(s/2), admits an analytic continuation to C \
+{0,1} and satisfies the functional equation
+Z(iU) = Z(£M-j),
+where the ideal classes & and 8! correspond to each other via Rfi! = [5]. It
+has simple poles ats = 0 and s = 1 with residues
+2r 2rR, resp. —R.w w
+Proof: Let f(t) = fF(a,t) and g(t) = fF-i((cti)-\t). Then (5.8) implies
+and
+/(0 = tf0 + 0(e~ctl/n), g(t) = a0 + 0(e~ctl/n),
+2r-l
+with a0 = -fi-R- Proposition (1.4) thus ensures the analytic continuation of
+the Mellin transforms of / and g, and the functional equation
+L(/,*) = l(*,±-j)
+with simple poles of L(/, 5) at 5 = 0 and 5 = - with residues — a0, resp. <20­
+Therefore
+Z(jU) = l(/,|)
+admits an analytic continuation to C \ {0,1} with simple poles at s = 0 and
+5 = 1 and residues2r 2r
+—2ao = /?, resp. 2a0 = —/?
+
+===== PDF PAGE 482 =====
+
+466 Chapter VII. Zeta Functions and L -series
+and satisfies the functional equation
+\-s
+Z(iU) = l(/, I) = L(s, -^) = Z(iT, 1 - s).D
+This theorem about the partial zeta functions immediately implies an
+analogous result for the completed zeta function of the number field K,
+ZK(s) = Z^is^Kis) = Y,Z(£,s).
+(5.10) Corollary. The completed zeta function Zk(s) admits an analytic
+continuation to C \ {0,1} and satisfies the functional equation
+ZK(s) = ZK(l-s).
+It has simple poles ats = 0 and s = 1 with residues
+2rhR 2rhR
+resp.w w
+where h is the class number of K.
+The last result can be immediately generalized as follows. For every
+character
+X : J IP —► Sl
+of the ideal class group, one may form the zeta function
+Z(x,s) = Zoo(s)£(x,s),
+where
+?(*.*) = £
+a integralVl(ay
+and x(ci) denotes the value xC&) °f the class 8 = [a] of an ideal a. Then
+clearly
+z(x,*) = £x(£)Z(JU),
+and in view of 8! = £-1[?>L we obtain from (5.9) the functional equation
+Z0c,j) = xa>)Z0t,l-j).
+If x 7^ 1, then Z(x,s) is holomorphic on all of C, as £^ /(^) = 0.
+
+===== PDF PAGE 483 =====
+
+5. The Dedekind Zeta Function 467
+We now conclude with the original Dedekind zeta function
+The Euler factor at infinity, Zoo fa), is given explicitly by §4 as
+Zoo(s) - \dK\s/2Lx(s) = |^r/2LR(^Lc(^)r2,
+where n, resp. r2, denotes the number of real, resp. complex, places. By
+(4.3), (i), one has Zoo(l) = \dK\1,2/nr2. As
+frfa) = Zoofa^Zjrfa) - I^T^xfar^fa),
+we obtain from (4.4) the
+(5.11) Corollary, (i) The Dedekind zeta function f^fa) has an analytic
+continuation to C \ {1}.
+(ii) At s = 1 it has a simple pole with residue
+w\dK\ I
+Here h denotes the class number and
+, w\dK\l/2o — log* B2ri(2ny2
+the genus of the number field K (see chap. Ill, (3.5)).
+(iii) It satisfies the functional equation
+Sk(1-s) = A(s)Sk(s)
+with the factor
+1 / TVS \ rl+r2 / TCS \r2
+A(s) = \dK\s-2 [cos—) (siny) Lc(s)n .
+The proof of the analytic continuation and functional equation of the
+Dedekind zeta function was first given by the mathematician Erich Hecke
+(1887-1947), along the same general lines we have presented here, albeit in a
+somewhat different formulation. Further, the theory we are about to develop
+in the following sections § § 6-8 also substantially goes back to Hecke.
+The formula for the residue
+2r* (27T)r2
+Res5=i frfa) = .nhR
+
+===== PDF PAGE 484 =====
+
+468 Chapter VII. Zeta Functions and L -series
+is commonly known as the analytic class number formula. It does allow
+us to determine the class number h of the field K, provided we know the
+law for the decomposition of primes in this field sufficiently well to lay our
+hands on the Euler product and thus compute the zeta function.
+The following application of corollary (5.11) to Dirichlet L-series L(x,s)
+(see §2) is highly remarkable. It results from studying the Dedekind zeta
+function f# (s) for the field K = Q(/xm) of ra-th roots of unity, and is based
+on the
+(5.12) Proposition. IfK = Q(fim) is the field ofm-th roots of unity, then
+X
+where x varies over all Dirichlet characters mod ra, and
+Gw = na-9t(p)T1.
+p\m
+Proof: The proof hinges on the law of decomposition of prime numbers p in
+the field K. Let p = (pi... pr)e be the decomposition of the prime number
+p in K, and let / be the degree of the p;, i.e., 9t(p;) = pf. Then £k(s)
+contains the factor
+T\v-n(prsrl = a-p-fsrr.
+pip
+On the other hand, the L-series give the factor Y[x (1 — X(p)P~s)~l- F°r P\m
+this is 1. So let p \ m. By chap. I, (10.3), / is the order of p mod m in
+(Z//wZ)* and e = 1. Since efr = <p(m), the quotient r — <p(m)/f is the
+index of the subgroup Gp generated by p in G = (Z/raZ)*. Associating
+X ^ X (p) defines an isomorphism Gp = {if, and gives the exact sequence
+1 —> G/Gp —> G —► fif —> 1,
+where ^ indicates character groups. We therefore find r = #(G/GP) = (G :
+Gp) elements in the preimage of x(p)- It follows that
+rid - x(P)P~syl = n (i - sp~srr = a - p~fsrrX Se/if
+= na-9fi(prV.
+pip
+Finally, taking the product over all p, we get £k(s) = G(s) f] L(x,s). D
+
+===== PDF PAGE 485 =====
+
+5. The Dedekind Zeta Function 469
+For the trivial character x° m°d ra, we have L(x°,s) = Y\p\m(l ~ P s)
+f 0), so that
+^K{s) = G{s)Y\i\-p-s)^s) J! Ux,s).P\m x¥:X0
+Since f (s) and £k(s) both have a simple pole at s = 1, we obtain the
+(5.13) Proposition. For every non-trivial Dirichlet character x, one has
+L(X,1)^0.
+This innocuous looking result is in fact rather profound, and yields as a
+concrete consequence
+(5.14) Dirichlet's Prime Number Theorem. Every arithmetic progression
+a, a ±ra, a ±2ra, a ± 3m, ..., with (a,m) = 1,
+i.e., every class a mod ra, contains infinitely many prime numbers.
+Proof: Let x be a Dirichlet character mod m. Then one has, for Re(s) > 1,
+logLOf,*) = -Eiog(i-x(P)p-') = E E ^£r = £ v+ft(,)lp p m=l mP p P
+where gx (s) is holomorphic for Re(5) > \ — this follows from a trivial
+estimate. Multiplying by x(&~1) and summing over all characters mod m,
+yields
+Zx(a-l)logL(X,s) = EEX(a SP) +g(s)X X P Pm 1
+= EZx(fl~1b) E —+g(s)b=\ X p=b(m) P
+E —;-+«(*)•~S
+p=fl(m) P
+Note here that
+iffl^fe,
+cpim) =#(Z//wZ)*, if a = ft.
+When we pass to the limit s -> 1 (s real > 1), logL(x,s) stays
+bounded for x ¥" X° because L(x,l) 7^ 0, whereas logL(x°,s) =
+
+===== PDF PAGE 486 =====
+
+470 Chapter VII. Zeta Functions and L -series
+X]p|mlog(l - p~s) + logfO) tends to oo because t;(s) has a pole. The
+left-hand side of the above equation therefore tends to oo, and since g(s) is
+holomorphic at s = 1, we find
+cp{m)hm 2^ = oo.
+s-+lp=a(m) PS
+Thus the sum cannot consist of only finitely many terms, and the theorem isproved. □
+For a = I, Dirichlet's prime number theorem may be proved by pure
+algebra (see chap. I, § 10, exercise 1). Searching for a proof in the general
+case Dirichlet was led to the study of the L-series L(x,s). This analytic
+method gives sharper results on the distribution of prime numbers among
+the classes a mod m. We will come back to this in a more general context
+in §13.
+§ 6. Hecke Characters
+Let m be an integral ideal of the number field K, and let /m be the group
+of all ideals of K which are relatively prime to m. Given any character
+x:j™-+Sl = [zeC\\z\ = \),
+we may associate to it, as a common generalization of the Dirichlet L -series
+as well as the Dedekind zeta function, the L -series
+Here a varies over all integral ideals of K, and one defines / (a) = 0 whenever
+(a, m) 7^ 1. Searching for the most comprehensive class of characters x f°r
+which the corresponding L -series could be shown to have a functional
+equation, Hecke was led to the notion of Grofiencharaktere, which we
+define as follows.
+(6.1) Definition. A GroBencharakter mod m is a character x • ^m -> Sl
+for which there exists a pair of characters
+Xf:(o/m)*—►S1, Xoo:R*-^S\
+such that
+*((<*)) =Xf(a)Xoo(a)
+for every algebraic integer a e o relatively prime to m.
+
+===== PDF PAGE 487 =====
+
+6. Hecke Characters 471
+A character x of /m is a Grofiencharakter mod m as soon as there exists
+a character Xoo of R* such that
+X ((<*)) =Xoo(a)
+for all a e o such that a = 1 mod m. For if this is the case, then the rule
+Xf(a) = x((a))Xoo(a)~l defines a character Xf of (o/m)* which satisfies
+x(O)) =Xf(a)Xoo(a)
+for all algebraic integers a e o relatively prime to m. This last identity
+underlines the fact that the restriction of a Grofiencharakter to principal
+ideals breaks up into a finite and an infinite part. From
+o{m) = {aGo\ (a,m) = 1},
+it extends uniquely to the group
+Kim) = {acK*\ (a,m) = 1}
+of all fractions relatively prime to m, because every a G K^ determines
+a well-defined class in (o/m)*. The character Xoo, and thus also the
+character Xf» are determined uniquely by the Grofiencharakter x, since
+the group
+Km = {a € #(m) | <z = 1 mod m}
+is dense in R*, by the approximation theorem, and one has Xoo(^) = x((a))
+for a g Km. Let us recall that the congruence a = 1 mod m signifies that
+a = b/c, for two integers b, c relatively prime to m, such that b = c mod m
+or, equivalently, a e Up c Kp for p|m, if m = f] p^p.
+The character Xoo factors automatically through R*/om, where
+om = {s e o*\s = 1 mod m} .
+In fact, for s e om we have Xf(e) = 1> and thus Xoo(^) = Xf(e)Xoo(^) =
+X((s)) = 1. The two characters Xf and Xoo of (o/m)*, resp. R*/om,
+associated with a Grofiencharakter x satisfy the relation
+Xf(e)Xoo(e) = ! for a11 £ e °* >
+and it can be shown that every such pair of characters (xf, Xoo) comes from
+a Grofiencharakter x (exercise 5).
+The attempt to understand Grofiencharaktere in a conceptual way leads
+one to introduce ideles. In fact, all Grofiencharaktere arise as characters of
+the idele class group of the number field K. We will not use this more
+abstract interpretation in what follows, but it will be explained at the end of
+this section.
+
+===== PDF PAGE 488 =====
+
+472 Chapter VII. Zeta Functions and L-series
+(6.2) Proposition. Let x be a Grofiencharakter mod m, and let mf be a
+divisor of m. Then the following conditions are equivalent
+(i) x is the restriction of a Grofiencharakter x' :Jm -+ Sl m°d m'­
+(ii) Xf factors through (o/m')*.
+Proof: (i) => (ii). Let x be the restriction of the Grofiencharakter
+X* : /m -+ S1, and let Xf> Xoo be the pair of characters associated with x'.
+Let Xf, resp. Xoo, be the composite of
+(o/m)* —> (o/mT -^> S\ resp. R*/om —► R*/om/ ~^> sl.
+We then find for a e o(m) c o{w!):
+x((a)) = x'((a)) = x{(a)x'oo(a) = Xf(*)Xoo(<0.
+so that Xf = Xf an<l Xoo = Xoo because Xf and Xoo are uniquely determined
+by x- Thus Xf factors through (o/m')* (and Xoo through R*/om).
+x'
+(ii) => (i). Let Xf be the composite of (o/m)* -> (o/m;)* —^> S1. In every
+class a; mod Pm' € J1^/Pm\ there is an ideal a e /m which is relatively
+prime to m, i.e., o! = aa for some (a) g Pm. We put
+xV) = X(a)Xf(a)Xoo(tf).
+This definition does not depend on the choice of the ideal a G /m, for if
+a' = a\au a\ € Jm, (ai) € Pm\ then one has (aaf1) € Jm, and
+X(a)Xf(«)Xoo(fl) = X(a)x((^r1))Xf(^"1«i)Xoo(^~1^i)Xf(«)Xoo(^)
+= X(cii)Xf(ai)Xoo(ai).
+The restriction of the character x! from /m to /m is the Grofiencharakter x
+of /m, and if (a!) is a principal ideal prime to m' and a' — ab, (a) e Jm,
+(b) € Pm\ then we have
+x'((*')) =x((a))x'((b)) = x((*))xf'(*)Xoo(*)
+= Xf(*)Xoa(*)Xf(b)Xoo(b) = xi(ab)Xoo(ab) = xfV)Xoo (<*')•
+Thus x' is a Grofiencharakter mod m' with corresponding pair of charactersXf. Xoo- □
+The Grofiencharakter x m°d m is called primitive if it is not the
+restriction of a Grofiencharakter x! m°d tn' for any proper divisor m'|m.
+
+===== PDF PAGE 489 =====
+
+6. Hecke Characters 473
+According to (6.2), this is the case if and only if the character Xf of (o/m)*
+is primitive in the sense that it does not factorize through (o/mf)* for any
+proper divisor m'lm. The conductor of x is the smallest divisor f of m
+such that x is the restriction of a Grojiencharakter mod f. By (6.2), f
+is the conductor of Xf» i-e> the smallest divisor of m such that Xf factors
+through (o/f)*.
+Let us now have a closer look at the character Xf» and then at the
+character Xoo­
+(6.3) Definition. Let Xf be a character of(o/m)* and y Gm ld l, where D
+is the different ofK\Q. Then we define the Gauss sum of Xf to he
+rm(Xuy)= £ Xf(x)e2*iT«xy\
+x mod m
+(jt,m)=l
+where x varies over a system of representatives of(o/m)*.
+The Gauss sum does not depend on the choice of representatives x, for if
+x' = x mod m, then x'y — xy G mm-1?)-1 = D"1 = {a G K | Tr(a) g Z},
+so that
+Tr(x'y) = Tr(xy) mod Z
+and therefore elniTr^x'y>} = elniTr^xy\ The same argument shows that
+^m(Xf^y) depends only on the coset y + D_1, i.e., it defines a function
+on the o/m-module m~lD~l/D~l. In the case K = Q, m = (ra), we get back
+the Gauss sum introduced in (2.5) by r(xf, n) = rm(xf, ^). We will have to
+define theta series and L -series attached to Hecke's Grojiencharaktere with
+a view to proving functional equations. For this, the following properties of
+Gauss sums will play a crucial role.
+(6.4) Theorem. Let Xf be a primitive character of (o/m)*, let y e m ld l
+and a e o. Then one has
+f Xf(a)Tm(Xu y), if (a, m) = 1,
+[ 0, if (<2,m) 7^ 1,
+and furthermore
+| *m(xf, y) I = >/W(m)> if 0™i3, m) = 1.
+
+===== PDF PAGE 490 =====
+
+474 Chapter VII. Zeta Functions and L -series
+The most diffcult part of the theorem is the last claim. To prove it, we
+make the following preparations. For integral ideals a = p\x • • • p?, v; > 1,
+consider the Mobius function
+For this function we have the
+1, ifr =0, i.e.,a=(l),
+(-I)', ifv1 = ... = vr = l,
+0, otherwise.
+(6.5) Proposition. If a ^ 1, then ^M(b) = 0.
+b|a
+Proof: If a = pj1 • • • pv/, v; > 1, then
+EM(b) = M(l) + E^(P/)+ E M(P/1P/2) + --' + M(Pi---Pr)b|a / i\ <i2
+= i + Q(-i) + Q(-i)2 + ... + (;)(_!)'•
+= (l + (-l))r=0. D
+Now, for y € m 'c> ' and for every integral divisor a of m, we look at
+the sums
+Ta(y)= £ e2aiTr(xy) and Sa(y) = £ e2niTr^.x mod m x mod mCx,m)=a a|*
+These sums do not depend on the choice of representatives x, for if
+xf = x mod m, then {xf — x)y G D_1, hence Tr(x'y) = Tr(xy) mod Z. We
+find the
+(6.6) Lemma. One has
+a|m
+and for every divisor a|m,
+
+===== PDF PAGE 491 =====
+
+§ 6. Hecke Characters 475
+Proof: In view of (6.5), we have
+E^)Wj) = E^) £ n(y) = En(y)EMa) = 7i(y).a|m a|m b b|m a|b
+a|b|m
+If y g a-1 D_1 and a | x, thenxy e D_1, so that Tr(xy) e Z, i.e., all summands
+of Sa are 1 and there are #(a/m) = 91(~) of them. If on the other hand
+y <£ a_1D_1, then we can find in a/m a class z mod m such that zy g D"1,
+i.e., 7r(z;y) £ Z, so that e27r/7r(z>,) ^ 1, and we obtain
+e2niTr(zy)Sa(y) = £ e2niTr{{x+z)y) = Sa{y) ^
+x mod m
+a\x
+since x + z varies over all the classes of a/m as x does, so that we do findsa(y) = 0. □
+Proof of Theorem (6.4): Let a e o, (a, m) = 1. As x runs through a system
+of representatives of (o/tn)*, so does x<2. We get
+Tm(Xf,«y)= E XfC*)^''7^
+x mod m
+0,m)=l
+= xf(«) E xfOt*)*2'"'7*"30
+* mod m
+U,m)=l
+= Xf(tf)rm(Xf,)>).
+Let ((3,m) = mi ^ 1. Since Xf *s primitive, we can find a class
+b mod m e (o/tn)* such that
+Xf(b) 7^ 1 and b = 1 modmi
+As a consequence, ab = a mod m, so that aby — ay € D-1, and by what we
+have just shown,
+Xf(b)rm(xf,ay) = *m(Xf, bay) = rm(xf, ay).
+Finally, in view of Xf(b) ^ 1, we find rm(xf,<2)0 = 0.
+As for the absolute value of the Gauss sum, we see from (6.6) that
+
+===== PDF PAGE 492 =====
+
+476 Chapter VII. Zeta Functions and L-series
+l*m(xf>y)l2 = Tm(xuy)^m(xuy)
+= E Tm(Xuy)Xf(x)e-2niTr(xy)
+x mod m
+0,m)=l
+= E rm(Xf,xy)e-2KiTr(xy)
+x mod m
+0,m)=l
+= E E xfCz)^7^-^
+z mod m x mod m
+(z,m)=l 0,m)=l
+= E MTi(y(z-l))
+z mod m
+(z,m)=l
+= E »(*) E A*(a)Sfl(y(z - 1)) .z mod m a|m
+(z,m)=l
+We now make use of the condition (yxrid, m) = 1. It implies that
+_1 _1 TTl
+y(z - 1) g a ld l «=» z = 1 mod — •a
+Indeed, if z — 1 e a-1m, then y(z — 1) e m-1^-^-^ = a_1D_1. If on the
+other hand z # 1 mod ^, i.e., ^ f (z - 1), then up(z - 1) < vp(^) for a
+prime divisor p of ^. Since (jmc),m) = 1, we have up(;ymc)) = 0, so that
+vp(y) = -Vp(nt) - vp(p) and
+vp(y(z - 1)) < up(m) - i;p(a) + up(y) = -up(a) - vp(d) = vp(crlXTl),
+and thus y(z — 1) ^ a_1D_1. This, together with (6.6), gives
+\Tm(xuy)\2 = Ev(*M-) E »(*).a|m V CI / z mod m
+z=l mod m/a
+For a 7^ 1, the last character sum vanishes since Xf is primitive, and therefore
+nonzero on the subgroup of z mod m e (o/vcCf such that z = 1 mod m/a:
+the sum reproduces itself under multiplication with a value Xf(x) ^ 1 of the
+character. So we finally have that |rm(xf,y)\2 = 9t(m). This proves all thestatements of the theorem. □
+Having studied the characters Xf of (o/m)*, we now turn to the characters
+Xoo of R*. They are given explicitly as follows.
+(6.7) Proposition. The characters X of R*, i.e., the continuous homomor­
+phisms
+X:R* —► S\
+
+===== PDF PAGE 493 =====
+
+6. Hecke Characters 477
+are given explicitly by
+X(x) = N(xp\x\-p+iq),
+for some admissible p e fir ^ (see §3, P-448) and a q g R±. p and q are
+uniquely determined by k.
+Proof: For every x e R* we may write x = -rrl*l, and obtain in this way\x\
+a decomposition
+r* = uxr;,
+where U={xeR*||x| = l}.It therefore suffices to determine separately
+the characters of U and those of R+. We write p instead of r for elements of
+Hom(K, C) to indicate that r = f, and we choose an element a from each
+pair {r, f} such that r^r. Then we have
+u = [n5i]+ = n(±i}xn[slx5i]+,t p a
+and Sl -+ [Sl x S1]+, x0 h> (xa,xa), is a topological isomorphism. The
+characters of {±1} correspond one-to-one to exponentiating by a pp e {0,1},
+and the characters of Sl correspond one-to-one to the mappings xG h> jt*,
+for k e Z. From the correspondence k h> (k, 0), resp. (0, — £), for £ > 0,
+resp. /: < 0, we obtain the characters of [Sl x S1]+ in a one-to-one way from
+the pairs (/?T, pf) with pT, Pt > 0 an(l PtPf = 0- The characters of U are
+therefore given by
+A.(jc) = #0:0,
+with a uniquely determined admissible p e Y\t^­
+The characters of R+ are obtained via the topological isomorphism
+log:R;-^R±.
+Writing as above
+R± = nixn[R xi]+,P G
+and observing the isomorphism [RxR] > R, (xa,xa) h> 2xa, we see
+that a character of R± corresponds one-to-one to a system (qp,qG) via the
+rule
+x Y-+ Y[ eiqpxp ]1 e2iq°x°.P <r
+It is therefore given by an element q e R± via x h> N(eiqx). The
+isomorphism log then gives a character k of R+ via y h> N(elqlogy) =
+
+===== PDF PAGE 494 =====
+
+478 Chapter VII. Zeta Functions and L -series
+N{yiq), with a uniquely determined q e R±. In view of the decomposition
+x = y- \x |, we finally obtain the characters k of R* as
+Hx) = N((^y\xr) = N{xr\x\-P+i<>). D
+If the character Xoo associated to the Grofiencharakter x • /m -* S1 is
+given by
+Xoo(x) = N(xP\x\-p^),
+then we say that x is of type (/?,#), and we call p — iq the exponent
+of x- Since Xoo factors through R*/om, not all exponents actually occur (see
+exercise 3).
+The class of all Grojiencharaktere subsumes in particular the generalized
+Dirichlet characters defined as follows. To the module
+pfoo
+we associate the ray class group Jm/Pm mod m (see chap. VI, § 1). Here
+/m is the group of all ideals relatively prime to m, and Pm is the group of
+fractional principal ideals (a) such that
+a = 1 mod m and a totally positive.
+This last condition means that za > 0 for every real embedding r : K —> R.
+(6.8) Definition. A Dirichlet character mod m is a character
+X : Jm/Pm —► Sl
+ofithe ray class group mod m, i.e., a character x • ^m -* Sl such that
+The conductor of a Dirichlet character x mod m is defined to be the
+smallest module f dividing m such that x factors through J^/P^.
+(6.9) Proposition. The Dirichlet characters x mod m are precisely the
+Grofienoharaktere mod m of type (p, 0), p = (pT), such that pT = 0 for all
+complex r. In other words, one has
+for some character Xf of (o/m)*. The conductor of the Dirichlet character is
+at the same time also the conductor of the corresponding Grofiencharakter.
+
+===== PDF PAGE 495 =====
+
+§ 6. Hecke Characters 479
+Proof: Let x be a Grofiencharakter mod m with corresponding characters
+Xf > Xoo of (0/111)*, R*/om, such that Xoo is of type (/?, 0) with pT = 0 for r
+complex. For totally positive aeo such that a == 1 mod m, we then obviously
+have XffaO = 1. and XoofaO = 1, and then x ((*)) = XffaOXoofa) = 1.
+Therefore x factorizes through /m/Pm, and is thus a Dirichlet character
+mod m.
+Conversely, let x be a Dirichlet character mod m, i.e., a character of /m
+such that x(Pm) = 1. Let /Tm = [a e K* \ a = 1 modm}, JC™ = [a e Km\ a
+totally positive} and R*+) = {(xT) e R* | xT > 0 for r real}. Then we have
+an isomorphism
+Km/K™ —► R*/R*+) = 11 {±1}.
+p real
+Then the composite
+Km/K™ -U> Jm/Pm -** Sl
+defines a character of R*/R*+). It is induced by a character Xoo of R* which —
+because Xoo(R*+)) = 1 - is of the form XooO) = N(( ]fj)p) with p = (pT),
+pT e {0,1} for r real, and pT = 0 for r complex. We have x((a)) = XooO?)
+for a e Km, and
+Xf(a) = x((a))Xoo(a)~l
+gives us a character of (o/m)*. Therefore x is indeed a Grofiencharakter of
+the type claimed.
+Let f be the conductor of the Dirichlet character x mod m, and let f be the
+conductor of the corresponding Grofiencharakter mod m. x • Jm/Pm -> S1
+is then induced by a character x' • /tyP* -+ S1, so the Grofiencharakter
+X : /m -> S1 mod m is the restriction of the Grofiencharakter x' - J* -+ Sl.
+This implies that f | f. On the other hand, the Grofiencharakter x • /m -^ S1
+is the restriction of a Grofiencharakter x" : J* -> S1, so Xf is the composite
+x"
+of (o/m)* -> (o/f )* —^> Sl (see (6.2)). By the above, x" gives a character
+/f/pf -> S1 such that the Dirichlet character x : Jm/Pm -> S1 factors
+through /f//>f. Hence f | f, so that f = f. □
+(6.10) Corollary. The characters of the ideal class group CIk = //P,
+i.e., the characters x - J ~> Sl such that x(P) = 1, are precisely the
+Grofiencharaktere x mod 1 satisfying Xoo = 1.
+
+===== PDF PAGE 496 =====
+
+480 Chapter VII. Zeta Functions and L -series
+Proof: For m = 1 we have (o/m)* = {1}. A character x °f J/P ls
+a Grofiencharakter mod 1. The associated character Xf is trivial, so
+Xoo(a) = Xf(a)~lx((a)) = 1» and thus Xoo = 1> because K* is dense
+in R*. If conversely x is a Grofiencharakter mod 1 satisfying Xoo = 1, then
+x(faO) = XffaOXoofaO = Xf(*) = 1.
+for a e K*. Therefore x(^) = 1» and X is a character of the ideal classgroup. □
+To conclude this section, let us study the relation of Grojiencharaktere to
+characters of the idele class group.
+(6.11) Definition. A Hecke character is a character of the idele class group
+C = I/K* of the number field K, i.e., a continuous homomorphism
+X : / —► Sl
+of the idele group / = EIp^p such that x(K*) = 1.
+In order to deal with Hecke characters concretely, consider an integral
+ideal m = \\p P"p °f ^> i-e-' nP — 0 an(^i np = 0 for p | oo. We associate to
+this ideal the subgroup Im of /,
+/m = /fm x /oo where /fm = ft U±n*\ /«, = n ^p*­pfoo p|oo
+If p \ oo, then Up is the group of units Up if n = 0, and the fl-th group
+of higher units for n > 1. We interpret 1^ as the multiplicative group R* of
+the R-algebra R = ^ ®Q R = Y[ploo kp- Observe that /m differs slightly
+from the congruence subgroup Im = fj Up p introduced in chap. VI, § 1, in
+that, for real p, we have the factor Up = K+ instead of the component K*.
+The effect is that I/ImK* is not the ray class_group Jm/Pm mod m, but
+isomorphic to the quotient Jm/Pm by the group Pm of all principal ideals (a)
+such that a = 1 mod m — this is seen as in chap. VI, (1.9). We will refer
+to Jm/Pm as the small ray class group.
+We call m a module of definition for the Hecke character x if
+X(/fm) = l.
+Every Hecke character admits a module of definition, since the image of
+X : ripfoo Up -+ Sl \s & compact and totally disconnected subgroup of
+
+===== PDF PAGE 497 =====
+
+§ 6. Hecke Characters 481
+S1, hence finite, and so the kernel has to contain a subgroup of the form
+ripfoo Up P where np = 0 for almost all p. For it we can take the ideal
+m = ]~Ipfoo Pnp as a m°dule of definition.
+Since x(/fm) = 1, the character x > C = //K* -» Sl induces a character
+X : C(m) —► S1
+of the group
+C(m) = I/IfmK*.
+But it will not in general factor through the small ray class group
+I/ImK* £ Jm/Pm (see chap. VI, (1.7), (1.9)), which bears the following
+relation to C(m).
+(6.12) Proposition. There is an exact sequence
+1 —> R*/om —> C(m) —> Jm/Fm —► 1.
+Proof: The claim follows immediately from the two exact sequences
+i —> imK*/i™K* ~> i/i™k* —► ///m/r —^ i,
+l —> 7m n /r//fm n jc* —> 7m//fm —> ImK*/i^K* —> l.
+In the second one, one has 7m n K* = om, /fm n K* = 1 and
+/"7/f™ = /oo = R*, and so ImK*/I™K* = R*/om. D
+Given a Hecke character x with module of definition m, we may now
+construct a Grofiencharakter mod m as follows. For every p \ oo, we choose
+a fixed prime element 7tp of Kp and obtain a homomorphism
+c:Jm—> C(m)
+which maps a prime ideal p { m to the class of the idele (7tp) =
+(..., 1, l,7Tj3,1,1, ...). This mapping does not depend on the choice of
+the prime elements, since the ideles (iip), up e Up, for p \ m, lie in 7fm.
+Taking the composite map
+Jm -A C(m) A S1
+yields a 1—1 correspondence between Hecke characters with module of
+definition m and Grofiencharaktere mod m. The reason for this is the
+following
+
+===== PDF PAGE 498 =====
+
+482 Chapter VII. Zeta Functions and L -series
+(6.13) Proposition. There is a canonical exact sequence
+1 —► K(m)/om -5* /m x (o/m)* x R*/om -U C(m) —► 1,
+where 8 is given by
+8(a) = ((a)-1, (3 mod m, a mod om).
+Proof: For every a e K^m\ let *a e I be the idele with components *ap = a
+for p \ moo and Sj, = 1 for p | moo. It is then obvious that
+c((a)) = a mod /fm/T.
+Let us decompose the principal idele a according to its components in
+/ = If x /oo as a product a = afCi^, and define the homomorphisms
+<p : (o/m)* —► C(m), ^ : R*/om —► C(m)
+by
+^(a) = aaao mod /fm/T, f(b) = b~l mod /fm/T,
+where every b e R* = loo is considered as an idele in /. For a e o,
+a = 1 mod m, we have a{a~x e /fm c /, so we get in C(m) the equation
+0>(<z) = [aaoo] = [afdoo] = [a] = 1, where [ ] indicates taking classes.
+This shows that <p is well-defined. For every s e om, one has ef e 7fm, so
+[s^] = [^oo^f] = [e] = 1 in C(m), and thus i//(Soo) = 1- Consequently ^ is
+well-defined. We now define the homomorphism
+f :Jmx (o/m)* x R*/om —-> C(m)
+by
+f((a, a mod m, 6 mod om)) = c(a)<p(a)\lr(b),
+and we show that the resulting sequence is exact. The homomorphism 8 is
+clearly injective. For a e K^ one has
+f(8(a)) = c{{a))~lcp{a)f{a) = a-laaOQa^ mod IfmK* = 1,
+so that / o 8 = 1. Conversely, let
+/((a, a mod m, b mod om)) = c(a)(p(a)ty(b) = 1,
+andleta = nptmooPVp-Then
+c(a) = y mod /fm/T
+for some idele y with components yp = 7tpp for p f moo, and yp = 1
+for p | moo. This yields an identity
+y'aaoob'1 = §x with § e 7fm and x g K*.
+
+===== PDF PAGE 499 =====
+
+§6. Hecke Characters 483
+For p \ moo one has {y^aa^b l)p = nppa = %px in Kp, and so
+vp = vp(a~lx). For p | m one has (y'aaOQb~l)p = I = §px, so that x g Upnp ,
+and also 0 = vp = vp(a~lx) since a is relatively prime to m. This gives
+a = (ax~l).
+As x g Up p , one has x = 1 mod m, hence
+cp(ax~l) = cp(a).
+Finally, for p|oo we find (y'aaOQb~l)p = ab~l = x in Kp, so that
+b = tfooX-1, and thus
+f(ax-l) = i/(b).
+So we have
+(a, a mod m, b mod om) = ((ax-1), ax~l mod m, ax~l mod om) ,
+and this shows the exactness of our sequence in the middle.
+The surjectivity of / is proved as follows. Let a mod 7fm^* be a class
+in C(m). By the approximation theorem, we may modify the representing
+idele a, multiplying it by a suitable x e K*, in such a way that ap e £/p"p
+for p | m. Let a = flptmoo PUp(ap)- Then we have
+c(a) = y mod I™K*,
+where the idele y has components yp = np p ap = epap, sp g £/p, for
+p { moo, and yp = 1 f or p | moo. This gives ya~laoo e 7fm, and if we define
+b = a^, then /((a, 1 mod m, b mod om)) = yb~l = ya^ = a mod /fmAT*.a
+By the preceding proposition, the characters of C(m) correspond 1 — 1 to
+the characters of /m x (o/m)* x R*/om that vanish on 8(Kim)/om), i.e., to
+the triples x> Xf> Xoo of characters of /m, resp. (o/m)*, resp. R*/om, such
+that
+X ((<*))" Xf(<* mod nx)Xoo(^ mod om) = 1
+for a e K^m\ This makes x a Grofiencharakter mod m, and since Xf and
+Xoo are uniquely determined by x» we obtain the
+(6.14) Corollary. The correspondence x »-> x °c ^ 1 —1 between characters
+X of C(m), i.e., Hecke characters with module of definition m, and
+Grqfiencharaktere mod m.
+
+===== PDF PAGE 500 =====
+
+484 Chapter VII. Zeta Functions and L -series
+Exercise 1. Let m = YT-=i m* ^e a decomposition of m into integral ideals which
+are pairwise relatively prime. Then one has the decompositions
+(o/m)* ^ fKo/m,)*
+and
+Let Xf he a character of (o/m)*, and let xu he the characters of (o/m,)* defined
+by /f. If v g m-1?)-1/^-1, and if v, € mr1^-1/^-1 are the components of v with
+respect to the above decomposition, then
+r
+1=1
+Exercise 2. Prove the Mobius inversion formula: let /(a) be any function of
+integral ideals a with values in an additive abelian group, and let
+S(a) = E/«0.
+b\a
+Then one has
+/(a) = Em( £)*(&)•b|o O
+Exercise 3. Which of the characters k(x) = j?V(jtp|jt|~/H'/*) of R* are characters of
+R*/om?
+Exercise 4. The characters of the "small ray class group" Jm/Pm mod m are the
+Grofiencharaktere mod m such that Xoo = 1.
+Exercise 5. Show that every pair of characters Xf : (o/m)* —> S1 and
+Xoo : R*/om -► Sl such that
+XfOOXooO?) = 1 for all <? g o*
+comes from a Grofiencharakter mod m.
+Exercise 6. Show that the homomorphism c : Jm ->► C(m) is injective.
+§ 7. Theta Series of Algebraic Number Fields
+The group P of fractional principal ideals (a) is constituted from the
+elements a g K*, and it sits in the exact sequence
+1 —► o* —+ K* —► P —► 1.
+In order to form the theta series we will need, let us now extend K* to a
+group .fiT* whose elements represent (3// fractional ideals a e /.
+
+===== PDF PAGE 501 =====
+
+§7. Theta Series of Algebraic Number Fields485
+(7.1) Proposition. There is a commutative exact diagram
+I y 0* ► k* —^-> P ► 1
+1 —► o* ► K* —^U / —► 1
+with a subgroup K* c C* containing K* such that \a\ e R+, and
+Ol((fl)) =\N(a)\
+for alia gK*.
+Proof: Let the ideal class group J/P be given by a basis [bi], ..., [br], and
+choose, for every one of these basic classes, an ideal bi, ..., br. Then every
+fractional ideal a € / can be written in the form
+a = ab\x • • • bv;
+where a e K* is well-determined up to a unit s e o*9 and the exponents
+Vi mod A,- are uniquely determined, hi being the order of [b/] in //P. Let
+bf f = (fy). For every r e Hom(i£, C), we choose a fixed root
+bit = y rft,­
+in C in such a way that 6/f = £>;T whenever r is complex. We define K* to
+be the subgroup of C* generated by K* and by the elements bi = (bit) e C*.
+Each class [b] e //F contains a uniquely determined ideal of the form
+b = b^1 • • • bv/ with 0 < vt < hi,
+and we consider the mapping
+f :J/P —>K*/K*, f([b]) = bvxl - - • i> mod /ST*.
+v' r
+It is a homomorphism, for if b = b\l • • • b^r and b' = bt* • • • bvrr, and if
+Vi + v\ = fa + k(hi, 0 < jit < hi, then bfl • • • b^r is the ideal belonging to
+the class [b][b'], and
+/([b][b;]) = b*x • • • 6>' = Sf1 • • • fc^'ftf1 • - • ^
+ss (^ . • .i^Kfcf1 • • •£*) mod J%T* = /([b])/([b']).
+/ is clearly surjective. To show the injectivity, let b"1 --brr = a e K*,
+and let h = h\- — hr be the class number of K. Then we have for
+
+===== PDF PAGE 502 =====
+
+486 Chapter VII. Zeta Functions and L -series
+the ideal a_= a^b? ■ ■ -bv/ e J that ah = a-h(b\ih,hi ■ ■ -b?h/hr) =
+a~h(bp • • • brr)h = (1). Since / is torsion-free, it follows that o = (1), and
+so bj1' • • • brr = (a) € P. From this we deduce that every element 'a G K*
+admits a unique representation
+a = abil ■ ■ •*>, 0 < v,- < hit a e K*.
+We define a map ^
+( ) : K* —* /by ^
+a = a^1 • • • b? i—> (^ = afc? • • ■ brv'.
+Arguing as above, we see that this is a homomorphism. It is surjective and
+obviously has kernel o*. Finally we have that |6,| = (|feiT|) e R+ and
+r r
+so that Ol((fti)) = \N(pi)\9 and thus |<z| € R^, Ot((fl)) = |iV(a)| forall a € ff *. D
+The elements a of K* used to be called ideal numbers — a name which
+is somewhat forgotten but will be used in what follows. The diagram (7.1)
+implies an isomorphism ^K*/K* = J/P.
+For a,b e K* we write a ^ b if a and b lie in the same class, i.e., if
+ab~l g AT*. We call a an ideal integer, or an integral ideal number, if (a) is
+an integral ideal. The semigroup of all ideal integers will be denoted by o.
+Furthermore we write a \ b if - e o, and for every pair a,b e ^T*, we have
+the notion of gcd(a, b) e AT* (which is lacking inside AT*). The greatest
+common divisor is the ideal number d (which is unique up to a unit) such
+that the ideal (d) is the gcd of the ideals (a), (b). Observe that the ideal
+numbers are not defined in a canonical way. This is the reason why they have
+not been able to hold their own in the development of number theory. (They
+are treated in [46], [65].)
+We now form an analogous extension of the prime residue groups
+(Z/raZ)*. For three ideal numbers a, b, ra, the congruence
+a = b mod m
+signifies that a ~ b and —^ e o U {0}. If m = (ra), we also write this
+relation as a = b mod m. Let m be an integral ideal. The semigroup 8(m)
+of all integral ideal numbers relatively prime to m is partitioned by the
+equivalence relation = into classes, which we will write as a mod m. They
+are given explicitly as follows.
+
+===== PDF PAGE 503 =====
+
+§7. Theta Series of Algebraic Number Fields487
+(7.2) Lemma. For every a e 3(m; one has
+a mod m = a + a(a~l)m.
+Proof: Let b g a mod m, b ^ a, i.e., b — aa for some a G K*, a ^ 1, and
+b — a = cm, ceo. Then
+a~l(b - a) = a - I e (a - I) = {a~l){c){m) c (tf_1)m,
+so that b e a + tf(<2_1)m. Let conversely b e a + a(a~l)m, b ^ (3, and thus
+6/(3 = a G 1 + (tf_1)m. Then one has b ^ a and (b — a) = (a)(a — 1) C
+(<2)(<2-1)m = (m), i.e., ra 16 — a and therefore 6 == a mod m. □
+We now consider the set
+(3/m)* := {a mod m | a G 3(m)}
+of all equivalence classes in the semigroup 3(m) of ideal integers prime to m.
+(7.3) Proposition. (3/m)* is an abelian group, and we have a canonical
+exact sequence
+1 —+ (o/m)* —■> (3/m)* _►///>—►!.
+Proof: For fl,ie 3(m\ the class a6 mod m only depends on the classes
+a mod m, b mod m, so we get a well-defined product in (3/m)*. Every
+class a mod m has an inverse. Indeed, since (a) + m = o, we may write
+I = a + fi, 0 ^ a g (a), {i G m. Consequently a \a, so that a = ax,
+x g 3(m\ and since 1 g a{\ + a_1m) = a mod m, we see that ax mod m is
+the unit class, i.e., x mod m is inverse to a mod m.
+The right-hand arrow in the sequence is induced by a \-+ (a). It is
+surjective since every class of J/P contains an integral ideal relatively prime
+to m. If the class a mod m = a(\ + (<2)-1m) is mapped to 1, then one has
+(a) G P, and so a g o, (a,m) = 1. Hence a mod m = a + m is a unit
+in o/m. The injectivity of the arrow on the left is completely trivial, i.e., wehave shown the exactness. □
+For an ideal class £ g J/P, we will denote by & g J/P in what follows
+the class defined by
+M! = [md],
+
+===== PDF PAGE 504 =====
+
+488 Chapter VII. Zeta Functions and L -series
+where D is the different of K |Q. Let m = (m) and D = (d), with some fixed
+ideal numbers ra, d. For m = o let m = 1. We now study characters
+X : (S/m)* —► C*,
+and put xO?) = 0 for a e o such that (<z,m) ^ 1. In the applications, x will
+come from a Grofiencharakter mod m, but the treatment of the theta series
+is independent of such an origin of x •
+(7.4) Definition. Let a eo be an ideal integer, and let & be the class of (a).
+Then we define the Gauss sum
+t(X,a)= £ x(?)^'7r(™W,
+x mod m
+where ? mod m runs through the classes of (3/tn)* which are mapped to the
+class &. In particular, we put r(x) = r(x, 1).
+The Gauss sum r(x,tf) reduces immediately to the one considered in §6,
+rm(x,y)= £ xW^,TrW.
+x mod m
+(*,m)=l
+In fact, on the one hand we have
+y = 'xa/md g m~ld~l,
+since the class of the ideal (y) = (a)(x*)(m)~l(d)~l is the principal class
+^ft'tn-1?)-1, so y g K*, and one finds
+y e (y) = (ax )m"1D"1 c m~ld~l,
+because a and ? are integral. On the other hand, if 'x mod m is a fixed
+class of (3/m)* which maps to &', then, in view of (7.3), we get the others
+by xi mod m, with x mod m varying over the classes of (o/m)*. Therefore
+*(X,a) = x(?)*m(x>y),
+and in particular
+*(x) = x(*>m(x>y)
+with y = x^/md, which satisfies (jmc),m) = 1 since yxxu) = (?) and
+((?),m) = 1. Consequently, r(x,tf) does not depend on the choice of
+representatives ?, and theorem (6.4) yields at once the
+(7.5) Proposition. For a primitive character x of (3/m)*, one has
+*(x>*) = x(*Mx)
+and |r(x)| = V3t(S).
+
+===== PDF PAGE 505 =====
+
+§7. Theta Series of Algebraic Number Fields489
+The theta series 0(x,z) used in §2 in the treatment of Dirichlet L-series
+are attached to the field Q. We now have to find their analogues relative to
+an arbitrary number field K. Given any admissible element p e Y\T % (see
+§3, p.448) and a character x of (o/m)*, we form the Hecke theta series
+Op(X,z)= E x(a)N(ap)eni{az/{md{>a\
+aeoU{0}
+where ra, d are fixed ideal numbers such that (m) = m and (d) =d. We take
+m = 1 if m = 1. The case m = 1, p = 0 is exceptional in that the constant
+term of the theta series is x (0)N(0P) = 1, whereas it is 0 in all other cases.
+Let us decompose the theta series according to the ideal classes £ e J/P
+into partial Hecke theta series
+0'(£,X,z) = E x(a)N(ap)eni{az/{md{>a\
+ae(st)S)U{0}
+where a varies over all ideal integers in the class £ e K*/K* which
+corresponds to the ideal class £ under the isomorphism K*/K* = J/P.
+For these partial theta series, we want to deduce a transformation formula,
+and to this end we decompose them further into theta series for which we
+have the general transformation formula (3.6) at our disposal.
+Let a be an integral ideal relatively prime to m which belongs to the
+class £, and let a e 8(m) be an ideal number such that (a) = a.
+(7.6) Lemma. Assume that m ^ 1 or p ^ 0. If x mod m varies over the
+classes of (e>/m)*, then one has
+eP(A,x,z) = X(a)N(aP) £ X(x)9pr{x,0,z\a2/md\),x mod m
+where r is the lattice m/a c R and
+0£(jc,O,z)= E N((x + g)p)eni{ix^)z^^K
+Proof: In the theta series 9p(&,x>z)i it suffices to sum over the elements of
+£ fl o(m) because x is jzero on the others. Every class 1c mod m e (o/m)*
+is either disjoint from £ or else it is contained in £. In view of the exact
+sequence (7.3)
+1 —► (o/m)* —► (o/m)* —► J/P —► 1,
+the classes
+ax mod m = a(x + cf 1m)
+
+===== PDF PAGE 506 =====
+
+490 Chapter VII. Zeta Functions and L-series
+are the different residue classes of (8/m)* contained in £. This gives
+^(£,X,z) = E E x(ax)N((ax + ag)p) ^i(a(x+8)z/\md\Mx+8))
+x modm geT
+= X(a)N(ap) £ XW £iV((x + g)p) ^'<(*+g)zl"2/»"*U+s>x mod m ge.T
+= X(a)N(aP) £ X(x)ef(x,0,z\a2/md\). D
+x mod m
+For any admissible element p = (/?T), we will write p for the admissible
+element with components pT = pf. From the transformation formula (3.6)
+for the series Op and proposition (7.5) on Gauss sums, we now obtain the
+(7.7) Theorem. For a primitive character x °f (o/m)*, one has the
+transformation formula
+^(£,X, -l/z) = W(x,p)N((z/iy+i)9P(#9x,z)
+with the constant factor
+This factor has absolute value \W(x,p)\ = 1.
+Proof: The lattice Ff dual to the lattice F = m/a c R is given, according
+to (5.7), by *Ff = a/mD. (Here as in §4, the asterisk signifies adjunction with
+respect to ( , ), i.e., (x,cty) = (*ax,y).) The volume of the fundamental
+mesh of F is by chap. I, (5.2),
+vol(r) = W(m/a)y/\diT\ = N(\m/a\)N(\d\)l/2.
+From (3.6) we now get
+(1) 6>£(x,0, - l/\md/a2\z) = A(z)9^f(0,x,z\md/a2\),
+with the factor
+A(z) = [/rr(;?)^(|m/^|)A^(|rf|)1/2]~1^((|mrf/^2|z//)^+2)
+= [i^p)y/^W]~lN(\md/ay)N((z/i)P+^)
+and the series
+(2) 9pr(0,x,z\md/a2\) = E Nig^)^^^eni{^md/a^g,).
+
+===== PDF PAGE 507 =====
+
+§7. Theta Series of Algebraic Number Fields491
+Writing g = ^, ,, N, the rules stated in §3 give*(md/a)
+{x,gf) = Tr(axg/md),
+(g'\md/a2\z,g') = (*gz\md/a2\/\md/a\\*g) = (gz/\md\,g)
+and N((*g)p) = N(g?). If g' varies over the lattice r', then g varies over
+the set
+(md/a)T' = (md/a)a(xnOyl = (ft Do) U {0}.
+Substituting all this into (2) yields
+(3) 9^(0,x,z\md/a2\)
+= fj(( — \P\ Y\ N(gP^e27iiTr(axg/md) e7ii{gz/\md\,g)
+^rnd) JgG(k,nSM0}
+Let us now consider first the special case m = 1, p = 0 (which was
+essentially treated already in §5). In this case, we have (i? Pi o) U {0} =
+{ag | g e K, (ag) c o} = aa~l = aT. Consequently
+eP(&9x,z)= E e"i{a*z/W'ag) = E <?i{8Z{a2/dU8)=er(z\a2/d\)9
+0P(Sl'9x,z) = E fi{gzndlg)=0r>{z\dla2\).
+ge(^/n<5)u{0}
+Equation (1) thus becomes
+0p(£,X, - 1/z) = N(z/i)*0P(&',x,z).
+Now assume m ^ 1 or /? ^ 0. Then we have x (O)N(O^) = 0. Substituting
+(3) into (1) and (1) into formula (7.6), with — 1/z instead of z, we obtain
+0p(A,X, ~ l/z) = N(aP) E x(a*)0£(x,O, " l/z\md/a2\)
+x mod m
+=B(Z) Y, N(gP)( £ x(ax)e2xiTr(axg/md)\e7zi(gz/lmd\,g)
+gek'no x mod m
+with the factor
+iV((/W£//fl)^)
+Now consider the sum in parentheses. If x varies over a system of
+representatives of (o/m)*, then A* varies over a system of representatives
+of those classes of (8/m)* which are mapped under (8/m)* -> J/P to the
+class £. Furthermore, (g) is an integral ideal in the class &', and since £'
+
+===== PDF PAGE 508 =====
+
+492 Chapter VII. Zeta Functions and L -series
+bears the same relation && = [mD] to £ as £ does to £', we recognize the
+sum in question as the Gauss sum
+*(X,g)= £ x(ax)e2niTr{ax8/md).
+x mod m
+Substituting in now the result (7.5),
+*0c.s) = x(sMx).
+we finally arrive at the identity
+(4) 8P(£,X, ~ 1/z) = W{x,p)N({z/i)P+h)eP(#,x,z)
+with the factor
+W(X,P) = [i^^y/^mV'NUmd/ay) N(aP)r(x}L J V ' N((md/a)P)
+:N//\ma\\P\ /a* a"\
+iTrWJWrnj \\ md / / \ \a\
+>[<™»O')] •
+where one has to observe that 7>(/?) = Tr(p), a? = *ap, a*a = |tf|2, and
+|mrf|^ = (*|mJ|)^ = \md\P because |md| € R^. Since |r(x)| = V^Um),we have \W(x,p)\ = 1. □
+If m 7^ 1 or /? 7^ 0, we find for the special theta series:
+*p(x,z) = £^x(«)iv(tf V<az/|WLa> = E^C^x,*),AGO •£
+and (7.7) yields the
+(7.8) Corollary. ^(x, - 1/z) = W(x,p)tf((z/iy+i)0'(x,z).
+We recommend that the reader who has studied the above proof allow
+himself a moment of contemplation. Looking back, he will realize the
+peculiar way in which almost all fundamental arithmetic properties of the
+number field K have been used. First they served to break up the theta
+series, then these constituents were reshuffled by the analytic transformation
+law, but in the end they are reassembled to form a new theta series. Having
+contemplated this, the reader should reflect upon the admirable simplicity of
+the theta formula which encapsulates all these aspects of the arithmetic of
+the number field.
+
+===== PDF PAGE 509 =====
+
+8. Hecke L -series 493
+There is however one important fundamental law of number theory which
+does not enter into this formula, that is, Dirichlet's unit theorem. This will
+play an essential role when we now pass from theta series to L -series in the
+next section.
+Exercise 1. Define ideal prime numbers and show that unique prime factorization
+holds in K*.
+Exercise 2. Let o be the semigroup of all ideal integers. If d = (a,b) is the gcd of
+a, b, then there exist elements x, y e o U {0} such that
+d —xa + yb.
+Furthermore, we have x ~ d/a, resp. y ~ d/b, unless x = 0, resp. y = 0. Here the
+notation a ~ ft means afi~l e K*.
+Exercise 3. The congruence ax = b mod m has a solution in o with integral x if
+and only if (a,m)\b. This solution is unique mod m, provided (a,m) = 1.
+Exercise 4. A system of finitely many congruences with pairwise relatively prime
+moduli is simultaneously solvable if every congruence is solvable individually in
+such a way that the individual solutions are equivalent (with respect to ~).
+Exercise 5. If a, m go, then there exists in every residue class mod m prime to m,
+an ideal integer prime to a.
+Exercise 6. For the factor group Jm/Pm by the group Pm of all principal ideals (a)
+such that a = 1 mod m, one has the exact sequence
+1 -► o*/om -► (3/m)* -► Jm/Pm -+ 1,
+where om = {e e o* \ s = 1 mod m}.
+Exercise 7. Let ^(m) be the preimage of /m under K* ->► /, and let
+Km = {a e K* \ a = 1 mod m}. Then one has (3/m)* = K(m)/Km.
+§ 8. Hecke L-series
+Let m be again an integral ideal of the number field K and let
+X : /m —► Sl
+be a character of the group of ideals relatively prime to m. With respect to
+this character, we form the L -series
+X(a)£(*,*) = Ea 91(a)*
+where a varies over the integral ideals of K and we put x (a) = 0 whenever
+(a, m) ^ 1. Then the following proposition holds in complete generality.
+
+===== PDF PAGE 510 =====
+
+494 Chapter VII. Zeta Functions and L -series
+(8.1) Proposition. The L-series L(x,s) converges absolutely and uniformly
+in the domain Re(s) > 1 + <5, for all 8 > 0, and one has
+1
+£(x,*) = nV i-x(p)^(p)-5
+where p varies over the prime ideals of K.
+Proof: Taking formally the logarithm of the product
+1
+e(s) = nV i-x(p)ot(p)­
+gives the series
+log £(*) = ££ X{prp n=\nVKp)™
+It converges absolutely and uniformly for Re(s) = o > 1 + 8. In fact,
+since |x(p)| < 1, and |0I(p)5| = |0l(p)r > pW+V > pl+8, and since
+#{p|p} < d = [K : Q], it admits the following convergent upper bound
+which is independent of s:
+E-7^T =dlogW+8).P,n npn{<l+d)
+This shows that the product
+is absolutely and uniformly convergent for Re(s) > 1 + 8. Now develop in
+this product the factors
+1 1-L X(P) , X(P)2 ,i-x(p)9i(p)-* W <n(p)2*
+for the finitely many prime ideals pi, ...,pr such that 9t(|j;) < N, and
+multiply them. This yields the equation
+_ y, X(a)
+a 91(0)*
+where Yl' denotes the sum over all integral ideals a which are divisible at
+most by the prime ideals pi, ... ,pr. Since the sum £]' contains in particular
+the terms such that 71(a) < N, we may also write
+n ' .= r ^+ r x<a)
+fai 1 - X»,)m(P,')-' mZ<N 1W MM.N "<»)*
+
+===== PDF PAGE 511 =====
+
+§8. Hecke L-series 495
+Comparing now in (*) the sum ^' with the series L(x,s), we get
+1
+Ui i-x(p.-)91(p.-)­L(X,s) y x(a)
+pit"
+na>N ^(a)l+<5
+For Af -> oo the right-hand side tends to zero, as it is the remainder term of
+a convergent series, since the sequence (J2yi(a)<N yyaW*) NeN *s monotone
+increasing and bounded from above. Indeed, with the previous notations we
+find
+1
+m(a)<N W(a) i+a
+ri
+91(a)i+s
+n(i-9i(pir(1+8))_I.i=i
+and
+iog( n (i - *(P.r(W)) ~l) = E iog( (i - mr(1+5))_1)
+i
+i=\ i=\
+r oo
+oo I
+-?B?mai(p)0+«)'«
+l
+,«(!+«)
+= dlog(f(l+«)). n
+We now face the task of analytically continuing the L-series L(x,s)
+attached to a GroBencharakter x mod m, and setting up a suitable functional
+equation for it at the same time. So we are given a character
+such that
+(*)
+x-.r
+X ((<*)) =Xf(fl)Xoo(a)
+for all integers a e o relatively prime to m, and there are two associated
+characters
+Xf: (o/m)* S1 and Xoo:R* S\
+
+===== PDF PAGE 512 =====
+
+496 Chapter VII. Zeta Functions and L -series
+The character Xf extends in a unique way to a character
+Xf: (3/m)* —► Sl
+such that the identity (*) holds for all integral ideal numbers a e 3(m) prime
+to m. Indeed, the restriction of the function Xf(#) := x((^))Xoo(^)-1 of 3(m)
+to o(m) is given by the original character Xf of (o/m)*, so it is in particular
+trivial on 1 + m and thus yields a character of (3/m)*.
+The L -series of a Grofiencharacter of /m is called a Hecke L-series.
+If X is a (generalized) Dirichlet character mod m, i.e., a character of the ray
+class group /m/Fm, then we call it a (generalized) Dirichlet L-series. The
+proof of the functional equation of the Hecke L -series proceeds in exactly
+the same way as for the Dedekind zeta function, except that it is based on
+the theta transformation formula (7.7).
+We decompose the Hecke L -series according to the classes £ of the ideal
+class group J/P as a sum
+L(x,*) = £ U&,x,s)
+of the partial L -series
+L&X,s)= E
+aefi
+integral
+a.* K(a)s
+and deduce a functional equation for those. If all one wants is the functional
+equation of the L-series L(x,s), this decomposition is unnecessary; it may
+also be derived directly using the transformation formula (7.8), because we
+know how to represent any ideal a by an ideal number (this was not yet
+the case when we were treating the Dedekind zeta function). However, we
+prefer to establish the finer result for the partial L -series.
+By (7.1), we have a bijective mapping
+(J? n o)/o* —^ {a e & | a integral} , a i—> (a),
+where £ e K*/K* corresponds to the class £ e J/P with respect to the
+isomorphism K*/K* = J/P. Therefore we get
+L(£,x,*)= E TT77T77'
+where £R is a system of representatives of (^flo)/o*. We want to write this
+function as a Mellin transform. To this end, we recall from §4 the L -function
+Lx(s) = N(7T-s/2)rx(s/2) = N(n-*/2) f Mie^y*'2)^,j y
+K
+
+===== PDF PAGE 513 =====
+
+8. Hecke L -series 497
+which has been attached to the G(C|R)-set X = Hom(X, C). The character
+Xoo of R* corresponding to x is given by (6.7) as
+Xoo(x) = N(xP\x\-P+i«),
+for an admissible p e\\xZ and a q e R±. We put s = si + p — iq, where
+s e C is a single complex variable, and
+^oo(x^) = Lx(s) = Lx(sl + p-iq).
+In the integral
+dy
+yrx(s/2) = j' N{e-yys'2)­
+K
+we make the substitution
+y\—>Tt\a\2y/\md\ {a e <H),
+where m,d e 3 are fixed ideal numbers such that (m) = m and (d) = c> is
+the different of K |Q. We then obtain
+rx(s/2) = N(^-^-J/2^N(\a\s) L-^WMI."^^)^
+R^
+and, since JVfliBdl1*/*) = (|djr I^On))*/2,
+(|^|W(m))5/2Loo(x,s)—!— = c(x) f e-*^md^N(ys?2)^N(\a\s) J yyRi
+where c(x) = N(|mJ|-p+"5r)1/2. Multiplying this by Xf(fl)N{ap) and
+summing over ae!ft yields, in view of
+Xf(a)N(aP) Xf(a)N(aP\a\-P+i«) x((a))
+Af(Hs) N(|a|*) |W(«)I*
+the equation
+(|^|?t(m))i/2Lco(x,5)L(^,x^) = c(x) j g{y)N{f'2)^­
+r;
+with the series
+*O0 = Exf(«)iV(«p)^<ay/Mu>.
+aeJH
+We now consider the completed L -series
+
+===== PDF PAGE 514 =====
+
+498 Chapter VII. Zeta Functions and L-series
+Then we get
+A(^x,s) = c(x) j g(y)N(ysl2) — •
+r;
+We now want to write this function as an integral over the series
+Wx.z) := ep(&Xf,z) = e(X) + E ^ Xf(a)N{ap)e^azl^a\
+where the summation is extended^not only — as in the case of g(y) — over a
+system of representatives £R of (£ n o)/o*, but over all a e & n 3. We have
+6^(x) = 1 if ra = 1 and /? = 0, and s(x) = 0 otherwise. We will proceed in
+the same way as with the Dedekind zeta function (see (5.5)). Just as we did
+there, using
+y=xtl,n- x = w^' { = N(y)>
+with n = [K : Q], we decompose
+R* =SxR* ^=d*xx —.y t
+Then, observing that
+N(ys/2) = N(xs/2)N(ts/2n) = N(x{p-iq)/2)tl2{s+Tr{p-iq)ln\
+we obtain the identity
+oo
+(*) A{&x>s) = c(X) f f N(x(p-iq)/2)g(xtl/n)d*x/ —
+0 S
+with s' = \ (s + Tr(p — iq)/n). The function under the second integral will
+be denoted by
+g^(xj) = N(xip-iq)/2) J2 Xf(a)N(aP)e-n{axtl/n/lmd^a).
+From it, the theta series 9(&,xJxtl^n) is constructed as follows.
+(8.2) Lemma. NtfP-W^O&xJxt1'") - e(X)) = £ gn(\e\2xJ)­
+Proof: For every unit s e o*, one has Xoo(s)Xf(£) = X((£)) = 1, so that
+we get
+N(\s\p-iq) = xooieme?) = Xf(£)N(sp).
+
+===== PDF PAGE 515 =====
+
+8. Hecke L -series 499
+We put for short § = xtl^n/\md\ and obtain
+g*(\e\2x,t) =N(xb-iM2) £ Xt(ea)N((eay)e-"{8at'8a)=g8fR(x9t).
+Since £ n o = |J s9l, we get
+£€0*
+N(x(p-il'W)(8(Sl,x,ixt1,n) - s(x)) =
+= E E tf(x(p-,'*)/2)Xf(6a)N((efl)p)e~sr<Mf,M>
+£GO* #€£91
+= E &*(*,*)= E g<«(|£|2x,?). D
+From this lemma we now obtain the desired integral representation of
+the function A(&, x>s)- We choose as in §5 a fundamental domain F of S
+for the action of the group \o*\2. F is mapped by log : R+ —^-> R± to a
+fundamental mesh of the lattice 2 log | o* |. This means that we have
+s= U n2F.
+(8.3) Proposition. The function
+^(^X^) = (l*|ai(m))J/2L00(x,j)L(^x^)
+is the Mellin transform
+A(&,x,s) = L(f,s')
+of the function
+fit) = fF&X,t) = — I N{x{P-i^2)9{^XMtx,n)d^xw J
+F
+at sf = \{s + Trip — iq)/n). Here we have set n = [K : Q], c(x)
+N(\md\~p+iq)1/2, and w denotes the number of roots of unity in K.
+Proof: One has
+/(oo) = C(X)S(X) [ N(xlP-W2)d*x.w J
+F
+
+===== PDF PAGE 516 =====
+
+500 Chapter VII. Zeta Functions and L-series
+We have seen before that
+(*)
+where
+oo
+/At
+Mt)ts'—=L{f,s')
+MO =c(x) I gn(x,t)d*x.
+s
+Since S = (J>je|o*i??2/7> one nas
+fo(t) = c(x) E / g*0c,t)d*x.ne|o*| J
+In each one of the integrals on the right, we make the transformation
+F ->■ r)2F, x h> r)2x, and obtain
+fo(t) = c(X) [ E g*tfx,t)d*x.
+F
+The fact that we may swap summation and integration is justified in exactly
+the same way as for the case of Dirichlet L -series in §2, p.436. In view of
+the exact sequence
+1 —► M(JO —► o* —► |o*|—>1,
+where /jl(K) denotes the group of roots of unity in K, one has
+#{£ e o* | \e\ = rj} = w, so that we get
+E gn{\e\2xj) =wgn(r}2xj).
+\S\=T]
+Using (8.2), this gives
+/o(0=— / E gn(\s\2x,t)d*x
+F
+= ^ f N(x{P-i«)l2)(9(&,x,ixtl'n)-s(x))d*x
+F
+= /(0-/(oo).
+This together with (*) yields the claim of the proposition. □
+It is now the transformation formula (7.7) for the theta series d(&, x>z) =
+0p(&>Xfiz) which guarantees that the functions fit) = /fC£, X»0 satisfy
+the hypotheses of the Mellin principle.
+
+===== PDF PAGE 517 =====
+
+§8. Hecke L-series 501
+(8.4) Proposition. We have />(£, x, 0 = a0 + 0(e~ctl/n) for some c > 0,
+and
+F
+ifm = 1 and /? = 0, and ao = 0 otherwise. Furthermore we have
+fF(&,x, ]) = W(x)tl+1Hp)/nfF-i(#,X,»
+where R8! = [mD], and the constant factor is given by
+Proof: The first statement follows exactly as in the proof of (5.8). For the
+second, we make use of formula (7.7). It gives us
+0(J*,X, - l/z) = 0'(J*,Xf, - l/z) = W(x)N((z/i)P+l2)9P(#,Xf,z)
+= w(x)N((z/iy+l2)e(#,x,z),
+because Xoo(x) = N(xP\x\~p^) = N((*x)p\x\-p-iq) = iV(jc^|jc|-^-^).
+Observing the fact that the transformation x h> x-1 leaves the Haar measure
+d*x invariant and takes the fundamental domain F to the fundamental domain
+F~\ (7.7) yields for z = ixtl'n:
+/f(#,X,-) = — [ N(xlr-W2)0(St,XJx/tl'n)d*x
+= S^1 [ N(x-{p-iq),1)0(&,X, ~ l/ixtl/n)d*xw J
+= c(xW(x) f ^(x-^+^iw&^i^^^jf.ixr^)^
+F-i
+c(*)W(x) r ^(x(^W2)ri/2+7Krt/i.e(^/^^/jcri/i.)d*JC
+F-l
+1
+= w(x)f2+7Kp)/B/>-i(ir,x,o.
+We have used in this calculation that N(x1/2) = N(x)1/2 = 1 and
+N(xp) = N((*x)p) = N(xp), and that the character Xoo, the complex
+conjugate of Xoo, is given by
+Xoo(x) = N(xP\x\-p-iq). D
+
+===== PDF PAGE 518 =====
+
+502 Chapter VII. Zeta Functions and L -series
+From this proposition and (1.4), we now finally get our main result.
+We may assume that x is a primitive Grojiencharacter mod m, i.e., that
+the corresponding character Xf of (o/m)* is primitive (see §6, p. 472).
+The L -series of an arbitrary character differs from the L -series of the
+corresponding primitive character only by finitely many Euler factors. So
+analytic continuation and functional equation of one follow from those of the
+other.
+(8.5) Theorem. Let x be a primitive Grojiencharacter mod m. Then the
+function
+A(&,x,s) = {\dKmrti))S/2L00(x,s)L(&,x,s), Re(s)>l,
+has a meromorphic continuation to the complex plane C and satisfies the
+functional equation
+where R8! = [mD], and the constant factor is given by
+md \^\~|-1 r(Xf)
+™-['*M(i=r)')]"\md\J /J JWmj
+It has absolute value \W(x)\ = 1.
+A(&,x,s) is holomorphic except for poles of order at most one at
+s = Tr(—p + iq)/n and 5 = 1+ Tr{p + iq)/n. In me case m ^ 1 or p ^ 0,
+A(ft, x,s) is holomorphic on all ofC.
+Proof: Let f(t) = />(£,x,0 and g(t) = fF-\{8!,J,t). From f(t) =
+<z0 + 0(e-ctl/"), g(t) = b0 + 0(<rcfl/") and
+f(\) = W(X)tl+1Hp),ng(.t),
+it follows by (1.4) that the Mellin transforms L(f,s) and L(g,s) can be
+meromorphically continued, and from (8.3) we get
+A(&,X,s) = L^f, -(s + Tr(p - iq)/n))
+= W{x)L(g, l- + Tr{p)/n ~\{s + Tr(p - iq)/n))
+= W(X)L(g, l-{l-s + Tr{p + iq)/n))
+= W(x)A(#,x,l-s),
+where we have to take into account again that XooOO = N(xp\x\~p~iq).
+
+===== PDF PAGE 519 =====
+
+§8. Hecke L-series 503
+According to (1.4), in the case ao ^ 0, L(f, s) has a simple pole at s = 0
+and s = ~ + Tr(p)/n, i.e., ^l(£, x,s) = £(/, \(s + 7r(p — iq)/n)) has a
+simple pole at s = Tr(—p + /<?)/fl and 5 = 1+ 7r(/? + iq)/n. If m ^ 1
+or p 7^ 0, then <20 = 0, i.e., A(R, x,s) is holomorphic on all of C. □
+For the completed Hecke L -series
+A(X,s) = (\dKmm))s/2L00(x,s)L(X,s) = E^(^X^)
+we derive immediately from the theorem the
+(8.6) Corollary. The L-series A(x,s) admits a holomorphic continuation
+to
+C \ {Tr(-p + iq)/n, 1 + Tr(p + iq)/n)
+and satisfies the functional equation
+A(X,s) = W(x)A(x,l-s).
+It is holomorphic on all of C, if m ^ 1 or p ^ 0.
+Remark 1: For a Dirichlet character x m°d m> the functional equation
+can be proved without using ideal numbers, by splitting the ray class group
+Jm/Pm into its classes £, and then proceeding exactly as for the Dedekind
+zeta function. The Gauss sums to be used then are those treated by Hasse
+in [52]. On the other hand, one may prove the functional equation for the
+Dedekind zeta function by using ideal numbers, imitating the above proof,
+without decomposing the ideal group at all.
+Remark 2: There is an important alternative approach to the results of
+this section. It starts from a character of the idele class group and from
+the representation (8.1) of the corresponding L -series as an Euler product.
+The proof of the functional equation is then based on the local-to-global
+principle of algebraic number theory and on the Fourier analysis of p-adic
+number fields and their idele class group. This theory was developed by the
+American mathematician John Tate, and is commonly known for short as
+Tate's thesis. Even though it does meet the goal of this book of presenting
+modern conceptual approaches, we still decided not to include it here. The
+reason for this is the clarity and conciseness of Tate's original paper [24],
+which cannot be improved upon. In addition Serge Lang's account of the
+theory [94] provides an illustrative complement.
+
+===== PDF PAGE 520 =====
+
+504 Chapter VII. Zeta Functions and L-series
+Thus instead of idly copying this theory, we have chosen to provide a
+conceptual framework and a modern treatment of Hecke's original proof
+which is somewhat difficult to fathom. It turns out that Hecke's approach
+continues to have a relevance of its own, and can even claim a number of
+advantages over Tate's theory. For the functional equation of the Riemann
+zeta function and the Dirichlet L -series, for example, it would be out of
+proportion to develop Tate's formalism with all its /?-adic expense, since
+they can be settled at a beginner's level with the method used here. Also,
+L -series, and the very theory of theta series has to be seen as an important
+arithmetic accomplishment in its own right.
+It was for pedagogical reasons that we have proved the analytic
+continuation and functional equation of L -series four times over: for the
+Riemann zeta function, for the Dirichlet L -series, for the Dedekind zeta
+function, and finally for general Hecke L -series. This explains the number
+of pages needed. Attacking the general case directly would shrink the expose
+to little more than the size of Tate's thesis. Still, it has to be said that
+Tate's theory has acquired fundamental importance for number theory at
+large through its far reaching generalizations.
+§ 9. Values of Dirichlet L-series at Integer Points
+The results of § 1 and §2 on the values f (1 — k) and L(x, 1 — k) of the
+Riemann zeta function and the Dirichlet L-series will now be extended to
+generalized Dirichlet L-series over a totally real number field. We do this
+using a method devised by the Japanese mathematician Takuro Shintani (who
+died an early and tragic death) (see [127], [128]).
+We first prove a new kind of unit theorem for which we need the following
+notions from linear algebra. Let V be an a-dimensional R -vector space, k
+a subfield of R, and Vk a fixed k-structure of V, i.e., a &-subspace such
+that V = Vk ®k K. By definition, an (open) fc-rational simplicial cone of
+dimension d is a subset of the form
+C(vu ...,vd) = {tivi + --- + tdvd\ti e»;}
+where v\, ...,Vd are linearly independent vectors in Vk- A finite disjoint
+union of k -rational simplicial cones is called a k -rational polyhedric cone.
+We call a linear form L on V k-rational if its coefficients with respect to a
+k -basis of Vk lie in k.
+
+===== PDF PAGE 521 =====
+
+§9. Values of Dirichlet L -series at Integer Points505
+(9.1) Lemma. Every nonempty subset different from {0} of the form
+P = {x € V | Lt(x) > 0, 0 < i < I, Mj(x) > 0, 0 < j < m)
+with nonzero k-rational linear forms Li, Mj (I = 0 or m = 0 is allowed) is
+a disjoint union of finitely many k -rational cones, and possibly the origin.
+Proof: First let P = [x e V \ L((x) > 0, / = 1, ...,£}, with k-rational
+linear forms L \, ..., Lt ^ 0. For n = 1 and a = 2 the lemma is obvious. We
+assume it is established for all R-vector spaces of dimension smaller than n.
+If P has no inner point, then there is a linear form L among the Li, ..., Li
+such that P is contained in the hyperplane L — 0. In this case the lemma
+follows from the induction hypothesis. So let u g P be an inner point, i.e.,
+L\(u) > 0, ...,Li(u) > 0. Since V* is dense in V, we may assume u e V*.
+For every / = 1, ... ,1, let dtP = [x e F | L/(x) = 0}. If 3/P ^ {0}, then
+3/ F \ {0} is by the induction hypothesis a disjoint union of a finite number
+of k -rational simplicial cones of dimension < n. If a simplicial cone in 3/F
+has a nonempty intersection with some 3;F, then it is clearly contained in
+3/ PDdjP. Therefore 3i P U ... U d^P \ {0} is a disjoint union of jfc-rational
+simplicial cones of dimension < n, so that
+31PU...U3^P\{0}= \JCj,
+where C; = C(v\, ...,t>d7), ui, ...,Vdj € V^, <i; < ^. For every j G J
+we put C/(w) = C(t>i, ..., Vdj,u). This is a (dj + 1)-dimensional k-rational
+simplicial cone. We claim that
+p x {0} = \J Cj U U Cj(u) U M>.ye/ ye/
+Indeed, if the point x e P \ {0} lies on the boundary of F, then it belongs
+to some 3/F, hence to UjejCj. On the other hand, if x belongs to the
+interior of P, then L((x) > 0 for all /. If x is a scalar multiple of w, then
+we have x e R+u. Assume this is not the case, and let s be the minimum
+of the numbers L\(x)/L\(u), ..., Li(x)/Li(u). Then s > 0 and x — su lies
+on the boundary of P. Since x — su ^ 0, there is a unique y € / such that
+x — su e Cj, and thus there is a unique je/ such that x e Cj(u). This
+proves the claim.
+Now let
+P = {x € V|L/(jc) >0, 0<i <£, Af/(jc) >0, y = 1, ...,m}.
+Then
+F = {x € V|L/(jc)>0, Mj(x) >0}
+
+===== PDF PAGE 522 =====
+
+506 Chapter VII. Zeta Functions and L -series
+is a disjoint union of a finite number of k -rational simplicial cones and {0}.
+For every j = 1, ... ,ra, let djP = {x e P \ Mj(x) = 0}. If a simplicial
+cone in P has nonempty intersection with 9/P, then it is contained in djP.
+As P = P \ \JJ=\ fyP> we see that since P \ {0} is a disjoint union of
+finitely many k-rational simplicial cones, then so is P. □
+(9.2) Corollary. IfC and C are k-rational polyhedric cones, then C \ C
+is also a k-rational polyhedric cone.
+Proof: We may assume without loss of generality that C and C are k­
+rational cones. Let d be the dimension of C'. Then there are n /:-rational
+linear forms L\, ..., Lw_j, Mi, ..., Mj such that
+C = {x G V | Li(*) = .-• = £„_</(*)=(), Mi(jc) >0, ...,Md(x) >0}.
+If we define, for each / = 1, ..., n — d,
+Cf = [x € C I Li(jc) = • • • = L/_i(jc) = 0, ±L/(x) >0},
+and for each y = 1, ..., d,
+Li(x) = --- = Ln-d(x) = 0, 1
+Mi(jc) >0, ...,Mj-i(x) >0, My(x) <0j'C; = \xeC
+then we find, as can be checked immediately, that C \ C; is the disjoint
+union of the sets C^, ..., C+_rf, Cf, ..., C~_d, Ci, ..., Cj. By (9.1), these
+are either empty or k-rational polyhedric cones. Therefore C \ C is also. D
+It is a rare and special event if a new substantial insight is added to the
+foundations of algebraic number theory. The following theorem, proved by
+Shintani in 1979, falls into this category. Let K be a number field of degree
+n = [K : Q], and let R = [ f|T ^] be the corresponding Minkowski space
+(r eHom(£\C)). Define
+R*+) = {(Xr) e R* | xT > 0 for all real r} .
+(Observe that one has R*+) = R^ only in the case where K is totally real.)
+Since R = K ®q R, the field K is a Q-structure of R. The group
+< = o*nR*+)
+of totally positive units acts on R*+) via multiplication, and we will show that
+this action has a fundamental domain which is a Q-rational polyhedric cone:
+
+===== PDF PAGE 523 =====
+
+9. Values of Dirichlet L -series at Integer Points507
+(9.3) Shintani's Unit Theorem. If E is a subgroup of finite index in o\,
+then there exists a Q-rational polyhedric cone P such that
+R*+) = (J sP (disjoint union).sgE
+Proof: We consider in R*+) the norm-one hypersurface
+S = {xgR*+)| \N(x)\ = l}.
+Every x g R*+) is in a unique way the product of an element of S and of a
+positive scalar element. Indeed, x = \N(x)\l/n(xJ\N(x)\l/n). By Dirichlet's
+unit theorem, E (being a subgroup of finite index in o*) is mapped by the
+mapping
+^:S-^[]-[R| + , (xT)i—►(log|xT|),
+T
+onto a complete lattice r of the trace-zero space H =
+[x g [ rir^]* I Tr(x) = 0}. Let 0 be a fundamental mesh of 7\ let
+0 be the closure of 0 in //, and put F = l~x{0). Since 0 is bounded and
+closed, so is F. It is therefore compact, and we have
+(1) S={jeF.
+SeE
+Let x g F and U8(x) = [y eR\\\x - y\\ < 8} c R*+), 5 > 0. Then there
+is clearly a basis t>i, ...,vn g t/^(x) of R such that x = rit?i + • • • + tnvn
+with ti > 0. Since K is dense in R by the approximation theorem, we may
+even choose the vi to lie in K n Ug(x). Then C^ = C(ui, ...,vn) is a
+Q-rational simplicial cone in R*+) with x e C5, and every j g C5 is of the
+form j = kz with A. G R!J. and z g Ug(x). We may now choose 6 sufficiently
+small so that
+C8 nsC8 = 0 for all e G £, e + 1.
+If not, then we would find sequences kvzv, kfvzfv g Ci/v, kv,k'v g R!J.,
+Zy^^ g U\/V(x), and ev e £, ev ^ 1, such that kvzv = evk'vzfv, and thus
+pvzv = svzfv, pv = kv/kfv. zv and z'v would converge to x\ now pv would
+converge to 1 as p"N(zv) = N(zfv), i.e., x = (lim£v)x. This would mean
+that lim£v = 1, which is impossible, since E is discrete in R.
+F being compact, we thus find a finite number of Q-rational cones
+C\, ..., Cm in R*+) such that
+m
+(2) F=\J(CiDF)
+i=\
+
+===== PDF PAGE 524 =====
+
+508 Chapter VII. Zeta Functions and L -series
+and C[ n eCt = 0 for all e G £, s ^ 1, and all / = 1, ... ,ra. From (1)
+and (2), we deduce that
+m
+K)=U LUC-­i=leeE
+In order to turn this union into a disjoint one, we put C\[ = C\ and
+cf^Cx IJeCi, i=2, ...,m.
+sCi and C; are disjoint for almost all e € £. Hence, by (9.2), C; is a
+Q-rational polyhedric cone. Observing that C; Pi sC; =0for£e£,£7^1,
+we obtain
+Rr+, = u u ec«z=l ee£
+and eC^ n c/1} = 0 for all e e E and / = 2, ... ,m.
+We now assume by induction that we have found a finite system of
+Q-rational polyhedric cones C\[ , ..., C^ , v = 1, ..., ra — 2 satisfying the
+following properties:
+(i) Cf'cc/,
+m
+(ii) R*+)=U l>cf\
+(iii) eC\v) D Cy = 0 for all e € £, if i < v and / ^ y.
+We put CJv+i) = C/W) for i < v + 1, and
+c(v+i) = c(v) x y eC(j fof . > v + 2
+Then Cj , ... ,C^V+ is a finite system of Q-rational polyhedric cones
+which enjoys properties (i), (ii), and (iii) with v+1 instead of v. Consequently,
+Cj , ..., Cm is a system of Q-rational polyhedric cones such that
+m
+R*+) = |J |J eCfl) (disjoint union). Di=\ sgE
+Based on Shintani's unit theorem, we now obtain the following description
+of Dirichlet's L -series. Let m be an integral ideal, Jm/Pm the ray class group
+mod m. Let x • Jm/Pm -> C* be a Dirichlet character mod m, and
+X(a)
+L(X'*) = ?^
+
+===== PDF PAGE 525 =====
+
+§9. Values of Dirichlet L -series at Integer Points509
+the associated Dirichlet L-series. If £ varies over the classes of Jm/Pm,
+then we have
+£(*,*) = Ex(*)?(iU)
+with the partial zeta functions
+1
+?(iU)= E
+aeSi
+a integral
+Vl(ay
+Let £ be a fixed class, and a an integral ideal in £. Furthermore let
+(1 + a-1m)+ = (1 + a-1m) n R*+) be the set of all totally positive elements
+in 1 + a-1m. The group
+E = o™= {e G o*\e = 1 mod m, e G R*+)}
+acts on (1 + a-1m)+, and we have the
+(9.4) Lemma. There is a bijection
+(1 + a-1m)+/£ > £int, a i—> aa,
+onto the set ^nt of integral ideals in £.
+Proof: Let a e (I + a-1m)+. Then we have (a — l)a c m, and since a and
+m are relatively prime, we get a — 1 g m, i.e., (a) g F(m). Hence aa lies
+in £. Furthermore, we have aa c a(l -f a-1m) = a + m = o, so that # a is
+integral. Therefore a \-+ aa gives us a mapping
+(l + a-1m)+ -> £int.
+It is surjective, for if aa, a g Fm, is an integral ideal in £, then
+(a — l)a c ma c m, so that a g 1 + a-1m, and also (3 g R*+), and so
+a g (1 + a_1m)+. For (3, ft g (1 + a-1m)+, we have aa = &a if and only
+if (^) = (ft), so that a — be with e G o*. Since e e (1 + a-1m)+, it follows
+that e e E, i.e., (3 and ft have exactly the same image if and only if they
+belong to the same class under the action of E. D
+The lemma implies the following formula for the partial zeta function
+?(iU): 1 1f (&,s) = T ,W alk\N(a)\s
+
+===== PDF PAGE 526 =====
+
+510 Chapter VII. Zeta Functions and L-series
+where £R runs through a system of representatives of (1 + a lm)+/E.To this
+we now apply Shintani's unit theorem. Let
+m
+R(+) = U U sdi=\ seE
+be a disjoint decomposition of R*+) into finitely many Q-rational simplicial
+cones C[. For every / = 1, ..., ra, let vn, ..., vtdi be a linearly independent
+system of generators of C;. Multiplying if necessary by a convenient totally
+positive integer, we may assume that all vu lie in m. Let
+C] = {hvn + • • • + tdividi | 0 < tt < 1},
+and
+/?(£,C/) = (l + a-1m)+nC/.
+Then we have the
+(9.5) Proposition. The sets R(&,d) are finite, and one has
+I m
+Way i=l xeR&d)
+with the zeta functions
+S(Ci,x,s) = J2\N(x + zxvn + • - • + zd.vidi)\~s,
+z
+where z = (zi, ..., zd{) varies over all d[ -tuples of nonnegative integers.
+Proof: /?(£, C{) is a bounded subset of the lattice a-1m in R, translated
+by 1. It is therefore finite. Since C; c R*+) is the simplicial cone generated
+by vn, ..., vtdi € m, every a e (1 + a_1m) n C; can be written uniquely as
+di
+a = £ )W*
+with rational numbers ^ > 0. Putting
+yi=xi + zi, 0 < xi < 1, 0 < z^ e Z,
+we have ^xivu e 1 + a-1m because £ zivu ^ tn c a_1m. In other words,
+every a e (1 + a-1m) fl C; can be written uniquely in the form
+tf =x+ Ez^^
+
+===== PDF PAGE 527 =====
+
+§9. Values of Dirichlet L-series at Integer Points511
+withx = Ylxtyit e R(R,Ci). Since
+m
+(1 + o_1m)+ = IJ U (1 + aTlm) n ed,
+a = x+ £ zivu mns through a system 9t of representatives of (l+a-1m)+/£
+if / runs through the numbers 1, ..., ra, x through the elements of /?(£, C;),
+and z = (zi, ..., z^.) through integer tuples with z^ > 0. Thus we indeed
+find that \ m*(JU)=m^£ ^ C(C;,x,s). D
+(9.6) Corollary. For the Dirichlet L -series attached to the Dirichlet character
+X : Jm/Pm -*■ C*, we have the decomposition
+L(X,s) = E^t £ t(Ci,x,s),Si WW i = l *€#(£, C;)
+where £ runs through the classes /m/Pm, and a denotes an integral ideal
+in £, one for each class.
+The relation between zeta functions and Bernoulli numbers hinges on a
+purely analytic fact which is independent of number theory. This is what we
+will describe now.
+Let A be a real r x a-matrix, r < n, with positive entries a^, 1 < j < r,
+1 < / < n. From this matrix we construct the linear forms
+n r
+Lj(tu ..., f/i) = £ ajiU and L*(zl, ..., zr) = £ a^z; .i=l y=l
+For an r-tuple x = (xi, ...,xr) of positive real numbers, we write the
+following series
+oo n
+zi,...,zr=0 /=l
+On the other hand we define the generalized Bernoulli polynomials Bk(A, x)
+by
+Bk{A,x)=-J:Bk{A,xii),
+n «=i
+where Bic(A,x)(-l')/(k\)n is the coefficient of
+M(*-1>"(;1.-.;i_1?i+1---?„)*-1
+
+===== PDF PAGE 528 =====
+
+512 Chapter VII. Zeta Functions and L -series
+in the Laurent expansion at 0 of the function
+exp(uXjLj(t))
+/i exp(uLj(t)) - 1f/=i
+in the variables u,t\, ... ,f/_i,f,-+i, ...,£«. For r = n = 1 and A = a,
+we have Bk(a,x) = a*""1/?^*), with the usual Bernoulli polynomial Bk(x)
+(see § 1, exercise 2). The equation
+fi*(A, 1 -x) = (-If (^1)+r^(A,x),
+where 1 — x signifies (1 — jti, ..., 1 — xr), is easily proved.
+(9.7) Proposition. The series f (A, x, s) is absolutely convergent forRe(s) >
+r/n, and it can be meromorphically continued to the whole complex plane.
+Its values at the points s = 1 —k,k — 1,2, ..., are given by
+{M.,,l-*)_ (-,?*££>.
+Proof: The absolute convergence for Re(s) > r/n is deduced from the
+convergence of a series YlnLi ~T+s by the same arguments that we have used
+repeatedly. It will be left to the reader. The remainder of the proof is similar
+to that of (1.8). In the gamma function
+oo oo
+r(s)n = J"j ft *-*('! ' • * tnf-'dh ' ' • dtn,0 0
+we substitute
+ti i—> L*(z+x)ti,
+and obtain
+n
+oo oo i- n -i
+■s-1
+= f..-fexp[-Er/L;(z+jc)(*!-••*„)* "dh-'-dtn.
+0 0
+Summing this over all z = (zi, ..., zr), z,- g Z, z,- > 0, and observing that
+i=i y=i
+
+===== PDF PAGE 529 =====
+
+§9. Values of Dirichlet L -series at Integer Points513
+yields the equation
+oo oo
+r(s)nS(A9x9s) = [• • • Ig(t)(h • "tn)s-xdtx ...dtn
+0 0
+with the function
+y=1 exp(Ly(r))- 1
+We cut up the space Rn into the subsets
+Di = {t eRn\0<ti<ti, 1 = 1, ...,i-l,i + l, ...,n]
+for / = !,...,«, and get
+i = l «/
+(i) ?(A,x,j) = r(J)-|li; / g{t){h...tny-ldh...dtn.
+Di
+In £)/ we make the transformation of variables
+t = uy = u(yu ...,y/i),
+where 0 < w, 0 < yi < 1 for € ^ / and j/ = 1. This gives
+w" /" g(t)(ti---tny-ldtl...dtn
+JDi
+oo 1 1
+= r(syn j[j^J g(uy)(Uyi)s-lndyi]uns-ldu.0 0 0
+For 0 < e < 1, let now 7e(l), resp. /e(+oo), denote the path in C consisting
+of the interval [1, e], resp. [+oo, e], followed by a circle around 0 of radius
+e in the positive direction, and the interval [s, 1], resp [s, + oo]. For £
+sufficiently small, the right-hand side of the last equation following (1.9)
+becomes
+(2) A(s) f f \g(uy)uns-l(Y\yty~lY\dyi]du,J J L l±i l±i J
+/«(+oo)/e(l)*-l
+with the factor
+Ms)
+where one has to observe that the linear forms L\, ... ,Lr have positive
+coefficients. It is easy to check that the above expression, as a function of the
+
+===== PDF PAGE 530 =====
+
+514 Chapter VII. Zeta Functions and L -series
+yt=i
+variable s, is meromorphic on all of C. As for the factor A (s), (1.2) implies
+that = _J rg-f)»
+(27r/)w (e27tins - l)(e2nis - l)~l ennis
+Let us now put s = 1 - ik. The function ^is^ins _ \)/^nis _ ^ takes
+the value (-l)n^k~l^n at s = I — k. Thus expression (2) turns into
+(_iy.(H)ZW . i r /r^(M:y)M»ci-«-i(ri y€)-^ n rfy€]rfM,/i (2;n )*; ; l ^ l¥:i j
+where JCe denotes the positively oriented circumference of the circle of radius
+£, and where we have to observe that the integrals over (oo,s] and [£,oo),
+resp. over [l,e] and [s, 1], kill each other in (2) if s = 1 — k. This value is
+obviously ({-\)n{k~x)T{k)n/n) times the coefficient of un{k~x){]\i¥ii ydk~x
+in the Laurent expansion of the function
+' exp(u(l-Xj)Lj(y))g(uyu ...9uyi-i9u,uyi+u ...,uyn) = H / r / ^ r~j=l exp(uLj(y))- 1
+which is a holomorphic function of «, t\, ..., £;_i, f;+i, ...,tn in the direct
+product of n copies of the punctured disc of radius s. Therefore the value
+of (2) at s = 1 - k equals (-l)/,(*-1)ifc-',fl*(A, 1 - x){i)/n. Inserting this
+into (1) gives
+f (A,*, 1 - *) = {-\)n«-xh-n - £ ^(A, 1 - jOw" i=i
+ik11
+Together with the equation Bk(A, 1 - x) = (-iy(*~1)+r£/:(A,x) mentioned
+above, this gives the desired result. □
+Theorems (9.5) and (9.6) now imply our main result concerning the values
+of Dirichlet L-series L(x,s) at integer points s = 1 — k, k = 1,2, ... If K
+is not totally real, then these values are all zero (except if x is the trivial
+character, for which s = 0 is not a zero). This can be read off immediately
+from the functional equation (8.6) and (5.11).
+So we let K be a totally real number field of degree n. Numbering
+the embeddings r : K -> R identifies the Minkowski space R with Rn,
+and R*+) = R+ with the set R+ of vectors (x\, ...,xn) with positive
+coefficients X[. Given the Q-rational simplicial cone C; c R^ generated by
+vn» • • • >vidi, we again consider the zeta functions
+Z(Ci,x,s) = J2\N(x + ziVn + • • • + zdiVidi)\~S.
+
+===== PDF PAGE 531 =====
+
+§9. Values of Dirichlet L -series at Integer Points515
+If
+Vij = (aft, .. .,a$), j = 1, ... ,dt,
+then Ai = (flj*) is a {d[ x ^)-matrix with positive entries, and the k-th
+component of z\Vn + • • • + z^ty^ becomes
+di
+L*k(zu ...,zdf.)= E *}**/•
+7=1
+For i e R^, we therefore get
+z k=\
+and, from (9.5) and (9.6), we obtain by putting s = 1 — k the
+(9.8) Theorem. The vaiues of the partial zeta function £(Si,s) at the integral
+points s = 1 — k, k = 1,2,3, ..., are given by
+and the values of the Dirichlet L -series L(x,s) are given by
+L(x,l-*) = Ex(o)9l(a)*-1f:r(-l)* £ ^1^1 •£ i=l L *e/?(£,C;) * J
+Here a is an integral ideal in the class & of Jm/Pm.
+This result about the Dirichlet L-series L(x,s) also covers the Dedekind
+zeta function £k (s). The theorem says in particular that the values L (x, 1 — k),
+for /: > 1, are algebraic numbers which all lie in the cyclotomic field Q(Xf)
+generated by the values of the character Xf- The values f#(l — k) are even
+rational numbers. From the functional equation (5.11),
+we deduce that t;K(l — k) =0 for odd k > 1, and it is ^ 0 for even k > 1.
+If the number field AT is not totally real, then we have ^k(s) = 0 for all
+s = -1, -2, -3, ...
+(9.9) Corollary (Siegel-Klingen). The values of the partial zeta function
+f (£, 5) at the points s = 0, — 1, — 2, ... are rational numbers.
+
+===== PDF PAGE 532 =====
+
+516 Chapter VII. Zeta Functions and L -series
+Proof: Let a\, ... ,ar be nonzero numbers in K, and let A be the (r x n)­
+matrix (ay/), where ay/ is the /-th component ofay, after identifying R = Rn
+according to the chosen numbering of the embeddings r : K -> R. It is
+enough to show that Bk(A,x) is a rational number for every r-tuple of
+rational numbers x = (xi, ...,xr). To see this, let L\Q be the normal
+closure of ^f|Q and a e G(L |Q). Then a induces a permutation of the
+indices {1,2, ..., n] so that
+a ay/ = aya(/} (1 < j < r, / = 1, ..., n).
+Now we had Bk(A,x) = \ £"=1 fl*GM)(l'\ where Bk(A,x){i) was the
+coefficient of w"(*-1)+r (^ ? ... ? ^_j ? ^+1, ..., f„)*-1 in the Taylor expansion
+of the function
+r * exp(Xyi/Ly(0)u —
+fjx exp(wLy(0-1)
+with Lj(t) = aj\t\ + • • • + a]ntn. This makes it clear that Bk{A,x)^ lies
+in L and that aBk(A,x)(i) = Bk(A,x)((T(i)\ Therefore Bk(A,x) is invariant
+under the action of the Galois group G(L |Q), and thus belongs to Q. □
+The nature of the special values of L -series at integer points has recently
+found increasing interest. Like in the class number formula, which expresses
+the behaviour of the Dedekind zeta function at the point s = 0, the properties
+of all the special values indicate a deep arithmetic law which appears
+to extend to an extremely wide class of L-series, the L -series attached
+to "motives". According to a conjecture of the American mathematician
+Stephen Lichtenbaum, the significance of these L -values can be explained
+by a strikingly simple geometric interpretation: they appear according to
+the Lichtenbaum conjecture as Euler characteristics in etale cohomology
+(see [99], [12]). The proof of this conjecture is a great, if still remote, goal
+of number theory. On the way towards it, the insights into the nature of
+L -series which we have encountered may prove to be important.
+Finally we want to mention that the French mathematicians Daniel Barsky
+and Pierette Cassou-Nogues have used Shintani's result to prove the existence
+of p-adic L-series. These play a major role in Iwasawa theory, which we
+have mentioned before. The p-adic zeta function of a totally real number
+field K is a continuous function
+£p:Zp\{l}-^Qp,
+which is related to the ordinary Dedekind zeta function ^k(s) by
+?P(-n) = ?*(-*) no-w1)
+p\p
+
+===== PDF PAGE 533 =====
+
+§10. Artin L -series 517
+for all n G N such that — n == 1 mod d, where d = [K(jub2P) : ^] denotes
+the degree of the field K{iJb2P) of 2/?-th roots of unity over K. The /?-adic
+zeta function is uniquely determined by this relation. Its existence hinges on
+the fact that the rational values £k(—n) are subjected to severe congruences
+with respect to p.
+§ 10. Artin L-series
+So far, all L-series we have considered were associated to an individual
+number field K. With the Artin L-series, a new type of L-series enters the
+stage; these are derived from representations of the Galois group G(L\K)
+of a Galois extension L\K. This new kind of L-series is intimately related
+to the old ones via the main theorem of class field theory. In this way they
+appear as far-reaching generalizations of the old L-series. Let us explain this
+for the case of a Dirichlet L-series
+~ X(n) 1
+attached to a Dirichlet character
+X : (Z/mZ)* —►€*.
+Let G = G(QOm)IQ) be the Galois group of the field QOm) of ra-th roots
+of unity. The main theorem of class field theory in this particular case simply
+describes the familiar isomorphism
+(Z/mZ)* -^G,
+which sends the residue class p mod m of a prime number p \ m to the
+Frobenius automorphism cpp, which in turn is defined by
+<pPS = Kp for K e /xm.
+Using this isomorphism we may interpret x as a character of the Galois
+group G, or in other words, as a 1-dimensional representation of G, i.e., a
+homomorphism
+x:G_^GL1(C).
+This interpretation describes the Dirichlet L-series in a purely Galois­
+theoretic fashion,
+p\m l-X(<Pp)P S
+and allows us the following generalization.
+
+===== PDF PAGE 534 =====
+
+518 Chapter VII. Zeta Functions and L -series
+Let L\K be a Galois extension of finite algebraic number fields with
+Galois group G = G(L\K). A representation of G is an action of G on a
+finite dimensional C-vector space V, i.e., a homomorphism
+p :G->GL(V)=Autc(V).
+Our shorthand notation for the action of a e G on v e V is av, instead of
+the complete expression p(cr)v. Let p be a prime ideal of K, and let *p|p be
+a prime ideal of L lying above p. Let G<p be the decomposition group and
+Irp the inertia group of *P over p. Then we have a canonical isomorphism
+Gv/Iv-^+G(kW)\k(p))
+onto the Galois group of the residue field extension /c(SP)|/c(p) (see chap. I,
+(9.5)). The factor group G«p//«p is therefore generated by the Frobenius
+automorphism <py whose image in G(jc($S)\ic(p)) is the #-th power map
+x h> xq, where q = 9t(p). (p<p is an endomorphism of the module V1^ of
+invariants. The characteristic polynomial
+det(l-^f; V1*)
+only depends on the prime ideal p, not on the choice of the prime ideal *P
+above p. In fact, a different choice *p;|p yields an endomorphism conjugate
+to cpy, as the decomposition groups G<p and Gqy, the inertia groups /«p
+und /«p/, and the Frobenius automorphisms cpy and cpy are simultaneous
+conjugates. We thus arrive at the following
+(10.1) Definition. Let L\K be a Galois extension of algebraic number fields
+with Galois group G, and let(p,V) be a representation ofG. Then the Artin
+L -series attached to p is defined to be
+C(L\K,p,s) = Tl ?—'1 '" V det(l-^W(p)-*; V1*)
+where p runs through all prime ideals of K.
+The Artin L -series converges absolutely and uniformly in the half-plane
+Re fa) > 1 + 5, for any S > 0. It thus defines an analytic function on the
+half-plane Refa) > 1. This is shown in the same way as for the Hecke
+L -series (see (8.1)), observing that the £/ in the factorization
+det(l - wpttfr)-'; V1*) = n(l -e/W)
+are roots of unity because the endomorphism cpy of V1^ has finite order.
+
+===== PDF PAGE 535 =====
+
+§10. Artin L -series 519
+For the trivial representation (p,C), p(a) = 1, the Artin L-series is
+simply the Dedekind zeta function f#(s). An additive expression analogous
+to the expansion
+does not exist for general Artin L -series. But they exhibit a perfectly regular
+behaviour under change of extensions L\K and representations p. This
+allows to deduce many of their excellent properties. As a preparation for this
+study, we first collect basic facts from representation theory of finite groups.
+For their proofs we refer to [125].
+The degree of a representation (p, V) of a finite group G is the dimension
+of V. The representation is called irreducible if the G-module V does not
+admit any proper G-invariant subspace. An irreducible representation of an
+abelian group is simply a character
+p:G —+ C* = GLi(C).
+Two representations (p,V) and (pf,Vf) are called equivalent if the G­
+modules V and V are isomorphic. Every representation (p, V) factors into
+a direct sum
+v = vx e • • • e vs
+of irreducible representations. If an irreducible representation (pa,Va) is
+equivalent to precisely ra among the representations in this decomposition,
+then ra is called the multiplicity of pa in p, and one writes
+P ^J2raPa,a
+where pa varies over all non-equivalent irreducible representations of G.
+The character of a representation (p, V) is by definition the function
+XP : G —>C, Xpfc) = trace p(a).
+One has xp(\) = dimV = degree(p), and Xp(aTcr~l) = XpM f°r
+all cr,r G G. In general, a function / : G -> C with the property
+that f(ara~l) = f(j) is called a central function (or class function).
+The special importance of characters comes from the following fact:
+Two representations are equivalent if and only if their characters are equal.
+If P^E«r«P«, then
+Xp — Z^raXpa 'a
+
+===== PDF PAGE 536 =====
+
+520 Chapter VII. Zeta Functions and L-series
+The character of the trivial representation p : G -> GL(V), dim V = 1,
+p(a) = 1 for all a e G, is the constant function of value 1, and is denoted
+by 1g, or simply 1. The regular representation is given by the G-module
+V = C[G] = { J2xtt\xtgC},tgG
+on which the a e G act via multiplication on the left. It decomposes
+into the direct sum of the trivial representation V0 = C^aGGa, and
+the augmentation representation { J2aeG x^° I Eo- x<* = ®} • The character
+associated with the regular, resp. the augmentation representation, is denoted
+by ra> resp. ug- We thus have re = uq + 1g> and explicitly: rc(cr) = 0
+for a ^ l,rG(l) = £ = #G.
+A character x is called irreducible if it belongs to an irreducible
+representation. Every central function cp can be written uniquely as a linear
+combination
+of irreducible characters, cp is a character of a representation of G if and only
+if the cx are rational integers > 0. For instance, for the character re of the
+regular representation we find
+where x varies over all irreducible characters of G. Given any two central
+functions (p and i// of G, we put
+* aeG
+where i// is the function which is the complex conjugate of ^. For two
+irreducible characters x and X'\ this gives
+fl, ifx=x',
+10, lfx^X­
+In other words, ( , ) is a hermitian scalar product on the space of all central
+functions on G, and the irreducible characters form an orthonormal basis of
+this hermitian space.
+For the representations itself, this scalar product has the following
+meaning. Let
+v = vx © • • • e vr
+be the decomposition of a representation V with character x into the direct
+sum of irreducible representations V/. If V is an irreducible representation
+with character x'» then (x,xO is the number of times that V occurs
+
+===== PDF PAGE 537 =====
+
+§10. Artin L -series 521
+among the V;, up to isomorphism. For if Xi is the character of V;, then
+X = Xi H \~Xr, so that
+(x,x,) = (xi,x,) + --- + (xr,x/),
+and we have (x/, x') = 1 or 0, depending whether V,- is or is not isomorphic
+to V. Applying this to the trivial representation V = C, we obtain in
+particular that
+dimVG = - £ x(cr), # = #G.
+Now let A : // -> G be a homomorphism of finite groups. If <p is a central
+function on G, then /**(#>) = ^ o h is a central function on H. Conversely,
+one has the following proposition.
+(10.2) Frobenius Reciprocity. For every central function ^ on H there is
+one and only one central function h*(i//) on G such that one has
+for all central functions <p on G.
+This will be applied chiefly to the following two special cases.
+a) H is a subgroup ofG and h is inclusion.
+In this case we write <p\H or simply <p instead of h*(cp), and i//* instead
+of A*(V0 (the induced function). If <p is the character of a representation
+(p,V) of G, then <p\H is the character of the representation (p\Hf V). If i/r
+is the character of a representation (p, V) of H, then ^* is the character of
+the representation (ind(p),Ind^(V)) given by the induced G-module
+Indg(V) = {/ : G -> V \ f(rx) = rf(x) for all r € //} ,
+on which a e G acts by (crf)(x) = f(xcr) (see chap. IV, §7). One has
+iM^O = £VKr<xr-1),
+T
+where r varies over a system of representatives on the right of G/H, and we
+put ty(roT~x) = 0 if TOT~l £ H.
+b) G w a quotient group H/N of H and h is the projection.
+We then write <p instead of h*(<p), and ^ instead of A*(V0- One has
+If <p is the character of a representation (p, V) of G, then A*(<p) is the
+character of the representation (p o h, V).
+The following result is of great importance.
+
+===== PDF PAGE 538 =====
+
+522 Chapter VII. Zeta Functions and L-series
+(10.3) Brauer's Theorem. Every character / of a finite group G is a Z­
+linear combination of characters Xi* induced from characters Xi of degree 1
+associated to subgroups Hi ofG.
+Note that a character of degree 1 of a group H is simply a homomorphism
+X : H -> C*.
+After this brief survey of representation theory for finite groups, we
+now return to Artin L-series. Since two representations (p, V) and (p\ V)
+are equivalent if and only if their characters x and x' coincide, we will
+henceforth write
+C(L\K,x,s) = El 7­Vdet(l-p(^)ai(p)^; V'*)
+instead of C(L\K,p,s). These L-series exhibit the following functorial
+behaviour.
+(10.4) Proposition, (i) For the principal character x = 1, one has
+C(L\KXs) = Sk(s).
+(ii) If x,Xr are tw0 characters ofG(L\K), then
+C(L\K,x+x\s) = C(L\K,X,s)C(L\K,xf,s).
+(iii) For a bigger Galois extension L'\K, V 5 L 5 K, and a character x of
+G(L\K) one has
+C(Lf\K,x,s) = C(L\K,X,s).
+(iv) If M is an intermediate field, L 5 M 2. K, and x is a character
+ofG(L\M), then
+C(L\M,x,s) = C(L\K,X*,s).
+Proof: We have already noted (i) earlier, (ii) If (p, V), (p',V) are
+representations of G(L\K) with characters x,x', then the direct sum
+(p © p\ V © V) is a representation with character x + x'» and
+det(l - cpyt; (V © Vf)^) = det(l - cp^t; V1*) det(l - cpyt; VfItp).
+This yields (ii).
+(iii) Let ^3;|^3|p be prime ideals of L'\L \K, each lying above the next. Let x
+be the character belonging to the G(L \K)-module V. G(L'\K) acts on V via
+the projection G(Lf\K) -> G(L \K). It induces surjective homomorphisms
+Gy —> G<p, /qy —> Ap, G<p/I<p —► Gy/Iy
+
+===== PDF PAGE 539 =====
+
+§10. Artin L -series 523
+of the decomposition and inertia groups. The latter maps the Frobenius
+automorphism (py to the Frobenius automorphism cpy so that (cpy, V #) =
+(^,V7*),i.e.,
+det(l - <ppt; V V) = det(l - cpyt, V1*).
+This yields (iii).
+(iv) Let G = G(L\K) and H = G(L\M). Let p be a prime ideal of K,
+qi, ..., qr the various prime ideals of M above p, and ^ a prime ideal
+of L above q/, / = 1, ... ,r. Let G;, resp. //, be the decomposition, resp.
+inertia, group of ^3/ over p. Then //,- = G/ n //, resp. 7/ = // n //, are the
+decomposition, resp. inertia, groups of *P; over q/. The degree of q; over p
+is/; =(G/://;/;), i.e.,
+9l(q«) = W' •
+We choose elements r; g G such that *P; = *$['. Then G; = t^xG\T[,
+and // = rflI\Ti. Let <p g Gi be an element which is mapped to the
+Frobenius <pyx g G\/I\. Then <pi = r.~VT/ £ ^/ is mapped to the Frobenius
+0>«p. G Gi/Ii, and the image of <p/' in ////// is the Frobenius of ^ over q;.
+Now let p : 7/ -> GL(W) be a representation of H with character /•
+Then x* is the character of the induced representation ind(p) : G -> GL(V),
+V = Ind^ (W). Clearly, what we have to show is that
+det(l - (pt\ Vh) = fl det(l - ^M ; W7/).i=\
+We reduce the problem to the case G\ = G, i.e., r = 1. Conjugating by r/,
+we obtain
+det(l - <pf'tfi; W7/) = det(l - cpfitfi; (r/W)71^77^1)
+and ft = (Gi : (Gi fl TiHx^l)I\). For every / we choose a system of
+representatives on the left, a;y, of Gi mod Gi fl t/Z/t^"1. One checks
+immediately that then {a/yr/} is a system of representatives on the left of
+G mod H. We thus have (see chap. IV, §5, p.297) the decomposition
+V = ®cnjTiW.
+Putting Vi = 0 (JijTiW, we obtain a decomposition V = 0; V/ of V as a
+G i -module. Hence
+det(l-<pf; VIl) = f[tet(l-<pt\ vfl).i=\
+It is therefore sufficient to prove that
+det(l - <pt\ VJX) = det(l - cpfitfi; (r/W)71^1'77^1).
+
+===== PDF PAGE 540 =====
+
+524 Chapter VII. Zeta Functions and L -series
+We simplify the notation by replacing G\ by G, I\ by 7, G\ fl TiHxi l by
+//, ft by / = (G : ///), Vi- by V, and r/W by W. Then we have still
+V = Ind^ (W), i.e., we are reduced to the case r = 1, G\ = G.
+We may further assume that I = 1. For if we put G = G/1, 7/ = //// HH,
+then V7 = Indf (W/n//). Indeed, a function / : G -> W in V is invariant
+under I if and only if one has f(xr) = /(jt) for all x e 7, i.e., if and only if
+it is constant on the right (and therefore also on the left) cosets of G mod I,
+i.e., if and only if it is a function on G. It then automatically takes values in
+WInH, because rf(x) = f(rx) = f(x) for r <e / H H.
+So let I = 1. Then G is generated by <p, / = (G : //), and thus
+/-i .
+Let A be the matrix of cpf with respect to a basis w\, ... ,Wd of W. If E
+denotes the (d x d) unit matrix, then
+0
+0
+is the matrix of (p with respect to the basis [cpl Wj] of V. This gives
+( E -tE ••• 0
+= det(l-0>/f/; WOdet(l -(pt\ V) = det0 0\-tA 0
+as desired. The last identity is obtained by first multiplying the first column
+by t and adding it to the second, and then multiplying the second column
+by t and adding it to the third, etc. □
+The character 1* induced from the trivial character 1 of the subgroup
+{1} Q G(L | K) is the character yq = J^x X(l)x of the regular representation
+of G(L\K). We therefore deduce from (10.4) the
+(10.5) Corollary. One has
+Sl(s) = Sk(s) l\C(L\K,x,s)xll\
+where x varies over the nontrivial irreducible characters ofG(L\K).
+
+===== PDF PAGE 541 =====
+
+§10. Artin L -series 525
+The starting point of Artin's investigations on L -series had been the
+question whether, for a Galois extension L\K, the quotient ^l(s)/^k(s) is
+an entire function, i.e., a holomorphic function on the whole complex plane.
+Corollary (10.5) shows that this could be deduced from the famous
+Artin Conjecture: For every irreducible character x ^ 1, the Artin L -series
+C(L | K, x ,s) defines an entire function.
+We will see presently that this conjecture holds for abelian extensions. In
+general it is not known. In view of its momentous consequences, it constitutes
+one of the big challenges in number theory.
+We will show next that the Artin L -series in the case of abelian extensions
+L\K coincide with certain Hecke L-series, more precisely, with generalized
+Dirichlet L -series. This means that the properties of Hecke's series, and in
+particular their functional equation, transfer to Artin series in the abelian
+case. Via functoriality (10.4) they may then be extended to the non-abelian
+case.
+The link between Artin and Hecke L -series is provided by class field
+theory. Let L\K be an abelian extension, and let f be the conductor of L \K,
+i.e., the smallest module
+t= npnp
+pfoo
+such that L\K lies in the ray class field K^\K (see chap. VI, (6.2)). The
+Artin symbol ( -L-) then gives us a surjective homomorphism
+/ty/>f —+ G(L\K), amodP^ (~)'
+from the ray class group J^/P*. Here /* is the group of fractional ideals
+prime to f, and P Ms the group of principal ideals (a) such that a = 1 mod f
+and a is positive in Kp = R if p is real.
+Now let x be an irreducible character of the abelian group G(L\K), i.e.,
+a homomorphism
+X:G(L\K)^C*.
+Composing with the Artin symbol ( ——), this gives a character of the ray
+class group J^/PK i.e., a Dirichlet character mod f. It induces a character
+on /*, which we denote by
+X : /f ^ C*.
+By (6.9), this character on ideals is a GroBencharacter mod f of type (/?, 0),
+and we have the
+
+===== PDF PAGE 542 =====
+
+526 Chapter VII. Zeta Functions and L -series
+(10.6) Theorem. Let L\K be an abelian extension, let f be the conductor of
+L\K, let x 7^ 1 be an irreducible character ofG(L\K), and x the associated
+Grofiencharakter mod f.
+Then the Artin L -series for the character x and the Hecke L -series for
+the Grofiencharakter x satisfy the identity
+C(L\K,X,s) = 11 1 , \m,H, sUx,s),peS l-X(*Hp)W(P) S
+where S = {p|f | x(4p) = 1}.
+Proof: The representation of G(L\K) associated to the character x is
+given by a 1-dimensional vector space V = C on which G(L\K) acts via
+multiplication by x» i-e., crt; = x(p)v- Since f is the conductor of L\K, we
+find by chap. VI, (6.6), that
+p|f <=> pis ramified <=^ /«p^l.
+If x(Ap) 7^ 1. then V1* = {0}, and the corresponding Euler factor does not
+occur in the Artin L -series. If on the other hand x(Ap) = 1» then V1^ = C,
+so that
+det(l - ^pOKp)-5; V7*) = 1 - xtep)0t(p)-'.
+We thus have
+c(l\k9x,s) = ni—, \cv>^-, n *ptf i - x(^)^(p)-5 Usl - x(<pvw<py
+and
+L(x,s) = Ylrtt i - x(P)^(P)~5
+For pff, one has (-Jp) = ^<p» and so x(p) = x(<P<p)- This proves theclaim. □
+Remark: If the character x • G(JL\K) -+ C* is infective, then S = 0, and
+one has complete equality
+C(L\K,X,s) = L(x,s).
+In this case x is a primitive Grofiencharakter mod f.
+If on the other hand x is the trivial character 1g , then x is the trivial
+Dirichlet character mod f, and we have
+
+===== PDF PAGE 543 =====
+
+§11. The Artin Conductor 527
+The theorem implies that the Artin conjecture holds for all Artin L­
+series £(L\K, x>s) which correspond to nontrivial irreducible characters x
+of abelian Galois groups G(L\K). For if Lx is the fixed field of the kernel
+of x and X is the Grojiencharakter associated with x : G(LX\K) ^ C*,
+then the above remark shows that C(L\K, x>s) — £(LX \K> X>s) = £(X>■*).
+Hence £(L\K,x>s) is holomorphic on all of C, because the same is true
+for L(x, s), as was shown in (8.5). This also settles the Artin conjecture for
+every solvable extension L\K.
+Our goal now is to prove a functional equation for Artin L -series. The
+basis for this will be the above theorem and the functional equation we have
+already established for Hecke L -series. We however have to complete the
+Artin L -series by the right "Euler factors" at the infinite places. In looking
+for these Euler factors, the first natural guideline is provided by the case of
+Hecke L-series. But in order to go the whole way, we need an additional
+Galois-theoretic complement which will be dealt with in the next section.
+§ 11. The Artin Conductor
+The discriminant D = Dl\k of a Galois extension L\K of algebraic number
+fields admits a fine structure based on group theory. It is expressed by a
+product decomposition
+f=nfo<)x(1),
+where x varies over the irreducible characters of the Galois group
+G = G(L\K). The ideals f(x) are given by
+toe) = n p/p(x)
+pfoo
+with
+/p(x) = £-codimVG<,
+i>0 <?0
+where V is a representation with character x, Gt is the z'-th ramification
+group of L<p|ATp, and gt denotes its order. This discovery goes back to Emil
+Artin and Helmut Hasse. The ideals f (x) are called Artin conductors. They
+play an important role in the functional equation of the Artin L -series, which
+we are going to prove in the next section. Here we collect the properties
+needed for this, following essentially the treatment given by J.-P.Serre
+in [122].
+
+===== PDF PAGE 544 =====
+
+528 Chapter VII. Zeta Functions and L -series
+First let us consider a Galois extension L\K of local fields, with Galois
+group G = G(L\K). Let / = f^\K — [A. • k] be the inertia degree of L\K.
+In chap. II, § 10, we defined, for any a e G,
+id?) = ^(crx — *),
+where x is an element such that oi = 0/^[x], and i>l is the normalized
+valuation of L. With this notation we can write the i-th ramification group as
+G; = [a zG\iG(a)>i + \).
+One has iG(rar~l) — iG(cr), and ///(cr) = iG(cr) for every subgroup
+// c G. If L|# is unramified, then iG(a) = 0 for all a e G, a ^ l. We put
+-fiG(cr) fora^l,
+/Et#i'gW fora = 1.
+aG is a central function on G, and we have
+(aG,lG) = — J2 aG(&) = 0.
+We may therefore write
+*G = E/0C)X. /(X)€C,
+x
+with x varying over the irreducible characters of G. Our chief problem
+is to prove that the coefficients /(x) are rational integers > 0. Once we
+have shown this, we may form the ideal fp(x) = p^x\ which will be the
+p-component of the global Artin conductor that we want. First we prove that
+the function aG satisfies the following properties (we use the notation of the
+preceding section).
+(11.1) Proposition, (i) IfH is a normal subgroup ofG, then
+VG/H = (tfG)h­
+(ii) If H is any subgroup ofG, and if Kf is the fixed field with discriminant
+*k>\k =PV, then
+aG\H = vrH + fK>\KaH.
+(iii) Let G; be the i-th ramification group of G, U[ the augmentation
+character ofGi, and (w/)* the character ofG induced from u{. Then one has
+oo l
+
+===== PDF PAGE 545 =====
+
+11. The Artin Conductor 529
+Proof: (i) follows immediately from chap. II, (10.5).
+(ii)Leta e H,a ^ 1. Then
+adv) = -fL\Kio(cr), aH{o) = -fL\K'iH(<*), rH(cr) =0.
+Since iG(a) = iH(o) and fL\K = fh\K>fK>\K, this implies
+VG (or) = Vr// (a) + fK'\K<lH (<*) •
+Now let a = 1, and let ^l\k be the different of L\K. Let Ol = c^M and
+g(X) be the minimal polynomial of x over K. By chap. Ill, (2.4), 2)l|a: is
+then generated by g'00 = n<j#i(°'x ~" *)• Consequently,
+vl($l\k) = vl (*'(*)) = E 'G(tf) = -—flG(l).or#l /L|AT
+By chap. Ill, (2.9), we know, on the other hand, that Dl\k = Nl\k(®l\k),
+so vk o Nl\k = fh\K^L gives the identity
+<*g(1) = /l|ATVl(25liat) = vat(^liat),
+and in the same way an (I) = vk'($l\k')- From chap. Ill, (2.10), we get
+furthermore that
+*l\k = $k>\k)[L:K']Nk>\k(?>l\k>)­
+Thus r//(l) = [L : Kf] and v = vk($k'\k) yields the formula
+«g(1) = [L : AT/]^(c)^/|^) + /^|^i'^(c)L|^0 = vrH{\) + fK>\KaH(\).
+(iii) Let g,- = #G;, g = #G. Since G; is invariant in G, we have (w/)*(<x) = 0
+if a £ G,-, and (k,-)*(<t) = -g/g; = -/ • g0/gt if a e G/, a ^ 1, and
+EaeG^)*^) = 0. For a eGk \ G*+i, we thus find
+tfG(oO = -/(* + 1) = E 77^77t("«-)*(ot).(Go : Cji)
+This implies the identity for the case a = 1 as well, since both sides areorthogonal to lG . □
+For the coefficients /(x) in the linear combination
+0G = E/0c)X>
+we have, in view of aG(a~l) = aG(a), that
+fix) = (<*G,x) = - E aG(a)X(cr~l) = - E flGfa"1)*^) = 0c>*g),<? aeG 8 aeG
+g = #G. For any central function <p of G, we put
+/(*>) = Op^g)and ,
+<p(Gt)=- E *>(*). ft=#G/.
+
+===== PDF PAGE 546 =====
+
+530 Chapter VII. Zeta Functions and L-series
+(11.2) Proposition, (i) Ifcp is a central function on the quotient group G/H,
+and (pf is the corresponding central function on G, then
+f(<p) = f(<p')­
+(ii) If (p is a central function on a subgroup H of G, and cp* is the central
+function induced by (p on G, then
+f((p*) = VK(0k'\k)<PW + fK'\Kf((p)­
+(iii) For a central function (p on G, one has
+/(^) = E-(^(D-^(G/)).
+i>0 <?0
+Proof: (i) f(cp) = ((p,aG/H) = (<p, (aG\) = (<p',aG) = f(<p').
+(ii) f{<P*) = (<P*,<*g) = (<p,aG\H) = v(<p,rH) + fK'\K(<P,<*H) = v^p(l) +
+fK'\Kf(<P) with v = vk($k'\k).
+(iii) We have (<p, (w/)*) = (<p\Gi, w/) — <p(l) — <p(Gi), so the formula followsfrom (11.1), (iii). □
+If x is the character of a representation (p, V) of G, then x(l) = dim V
+and xiQi) = dim VG*, hence
+/(x) = E-codimVG'.
+/>o go
+Now consider the function
+s
+f dx
+0
+which was introduced in chap. II, § 10. For integers m > — 1, it is given by
+Vl\k(~1) = -1, til\k(0) = 0, and
+m gir)L\K(m) = J2— form>l.
+i = l 80
+The theorem of Hasse-Arf (see chap. V, (6.3)) now gives us the following
+integrality statement for the number f(x) in the case of a character x of
+degree 1.
+(11.3) Proposition. Let x be a character of G of degree 1. Let j be the
+biggest integer such that x\Gj ¥" ^G} (when x — 1g we put j = —1). Then
+we have
+f(x) = r}L\K(j) + h
+and this is a rational integer > 0.
+
+===== PDF PAGE 547 =====
+
+§11. The Artin Conductor 531
+Proof: If / < 7, then x(G;) = 0, so that x(l) - xiGi) = 1. If / > j, then
+XiQi) = 1, and so x(l) - x(G7) = 0. From (11.2), (iii), it thus follows that
+/(X) = E -=r]L\K(j) + h
+i=0 <?0
+provided j > 0. If j = — 1, we have x(l) — x(G;) = 0 f°r aU * > 0, and
+hence by (11.2), (iii), f(X) =0 = t}l\k(-1) + 1.
+Let H be the kernel of x and U the fixed field of H. By Herbrand's
+theorem (chap. II, (10.7)) one has
+Gj(L\K)H/H = Gr(L'\K) with j' = riL\L>U).
+In terms of the upper numbering of the ramification groups, this translates
+into
+G'(L|/0///// = G'(Z/|/0,
+where t = 7?l|AtO') = VL'\K(riL\L'U)) = Vl'\kW) (see chap.II, (10.8)). But
+X(Gj(L\K)H/H) # 1, and x(Gj+8(L\K)H/H) = x(Gj+l(L\K)H/H)
+= 1 for all 5 > 0, and in particular Gj(L\K)H/H + Gj+8(L\K)H/H for
+all S > 0. Since 77l|/Ks) is continuous and strictly increasing, it follows that
+G'(L'\K) = G\L\K)H/H ^ Gt+£{L\K)H/H = G'+fi(L'|tf)
+for all £ > 0, i.e., f is & jump in the ramification filtration of Lf\K. The
+extension V\K is abelian and therefore t — t)l\kU) is an integer, by thetheorem of Hasse and Arf. □
+Now let x be an arbitrary character of the Galois group G = G(L\K).
+By Brauer's theorem (10.3), we then have
+X = Z>iXi*> «/ eZ,
+where x/* is the character induced from a character Xi of degree 1 of a
+subgroup Hi. By (11.2), (ii), we have
+fix) = Y,nif(Xi*) = T,ni(vKQ>Ki\K)Xi(l) + fKi\Kf(Xi)) .
+where Kx is the fixed field of ///. Therefore /(x) is a rational integer. On the
+other hand, (11.1), (iii) shows that go^G is the character of a representation
+of G, so go f(x) = iXigoGG) > 0. We have thus established the
+(11.4) Theorem. Ifx is a character of the Galois group G = G(L\K), then
+fix) is a rational integer > 0.
+
+===== PDF PAGE 548 =====
+
+532 Chapter VII. Zeta Functions and L -series
+(11.5) Definition. We define the (local) Artin conductor of the character x
+ofG = G(L\K)to be the ideal
+fp(x) = P/(x).
+In chap. V, (1.6), we defined the conductor of an abelian extension L\K
+of local fields to be the smallest power of p, f = p", such that the n-th higher
+unit group Uj£ is contained in the norm group Nl\kL*. The latter is the
+kernel of the norm residue symbol
+( ,L\K):K*-+G{L\K),
+which maps Ug to the higher ramification group Gl (L\K) = Gj(L\K) with
+i = Vl\kU) ~ see V, (6.2). The conductor f = pw is therefore given by the
+smallest integer n > 0 such that Gn(L\K) = 1. From (11.3) we thus obtain
+the following result.
+(11.6) Proposition. Let L\K be a Galois extension of local fields, and let x
+be a character ofG(L\K) of degree 1. Let Lx be the fixed field of the kernel
+of x, and f the conductor of LX\K. Then one has
+f = fp(x).
+Proof: By (11.3), we have f(x) = tjl\k(J) + 1> where j is the largest
+integer such that Gj(L\K) % G(L\LX) =: H. Let t = rjLlK(j). Then one
+has
+G\LX\K) = G{(L\K)H/H = Gj(L\K)H/H,
+and Gt+£(LX\K) c Gj+X(L\K)H/H = 1 for all e > 0. Hence t is the
+largest number such that Gt(Lx \K) ^ 1. By the theorem of Hasse-Arf, t is
+an integer, and we conclude that f(x) = t + 1 is the smallest integer such
+that Gf^(Lx \K) = 1, i.e., /(*) = n. D
+We now leave the local situation, and suppose that L\K is a Galois
+extension of global fields. Let p be a prime ideal of K, ^3|p a prime
+ideal of L lying above p. Let Ly\Kp be the completion of L\K, and
+G<p = G(L<p|£p) the decomposition group of ^)3 over K. We denote the
+function aov on G<p by <2<p, and extend it to G = G(L\K) by zero. The
+central function
+ap = £ av
+
+===== PDF PAGE 549 =====
+
+§11. The Artin Conductor 533
+immediately turns out to be the function (a*p)* induced by <2*p|G*p. It is
+therefore the character of a representation of G. If now x is a character of G,
+then we put
+/(X,p) = (x,«p) = /(X|G»).
+Then fp(x) = p^x'^ is the Artin conductor of the restriction of x t0
+G<p = G(Lrp\Kp). In particular, we have fp(x) = 1 if p is unramified. We
+define the (global) Artin conductor of x to be the product
+foc>= nfp(x).
+pfoo
+Whenever precision is called for, we write f(L\K,x) instead of f(x). The
+properties (11.2) of the numbers f(x,P) transfer immediately to the Artin
+conductor f(x), and we obtain the
+(11.7) Proposition, (i) f(X + xO = f(x)f(xO, f(D = (D­
+(ii) If L'\K is a Galois subextension of L\K, and x is a character of
+G(L'\K), then
+f(L|AT,x) = f(L/|A:,x).
+(iii) If H is a subgroup of G with fixed field K\ and if x is a character
+of H, then
+f(L\K,x*) = -0XK%NK/]K(KL\K',X)) ■
+Proof: (i) and (ii) are trivial. To prove (iii), we choose a fixed prime ideal ^3
+of L, put
+G = G(L\K), H = G(L\K'), Gv = G(Lv\Kp),
+with p = *# fl K, and consider the decomposition
+G = (J G^xH
+into double cosets. Then representation theory yields the following formula
+for the character x of H:
+(*) x*l% = Ex*T,
+r
+where xT is the character xT(&) = x(*~lcrT) of G<pflr//r-1, and xl is the
+character of G<$ induced by xT (see [119], chap. 7, prop. 22). Furthermore
+<P'r = <pT n K' are the different prime ideals of K' above p (see chap. I, §9,
+p. 55), and we have
+G^pr = r G*pt = G(L«pr |/STp), Hyp = Gfpr n H = G(L<pr \Kyg ).
+
+===== PDF PAGE 550 =====
+
+534 Chapter VII. Zeta Functions and L-series
+Now let Dfy = p ^ be the discriminant ideal of K', \KP, and let /^ be the
+degree of % over K. Thus NK>\K(WT) = pf<. Since
+fp(L\K,X*) = Pf(x*lG*) and ^r(L\K\x) = ^fr(XlHvT\
+we have to show that
+f(X*IGv) = £ v«p;X (1) + /<p'r /(XIHw),
+or, in view of (11.2), (ii), that
+(**) /(x*|G?0 = E/((xl%O*)­
+T
+But 7/<pr = r-1((j<p n r//r-1)r, and xl#<pT> resp. (xl#<pT)*> arises by
+conjugation a h> Tar"1 from xT> resP- xj- Therefore /((xl#«pr)*) =
+/(X*)» and (**) follows from (*). □
+We apply (iii) to the case x = 1//> and denote the induced character x*
+by sg/h- Since f(x) = 1, we obtain the
+(11.8) Corollary. X>K,lK = f(L\K,sG/H).
+If in particular H = {1}, then sg/// is the character rG of the regular
+representation. Its decomposition into irreducible characters x is given by
+re = Ex(l)X­
+x
+This yields the
+(11.9) Conductor-Discriminant-Formula. For an arbitrary Galois
+extension L\K of global fields, one has
+X
+where x varies over the irreducible characters ofG(L\K).
+For an abelian extension L\K of global fields, we defined the conductor
+f in VI, (6.4). By chap. VI, (6.5), it is the product
+f = llfp
+p
+of the conductors fp of the local extensions Ly\Kp. (11.6) now gives rise to
+the following
+
+===== PDF PAGE 551 =====
+
+§12. The Functional Equation of Artin L -series535
+(11.10) Proposition. Let L\K be a Galois extension of global fields, x a
+character ofG(L\K) of degree 1, Lx the fixed field of the kernel ofx, and f
+the conductor of LX\K. Then one has
+f = f(x)­
+Now let L | K be a Galois extension of algebraic number fields. We form
+the ideal
+c(L\K,x) = *XK%NKlQ(f(L\K,X))
+of Z. The positive generator of this ideal is the integer
+c(L\K,x)=\dK\xW<n(KL\K,x))­
+Applying (11.7) and observing the transitivity of the discriminant (chap. Ill,
+(2.10)), we get the
+(11.11) Proposition, (i) c(L\K,X + x') = c(L\K,X)c(L\K,X'), c(L\K,l)
+= \dK\,
+(ii) c(L\K,X) = c(L'\K>X),
+(iii) c(L\K,x*) = c(L\K',X)­
+Here the notation is that of (11.7).
+§ 12. The Functional Equation of Artin L-series
+The first task is to complete the Artin L -series
+1
+C(L\K,X,s)= n
+Cp{L\K,X,s)
+^deta-^OKp)-*; Vh)
+for the character x of G = G(L\K), by the appropriate gamma factors. For
+every infinite place p of K we put
+£<c(s)x(1)> if P is complex,
+LR(s)n+LR(s + 1)"", if p is real,
+with the exponents n+ = x(1)+2x(^}, n~ = x(1)~2x(^}. Here <pv is the
+distinguished generator of G(L<p\Kp), and
+L*(s) = 7t-s/2r(s/2), Lc(s) = 2(27T)-Sr(s)
+(see §4). For p real, the exponents n+, rC in £p(L\K,x,s) have the
+following meaning.
+
+===== PDF PAGE 552 =====
+
+536 Chapter VII. Zeta Functions and L -series
+The involution (p<$ on V induces an eigenspace decomposition V =
+V+ © V~, where
+V+ = [x G V | <p<pX = *}, V~ = {x G V | 0>«pJt = — x} ,
+and it follows from the remark in § 10, p. 521, that
+dimV+ = i(x(l) + xfap)) , dim V- = I(x(l) - x(^)) .
+The functions Cp(L\K,x>s) exhibit the same behaviour under change of
+fields and characters as the L -series and the Artin conductor.
+(12.1) Proposition, (i) CP(L\K9 x +x\s) = CP(L\K, x,s)Cp(L\K, X',s).
+(ii) IfLf\K is a Galois subextension ofL\K and x a character ofG(Lf\K),
+then
+Cp(L\K,X,s) = £p(L,\K,x,s).
+(iii) If Kf is an intermediate field of L\K and x a character of G{L\Kf),
+then
+Cp(L\K,x„s) = Y[^(L\K\x,s),
+qlp
+where q varies over the places of Kf lying above p.
+Proof: (i) is trivial.
+(ii) If ^PI^P'lP are places of L 3 V 3 K, each lying above the next,
+then <py is mapped under the projection G(L\K) -> G(Lf\K) to <pqy.
+So x(<Pvp) = X(^qy)­
+(iii) If p is complex, then there are precisely m = [Kf : K] places q above p.
+They are also complex, and the claim follows from x*(l) = ^x(l)­
+Suppose p is real. Let G = G(L\K), H = G{L\K')9 and let H\G/G<$ be
+the set of double cosets HzGy with a fixed place *P of L above p. Then we
+have a bijection
+H\G/Gy —> {q place of Kf above p}, HrGv i—> qT = z<#\K>
+(see chap. I, §9, p.55). qT is real if and only if cpT^ = zcpyz~l e //, i.e.,
+GT<p = zGyZ~l C //. The latter inclusion holds if and only if the double
+coset HrGy consists of only one coset mod H:
+HzGy = (HzGvz~l)z = Hz.
+We thus obtain the real places among the qT by letting z run through a
+system of representatives of the cosets Hz of H\G such that z<py$z~l e H.
+But, for such a system, one has
+x*(<py) = Ex(Tw-1) = Ex(^r^).T T
+
+===== PDF PAGE 553 =====
+
+§12. The Functional Equation of Artin L -series537
+Putting 0 = r?P, makes q = £1\k' run through the real places of Kf above p,
+i.e.,
+X*(^p)= ExOn).
+qlP
+real
+On the other hand we have
+x*(D= E 2X(i)+ E xd).q complex q real
+Legendre's duplication formula L^(s)L^(s + 1) = Lc(s) (see (4.3)) turns
+this into
+Cp(L\K,x*,s) =
+rr t / xvCn rr r / - x(1)+x(<?q) _ xO)-x(pq)n LC(^)x(i) n ^w 2 n £r(* + i)2q complex q real q real= Y[Cq(L\K\jL,s). D
+q|p
+We finally put
+coq(l\k,x,s) = n^p(L|/r,x^),
+p|oo
+and obtain immediately from the above proposition the equations
+/:oo(L|/^,x + X/^) = >C00(L|^,x^)>C00(L|^,x/^),
+C00(L\K,x,s) = C00(L'\K,X,s),
+Coo(L\K,x*,s) = Coo(L\K'9x,s).
+(12.2) Definition. The completed Artin L -series for the character x of
+G(L\K) is defined to be
+A{L\K,x,s) = c(L\K,xY,2Coo(L\K,x,s)C(L\K,x,s),
+where
+c(L\K,X) = \dK\x(l)yi(KL\K,x))­
+The behaviour of the factors c(L\K,x)> £oo(L\K,Xis), £(L\K,x>s) on
+the right-hand side, which we studied in (10.4), (11.11), and above, carries
+over to the function A(L \K, x> s), i-e> we have the
+
+===== PDF PAGE 554 =====
+
+538 Chapter VII. Zeta Functions and L -series
+(12.3) Proposition, (i) A{L\K,x+x'*s) = A(L\K,x,s)A(L\K,x',s).
+(ii) IfL'\K is a Galois subextension ofL\K and x a character ofG{L'\K),
+then
+A(L\K,x,s) = ML,\K,x,s)­
+(iii) If K' is an intermediate field of L\K and x & character of G(L\K'),
+then
+A{L\K,x*,s) = A(L\K'9x,s).
+For a character / of degree 1, the completed Artin L-series A(L \K,x>s)
+coincides with a completed Hecke L-series. To see this, let LX\K be the
+fixed field of the kernel of x > m& let f = EL Pnp t>e the conductor of Lx \K.
+By (11.10), we then have
+f = f(x).
+Via the Artin symbol
+/7J>f —G(LX|*), a^(^),
+X becomes a Dirichlet character of conductor f, i.e., by (6.9), a primitive
+Grofiencharakter mod f(x) with exponent p = (pT), so that pT = 0 if r is
+complex. This Grofiencharakter will be denoted x •
+We put pp = px if p is the place corresponding to the embedding
+t : K —> C The numbers pp have the following Galois-theoretical meaning.
+(12.4) Lemma. For every real place p of K one has
+Pp = [Lx*p : ^Tp] — 1­
+Proof: We consider the isomorphism
+I/I*K* -^> /f/Tf,
+where /* = {~L J/pWp is the congruence subgroup mod f of the idele group
+I = EL^p (see chap. VI, (1.9)), and consider the composite map
+///f/T ___> jrf/pf —> G(LX|/T)^>C*.
+Let p be a real place of K, and let a e / be the idele with components
+ap = — 1 and aq = 1 for all places q different from p. By chap. VI, (5.6),
+the image <p^ = (a,Lx\K) = (—l,Lx«p|ATj,) in G(LX\K) is a generator of
+
+===== PDF PAGE 555 =====
+
+§12. The Functional Equation of Artin L-series539
+the decomposition group Gp = G(Lxy\Kp). By the approximation theorem,
+we may choose an a e K* such that a = 1 mod f, a < 0 in Kp, and a > 0
+in Kq, for all real places q ^ p. Then
+P=aa e/(f) = {x e I \ xp e U^p) for p|foo} , if f = npP'Ip ­
+As explained in the proof of chap. VI, (1.9), the image of a mod I*K* in
+Jt/pt is the class of (/?) = (a), which therefore maps to <p<p. Consequently,
+X«A» = XffaOXoofaO = X(<Pvp)­
+Since a = I mod f, we have Xf(^) = 1 and XoofaO = ^(("rr)P) =
+(dr)Pp = (-1>Pp» ie' x(wp) = (-1>Pp'so that w = l for pp = o,\a\p
+and <p<p 7^ 1 for /?p = 1. But this is the statement of the lemma. □
+(12.5) Proposition. The completed Artin L-series for the character x of
+degree 1 and the completed Hecke L-series for the Grofiencharakter x
+coincide:
+A(L\K,x,s) = A(x,s).
+Proof: The completed Hecke L-series is given, according to §8, by
+A(x,s) = (\dKmf(x))y/2Loo(x,s)L(x,s)
+with
+£oo(x» = Lx(s),
+and s = si + p, where
+Lx(s) = n M»p)
+p|oo
+is the L-function of the G(C|R)-set X = Hom(£\C) defined in §4. The
+factors Lp(Sp) are given explicitly by
+f Lc(s), if p complex,
+[Lr(s + pp), if p real,
+(see p. 454). On the other hand we have
+A(L\K,x,s) = c(L\K9x)s/2Coo(L\K,x,s)C(L\K,x,s)
+with
+c(L\K9x) = \dK\W(KL\K,X))
+and
+£00(L|a:,x,J)= \\cp(l\k,x,s).
+p|00
+(*) MSp) =
+
+===== PDF PAGE 556 =====
+
+540 Chapter VII. Zeta Functions and L-series
+Let Lx be the fixed field of the kernel of /. By (11.11), (ii), and the remark
+preceding lemma (12.4), one has
+c(L\K,X) = c(Lx\K,X) = \dKW(Kx)) ,
+and by (10.4), (ii), and (10.6), and the subsequent remark, one has
+C(L\K,x,s) = C(Lx\K,x,s) = Ux,s).
+We are thus reduced to proving
+Cp(L\K,x,s) = £p(sP)
+for p|oo and s = si + p. Firstly, we have Cp(L\K,x>s) = £p(Lx \K>X>S)
+(see p. 537). Let cpy be the generator of G(Lxy\Kp). Since x is injective
+on G(LX \K), we get x(^p) = -1 if <Py ¥" 1> and X(^qj) = 1 if <p<p = 1.
+Using (12.4) this gives
+r L<c (s), for p complex,
+Cp(Lx\K,x>s)= | Lr(j), forp real and ty real, i.e., pp = 0,
+I Lk(j + 1), for p real and <P complex, i.e., pp = 1 .
+Hence (*) shows that indeed Cp(L\K,x>s) = Lp(sp). D
+In view of the two results (12.3) and (12.5), the functional equation for
+Artin L -series now follows from Brauer's theorem (10.3) in a purely formal
+fashion, as a consequence of the functional equation for Hecke L-series,
+which we have already established.
+(12.6) Theorem. The Anin L-series A(L\K,x>s) admits a meromorphic
+continuation to C and satisfies the functional equation
+A(L\K,x,s) = W{x)ML\K,X,l-s)
+with a constant W(x) of absolute value 1.
+Proof: By Brauer's theorem, the character x is an integral linear combination
+X =Eiii"Xi*.
+where the xu are induced from characters Xi °f degree 1 on subgroups
+Hi =G(L\Kt). From propositions (12.3) and (12.5), it follows that
+A(L\K,X,s) = 11 ML\K,Xi*,s)ni
+i
+= Y[A(L\Ki,Xi,sr
+i
+
+===== PDF PAGE 557 =====
+
+§12. The Functional Equation of Artin L -series541
+where Xi is the Grofiencharakter of K( associated to //. By (8.6), the Hecke
+L-series A(xi,s) admit meromorphic continuations to C and satisfy the
+functional equation
+A(xi,s) = W(xi)A(xiA-s).
+Therefore A(L\K,x,s) satisfies the functional equation
+A(L\K,X,s) = W(X)UMXi, l-s) = W(x)A(L\K,x, 1 - *),
+where W(x) = Y\i W(X/) is of absolute value 1. □
+The functional equation for the Artin L -series may be given the following
+explicit form, which is easily deduced from (12.6) and (4.3):
+C{L\K,x> l-s) = A(x,s)C(L\K,X,s),
+with the factor
+A(x,s) = W(x)[\dK\x(l)yi(f(L\K,x))Y~l2
+x (cosns/2)n+ (sinits/2)n~rc(s)nx(l)
+and the exponents
+Here the summations are over the real places p of K. This gives immediately
+the zeroes of the function C(L \K, x> s) in the half-plane Re(s) < 0. If x is
+not the principal character, they are the following:
+at s= 0, -2, -4, ... zeroes of order ^x(l)+ £ oX(^p),
+p real
+at 5 = -1, - 3, - 5, ... zeroes of order ^x(l)- £ ^XifPvp)­
+p real
+Remark: For the proof of the functional equation of the completed Artin
+L -series, we have made essential use of the fact that "Euler factors"
+Cp(L\K,x>s) at the infinite places p, which are made up out of gamma
+functions, behave under change of fields and characters in exactly the same
+way as the Euler factors
+Cp(L\K,x,s) = det(l - ^StCP)"5; V1*)'1
+
+===== PDF PAGE 558 =====
+
+542 Chapter VII. Zeta Functions and L-series
+at the finite places. This uniform behaviour is in striking contrast to the
+great difference in the procedures that lead to the definitions of the Euler
+factors for p|oo and p \ oo. It is in this context that the mathematician
+Christopher Deninger recently made a very interesting discovery (see [26],
+[27]). He shows that the Euler factors for all places p can all be written in
+the same way:
+/logWp) \-i
+£p(L|g,X,j)=detoo( *^.W(*id-@p); H(Xp/hp)j .
+Here H(Xp/hp) is an infinite dimensional C-vector space which can be
+canonically constructed, 0P is a certain linear "Frobenius" operator on it,
+and detoo is a "regularized determinant" which generalizes the ordinary
+notion of determinant for finite dimensional vector spaces to the infinite
+dimensional case. The theory based on this observation is of the utmost
+generality, and reaches far beyond Artin L -series. It suggests a complete
+analogy for the theory of L -series of algebraic varieties over finite fields.
+The striking success which the geometric interpretation and treatment of the
+L -series has enjoyed in this analogous situation adds to the relevance of
+Deninger's theory for present-day research.
+§ 13. Density Theorems
+Dirichlet's prime number theorem (5.14) says that in every arithmetic
+progression
+a, a±m, a ± 2m, a ± 3m, ... ,
+a,m e N, (a,m) = 1, there occur infinitely many prime numbers. Using
+L -series, we will now deduce a far-reaching generalization and sharpening
+of this theorem.
+(13.1) Definition. Let M be a set of prime ideals of K. The limit
+d(M)= lim PGM
+p
+provided it exists, is called the Dirichlet density of M.
+
+===== PDF PAGE 559 =====
+
+§13. Density Theorems 543
+From the product expansion
+we obtain as in §8, p.494,
+log fg (j) = E cvy^mf = £ ^7^7 + £
+The latter sum obviously defines an analytic function at s = 1. We write
+/(5) ~ g(s) if f(s) — g(s) is an analytic function at s = 1. Then we have
+because the sum ]Cdeg(p)>2^(P)~5 taken over all p of degree > 2 is analytic
+at s = 1. Furthermore, by (5.11), (ii), we have ^k(s) ~ 7, and so
+So we may also write the Dirichlet density as
+£psm*(p)
+—s
+d(M)= lim,-1+0 log^
+Since the sum ]P 9t(p)~~5 over all prime ideals of degree > 1 converges, the
+definition of Dirichlet density only depends on the prime ideals of degree 1
+in M. Adding or omitting finitely many prime ideals also does not change
+anything as far as existence or value of the Dirichlet density is concerned.
+One frequently also considers the natural density
+3(M)=Am~ #{pI*»)<*} •
+It is not difficult to show that the existence of S(M) implies the existence
+of d(M), and that one has 8(M) = d(M). The converse is not always true
+(see [123], p. 26). In the notation of chap. VI, §1 and §7, we prove the
+generalized Dirichlet density theorem.
+(13.2) Theorem. Let m be a module ofK and Hm an ideal group such that
+/m2//m2 Pm with index hm = (/m : Hm).
+For every class & e Jm/Hm,theset P (£) of prime ideals in R has density
+
+===== PDF PAGE 560 =====
+
+544 Chapter VII. Zeta Functions and L -series
+For the proof we need the following
+(13.3) Lemma. Let x be a nontrivial (irreducible) character ofJm/Pm (i.e.,
+a character of degree 1). Then the Hecke L -series
+L(X,s) = Yl -sV i-x(p)W(p)
+(x(p) = 0 for p|m) satisfies
+L0c,l)#0.
+Proof: By (8.5) and the remark following (5.10) (in the case m = 1), L(x,s)
+does not have a pole at s = 1. Let L\K be the ray class field mod m,
+so G(L |K) = Jm/Pm. Interpreting x as a character of the Galois group
+G(L\K), the function L(x,s) agrees with the Artin L-series C(L\K,x,s)
+up to finitely many Euler factors — see (10.6). Like L(x,s), this Artin
+L -series does not have a pole at s = 1. So all we have to show is that
+C(L\K, x, 1) + 0. According to (10.5), we have
+!l(s) = !k(s) Y[C(L\K,x,s)*{1\
+where x mns through the nontrivial irreducible characters of G(L\K).
+By (5.11), both $k(s) and $l(s) have simple poles at s = 1, i.e., the
+product is nonzero at s = 1. Since none of the factors has a pole, wefind £(L\K,x> 1)^0. □
+Proof of (13.2): Exactly as for the Dedekind zeta function above, we obtain
+for the Dirichlet L -series
+logLOc,*) ~ £ ££- = £ *(#) £ *
+W
+vi(py
+Multiplying this by xC^-1) and summing over all (irreducible) x yields
+log fir (J) + E xtf-^logLOf,*) - £ Ex(^^_1) EXt^I A'eJm/Pm X petf
+Since L(x, 1) ^ 0, logL(x,s) is analytic at s = 1. But
+Hence we get
+log ~ logf/rO) ~ Am £
+and the theorem is proved. □
+
+===== PDF PAGE 561 =====
+
+§13. Density Theorems 545
+The theorem shows in particular that the density of the prime ideals
+in a class of Jm/Hm is the same for every class, i.e., the prime ideals
+are equidistributed among the classes. In the case K = Q, m = (ra),
+and Hm = Pm, we have Jm/Pm = (Z/mZ)* (see chap. VI, (1.10)),
+and we recover the classical Dirichlet prime number theorem recalled at
+the beginning, in the stronger form which says that the prime numbers
+in an arithmetic progression, i.e., in a class a mod ra, (a,m) = 1, have
+density ^ = l/#(Z/wZ)*.
+Relating the prime ideals p of a class of /m/Fm, via the class field
+theory isomorphism Jm/Pm = G(L \K), to the Frobenius automorphisms
+cpp = (^-), gives us a Galois-theoretic interpretation of the Dirichlet
+density theorem. We now deduce a more general density theorem which
+is particularly important in that it concerns arbitrary Galois extensions (not
+necessarily abelian). For every a g G(L\K), let us consider the set
+Pl\k(ct)
+of all unramified prime ideals p of K such that there exists a prime ideal *]3|p
+of L satisfying
+where (-—-) is the Frobenius automorphism <p<p of *P over K. It is clear
+that this set depends only on the conjugacy class
+{a) = {rar-1! r eG(L\K)}
+of a and that one has Pl\k(&) H Pl\k(t) = 0 if {&} ^ (r). What is the
+density of the set Pl\k(g)7 The answer to this question is given by the
+Cebotarev density theorem.
+(13.4) Theorem. Let L\K be a Galois extension with group G. Then for
+every o e G, the set Pl\k(&) has a density, and it is given by
+Proof: We first assume that G is generated by a. Let m be the conductor of
+L\K. Then L\K is the class field of an ideal group 7/m, /m D 7/m D Pm.
+Let £ g Jm/Hm be the class corresponding to the element a under the
+isomorphism
+
+===== PDF PAGE 562 =====
+
+546 Chapter VII. Zeta Functions and L -series
+Then Pl\k(&) consists precisely of the prime ideals p which lie in the
+class £. By the Dirichlet density theorem (13.2), we conclude that Pl\k(p)
+has density
+In the general case, let £ be< the fixed field of a. If / is the order of a,
+then, as we just saw, d(Pi^(a)) = 4. Let P(p) be the set of prime ideals
+<P of L such that <£|p e Pl\k(°) and (^p) = or. Then P(a) corresponds
+bijectively to the set P^zicr) of those prime ideals q in Pl\e(ct) such
+that Sq = £p, q|p. Since the remaining prime ideals in Pl\e(g) are either
+ramified or have degree > 1 over Q, we may omit them and obtain
+d(PilL(a))=d(PLli:(a)) = j
+Now we consider the surjective map
+p:Pi{E(a}^ PL\k(<t), q^qn/T.
+As P'L\E(a) = P(cr), we get, for every p e Pl\k(<*),
+p-l(p) = {$£P(cr)\¥\p} = Z(a)/(a),
+where Z(a) = {r e G \ xo = ar} is the centralizer of a. So we get
+d(PL\K(cr))= d(P'nE(cr)) = — = -^-- □v l\k\ jj (Z(ar)i(cr)) LlE #Z(<r) f #G
+The Cebotarev density theorem has quite a number of surprising
+consequences, which we will now deduce. If S and T are any two sets
+of primes, then let us write
+to indicate that S is contained in T up to finitely many exceptional elements.
+Furthermore, let us write S = T if S c T and T C.S.
+Let L | K be a finite extension of algebraic number fields. We denote by
+P(L\K) the set of all unramified prime ideals p of K which admit in L a
+prime divisor *# of degree 1 over K. So, if L\K is Galois, then P(L\K) is
+just the set of all prime ideals of K which split completely in L.
+(13.5) Lemma. Let N\K be a Galois extension containing L, and let
+G = G(N\K), H = G(N\L). Then one has
+P(L\K)= |J Pn\k(ct) (disjoint union).
+(a)n##0
+
+===== PDF PAGE 563 =====
+
+13. Density Theorems 547
+Proof: A prime ideal p of K which is unramified in N lies in P(L\K) if
+and only if the conjugacy class {a) of a = (^-), for some prime ideal
+*Plp of N, contains an element of //, i.e., if and only if p e Pn\k(&) forsome a e G such that {a) n // ^ 0. D
+(13.6) Corollary. If L\K is an extension of degree n, then the set P(L\K)
+has density d(P(L\K)) > £. Furthermore, one has
+d(P(L\K)) = - 4=^ L\K is Galois,n
+Proof: Let N\K be a Galois extension containing L, and let G = G(N\K)
+and // = G(W|L). By (13.5), we have
+P(L\K)= |J /V,*(cr).
+The Cebotarev density theorem (13.4) then yields
+d(P(L\K))= £ ^ = i^#( U <*»•
+Since 7/ c U(a)n//^0(a)' ^ follows that
+#7/ 1rf(/>(L|/Q)> — = ­#G a
+L|^T is Galois if and only if H is a normal subgroup of G, and this is the
+case if and only if (a) c H whenever (a) n H ^ 0, and so this holds if and
+only if H = U(a)n//^0^a)- This implies the second claim. □
+(13.7) Corollary. If almost all prime ideals split completely in the finite
+extension L\K, then L = K.
+Proof: Let N\K be the normal closure of L\K, i.e., the smallest Galois
+extension containing L. A prime ideal p of K splits completely in L if and
+only if it splits completely m N\K (see chap. I, §9, exercise 4). Under the
+hypothesis of the corollary, we therefore have
+1 = d{P{L\K)) = d(P(N\K)) = jj^Yy
+so that [N : K] = 1 and N = L = K. □
+
+===== PDF PAGE 564 =====
+
+548 Chapter VII. Zeta Functions and L-series
+(13.8) Corollary. An extension L\K is Galois if and only if every prime
+ideal in P(L\K) splits completely in L.
+Proof: Let again N\K be the normal closure of L\K. Then P(N\K)
+consists precisely of those prime ideals which split completely in L. Hence
+if P(N\K) = P(L\K)9 then by (13.6),
+= d(P(N\K)) = d(P(L\K)) > —-—,[N : K] v ' " v v ' " ~ [L : K]
+i.e., [N : K] < [L : K], so L = N is Galois. The converse is trivial. D
+(13.9) Proposition (M.Bauer). If L\K is Galois and M\K is an arbitrary
+finite extension, then
+P(L\K)^P(M\K) <=> LCM.
+Proof: LCM trivially implies that P(M\K) c P(L\K). So assume
+conversely that P(L\K)^ P(M\K). Let N\K be a Galois extension
+containing L and M, and let G = G(N\K), H = G(N\L), Hf = G(N\M).
+Then we have
+P(M\K)= |J PN{K(cr) c P(L\K)= \J PN\k(ct).
+Let a g T/'. Since Pn\k(?) is infinite by (13.4), there must exist some
+P e Pn\k(&) such that p e Pn\k(t) for a suitable r g G such that
+(r> H // 7^ 0. But then a is conjugate to r, and since // is a normal
+subgroup of G, we find (a) = (r) c //. We therefore have Hf c. H, andhence L c. M. □
+(13.10) Corollary. A Galois extension L\K is uniquely determined by the
+set P(L\K) of prime ideals which split completely in it.
+This beautiful result is the beginning of an answer to the programme
+formulated by Leopold Kronecker (1821-1891), of characterizing the
+extensions of K, with all their algebraic and arithmetic properties, solely
+in terms of sets of prime ideals, "m a similar way as Cauchys theorem
+determines a function by its boundary values". The result raises the question
+of how to characterize the sets P(L\K) of prime ideals solely in terms of
+the base field K. For abelian extensions, class field theory gives a concise
+
+===== PDF PAGE 565 =====
+
+13. Density Theorems 549
+answer to this, in that it recognizes P(L\K) as the set of prime ideals lying
+in the ideal group Hm for any module of definition m (see chap. VI, (7.3)).
+If for instance L \K is the Hilbert class field, then P(L\K) consists precisely
+of the prime ideals which are principal ideals. If on the other hand K = Q
+and L = Q(/xm), then P(L\K) consists of all prime numbers p = 1 mod m.
+In the case of nonabelian extensions L\K, a characterization of the sets
+P(L\K) is essentially not known. However, this problem is part of a much
+more general and far-reaching programme known as "Langlands philosophy",
+which is undergoing a rapid development at the moment. For an introduction
+to this circle of ideas, we refer the interested reader to [106].

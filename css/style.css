@@ -86,7 +86,15 @@ body {
   transition: color 0.12s, border-color 0.12s;
 }
 .site-header .home-btn:hover { color: var(--accent); border-color: var(--accent-soft); }
-.site-header .brand { flex: 1; font-weight: 600; letter-spacing: -0.01em; }
+.site-header .brand {
+  flex: 1;
+  min-width: 0;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .site-header .brand small { color: var(--ink-soft); font-weight: 400; margin-left: 0.4rem; }
 .site-header nav {
   flex-shrink: 0;
@@ -115,8 +123,16 @@ body {
 }
 
 @media (max-width: 600px) {
-  .site-header nav { display: none; }
+  /* Keep the theme toggle + Read button reachable — just make them compact */
+  .site-header { gap: 0.5rem; padding: 0.6rem 0.9rem; }
   .site-header .brand small { display: none; }
+  .site-header .brand { font-size: 0.85rem; min-width: 0; }
+  .site-header nav { gap: 0.4rem; }
+  .theme-toggle {
+    min-width: auto;
+    padding: 0.28rem 0.55rem;
+    font-size: 0.75rem;
+  }
 }
 
 .layout {

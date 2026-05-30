@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ch 07 — Zeta Functions and L-series · Algebraic Number Theory</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/><link href="/css/tts.css" rel="stylesheet"/>
+</head>
+<body data-book="algebraic_number_theory" data-page="ch07">
+<header class="site-header">
+<a class="home-btn" href="/">Home</a>
+<a class="brand" href="/books/algebraic_number_theory/">Algebraic Number Theory <small>a slow reading guide</small></a>
+<nav>
+<button aria-label="toggle theme" class="theme-toggle">Dark</button>
+</nav>
+</header>
+<main class="layout">
+<aside class="sidebar">
+<h4>Chapter 07</h4>
+<ol>
+<li><a href="#intro">Orientation</a></li>
+<li><a href="#s7-1">7.1 The Riemann Zeta Function</a></li>
+<li><a href="#s7-2">7.2 Dirichlet L-series</a></li>
+<li><a href="#s7-3">7.3 Theta Series</a></li>
+<li><a href="#s7-4">7.4 The Higher-dimensional Gamma Function</a></li>
+<li><a href="#s7-5">7.5 The Dedekind Zeta Function</a></li>
+<li><a href="#s7-6">7.6 Hecke Characters</a></li>
+<li><a href="#s7-7">7.7 Theta Series of Number Fields</a></li>
+<li><a href="#s7-8">7.8 Hecke L-series</a></li>
+<li><a href="#s7-9">7.9 Values of L-series at Integers</a></li>
+<li><a href="#s7-10">7.10 Artin L-series</a></li>
+<li><a href="#s7-11">7.11 The Artin Conductor</a></li>
+<li><a href="#s7-12">7.12 Functional Equation of Artin L-series</a></li>
+<li><a href="#s7-13">7.13 Density Theorems</a></li>
+<li><a href="#summary">Summary</a></li>
+</ol>
+</aside>
+<article class="content">
+<section class="hero">
+<div class="kicker">Chapter 07</div>
+<h1>Zeta Functions and L-series</h1>
+<p class="subtitle" data-cid="ch07-010">A single analytic function — the zeta function — secretly encodes the deepest arithmetic of a number field; this chapter learns to read it, from Riemann's prototype all the way to Artin L-series and the density theorems.</p>
+<div class="meta">
+<span>Neukirch Chapter VII</span>
+<span>~120 min reading time</span>
+<span>Prereqs: complex analysis, ideal theory (Ch. I), ramification (Ch. II), class field theory (Ch. VI)</span>
+</div>
+</section>
+
+<h2 id="intro" data-cid="ch07-020">Orientation: why analysis enters number theory</h2>
+<p data-cid="ch07-030">Up to now this book has been almost entirely algebraic: ideals, valuations, ramification, class groups, reciprocity. This final chapter changes register. It attaches to each number field an <em>analytic</em> object — its zeta function — and then shows that the arithmetic we worked so hard to build (unique factorization, the class number, the regulator, decomposition of primes, the Galois action) is all visible inside the analytic behaviour of that one function and its relatives, the <strong>L-series</strong>.</p>
+
+<div class="box intuition" data-cid="ch07-040">
+<span class="box-label">Intuition</span>
+<p data-cid="ch07-050">There is one mechanism that runs through the whole chapter, and if you grasp it once you can replay it five times. A Dirichlet-type series (a sum over integers or ideals) equals an <em>Euler product</em> (a product over primes) — this is unique factorization made analytic. To continue the series past its line of convergence and find its symmetry, you write it as a <strong>Mellin transform</strong> (an integral against <span class="tts-math" data-tts="y to the s, times d y over y">$y^s\,\frac{dy}{y}$</span>) of a <strong>theta series</strong>. The theta series obeys a transformation law <span class="tts-math" data-tts="theta of minus one over z equals root z over i, times theta of z">$\theta(-1/z)=\sqrt{z/i}\,\theta(z)$</span> coming from Poisson summation, and that single law forces the <strong>functional equation</strong> relating <span class="tts-math" data-tts="s">$s$</span> to <span class="tts-math" data-tts="one minus s">$1-s$</span>. Every section below is a variation on this theme.</p>
+</div>
+
+<p data-cid="ch07-060">The plan: §7.1 does the Riemann zeta function <span class="tts-math" data-tts="zeta of s">$\zeta(s)$</span> in full, building all the machinery (gamma function, Mellin principle, theta transformation, Bernoulli values). §7.2 repeats it for Dirichlet L-series, where Gauss sums first appear. §§7.3–7.4 build the higher-dimensional toolbox (theta series and gamma function on Minkowski space) needed for number fields. §7.5 is the <strong>Dedekind zeta function</strong> and the analytic class number formula. §§7.6–7.8 introduce <strong>Hecke characters</strong> (Größencharaktere) and <strong>Hecke L-series</strong>, the common generalization. §7.9 evaluates L-values at integers via Shintani. §§7.10–7.12 introduce <strong>Artin L-series</strong> from Galois representations, their conductor, and their functional equation. §7.13 harvests the <strong>density theorems</strong> of Dirichlet and Chebotarev.</p>
+
+<!-- ======================= 7.1 ======================= -->
+<h2 id="s7-1" data-cid="ch07-070">7.1 The Riemann Zeta Function</h2>
+
+<p data-cid="ch07-080">The fundamental prototype is Riemann's zeta function, the series</p>
+<span class="tts-math" data-tts="zeta of s equals the sum from n equals one to infinity of one over n to the s">
+$$\zeta(s)=\sum_{n=1}^{\infty}\frac{1}{n^{s}},$$
+</span>
+<p data-cid="ch07-090">where <span class="tts-math" data-tts="s">$s$</span> is a complex variable.</p>
+
+<div class="box definition" data-cid="ch07-100">
+<span class="box-label">Proposition (1.1) — convergence and Euler's identity</span>
+<p data-cid="ch07-110">The series converges absolutely and uniformly in every half-plane <span class="tts-math" data-tts="real part of s greater than one plus delta">$\operatorname{Re}(s)&gt;1+\delta$</span> (<span class="tts-math" data-tts="delta greater than zero">$\delta&gt;0$</span>), so <span class="tts-math" data-tts="zeta of s">$\zeta(s)$</span> is analytic for <span class="tts-math" data-tts="real part of s greater than one">$\operatorname{Re}(s)&gt;1$</span>, and one has <strong>Euler's identity</strong></p>
+<span class="tts-math" data-tts="zeta of s equals the product over all primes p of one over, one minus p to the minus s">
+$$\zeta(s)=\prod_{p}\frac{1}{1-p^{-s}},$$
+</span>
+<p data-cid="ch07-120">the product running over all prime numbers.</p>
+</div>
+
+<p data-cid="ch07-130">Why is this true? Convergence is the comparison <span class="tts-math" data-tts="the absolute value of one over n to the s equals one over n to the sigma">$|n^{-s}|=n^{-\sigma}$</span> with <span class="tts-math" data-tts="sigma equals the real part of s">$\sigma=\operatorname{Re}(s)$</span>. The Euler product is unique prime factorization in disguise: expand each geometric factor <span class="tts-math" data-tts="one over, one minus p to the minus s, equals one plus p to the minus s plus p to the minus two s plus dot dot dot">$\frac{1}{1-p^{-s}}=1+p^{-s}+p^{-2s}+\cdots$</span> and multiply over primes <span class="tts-math" data-tts="p less than or equal to N">$p\le N$</span>; the cross-terms are exactly <span class="tts-math" data-tts="n to the minus s">$n^{-s}$</span> for <span class="tts-math" data-tts="n">$n$</span> built from those primes, each appearing once because factorization is unique. The difference from <span class="tts-math" data-tts="zeta of s">$\zeta(s)$</span> is the tail <span class="tts-math" data-tts="the sum over n greater than N of n to the minus s, goes to zero">$\sum_{n&gt;N}n^{-s}\to 0$</span>.</p>
+
+<div class="box pause" data-cid="ch07-140">
+<span class="box-label">Pause</span>
+<p data-cid="ch07-150">Euler's identity already shows <span class="tts-math" data-tts="zeta of s is not zero">$\zeta(s)\ne 0$</span> for <span class="tts-math" data-tts="real part of s greater than one">$\operatorname{Re}(s)&gt;1$</span> (no factor vanishes and the product converges). So <em>all the interesting zeros must come from analytic continuation</em>. Getting that continuation, and the symmetry <span class="tts-math" data-tts="s maps to one minus s">$s\leftrightarrow 1-s$</span>, is the work of the rest of the section.</p>
+</div>
+
+<h3 data-cid="ch07-160">The gamma function and the integral representation</h3>
+<p data-cid="ch07-170">Recall the gamma function, defined for <span class="tts-math" data-tts="real part of s greater than zero">$\operatorname{Re}(s)&gt;0$</span> by the convergent integral</p>
+<span class="tts-math" data-tts="gamma of s equals the integral from zero to infinity of e to the minus y, times y to the s, times d y over y">
+$$\Gamma(s)=\int_{0}^{\infty}e^{-y}\,y^{s}\,\frac{dy}{y}.$$
+</span>
+<div class="box definition" data-cid="ch07-180">
+<span class="box-label">Proposition (1.2) — properties of <span class="tts-math" data-tts="the gamma function">$\Gamma$</span></span>
+<p data-cid="ch07-190"><span class="tts-math" data-tts="the gamma function">$\Gamma$</span> extends to a meromorphic function on <span class="tts-math" data-tts="the complex numbers">$\mathbb{C}$</span>, is nowhere zero, and has simple poles at <span class="tts-math" data-tts="s equals minus n, for n equals zero, one, two, and so on">$s=-n$</span> with residue <span class="tts-math" data-tts="minus one to the n over n factorial">$(-1)^{n}/n!$</span>. It satisfies <span class="tts-math" data-tts="gamma of s plus one equals s times gamma of s">$\Gamma(s+1)=s\,\Gamma(s)$</span>, the reflection formula <span class="tts-math" data-tts="gamma of s times gamma of one minus s equals pi over sine pi s">$\Gamma(s)\Gamma(1-s)=\frac{\pi}{\sin\pi s}$</span>, and Legendre's duplication formula <span class="tts-math" data-tts="gamma of s times gamma of s plus one half equals two to the one minus two s, times root pi, times gamma of two s">$\Gamma(s)\Gamma\!\left(s+\tfrac12\right)=2^{1-2s}\sqrt{\pi}\,\Gamma(2s)$</span>. Special values: <span class="tts-math" data-tts="gamma of one half equals root pi">$\Gamma(\tfrac12)=\sqrt{\pi}$</span>, <span class="tts-math" data-tts="gamma of k plus one equals k factorial">$\Gamma(k+1)=k!$</span>.</p>
+</div>
+
+<p data-cid="ch07-200">Substituting <span class="tts-math" data-tts="y maps to pi n squared y">$y\mapsto\pi n^{2}y$</span> in the gamma integral and summing over <span class="tts-math" data-tts="n">$n$</span> relates <span class="tts-math" data-tts="the gamma function">$\Gamma$</span> and <span class="tts-math" data-tts="zeta">$\zeta$</span>. Here is the one line that does it: replacing <span class="tts-math" data-tts="y by pi n squared y">$y$ by $\pi n^{2}y$</span> in <span class="tts-math" data-tts="gamma of s equals the integral from zero to infinity of e to the minus y, y to the s, d y over y">$\Gamma(s)=\int_{0}^{\infty}e^{-y}y^{s}\frac{dy}{y}$</span> (the measure <span class="tts-math" data-tts="d y over y">$\frac{dy}{y}$</span> is scale-invariant, so it does not change) gives</p>
+<span class="tts-math" data-tts="the integral from zero to infinity of e to the minus pi n squared y, times y to the s, times d y over y, equals pi n squared to the minus s, times gamma of s">
+$$\int_{0}^{\infty}e^{-\pi n^{2}y}\,y^{s}\,\frac{dy}{y}=(\pi n^{2})^{-s}\,\Gamma(s),$$
+</span>
+<p data-cid="ch07-205">and now summing over <span class="tts-math" data-tts="n at least one">$n\ge1$</span> the right side becomes <span class="tts-math" data-tts="pi to the minus s, gamma of s, times the sum of n to the minus two s, which is pi to the minus s, gamma of s, zeta of two s">$\pi^{-s}\Gamma(s)\sum_{n\ge1}n^{-2s}=\pi^{-s}\Gamma(s)\zeta(2s)$</span> — the factor <span class="tts-math" data-tts="n to the minus two s">$n^{-2s}$</span> from each term is exactly what assembles <span class="tts-math" data-tts="zeta of two s">$\zeta(2s)$</span>. Interchanging sum and integral on the left, one finds</p>
+<span class="tts-math" data-tts="pi to the minus s, times gamma of s, times zeta of two s, equals the integral from zero to infinity of the sum over n of e to the minus pi n squared y, times y to the s, times d y over y">
+$$\pi^{-s}\Gamma(s)\zeta(2s)=\int_{0}^{\infty}\Big(\sum_{n=1}^{\infty}e^{-\pi n^{2}y}\Big)y^{s}\,\frac{dy}{y}.$$
+</span>
+<p data-cid="ch07-210">The series inside is half of <strong>Jacobi's theta series</strong> minus one: with</p>
+<span class="tts-math" data-tts="theta of z equals the sum over n in the integers of e to the pi i n squared z, equals one plus two times the sum from n equals one to infinity of e to the pi i n squared z">
+$$\theta(z)=\sum_{n\in\mathbb{Z}}e^{\pi i n^{2}z}=1+2\sum_{n=1}^{\infty}e^{\pi i n^{2}z},$$
+</span>
+<p data-cid="ch07-220">we have <span class="tts-math" data-tts="the sum over n at least one of e to the minus pi n squared y, equals one half times theta of i y minus one">$\sum_{n\ge1}e^{-\pi n^{2}y}=\tfrac12(\theta(iy)-1)$</span>. Define the <strong>completed zeta function</strong></p>
+<span class="tts-math" data-tts="capital Z of s equals pi to the minus s over two, times gamma of s over two, times zeta of s">
+$$Z(s)=\pi^{-s/2}\Gamma(s/2)\,\zeta(s).$$
+</span>
+
+<div class="box definition" data-cid="ch07-230">
+<span class="box-label">Proposition (1.3) — integral representation</span>
+<p data-cid="ch07-240">The completed zeta function has the integral representation</p>
+<span class="tts-math" data-tts="capital Z of s equals one half, times the integral from zero to infinity of, theta of i y minus one, times y to the s over two, times d y over y">
+$$Z(s)=\frac{1}{2}\int_{0}^{\infty}\big(\theta(iy)-1\big)\,y^{s/2}\,\frac{dy}{y}.$$
+</span>
+</div>
+
+<h3 data-cid="ch07-250">The Mellin principle</h3>
+<p data-cid="ch07-260">This is the abstract engine. For a continuous <span class="tts-math" data-tts="f from the positive reals to the complex numbers">$f:\mathbb{R}_{+}^{*}\to\mathbb{C}$</span> on the positive reals, its <strong>Mellin transform</strong> is</p>
+<span class="tts-math" data-tts="capital L of f comma s equals the integral from zero to infinity of, f of y minus f of infinity, times y to the s, times d y over y">
+$$L(f,s)=\int_{0}^{\infty}\big(f(y)-f(\infty)\big)\,y^{s}\,\frac{dy}{y},$$
+</span>
+<p data-cid="ch07-270">where <span class="tts-math" data-tts="f of infinity equals the limit as y goes to infinity of f of y">$f(\infty)=\lim_{y\to\infty}f(y)$</span>. The whole game is governed by:</p>
+
+<div class="box intuition" data-cid="ch07-274">
+<span class="box-label">Intuition — what the Mellin transform really is</span>
+<p data-cid="ch07-276">Why integrate against <span class="tts-math" data-tts="y to the s, times d y over y">$y^{s}\,\frac{dy}{y}$</span>, of all things? Because the Mellin transform is nothing but <em>Fourier analysis on the multiplicative group</em> <span class="tts-math" data-tts="the positive reals under multiplication">$\mathbb{R}_{+}^{*}$</span> of positive reals. On the additive line, Fourier analysis integrates against <span class="tts-math" data-tts="e to the i x xi, times d x">$e^{ix\xi}\,dx$</span> with translation-invariant measure <span class="tts-math" data-tts="d x">$dx$</span>. Here the group law is multiplication, so the invariant ("Haar") measure is the scale-invariant <span class="tts-math" data-tts="d y over y">$\frac{dy}{y}$</span> — it is unchanged under <span class="tts-math" data-tts="y maps to c y">$y\mapsto cy$</span> — and the characters of <span class="tts-math" data-tts="the positive reals">$\mathbb{R}_{+}^{*}$</span> are the powers <span class="tts-math" data-tts="y to the s">$y^{s}$</span>. So <span class="tts-math" data-tts="s">$s$</span> plays the role of <em>frequency</em>, and <span class="tts-math" data-tts="L of f comma s">$L(f,s)$</span> is the "Fourier coefficient of <span class="tts-math" data-tts="f">$f$</span> at frequency <span class="tts-math" data-tts="s">$s$</span>".</p>
+<p data-cid="ch07-278">This is exactly why the engine produces functional equations. The multiplicative group has an obvious symmetry, inversion <span class="tts-math" data-tts="y maps to one over y">$y\mapsto1/y$</span>; on the frequency side this turns into the additive symmetry <span class="tts-math" data-tts="s maps to k minus s">$s\mapsto k-s$</span>. A theta series is a function on <span class="tts-math" data-tts="the positive reals">$\mathbb{R}_{+}^{*}$</span> whose behaviour under <span class="tts-math" data-tts="y maps to one over y">$y\mapsto1/y$</span> is known (Poisson summation). Feed that multiplicative symmetry through the Mellin transform and out comes the additive symmetry <span class="tts-math" data-tts="s maps to k minus s">$s\leftrightarrow k-s$</span> of the L-series. Theta law in, functional equation out.</p>
+</div>
+
+<div class="box definition" data-cid="ch07-280">
+<span class="box-label">Theorem (1.4) — the Mellin principle</span>
+<p data-cid="ch07-290">Let <span class="tts-math" data-tts="f and g from the positive reals to the complex numbers">$f,g:\mathbb{R}_{+}^{*}\to\mathbb{C}$</span> be continuous with <span class="tts-math" data-tts="f of y equals a naught plus big O of e to the minus c y to the alpha">$f(y)=a_{0}+O(e^{-cy^{\alpha}})$</span> and <span class="tts-math" data-tts="g of y equals b naught plus big O of e to the minus c y to the alpha">$g(y)=b_{0}+O(e^{-cy^{\alpha}})$</span> as <span class="tts-math" data-tts="y goes to infinity">$y\to\infty$</span>, satisfying the transformation law</p>
+<span class="tts-math" data-tts="f of one over y equals capital C, times y to the k, times g of y">
+$$f(1/y)=C\,y^{k}\,g(y)$$
+</span>
+<p data-cid="ch07-300">for some <span class="tts-math" data-tts="k greater than zero">$k&gt;0$</span> and <span class="tts-math" data-tts="C not equal to zero">$C\ne0$</span>. Then <span class="tts-math" data-tts="the Mellin transform L of f comma s">$L(f,s)$</span> and <span class="tts-math" data-tts="the Mellin transform L of g comma s">$L(g,s)$</span> converge for <span class="tts-math" data-tts="real part of s greater than k">$\operatorname{Re}(s)&gt;k$</span>, extend holomorphically to <span class="tts-math" data-tts="the complex plane minus the two points zero and k">$\mathbb{C}\setminus\{0,k\}$</span> with simple poles at <span class="tts-math" data-tts="zero">$0$</span> and <span class="tts-math" data-tts="k">$k$</span> (residues <span class="tts-math" data-tts="minus a naught, and C times b naught">$-a_{0},\,Cb_{0}$</span> for <span class="tts-math" data-tts="f">$f$</span>), and satisfy the <strong>functional equation</strong></p>
+<span class="tts-math" data-tts="capital L of f comma s equals capital C, times capital L of g comma k minus s">
+$$L(f,s)=C\,L(g,k-s).$$
+</span>
+</div>
+
+<p data-cid="ch07-310">The proof is honest but mechanical: split <span class="tts-math" data-tts="the integral from zero to infinity equals the integral from zero to one plus the integral from one to infinity">$\int_{0}^{\infty}=\int_{0}^{1}+\int_{1}^{\infty}$</span>, use <span class="tts-math" data-tts="y maps to one over y">$y\mapsto1/y$</span> and the transformation law to fold the first piece onto the second, and read off the two explicit poles from the constant terms <span class="tts-math" data-tts="a naught and b naught">$a_{0},b_{0}$</span>. The exponential decay guarantees the leftover integral <span class="tts-math" data-tts="F of s">$F(s)$</span> is entire, and <span class="tts-math" data-tts="F of s equals C times G of k minus s">$F(s)=CG(k-s)$</span> gives the symmetry.</p>
+
+<div class="box intuition" data-cid="ch07-315">
+<span class="box-label">Intuition — why we want continuation and a functional equation at all</span>
+<p data-cid="ch07-318">It is worth pausing on <em>why</em> this work is worth doing. The defining series <span class="tts-math" data-tts="the sum of one over n to the s">$\sum n^{-s}$</span> converges only for <span class="tts-math" data-tts="real part of s greater than one">$\operatorname{Re}(s)&gt;1$</span> — a single half-plane. But almost everything we care about lives <em>outside</em> it: the pole at <span class="tts-math" data-tts="s equals one">$s=1$</span> that encodes the class number, the special values at <span class="tts-math" data-tts="s equals zero and the negative integers">$s=0,-1,-2,\dots$</span> (Bernoulli numbers, <span class="tts-math" data-tts="p-adic">$p$</span>-adic L-functions), and the critical line <span class="tts-math" data-tts="real part of s equals one half">$\operatorname{Re}(s)=\tfrac12$</span> where the deep zeros sit. <strong>Analytic continuation</strong> is what extends the function to those points so the questions even make sense. And the <strong>functional equation</strong> <span class="tts-math" data-tts="s maps to one minus s">$s\leftrightarrow1-s$</span> is what makes the answers computable: it reflects the unreachable left half-plane onto the convergent right half-plane, so a value at, say, <span class="tts-math" data-tts="s equals minus three">$s=-3$</span> is pinned down by the easy value at <span class="tts-math" data-tts="s equals four">$s=4$</span>. That single mirror symmetry turns an otherwise mysterious analytic continuation into an explicit, usable object.</p>
+</div>
+
+<div class="box definition" data-cid="ch07-320">
+<span class="box-label">Proposition (1.5) — theta transformation</span>
+<p data-cid="ch07-330"><span class="tts-math" data-tts="theta of z equals the sum over n in the integers of e to the pi i n squared z">$\theta(z)=\sum_{n\in\mathbb{Z}}e^{\pi i n^{2}z}$</span> is analytic on the upper half-plane <span class="tts-math" data-tts="the upper half-plane">$\mathbb{H}$</span> and satisfies</p>
+<span class="tts-math" data-tts="theta of minus one over z equals root z over i, times theta of z">
+$$\theta(-1/z)=\sqrt{z/i}\;\theta(z),$$
+</span>
+<p data-cid="ch07-340">where <span class="tts-math" data-tts="the square root of z over i">$\sqrt{z/i}$</span> is the holomorphic branch with <span class="tts-math" data-tts="the square root of i y over i equals the square root of y, greater than zero">$\sqrt{iy/i}=\sqrt{y}&gt;0$</span>. (Proved in great generality in §7.3 via Poisson summation.)</p>
+</div>
+
+<p data-cid="ch07-350">Feeding <span class="tts-math" data-tts="f of y equals one half theta of i y">$f(y)=\tfrac12\theta(iy)$</span> into the Mellin principle — here <span class="tts-math" data-tts="a naught equals one half">$a_0=\tfrac12$</span>, and the theta law gives <span class="tts-math" data-tts="f of one over y equals the square root of y times f of y">$f(1/y)=y^{1/2}f(y)$</span>, so <span class="tts-math" data-tts="C equals one and k equals one half">$C=1,k=\tfrac12$</span> — yields the central result.</p>
+
+<div class="box definition" data-cid="ch07-360">
+<span class="box-label">Theorem (1.6) / Corollary (1.7) — continuation and functional equation</span>
+<p data-cid="ch07-370"><span class="tts-math" data-tts="capital Z of s equals pi to the minus s over two, times gamma of s over two, times zeta of s">$Z(s)=\pi^{-s/2}\Gamma(s/2)\zeta(s)$</span> continues to <span class="tts-math" data-tts="the complex plane minus the points zero and one">$\mathbb{C}\setminus\{0,1\}$</span>, has simple poles at <span class="tts-math" data-tts="zero">$0$</span> and <span class="tts-math" data-tts="one">$1$</span> with residues <span class="tts-math" data-tts="minus one">$-1$</span> and <span class="tts-math" data-tts="one">$1$</span>, and satisfies the elegant symmetry</p>
+<span class="tts-math" data-tts="capital Z of s equals capital Z of one minus s">
+$$Z(s)=Z(1-s).$$
+</span>
+<p data-cid="ch07-380">Consequently <span class="tts-math" data-tts="zeta of s">$\zeta(s)$</span> extends to <span class="tts-math" data-tts="the complex plane minus the point one">$\mathbb{C}\setminus\{1\}$</span>, has a simple pole at <span class="tts-math" data-tts="s equals one">$s=1$</span> with residue <span class="tts-math" data-tts="one">$1$</span>, and</p>
+<span class="tts-math" data-tts="zeta of one minus s equals two times two pi to the minus s, times gamma of s, times cosine of pi s over two, times zeta of s">
+$$\zeta(1-s)=2(2\pi)^{-s}\Gamma(s)\cos\!\Big(\frac{\pi s}{2}\Big)\zeta(s).$$
+</span>
+</div>
+
+<h3 data-cid="ch07-390">Special values and Bernoulli numbers</h3>
+<p data-cid="ch07-400">The famous evaluations <span class="tts-math" data-tts="zeta of two equals pi squared over six">$\zeta(2)=\frac{\pi^{2}}{6}$</span>, <span class="tts-math" data-tts="zeta of four equals pi to the fourth over ninety">$\zeta(4)=\frac{\pi^{4}}{90}$</span>, <span class="tts-math" data-tts="zeta of six equals pi to the sixth over nine hundred forty five, and so on">$\zeta(6)=\frac{\pi^{6}}{945},\dots$</span> are explained through the functional equation by the values at negative integers, which are <strong>Bernoulli numbers</strong>. These come from</p>
+<span class="tts-math" data-tts="F of t equals t e to the t, over e to the t minus one, equals the sum from k equals zero of B sub k, times t to the k over k factorial">
+$$F(t)=\frac{te^{t}}{e^{t}-1}=\sum_{k=0}^{\infty}B_{k}\frac{t^{k}}{k!},$$
+</span>
+<p data-cid="ch07-410">with <span class="tts-math" data-tts="B naught equals one, B one equals one half, B two equals one sixth, B four equals minus one thirtieth, B six equals one over forty two">$B_{0}=1,\,B_{1}=\tfrac12,\,B_{2}=\tfrac16,\,B_{4}=-\tfrac1{30},\,B_{6}=\tfrac1{42}$</span>, and <span class="tts-math" data-tts="B sub two v plus one equals zero">$B_{2v+1}=0$</span> for <span class="tts-math" data-tts="v at least one">$v\ge1$</span>.</p>
+
+<div class="box definition" data-cid="ch07-420">
+<span class="box-label">Theorem (1.8) / Corollary (1.10)</span>
+<p data-cid="ch07-430">For every integer <span class="tts-math" data-tts="k at least one">$k\ge1$</span>,</p>
+<span class="tts-math" data-tts="zeta of one minus k equals minus B sub k over k">
+$$\zeta(1-k)=-\frac{B_{k}}{k},$$
+</span>
+<p data-cid="ch07-440">and for the even positive integers <span class="tts-math" data-tts="s equals two k">$s=2k$</span>,</p>
+<span class="tts-math" data-tts="zeta of two k equals minus one to the k minus one, times two to the two k minus one, times B sub two k, over two k factorial, times pi to the two k">
+$$\zeta(2k)=(-1)^{k-1}\frac{2^{2k-1}B_{2k}}{(2k)!}\,\pi^{2k}.$$
+</span>
+</div>
+
+<p data-cid="ch07-450">The proof of (1.8) follows by a contour-integral argument (see Neukirch): in brief, <span class="tts-math" data-tts="B sub k over k">$B_k/k$</span> is read off as a residue of <span class="tts-math" data-tts="F of z times z to the minus k minus one">$F(z)z^{-k-1}$</span> at <span class="tts-math" data-tts="zero">$0$</span>, and that residue is related back to <span class="tts-math" data-tts="zeta">$\zeta$</span> through the gamma integral and the reflection formula. The contour used is a <em>Hankel contour</em> — picture a keyhole that comes in from <span class="tts-math" data-tts="positive infinity">$+\infty$</span> just above the positive real axis, loops once around the origin, and returns to <span class="tts-math" data-tts="positive infinity">$+\infty$</span> just below it; it lets one integrate around the branch cut of <span class="tts-math" data-tts="z to the s">$z^{s}$</span> and convert the gamma integral into a residue. The reader can take the shape on faith; only the residue at the end matters.</p>
+
+<div class="box pause" data-cid="ch07-455">
+<span class="box-label">Optional aside — the odd values</span>
+<p data-cid="ch07-456">The values <span class="tts-math" data-tts="zeta of two k minus one">$\zeta(2k-1)$</span> at <em>odd</em> arguments (like <span class="tts-math" data-tts="zeta of three">$\zeta(3)$</span>) have no such clean Bernoulli formula and are far more mysterious. There is a much deeper story here, involving algebraic K-theory — Borel showed these values are "regulators" attached to higher K-groups <span class="tts-math" data-tts="K sub four k minus one of the integers">$K_{4k-1}(\mathbb{Z})$</span>, the entry point to the Beilinson conjectures — but it is well beyond this book and can be skipped.</p>
+</div>
+
+<div class="box warn" data-cid="ch07-460">
+<span class="box-label">Where the zeros live</span>
+<p data-cid="ch07-470">Euler's product gives <span class="tts-math" data-tts="zeta of s is not zero">$\zeta(s)\ne0$</span> for <span class="tts-math" data-tts="real part of s greater than one">$\operatorname{Re}(s)&gt;1$</span>. The functional equation then forces the only zeros in <span class="tts-math" data-tts="real part of s less than zero">$\operatorname{Re}(s)&lt;0$</span> to be the <em>trivial zeros</em> at <span class="tts-math" data-tts="s equals minus two, minus four, minus six, and so on">$s=-2,-4,-6,\dots$</span> (poles of <span class="tts-math" data-tts="gamma of s over two">$\Gamma(s/2)$</span>). <strong>Trivial zeros</strong> — a phrase we will reuse for L-series and Hecke L-series throughout the chapter — always mean the same thing: zeros <em>forced by the poles of the archimedean gamma factor</em> in the completed L-function, not by anything arithmetic. Since the completed <span class="tts-math" data-tts="capital Z of s">$Z(s)$</span> is finite and nonzero there, wherever the gamma factor <span class="tts-math" data-tts="gamma of s over two">$\Gamma(s/2)$</span> has a pole the bare <span class="tts-math" data-tts="zeta of s">$\zeta(s)$</span> must have a compensating zero. They carry no deep information; they are bookkeeping. Everything else lies in the <strong>critical strip</strong> <span class="tts-math" data-tts="real part of s between zero and one">$0&lt;\operatorname{Re}(s)&lt;1$</span>. The <strong>Riemann Hypothesis</strong> asserts these nontrivial zeros all lie on <span class="tts-math" data-tts="real part of s equals one half">$\operatorname{Re}(s)=\tfrac12$</span> — still unproven, and intimately tied to the distribution of primes.</p>
+</div>
+
+<!-- ======================= 7.2 ======================= -->
+<h2 id="s7-2" data-cid="ch07-480">7.2 Dirichlet L-series</h2>
+
+<p data-cid="ch07-490">The closest relatives of <span class="tts-math" data-tts="zeta">$\zeta$</span> are Dirichlet L-series. Fix a natural number <span class="tts-math" data-tts="m">$m$</span>. A <strong>Dirichlet character mod <span class="tts-math" data-tts="m">$m$</span></strong> is a character</p>
+<span class="tts-math" data-tts="chi from the units mod m to the circle group S one">
+$$\chi:(\mathbb{Z}/m\mathbb{Z})^{*}\longrightarrow S^{1}=\{z\in\mathbb{C}\mid|z|=1\}.$$
+</span>
+<p data-cid="ch07-500">It is <strong>primitive</strong> if it does not factor through <span class="tts-math" data-tts="the units mod m prime">$(\mathbb{Z}/m'\mathbb{Z})^{*}$</span> for any proper divisor <span class="tts-math" data-tts="m prime dividing m">$m'\mid m$</span>; the least such modulus is the <strong>conductor</strong> <span class="tts-math" data-tts="f">$f$</span>. Concretely, the conductor is the <em>true period</em> of the character. Suppose we write down a character mod <span class="tts-math" data-tts="twelve">$12$</span>, but its value <span class="tts-math" data-tts="khi of n">$\chi(n)$</span> actually depends only on <span class="tts-math" data-tts="n mod four">$n\bmod 4$</span> (say it ignores the residue mod <span class="tts-math" data-tts="three">$3$</span> entirely). Then <span class="tts-math" data-tts="khi">$\chi$</span> does not genuinely "live mod <span class="tts-math" data-tts="twelve">$12$</span>": it factors through <span class="tts-math" data-tts="the units mod four">$(\mathbb{Z}/4\mathbb{Z})^{*}$</span> and really lives mod <span class="tts-math" data-tts="four">$4$</span>. Its conductor is <span class="tts-math" data-tts="four">$4$</span>, not <span class="tts-math" data-tts="twelve">$12$</span> — the smallest modulus on which the character is actually defined. Extend <span class="tts-math" data-tts="khi">$\chi$</span> to all of <span class="tts-math" data-tts="the integers">$\mathbb{Z}$</span> by <span class="tts-math" data-tts="khi of n equals zero">$\chi(n)=0$</span> when <span class="tts-math" data-tts="n and m not coprime">$(n,m)\ne1$</span>. The associated L-series is</p>
+<span class="tts-math" data-tts="capital L of chi comma s equals the sum from n equals one to infinity of chi of n over n to the s, equals the product over primes of one over, one minus chi of p, times p to the minus s">
+$$L(\chi,s)=\sum_{n=1}^{\infty}\frac{\chi(n)}{n^{s}}=\prod_{p}\frac{1}{1-\chi(p)p^{-s}}\quad(\operatorname{Re}(s)&gt;1).$$
+</span>
+<p data-cid="ch07-510">For the principal character <span class="tts-math" data-tts="khi equals the principal character">$\chi=\mathbf{1}$</span> we recover <span class="tts-math" data-tts="zeta of s">$\zeta(s)$</span> (up to finitely many Euler factors), so this section subsumes §7.1.</p>
+
+<div class="box intuition" data-cid="ch07-520">
+<span class="box-label">Even vs. odd — and why <span class="tts-math" data-tts="n to the p">$n^{p}$</span> appears</span>
+<p data-cid="ch07-530">Now a subtlety enters that recurs everywhere later. We must distinguish characters by the sign <span class="tts-math" data-tts="khi of minus one equals plus or minus one">$\chi(-1)=\pm1$</span>. Define the <strong>exponent</strong> <span class="tts-math" data-tts="p in zero one">$p\in\{0,1\}$</span> by <span class="tts-math" data-tts="chi of minus one equals minus one to the p, times chi of one">$\chi(-1)=(-1)^{p}\chi(1)$</span>: <span class="tts-math" data-tts="p equals zero">$p=0$</span> is "even", <span class="tts-math" data-tts="p equals one">$p=1$</span> is "odd". (A warning on notation: throughout this section <span class="tts-math" data-tts="p">$p$</span> denotes this parity <em>exponent</em> in <span class="tts-math" data-tts="the set zero one">$\{0,1\}$</span>, <strong>not</strong> a prime number. When we need a prime in the same breath we will say so explicitly.) The L-series sums over <span class="tts-math" data-tts="n at least one">$n\ge1$</span>, but the theta series must sum over all <span class="tts-math" data-tts="n in the integers">$n\in\mathbb{Z}$</span>. To reconcile them, the theta series carries a factor <span class="tts-math" data-tts="n to the p">$n^{p}$</span>:</p>
+<span class="tts-math" data-tts="theta of chi comma z equals the sum over n in the integers of chi of n, times n to the p, times e to the pi i n squared z over m">
+$$\theta(\chi,z)=\sum_{n\in\mathbb{Z}}\chi(n)\,n^{p}\,e^{\pi i n^{2}z/m}.$$
+</span>
+<p data-cid="ch07-540">The factor <span class="tts-math" data-tts="n to the p">$n^p$</span> exactly absorbs the parity, so that <span class="tts-math" data-tts="khi of n times n to the p">$\chi(n)n^p$</span> is even in <span class="tts-math" data-tts="n">$n$</span> and the half-sum over <span class="tts-math" data-tts="n at least one">$n\ge1$</span> matches.</p>
+</div>
+
+<p data-cid="ch07-550">The "Euler factor at infinity" is <span class="tts-math" data-tts="capital L sub infinity of chi comma s equals m over pi to the s plus p over two, times gamma of s plus p over two">$L_{\infty}(\chi,s)=\big(\tfrac{m}{\pi}\big)^{(s+p)/2}\Gamma\!\big(\tfrac{s+p}{2}\big)$</span>, and the <strong>completed L-series</strong> is <span class="tts-math" data-tts="capital lambda of chi comma s equals L sub infinity of chi comma s, times capital L of chi comma s">$\Lambda(\chi,s)=L_{\infty}(\chi,s)L(\chi,s)$</span>. As before it is a Mellin transform of <span class="tts-math" data-tts="theta of khi">$\theta(\chi,\cdot)$</span>.</p>
+
+<h3 data-cid="ch07-560">Gauss sums</h3>
+<div class="box definition" data-cid="ch07-570">
+<span class="box-label">Definition (2.5) / Proposition (2.6) — Gauss sums</span>
+<p data-cid="ch07-580">For <span class="tts-math" data-tts="n in the integers">$n\in\mathbb{Z}$</span> the Gauss sum is <span class="tts-math" data-tts="tau of chi comma n equals the sum over v from zero to m minus one of chi of v, times e to the two pi i v n over m">$\tau(\chi,n)=\sum_{v=0}^{m-1}\chi(v)e^{2\pi i vn/m}$</span>, and <span class="tts-math" data-tts="tau of khi equals tau of khi comma one">$\tau(\chi)=\tau(\chi,1)$</span>. For a <em>primitive</em> character mod <span class="tts-math" data-tts="m">$m$</span>,</p>
+<span class="tts-math" data-tts="tau of chi comma n equals chi bar of n, times tau of chi, and the absolute value of tau of chi equals root m">
+$$\tau(\chi,n)=\overline{\chi}(n)\,\tau(\chi),\qquad |\tau(\chi)|=\sqrt{m}.$$
+</span>
+</div>
+
+<p data-cid="ch07-590">The key identity <span class="tts-math" data-tts="the absolute value of tau of khi, squared, equals m">$|\tau(\chi)|^{2}=m$</span> falls out of opening up <span class="tts-math" data-tts="tau of khi times the conjugate of tau of khi">$\tau(\chi)\overline{\tau(\chi)}$</span> and summing geometric progressions — the same orthogonality of additive characters used everywhere in this circle of ideas. The theta series then transforms beautifully.</p>
+
+<div class="box definition" data-cid="ch07-600">
+<span class="box-label">Proposition (2.7) — theta transformation with a Gauss sum</span>
+<p data-cid="ch07-610">For a primitive character <span class="tts-math" data-tts="khi">$\chi$</span> mod <span class="tts-math" data-tts="m">$m$</span>,</p>
+<span class="tts-math" data-tts="theta of chi comma minus one over z equals tau of chi, over i to the p, times root m, times the quantity z over i to the p plus one half, times theta of chi bar comma z">
+$$\theta(\chi,-1/z)=\frac{\tau(\chi)}{i^{p}\sqrt{m}}\Big(\frac{z}{i}\Big)^{p+\frac12}\theta(\overline{\chi},z).$$
+</span>
+</div>
+
+<div class="box definition" data-cid="ch07-620">
+<span class="box-label">Theorem (2.8) — functional equation of <span class="tts-math" data-tts="capital lambda of khi comma s">$\Lambda(\chi,s)$</span></span>
+<p data-cid="ch07-630">For a nontrivial primitive Dirichlet character <span class="tts-math" data-tts="khi">$\chi$</span>, <span class="tts-math" data-tts="capital lambda of khi comma s">$\Lambda(\chi,s)$</span> continues to an <em>entire</em> function and satisfies</p>
+<span class="tts-math" data-tts="capital lambda of chi comma s equals capital W of chi, times capital lambda of chi bar comma one minus s">
+$$\Lambda(\chi,s)=W(\chi)\,\Lambda(\overline{\chi},1-s),\qquad W(\chi)=\frac{\tau(\chi)}{i^{p}\sqrt{m}},\ \ |W(\chi)|=1.$$
+</span>
+<p data-cid="ch07-640">The "root number" <span class="tts-math" data-tts="the root number W of khi">$W(\chi)$</span> — a normalized Gauss sum — is the new feature: unlike <span class="tts-math" data-tts="zeta">$\zeta$</span>, an L-series relates <span class="tts-math" data-tts="khi">$\chi$</span> to its conjugate <span class="tts-math" data-tts="khi bar">$\overline\chi$</span>, twisted by <span class="tts-math" data-tts="the root number W of khi">$W(\chi)$</span> on the unit circle.</p>
+</div>
+
+<div class="box example" data-cid="ch07-650">
+<span class="box-label">Example — the quadratic character mod 4</span>
+<p data-cid="ch07-660">Let <span class="tts-math" data-tts="khi">$\chi$</span> be the nontrivial character mod <span class="tts-math" data-tts="four">$4$</span>: <span class="tts-math" data-tts="khi of one equals one">$\chi(1)=1$</span>, <span class="tts-math" data-tts="khi of three equals minus one">$\chi(3)=-1$</span>. It is odd (<span class="tts-math" data-tts="khi of minus one equals minus one">$\chi(-1)=-1$</span>, so <span class="tts-math" data-tts="p equals one">$p=1$</span>), with conductor <span class="tts-math" data-tts="four">$4$</span>. Its L-series is</p>
+<span class="tts-math" data-tts="capital L of chi comma s equals one minus one over three to the s, plus one over five to the s, minus one over seven to the s, plus dot dot dot">
+$$L(\chi,s)=1-\frac{1}{3^{s}}+\frac{1}{5^{s}}-\frac{1}{7^{s}}+\cdots.$$
+</span>
+<p data-cid="ch07-670">At <span class="tts-math" data-tts="s equals one">$s=1$</span> this is Leibniz's series <span class="tts-math" data-tts="pi over four">$\frac{\pi}{4}$</span>. Let us actually compute the Gauss sum. With <span class="tts-math" data-tts="m equals four">$m=4$</span> only <span class="tts-math" data-tts="v equals one and v equals three">$v=1,3$</span> contribute (the others have <span class="tts-math" data-tts="khi of v equals zero">$\chi(v)=0$</span>), so</p>
+<span class="tts-math" data-tts="tau of khi equals khi of one, times e to the two pi i over four, plus khi of three, times e to the two pi i times three over four, equals e to the i pi over two, minus e to the i three pi over two, equals i minus minus i, which is two i">
+$$\tau(\chi)=\chi(1)e^{2\pi i/4}+\chi(3)e^{2\pi i\cdot 3/4}=e^{i\pi/2}-e^{i3\pi/2}=i-(-i)=2i.$$
+</span>
+<p data-cid="ch07-675">So the functional equation has root number <span class="tts-math" data-tts="W of khi equals tau of khi over i times root four, equals two i over two i, equals one">$W(\chi)=\tau(\chi)/(i\sqrt4)=2i/(2i)=1$</span>, exhibiting the symmetry. As for the special value <span class="tts-math" data-tts="L of khi comma zero equals one half">$L(\chi,0)=\tfrac12$</span>: this is an instance of the trivial-zero rule from (2.9). Here <span class="tts-math" data-tts="khi">$\chi$</span> is odd, so <span class="tts-math" data-tts="p equals one">$p=1$</span>, and the value <span class="tts-math" data-tts="L of khi comma one minus k">$L(\chi,1-k)$</span> at <span class="tts-math" data-tts="k equals one">$k=1$</span> (i.e. <span class="tts-math" data-tts="s equals zero">$s=0$</span>) survives precisely because <span class="tts-math" data-tts="k equals one is congruent to p equals one mod two">$k=1\equiv p=1\pmod2$</span> — an <em>even</em> index there would force a trivial zero, an odd one need not vanish, and indeed <span class="tts-math" data-tts="L of khi comma zero equals minus B sub one khi, which is one half">$L(\chi,0)=-B_{1,\chi}=\tfrac12$</span>. This <span class="tts-math" data-tts="L of khi comma s">$L(\chi,s)$</span> is, up to the Euler factor at <span class="tts-math" data-tts="two">$2$</span>, the L-series whose product with <span class="tts-math" data-tts="zeta of s">$\zeta(s)$</span> is the Dedekind zeta of <span class="tts-math" data-tts="the field Q adjoin i">$\mathbb{Q}(i)$</span>.</p>
+</div>
+
+<h3 data-cid="ch07-680">Generalized Bernoulli numbers</h3>
+<p data-cid="ch07-690">The integer-point story generalizes. Define <span class="tts-math" data-tts="B sub k khi">$B_{k,\chi}$</span> by</p>
+<span class="tts-math" data-tts="F sub chi of t equals the sum from a equals one to m of chi of a, times t e to the a t, over e to the m t minus one, equals the sum over k of B sub k chi, times t to the k over k factorial">
+$$F_{\chi}(t)=\sum_{a=1}^{m}\chi(a)\frac{te^{at}}{e^{mt}-1}=\sum_{k=0}^{\infty}B_{k,\chi}\frac{t^{k}}{k!}.$$
+</span>
+
+<div class="box definition" data-cid="ch07-700">
+<span class="box-label">Theorem (2.9)</span>
+<p data-cid="ch07-710">For any integer <span class="tts-math" data-tts="k at least one">$k\ge1$</span> and nontrivial primitive <span class="tts-math" data-tts="khi">$\chi$</span>,</p>
+<span class="tts-math" data-tts="capital L of chi comma one minus k equals minus B sub k chi, over k">
+$$L(\chi,1-k)=-\frac{B_{k,\chi}}{k}.$$
+</span>
+<p data-cid="ch07-720">Moreover <span class="tts-math" data-tts="L of khi comma one minus k equals zero">$L(\chi,1-k)=0$</span> exactly when <span class="tts-math" data-tts="k not congruent to p mod two">$k\not\equiv p\pmod 2$</span> — the "trivial zeros" of the L-series — while the surviving values are nonzero. The <span class="tts-math" data-tts="B sub k khi">$B_{k,\chi}$</span> are algebraic numbers in <span class="tts-math" data-tts="the field Q adjoin the values of khi">$\mathbb{Q}(\chi)$</span>.</p>
+</div>
+
+<!-- ======================= 7.3 ======================= -->
+<h2 id="s7-3" data-cid="ch07-730">7.3 Theta Series</h2>
+
+<p data-cid="ch07-740">To do for a number field <span class="tts-math" data-tts="K">$K$</span> what we did for <span class="tts-math" data-tts="the rationals">$\mathbb{Q}$</span>, we must work over <strong>Minkowski space</strong> rather than <span class="tts-math" data-tts="the reals">$\mathbb{R}$</span>. This section sets up the higher-dimensional analogues of <span class="tts-math" data-tts="the complex numbers, the reals, the positive reals, the upper half-plane, absolute value, and log">$\mathbb{C},\mathbb{R},\mathbb{R}_+,\mathbb{H},|\,\cdot\,|,\log$</span>, and proves the master theta transformation formula via Poisson summation.</p>
+
+<p data-cid="ch07-750">Let <span class="tts-math" data-tts="X">$X$</span> be a finite set with an involution <span class="tts-math" data-tts="tau maps to tau bar">$\tau\mapsto\bar\tau$</span> (think <span class="tts-math" data-tts="X equals the set of embeddings of K into the complex numbers">$X=\operatorname{Hom}(K,\mathbb{C})$</span> with complex conjugation), <span class="tts-math" data-tts="n equals the size of X">$n=\#X$</span>. Form the <span class="tts-math" data-tts="the complex numbers">$\mathbb{C}$</span>-algebra <span class="tts-math" data-tts="the script C, equals the product over tau in X of C">$\mathbb{C}=\prod_{\tau\in X}\mathbb{C}$</span> of tuples <span class="tts-math" data-tts="z equals the tuple z sub tau">$z=(z_\tau)$</span>, with conjugation <span class="tts-math" data-tts="the tau component of z bar equals the conjugate of z sub tau bar">$(\bar z)_\tau=\bar z_{\bar\tau}$</span>. The fixed subalgebra <span class="tts-math" data-tts="the script R equals the set of z in script C with z bar equals z">$\mathbb{R}=\{z\in\mathbb{C}\mid \bar z=z\}$</span> is the Minkowski space <span class="tts-math" data-tts="Minkowski space K sub R">$K_{\mathbb{R}}$</span> when <span class="tts-math" data-tts="X equals the set of embeddings of K into the complex numbers">$X=\operatorname{Hom}(K,\mathbb{C})$</span>. We have trace and norm maps <span class="tts-math" data-tts="trace of z equals the sum over tau of z sub tau">$\operatorname{Tr}(z)=\sum_\tau z_\tau$</span>, <span class="tts-math" data-tts="capital N of z equals the product over tau of z sub tau">$N(z)=\prod_\tau z_\tau$</span>, a hermitian product <span class="tts-math" data-tts="angle bracket x comma y equals trace of x star y">$\langle x,y\rangle=\operatorname{Tr}(x^{*}y)$</span>, and an <strong>upper half-space</strong> <span class="tts-math" data-tts="the script H equals the set of z in script C with z equal to z star and imaginary part of z greater than zero">$\mathbb{H}=\{z\in\mathbb{C}\mid z=z^{*},\,\operatorname{Im}(z)&gt;0\}$</span>.</p>
+
+<div class="box pause" data-cid="ch07-760">
+<span class="box-label">Pause — keep the dictionary in mind</span>
+<p data-cid="ch07-770">Everything from §7.1 has a vector version: <span class="tts-math" data-tts="absolute value from the units of script R to the positive reals">$|\,\cdot\,|:\mathbb{R}^{*}\to\mathbb{R}_{+}^{*}$</span>, <span class="tts-math" data-tts="log from the positive reals to the trace-zero space">$\log:\mathbb{R}_{+}^{*}\to\mathbb{R}_{\pm}$</span>, powers <span class="tts-math" data-tts="z to the p equals the product over tau of z sub tau to the p sub tau">$z^{p}=\prod_\tau z_\tau^{p_\tau}$</span>, and so on. When <span class="tts-math" data-tts="n equals one">$n=1$</span> these collapse to the familiar one-variable notions. Neukirch urges memorizing this table — it is used constantly without comment.</p>
+</div>
+
+<div class="box example" data-cid="ch07-775">
+<span class="box-label">Example — the dictionary for <span class="tts-math" data-tts="K equals Q adjoin i">$K=\mathbb{Q}(i)$</span></span>
+<p data-cid="ch07-776">Take the smallest interesting case, <span class="tts-math" data-tts="K equals Q adjoin i">$K=\mathbb{Q}(i)$</span>, degree <span class="tts-math" data-tts="n equals two">$n=2$</span>. There are two embeddings into <span class="tts-math" data-tts="the complex numbers">$\mathbb{C}$</span>, <span class="tts-math" data-tts="tau sending i to i, and tau bar sending i to minus i">$\tau:i\mapsto i$</span> and <span class="tts-math" data-tts="tau bar sending i to minus i">$\bar\tau:i\mapsto-i$</span>, swapped by conjugation — so <span class="tts-math" data-tts="X equals the pair tau and tau bar">$X=\{\tau,\bar\tau\}$</span> and this is <em>one complex place</em> (<span class="tts-math" data-tts="r one equals zero, r two equals one">$r_1=0,\ r_2=1$</span>). The big algebra is <span class="tts-math" data-tts="script C equals C times C">$\mathbb{C}\times\mathbb{C}$</span>, a pair <span class="tts-math" data-tts="z equals z sub tau, z sub tau bar">$z=(z_\tau,z_{\bar\tau})$</span>. The conjugation rule <span class="tts-math" data-tts="z bar has tau component equal to the conjugate of z sub tau bar">$(\bar z)_\tau=\overline{z_{\bar\tau}}$</span> swaps and conjugates the two slots, so the fixed Minkowski space is</p>
+<span class="tts-math" data-tts="K sub R equals the set of pairs w and w bar, for w in C, which is isomorphic to C, which is isomorphic to R two">
+$$K_{\mathbb{R}}=\{(w,\bar w)\mid w\in\mathbb{C}\}\;\cong\;\mathbb{C}\;\cong\;\mathbb{R}^{2}.$$
+</span>
+<p data-cid="ch07-778">On such a point <span class="tts-math" data-tts="the trace is z sub tau plus z sub tau bar, equals w plus w bar, equals two times the real part of w">$\operatorname{Tr}(z)=z_\tau+z_{\bar\tau}=w+\bar w=2\operatorname{Re}(w)$</span> and the norm is <span class="tts-math" data-tts="N of z equals z sub tau times z sub tau bar, equals w times w bar, equals the absolute value of w squared">$N(z)=z_\tau z_{\bar\tau}=w\bar w=|w|^{2}$</span> — exactly the field trace and norm of <span class="tts-math" data-tts="Q adjoin i">$\mathbb{Q}(i)$</span> (e.g. for <span class="tts-math" data-tts="the element a plus b i">$a+bi$</span>, trace <span class="tts-math" data-tts="two a">$2a$</span>, norm <span class="tts-math" data-tts="a squared plus b squared">$a^2+b^2$</span>). The hermitian product <span class="tts-math" data-tts="angle bracket x comma y equals trace of x star y">$\langle x,y\rangle=\operatorname{Tr}(x^{*}y)$</span> is the standard one on <span class="tts-math" data-tts="R two">$\mathbb{R}^{2}$</span>. And the upper half-space <span class="tts-math" data-tts="script H">$\mathbb{H}$</span> here is a single copy of the classical upper half-plane <span class="tts-math" data-tts="positive imaginary part">$\operatorname{Im}&gt;0$</span> — one complex place contributes one ordinary <span class="tts-math" data-tts="upper half-plane">$\mathbb{H}$</span>. So for <span class="tts-math" data-tts="Q adjoin i">$\mathbb{Q}(i)$</span> the whole "Minkowski space" apparatus is just <span class="tts-math" data-tts="C">$\mathbb{C}$</span> with its usual geometry.</p>
+</div>
+
+<h3 data-cid="ch07-780">Poisson summation</h3>
+<p data-cid="ch07-790">A <strong>Schwartz function</strong> on a euclidean space <span class="tts-math" data-tts="the reals">$\mathbb{R}$</span> is a smooth function decaying (with all derivatives) faster than any power. Its Fourier transform is <span class="tts-math" data-tts="f hat of y equals the integral over script R of f of x, times e to the minus two pi i, times the inner product x comma y, d x">$\hat f(y)=\int_{\mathbb{R}}f(x)e^{-2\pi i\langle x,y\rangle}dx$</span>.</p>
+
+<div class="box definition" data-cid="ch07-800">
+<span class="box-label">Proposition (3.1) — the Gaussian is self-dual</span>
+<p data-cid="ch07-810"><span class="tts-math" data-tts="h of x equals e to the minus pi, inner product of x with x">$h(x)=e^{-\pi\langle x,x\rangle}$</span> equals its own Fourier transform. For a linear map <span class="tts-math" data-tts="A">$A$</span> and <span class="tts-math" data-tts="f sub A of x equals f of A x">$f_{A}(x)=f(Ax)$</span>, one has <span class="tts-math" data-tts="f sub A hat of y equals one over the absolute value of determinant A, times f hat of the transpose A inverse y">$\widehat{f_{A}}(y)=\frac{1}{|\det A|}\hat f({}^{t}\!A^{-1}y)$</span>.</p>
+</div>
+
+<div class="box definition" data-cid="ch07-820">
+<span class="box-label">Theorem (3.2) — Poisson summation formula</span>
+<p data-cid="ch07-830">For a complete lattice <span class="tts-math" data-tts="a lattice gamma inside script R">$\Gamma\subset\mathbb{R}$</span> with dual lattice <span class="tts-math" data-tts="gamma prime equals the set of g prime with the inner product g comma g prime an integer for all g in gamma">$\Gamma'=\{g'\mid\langle g,g'\rangle\in\mathbb{Z}\ \forall g\in\Gamma\}$</span>, and any Schwartz function <span class="tts-math" data-tts="f">$f$</span>,</p>
+<span class="tts-math" data-tts="the sum over g in gamma of f of g, equals one over the volume of gamma, times the sum over g prime in gamma prime of f hat of g prime">
+$$\sum_{g\in\Gamma}f(g)=\frac{1}{\operatorname{vol}(\Gamma)}\sum_{g'\in\Gamma'}\hat f(g').$$
+</span>
+</div>
+
+<p data-cid="ch07-840">Poisson summation is itself proved by expanding the periodization <span class="tts-math" data-tts="the sum over k in gamma of f of x plus k">$\sum_{k\in\Gamma}f(x+k)$</span> in a Fourier series. Applying it to a Gaussian along the lattice <span class="tts-math" data-tts="root mu times the integers">$\sqrt{\mu}\,\mathbb{Z}$</span> and tracking the dual lattice gives the general theta transformation. With <span class="tts-math" data-tts="theta sub mu of a comma b comma z equals the sum over g in mu Z of e to the pi i, times a plus g, squared, times z, plus two pi i b g">$\theta_{\mu}(a,b,z)=\sum_{g\in\mu\mathbb{Z}}e^{\pi i(a+g)^{2}z+2\pi i bg}$</span>:</p>
+
+<div class="box definition" data-cid="ch07-850">
+<span class="box-label">Theorem (3.6, schematic) — master theta transformation</span>
+<p data-cid="ch07-860">For admissible parameters one has a transformation law of the shape</p>
+<span class="tts-math" data-tts="theta of minus one over z equals a constant of absolute value one, times the determinant factor, the quantity z over i to the power p plus one half, times the dual theta of z">
+$$\theta_{\Gamma}(-1/z)=\frac{1}{\operatorname{vol}(\Gamma)}\,(z/i)^{p+1/2}\,\theta_{\Gamma'}(z),$$
+</span>
+<p data-cid="ch07-870">a lattice <span class="tts-math" data-tts="the gamma function">$\Gamma$</span> becoming its dual <span class="tts-math" data-tts="the dual lattice gamma prime">$\Gamma'$</span>, the volume entering as a normalizing factor. Propositions (1.5) and (2.3) are the <span class="tts-math" data-tts="n equals one">$n=1$</span> specializations promised earlier. <em>This single formula is the source of every functional equation in the chapter.</em></p>
+</div>
+
+<!-- ======================= 7.4 ======================= -->
+<h2 id="s7-4" data-cid="ch07-880">7.4 The Higher-dimensional Gamma Function</h2>
+
+<p data-cid="ch07-890">Paired with the higher theta series is a higher gamma factor, the "Euler factor at infinity" for a number field. To the <span class="tts-math" data-tts="the Galois group of C over R">$G(\mathbb{C}\mid\mathbb{R})$</span>-set <span class="tts-math" data-tts="X equals the set of embeddings of K into the complex numbers">$X=\operatorname{Hom}(K,\mathbb{C})$</span> we attach the L-function</p>
+<span class="tts-math" data-tts="capital L sub X of s equals capital N of pi to the minus s over two, times gamma sub X of s over two">
+$$L_{X}(s)=N(\pi^{-s/2})\,\Gamma_{X}(s/2),$$
+</span>
+<p data-cid="ch07-900">where <span class="tts-math" data-tts="gamma sub X of s equals the integral over the positive cone of the norm of e to the minus y times y to the s, times d y over y">$\Gamma_{X}(s)=\int_{\mathbb{R}_{+}^{*}}N(e^{-y}y^{s})\,\frac{dy}{y}$</span> is the gamma integral over the positive cone of Minkowski space. Concretely it factors into one gamma factor per archimedean place.</p>
+
+<div class="box definition" data-cid="ch07-910">
+<span class="box-label">The two local gamma factors (4.3)</span>
+<p data-cid="ch07-920">Write <span class="tts-math" data-tts="capital L sub R of s equals pi to the minus s over two, times gamma of s over two">$L_{\mathbb{R}}(s)=\pi^{-s/2}\Gamma(s/2)$</span> for a <em>real</em> place and <span class="tts-math" data-tts="capital L sub C of s equals two times two pi to the minus s, times gamma of s">$L_{\mathbb{C}}(s)=2(2\pi)^{-s}\Gamma(s)$</span> for a <em>complex</em> place. For a field with <span class="tts-math" data-tts="r one">$r_{1}$</span> real and <span class="tts-math" data-tts="r two">$r_{2}$</span> complex places,</p>
+<span class="tts-math" data-tts="capital L sub X of s equals capital L sub R of s to the r one, times capital L sub C of s to the r two">
+$$L_{X}(s)=L_{\mathbb{R}}(s)^{r_{1}}\,L_{\mathbb{C}}(s)^{r_{2}}.$$
+</span>
+<p data-cid="ch07-930">Legendre's duplication formula is precisely the statement <span class="tts-math" data-tts="L sub R of s times L sub R of s plus one, equals L sub C of s">$L_{\mathbb{R}}(s)L_{\mathbb{R}}(s+1)=L_{\mathbb{C}}(s)$</span> — a complex place "is" two real places glued together. This compatibility is exactly what makes the Artin functional equation work in §7.12.</p>
+</div>
+
+<!-- ======================= 7.5 ======================= -->
+<h2 id="s7-5" data-cid="ch07-940">7.5 The Dedekind Zeta Function</h2>
+
+<div class="box definition" data-cid="ch07-950">
+<span class="box-label">Definition (5.1) / Proposition (5.2)</span>
+<p data-cid="ch07-960">The <strong>Dedekind zeta function</strong> of a number field <span class="tts-math" data-tts="K">$K$</span> is</p>
+<span class="tts-math" data-tts="zeta sub K of s equals the sum over integral ideals a, of one over the absolute norm of a, to the s, equals the product over prime ideals p of one over, one minus the absolute norm of p to the minus s">
+$$\zeta_{K}(s)=\sum_{\mathfrak{a}}\frac{1}{\mathfrak{N}(\mathfrak{a})^{s}}=\prod_{\mathfrak{p}}\frac{1}{1-\mathfrak{N}(\mathfrak{p})^{-s}},$$
+</span>
+<p data-cid="ch07-970">where <span class="tts-math" data-tts="the ideal a">$\mathfrak{a}$</span> runs over integral ideals, <span class="tts-math" data-tts="the prime ideal p">$\mathfrak{p}$</span> over prime ideals, and <span class="tts-math" data-tts="the absolute norm">$\mathfrak{N}$</span> is the absolute norm. It converges for <span class="tts-math" data-tts="real part of s greater than one">$\operatorname{Re}(s)&gt;1$</span>; the Euler product is again unique ideal factorization. For <span class="tts-math" data-tts="K equals the rationals">$K=\mathbb{Q}$</span> it is <span class="tts-math" data-tts="zeta of s">$\zeta(s)$</span>.</p>
+</div>
+
+<div class="box intuition" data-cid="ch07-980">
+<span class="box-label">The new ingredient: units and the class group</span>
+<p data-cid="ch07-990">For <span class="tts-math" data-tts="the rationals">$\mathbb{Q}$</span> each integral ideal had one positive generator. For general <span class="tts-math" data-tts="K">$K$</span>, two new arithmetic facts intervene. First, ideals come in <strong>ideal classes</strong>, so we split <span class="tts-math" data-tts="zeta sub K equals the sum over ideal classes of the partial zeta of that class">$\zeta_K=\sum_{\mathfrak{K}}\zeta(\mathfrak{K},s)$</span> over the class group <span class="tts-math" data-tts="the class group of K">$Cl_K$</span>. Second — and this is the crux — within a class, ideals correspond to lattice points <em>up to units</em>. By Lemma (5.3) the integral ideals in the class of <span class="tts-math" data-tts="the inverse ideal a inverse">$\mathfrak{a}^{-1}$</span> biject with orbits <span class="tts-math" data-tts="the nonzero elements of a modulo the units">$\mathfrak{a}^{*}/\mathcal{o}^{*}$</span>. So Dirichlet's unit theorem now enters the analysis essentially: we integrate over a <strong>fundamental domain</strong> <span class="tts-math" data-tts="the fundamental domain F">$F$</span> for the unit action on the norm-one surface, and its volume is the <strong>regulator</strong>.</p>
+</div>
+
+<div class="box intuition" data-cid="ch07-995">
+<span class="box-label">Intuition — why the volume <em>is</em> the regulator (real quadratic case)</span>
+<p data-cid="ch07-996">The phrase "ideals correspond to lattice points up to units, and the volume is the regulator" compresses Dirichlet's unit theorem and the geometry of numbers into one line. Unpack it in the simplest nontrivial case, a real quadratic field <span class="tts-math" data-tts="K equals Q adjoin root d">$K=\mathbb{Q}(\sqrt d)$</span> (<span class="tts-math" data-tts="d greater than zero">$d&gt;0$</span>) with one fundamental unit <span class="tts-math" data-tts="epsilon greater than one">$\varepsilon&gt;1$</span>. The elements of an ideal <span class="tts-math" data-tts="the ideal a">$\mathfrak a$</span>, sent into Minkowski space by its two real embeddings, form a <strong>lattice</strong> in the plane. Counting ideals in a class means counting these lattice points — but only <em>up to units</em>, and the units are the powers <span class="tts-math" data-tts="epsilon to the k">$\varepsilon^{k}$</span> of the fundamental unit.</p>
+<p data-cid="ch07-997">A unit acts on a point <span class="tts-math" data-tts="x">$x$</span> by <span class="tts-math" data-tts="x maps to epsilon x">$x\mapsto\varepsilon x$</span>: it scales the first coordinate by <span class="tts-math" data-tts="epsilon">$\varepsilon$</span> and the second by its conjugate <span class="tts-math" data-tts="epsilon prime">$\varepsilon'$</span> (with <span class="tts-math" data-tts="epsilon times epsilon prime equals plus or minus one">$\varepsilon\varepsilon'=\pm1$</span>). In logarithmic coordinates <span class="tts-math" data-tts="log of the absolute values">$(\log|x_1|,\log|x_2|)$</span> this multiplication becomes <em>translation</em> by the vector <span class="tts-math" data-tts="log absolute epsilon, log absolute epsilon prime">$(\log|\varepsilon|,\log|\varepsilon'|)$</span>. So summing over <span class="tts-math" data-tts="a star modulo o star">$\mathfrak a^{*}/\mathcal o^{*}$</span> — one representative per unit-orbit — is exactly summing over <em>one strip</em>, a fundamental domain for that translation, between the line and its <span class="tts-math" data-tts="epsilon">$\varepsilon$</span>-shifted copy. The log-width of that strip is <span class="tts-math" data-tts="the absolute value of log absolute epsilon">$|\log|\varepsilon||$</span> — which is precisely the <strong>regulator</strong> <span class="tts-math" data-tts="R">$R$</span> of a real quadratic field. That is the whole content of "the volume of the fundamental domain is the regulator": the regulator measures how big a slice you must take before the units start repeating.</p>
+</div>
+
+<p data-cid="ch07-1000">Tracking discriminant, regulator, roots of unity and infinite places, the partial completed zeta function <span class="tts-math" data-tts="capital Z of script K comma s equals the absolute discriminant to the s over two, times L sub X of s, times zeta of script K comma s">$Z(\mathfrak{K},s)=|d_{K}|^{s/2}L_{X}(s)\,\zeta(\mathfrak{K},s)$</span> becomes a Mellin transform of a higher theta series, and the Mellin principle delivers the functional equation. The two volume computations needed are: <span class="tts-math" data-tts="the volume of F equals two to the r minus one, times the regulator R">$\operatorname{vol}(F)=2^{r-1}R$</span> (<span class="tts-math" data-tts="the regulator R">$R$</span> = regulator, <span class="tts-math" data-tts="r equals r one plus r two">$r=r_1+r_2$</span> infinite places, Lemma 5.6), and the dual of the lattice <span class="tts-math" data-tts="the ideal a">$\mathfrak{a}$</span> is <span class="tts-math" data-tts="the inverse of a times the different">$(\mathfrak{a}\mathfrak{d})^{-1}$</span> with <span class="tts-math" data-tts="the different">$\mathfrak{d}$</span> the different (Lemma 5.7).</p>
+
+<div class="box definition" data-cid="ch07-1010">
+<span class="box-label">Corollary (5.10) — functional equation</span>
+<p data-cid="ch07-1020">The completed Dedekind zeta function <span class="tts-math" data-tts="capital Z sub K of s equals the absolute discriminant to the s over two, times L sub X of s, times zeta sub K of s">$Z_{K}(s)=|d_{K}|^{s/2}L_{X}(s)\zeta_{K}(s)$</span> continues to <span class="tts-math" data-tts="the complex plane minus the points zero and one">$\mathbb{C}\setminus\{0,1\}$</span> and satisfies</p>
+<span class="tts-math" data-tts="capital Z sub K of s equals capital Z sub K of one minus s">
+$$Z_{K}(s)=Z_{K}(1-s),$$
+</span>
+<p data-cid="ch07-1030">with simple poles at <span class="tts-math" data-tts="zero">$0$</span> and <span class="tts-math" data-tts="one">$1$</span> of residue <span class="tts-math" data-tts="minus or plus two to the r, times h R over w">$\mp\,2^{r}hR/w$</span>, where <span class="tts-math" data-tts="the class number h">$h$</span> is the class number and <span class="tts-math" data-tts="the number of roots of unity w">$w$</span> the number of roots of unity.</p>
+</div>
+
+<div class="box definition" data-cid="ch07-1040">
+<span class="box-label">Corollary (5.11) — the analytic class number formula</span>
+<p data-cid="ch07-1050"><span class="tts-math" data-tts="zeta sub K of s">$\zeta_{K}(s)$</span> continues to <span class="tts-math" data-tts="the complex plane minus the point one">$\mathbb{C}\setminus\{1\}$</span> with a simple pole at <span class="tts-math" data-tts="s equals one">$s=1$</span> whose residue assembles <em>all</em> the basic invariants of <span class="tts-math" data-tts="K">$K$</span>:</p>
+<span class="tts-math" data-tts="the residue at s equals one of zeta sub K equals two to the r one, times two pi to the r two, times h R, over w, times the square root of the absolute discriminant">
+$$\operatorname*{Res}_{s=1}\zeta_{K}(s)=\frac{2^{r_{1}}(2\pi)^{r_{2}}\,hR}{w\,\sqrt{|d_{K}|}}.$$
+</span>
+</div>
+
+<div class="box example" data-cid="ch07-1060">
+<span class="box-label">Example — class number from the residue</span>
+<p data-cid="ch07-1070">For an imaginary quadratic field <span class="tts-math" data-tts="K equals Q adjoin root minus d">$K=\mathbb{Q}(\sqrt{-d})$</span> (<span class="tts-math" data-tts="d greater than zero">$d&gt;0$</span> squarefree) we have <span class="tts-math" data-tts="r one equals zero, r two equals one, regulator equals one">$r_1=0,\ r_2=1,\ R=1$</span> (no fundamental units beyond roots of unity), so the formula reads <span class="tts-math" data-tts="the residue equals two pi h over w root the absolute discriminant">$\operatorname{Res}_{s=1}\zeta_{K}=\frac{2\pi h}{w\sqrt{|d_{K}|}}$</span>. Combined with the factorization <span class="tts-math" data-tts="zeta sub K of s equals zeta of s times L of khi sub K comma s">$\zeta_K(s)=\zeta(s)L(\chi_K,s)$</span> (where <span class="tts-math" data-tts="khi sub K">$\chi_K$</span> is the quadratic character of <span class="tts-math" data-tts="K">$K$</span>) and the residue <span class="tts-math" data-tts="one">$1$</span> of <span class="tts-math" data-tts="zeta">$\zeta$</span> at <span class="tts-math" data-tts="one">$1$</span>, this becomes Dirichlet's class number formula <span class="tts-math" data-tts="h equals w root the absolute discriminant over two pi, times L of khi sub K comma one">$h=\frac{w\sqrt{|d_K|}}{2\pi}L(\chi_K,1)$</span> — an exact count of the class number from a special L-value.</p>
+</div>
+
+<h3 data-cid="ch07-1080">Cyclotomic fields and Dirichlet's prime number theorem</h3>
+<p data-cid="ch07-1090">The deepest payoff of §7.5 comes from factoring the Dedekind zeta of <span class="tts-math" data-tts="K equals Q adjoin the m-th roots of unity">$K=\mathbb{Q}(\mu_{m})$</span>.</p>
+
+<div class="box definition" data-cid="ch07-1100">
+<span class="box-label">Proposition (5.12) — factorization of <span class="tts-math" data-tts="the Dedekind zeta of Q adjoin the m-th roots of unity">$\zeta_{\mathbb{Q}(\mu_m)}$</span></span>
+<p data-cid="ch07-1110">For <span class="tts-math" data-tts="K equals Q adjoin the m-th roots of unity">$K=\mathbb{Q}(\mu_{m})$</span>,</p>
+<span class="tts-math" data-tts="zeta sub K of s equals G of s, times the product over Dirichlet characters chi mod m of capital L of chi comma s">
+$$\zeta_{K}(s)=G(s)\prod_{\chi}L(\chi,s),$$
+</span>
+<p data-cid="ch07-1120"><span class="tts-math" data-tts="khi">$\chi$</span> ranging over all Dirichlet characters mod <span class="tts-math" data-tts="m">$m$</span> and <span class="tts-math" data-tts="G of s equals a finite product over primes dividing m">$G(s)=\prod_{p\mid m}(\cdots)$</span> a finite correction. The proof is the decomposition law: the order <span class="tts-math" data-tts="f">$f$</span> of <span class="tts-math" data-tts="p">$p$</span> in <span class="tts-math" data-tts="the units mod m">$(\mathbb{Z}/m\mathbb{Z})^{*}$</span> controls how the Euler factor at <span class="tts-math" data-tts="p">$p$</span> splits, matching the product of <span class="tts-math" data-tts="L">$L$</span>-factors via the duality <span class="tts-math" data-tts="the decomposition group is the dual of the cyclic group generated by p">$G_p\cong\hat{\langle p\rangle}$</span>.</p>
+</div>
+
+<p data-cid="ch07-1130">Comparing the simple poles at <span class="tts-math" data-tts="s equals one">$s=1$</span> on both sides forces every nontrivial factor to be nonzero there:</p>
+
+<div class="box definition" data-cid="ch07-1140">
+<span class="box-label">Proposition (5.13)</span>
+<p data-cid="ch07-1150">For every nontrivial Dirichlet character <span class="tts-math" data-tts="khi">$\chi$</span>, <span class="tts-math" data-tts="L of khi comma one is not zero">$\;L(\chi,1)\ne0$</span>.</p>
+</div>
+
+<div class="box definition" data-cid="ch07-1160">
+<span class="box-label">Theorem (5.14) — Dirichlet's prime number theorem</span>
+<p data-cid="ch07-1170">Every arithmetic progression <span class="tts-math" data-tts="a, a plus or minus m, a plus or minus two m, and so on">$a,\,a\pm m,\,a\pm 2m,\dots$</span> with <span class="tts-math" data-tts="a and m coprime">$(a,m)=1$</span> contains infinitely many primes.</p>
+</div>
+
+<p data-cid="ch07-1180">The proof is the prototype of all density arguments: <span class="tts-math" data-tts="log L of khi comma s is asymptotic to the sum over p of khi of p, times p to the minus s">$\log L(\chi,s)\sim\sum_{p}\chi(p)p^{-s}$</span> near <span class="tts-math" data-tts="s equals one">$s=1$</span>. Multiply by <span class="tts-math" data-tts="khi bar of a">$\overline{\chi}(a)$</span>, sum over characters, and use orthogonality <span class="tts-math" data-tts="one over phi of m, times the sum over khi of khi bar of a times khi of p, equals one when p is congruent to a and zero otherwise">$\frac1{\varphi(m)}\sum_\chi\overline\chi(a)\chi(p)=\mathbf 1_{p\equiv a}$</span>. The trivial character makes <span class="tts-math" data-tts="log L of the principal character goes to infinity">$\log L(\chi^0,s)\to\infty$</span> (the pole of <span class="tts-math" data-tts="zeta">$\zeta$</span>), while <span class="tts-math" data-tts="L of khi comma one is not zero">$L(\chi,1)\ne0$</span> keeps the others bounded. So <span class="tts-math" data-tts="the sum over primes congruent to a mod m of p to the minus s, goes to infinity">$\sum_{p\equiv a(m)}p^{-s}\to\infty$</span> — infinitely many such primes.</p>
+
+<!-- ======================= 7.6 ======================= -->
+<h2 id="s7-6" data-cid="ch07-1190">7.6 Hecke Characters</h2>
+
+<p data-cid="ch07-1200">We now seek the most general characters <span class="tts-math" data-tts="khi">$\chi$</span> on ideals whose L-series still satisfies a functional equation. Hecke's answer is the <strong>Größencharakter</strong>. Fix an integral ideal <span class="tts-math" data-tts="the modulus m">$\mathfrak{m}$</span> and let <span class="tts-math" data-tts="the group of ideals prime to m">$J^{\mathfrak{m}}$</span> be the group of ideals prime to <span class="tts-math" data-tts="the modulus m">$\mathfrak{m}$</span>.</p>
+
+<div class="box definition" data-cid="ch07-1210">
+<span class="box-label">Definition (6.1) — Größencharakter (Hecke character)</span>
+<p data-cid="ch07-1220">A <strong>Größencharakter mod <span class="tts-math" data-tts="the modulus m">$\mathfrak{m}$</span></strong> is a character <span class="tts-math" data-tts="chi from J to the m, to the circle group S one">$\chi:J^{\mathfrak{m}}\to S^{1}$</span> for which there exist characters <span class="tts-math" data-tts="chi sub f of the units of o mod m">$\chi_{f}:(\mathcal{o}/\mathfrak{m})^{*}\to S^{1}$</span> and <span class="tts-math" data-tts="chi sub infinity of the unit group of script R">$\chi_{\infty}:\mathbb{R}^{*}\to S^{1}$</span> with</p>
+<span class="tts-math" data-tts="chi of the principal ideal a equals chi sub f of a, times chi sub infinity of a">
+$$\chi\big((a)\big)=\chi_{f}(a)\,\chi_{\infty}(a)$$
+</span>
+<p data-cid="ch07-1230">for every integer <span class="tts-math" data-tts="a">$a$</span> prime to <span class="tts-math" data-tts="the modulus m">$\mathfrak{m}$</span>. The two pieces are a <strong>finite part</strong> <span class="tts-math" data-tts="the finite part khi sub f">$\chi_f$</span> (a Dirichlet-type character mod <span class="tts-math" data-tts="the modulus m">$\mathfrak m$</span>) and an <strong>infinite part</strong> <span class="tts-math" data-tts="the infinite part khi sub infinity">$\chi_\infty$</span> (an archimedean character on Minkowski space).</p>
+</div>
+
+<div class="box intuition" data-cid="ch07-1240">
+<span class="box-label">Intuition — two specializations you already know</span>
+<p data-cid="ch07-1250">If <span class="tts-math" data-tts="khi sub infinity equals one">$\chi_\infty=1$</span>, the Größencharakter is just a generalized Dirichlet character — a character of the ray class group <span class="tts-math" data-tts="the ray class group">$J^{\mathfrak m}/P^{\mathfrak m}$</span>. If also <span class="tts-math" data-tts="khi sub f equals one">$\chi_f=1$</span> and <span class="tts-math" data-tts="khi equals one">$\chi=1$</span>, the L-series is the Dedekind zeta function. So Größencharaktere are <em>exactly</em> the bridge between §7.2 and §7.5. They are determined uniquely by <span class="tts-math" data-tts="the infinite part khi sub infinity">$\chi_\infty$</span> (the ideals <span class="tts-math" data-tts="a congruent to one mod m">$a\equiv1\bmod\mathfrak m$</span> are dense in <span class="tts-math" data-tts="the units of script R">$\mathbb R^*$</span>), and the compatibility <span class="tts-math" data-tts="khi sub f of epsilon, times khi sub infinity of epsilon, equals one">$\chi_f(\varepsilon)\chi_\infty(\varepsilon)=1$</span> on units <span class="tts-math" data-tts="epsilon a unit">$\varepsilon\in\mathcal o^*$</span> is the one constraint linking the two halves.</p>
+<p data-cid="ch07-1255">What does <span class="tts-math" data-tts="khi sub infinity">$\chi_\infty$</span> actually look like? Over <span class="tts-math" data-tts="the rationals">$\mathbb{Q}$</span> there is one real place, so a character of <span class="tts-math" data-tts="the units of the reals">$\mathbb{R}^*$</span> is built from just two ingredients: the <em>sign</em> and the <em>size</em>. The sign character is <span class="tts-math" data-tts="khi sub infinity of x equals sign of x to the p">$\chi_\infty(x)=\operatorname{sign}(x)^{p}$</span> with <span class="tts-math" data-tts="p in zero one">$p\in\{0,1\}$</span> — exactly the even/odd parity exponent from §7.2. The size character is <span class="tts-math" data-tts="the absolute value of x to the i s">$\chi_\infty(x)=|x|^{is}$</span> for a real <span class="tts-math" data-tts="s">$s$</span>, a continuous frequency. So over <span class="tts-math" data-tts="the rationals">$\mathbb{Q}$</span> the Größencharaktere are essentially the Dirichlet characters again (times an uninteresting <span class="tts-math" data-tts="the absolute value of x to the i s">$|x|^{is}$</span> twist). The genuinely <em>new</em> Hecke characters — the ones with no Dirichlet analogue — first appear on <strong>imaginary quadratic fields</strong>, where the single complex place lets <span class="tts-math" data-tts="khi sub infinity">$\chi_\infty$</span> wind around the unit circle nontrivially; these are the celebrated <strong>CM characters</strong> attached to elliptic curves with complex multiplication.</p>
+</div>
+
+<p data-cid="ch07-1260">A Größencharakter is <strong>primitive</strong> if its finite part <span class="tts-math" data-tts="the finite part khi sub f">$\chi_f$</span> does not factor through <span class="tts-math" data-tts="the units of o mod m prime">$(\mathcal o/\mathfrak m')^*$</span> for a proper divisor; the least such <span class="tts-math" data-tts="the conductor f">$\mathfrak f$</span> is the <strong>conductor</strong> (6.2–6.3). Hecke's Gauss sums (Definition 6.3) generalize §7.2: for <span class="tts-math" data-tts="y in the inverse of m times the different">$y\in\mathfrak m^{-1}\mathfrak d^{-1}$</span>,</p>
+<span class="tts-math" data-tts="tau sub m of chi f comma y equals the sum over x mod m prime to m, of chi sub f of x, times e to the two pi i, trace of x y">
+$$\tau_{\mathfrak m}(\chi_{f},y)=\sum_{\substack{x\bmod\mathfrak m\\(x,\mathfrak m)=1}}\chi_{f}(x)\,e^{2\pi i\operatorname{Tr}(xy)},$$
+</span>
+
+<div class="box definition" data-cid="ch07-1270">
+<span class="box-label">Theorem (6.4) — Gauss sum identities</span>
+<p data-cid="ch07-1280">For primitive <span class="tts-math" data-tts="the finite part khi sub f">$\chi_f$</span>: <span class="tts-math" data-tts="tau sub m of chi f comma a y equals chi f bar of a, times tau sub m of chi f comma y, when a is prime to m, and zero otherwise">$\tau_{\mathfrak m}(\chi_f,ay)=\overline{\chi_f}(a)\tau_{\mathfrak m}(\chi_f,y)$</span> (and <span class="tts-math" data-tts="zero">$0$</span> if <span class="tts-math" data-tts="a not prime to m">$(a,\mathfrak m)\ne1$</span>), with absolute value <span class="tts-math" data-tts="the absolute value of tau sub m of chi f comma y equals the square root of the absolute norm of m">$|\tau_{\mathfrak m}(\chi_f,y)|=\sqrt{\mathfrak N(\mathfrak m)}$</span> when <span class="tts-math" data-tts="y times m times the different is prime to m">$(y\mathfrak m\mathfrak d,\mathfrak m)=1$</span>.</p>
+</div>
+
+<p data-cid="ch07-1290">The proof of <span class="tts-math" data-tts="the absolute value of tau equals the square root of the absolute norm of m">$|\tau|=\sqrt{\mathfrak N(\mathfrak m)}$</span> uses a Möbius-function argument (6.5–6.6) over ideals — the exact analogue of the geometric-series cancellation in (2.6). Conceptually, Größencharaktere are characters of the <strong>idele class group</strong>, the viewpoint that makes Tate's thesis possible; Neukirch flags this but proves everything by Hecke's classical theta method.</p>
+
+<!-- ======================= 7.7 ======================= -->
+<h2 id="s7-7" data-cid="ch07-1300">7.7 Theta Series of Algebraic Number Fields</h2>
+
+<p data-cid="ch07-1310">This is the technical heart, where the theta machinery is assembled over <span class="tts-math" data-tts="K">$K$</span>. One obstacle: a general ideal <span class="tts-math" data-tts="the ideal a">$\mathfrak a$</span> has no single generator. Hecke's device — <strong>ideal numbers</strong> — restores generators by enlarging <span class="tts-math" data-tts="the nonzero elements of K">$K^{*}$</span>.</p>
+
+<div class="box definition" data-cid="ch07-1320">
+<span class="box-label">Proposition (7.1) — ideal numbers</span>
+<p data-cid="ch07-1330">There is a group <span class="tts-math" data-tts="K tilde star inside the nonzero complex numbers">$\widetilde{K}^{*}\subset\mathbb{C}^{*}$</span> containing <span class="tts-math" data-tts="the nonzero elements of K">$K^{*}$</span>, with a surjection <span class="tts-math" data-tts="K tilde star surjecting onto the ideal group J">$\widetilde{K}^{*}\twoheadrightarrow J$</span> (onto <em>all</em> fractional ideals) extending <span class="tts-math" data-tts="a maps to the principal ideal a">$a\mapsto(a)$</span>, such that <span class="tts-math" data-tts="the absolute value of a is a positive real">$|a|\in\mathbb{R}_{+}^{*}$</span> and <span class="tts-math" data-tts="the absolute norm of the ideal a equals the absolute value of the norm of a">$\mathfrak{N}((a))=|N(a)|$</span> for all <span class="tts-math" data-tts="a in K tilde star">$a\in\widetilde K^*$</span>. The kernel is still <span class="tts-math" data-tts="the unit group">$\mathcal o^*$</span>, so <span class="tts-math" data-tts="K tilde star modulo K star is isomorphic to ideals modulo principal ideals, the class group">$\widetilde K^*/K^*\cong J/P=Cl_K$</span>.</p>
+</div>
+
+<p data-cid="ch07-1340">Concretely: pick ideals <span class="tts-math" data-tts="ideals b one through b r">$\mathfrak b_1,\dots,\mathfrak b_r$</span> generating the class group, choose formal roots <span class="tts-math" data-tts="b sub i">$b_i$</span> of generators of <span class="tts-math" data-tts="b sub i to the h sub i">$\mathfrak b_i^{h_i}$</span>, and adjoin them. Now every ideal "has a generator" <span class="tts-math" data-tts="a">$a$</span> (an <strong>ideal number</strong>), unique up to units.</p>
+
+<div class="box example" data-cid="ch07-1345">
+<span class="box-label">Example — an ideal number in <span class="tts-math" data-tts="Q adjoin root minus five">$\mathbb{Q}(\sqrt{-5})$</span></span>
+<p data-cid="ch07-1346">The point of "ideal numbers" is easiest to see where ideals genuinely fail to be principal. Take <span class="tts-math" data-tts="K equals Q adjoin root minus five">$K=\mathbb{Q}(\sqrt{-5})$</span>, which has class number <span class="tts-math" data-tts="two">$2$</span>. The prime <span class="tts-math" data-tts="p equals the ideal generated by two and one plus root minus five">$\mathfrak p=(2,\,1+\sqrt{-5})$</span> is <em>not</em> principal — there is no single algebraic number generating it. But its square is: a short computation gives <span class="tts-math" data-tts="p squared equals the ideal generated by two">$\mathfrak p^{2}=(2)$</span>, an honest principal ideal. So <span class="tts-math" data-tts="p">$\mathfrak p$</span> has order <span class="tts-math" data-tts="two">$2$</span> in the class group, matching <span class="tts-math" data-tts="h equals two">$h=2$</span>.</p>
+<p data-cid="ch07-1347">Hecke's device says: since <span class="tts-math" data-tts="p squared">$\mathfrak p^{2}$</span> is generated by <span class="tts-math" data-tts="two">$2$</span>, just <em>adjoin a square root of that generator</em>, the formal number <span class="tts-math" data-tts="a equals root two">$a=\sqrt2$</span>, to <span class="tts-math" data-tts="K star">$K^{*}$</span>. This <span class="tts-math" data-tts="a">$a$</span> is the <strong>ideal number</strong> generating <span class="tts-math" data-tts="p">$\mathfrak p$</span>: it lives in the enlarged group <span class="tts-math" data-tts="K tilde star">$\widetilde K^{*}\subset\mathbb{C}^{*}$</span>, it maps to <span class="tts-math" data-tts="p">$\mathfrak p$</span> under <span class="tts-math" data-tts="K tilde star onto J">$\widetilde K^{*}\twoheadrightarrow J$</span>, and it has the right size, <span class="tts-math" data-tts="the absolute norm of p equals two equals the absolute value of the norm of root two">$\mathfrak N(\mathfrak p)=2=|N(\sqrt2)|$</span>. The non-principal ideal now "has a generator", and theta sums can run over elements again — exactly as they did over <span class="tts-math" data-tts="the rationals">$\mathbb{Q}$</span>.</p>
+</div>
+
+<p data-cid="ch07-1348">One builds the residue group <span class="tts-math" data-tts="the units of o tilde mod m">$(\widetilde{\mathcal o}/\mathfrak m)^{*}$</span> fitting in an exact sequence (7.3)</p>
+<span class="tts-math" data-tts="one goes to the units of o mod m, goes to the units of o tilde mod m, goes to the class group J over P, goes to one">
+$$1\to(\mathcal o/\mathfrak m)^{*}\to(\widetilde{\mathcal o}/\mathfrak m)^{*}\to J/P\to1.$$
+</span>
+
+<p data-cid="ch07-1350">For an admissible exponent <span class="tts-math" data-tts="p equals the tuple p sub tau">$p=(p_\tau)$</span> and a character <span class="tts-math" data-tts="khi">$\chi$</span>, the <strong>Hecke theta series</strong> is</p>
+<span class="tts-math" data-tts="theta sub p of chi comma z equals the sum over ideal integers a, of chi of a, times capital N of a to the p, times e to the pi i, inner product of a z over the absolute value of m d, with a">
+$$\theta_{p}(\chi,z)=\sum_{a\in\widetilde{\mathcal o}\cup\{0\}}\chi(a)\,N(a^{p})\,e^{\pi i\langle az/|md|,\,a\rangle}.$$
+</span>
+
+<div class="box definition" data-cid="ch07-1360">
+<span class="box-label">Theorem (7.7) — the master transformation over <span class="tts-math" data-tts="K">$K$</span></span>
+<p data-cid="ch07-1370">For a primitive character <span class="tts-math" data-tts="khi">$\chi$</span>,</p>
+<span class="tts-math" data-tts="theta sub p of script K, chi, minus one over z equals capital W of chi p, times capital N of the quantity z over i to the power p plus one half, times theta sub p of script K prime, chi bar, z">
+$$\theta_{p}(\mathfrak K,\chi,-1/z)=W(\chi,p)\,N\big((z/i)^{p+\frac12}\big)\,\theta_{p}(\mathfrak K',\overline\chi,z),$$
+</span>
+<p data-cid="ch07-1380">where <span class="tts-math" data-tts="the partner class K prime">$\mathfrak K'$</span> is the class with <span class="tts-math" data-tts="K times K prime equals the class of m times the different">$\mathfrak K\mathfrak K'=[\mathfrak m\mathfrak d]$</span> and <span class="tts-math" data-tts="the absolute value of W of khi comma p equals one">$|W(\chi,p)|=1$</span> is built from the Gauss sum <span class="tts-math" data-tts="the Gauss sum tau of khi">$\tau(\chi)$</span>.</p>
+</div>
+
+<div class="box intuition" data-cid="ch07-1390">
+<span class="box-label">What actually happens in the proof</span>
+<p data-cid="ch07-1400">Neukirch invites the reader to pause here, and rightly. The proof <em>breaks</em> <span class="tts-math" data-tts="theta">$\theta$</span> into pieces indexed by residue classes (using the arithmetic of <span class="tts-math" data-tts="K">$K$</span>: ideal numbers, the class group, the different), applies the analytic transformation law (3.6) to each piece (a lattice goes to its dual), and then <em>reassembles</em> the transformed pieces — via the Gauss sum identity (7.5) — into a brand-new theta series for the conjugate character and the partner class. Almost every fundamental arithmetic property of <span class="tts-math" data-tts="K">$K$</span> is consumed and then handed back. The one law <em>not</em> used here is Dirichlet's unit theorem; it enters in the next section.</p>
+</div>
+
+<!-- ======================= 7.8 ======================= -->
+<h2 id="s7-8" data-cid="ch07-1410">7.8 Hecke L-series</h2>
+
+<div class="box definition" data-cid="ch07-1420">
+<span class="box-label">Definition / Proposition (8.1) — Hecke L-series</span>
+<p data-cid="ch07-1430">For a Größencharakter <span class="tts-math" data-tts="khi">$\chi$</span> mod <span class="tts-math" data-tts="the modulus m">$\mathfrak m$</span>, the <strong>Hecke L-series</strong> is</p>
+<span class="tts-math" data-tts="capital L of chi comma s equals the sum over integral ideals a, of chi of a over the absolute norm of a to the s, equals the product over prime ideals p, of one over, one minus chi of p, times the absolute norm of p to the minus s">
+$$L(\chi,s)=\sum_{\mathfrak a}\frac{\chi(\mathfrak a)}{\mathfrak N(\mathfrak a)^{s}}=\prod_{\mathfrak p}\frac{1}{1-\chi(\mathfrak p)\mathfrak N(\mathfrak p)^{-s}},$$
+</span>
+<p data-cid="ch07-1440">convergent and given by its Euler product for <span class="tts-math" data-tts="real part of s greater than one">$\operatorname{Re}(s)&gt;1$</span>. This is the common generalization: <span class="tts-math" data-tts="khi equals one">$\chi=1$</span> gives <span class="tts-math" data-tts="the Dedekind zeta function of K">$\zeta_K$</span>, and a ray-class character gives a generalized Dirichlet L-series over <span class="tts-math" data-tts="K">$K$</span>.</p>
+</div>
+
+<p data-cid="ch07-1450">The completed L-series is <span class="tts-math" data-tts="capital lambda of chi comma s equals the absolute discriminant times the absolute norm of m, all to the s over two, times L sub infinity of chi comma s, times capital L of chi comma s">$\Lambda(\chi,s)=\big(|d_{K}|\,\mathfrak N(\mathfrak m)\big)^{s/2}L_{\infty}(\chi,s)L(\chi,s)$</span>, with the archimedean factor <span class="tts-math" data-tts="L sub infinity of khi comma s equals L sub X of s one plus p minus i q">$L_{\infty}(\chi,s)=L_{X}(s_{1}+p-iq)$</span>. This notation is dense, so unpack it slowly. Here <span class="tts-math" data-tts="s one">$s_{1}$</span> is the <em>constant tuple</em> <span class="tts-math" data-tts="s one equals the tuple all of whose entries are s">$s_{1}=(s,s,\dots,s)$</span> — one copy of the complex variable <span class="tts-math" data-tts="s">$s$</span> at each archimedean place, so that <span class="tts-math" data-tts="s one">$s_{1}$</span> is the diagonal way of feeding a single <span class="tts-math" data-tts="s">$s$</span> into the vector-valued gamma factor <span class="tts-math" data-tts="L sub X">$L_X$</span>. The pair <span class="tts-math" data-tts="p comma q">$(p,q)$</span> is the <strong>infinite type</strong> of <span class="tts-math" data-tts="khi sub infinity">$\chi_\infty$</span>, defined by <span class="tts-math" data-tts="chi infinity of x equals capital N of x to the p, times the absolute value of x to the minus p plus i q">$\chi_{\infty}(x)=N(x^{p}|x|^{-p+iq})$</span>: the integer tuple <span class="tts-math" data-tts="p">$p$</span> is a <em>discrete weight</em> (a parity/winding exponent, the direct descendant of the <span class="tts-math" data-tts="n to the p">$n^{p}$</span> parity factor from §7.2), while the real tuple <span class="tts-math" data-tts="q">$q$</span> is a <em>continuous frequency</em> (the <span class="tts-math" data-tts="the absolute value to the i q">$|\cdot|^{iq}$</span> oscillation, the higher analogue of the <span class="tts-math" data-tts="the absolute value of x to the i s">$|x|^{is}$</span> twist). The shift <span class="tts-math" data-tts="s one plus p minus i q">$s_{1}+p-iq$</span> just slides the gamma argument by exactly the weight and frequency carried by <span class="tts-math" data-tts="khi sub infinity">$\chi_\infty$</span>. The point is only that there <em>is</em> a clean gamma factor of this shape — its precise form is dictated, place by place, by the parity-and-frequency data <span class="tts-math" data-tts="p comma q">$(p,q)$</span>. The proof of the functional equation mirrors §7.5 exactly but rests on the theta law (7.7); Dirichlet's unit theorem enters through the fundamental domain <span class="tts-math" data-tts="the fundamental domain F">$F$</span> for the unit action.</p>
+
+<div class="box definition" data-cid="ch07-1460">
+<span class="box-label">Theorem (8.5) / Corollary (8.6) — functional equation of Hecke L-series</span>
+<p data-cid="ch07-1470">For a primitive Größencharakter <span class="tts-math" data-tts="khi">$\chi$</span> mod <span class="tts-math" data-tts="the modulus m">$\mathfrak m$</span>, the completed series <span class="tts-math" data-tts="capital lambda of khi comma s">$\Lambda(\chi,s)$</span> continues meromorphically and satisfies</p>
+<span class="tts-math" data-tts="capital lambda of chi comma s equals capital W of chi, times capital lambda of chi bar comma one minus s">
+$$\Lambda(\chi,s)=W(\chi)\,\Lambda(\overline\chi,1-s),\qquad |W(\chi)|=1.$$
+</span>
+<p data-cid="ch07-1480">It is entire <em>unless</em> <span class="tts-math" data-tts="m equals one">$\mathfrak m=1$</span> and <span class="tts-math" data-tts="p equals zero">$p=0$</span> (the Dedekind case), where it has the two poles inherited from <span class="tts-math" data-tts="the Dedekind zeta function of K">$\zeta_K$</span>. The root number <span class="tts-math" data-tts="the root number W of khi">$W(\chi)$</span> is again a normalized Gauss sum.</p>
+</div>
+
+<div class="box pause" data-cid="ch07-1490">
+<span class="box-label">Pause — Hecke vs. Tate</span>
+<p data-cid="ch07-1500">There is a second route to all of this (Tate's thesis): view <span class="tts-math" data-tts="khi">$\chi$</span> as a character of the idele class group, write <span class="tts-math" data-tts="L of khi comma s">$L(\chi,s)$</span> as an Euler product, and prove the functional equation by local <span class="tts-math" data-tts="p">$p$</span>-adic Fourier analysis plus the local-to-global principle. Neukirch deliberately presents Hecke's classical theta proof instead — partly because Tate's paper cannot be improved upon, and partly because the theta theory is a genuine arithmetic achievement in its own right. The functional equation has now been proved <em>four times</em>: <span class="tts-math" data-tts="zeta">$\zeta$</span>, Dirichlet <span class="tts-math" data-tts="L">$L$</span>, Dedekind <span class="tts-math" data-tts="the Dedekind zeta function of K">$\zeta_K$</span>, Hecke <span class="tts-math" data-tts="L">$L$</span> — each a strict generalization of the last.</p>
+</div>
+
+<!-- ======================= 7.9 ======================= -->
+<h2 id="s7-9" data-cid="ch07-1510">7.9 Values of Dirichlet L-series at Integer Points</h2>
+
+<p data-cid="ch07-1520">The clean evaluations <span class="tts-math" data-tts="zeta of one minus k equals minus B sub k over k">$\zeta(1-k)=-B_k/k$</span> and <span class="tts-math" data-tts="L of khi comma one minus k equals minus B sub k khi over k">$L(\chi,1-k)=-B_{k,\chi}/k$</span> from §§7.1–7.2 generalize to L-series over a <strong>totally real</strong> number field, using Shintani's method. The first ingredient is a refined unit theorem.</p>
+
+<div class="box definition" data-cid="ch07-1530">
+<span class="box-label">Theorem (9.3) — Shintani's unit theorem</span>
+<p data-cid="ch07-1540">If <span class="tts-math" data-tts="E">$E$</span> is a finite-index subgroup of the totally positive units <span class="tts-math" data-tts="the totally positive units">$\mathcal o_{+}^{*}$</span>, then the totally positive cone <span class="tts-math" data-tts="the totally positive cone">$\mathbb{R}_{(+)}^{*}$</span> is a <em>disjoint</em> union of translates <span class="tts-math" data-tts="the union over epsilon in E of epsilon times P">$\bigcup_{\varepsilon\in E}\varepsilon P$</span> of a single <span class="tts-math" data-tts="the rationals">$\mathbb{Q}$</span>-rational polyhedric cone <span class="tts-math" data-tts="the cone P">$P$</span> (a finite disjoint union of simplicial cones <span class="tts-math" data-tts="the cone on v one through v d, the set of positive combinations of the v sub i">$C(v_{1},\dots,v_{d})=\{\sum t_{i}v_{i}\mid t_{i}&gt;0\}$</span>).</p>
+</div>
+
+<div class="box intuition" data-cid="ch07-1550">
+<span class="box-label">Why a cone helps</span>
+<p data-cid="ch07-1560">Summing <span class="tts-math" data-tts="the absolute norm of a to the minus s">$\mathfrak N(\mathfrak a)^{-s}$</span> over a class means summing over totally positive numbers up to units. Shintani replaces "up to units" by an honest <em>fundamental domain</em> built from finitely many simplicial cones. On each cone the partial zeta function becomes an explicit lattice-point series <span class="tts-math" data-tts="zeta of C i, x, s equals the sum over z of, the absolute norm of x plus z one v i one plus dot dot dot, to the minus s">$\zeta(C_i,x,s)=\sum_{z}|N(x+z_1v_{i1}+\cdots+z_{d_i}v_{id_i})|^{-s}$</span>, which can be evaluated by the same contour technique as <span class="tts-math" data-tts="zeta of one minus k">$\zeta(1-k)$</span>.</p>
+</div>
+
+<p data-cid="ch07-1570">These series have meromorphic continuations whose integer values are <strong>generalized Bernoulli polynomials</strong> <span class="tts-math" data-tts="the generalized Bernoulli polynomial B sub k of A comma x">$B_{k}(A,x)$</span> attached to a positive matrix <span class="tts-math" data-tts="A">$A$</span> (Proposition 9.7): <span class="tts-math" data-tts="zeta of A, x, one minus k equals minus one to the n, times B sub k of A comma x, over k">$\zeta(A,x,1-k)=(-1)^{n}\frac{B_{k}(A,x)}{k}$</span>.</p>
+
+<div class="box definition" data-cid="ch07-1580">
+<span class="box-label">Theorem (9.8) — integer values of partial zeta and L</span>
+<p data-cid="ch07-1590">For a totally real <span class="tts-math" data-tts="K">$K$</span>, the values <span class="tts-math" data-tts="the partial zeta of the class K at one minus k">$\zeta(\mathfrak K,1-k)$</span> and <span class="tts-math" data-tts="L of khi comma one minus k">$L(\chi,1-k)$</span> at <span class="tts-math" data-tts="s equals one minus k">$s=1-k$</span> (<span class="tts-math" data-tts="k at least one">$k\ge1$</span>) are finite sums of generalized Bernoulli polynomials evaluated at cone data. In particular the L-values <span class="tts-math" data-tts="L of khi comma one minus k">$L(\chi,1-k)$</span> are algebraic numbers in <span class="tts-math" data-tts="the field Q adjoin the values of khi sub f">$\mathbb{Q}(\chi_{f})$</span>, and the partial zeta values are <strong>rational</strong>.</p>
+</div>
+
+<div class="box definition" data-cid="ch07-1600">
+<span class="box-label">Corollary (9.9) — Siegel–Klingen</span>
+<p data-cid="ch07-1610">The values <span class="tts-math" data-tts="the partial zeta of the class K at s">$\zeta(\mathfrak K,s)$</span> of the partial zeta function at <span class="tts-math" data-tts="s equals zero, minus one, minus two, and so on">$s=0,-1,-2,\dots$</span> are rational numbers. (Proof: a Galois-invariance argument shows the generalized Bernoulli numbers <span class="tts-math" data-tts="B sub k of A comma x">$B_k(A,x)$</span> are fixed by <span class="tts-math" data-tts="the Galois group of L over Q">$G(L\mid\mathbb Q)$</span>, hence in <span class="tts-math" data-tts="the rationals">$\mathbb Q$</span>.)</p>
+</div>
+
+<div class="box warn" data-cid="ch07-1620">
+<span class="box-label">If <span class="tts-math" data-tts="K">$K$</span> is not totally real</span>
+<p data-cid="ch07-1630">When <span class="tts-math" data-tts="K">$K$</span> has a complex place, the functional equation forces <span class="tts-math" data-tts="zeta sub K of s equals zero">$\zeta_K(s)=0$</span> at all negative integers <span class="tts-math" data-tts="s equals minus one, minus two, and so on">$s=-1,-2,\dots$</span> — the values are simply zero. The rich rationality phenomenon is special to totally real fields, and it is precisely the rational values <span class="tts-math" data-tts="zeta sub K of minus n">$\zeta_K(-n)$</span> (with their <span class="tts-math" data-tts="p">$p$</span>-adic congruences) that make the <span class="tts-math" data-tts="p">$p$</span>-adic L-functions of Iwasawa theory possible (Barsky, Cassou-Noguès).</p>
+</div>
+
+<!-- ======================= 7.10 ======================= -->
+<h2 id="s7-10" data-cid="ch07-1640">7.10 Artin L-series</h2>
+
+<p data-cid="ch07-1650">A genuinely new species of L-series now appears, built not from a field but from a <strong>Galois representation</strong>. The motivating identity: for <span class="tts-math" data-tts="L equals Q adjoin the m-th roots of unity">$L=\mathbb Q(\mu_m)$</span>, class field theory identifies <span class="tts-math" data-tts="the units mod m are isomorphic to the Galois group of Q adjoin the m-th roots of unity over Q">$(\mathbb Z/m\mathbb Z)^*\xrightarrow{\sim}G=G(\mathbb Q(\mu_m)\mid\mathbb Q)$</span> sending <span class="tts-math" data-tts="p maps to the Frobenius at p">$p\mapsto\varphi_p$</span> (Frobenius). A Dirichlet character <span class="tts-math" data-tts="khi">$\chi$</span> thus <em>is</em> a <span class="tts-math" data-tts="one">$1$</span>-dimensional representation of <span class="tts-math" data-tts="the Galois group G">$G$</span>, and</p>
+<span class="tts-math" data-tts="capital L of chi comma s equals the product over p not dividing m, of one over, one minus chi of Frobenius p, times p to the minus s">
+$$L(\chi,s)=\prod_{p\nmid m}\frac{1}{1-\chi(\varphi_{p})p^{-s}}.$$
+</span>
+<p data-cid="ch07-1660">Generalize: let <span class="tts-math" data-tts="L over K">$L\mid K$</span> be Galois with group <span class="tts-math" data-tts="the Galois group G">$G$</span>, and <span class="tts-math" data-tts="the representation rho on V">$(\rho,V)$</span> a representation, <span class="tts-math" data-tts="rho from G to the general linear group of V">$\rho:G\to GL(V)$</span>. For a prime <span class="tts-math" data-tts="the prime ideal p">$\mathfrak p$</span> of <span class="tts-math" data-tts="K">$K$</span> and <span class="tts-math" data-tts="a prime P of L above p">$\mathfrak P\mid\mathfrak p$</span> of <span class="tts-math" data-tts="L">$L$</span>, let <span class="tts-math" data-tts="the Frobenius at P">$\varphi_{\mathfrak P}$</span> be the Frobenius acting on the inertia invariants <span class="tts-math" data-tts="the inertia invariants of V">$V^{I_{\mathfrak P}}$</span>.</p>
+
+<div class="box definition" data-cid="ch07-1670">
+<span class="box-label">Definition (10.1) — Artin L-series</span>
+<p data-cid="ch07-1680">The <strong>Artin L-series</strong> of <span class="tts-math" data-tts="the representation rho on V">$(\rho,V)$</span> is</p>
+<span class="tts-math" data-tts="capital L of L over K, rho, s equals the product over prime ideals p, of one over the determinant of, one minus Frobenius P, times the absolute norm of p to the minus s, acting on V to the inertia invariants">
+$$\mathcal{L}(L\mid K,\rho,s)=\prod_{\mathfrak p}\frac{1}{\det\!\big(1-\varphi_{\mathfrak P}\,\mathfrak N(\mathfrak p)^{-s};\,V^{I_{\mathfrak P}}\big)}.$$
+</span>
+<p data-cid="ch07-1690">The factor depends only on <span class="tts-math" data-tts="the prime ideal p">$\mathfrak p$</span> (different choices of <span class="tts-math" data-tts="the prime P">$\mathfrak P$</span> give conjugate data). It converges for <span class="tts-math" data-tts="real part of s greater than one">$\operatorname{Re}(s)&gt;1$</span> and depends only on the <strong>character</strong> <span class="tts-math" data-tts="khi equals the trace of rho">$\chi=\operatorname{tr}\rho$</span>, so we write <span class="tts-math" data-tts="the Artin L-series of L over K, khi, s">$\mathcal L(L\mid K,\chi,s)$</span>.</p>
+</div>
+
+<div class="box intuition" data-cid="ch07-1700">
+<span class="box-label">Intuition — a determinant replaces a single Euler factor</span>
+<p data-cid="ch07-1710">For a <span class="tts-math" data-tts="one">$1$</span>-dimensional <span class="tts-math" data-tts="rho">$\rho$</span> this is a Hecke Euler factor. Let us check that directly. If <span class="tts-math" data-tts="V">$V$</span> is one-dimensional, <span class="tts-math" data-tts="rho of Frobenius">$\rho(\varphi_{\mathfrak P})$</span> is a single scalar <span class="tts-math" data-tts="khi of Frobenius p">$\chi(\varphi_{\mathfrak p})$</span> (the character value), and a <span class="tts-math" data-tts="one by one">$1\times1$</span> determinant is just that number, so</p>
+<span class="tts-math" data-tts="the determinant of one minus Frobenius P times the absolute norm of p to the minus s, on V, equals one minus khi of Frobenius p, times the absolute norm of p to the minus s">
+$$\det\!\big(1-\varphi_{\mathfrak P}\mathfrak N(\mathfrak p)^{-s};V\big)=1-\chi(\varphi_{\mathfrak p})\,\mathfrak N(\mathfrak p)^{-s},
+$$
+</span>
+<p data-cid="ch07-1712">and the Euler factor <span class="tts-math" data-tts="one over the determinant">$1/\det(\cdots)$</span> collapses to exactly the Hecke/Dirichlet factor <span class="tts-math" data-tts="one over, one minus khi of Frobenius p, times the absolute norm of p to the minus s">$\dfrac{1}{1-\chi(\varphi_{\mathfrak p})\mathfrak N(\mathfrak p)^{-s}}$</span> from §7.8. The determinant is simply what generalizes that single factor to a whole matrix. For higher dimensions, <span class="tts-math" data-tts="the determinant of one minus Frobenius P times t, on the inertia invariants of V">$\det(1-\varphi_{\mathfrak P}t;V^{I_{\mathfrak P}})$</span> packages how Frobenius acts on the whole representation at <span class="tts-math" data-tts="the prime ideal p">$\mathfrak p$</span> — its eigenvalues are roots of unity (Frobenius has finite order on <span class="tts-math" data-tts="the inertia invariants of V">$V^{I_{\mathfrak P}}$</span>). Inertia invariants <span class="tts-math" data-tts="the inertia invariants of V">$V^{I_{\mathfrak P}}$</span> are how <em>ramification</em> enters: at an unramified <span class="tts-math" data-tts="the prime ideal p">$\mathfrak p$</span> the inertia group <span class="tts-math" data-tts="I sub P">$I_{\mathfrak P}$</span> is trivial, so <span class="tts-math" data-tts="V to the inertia invariants equals V">$V^{I_{\mathfrak P}}=V$</span> and the factor uses all of <span class="tts-math" data-tts="V">$V$</span> (the generic case, since only finitely many primes ramify); the space shrinks to a proper subspace <em>only</em> at the ramified primes.</p>
+</div>
+
+<p data-cid="ch07-1720">The power of Artin L-series is their <strong>functoriality</strong>. After a short tour of representation theory (irreducibles, characters, the hermitian inner product <span class="tts-math" data-tts="the inner product of khi and khi prime equals one over the order of G, times the sum over sigma of khi of sigma times the conjugate of khi prime of sigma">$\langle\chi,\chi'\rangle=\frac1{\#G}\sum_\sigma\chi(\sigma)\overline{\chi'(\sigma)}$</span>, induction <span class="tts-math" data-tts="the induced character khi star">$\chi^{*}$</span>, inflation, and crucially <strong>Brauer's theorem</strong> that every character is a <span class="tts-math" data-tts="the integers">$\mathbb Z$</span>-combination of induced degree-1 characters), one proves:</p>
+
+<div class="box intuition" data-cid="ch07-1722">
+<span class="box-label">Intuition — Brauer's theorem is the lever for everything that follows</span>
+<p data-cid="ch07-1724">One representation-theoretic fact does almost all the heavy lifting in §§7.10–7.12, so it deserves to be stated on its own. <strong>Brauer's induction theorem</strong> says: the character of <em>any</em> finite-group representation, however complicated and high-dimensional, can be written as a <span class="tts-math" data-tts="the integers">$\mathbb{Z}$</span>-linear combination</p>
+<span class="tts-math" data-tts="khi equals the sum over i of n sub i, times the induced character of khi sub i, where each khi sub i is degree one and each n sub i is an integer">
+$$\chi=\sum_i n_i\,\chi_i^{*},\qquad n_i\in\mathbb{Z},\ \ \chi_i\ \text{degree }1,$$
+</span>
+<p data-cid="ch07-1726">of characters <em>induced from one-dimensional</em> (abelian) characters of subgroups. The integers <span class="tts-math" data-tts="n sub i">$n_i$</span> can be negative, which is why the L-series identities below come out as products <em>and ratios</em>. Why does this matter so much? Because the Artin L-series is additive in the character and compatible with induction (Proposition 10.4). So Brauer's decomposition immediately turns any Artin L-series into a product/ratio of L-series of <em>degree-1</em> characters — and a degree-1 Artin L-series is just a Hecke L-series (Theorem 10.6), which we have already analyzed completely. In one stroke, <em>anything we can prove for abelian (1-dimensional) characters propagates to all Galois representations</em>: the functional equation, the conductor identities, the gamma factors. Hold onto this; it is the engine of the next three sections.</p>
+</div>
+
+<div class="box definition" data-cid="ch07-1730">
+<span class="box-label">Proposition (10.4) — functorial behaviour</span>
+<p data-cid="ch07-1740">(i) For <span class="tts-math" data-tts="khi equals one">$\chi=1$</span>, <span class="tts-math" data-tts="the Artin L-series at the trivial character equals zeta sub K of s">$\mathcal L(L\mid K,1,s)=\zeta_{K}(s)$</span>. (ii) Additive in the character: <span class="tts-math" data-tts="the L-series of khi plus khi prime equals the L-series of khi times the L-series of khi prime">$\mathcal L(\chi+\chi')=\mathcal L(\chi)\mathcal L(\chi')$</span>. (iii) <em>Inflation-invariant</em>: enlarging <span class="tts-math" data-tts="L">$L$</span> leaves <span class="tts-math" data-tts="the Artin L-series of L over K, khi, s">$\mathcal L(L\mid K,\chi,s)$</span> unchanged. (iv) <em>Induction</em>: for <span class="tts-math" data-tts="khi">$\chi$</span> on <span class="tts-math" data-tts="the Galois group of L over M">$G(L\mid M)$</span>, <span class="tts-math" data-tts="L of L over M, chi, s equals L of L over K, chi induced, s">$\mathcal L(L\mid M,\chi,s)=\mathcal L(L\mid K,\chi^{*},s)$</span>.</p>
+</div>
+
+<div class="box definition" data-cid="ch07-1750">
+<span class="box-label">Corollary (10.5) — factoring <span class="tts-math" data-tts="the Dedekind zeta of L">$\zeta_L$</span></span>
+<p data-cid="ch07-1760">For <span class="tts-math" data-tts="L over K">$L\mid K$</span> Galois,</p>
+<span class="tts-math" data-tts="zeta sub L of s equals zeta sub K of s, times the product over nontrivial irreducible characters chi, of the Artin L-series to the power chi of one">
+$$\zeta_{L}(s)=\zeta_{K}(s)\prod_{\chi\ne1}\mathcal L(L\mid K,\chi,s)^{\chi(1)},$$
+</span>
+<p data-cid="ch07-1770"><span class="tts-math" data-tts="khi">$\chi$</span> over the nontrivial irreducible characters. So the famous <strong>Artin Conjecture</strong> — that <span class="tts-math" data-tts="the Artin L-series of L over K, khi, s">$\mathcal L(L\mid K,\chi,s)$</span> is <em>entire</em> for each irreducible <span class="tts-math" data-tts="khi not equal to one">$\chi\ne1$</span> — would imply <span class="tts-math" data-tts="zeta sub L over zeta sub K">$\zeta_L/\zeta_K$</span> is entire.</p>
+</div>
+
+<div class="box definition" data-cid="ch07-1780">
+<span class="box-label">Theorem (10.6) — Artin L = Hecke L in the abelian case</span>
+<p data-cid="ch07-1790">If <span class="tts-math" data-tts="L over K">$L\mid K$</span> is abelian with conductor <span class="tts-math" data-tts="the conductor f">$\mathfrak f$</span> and <span class="tts-math" data-tts="khi not equal to one">$\chi\ne1$</span> irreducible, then via the Artin symbol <span class="tts-math" data-tts="khi">$\chi$</span> becomes a Größencharakter <span class="tts-math" data-tts="khi tilde">$\tilde\chi$</span> mod <span class="tts-math" data-tts="the conductor f">$\mathfrak f$</span>, and the Artin and Hecke series agree up to finitely many Euler factors; if <span class="tts-math" data-tts="khi">$\chi$</span> is injective, exactly</p>
+<span class="tts-math" data-tts="the Artin L-series of L over K, chi, s equals the Hecke L-series of chi tilde, s">
+$$\mathcal L(L\mid K,\chi,s)=L(\tilde\chi,s).$$
+</span>
+</div>
+
+<p data-cid="ch07-1800">This identity proves the <strong>Artin conjecture for abelian (hence, via Brauer, for all <em>solvable</em>) extensions</strong>: the abelian Artin L-series is a Hecke L-series, which we already know to be entire. The general (nonabelian) case is open and one of the central problems of number theory, now embedded in the Langlands program.</p>
+
+<!-- ======================= 7.11 ======================= -->
+<h2 id="s7-11" data-cid="ch07-1810">7.11 The Artin Conductor</h2>
+
+<p data-cid="ch07-1820">To write a functional equation for Artin L-series we need the right "conductor", carrying ramification data character by character. The discriminant of <span class="tts-math" data-tts="L over K">$L\mid K$</span> has a fine decomposition</p>
+<span class="tts-math" data-tts="the discriminant of L over K equals the product over irreducible characters chi of the Artin conductor f of chi, to the power chi of one">
+$$\mathfrak d_{L\mid K}=\prod_{\chi}\mathfrak f(\chi)^{\chi(1)},$$
+</span>
+<p data-cid="ch07-1830">where the <strong>Artin conductor</strong> <span class="tts-math" data-tts="the conductor of khi equals the product over primes p of p to the exponent f sub p of khi">$\mathfrak f(\chi)=\prod_{\mathfrak p}\mathfrak p^{f_{\mathfrak p}(\chi)}$</span> is built from the higher ramification groups via</p>
+<span class="tts-math" data-tts="f sub p of chi equals the sum over i greater than or equal to zero, of g sub i over g sub zero, times the codimension of V to the ramification group G i">
+$$f_{\mathfrak p}(\chi)=\sum_{i\ge0}\frac{g_{i}}{g_{0}}\,\operatorname{codim}V^{G_{i}},\qquad g_{i}=\#G_{i}.$$
+</span>
+
+<div class="box intuition" data-cid="ch07-1840">
+<span class="box-label">What the exponent measures</span>
+<p data-cid="ch07-1850">First, recall the ramification filtration: <span class="tts-math" data-tts="G sub zero">$G_0$</span> is the <strong>inertia group</strong> (it measures ramification at all), <span class="tts-math" data-tts="G sub one">$G_1$</span> is the <strong>wild inertia</strong> (the <span class="tts-math" data-tts="p">$p$</span>-part), and the higher <span class="tts-math" data-tts="G sub i">$G_i$</span> refine the wild part further; they shrink, <span class="tts-math" data-tts="G sub zero contains G sub one contains G sub two and so on">$G_0\supseteq G_1\supseteq G_2\supseteq\cdots$</span>. The quantity <span class="tts-math" data-tts="the codimension of the G sub i invariants of V">$\operatorname{codim}V^{G_i}$</span> is the dimension of <span class="tts-math" data-tts="V">$V$</span> <em>not</em> fixed by <span class="tts-math" data-tts="G sub i">$G_i$</span>, i.e. <span class="tts-math" data-tts="khi of one minus the dimension of the G sub i invariants">$\chi(1)-\dim V^{G_i}$</span> — a measure of how much of the representation the <span class="tts-math" data-tts="i">$i$</span>-th ramification group moves. So <span class="tts-math" data-tts="f sub p of khi">$f_{\mathfrak p}(\chi)$</span> is a weighted count of how badly <span class="tts-math" data-tts="khi">$\chi$</span> "sees" the wild and tame ramification at <span class="tts-math" data-tts="the prime ideal p">$\mathfrak p$</span>. Two anchors fix the scale: if <span class="tts-math" data-tts="the prime ideal p">$\mathfrak p$</span> is <strong>unramified</strong> all <span class="tts-math" data-tts="the i-th ramification group">$G_i$</span> are trivial, every <span class="tts-math" data-tts="V to the G sub i equals V">$V^{G_i}=V$</span>, and <span class="tts-math" data-tts="f sub p of khi equals zero">$f_{\mathfrak p}(\chi)=0$</span>; if <span class="tts-math" data-tts="the prime ideal p">$\mathfrak p$</span> is <strong>tamely ramified</strong> only <span class="tts-math" data-tts="G sub zero">$G_0$</span> survives (the wild part <span class="tts-math" data-tts="G sub one">$G_1$</span> is already trivial), and the formula collapses to the single term <span class="tts-math" data-tts="f sub p of khi equals the codimension of the G sub zero invariants of V">$f_{\mathfrak p}(\chi)=\operatorname{codim}V^{G_0}$</span>. For a degree-1 character, <span class="tts-math" data-tts="the conductor of khi">$\mathfrak f(\chi)$</span> recovers exactly the conductor of the abelian extension cut out by <span class="tts-math" data-tts="khi">$\chi$</span> (Proposition 11.6, via Hasse–Arf).</p>
+</div>
+
+<p data-cid="ch07-1860">The heart of the section is proving <span class="tts-math" data-tts="f sub p of khi is a nonnegative integer">$f_{\mathfrak p}(\chi)\in\mathbb Z_{\ge0}$</span>. Locally one introduces the central function <span class="tts-math" data-tts="a sub G, defined via the ramification numbers i sub G of sigma">$a_{G}$</span> with <span class="tts-math" data-tts="a sub G of sigma equals minus the residue degree of L over K, times i sub G of sigma">$a_G(\sigma)=-f_{L\mid K}\,i_G(\sigma)$</span> for <span class="tts-math" data-tts="sigma not equal to one">$\sigma\ne1$</span>, expands <span class="tts-math" data-tts="a sub G equals the sum over khi of f of khi times khi">$a_G=\sum_\chi f(\chi)\chi$</span>, and shows the coefficients are integers. Integrality for degree-1 characters is the theorem of <strong>Hasse–Arf</strong> (jumps in the ramification filtration of an abelian extension are integers); the general case follows by Brauer (Theorem 11.4).</p>
+
+<div class="box definition" data-cid="ch07-1870">
+<span class="box-label">Proposition (11.7) — functoriality of the conductor</span>
+<p data-cid="ch07-1880">(i) <span class="tts-math" data-tts="the conductor of khi plus khi prime equals the conductor of khi times the conductor of khi prime">$\mathfrak f(\chi+\chi')=\mathfrak f(\chi)\mathfrak f(\chi')$</span>, <span class="tts-math" data-tts="the conductor of the trivial character is the unit ideal">$\mathfrak f(1)=(1)$</span>. (ii) Inflation-invariant. (iii) For induction from <span class="tts-math" data-tts="H equals the Galois group of L over K prime">$H=G(L\mid K')$</span>: <span class="tts-math" data-tts="the conductor of L over K of chi induced equals the discriminant of K prime over K, to the chi of one, times the norm from K prime to K of the conductor of L over K prime of chi">$\mathfrak f(L\mid K,\chi^{*})=\mathfrak d_{K'\mid K}^{\chi(1)}\,N_{K'\mid K}\!\big(\mathfrak f(L\mid K',\chi)\big)$</span>.</p>
+</div>
+
+<div class="box definition" data-cid="ch07-1890">
+<span class="box-label">Theorem (11.9) — Conductor–Discriminant Formula</span>
+<p data-cid="ch07-1900">Taking <span class="tts-math" data-tts="H equals the trivial group">$H=\{1\}$</span> in (11.7)(iii) and decomposing the regular representation gives, for any Galois <span class="tts-math" data-tts="L over K">$L\mid K$</span>,</p>
+<span class="tts-math" data-tts="the discriminant of L over K equals the product over irreducible characters chi of the conductor f of chi, to the power chi of one">
+$$\mathfrak d_{L\mid K}=\prod_{\chi}\mathfrak f(\chi)^{\chi(1)},$$
+</span>
+<p data-cid="ch07-1910">a clean group-theoretic refinement of the discriminant. We also write <span class="tts-math" data-tts="c of L over K khi equals the absolute discriminant to the khi of one, times the absolute norm of the conductor">$c(L\mid K,\chi)=|d_{K}|^{\chi(1)}\mathfrak N\!\big(\mathfrak f(L\mid K,\chi)\big)$</span> for the integer that will appear in the functional equation.</p>
+</div>
+
+<!-- ======================= 7.12 ======================= -->
+<h2 id="s7-12" data-cid="ch07-1920">7.12 The Functional Equation of Artin L-series</h2>
+
+<p data-cid="ch07-1930">Now complete the Artin L-series with archimedean Euler factors. For each infinite place <span class="tts-math" data-tts="the prime ideal p">$\mathfrak p$</span> of <span class="tts-math" data-tts="K">$K$</span> set the gamma factor <span class="tts-math" data-tts="the local L-factor at p">$\mathcal L_{\mathfrak p}(L\mid K,\chi,s)$</span> to be <span class="tts-math" data-tts="L sub C of s, to the chi of one, if p is complex">$L_{\mathbb C}(s)^{\chi(1)}$</span> if <span class="tts-math" data-tts="the prime ideal p">$\mathfrak p$</span> is complex, and <span class="tts-math" data-tts="L sub R of s, to the n plus, times L sub R of s plus one, to the n minus, if p is real">$L_{\mathbb R}(s)^{n^{+}}L_{\mathbb R}(s+1)^{n^{-}}$</span> if <span class="tts-math" data-tts="the prime ideal p">$\mathfrak p$</span> is real, where</p>
+<span class="tts-math" data-tts="n plus equals chi of one plus chi of the Frobenius at p, over two, and n minus equals chi of one minus chi of Frobenius at p, over two">
+$$n^{+}=\frac{\chi(1)+\chi(\varphi_{\mathfrak P})}{2},\qquad n^{-}=\frac{\chi(1)-\chi(\varphi_{\mathfrak P})}{2}.$$
+</span>
+<p data-cid="ch07-1940">These count the <span class="tts-math" data-tts="plus or minus one">$\pm1$</span>-eigenspaces of complex conjugation <span class="tts-math" data-tts="the Frobenius at P">$\varphi_{\mathfrak P}$</span> on <span class="tts-math" data-tts="V">$V$</span>. Set <span class="tts-math" data-tts="the archimedean L-factor equals the product over infinite places of the local factors">$\mathcal L_{\infty}(L\mid K,\chi,s)=\prod_{\mathfrak p\mid\infty}\mathcal L_{\mathfrak p}$</span>.</p>
+
+<div class="box definition" data-cid="ch07-1950">
+<span class="box-label">Definition (12.2) — completed Artin L-series</span>
+<p data-cid="ch07-1960"><span class="tts-math" data-tts="capital lambda of L over K, chi, s equals c of L over K chi, to the s over two, times L infinity of L over K chi s, times the Artin L-series">$$\Lambda(L\mid K,\chi,s)=c(L\mid K,\chi)^{s/2}\,\mathcal L_{\infty}(L\mid K,\chi,s)\,\mathcal L(L\mid K,\chi,s).$$</span></p>
+</div>
+
+<p data-cid="ch07-1970">The decisive point (Proposition 12.1) is that the <em>archimedean</em> factors transform under change of fields and characters in <em>exactly</em> the same way (i)–(iii) as the finite Euler factors and the conductor — Legendre's duplication <span class="tts-math" data-tts="L sub R of s times L sub R of s plus one, equals L sub C of s">$L_{\mathbb R}(s)L_{\mathbb R}(s+1)=L_{\mathbb C}(s)$</span> being what makes induction at a complex place work. Hence <span class="tts-math" data-tts="the completed Artin L-series capital lambda of L over K, khi, s">$\Lambda(L\mid K,\chi,s)$</span> inherits full functoriality (Proposition 12.3). For degree-1 <span class="tts-math" data-tts="khi">$\chi$</span> the completed Artin series equals a completed Hecke series (Proposition 12.5): <span class="tts-math" data-tts="capital lambda of L over K, chi, s equals capital lambda of chi tilde, s">$\Lambda(L\mid K,\chi,s)=\Lambda(\tilde\chi,s)$</span>.</p>
+
+<div class="box definition" data-cid="ch07-1980">
+<span class="box-label">Theorem (12.6) — functional equation of Artin L-series</span>
+<p data-cid="ch07-1990"><span class="tts-math" data-tts="the completed Artin L-series capital lambda of L over K, khi, s">$\Lambda(L\mid K,\chi,s)$</span> has a meromorphic continuation to <span class="tts-math" data-tts="the complex numbers">$\mathbb{C}$</span> and satisfies</p>
+<span class="tts-math" data-tts="capital lambda of L over K, chi, s equals capital W of chi, times capital lambda of L over K, chi bar, one minus s">
+$$\Lambda(L\mid K,\chi,s)=W(\chi)\,\Lambda(L\mid K,\overline\chi,1-s),\qquad |W(\chi)|=1.$$
+</span>
+</div>
+
+<div class="box intuition" data-cid="ch07-2000">
+<span class="box-label">The Brauer trick</span>
+<p data-cid="ch07-2010">The proof is purely formal given the toolkit. Brauer writes <span class="tts-math" data-tts="khi equals the sum over i of n sub i times the induced character khi sub i star">$\chi=\sum_i n_i\,\chi_i^{*}$</span> with <span class="tts-math" data-tts="khi sub i">$\chi_i$</span> degree-1 on subgroups <span class="tts-math" data-tts="H sub i equals the Galois group of L over K sub i">$H_i=G(L\mid K_i)$</span>. By functoriality (12.3) and the abelian identity (12.5), <span class="tts-math" data-tts="the completed Artin L-series equals the product over i of the completed Hecke series of khi tilde sub i to the n sub i">$\Lambda(L\mid K,\chi,s)=\prod_i\Lambda(\tilde\chi_i,s)^{n_i}$</span>. Each Hecke factor satisfies its functional equation from (8.6); multiplying them gives the Artin functional equation, with <span class="tts-math" data-tts="the root number of khi equals the product over i of the root number of khi tilde sub i to the n sub i">$W(\chi)=\prod_i W(\tilde\chi_i)^{n_i}$</span>. This is why so much effort went into Hecke L-series first: the hard analysis is done once, abelian, and Brauer transports it to <em>all</em> Galois representations — even where the Artin conjecture (holomorphy) remains unknown, the functional equation holds.</p>
+</div>
+
+<p data-cid="ch07-2020">In explicit form, <span class="tts-math" data-tts="the Artin L-series at one minus s equals A of khi comma s, times the Artin L-series of khi bar at s">$\mathcal L(L\mid K,\chi,1-s)=A(\chi,s)\,\mathcal L(L\mid K,\overline\chi,s)$</span> with a factor <span class="tts-math" data-tts="A of khi comma s">$A(\chi,s)$</span> built from <span class="tts-math" data-tts="the absolute discriminant of K">$|d_K|$</span>, the conductor norm, <span class="tts-math" data-tts="cosine of pi s over two to the n plus, times sine of pi s over two to the n minus">$\cos(\pi s/2)^{n^+}\sin(\pi s/2)^{n^-}$</span> and <span class="tts-math" data-tts="L sub C of s to the n times khi of one">$L_{\mathbb C}(s)^{n\chi(1)}$</span>; from it one reads off the zeros of <span class="tts-math" data-tts="the Artin L-series of L over K, khi, s">$\mathcal L(L\mid K,\chi,s)$</span> in <span class="tts-math" data-tts="real part of s less than zero">$\operatorname{Re}(s)&lt;0$</span>. Deninger's regularized-determinant viewpoint (remark) even writes the archimedean and finite Euler factors by a single uniform formula.</p>
+
+<!-- ======================= 7.13 ======================= -->
+<h2 id="s7-13" data-cid="ch07-2030">7.13 Density Theorems</h2>
+
+<p data-cid="ch07-2040">The chapter closes by cashing in the L-series machinery for statements about how primes distribute.</p>
+
+<div class="box definition" data-cid="ch07-2050">
+<span class="box-label">Definition (13.1) — Dirichlet density</span>
+<p data-cid="ch07-2060">A set <span class="tts-math" data-tts="M">$M$</span> of prime ideals of <span class="tts-math" data-tts="K">$K$</span> has <strong>Dirichlet density</strong></p>
+<span class="tts-math" data-tts="d of M equals the limit as s goes to one from above, of the sum over p in M of the absolute norm of p to the minus s, divided by the log of one over s minus one">
+$$d(M)=\lim_{s\to1^{+}}\frac{\sum_{\mathfrak p\in M}\mathfrak N(\mathfrak p)^{-s}}{\log\frac{1}{s-1}}$$
+</span>
+<p data-cid="ch07-2070">when the limit exists. The strange denominator <span class="tts-math" data-tts="log of one over s minus one">$\log\frac1{s-1}$</span> is not arbitrary: it is the exact <em>rate at which the whole prime sum blows up</em> as <span class="tts-math" data-tts="s goes to one">$s\to1$</span>. Indeed <span class="tts-math" data-tts="log zeta sub K of s is asymptotic to the sum over all primes of the absolute norm of p to the minus s, which is asymptotic to log one over s minus one">$\log\zeta_{K}(s)\sim\sum_{\mathfrak p}\mathfrak N(\mathfrak p)^{-s}\sim\log\frac1{s-1}$</span>, because <span class="tts-math" data-tts="zeta sub K">$\zeta_K$</span> has a simple <em>pole</em> at <span class="tts-math" data-tts="s equals one">$s=1$</span> and taking a log turns that pole into a <span class="tts-math" data-tts="log one over s minus one">$\log\frac1{s-1}$</span> divergence. So dividing by <span class="tts-math" data-tts="log one over s minus one">$\log\frac1{s-1}$</span> measures the <em>fraction of that total blow-up</em> contributed by the primes in <span class="tts-math" data-tts="M">$M$</span> — that fraction is the density. Two consequences are immediate. Only <strong>degree-1 primes matter</strong>: a prime of residue degree <span class="tts-math" data-tts="at least two">$\ge2$</span> contributes <span class="tts-math" data-tts="the absolute norm of p to the minus s, with absolute norm at least p squared">$\mathfrak N(\mathfrak p)^{-s}$</span> with <span class="tts-math" data-tts="the absolute norm at least p squared">$\mathfrak N(\mathfrak p)\ge p^{2}$</span>, and such a sum <em>converges</em> at <span class="tts-math" data-tts="s equals one">$s=1$</span>, so it adds nothing to a quantity that is being divided by something going to infinity. And finitely many primes never affect <span class="tts-math" data-tts="the Dirichlet density of M">$d(M)$</span>, for the same reason.</p>
+</div>
+
+<div class="box definition" data-cid="ch07-2080">
+<span class="box-label">Theorem (13.2) — generalized Dirichlet density theorem</span>
+<p data-cid="ch07-2090">Let <span class="tts-math" data-tts="the ideal group H to the m">$H^{\mathfrak m}$</span> be an ideal group with <span class="tts-math" data-tts="J to the m contains H to the m, which contains the principal ray P to the m">$J^{\mathfrak m}\supseteq H^{\mathfrak m}\supseteq P^{\mathfrak m}$</span> and index <span class="tts-math" data-tts="h sub m equals the index of H to the m in J to the m">$h_{\mathfrak m}=(J^{\mathfrak m}:H^{\mathfrak m})$</span>. Then for every class <span class="tts-math" data-tts="a class K in J to the m modulo H to the m">$\mathfrak K\in J^{\mathfrak m}/H^{\mathfrak m}$</span>, the primes in <span class="tts-math" data-tts="the class K">$\mathfrak K$</span> have density</p>
+<span class="tts-math" data-tts="d of P of script K equals one over h sub m">
+$$d\big(P(\mathfrak K)\big)=\frac{1}{h_{\mathfrak m}}.$$
+</span>
+<p data-cid="ch07-2100">Primes are <strong>equidistributed</strong> among the classes. The proof is the §7.5 argument verbatim, now using <span class="tts-math" data-tts="L of khi comma one is not zero">$L(\chi,1)\ne0$</span> for all nontrivial ray-class characters (Lemma 13.3) — which itself follows because <span class="tts-math" data-tts="zeta sub L over zeta sub K">$\zeta_L/\zeta_K$</span> is nonzero at <span class="tts-math" data-tts="s equals one">$s=1$</span> for the ray class field <span class="tts-math" data-tts="L">$L$</span>.</p>
+</div>
+
+<p data-cid="ch07-2110">For <span class="tts-math" data-tts="K equals the rationals">$K=\mathbb Q$</span>, <span class="tts-math" data-tts="the modulus equals the ideal m">$\mathfrak m=(m)$</span>, <span class="tts-math" data-tts="H to the m equals the principal ray P to the m">$H^{\mathfrak m}=P^{\mathfrak m}$</span> we have <span class="tts-math" data-tts="the ray class group equals the units mod m">$J^{\mathfrak m}/P^{\mathfrak m}=(\mathbb Z/m\mathbb Z)^{*}$</span>, and this recovers Dirichlet's theorem in sharp form: primes <span class="tts-math" data-tts="congruent to a mod m">$\equiv a\bmod m$</span> have density <span class="tts-math" data-tts="one over phi of m">$\frac1{\varphi(m)}$</span>.</p>
+
+<p data-cid="ch07-2120">Via class field theory <span class="tts-math" data-tts="the ray class group is isomorphic to the Galois group of L over K">$J^{\mathfrak m}/P^{\mathfrak m}\cong G(L\mid K)$</span> sends a prime to its Frobenius, and the density theorem becomes a statement about <em>Frobenius conjugacy classes</em> — valid even for nonabelian extensions.</p>
+
+<div class="box definition" data-cid="ch07-2130">
+<span class="box-label">Theorem (13.4) — Chebotarev density theorem</span>
+<p data-cid="ch07-2140">Let <span class="tts-math" data-tts="L over K">$L\mid K$</span> be Galois with group <span class="tts-math" data-tts="the Galois group G">$G$</span>. For <span class="tts-math" data-tts="sigma in G">$\sigma\in G$</span>, let <span class="tts-math" data-tts="the set of primes with Frobenius sigma">$P_{L\mid K}(\sigma)$</span> be the unramified primes <span class="tts-math" data-tts="the prime ideal p">$\mathfrak p$</span> admitting <span class="tts-math" data-tts="a prime P of L above p">$\mathfrak P\mid\mathfrak p$</span> with Frobenius <span class="tts-math" data-tts="the Frobenius of P equals sigma">$\big(\tfrac{L\mid K}{\mathfrak P}\big)=\sigma$</span>. This set depends only on the conjugacy class <span class="tts-math" data-tts="the conjugacy class of sigma">$\{\sigma\}$</span>, and has density</p>
+<span class="tts-math" data-tts="d of P of sigma equals the size of the conjugacy class of sigma, over the order of G">
+$$d\big(P_{L\mid K}(\sigma)\big)=\frac{\#\{\sigma\}}{\#G}.$$
+</span>
+</div>
+
+<div class="box intuition" data-cid="ch07-2150">
+<span class="box-label">How Chebotarev reduces to Dirichlet</span>
+<p data-cid="ch07-2160">First, if <span class="tts-math" data-tts="G is generated by sigma">$G=\langle\sigma\rangle$</span> is cyclic, <span class="tts-math" data-tts="L over K">$L\mid K$</span> is abelian and <span class="tts-math" data-tts="the set of primes with Frobenius sigma">$P_{L\mid K}(\sigma)$</span> is exactly the primes in one ray class — density <span class="tts-math" data-tts="one over the order of G">$1/\#G$</span> by (13.2). In general, pass to the cyclic subextension <span class="tts-math" data-tts="E over K">$E\mid K$</span> fixed by <span class="tts-math" data-tts="sigma">$\sigma$</span> (where Frobenius is <span class="tts-math" data-tts="sigma">$\sigma$</span> of order <span class="tts-math" data-tts="f">$f$</span>), count primes there with density <span class="tts-math" data-tts="one over f">$1/f$</span>, then transport up to <span class="tts-math" data-tts="K">$K$</span> through the centralizer <span class="tts-math" data-tts="the centralizer of sigma">$Z(\sigma)$</span>: the map <span class="tts-math" data-tts="P maps to P intersect E">$\mathfrak P\mapsto\mathfrak P\cap E$</span> has fibers of size <span class="tts-math" data-tts="the order of the centralizer over f">$\#Z(\sigma)/f$</span>, giving <span class="tts-math" data-tts="the density equals the order of the centralizer over f, divided by the order of G over f, which equals the order of the centralizer over the order of G, which equals the size of the conjugacy class over the order of G">$d=\frac{\#Z(\sigma)/f}{\#G/f}=\frac{\#Z(\sigma)}{\#G}=\frac{\#\{\sigma\}}{\#G}$</span>. So Chebotarev is genuinely "Dirichlet for nonabelian extensions".</p>
+</div>
+
+<p data-cid="ch07-2170">Chebotarev has striking corollaries. Writing <span class="tts-math" data-tts="S contained in T">$S\subseteq T$</span> for "up to finitely many exceptions" and <span class="tts-math" data-tts="the primes split in L over K">$P(L\mid K)$</span> for the primes of <span class="tts-math" data-tts="K">$K$</span> with a degree-1 prime divisor in <span class="tts-math" data-tts="L">$L$</span>:</p>
+<ul data-cid="ch07-2180">
+<li>(13.6) <span class="tts-math" data-tts="the density of the split primes is at least one over n">$d\big(P(L\mid K)\big)\ge\frac1n$</span> for <span class="tts-math" data-tts="the degree of L over K equals n">$[L:K]=n$</span>, with equality <em>iff</em> <span class="tts-math" data-tts="L over K">$L\mid K$</span> is Galois.</li>
+<li>(13.7) If almost all primes split completely in <span class="tts-math" data-tts="L">$L$</span>, then <span class="tts-math" data-tts="L equals K">$L=K$</span>.</li>
+<li>(13.9, Bauer) If <span class="tts-math" data-tts="L over K">$L\mid K$</span> is Galois, then <span class="tts-math" data-tts="the split primes of L over K contain those of M over K if and only if L is contained in M">$P(L\mid K)\supseteq P(M\mid K)\iff L\subseteq M$</span>.</li>
+<li>(13.10) A Galois extension is <strong>uniquely determined</strong> by its set of completely split primes.</li>
+</ul>
+
+<div class="box example" data-cid="ch07-2190">
+<span class="box-label">Example — what "split completely" means concretely</span>
+<p data-cid="ch07-2200">For <span class="tts-math" data-tts="K equals the rationals">$K=\mathbb Q$</span>, <span class="tts-math" data-tts="L equals Q adjoin the m-th roots of unity">$L=\mathbb Q(\mu_m)$</span>, the completely split primes <span class="tts-math" data-tts="the primes split in L over Q">$P(L\mid\mathbb Q)$</span> are exactly the primes <span class="tts-math" data-tts="p congruent to one mod m">$p\equiv1\bmod m$</span>. For <span class="tts-math" data-tts="L">$L$</span> the Hilbert class field of <span class="tts-math" data-tts="K">$K$</span>, <span class="tts-math" data-tts="the primes split in L over K">$P(L\mid K)$</span> is exactly the primes that are <em>principal ideals</em>. The dream of characterizing all extensions by such prime sets — "as Cauchy's theorem determines a function by its boundary values" (Kronecker) — is answered by class field theory in the abelian case; the nonabelian case is the heart of the <strong>Langlands program</strong>.</p>
+</div>
+
+<!-- ======================= Summary ======================= -->
+<h2 id="summary" data-cid="ch07-2210">Summary</h2>
+
+<p data-cid="ch07-2220">One mechanism, replayed at five levels of generality, organizes this entire chapter:</p>
+<ol data-cid="ch07-2230">
+<li><strong>Euler product</strong> <span class="tts-math" data-tts="equals">$=$</span> unique factorization (of integers, then ideals) made analytic — and it proves nonvanishing for <span class="tts-math" data-tts="real part of s greater than one">$\operatorname{Re}(s)&gt;1$</span>.</li>
+<li><strong>Mellin transform of a theta series</strong> gives the integral representation that continues the L-series past <span class="tts-math" data-tts="real part of s equals one">$\operatorname{Re}(s)=1$</span>.</li>
+<li><strong>Poisson summation</strong> <span class="tts-math" data-tts="implies">$\Rightarrow$</span> the theta transformation <span class="tts-math" data-tts="theta of minus one over z equals root z over i, times theta of z">$\theta(-1/z)=\sqrt{z/i}\,\theta(z)$</span> (and its number-field analogue, with a lattice becoming its dual).</li>
+<li>The theta law <span class="tts-math" data-tts="implies">$\Rightarrow$</span> the <strong>functional equation</strong> <span class="tts-math" data-tts="s maps to one minus s">$s\leftrightarrow1-s$</span>, with a root number <span class="tts-math" data-tts="the root number W of khi">$W(\chi)$</span> that is a normalized Gauss sum.</li>
+<li>Special values at integers are <strong>(generalized) Bernoulli numbers</strong> — rational for totally real fields.</li>
+</ol>
+
+<p data-cid="ch07-2240">Concretely we obtained: the analytic continuation, functional equation, and special values of <span class="tts-math" data-tts="zeta of s">$\zeta(s)$</span> (§7.1) and Dirichlet <span class="tts-math" data-tts="L of khi comma s">$L(\chi,s)$</span> (§7.2); the higher-dimensional theta and gamma machinery over Minkowski space (§§7.3–7.4); the <strong>Dedekind zeta function</strong> with its <strong>analytic class number formula</strong> <span class="tts-math" data-tts="the residue at s equals one of zeta sub K equals two to the r one, times two pi to the r two, times h R, over w times the square root of the absolute discriminant">$\operatorname{Res}_{s=1}\zeta_K=\frac{2^{r_1}(2\pi)^{r_2}hR}{w\sqrt{|d_K|}}$</span> and, via cyclotomic factorization, Dirichlet's prime number theorem (§7.5); <strong>Hecke characters</strong> and <strong>Hecke L-series</strong> unifying everything (§§7.6–7.8); Shintani's rational evaluation of L-values for totally real fields (§7.9); <strong>Artin L-series</strong> from Galois representations, their identity with Hecke L-series in the abelian case, the Artin conjecture (solvable case), the <strong>Artin conductor</strong> and conductor–discriminant formula, and the functional equation via Brauer (§§7.10–7.12); and finally the <strong>Dirichlet and Chebotarev density theorems</strong> describing the equidistribution of Frobenius (§7.13).</p>
+
+<div class="box pause" data-cid="ch07-2250">
+<span class="box-label">Looking ahead</span>
+<p data-cid="ch07-2260">Two open horizons close the book. The <strong>Artin conjecture</strong> (holomorphy of <span class="tts-math" data-tts="the Artin L-series of L over K, khi, s">$\mathcal L(L\mid K,\chi,s)$</span> for irreducible <span class="tts-math" data-tts="khi">$\chi$</span>) and Kronecker's dream of characterizing <span class="tts-math" data-tts="the primes split in L over K">$P(L\mid K)$</span> for nonabelian <span class="tts-math" data-tts="L over K">$L\mid K$</span> are both subsumed in the <strong>Langlands program</strong> — the conjectural dictionary between Galois representations and automorphic forms, of which Hecke's theta-to-L-series correspondence (Jacobi's <span class="tts-math" data-tts="theta">$\theta$</span> is a modular form of weight <span class="tts-math" data-tts="one half">$\tfrac12$</span>) was an early and seminal instance.</p>
+</div>
+
+<nav class="chapter-nav">
+<a href="ch06.html"><span class="label">← Previous</span><span class="title">VI. Global Class Field Theory</span></a>
+<a class="next" href="../index.html"><span class="label">Up</span><span class="title">Contents</span></a>
+</nav>
+</article>
+</main>
+<script src="/js/main.js"></script><script src="/js/comments.js"></script><script src="/js/tts.js"></script>
+</body>
+</html>

@@ -1,0 +1,3391 @@
+
+===== PDF PAGE 17 =====
+
+Chapter I
+Algebraic Integers
+§ 1. The Gaussian Integers
+The equations
+2 = 1 + 1, 5 = 1+4, 13 = 4 + 9, 17 = 1 + 16, 29 = 4 + 25, 37 = 1 + 36
+show the first prime numbers that can be represented as a sum of two squares.
+Except for 2, they are all = 1 mod 4, and it is true in general that any odd
+prime number of the form p = a2 + b2 satisfies p = 1 mod 4, because
+perfect squares are = 0 or = 1 mod 4. This is obvious. What is not obvious
+is the remarkable fact that the converse also holds:
+(1.1) Theorem. For all prime numbers p ^ 2, one has:
+p = a2 + b2 (a,beZ) <£=> p = lmod4.
+The natural explanation of this arithmetic law concerning the ring Z of
+rational integers is found in the larger domain of the gaussian integers
+Z[i] = {a + bi\a,beZ}, i = V^T.
+In this ring, the equation p = x2 + y2 turns into the product decomposition
+p = (x + iy)(x - iy),
+so that the problem is now when and how a prime number p e Z factors
+in Z[/]. The answer to this question is based on the following result about
+unique factorization in Z[/].
+(1.2) Proposition. The ring Z[i] is euclidean, therefore in particular
+factorial
+Proof: We show that Z[i] is euclidean with respect to the function Z[i] ->
+N U {0}, a h* \a\2. So, for a,/3 e Z[i], /5 ^ 0, one has to verify the
+existence of gaussian integers y, p such that
+a = )/£ + p and |p|2 < |£|2.
+It clearly suffices to find y € Z[i] such that | ^ — y| < 1. Now, the
+J. Neukirch, Algebraic Number Theory
+© Springer-Verlag Berlin Heidelberg 1999
+
+===== PDF PAGE 18 =====
+
+2 Chapter I. Algebraic Integers
+gaussian integers form a lattice in the complex plane C (the points with
+integer coordinates with respect to the basis 1,/). The complex number ^
+lies in some mesh of the lattice and its distance from the nearest lattice point
+is not greater than half the length of the diagonal of the mesh, i.e. ^\/2.
+Therefore there exists an element y e Z[/] with I ^ — y\ < -a/2 < 1. □1 p '2
+Based on this result about the ring Z[/], theorem (1.1) now follows like
+this: it is sufficient to show that a prime number p == 1 mod 4 of Z does
+not remain a prime element in the ring Z[/]. Indeed, if this is proved, then
+there exists a decomposition
+p = a-fi
+into two non-units a, ft of Z[/]. The norm of z = x + /y is defined by
+N(x + iy) = (x + iy)(x - iy) = x2 + y2,
+i.e., by N(z) = |z|2. It is multiplicative, so that one has
+Since a and /? are not units, it follows that N(a), N(/3) ^ 1 (see exercise 1),
+and therefore p = N(a) = a2 + b2, where we put a — a-\-bi.
+Finally, in order to prove that a rational prime of the form p = 1 + An
+cannot be a prime element in Z[z], we note that the congruence
+— 1 = x2 mod p
+admits a solution, namely x = (2n)!. Indeed, since —1
+by Wilson's theorem, one has
+-1 ee (p - 1)! = [ 1 • 2 • • • (2n)] [ (p - 1) (p - 2)
+ee [(2n)!][(-l)2w(2n)!] = [(2n)\]2 mod p.
+Thus we have p \x2 + 1 = (x + i)(x — /). But since ^ ± -^ ^ Z[/], p does
+not divide any of the factors x + i,x — i, and is therefore not a prime element
+in the factorial ring Z[/].
+The example of the equation p = x2+y2 shows that even quite elementary
+questions about rational integers may lead to the consideration of higher
+domains of integers. But it was not so much for this equation that we have
+introduced the ring Z[i], but rather in order to preface the general theory
+of algebraic integers with a concrete example. For the same reason we will
+now look at this ring a bit more closely.
+(p — 1)! mod p
+(P - 2#i)]
+
+===== PDF PAGE 19 =====
+
+§ 1. The Gaussian Integers 3
+When developing the theory of divisibility for a ring, two basic problems
+are most prominent: on the one hand, to determine the units of the ring in
+question, on the other, its prime elements. The answer to the first question
+in the present case is particularly easy. A number a = a + bi e Z[i] is a
+unit if and only if its norm is 1:
+N(a) := (a + ib)(a - ib) = a2 + b2 = l
+(exercise 1), i.e., if either a2 = 1, b2 = 0, or a2 = 0, b2 = 1. We thus obtain
+the
+(1.3) Proposition. The group of units of the ring Z [ i ] consists of the fourth
+roots of unity,
+Z[i]* = {1, -l,i\ -/}.
+In order to answer the question for primes, i.e., irreducible elements of
+the ring Z[/], we first recall that two elements ck,j8 in a ring are called
+associated, symbolically a ~ P, if they differ only by a unit factor, and
+that every element associated to an irreducible element tv is also irreducible.
+Using theorem (1.1) we obtain the following precise list of all prime numbers
+of Z[i].
+(1.4) Theorem. The prime elements n of Z[/], up to associated elements,
+are given as follows.
+(1) n = l+i,
+(2) n = a + 6/ with a2 + b2 = p, p == 1 mod 4, a > |6| > 0,
+(3) n = p, p == 3 mod 4.
+Here, p denotes a prime number of Z.
+Proof: Numbers as in (1) or (2) are prime because a decomposition 7T = a -ft
+in Z[/] implies an equation
+p = Af(7r) = tf(a) • #08),
+with some prime number p. Hence either N(a) = 1 or ^V(j8) = 1, so that
+either a or /? is a unit.
+Numbers n = p, where p == 3 mod 4, are prime in Z[/], because
+a decomposition p = a • p into non-units a,j8 would imply that p2 =
+A^(a) • N(P), so that p = N(a) = A^(a + 6i) = a2 + ft2, which according
+to (1.1) would yield p = 1 mod 4.
+
+===== PDF PAGE 20 =====
+
+4 Chapter I. Algebraic Integers
+This being said, we have to check that an arbitrary prime element n
+of Z[i] is associated to one of those listed. First of all, the decomposition
+N(n) —7t'7t — p\'"pr,
+with rational primes pt, shows that n\p for some p = /?;. This gives
+N(n) \N(p) = p2, so that either N(n) = p or N(n) = p2. In the case
+Af(7r) = p we get 7T = a + 6/ with a2 + b2 = p, so 7T is of type (2) or,
+if p = 2, it is associated to 1 + /. On the other hand, if N(n) = p2,
+then 7T is associated to p since p/n is an integer with norm one and
+thus a unit. Moreover, p == 3 mod 4 has to hold in this case because
+otherwise we would have p = 2 or p == 1 mod 4 and because of (1.1)
+p = a2 + b2 = (a + bi)(a — 6i) could not be prime. This completes theproof. □
+The proposition also settles completely the question of how prime
+numbers p e Z decompose in Z[/]. The prime 2 = (1 + i)(l — i) is associated to
+the square of the prime element 1 + /. Indeed, the identity \—i = — /(l + /)
+shows that 2 ~ (1 +1)2. The prime numbers p == 1 mod 4 split into two
+conjugate prime factorsJ & F p = (a + bi)(a - bi),
+and the prime numbers p == 3 mod 4 remain prime in Z[/].
+The gaussian integers play the same role in the field
+Q(i) = {fl + «|fl,fceQ}
+as the rational integers do in the field Q. So they should be viewed as the
+"integers" in Q(/). This notion of integrality is relative to the coordinates of
+the basis 1,/. However, we also have the following characterization of the
+gaussian integers, which is independent of a choice of basis.
+(1.5) Proposition. Z[i] consists precisely of those elements of the extension
+field Q(i) of Q which satisfy a monic polynomial equation
+x2 + ax + b = 0
+with coefficients a, b e Z.
+Proof: An element a = c + id e Q(/) is a zero of the polynomial
+jc2 + ox + b e Q[x] with a = -2c, b = c2 + d2.
+If c and d are rational integers, then so are a and b. Conversely, if a and b
+are integers, then so are 2c and 2d. From (2c)2 + (2d)2 = 4fe == 0 mod 4 it
+follows that (2c)2 == (2d)2 == 0 mod 4, since squares are always == 0 or == 1.
+Hence c and d are integers. □
+
+===== PDF PAGE 21 =====
+
+§2. Integrality 5
+The last proposition leads us to the general notion of an algebraic integer
+as being an element satisfying a monic polynomial equation with rational
+integer coefficients. For the domain of the gaussian integers we have obtained
+in this section a complete answer to the question of the units, the question
+of prime elements, and to the question of unique factorization.
+These questions indicate already the fundamental problems in the general
+theory of algebraic integers. But the answers we found in the special
+case Z[i] are not typical. Novel features will present themselves instead.
+Exercise 1. a € Z[/] is a unit if and only if N(a) = 1.
+Exercise 2. Show that, in the ring Z[/], the relation afi = syn, for a,/? relatively
+prime numbers and s a unit, implies a = e'%n and ft = e"rjn, with e\ e" units.
+Exercise 3. Show that the integer solutions of the equation
+x2 + y2 = z2
+such that x, y, z > 0 and (x,y,z) = 1 ("pythagorean triples") are all given, up to
+possible permutation of x and y, by the formulae
+x = u2 — v2, y=2uv, z = u2-\-v2,
+where w, v e Z, u > v > 0, (w, v) = 1, w, v not both odd.
+Hint: Use exercise 2 to show that necessarily x + iy = set2 with a unit s and with
+a = u -\-iv € Z[/].
+Exercise 4. Show that the ring Z[i] cannot be ordered.
+Exercise 5. Show that the only units of the ring Z[V—~d\ = Z + Z>/—~d, for any
+rational integer d > 1, are ±1.
+Exercise 6. Show that the ring Z[Vd] = Z + Z\/5, for any squarefree rational
+integer d > 1, has infinitely many units.
+Exercise 7. Show that the ring Z[V2] = Z + Z\/2 is euclidean. Show furthermore
+that its units are given by ±(1 + \/2)n, n £ Z, and determine its prime elements.
+§ 2. Integrality
+An algebraic number field is a finite field extension K of Q. The
+elements of K are called algebraic numbers. An algebraic number is called
+integral, or an algebraic integer, if it is a zero of a monic polynomial
+f(x)eZ[x], This notion of integrality applies not only to algebraic
+numbers, but occurs in many different contexts and therefore has to be treated
+in full generality.
+
+===== PDF PAGE 22 =====
+
+6 Chapter I. Algebraic Integers
+In what follows, rings are always understood to be commutative rings
+with 1.
+(2.1) Definition. Let A c B be an extension of rings. An element b e B is
+called integral over A, if it satisfies a monic equation
+xn + axxn~x H h an = 0, n > 1,
+with coefficients at e A. The ring B is called integral over A if all elements
+b e B are integral over A.
+It is desirable, but strangely enough not immediately obvious, that the
+sum and the product of two elements which are integral over A are again
+integral. This will be a consequence of the following abstract reinterpretation
+of the notion of integrality.
+(2.2) Proposition. Finitely many elements b\, ..., bn e B are all integral
+over A if and only if the ring A[b\, ..., bn] viewed as an A-module is finitely
+generated.
+To prove this we make use of the following result of linear algebra.
+(2.3) Proposition (Row-Column Expansion). Let A = (aij) bean(r xr)­
+matrix with entries in an arbitrary ring, and let A* = (a*A be the adjoint
+matrix, i.e., a*. = (—l)l+J det(A/;), where the matrix A/y is obtained from A
+by deleting the i -th column and the j -th row. Then one has
+AA* = A*A = det(A)£,
+where E denotes the unit matrix of rank r. For any vector x = (jci, ..., xr),
+this yields the implication
+Ax = 0 =» (detA)jc =0.
+Proof of proposition (2.2): Let b e B be integral over A and f(x) e A[x]
+a monic polynomial of degree n > 1 such that f(b) = 0. For an arbitrary
+polynomial g(x) e A[x] we may then write
+g(x) =q(x)f(x)+r(x),
+with q(x), r(x) e A[x] and deg(r(x)) < n, so that one has
+gib) = r (b) = a0 + axb + • • • + an-ibn~1.
+Thus A[b] is generated as A-module by 1,6, ..., bn~l.
+
+===== PDF PAGE 23 =====
+
+§2. Integrality 7
+More generally, if b\, ..., bn e B are integral over A, then the fact that
+A[b\, ..., bn] is of finite type over A follows by induction on n. Indeed,
+since bn is integral over R — A[b\, ..., bn-\], what we have just shown
+implies that R[bn] = A[b\, ..., bn] is finitely generated over R, hence also
+over A, if we assume, by induction, that R is an A-module of finite type.
+Conversely, assume that the A-module A[b\, ..., bn] is finitely generated
+and that &>i, ..., cor is a system of generators. Then, for any element
+b e A[b\, ..., bn], one finds that
+r
+ft cot = J] ayfijy, i = 1, ..., r, ay e A.
+7=1
+From (2.3) we see that dtt(bE — (aij)) coi = 0, / = 1, ..., r (here E is the
+unit matrix of rank r), and since 1 can be written 1 = c\co\ H h cr&>r, the
+identity Ati(bE — (aij)) = 0 gives us a monic equation for b with coefficients
+in A. This shows that ft is indeed integral over A. □
+According to this proposition, if b\, ..., bn e B are integral over A,
+then so is any element b of A[b\, ..., few], because A[b\, ...,bn,b] =
+A[bi, ..., bn] is a finitely generated A-module. In particular, given two
+integral elements b\,b2 € B, then b\ + fo2 and b\b2 are also integral over A.
+At the same time we obtain the
+(2.4) Proposition. Let A c Z? c C be two ring extensions. IfC is integral
+over B and B is integral over A, then C is integral over A.
+Proof: Take c e C, and let cn + bic"-1 H h fe^ = 0 be an equation with
+coefficients in B. Write R = A[fei, ..., fe«]. Then R[c] is a finitely generated
+J?-module. If B is integral over A, then 7?[c] is even finitely generated
+over A, since R is finitely generated over A. Thus c is integral over A. □
+From what we have proven, the set of all elements
+A = {b e B | b integral over A}
+in a ring extension A c B forms a ring. It is called the integral closure
+of A in B. A is said to be integrally closed in B if A = A. It is immediate
+from (2.4) that the integral closure A is itself integrally closed in B. If A is an
+integral domain with field of fractions K, then the integral closure A of A
+in K is called the normalization of A, and A is simply called integrally
+closed if A = A. For instance, every factorial ring is integrally closed.
+
+===== PDF PAGE 24 =====
+
+8 Chapter I. Algebraic Integers
+In fact, if alb e K (a, b e A) is integral over A, i.e.,
+(a/b)n + ax (a/b)n~l + • • • + an = 0,
+with at e A, then
+an + aiban~l + • • • + anbn = 0.
+Therefore each prime element n which divides b also divides a. Assuming
+a/b to be reduced, this implies a/b e A.
+We now turn to a more specialized situation. Let A be an integral
+domain which is integrally closed, K its field of fractions, L\K a finite
+field extension, and B the integral closure of A in L. According to (2.4), Z?
+is automatically integrally closed. Each element /? e L is of the form
+b
+ft = - » &eB,fleA,
+because if
+a/i/*71 H \-aif} + a0 = 0, fl/6A, a„/0,
+then b — an^ is integral over A, an integral equation
+(a^)" + • • • + flI(fl„iS) + a'0 = 0, fl; e A,
+being obtained from the equation for /? by multiplication by a%~1.
+Furthermore, the fact that A is integrally closed has the effect that an element ]8eL
+is integral over A if and only if its minimal polynomial p(x) takes its
+coefficients in A. In fact, let f} be a zero of the monic polynomial g(x) e A[x],
+Then p(x) divides g(x) in K[x], so that all zeroes f}\, ..., f}n of p(x)
+are integral over A, hence the same holds for all the coefficients, in other
+words p(x) e A[x].
+The trace and the norm in the field extension L\K furnish important tools
+for the study of the integral elements in L. We recall the
+(2.5) Definition. The trace and norm of an element x e L are defined to be
+the trace and determinant, respectively, of the endomorphism
+Tx : L -» L, Tx (a) = xa,
+of the K -vector space L:
+TrLlK(x)=Tr(Tx), NL]K (x) = det(Zi).
+
+===== PDF PAGE 25 =====
+
+§2. Integrality 9
+In the characteristic polynomial
+fx(t) = det(f id-7i) = tn - axtn-x + ... + {-\)nan e K[t]
+of Tx, n = [L : K], we recognize the trace and the norm as
+0i = TrL\K(x) and an = NL\K(x).
+Since rx+>7 = Tx + 7^ and Txy = TX oTy,we obtain homomorphisms
+TrLlK:L-^K and NL[K : L*-^ K*.
+In the case where the extension L\K is separable, the trace and norm admit
+the following Galois-theoretic interpretation.
+(2.6) Proposition. If L\K is a separable extension and a : L -> K varies
+over the different K -embeddings ofL into an algebraic closure KofK, then
+we have
+a) /*(o = nc-<™).
+o
+(ii) TrL\K{x) = £>*,
+(iii) A^L|A:W = n^­
+Proof: The characteristic polynomial fx{t) is a power
+/x(0 = Px(Orf, </= [L : ff(*)] ,
+of the minimal polynomial
+px(t) =tm+ cxtm-x + • • • + cm, m = [*(*) : AT] ,
+of x. In fact, 1, jc, ..., xm_1 is a basis of AT(x)|/T, and if ct\, ..., a^ is a
+basis of L\K(x)9 then
+is a basis of L \ K. The matrix of the linear transformation Tx : y h* xy with
+respect to this basis has obviously only blocks along the diagonal, each of
+them equal to
+0/ °
+0
+0
+\-c„
+1
+0 1
+-Cm-\ ~cm-2
+0 \
+o
+i
+-ex)
+
+===== PDF PAGE 26 =====
+
+10 Chapter I. Algebraic Integers
+The corresponding characteristic polynomial is easily checked to be
+rw + Cirw-1 + ... + cw=pJC(0,
+so that finally fx(t) = Px(t)d.
+The set HomK(L,K) of all K-embeddings of L is partitioned by the
+equivalence relation
+a ~ r 4=^ crx = xx
+into m equivalence classes of d elements each. If o\, ..., am is a system of
+representatives, then we find
+m
+Px(t) = n ('-*!*).
+and Mt) = nsiic - ^-^ = nr=i ri^c - **) = ru* - **)• ™sproves (i), and therefore also (ii) and (iii), after Vieta. □
+(2.7) Corollary. In a tower of finite field extensions K c L c M, one has
+TrL\KoTrM\L =TrM\K , NL|a: oNmil = Nm\k ­
+Proof: We assume that M|£" is separable. The set Hom/^M,^) of K­
+embeddings of M is partitioned by the relation
+into m = [L : K] equivalence classes. If a\, ..., am is a system of
+representatives, then Hom#(L, iO = {<t; |l | / = 1, ..., m}, and we findmm m
+1 = 1 or~OT/ / = 1 f = l
+= 7>l|a:(7>M|l(^)) .
+Likewise for the norm.
+We will not need the inseparable case for the sequel. However it follows
+easily from what we have shown above, by passing to the maximal separable
+subextension MS\K. Indeed, for the inseparable degree [M : K]( =
+[M : Ms] one has [M : K]( = [M : L],- [L : K]t and
+TrM\K(x) = [M : AT]/ Tr^i* (*), Afa |*(*) = NM>\K(x)[M:K]i
+(see [143], vol. I, chap. II, § 10). □
+
+===== PDF PAGE 27 =====
+
+§2. Integrality 11
+The discriminant of a basis «i, ..., an of a separable extension L\K is
+defined by
+d(au ...,«„)= det((or,-ay))2,
+where a/, z = 1, ..., n, varies over the K-embeddings L -^ K. Because of
+the relation
+TrL\KiptiOtj) = Etao^foay),
+the matrix (Tr^Ca/ay)) is the product of the matrices (cr^of/)r and (akotj).
+Thus one may also write
+d(au ...,«„)= det(rrL|/Ka/a/)) •
+In the special case of a basis of type 1,0, ..., 0n~~l one gets
+</(l,0, ...,0n-l)= Y\(0i-0j)\
+where 0,- = 07 0. This is seen by successively multiplying each of the first
+(n — 1) columns in the Vandermonde matrix
+/ 1 0! 02 ... 0f"1\i 02 022 • • • etl
+V l on 02 ... 0^/
+by 0i and subtracting it from the following.
+(2.8) Proposition. If L\K is separable and ot\, ..., an is a basis, then the
+discriminant
+d(ctu ..., otn) 7^ 0,
+and
+(x,y) = TrLlK(xy)
+is a nondegenerate bilinear form on the K-vector space L.
+Proof: We first show that the bilinear form (x, y) = Tr{xy) is nondegenerate.
+Let 0 be a primitive element for L\K, i.e., L = K(6). Then 1,0, ..., 6n~l
+is a basis with respect to which the form (x,y) is given by the matrix
+M = (TrL\K{0l~~x0J~~x))ij=\^„, n. It is nondegenerate because, for 0,- = 07 0,
+we have
+det(M) = </(l, 0, ..., 0*-1) = n (ft " Ojf + 0.
+If #1, ..., a„ is an arbitrary basis of L \K, then the bilinear form (jc, y) with
+respect to this basis is given by the matrix M = (7>L|^(a/ay)). From the
+above it follows that d(ai, ..., orw) = det(M) ^ 0. D
+
+===== PDF PAGE 28 =====
+
+12 Chapter I. Algebraic Integers
+After this review from the theory of fields, we return to the integrally
+closed integral domain A with field of fractions K, and to its integral
+closure B in the finite separable extension L\K. If x e B is an integral
+element of L, then all of its conjugates ax are also integral. Taking into
+account that A is integrally closed, i.e., A = B n K, (2.6) implies that
+TrL[K(x), NLlK(x)eA.
+Furthermore, for the group of units of B over A, we obtain the relation
+jcgB* ^ NLlK(x)eA\
+For if clNl\k(x) = 1, a e A, then 1 = a Y\a crx = jx for some y e B. The
+discriminant is often useful because of the following
+(2.9) Lemma. Leta\, ..., an be a basis of L|/sT which is contained in B, of
+discriminant d = d(ot\, ..., aw). Then one has
+dB C Aai H h Aa,,.
+Proof: If a = a\a\ -\ h anan e B, aj e K, then the aj are a solution of
+the system of linear equations
+TrL\KiptiOt) = Y,TrL\K(ai<Xj)aj,
+J
+and, as Tri\K{otiOt) € A, they are given as the quotient of an element of A
+by the determinant det(rrL|Ar(of,-ay-)) = d. Therefore daj e A, and thus
+da e Aot\ H h Aorw. □
+A system of elements co\, ..., con e B such that each b e B can be
+written uniquely as a linear combination
+b — a\(D\ H Van(on
+with coefficients a,- € A, is called an integral basis of B over A (or:
+an A-basis of B). Since such an integral basis is automatically a basis
+of L | /T, its length /i always equals the degree [L : K] of the field extension.
+The existence of an integral basis signifies that B is a free A-module
+of rank n = [L : K]. In general, such an integral basis does not exist.
+If, however, A is a principal ideal domain, then one has the following more
+general
+(2.10) Proposition. If L\K is separable and A is a principal ideal domain,
+then every finitely generated B-submodule M ^0 of L is a free A-module of
+rank [L : K]. In particular, B admits an integral basis over A.
+
+===== PDF PAGE 29 =====
+
+§2. Integrality 13
+Proof: Let M ^ 0 be a finitely generated B-submodule of L and ai, ..., <xn
+a basis of L \K. Multiplying by an element of A, we may arrange for the ol[
+to lie in B. By (2.9), we then have dB c Act\ + h Aan, in particular,
+rank(B) < [L : /£], and since a system of generators of the A-module B is
+also a system of generators of the K-module L, we have rank(B) = [L : K].
+Let /xi, ..., jir e M be a system of generators of the B -module M. There
+exists an a e A, a / 0, such that a/x; e B, / = 1, ..., r, so that aM c B.
+Then
+adM C.dB C. Aa\ + h Aorw = Mo.
+According to the main theorem on finitely generated modules over principal
+ideal domains, since Mo is a free A-module, so is adM, and hence also M.
+Finally,
+[L : K] = rank(fl) < rank(M) = rankedM) < rank(M0) = [L : AT],
+hence rank(M) = [L : K], D
+It is in general a difficult problem to produce integral bases. In concrete
+situations it can also be an important one. This is why the following
+proposition is interesting. Instead of integral bases of the integral closure B
+of A in L, we will now simply speak of integral bases of the extension L\K.
+(2.11) Proposition. Let L \ K and L'\K be two Galois extensions of degree n,
+resp. n', such that L D V = K. Let co\, ..., con, resp. co[, ..., cofn,, be an
+integral basis ofL\K, resp. L'\K, with discriminant d, resp. d'. Suppose that
+d and d' are relatively prime in the sense that xd + x'd' = 1, for suitable
+x, x' e A. Then coi co'- is an integral basis ofLL\ of discriminant dn'd,n.
+Proof: As L C\Lr = K, we have \LL' : K] = nnl', so the nn' products &>;&/
+do form a basis of LL'\K. Now let a be an integral element of LL\ and
+write
+a = J2 aij °>i ^j > aij e K ­
+We have to show that atj e A. Put $3 — Y^i^j^i- Let G(LU\U) =
+{ori, ..., an) and G(LL'\L) = {cr[, ..., cr'n,}. Thus
+G(LL'\K) = {aka^\k = 1, ...,n, £ = 1, ..., ri) .
+Putting
+7 = (cr^'j), a = (orfa, ..., ct»' , & = ()8i, ..., M*,
+
+===== PDF PAGE 30 =====
+
+14 Chapter I. Algebraic Integers
+one finds det(!T)2 = d' and
+a = Tb.
+Write T* for the adjoint matrix of T. Then row-column expansion (2.3) gives
+det(T)b = T*a.
+Since T* and a have integral entries in LL\ the multiple d'b has integral
+entries in L, namely d'fy = ^ d'tf/y &>/• Thus d'aij e A. Swapping the roles
+of (cot) and (&/•), one checks in the same manner that daij e A, so that
+aij = jcda/y + x'd'aij € A.
+Therefore <w,-a/, is indeed an integral basis of LL'\K. We compute the
+discriminant z^ of this integral basis. Since G(LL'\K) = {cr^cr^ | A: =
+1, ..., n9 £ = 1, ..., /i7}, it is the square of the determinant of the
+(nnf x /i/i^-matrix
+M = (cr^ ^^) = (crka)i cr'zCDj).
+This matrix is itself an (n' x /^-matrix with entries (/i x /i)-matrices of which
+the (£, y)-entry is the matrix QoW- where Q = (orjccoi). In other words,
+=
+\0 fi/ \^{^, ... Ea'n,co'nli
+Here £ denotes the (n x /i)-unit matrix. By changing indices the second
+matrix may be transformed to look like the first one. This yields
+A = det(M)2 = det(Q)2w/ det( (afa'j))2n = dn'd'n. D
+Remark: It follows from the proof that the proposition is valid for arbitrary
+separable extensions (not necessarily Galois), if one assumes instead of
+LDL' = K that L and V are linearly disjoint.
+The chief application of our considerations on integrality will concern the
+integral closure Ok ^ K of Z C Q in an algebraic number field K. By
+proposition (2.10), every finitely generated o^-submodule a of K admits
+a Z-basis ofi, ..., an,
+a = Zofi + h Zan .
+The discriminant
+d(cti, ..., <xn) = det((or,-a;-))
+
+===== PDF PAGE 31 =====
+
+§2. Integrality 15
+is independent of the choice of a Z-basis; if a[, ..., a!n is another basis,
+then the base change matrix T = (tf/y), ol\ = £\- ^7^; > as weU as its inverse,
+has integral entries. It therefore has determinant ±1, so that indeed
+d(a[, ..., arn) = det(r)2 d(c*i,...,«„) = d(c*i, ..., a„).
+We may therefore write
+d(a) =d(au ..., an).
+In the special case of an integral basis cd\, ..., con of Ok we obtain the
+discriminant of the algebraic number field K,
+dK =d(oK) =d(cou ...,<»„).
+In general, one has the
+(2.12) Proposition. If a c a' are two nonzero finitely generated Ok -sub­
+modules ofK, then the index (a' : a) is finite and satisfies
+d(o) = (d :o)2d{o!).
+All we have to show is that the index (o! : a) equals the absolute value
+of the determinant of the base change matrix passing from a Z-basis of a
+to a Z-basis of a'. This proof is part of the well-known theory of finitely
+generated Z-modules.
+Exercise 1. Is j^jr an algebraic integer?
+Exercise 2. Show that, if the integral domain A is integrally closed, then so is the
+polynomial ring A[t].
+Exercise 3. In the polynomial ring A = Q[X,Y], consider the principal ideal
+p = (X2 — Y3). Show that p is a prime ideal, but A/p is not integrally closed.
+Exercise 4. Let D be a squarefree rational integer ^ 0,1 and d the discriminant of
+the quadratic number field K = Q(\/D). Show that
+d = D, if D = 1 mod 4,
+d = 4D, if D =2 or 3 mod 4,
+and that an integral basis of K is given by {1,VD} in the second case, by
+{1, \(1 + V£>)} in the first case, and by {1, \(d + Vd)} in both cases.
+Exercise 5. Show that {1, Ifl, t/l1} is an integral basis of Q(^2).
+Exercise 6. Show that {1,0, \ (0 + 02)} is an integral basis of Q(0), 03 - 0 - 4 = 0.
+Exercise 7. The discriminant dK of an algebraic number field K is always = 0 mod 4
+or = 1 mod 4 (Stickelberger's discriminant relation).
+Hint: The determinant det(cr/<w/) of an integral basis coj is a sum of terms, each
+prefixed by a positive or a negative sign. Writing P, resp. N, for the sum of the
+positive, resp. negative terms, one finds dK = (P — N)2 = (P + N)2 — 4PN.
+
+===== PDF PAGE 32 =====
+
+16 Chapter I. Algebraic Integers
+§ 3, Ideals
+Being a generalization of the ring Z C Q, the ring Ok of integers of an
+algebraic number field K is at the center of all our considerations. As in Z,
+every non-unit a / 0 can be factored in Ok into a product of irreducible
+elements. For if a is not itself irreducible, then it can be written as a product
+of two non-units a = fly. Then by §2, one has
+1 < \NK\q(P)\ < \NK\q(<x)\ , 1 < \NK\q(y)\ < \NK\Q(a)\,
+and the prime decomposition of a follows by induction from those of ft
+and y. However, contrary to what happens in the rings Z and Z[z], the
+uniqueness of prime factorization does not hold in general.
+Example: The ring of integers of the field K = Q(V^5) is given by §2,
+exercise 4, as Ok = Z + ZV^5. In this ring, the rational integer 21 can be
+decomposed in two ways,
+21 = 3 • 7 = (1 + 2V=5) . (1 - 2V=5).
+All factors occurring here are irreducible in o^. For if one had, for
+instance, 3 = a/?, with a, ft non-units, then 9 = Nk\q(<x) Nk\q(P) would
+imply Nk\q(oc) = ±3. But the equation
+Nk\q(x + )> V-5) = x2 + 5y2 = ±3
+has no solutions in Z. In the same way it is seen that 7, 1 + l-sf—S, and
+1 — 2a/^5 are irreducible. As the fractions
+1 ± 2 V^5 1 ± 2J^5
+do not belong to Ok , the numbers 3 and 7 are not associated to 1 + 2V—5
+or 1 — 2>/^5. The two prime factorizations of 21 are therefore essentially
+different.
+Realizing the failure of unique factorization in general has led to one of the
+grand events in the history of number theory, the discovery of ideal theory by
+Eduard Kummer. Inspired by the discovery of complex numbers, Kummer's
+idea was that the integers of K would have to admit an embedding into a
+bigger domain of "ideal numbers" where unique factorization into "ideal
+
+===== PDF PAGE 33 =====
+
+§3. Ideals 17
+prime numbers" would hold. For instance, in the example of
+21 = 3 • 7 = (1 + 2VZ5 )(1 - 2V=5),
+the factors on the right would be composed of ideal prime numbers pi,p2,
+p3,p4, subject to the rules
+3 = P1P2, 7 = p3p4, 1 + 2V^5 = pip3, 1 - 2V^5 = p2p4 •
+This would resolve the above non-uniqueness into the wonderfully unique
+factorization
+21 = (Pip2)(p3p4) = (P1P3XP2P4).
+Kummer's concept of "ideal numbers" was later replaced by that of ideals
+of the ring o#. The reason for this is easily seen: whatever an ideal number
+a should be defined to be, it ought to be linked to certain numbers a e Ok
+by a divisibility relation a | a satisfying the following rules, for a, b, X e Ok,
+a\a and a\b => a\a±b; a\a =$ a\Xa.
+And an ideal number a should be determined by the totality of its divisors
+in Ok
+a= [a e Ok \ a\a).
+But in view of the rules for divisibility, this set is an ideal of Ok.
+This is the reason why Richard Dedekind re-introduced Kummer's "ideal
+numbers" as being the ideals of Ok- Once this is done, the divisibility
+relation a | a can simply be defined by the inclusion a e a, and more generally
+the divisibility relation a | b between two ideals by b C a. In what follows,
+we will study this notion of divisibility more closely. The basic theorem here
+is the following.
+(3.1) Theorem. The ring Ok is noetherian, integrally closed, and every prime
+ideal p ^ 0 is a maximal ideal.
+Proof: Ok is noetherian because every ideal a is a finitely generated Z­
+module by (2.10), and therefore a fortiori a finitely generated Ok -module.
+By §2, Ok is also integrally closed, being the integral closure of Z in K.
+It thus remains to show that each prime ideal p / 0 is maximal. Now, p n Z
+is a nonzero prime ideal (p) in Z: the primality is clear, and if y e p, y / 0,
+and
+yn+aiyn-l + ...+an=0
+is an equation for y with a\ e Z, an / 0, then an e p 0 Z. The integral
+domain o = Ok/P arises from k = Z/pZ by adjoining algebraic elements
+and is therefore again a field (recall the fact that ic[a] = ic(a), if or is
+algebraic). Therefore p is a maximal ideal. □
+
+===== PDF PAGE 34 =====
+
+18 Chapter I. Algebraic Integers
+The three properties of the ring Ok which we have just proven lay the
+foundation of the whole theory of divisibility of its ideals. This theory was
+developed by Dedekind, which suggested the following
+(3.2) Definition. A noetherian, integrally closed integral domain in which
+every nonzero prime ideal is maximal is called a Dedekind domain.
+Just as the rings of the form Ok may be viewed as generalizations of the
+ring Z, the Dedekind domains may be viewed as generalized principal ideal
+domains. Indeed, if A is a principal ideal domain with field of fractions K,
+and L \ K is a finite field extension, then the integral closure B of A in L is,
+in general, not a principal ideal domain, but always a Dedekind domain, as
+we shall show further on.
+Instead of the ring Ok we will now consider an arbitrary Dedekind
+domain o, and we denote by K the field of fractions of o. Given two
+ideals a and b of o (or more generally of an arbitrary ring), the divisibility
+relation a|b is defined by b c a, and the sum of the ideals by
+a + b = [a+ b\ae a, be b}.
+This is the smallest ideal containing a as well as b, in other words, it is
+the greatest common divisor gcd(a, b) of a and b. By the same token the
+intersection a Pi b is the 1cm (least common multiple) of a and b. We define
+the product of a and b by
+ab = { Ylaibi | ai e a> bi e b] •
+i
+With respect to this multiplication the ideals of o will grant us what the
+elements alone may refuse to provide: the unique prime factorization.
+(3.3) Theorem. Every ideal a of o different from (0) and (1) admits a
+factorization
+a = P\" 'Pr
+into nonzero prime ideals p; ofo which is unique up to the order of the factors.
+This theorem is of course perfectly in line with the invention of "ideal
+numbers". Still, the fact that it holds is remarkable because its proof is far
+from straightforward, and unveils a deeper principle governing the arithmetic
+in o. We prepare the proof proper by two lemmas.
+
+===== PDF PAGE 35 =====
+
+§3. Ideals 19
+(3.4) Lemma. For every ideal a ^ 0 of o there exist nonzero prime ideals
+pi, p2, •.., Pr such that
+a 2 Pip2* "Pr­
+Proof: Suppose the set 9Jt of those ideals which do not fulfill this condition
+is nonempty. As o is noetherian, every ascending chain of ideals becomes
+stationary. Therefore 9Jt is inductively ordered with respect to inclusion and
+thus admits a maximal element a. This cannot be a prime ideal, so there exist
+elements fri,fr2 g o such that b\b2 G a, but b\,b2 $ a. Put <*i = (&i) + a,
+a2 = (fr2) + a. Then a ^ <*i, a ^ a2 and ai<x2 c a. By the maximality of a,
+both ai and a2 contain a product of prime ideals, and the product of these
+products is contained in a, a contradiction. □
+(3.5) Lemma. Let p be a prime ideal ofo and define
+p"1 = [x e K | xp c o}.
+Then one has ap-1 := {£]/ a,-jc,-1 a,- G a, *,- g p"1} / a, for every ideal a / 0.
+Proof: Let a G p, a / 0, and pip2 • • -pr c (a) c p, with r as small as
+possible. Then one of the p;, say pi, is contained in p, and so pi = p because
+pi is a maximal ideal. (Indeed, if none of the p,- were contained in p, then
+for every i there would exist at e p; \ p such that a\---ar e p. But p is
+prime.) Since p2 • • • pr £ (fl)> there exists b e p2 • • • pr such that b £ ao,
+i.e., a~lb (£ o. On the other hand we have 6pc (a), i.e., a~lbp C e>, and
+thus a_1fe G p"1. It follows that p"1 / o.
+Now let a 7^ 0 be an ideal of o and ai, ..., an a system of generators.
+Let us assume that ap"1 = a. Then for every x e p"1,
+XOL{ = £fl/y Ofy , 0,-y G 0.
+J
+Writing A for the matrix (jc5/y — a/y) we obtain A(ofi, ..., an)f = 0. By (2.3),
+the determinant d = det(A) satisfies dori = • • • = dan = 0 and thus J = 0.
+It follows that x is integral over o, being a zero of the monic polynomial
+f(X) = det(X5,-y -a,-y) G o[X]. Therefore x e o. This means that p"1 = o,a contradiction. □
+Proof of (3.3): I. Existence of the prime ideal factorization. Let SEFt be the
+set of all ideals different from (0) and (1) which do not admit a prime ideal
+decomposition. If SEFt is nonempty, then we argue as for (3.4) that there exists
+
+===== PDF PAGE 36 =====
+
+20 Chapter I. Algebraic Integers
+a maximal element a in 9Jt. It is contained in a maximal ideal p, and the
+inclusion o c p"1 gives us
+a c ap"1 c pp"1 c o.
+By (3.5), one has a ^ ap"1 and p ^ p p"1 c o. Since p is a maximal ideal,
+it follows that p p"1 = o. In view of the maximality of a in 9Jt and since
+a / p, i.e., ap"1 / o, the ideal ap"1 admits a prime ideal decomposition
+ap"1 = pi • • • pr, and so does a = ap"1 p = pi • • • prp, a contradiction.
+II. Uniqueness of the prime ideal factorization. For a prime ideal p one has:
+abcp=>aCporbcp, i.e., p | a b => p | a or p | b. Let
+a = pip2---pr = qi (\2--qs
+be two prime ideal factorizations of a. Then pi divides a factor q;, say qi,
+and being maximal equals qi. We multiply by p^"1 and obtain, in view of
+Pi /Pipr1 =0, thai
+P2 • • • Pr = q2 • • • qs.
+Continuing like this we see that r = s and, possibly after renumbering,pi = q,-, for all i = 1, ..., r. D
+Grouping together the occurrences of the same prime ideals in the prime
+ideal factorization of an ideal a ^ 0 of o, gives a product representation
+a = p?...p;*, vt >0.
+In the sequel such an identity will be automatically understood to signify
+that the p/ are pairwise distinct. If in particular a is a principal ideal (a),
+then - following the tradition which tends to attribute to the ideals the role
+of "ideal numbers" — we will write with a slight abuse of notation
+Similarly, the notation a | a is often used instead of a | {a) and (a, b) — 1
+is written for two relatively prime ideals, instead of the correct formula
+(a, b) = a + b = o. For a product a = ai • • • an of relatively prime ideals
+ai, ..., an, one has an analogue of the well-known "Chinese Remainder
+Theorem" from elementary number theory. We may formulate this result for
+an arbitrary ring taking into account that
+n
+1=1
+Indeed, since a/1 a, / = 1, ..., n, we find on the one hand that a c p|/=i ai ->
+and for a e f]( at we find that a/1 a, and therefore, the factors being relatively
+prime, we get a = ai • • • an | a, i.e., a e a.
+
+===== PDF PAGE 37 =====
+
+§3. Ideals 21
+(3.6) Chinese Remainder Theorem. Let a\, ..., an be ideals in a ring o
+such that a, + ay = o fori =£ j. Then, if a = (Xi=\ a* > one ^as
+o/a = © o/ai.
+*=i
+Proof: The canonical homomorphismn n
+o —> © o/ai, a i—► © a mod a,-,i=\ i=\
+has kernel a = f\t a/. It therefore suffices to show that it is surjective.
+For this, let xi mod a; € o/a/, / = 1, ..., n, be given. If n = 2, we
+may write 1 = ^i + ^2, 0; € a/, and putting x = X2#i + xi^ we get
+x = xi mod a/, / = 1,2.
+If ft > 2, we may find as before an element y\ e o such that
+n
+y\ = 1 mod ai, ji = 0 mod p| a,-,
+i=2
+and, by the same token, elements j2, ..., yn such that
+yt = 1 mod a,-, y; = 0 mod ay for j ^ y.
+Putting x = jciyi + • • • + x^ we find x == xx mod a/, / = 1, ..., n. Thisproves the surjectivity. □
+Now let o be again a Dedekind domain. Just as for nonzero numbers, we
+may obtain inverses for the nonzero ideals of o by introducing the notion
+of fractional ideal in the field of fractions K.
+(3.7) Definition. A fractional ideal of K is a finitely generated o-submod­
+ulea^OofK.
+For instance, an element a e K* defines the fractional "principal ideal"
+(a) = ao. Obviously, since o is noetherian, an o-submodule a ^ 0 of K is
+a fractional ideal if and only if there exists c € o, c / 0, such that ca c o
+is an ideal of the ring o. Fractional ideals are multiplied in the same way
+as ideals in o. For distinction the latter may henceforth be called integral
+ideals of K.
+(3.8) Proposition. The fractional ideals form an abelian group, the ideal
+group Jk ofK. The identity element is (1) = o, and the inverse of a is
+a"1 = [x e K | xa c o] .
+
+===== PDF PAGE 38 =====
+
+22 Chapter I. Algebraic Integers
+Proof: One obviously has associativity, commutativity and a(l) = a. For
+a prime ideal p, (3.5) says that p C pp"1 and therefore pp"1 = o
+because p is maximal. Consequently, if a = pi - - -pr is an integral ideal,
+then b = pj"1 • • • p~l is an inverse, ba — o implies that b c a"1. Conversely,
+if xa c o, then xab c b, so x e b because ab = o. Thus we have b = a"1.
+Finally, if a is an arbitrary fractional ideal and c e o, c ^ 0, is such that
+ca c o, then (ca)"1 = c~lcrl is the inverse of ca, so aa"1 = o. □
+(3.9) Corollary. Every fractional ideal a admits a unique representation as a
+product
+P
+with vp e Z and vp = 0 for almost all p. In other words, Jk is the free abelian
+group on the set of nonzero prime ideals pofo.
+Proof: Every fractional ideal a is a quotient a = b/c of two integral ideals b
+and c, which by (3.3) have a prime decomposition. Therefore a has a prime
+decomposition of the type stated in the corollary. By (3.3), it is unique if a
+is integral, and therefore clearly also in general. □
+The fractional principal ideals (a) = ao, a e K*, form a subgroup of the
+group of ideals Jk , which will be denoted Pk . The quotient group
+CIk=Jk/Pk
+is called the ideal class group, or class group for short, of K. Along with
+the group of units o* of o, it fits into the exact sequence
+1 _^ 0* _^ K* _^ jK _^ ciK —► 1,
+where the arrow in the middle is given by a \-+ {a). So the class group
+CIk measures the expansion that takes place when we pass from numbers
+to ideals, whereas the unit group o* measures the contraction in the
+same process. This immediately raises the problem of understanding these
+groups o* and CIk more thoroughly. For general Dedekind domains they
+may turn out to be completely arbitrary groups. For the ring Ok of integers
+in a number field K, however, one obtains important finiteness theorems,
+which are fundamental for the further development of number theory. But
+these results cannot be had for nothing. They will be obtained by viewing
+the numbers geometrically as lattice points in space. For this we will now
+prepare the necessary concepts, which all come from linear algebra.
+
+===== PDF PAGE 39 =====
+
+§4. Lattices 23
+Exercise 1. Decompose 33 + 11>/—7 into irreducible integral elements of Q(a/—7 )•
+Exercise 2. Show that
+are two essentially different decompositions into irreducible integral elements of
+Q(V=47).
+Exercise 3. Let d be squarefree and p a prime number not dividing 2d. Let o be the
+ring of integers of Q(Vd). Show that (p) = p o is a prime ideal of o if and only if
+the congruence x1 = d mod p has no solution.
+Exercise 4. A Dedekind domain with a finite number of prime ideals is a principal
+ideal domain.
+Hint: If a = p\l • • • pvrr ^ 0 is an ideal, then choose elements 717 e Pi^pj and apply
+the Chinese remainder theorem for the cosets it]1 mod pvtl + .
+Exercise 5. The quotient ring o/a of a Dedekind domain by an ideal a ^ 0 is a
+principal ideal domain.
+Hint: For a = pn the only proper ideals of o/a are given by p/prt, ..., prt-1/pn­
+Choose n: € p \ p2 and show that pv = o;rv + p\
+Exercise 6. Every ideal of a Dedekind domain can be generated by two elements.
+Hint: Use exercise 5.
+Exercise 7. In a noetherian ring R in which every prime ideal is maximal, each
+descending chain of ideals cii 2 &i 2 • • • becomes stationary.
+Hint: Show as in (3.4) that (0) is a product pi • • • pr of prime ideals and that the
+chain R 2 pi 2 pip2 2 • • • 2 Pi • • • Pr = (0) can be refined into a composition
+series.
+Exercise 8. Let m be a nonzero integral ideal of the Dedekind domain o. Show that
+in every ideal class of CIk , there exists an integral ideal prime to m.
+Exercise 9. Let o be an integral domain in which all nonzero ideals admit a unique
+factorization into prime ideals. Show that o is a Dedekind domain.
+Exercise 10. The fractional ideals a of a Dedekind domain o are projective o­
+modules, i.e., given any surjective homomorphism M —> N of o-modules, each
+homomorphism a —> N can be lifted to a homomorphism h : a -> M such that
+foh=g.
+§ 4. Lattices
+In § 1, when solving the basic problems concerning the gaussian integers,
+we used at a crucial place the inclusion
+Z[i] CC
+
+===== PDF PAGE 40 =====
+
+24 Chapter I. Algebraic Integers
+and considered the integers of Q(i) as lattice points in the complex plane.
+This point of view has been generalized to arbitrary number fields by
+Hermann Minkowski (1864-1909) and has led to results which make up an
+essential part of the foundations of algebraic number theory. In order to
+develop Minkowski's theory we first have to introduce the general notion of
+lattice and study some of its basic properties.
+(4.1) Definition. Let V be an n-dimensional R-vector space. A lattice in V
+is a subgroup of the form
+with linearly independent vectors v\, ..., vm ofV. The m -tuple {v\, ..., vm)
+is called a basis and the set
+0 = [xxv\ n \-xmvm | xt e R, 0 <xt < 1}
+a fundamental mesh of the lattice. The lattice is called complete or a Z ­
+structure ofV,ifm —n.
+The completeness of the lattice is obviously tantamount to the fact that
+the set of all translates 0 + y, y e 7\ of the fundamental mesh covers the
+entire space V.
+The above definition makes use of a choice of linearly independent
+vectors. But we will need a characterization of lattices which is independent
+of such a choice. Note that, first of all, a lattice is a finitely generated
+subgroup of V. But not every finitely generated subgroup is a lattice — for
+instance Z + Z>/2 c R is not. But each lattice r = Zv\ H h Zvm
+has the special property of being a discrete subgroup of V. This is to say
+that every point y e r is an isolated point in the sense that there exists a
+neighbourhood which contains no other points of T. In fact, if
+y =a\Vi-\ Vamvm e T,
+then, extending v\, ..., vm to a basis v 1? ..., vn of V, the set
+{xiui H \-xnvn | Xi e K, \ai - xi\ < 1 for i = 1, ..., m)
+clearly is such a neighbourhood. This property is indeed characteristic.
+(4.2) Proposition. A subgroup r C.V is a lattice if and only if it is discrete.
+
+===== PDF PAGE 41 =====
+
+§4. Lattices 25
+Proof: Let F be a discrete subgroup of V. Then F is closed. For let U be an
+arbitrary neighbourhood of 0. Then there exists a neighbourhood Ur c JJ of 0
+such that every difference of elements of Ur lies in U. If there were an x <£ F
+belonging to the closure of F, then we could find in the neighbourhood x+U'
+of x two distinct elements yi,yi G /\ so that 0 ^ y\ — y2 e U; — U; c. U.
+Thus 0 would not be an isolated point, a contradiction.
+Let Vo be the linear subspace of V which is spanned by the set F, and
+let m be its dimension. Then we may choose a basis u\, ..., um of Vo which
+is contained in F, and form the complete lattice
+Fq = Zu\ + • • • + Zum C F
+of Vo. We claim that the index (F : F0) is finite. To see this, let y,- e F vary
+over a system of representatives of the cosets in F/F0. Since Fq is complete
+in Vo, the translates &o + y, y e /o, of the fundamental mesh
+0O = {*iwi H hxmwm | *,- G K, 0 <X( < 1}
+cover the entire space Vo. We may therefore write
+Yt = M + yo/, ^/ e 0O, yo/ e r0 c v0.
+As the /x/ = Yi — Yoi € T lie discretely in the bounded set <Pq, they have to
+be finite in number. In fact, the intersection of F with the closure of &o is
+compact and discrete, hence finite.
+Putting now q = (F : T0), we have qF c To, whence11 1
+By the main theorem on finitely generated abelian groups, F therefore
+admits a Z-basis v\, ..., fr, r < m, i.e., T = Zv\ + ••• + Zvr. The
+vectors v\9 ..., fr are also R-linearly independent because they span the
+m -dimensional space Vq. This shows that F is a lattice. □
+Next we prove a criterion which will tell us when a lattice in the space V —
+given, say, as a discrete subgroup F C V — is complete.
+(4.3) Lemma. A lattice T in V is complete if and only if there exists a bounded
+subset M c V such that the collection of all translates M + y, y e r, covers
+the entire space V.
+
+===== PDF PAGE 42 =====
+
+26 Chapter I. Algebraic Integers
+Proof: If r = Zt»i H h Zuw is complete, then one may take M to be the
+fundamental mesh 0 — {x\V\ -\ \- xnvn | 0 < X[ < 1}.
+Conversely, let M be a bounded subset of V whose translates M + y,
+for y g r, cover V. Let Vb be the subspace spanned by r. We have to
+show that V = Vb- So let v e V. Since V = (Jy€r(M + y) we may write,for each vgN,
+vv = av + yv, av e M, yv^^^Vo.
+Since M is bounded, ^<zv converges to zero, and since Vb is closed,
+i> = lim -av + lim -yv = lim -/v € Vb- □v-»oo y v->oo y v->oo y
+Now let V be a euclidean vector space, i.e., an K-vector space of finite
+dimension n equipped with a symmetric, positive definite bilinear form
+( , ) : V x V —►».
+Then we have on V a notion of volume — more precisely a Haar measure.
+The cube spanned by an orthonormal basis e\,...,en has volume 1,
+and more generally, the parallelepiped spanned by n linearly independent
+vectors t>i, ..., vn,
+0 = [xxv\ H \-xnvn | Xi e R, 0 < jc,- < 1}
+has volume
+vol(4>) = | det A |,
+where A = ((2z)t) is the matrix of the base change from eu ..., en to
+v\, ..., vn, so that f/ = ^2kaikek. Since
+((u,-,u/>) = (E^^^yH^,^)) = (E^/^^) = AAr,
+we also have the invariant notation
+vol«P) = |det((i;/fi;y»|1/2.
+Let r be the lattice spanned by v\9 ..., vn. Then 0 is a fundamental
+mesh of T, and we write for short
+vol(r)=vol(«).
+This does not depend on the choice of a basis v\, ..., vn of the lattice
+because the transition matrix passing to a different basis, as well as its
+inverse, has integer coefficients, and therefore has determinant ±1 so that
+the set 0 is transformed into a set of the same volume.
+We now come to the most important theorem about lattices. A subset X
+of V is called centrally symmetric, if, given any point x e X, the point — x
+also belongs to X. It is called convex if, given any two points jc, y e X, the
+whole line segment {ty + (1 — t)x \ 0 < t < 1} joining x with y is contained
+in X. With these definitions we have
+
+===== PDF PAGE 43 =====
+
+§4. Lattices 27
+(4.4) Minkowski's Lattice Point Theorem. Let r be a complete lattice in
+the euclidean vector space V and X a centrally symmetric, convex subset ofV.
+Suppose that
+vol(X) >2"vol(r).
+Then X contains at least one nonzero lattice point y e T.
+Proof: It is enough to show that there exist two distinct lattice points
+Y\ •> Yi £ r such that
+In fact, choosing a point in this intersection,
+t*i +Y\— 2X2 + y2> XuXl e X>
+we obtain an element 1Y = Yi-Y2= -*2- -xu
+which is the center of the line segment joining X2 and —x\, and therefore
+belongs to X n T.
+Now, if the sets \X + y, y e r, were pairwise disjoint, then the same
+would be true of their intersections &H(jX + y) with a fundamental mesh <P
+of r, i.e., we would have
+vol(<2>)> £ vol(#n(-X + y)).
+But translation ofc^n(^X + y)by-y creates the set (0 - y) n ^X of
+equal volume, and the <P — y, y e r, cover the entire space V, therefore
+also the set ^X. Consequently we would obtain
+vol«P) > E vol(«P -y)flk)= vol( \x) = ^ vol(X),
+which contradicts the hypothesis. □
+Exercise 1. Show that a lattice T in Rn is complete if and only if the quotient Rn/T
+is compact.
+Exercise 2. Show that Minkowski's lattice point theorem cannot be improved,
+by giving an example of a centrally symmetric convex set X C V such that
+vol(X) = 2n vol(r) which does not contain any nonzero point of the lattice J\
+If X is compact, however, then the statement (4.4) does remain true in the case of
+equality.
+
+===== PDF PAGE 44 =====
+
+28 Chapter I. Algebraic Integers
+Exercise 3 (Minkowski's Theorem on Linear Forms). Let
+n
+Li(xU ...,*„) = JlaijXJ> * = 1, • • • , H,
+y=i
+be real linear forms such that det(<Z/y) ^ 0, and let C\, ..., cn be positive real numbers
+such that C\ • • • cn > | det(<Z/y)|. Show that there exist integers mu ..., mn gZ such
+that
+\Liimu ..., m„)| < q, i = 1, ..., n.
+Hint: Use Minkowski's lattice point theorem.
+§ 5. Minkowski Theory
+The basic idea in Minkowski's treatment of an algebraic number field K\Q
+of degree n is to interpret its numbers as points in n -dimensional space. This
+explains why his theory has been called "Geometry of Numbers." It seems
+appropriate, however, to follow the current trend and call it "Minkowski
+Theory" instead, because in the meantime a geometric approach to number
+theory has been developed which is quite different in nature and much
+more comprehensive. We will explain this in §13. In the present section,
+we consider the canonical mapping
+j : K —► Kc := FIG, a\-^>ja = (ta),
+T
+which results from the n complex embeddings r : K -> C. The C-vector
+space ^c is equipped with the hermitian scalar product
+(*) (x,y) = Y,xryT­
+X
+Let us recall that a hermitian scalar product is given by a form H(x,y)
+which is linear in the first variable and satisfies H(x,y) = H(y,x) as well
+as H(x,x) > 0 for x / 0. In the sequel we always view Kc as a hermitian
+space, with respect to the "standard metric" (*).
+The Galois group G(C|R) is generated by complex conjugation
+F : z i—> z.
+The notation F will be justified only later (see chap. Ill, §4). F acts on the
+one hand on the factors of the product \\T C» but on the other hand it also
+acts on the indexing set of r's; to each embedding r : K -> C corresponds
+its complex conjugate r : K -> C. Altogether, this defines an involution
+F : Kc —> Kc
+
+===== PDF PAGE 45 =====
+
+§5. Minkowski Theory 29
+which, on the points z = (zT) e Kc, is given by
+(Fz)T = zf.
+The scalar product ( , ) is equivariant under F, that is
+(Fx,Fy) = F(x,y).
+Finally, we have on the C-vector space ^c = Y\T C the linear map
+7r : ffc —► C,
+given as the sum of the coordinates. It is also F -invariant. The composite
+K -U Kc -^* C
+gives the usual trace of K\Q_ (see (2.6), (ii)),
+TrK\q(a) = Tr(ja).
+We now concentrate on the R -vector space
+Ku = K+= [t\C] +
+consisting of the G(C|K)-invariant, i.e., F-invariant, points of Kc. These
+are the points (zT) such that Zf = zT. An explicit description of KR will be
+given anon. Since fa = fa for a e K, one has F(ja) = y<z. This yields a
+mapping
+7 : K —> KR.
+The restriction of the hermitian scalar product (, ) from Kc to KR gives a
+scalar product
+( , ) : KR x KR —► R
+on the K-vector space KR. Indeed, for jc, y € /STr, one has (jc, y) e R in
+view of the relations F(x,y) = (Fx,Fy) = (x, y), (x,y) = (jc,y) = (y,jc),
+and, in any case, (jc, jc) > 0 for x ^ 0.
+We call the euclidean vector space
+kr = [Y\c] +
+T
+the Minkowski space, its scalar product ( , ) the canonical metric, and
+the associated Haar measure (see §4, p. 26) the canonical measure. Since
+Tro F = F oTr we have on KR the E-linear map
+Tr:KR —►»,
+
+===== PDF PAGE 46 =====
+
+30 Chapter I. Algebraic Integers
+and its composite with j : K -> KR is again the usual trace of K\Q,
+TrK\q(a) = Tr(ja).
+Remark: We mention in passing - it will not be used in the sequel - that
+the mapping j : K -> KR identifies the vector space Kr with the tensor
+product K ®q K,
+K ®q R —> K^, a® x i—► (ja)x.
+Likewise, K ®q C —> Kq. In this approach, the inclusion KR c ^c
+corresponds to the canonical mapping K ®q R -+ K ®q C which is induced
+by the inclusion R c-> C. F corresponds to F{a® z) = a®z.
+An explicit description of the Minkowski space Kr can be given in the
+following manner. Some of the embeddings r : K -> C are real in that they
+land already in K, and others are complex, i.e., not real. Let
+pu .-., Pr :K —>R
+be the real embeddings. The complex ones come in pairs
+<j\, (j i, ..., (jy, (j s : K —> C
+of complex conjugate embeddings. Thus n = r + 2s. We choose from each
+pair some fixed complex embedding, and let p vary over the family of real
+embeddings and a over the family of chosen complex embeddings. Since F
+leaves the p invariant, but exchanges the <r,a, we have
+kr = {(zT) € n c i zp e r, *<?=zaj.
+T
+This gives the
+(5.1) Proposition. There is an isomorphism
+T
+given by the rule (zT) h-> (xT) where
+xp =zp, xG = Re(za), x^ = Im(za).
+TTiis isomorphism transforms the canonical metric (, ) into the scalar product
+where QfT = 1, resp. aT = 2, if r is reai, resp. complex.
+
+===== PDF PAGE 47 =====
+
+§5. Minkowski Theory 31
+Proof: The map is clearly an isomorphism. If z = (zT) = (xx + iyT),
+z' = (z'T) = (*£ + iy'T) e KR, then z^ = xpx'p9 and in view of ya = *a
+and y'a — x'~, one gets
+zaz'a + z^z'- = z^z^ + zaz'a = 2Re(zaz'a) = 2(xax'a + x„x'-).
+This proves the claim concerning the scalar products. □
+The scalar product (x,y) = ^xoixxxyx transfers the canonical measure
+from K^ to Kr+2,s. It obviously differs from the standard Lebesgue
+measure by
+VOlCanonical(^) = 25 VOlLebesgue( f(X)) •
+Minkowski himself worked with the Lebesgue measure on Kr+Zs, and
+most textbooks follow suit. The corresponding measure on Kr is the one
+determined by the scalar product
+x 0tx
+This scalar product may therefore be called the Minkowski metric on K^.
+But we will systematically work with the canonical metric, and denote by
+vol the corresponding canonical measure.
+The mapping j : K -> Kr gives us the following lattices in Minkowski
+space /STr.
+(5.2) Proposition. If a / 0 is an ideal of ok, then r = ja is a complete
+lattice in K^. Its fundamental mesh has volume
+vol(r) = y/\d^\(oK:a).
+Proof: Let ot\, ..., an be a Z-basis of a, so that r = Zyai H \- Zjan.
+We choose a numbering of the embeddings r : K -> C, n, ..., r«, and
+form the matrix A = (r^a,-). Then, according to (2.12), we have
+d(a) = d(ai, ...,«„) = (det A)2 = (oK : a)2d(OA:) = (oK : a)2*fr,
+and on the other hand« _
+(U<*i,j<xk)) = (E r^ «i ^ <**) = A^r •
+This indeed yields
+vol(r) = |det((M-,M))|1/2 = I det AI = J\djT\(oK : a). □
+Using this proposition, Minkowski's lattice point theorem now gives the
+following result, which is what we chiefly intend to use in our applications
+to number theory.
+
+===== PDF PAGE 48 =====
+
+32 Chapter I. Algebraic Integers
+(5.3) Theorem. Let a ^ 0 be an integral ideal of K, and let cT > 0, for
+x e Hom(K,C), be real numbers such that cT = Cf and
+Y\cT > A(oK : a),
+X
+where A = (— )5vVa:I- ITien there exists flea,fl^0, such that
+|r<2|<cT for ail reHom(X,C).
+Proof: The set X = {(zT) e /STr | \zt\ < cT} is centrally symmetric and
+convex. Its volume vol(X) can be computed via the map (5.1)
+f:Km^>Y\R, (zT)h->(*T),
+X
+given by x^ = zp, xG = Re(za), x^ = Im(za). It comes out to be 2s times
+the Lebesgue-volume of the image
+fix) = {(xT) € n» i \*p\ < cP, *i+4< cD •
+X
+This gives
+VOl(X) = 2s VOlLebesgue(/(X)) = 2* \\{2cp) \[{*cl) = 2r+57T5 fl *r •p o x
+Now using (5.2), we obtain
+vol(X) > 2r+sns(~y^\dF\(oK : a) = 2n vol(r).
+Thus the hypothesis of Minkowski's lattice point theorem is satisfied. So
+there does indeed exist a lattice point ja e X, a / 0, a e a; in otherwords |ra| < cT. □
+There is also a multiplicative version of Minkowski theory. It is based
+on the homomorphism
+X
+The multiplicative group K^ admits the homomorphism
+N : Kl —> C*
+given by the product of the coordinates. The composite
+K* -4 KZ-?U C*
+
+===== PDF PAGE 49 =====
+
+§5. Minkowski Theory 33
+is the usual norm of K\Q,
+NKlQ(a) = N(ja).
+In order to produce a lattice from the multiplicative theory, we use the
+logarithm to pass from multiplicative to additive groups
+£:C* —>R, zh->log|z|.
+It induces a surjective homomorphism
+l:K*c
+and we obtain the commutative diagram
+K* —► K£ —ru
+NK\Q N Tr
+The involution F e G(C|R) acts on all groups in this diagram, trivially
+on K*, on Kfc as before, and on the points x = (xT) e Y\T R by (Fx)T = jcf.
+One clearly has
+Foj = j, Fo£=£oF, N oF = F oN, TroF=Tr,
+i.e., the homomorphisms of the diagram are G(C|K)-homomorphisms. We
+now pass everywhere to the fixed modules under G(C|K) and obtain the
+diagram
+Nk\q N Tr
+The R -vector space [ Y\T R] is explicitly given as follows. Separate as
+before the embeddings r : K -> C into real ones, p\, ..., pr, and pairs
+of complex conjugate ones, g\,g\, ..., crs,as. We obtain a decomposition
+which is analogous to the one we saw above for [ ]~]T C ] ,
+[nK]+=nKxn[RxR]+­t pa
+The factor [lxl]+ now consists of the points (jc,jc), and we identify it
+with R by the map (x,x) h> 2x. In this way we obtain an isomorphism
+
+===== PDF PAGE 50 =====
+
+34 Chapter I. Algebraic Integers
+which again transforms the map Tr : [ [~[T R ]+ -> R into the usual map
+Tr : Rr+S —► K
+given by the sum of the coordinates. Identifying [ Y[T K] with Rr+S, the
+homomorphism
+£ : K£ —► Kr+5
+is given by
+£(*) = (log \xPl |, ..., log \xPr I, log |xai |2, ..., log |xa512),
+where we write ig^Jc [~JT C* as x = (jct).
+Exercise 1. Write down a constant A which depends only on K such that every
+integral ideal a ^ 0 of K contains an element a ^ 0 satisfying
+\xa\ < A(o* : a)1/rt for all r e Hom(A\C), n = [K :Q].
+Exercise 2. Show that the convex, centrally symmetric set
+X={(ZT)GKR\ E\Zr\<t}
+X
+has volume vol(X) = 2rns £ (see chap. Ill, (2.15)).
+Exercise 3. Show that in every ideal a ^ 0 of oK there exists an a ^ 0 such that
+|AfolQ(a)l < A*(o* : a),w j 4
+where M = — (— )Sy/\dK\ (the so-called Minkowski bound).
+Hint: Use exercise 2 to proceed as in (5.3), and make use of the inequality between
+arithmetic and geometric means,
+-EUrl>(niZrl),/B.W T T
+§ 6. The Class Number
+As a first application of Minkowski theory, we are going to show that the
+ideal class group CIk = Jk/Pk of an algebraic number field K is finite.
+In order to count the ideals a / 0 of the ring Ok we consider their absolute
+norm
+Vi(a) = (oK :o).
+(Throughout this book the case of the zero ideal a = 0 is often tacitly
+excluded, when its consideration would visibly make no sense.) This index
+
+===== PDF PAGE 51 =====
+
+§6. The Class Number 35
+is finite by (2.12), and the name is justified by the special case of a principal
+ideal (a) of o#, where we have the identity
+W((oO) =\NKlQ(a)\.
+Indeed, if co\, ..., con is a Z-basis of Ok , then a co\, ..., a con is a Z-basis of
+(a) = oiOk , and if A = (a/7) denotes the transition matrix, a cot = J] a/; &>;,
+then, as was pointed out already in §2, one has | det(A)| = (ok : (a)) as
+well as det(A) = Nk\q(oi) by definition.
+(6.1) Proposition. If a = p\l • • • p^r is the prime factorization of an ideal
+a^O, then one has
+yi(a) = yi(pi)vl---yi(pr)Vr­
+Proof: By the Chinese remainder theorem (3.6), one has
+oK/a = oK/p\l 0 • • • 0 oKlPv; .
+We are thus reduced to considering the case where a is a prime power pv.
+In the chain
+P 3 P2 2 • • • 3 Pv
+one has p* ^ p*+1 because of the unique prime factorization, and each
+quotient p*/p'+1 is an o^/p-vector space of dimension 1. In fact, if a e
+p( \ p/+1 and b = (a) +p'+1, then p/ 2 & ^ p'+1 and consequently p' = b,
+because otherwise W = bp~' would be a proper divisor of p = p'+1p~'. Thus
+a — a mod p*+1 is a basis of the Oj^/p-vector space p'/p'+1- So we have
+p7p/+1 = OkIP and therefore
+W(pv) = (oK : pv) = (oK : P)(P : P2) • • • (P^1 : pv) = W(p)v. □
+The proposition immediately implies the multiplicativity
+m(ab) = Vl(a)m(b)
+of the absolute norm. It may therefore be extended to a homomorphism
+VI: JK —► R+
+defined on all fractional ideals a = ]~[pPyp' vp e %- The following lemma,
+a consequence of (5.3), is crucial for the finiteness of the ideal class group.
+(6.2) Lemma. In every ideal a / 0 of Ok there exists an a e a, a / 0, such
+that
+\NK\q(a)\ <(-)SJ\^k\K(a).
+
+===== PDF PAGE 52 =====
+
+36 Chapter I. Algebraic Integers
+Proof: Given s > 0, we choose positive real numbers cT, for r e
+Hom(K,C), such that cT = c^ and
+Then by (5.3) we find an element a e a, a ^ 0, satisfying |ra| < cT. Thus
+|tf*iQ(<oi =m^i <(-Vyi4H9fi(a)+e.
+This being true for all s > 0 and since | A^qOz) | is always a positive integer,
+there has to exist an a e a, a ^ 0, such that
+|Afr|Q(fl)| <(§)Vw*IW(tt)- □
+(6.3) Theorem. TTie ideal class group CIk = Jk/Pk is finite. Its order
+hK = (/* : />*)
+is caiied the class number of/T.
+Proof: If p 7^ 0 is a prime ideal of Ok and p D Z = pZ, then o^/p is a
+finite field extension of Z/pZ of degree, say, / > 1, and we have
+W(P) = Pf­
+Given p, there are only finitely many prime ideals p such that p D Z = pZ,
+because this means that p | (p). It follows that there are only finitely many
+prime ideals p of bounded absolute norm. Since every integral ideal admits
+a representation a = p^1 • • • prr where v; > 0 and
+there are altogether only a finite number of ideals a of Ok with bounded
+absolute norm 91(a) < M.
+It therefore suffices to show that each class [a] e CIk contains an integral
+ideal <*i satisfying
+For this, choose an arbitrary representative a of the class, and a y e Ok,
+y ^ 0, such that b = y a-1 c o^. By (6.2), there exists a e b, a / 0, such
+that
+\NKlQ(a)\ - miby1 = m((a)b-1) = S^ab"1) < M.
+The ideal <*i = orb-1 = ay~xa e [a] therefore has the required property. □
+
+===== PDF PAGE 53 =====
+
+§6. The Class Number 37
+The theorem of the finiteness of the class number Hk means that passing
+from numbers to ideals has not thrust us into unlimited new territory. The
+most favourable case occurs of course when hjc = 1. This means that Ok
+is a principal ideal domain, i.e., that prime factorization of elements in the
+classical sense holds. In general, however, one has Hk > 1. For instance,
+we know now that the only imaginary quadratic fields Q(Vd), d squarefree
+and < 0, which have class number 1 are those with
+d = -1, - 2, - 3, - 7, - 11, - 19, - 43, - 67, - 163.
+Among real quadratic fields, class number 1 is more common. In the range
+2 < d < 100 for instance, it occurs for
+d = 2, 3, 5, 6,7,11,13,14,17,19, 21, 22, 23, 29,
+31,33,37,38,41,43,46,47,53,57, 59,61,
+62, 67, 69, 71, 73, 77, 83, 86, 89, 93, 94, 97.
+It is conjectured that there are infinitely many real quadratic fields of class
+number 1. But we do not even yet know whether there are infinitely many
+algebraic number fields (of arbitrary degree) with class number 1. It was
+found time and again in innumerable investigations that the ideal class groups
+CIk behave completely unpredictably, both in their size and their structure.
+An exception to this lack of rule is Kenkichi Iwasawa's discovery that the
+p-part of the class number of the field of pn-th roots of unity obeys a very
+strict law when n varies (see [136], th. 13.13).
+In the case of the field of p-th roots of unity, the question whether the
+class number is divisible by p has played a very important special role
+because it is intimately linked to the celebrated Fermat's Last Theorem
+according to which the equation
+for p > 3 has no solutions in integers ^ 0. In a similar way as the sums of
+two squares x2+y2 = (x+iy)(x — iy) lead to studying the gaussian integers,
+the decomposition of xp+yp by means of a p-th root of unity £ ^ 1 leads to
+a problem in the ring Z[f ] of integers of Q(f). The equation yp = zp — xp
+there turns into the identity
+y . y . . . y = (Z - x)(z - $x) • • • (z - ^~lx) .
+Thus, assuming the existence of a solution, one obtains two multiplicative
+decompositions of the same number in Z[f ]. One can show that this
+contradicts the unique factorization — provided that this holds in the
+ring Z[f ]. Supposing erroneously that this was the case in general - in
+other words that the class number hp of the field Q(f) were always equal
+
+===== PDF PAGE 54 =====
+
+38 Chapter I. Algebraic Integers
+to 1 - some actually thought they had proved "Fermat's Last Theorem" in
+this way. Kummer, however, did not fall into this trap. Instead, he proved that
+the arguments we have indicated can be salvaged if one only assumes p \ hp
+instead of hp = 1. In this case he called a prime number p regular, otherwise
+irregular. He even showed that p is regular if and only if the numerators
+of the Bernoulli numbers Z?2, #4, • • •, #/?-3 are not divisible by p. Among
+the first 25 prime numbers < 100 only three are irregular: 37, 59, and 67.
+We still do not know today whether there are infinitely many regular prime
+numbers.
+The connection with Fermat's last theorem has at last become obsolete.
+Following a surprising discovery by the mathematician Gerhard Frey, who
+established a link with the theory of elliptic curves, it was Kenneth Ribet,
+who managed to reduce Fermat's statement to another, much more important
+conjecture, the Taniyama-Shimura-Weil Conjecture. This was proved in
+sufficient generality in 1994 by Andrew Wiles, after many years of work,
+and with a helping hand from Richard Taylor. See [144].
+The regular and irregular prime numbers do however continue to be
+important.
+Exercise 1. How many integral ideals a are there with the given norm ^(a) = n ?
+Exercise 2. Show that the quadratic fields with discriminant 5, 8, 11, —3, —4,-7,
+—8, — 11 have class number 1.
+Exercise 3. Show that in every ideal class of an algebraic number field K of degree n,
+there exists an integral ideal a such that
+Wa) <^(-)Vtfd.nn N it'
+Hint: Using exercise 3, §5, proceed as in the proof of (6.3).
+Exercise 4. Show that the absolute value of the discriminant \dK\ is > 1 for every
+algebraic number field K ^ Q (Minkowski's theorem on the discriminant, see
+chap. Ill, (2.17)).
+Exercise 5. Show that the absolute value of the discriminant \dK\ tends to oo with
+the degree n of the field.
+Exercise 6. Let a be an integral ideal of K and am = (a). Show that a becomes a
+principal ideal in the field L = K(iya), in the sense that aoL = (a).
+Exercise 7. Show that, for every number field K, there exists a finite extension L
+such that every ideal of K becomes a principal ideal.
+
+===== PDF PAGE 55 =====
+
+§7. Dirichlet's Unit Theorem 39
+§ 7. Dirichlet's Unit Theorem
+After considering the ideal class group CIk , we now turn to the second
+main problem posed by the ring Ok of integers of an algebraic number
+field K, the group of units o\. It contains the finite group \x(K) of the
+roots of unity that lie in K, but in general is not itself finite. Its size is in
+fact determined by the number r of real embeddings p : K -> K and the
+number s of pairs a, a : K -> C of complex conjugate embeddings. In order
+to describe the group, we use the diagram which was set up in §5:
+r—L^Kii—L_*[nTR]+
+Nk\q N
+log I I
+Tr
+In the upper part of the diagram we consider the subgroups
+o\ = {s e Ok I Nk\q(s) = ±1}, the group of units,
+S = {y e K^ | N(y) = ±1}, the "norm-one surface",
+H = {x e [ 11R]+1 Tr(x) = 0}, the "trace-zero hyperplane".
+We obtain the homomorphisms
+o*K -A S -^ H
+and the composite X := £ o j : e>^ -> H. The image will be denoted by
+and we obtain the
+(7.1) Proposition. The sequence
+1 —-> /x(£) —► o^ -^> T —► 0
+is exact.
+Proof: We have to show that /jl(K) is the kernel of X. For £ e M(^) and
+r : K -+ C any embedding, we find log |rf | = log 1 =0, so that certainly
+Ijl(K) c ker(A.). Conversely, let £ e o^ be an element in the kernel, so
+that X(e) = £(j£) = 0. This means that |re| = 1 for each embedding
+
+===== PDF PAGE 56 =====
+
+40 Chapter I. Algebraic Integers
+r : K -> C, so that js = (rs) lies in a bounded domain of the R­
+vector space K^. On the other hand, js is a point of the lattice jok of jKr
+(see (5.2)). Therefore the kernel of k can contain only a finite number of
+elements, and thus, being a finite group, contains only roots of unity in A'*.
+□
+Given this proposition, it remains to determine the group r. For this, we
+need the following
+(7.2) Lemma. Up to multiplication by units there are only finitely many
+elements a e Ok of given norm Nk\q((x) = a.
+Proof: Let a e Z, a > 1. In every one of the finitely many cosets of
+Ok/clok there exists, up to multiplication by units, at most one element a
+such that \N(a)\ = \Nk\q((x)\ = a. For if ft = a + ay, y e Ok, is another
+one, then a N(fi)- = l±—Y€OK
+because N(f})/fi e Ok, and by the same token ^ = 1 ± —^p-ye Ok,
+i.e., )6 is associated to a. Therefore, up to multiplication by units, there
+are at most (ok '• QOk) elements of norm ±a. D
+(7.3) Theorem. The group r is a complete lattice in the (r + s - 1)­
+dimensional vector space H, and is therefore isomorphic to Zr+5_1.
+Proof: We first show that r = k(o*K) is a lattice in H, i.e., a discrete
+subgroup. The mapping k : o\ -> // arises by restricting the mapping
+T T
+and it suffices to show that, for any c > 0, the bounded domain {(xT) e
+Y[T R I krl < ^} contains only finitely many points of r = -^O'c?^). Since
+£((zT)) = (log |zT|), the preimage of this domain with respect to £ is the
+bounded domain
+{(zT)en<C*|<rc<M<*c}.
+T
+It contains only finitely many elements of the set jo*K because this is a
+subset of the lattice jok in [ fir ^] (see (^-2)). Therefore r is a lattice.
+
+===== PDF PAGE 57 =====
+
+§7. Dirichlet's Unit Theorem 41
+We now show that f is a complete lattice in H. This is the principal
+claim of the theorem. We apply the criterion (4.3). So we have to find a
+bounded set M c H such that
+We construct this set through its preimage with respect to the surjective
+homomorphism
+£:S -^ H.
+More precisely, we will construct a bounded set T in the norm-one surface 5,
+the multiplicative translations Tjs, s e o\, of which cover all of S:
+S= U Tje.
+eeo*K
+For x = (jct) € r, it will follow that the absolute values |jct| are bounded
+from above and also away from zero, because Y\T \xT | = 1. Thus M = £(T)
+will also be bounded. We choose real numbers cT > 0, for r e Hom(Ar, C),
+satisfying cT = Cf and
+c = n^>(-yv/Wi,
+and we consider the set
+X = {(zT)eKR\ \zT\ <cT}.
+For an arbitrary point y = (jT) e 5, it follows that
+Xy = {(zT) € KR | |zT| <4}
+where cfT = cT\yT\, and one has c^. = d- and fjr ct — Wx cx —C because
+Y\T \yT\ = |A^(j)| = 1. Then, by (5.3), there is a point
+ja = (ra) gIj, agojs:, a^O.
+Now, according to lemma (7.2), we may pick a system ai, ..., cln € Ok,
+oil ■£ 0, in such a way that every a e Ok with 0 < \Nk\q(q)\ < C is
+associated to one of these numbers. The set
+r = sn|jxo'al-r1
+then has the required property: since X is bounded, so is X(jai)"1 and
+therefore also T, and we have
+S= U ?>.
+
+===== PDF PAGE 58 =====
+
+42 Chapter I. Algebraic Integers
+In fact, if y e 5, we find by the above an a e Ok, a ^ 0, such that
+ja e Xy~~l, so ja = xy~~l for some x e X. Since
+\NK\q(a)\ =\N(xy-l)\ =\N(x)\ <\[cx=C9
+a is associated to some or,, oti — sa, s e o\. Consequently
+y = xja~l =xj(a7le).
+Since y, js e S, one finds xjaj'1 e S D Xja^1 c T, and thus y e Tjs. D
+From proposition (7.1) and theorem (7.3) we immediately deduce Dirich­
+let's unit theorem in its classical form.
+(7.4) Theorem. The group of units o\ ofOK is the direct product of the finite
+cyclic group jjl(K) and a free abelian group of rank r + s — 1.
+In other words: there exist units e\, ..., et, t = r + s — 1, called
+fundamental units, such that any other unit s can be written uniquely as a
+Product
+with a root of unity f and integers v/.
+Proof: In the exact sequence
+1 —► fji(K) —-> o\ -^ r —► 0
+r is a free abelian group of rank r = r + s — lby (7.3). Let v\, ..., vt be
+a Z-basis of T, let ^i, ..., £r e o\ be preimages of the u/, and let A c o\
+be the subgroup generated by the £/. Then A is mapped isomorphically onto
+r by A., i.e., one has fi(K) n A = {1} and therefore o^ = /x(^) x A. □
+Identifying [ ["[T R] = Mr+,s (see §5, p.33), // becomes a subspace of
+the euclidean space Rr+S and thus itself a euclidean space. We may therefore
+speak of the volume of the fundamental mesh vol(A.(o^)) of the unit lattice
+r = Ho*K) c H, and will now compute it. Let £i, ..., et, t = r + 5" - 1,
+be a system of fundamental units and <£> the fundamental mesh of the unit
+lattice A.(o^), spanned by the vectors A.(£i), ..., X(£t) £ H . The vector
+Ao=-p5=(lf ...f l)€Rr+*
+
+===== PDF PAGE 59 =====
+
+§7. Dirichlet's Unit Theorem 43
+is obviously orthogonal to H and has length 1. The t -dimensional volume
+of 0 therefore equals the (t + 1)-dimensional volume of the parallelepiped
+spanned by A.0, A.(^i), ..., X(st) in Mr+1. But this has volume
+: : :
+>W+i >Wi(£i) *•* 'Wife)'
+Adding all rows to a fixed one, say the i-th row, this row has only zeroes,
+except for the first entry, which equals jr + s. We therefore get the
+(7.5) Proposition. The volume of the fundamental mesh of the unit
+lattice X(ot) inH is , , . . > „K vol(A.(e>^)) = Jr + sR,
+where R is the absolute value of the determinant of an arbitrary minor of rank
+t=r + s — \ofthe following matrix:
+A.iO?i) ••• Xi{st)
+,A.r+1(£i) ••• Xt+X(et),
+This absolute value R is called the regulator of the field K.
+The importance of the regulator will only be demonstrated later (see
+chap. VII, §5).
+Exercise 1. Let D > 1 be a squarefree integer and d the discriminant of the real
+quadratic number field K = Q(^/D) (see §2, exercise 4). Let Xi,y\ be the uniquely
+determined rational integer solution of the equation
+x2-dy2 = -4,
+or — in case this equation has no rational integer solutions — of the equation
+x2-dy2 = 4,
+for which X\,y\ > 0 are as small as possible. Then
+x\ +y\Vd
+is a fundamental unit of K. (The pair of equations x2 — dy2 = ±4 is called Pell's
+equation.)
+Exercise 2. Check the following table of fundamental units £i for Q(\/D):
+D 2 3 5 6 7 10
+ex 1 + V2 2 + V3 (l + V5)/2 5 + 2^6 8 + 3x/7 3 + 710
+
+===== PDF PAGE 60 =====
+
+44 Chapter I. Algebraic Integers
+Hint: Check one by one for y = 1,2,3, ..., whether one of the numbers dy2 =p4 is a
+square x2. By the unit theorem this is bound to happen, with the plus sign. However,
+for fixed y, let preference be given to the minus sign. Then the first case, in this
+order, where dy2 =p4 = x2, gives the fundamental unit £i = (x\ + yi*Jd)/2.
+Exercise 3. The Battle of Hastings (October 14, 1066).
+"The men of Harold stood well together, as their wont was, and formed thirteen
+squares, with a like number of men in every square thereof, and woe to the hardy
+Norman who ventured to enter their redoubts; for a single blow of a Saxon war­
+hatched would break his lance and cut through his coat of mail... When Harold
+threw himself into the fray the Saxons were one mighty square of men, shouting the
+battle-cries, 'Ut!', 'Olicrosse!', 'Godemite!'." [Fictitious historical text, following
+essentially problem no. 129 in: H.E. Dundeney, Amusements in Mathematics, 1917
+(Dover reprints 1958 and 1970).]
+Question. How many troops does this suggest Harold II had at the battle of Hastings?
+Exercise 4. Let £ be a primitive p-th root of unity, p an odd prime number. Show
+that Z[£]* = (f )Z[f + r!]*. Show that Z[£]* = {±f *(1 + £)n I 0 < k < 5, n e Z},
+if p = 5.
+Exercise 5. Let £ be a primitive m-th root of unity, m > 3. Show that the numbers
+-j^- for (£, m) = 1 are units in the ring of integers of the field Q(£). The subgroup
+of the group of units they generate is called the group of cyclotomic units.
+Exercise 6. Let K be a totally real number field, i.e., X = Hom(/f, C) = Hom(/f, R),
+and let T be a proper nonempty subset of X. Then there exists a unit s satisfying
+0 < re < 1 for r g T, and re > 1 for r ^ T.
+Hint: Apply Minkowski's lattice point theorem to the unit lattice in trace-zero space.
+§ 8. Extensions of Dedekind Domains
+Having studied the ideal class group and the group of units of the ring Ok
+of integers of a number field K, we now propose to make a first survey of
+the set of prime ideals of Ok . They are often referred to as the prime ideals
+of K — an imprecise manner of speaking which is, however, not likely to
+cause any misunderstanding.
+Every prime ideal p / 0 of Ok contains a rational prime number p (see
+§3, p. 17) and is therefore a divisor of the ideal p<Dk> Hence the question
+arises as to how a prime number p factors into prime ideals of the ring Ok .
+We treat this problem in a more general context, starting from an arbitrary
+Dedekind domain o at the base instead of Z, and taking instead of Ok the
+integral closure O of o in a finite extension of its field of fractions.
+
+===== PDF PAGE 61 =====
+
+§ 8. Extensions of Dedekind Domains 45
+(8.1) Proposition. Let obea Dedekind domain with field of fractions K, let
+L\K be a finite extension ofK and O the integral closure ofo in L. Then O
+is again a Dedekind domain.
+Proof: Being the integral closure of o, O is integrally closed. The fact that
+the nonzero prime ideals *P of O are maximal is proved similarly as in the
+case o = Z (see (3.1)): p = ^J fl o is a nonzero prime ideal of o. Thus
+the integral domain O/ty is an extension of the field o/p, and therefore has
+itself to be a field, because if it were not, then it would admit a nonzero
+prime ideal whose intersection with o/p would again be a nonzero prime
+ideal in o/p. It remains to show that O is noetherian. In the case that is of
+chief interest to us, namely, if L\K is a separable extension, the proof is
+very easy. Let ai, ..., an be a basis of L \ K contained in O, of discriminant
+d = d(au ..., an). Then d + 0 by (2.8), and (2.9) tells us that O is
+contained in the finitely generated o-module oot\/d + h oan/d. Every
+ideal of O is also contained in this finitely generated o-module, and therefore
+is itself an o-module of finite type, hence a fortiori & finitely generated O­
+module. This shows that O is noetherian, provided L\K is separable. We
+ask the reader's permission to content ourselves for the time being with
+this case. We shall come back to the general case on a more convenient
+occasion. In fact, we shall give the proof in a more general frameworkin §12 (see (12.8)). □
+For a prime ideal p of o one always has
+pO + O.
+In fact, let n e p \ p2 (p ^ 0), so that no = pa with p \ a, hence p + a = o.
+Writing 1 = b + s, with b e p and s e a, we find s £ p and sp c pa = no.
+If one had pO = O, then it would follow that sO = spO c nO, so that
+s = 7ix for some x e O fl K = o, i.e., s e p, a contradiction.
+A prime ideal p ^ 0 of the ring o decomposes in O in a unique way into
+a product of prime ideals,
+Instead of p(9 we will often write simply p. The prime ideals *P; occurring in
+the decomposition are precisely those prime ideals ^J of O which lie over p
+in the sense that one has the relation
+p = ^ne>.
+This we also denote for short by ^J | p, and we call ^J a prime divisor of p.
+The exponent e\ is called the ramification index, and the degree of the field
+extension
+Si = [OWi : o/p]
+
+===== PDF PAGE 62 =====
+
+46 Chapter I. Algebraic Integers
+is called the inertia degree of <$/ over p. If the extension L \K is separable,
+the numbers e,-, fi and the degree n = [L : K] are connected by the
+following law.
+(8.2) Proposition. Let L\K be separable. Then we have the fundamental
+identity r
+T,eifi z=n'i=l
+Proof: The proof is based on the Chinese remainder theorem
+O/pO = 0 OI%1.i=i
+O/pO and O/tyf are vector spaces over the field k = o/p, and it suffices
+to show that
+dim* (O/pO) =n and dim* (O/^pf) = et ft.
+In order to prove the first identity, let co\, ..., com e O be representatives
+of a basis 5>i, , 55m of (9/p(9 over k (we have seen in the proof of (8.1)
+that O is a finitely generated o-module, so certainly dimK((D/pO) < oo).
+It is sufficient to show that co\, ..., com is a basis of Ll^. Assume the
+&>i, ..., com are linearly dependent over K, and hence also over o. Then
+there are elements a\, ..., am e o not all zero such that
+a\CO\ H Vam(Om = 0.
+Consider the ideal a = (a\, ..., am) of o and find a e a"1 such that
+a ^ a_1p, hence aa g p. Then the elements 001, ..., aam lie in 0, but not
+all belong to p. The congruence
+aa\co\ + • • • + aamcom = 0 mod p
+thus gives us a linear dependence among the (D\, ..., 00m over /c, a
+contradiction. The &>i, ..., com are therefore linearly independent over K.
+In order to show that the cot are a basis of L\K, we consider the o­
+modules M = o&>i + h 0&>m and N = O/M. Since O = M + pO,
+we have pAf = N. As L|^ is separable, O, and hence also N, are finitely
+generated 0-modules (see p. 45). If a\, ..., as is a system of generators
+of Af, then
+a 1 = XI aUaj for a*7 G P •j
+Let A be the matrix (atj) — I, where / is the unit matrix of rank s, and let
+B be the adjoint matrix of A, whose entries are the minors of rank (s — 1)
+
+===== PDF PAGE 63 =====
+
+8. Extensions of Dedekind Domains 47
+of A. Then one has A(a\, ..., as)r = 0 and BA = dl, with d = det(A),
+(see (2.3)). Hence
+0 = BA(a\, ..., as)f = (dai, ..., das)f,
+and therefore dAf = 0, i.e., d(9 c M = o&>i + ••• + o&>m. We have
+d ^ 0, because expanding the determinant d = det((az;) — /) we find d =
+(-l)s mod p because a^ e p. It follows that L = dL = Kco\ H h Ar6Dm.
+<wi, ..., com is therefore indeed a basis of L | K.
+In order to prove the second identity, let us consider the descending chain
+o/yfs 2 %/^ 2 • • • 2 ^TlWei 3 (0)
+of k -vector spaces. The successive quotients ?pV/^pV+1 in this chain are
+isomorphic to O/tyt, for if a e ^3? \ ^v+1, then the homomorphism
+has kernel tyt and is surjective because ty? is the gcd of *P^+1 and
+(a) = aO so that q}V =aO + q}V+1. Since /} = [C7/qj,- : if], we obtain
+duMW/W+1) = /; and therefore
+dimAO/W?) = £ diiM^/Vr1) = *■/> • D
+v=0
+Suppose now that the separable extension L\K is given by a primitive
+element AgO with minimal polynomial
+p(X) e o[X],
+so that L = ^(0). We may then deduce a result about the nature of the
+decomposition of p in O which, albeit not complete, does show characteristic
+phenomena and a striking simplicity. It is incomplete in that a finite number
+of prime ideals are excluded; only those relatively prime to the conductor of
+the ring o[6] can be considered. This conductor is defined to be the biggest
+ideal $ of O which is contained in o[9]. In other words
+£={a€0|cx0Co[6>]}.
+Since O is a finitely generated o-module (see proof of (8.1)), one has $ / 0.
+(8.3) Proposition. Let p be a prime ideal ofo which is relatively prime to the
+conductor $ofo[0], and let
+p(X)=P!(X)"...pr(X)*
+
+===== PDF PAGE 64 =====
+
+48 Chapter I. Algebraic Integers
+be the factorization of the polynomial p(X) = p(X) mod p into irreducibles
+pt (X) = pi (X) mod p over the residue class field o/p, with all pi (X) e o[X]
+monic. Then
+% =pO + Pi(6)0, i = l, ...,r,
+are the different prime ideals ofO above p. The inertia degree ft oftyi is the
+degree ofpi (X), and one has
+Proof: Writing O' = o[0] and o = o/p, we have a canonical isomorphism
+o/po = cr/pcr =- o[X]/(p(X)).
+The first isomorphism follows from the relative primality pO + ff = O. As
+5 c 0', it follows that O = pO + 0\ i.e., the homomorphism O -> O/pO
+is surjective. It has kernel pODO', which equals pO'. Since (p,Jflo) = 1,
+it follows that pO n 0' = (p + £)(p(9 n (90 c pO'.
+The second isomorphism is deduced from the surjective homomorphism
+o[X]—>o[X]/(p(X)).
+Its kernel is the ideal generated by p and p(X), and in view of O' — o[0] =
+o[X]/(p(X)), we have O'/pO' = o[X]/(p(X)).
+Since p (X) = ]~[/=i Pi i^Y* •> the Chinese remainder theorem finally gives
+the isomorphism
+o[X]/(p(X)) = ©o[X]/(p/(X))«.
+This shows that the prime ideals of the ring R = o[X] /(/?(X)) are the
+principal ideals (p/) generated by the pi(X) mod p(X), for / = 1, ..., r,
+that the degree [R/(pi) : e>] equals the degree of the polynomial /?;(X), andthat r
+(0) = (p) = n(P/)e/ •/=i
+In view of the isomorphism o[X]_/(p(X)) = O/pO, /(X) h-> /(6JX the
+same situation holds in the ring (9 = O/pO. Thus the prime ideals ^Jz of
+(9 correspond to the prime ideals (/?,-), and they are the principal ideals
+generated by the pi{9) mod pO. The degreeJhO/^P/ : o] is the degree of the
+polynomial pt (X), and we have (0) = f|/=i Wt • Now let *Pi = pO+pt (0)0
+be the preimage of *P; with respect to the canonical homomorphism
+O—-> O/pO.
+Then ?p,-, for i = 1, ..., r, varies over the prime ideals of O above p.
+fi = [ O/tyi : o/p] is the degree of the polynomial pt (X). Furthermore ^
+is the preimage of <p? (because e,- = #{<pv | v € N}), and pO 2 f|/=i *P?>
+so that p (9| n/=i ^Pf and therefore pO = 07=i *P? because X>/// = n.
+D
+
+===== PDF PAGE 65 =====
+
+§ 8. Extensions of Dedekind Domains 49
+The prime ideal p is said to split completely (or to be totally split) in L,
+if in the decomposition
+one has r = n = [L : A^], so that ei = /} = 1 for all / = 1, ..., r. p is
+called nonsplit, or indecomposed, if r = 1, i.e., if there is only a single
+prime ideal of L over p. From the fundamental identity
+r
+i=l
+we now understand the name of inertia degree: the smaller this degree is,
+the more the ideal p will be tend to factor into different prime ideals.
+The prime ideal qj,- in the decomposition p = [~I/=i *V>? *s called
+unramified over o (or over K) if et = 1 and if the residue class field
+extension 0/tyi\o/p is separable. If not, it is called ramified, and totally
+ramified if furthermore ft• = 1. The prime ideal p is called unramified if
+all tyi are unramified, otherwise it is called ramified. The extension L\K
+itself is called unramified if all prime ideals p of K are unramified in L.
+The case where a prime ideal p of K is ramified in L is an exceptional
+phenomenon. In fact, we have the
+(8.4) Proposition. If L\K is separable, thenthere are only finitely many prime
+ideals ofK which are ramified in L.
+Proof: Let 0 e O be a primitive element for L, i.e., L = K(0), and let
+p(X) e o[X] be its minimal polynomial. Let
+d = d(l,0, ...,en~l)= Y\(0i-0j)2 eo
+be the discriminant of p(X) (see §2, p. 11). Then every prime ideal p of K
+which is relatively prime to d and to the conductor 5 of o[0] is unramified.
+In fact, by (8.3), the ramification indices et equal 1 as soon as they are equal
+to 1 in the factorization of p(X) = p(X) mod p in o/p, so certainly if p(X)
+has no multiple roots. But this is the case since the discriminant d — d mod p
+of p(X) is nonzero. The residue class field extensions O/tyi \o/p are
+generated by 0 = 0 mod ^J/ and therefore separable. Hence p is unramified.
+□
+The precise description of the ramified prime ideals is given by the
+discriminant of 0\o. It is defined to be the ideal d of o which is generated by
+the discriminants d(co\, ..., con) of all bases co\, ...,con of L | K contained
+
+===== PDF PAGE 66 =====
+
+50 Chapter I. Algebraic Integers
+in O. We will show in chapter III, § 2 that the prime divisors of V are exactly
+the prime ideals which ramify in L.
+Example: The law of decomposition of prime numbers p in a quadratic
+number field Q(<s/a) is intimately related to Gauss's famous quadratic
+reciprocity law. The latter concerns the problem of integer solutions of the
+equation
+x2 + by=a, (a,beZ),
+the simplest among the nontrivial diophantine equations. The theory of this
+equation reduces immediately to the case where b is an odd prime number
+p and (a,p) = 1 (exercise 6). Let us assume this for the sequel. We are
+then facing the question as to whether a is a quadratic residue mod p,
+i.e., whether the congruence
+x2 == a mod p
+does or does not have a solution. In other words, we want to know if
+the equation x2 = a, for a given element a — a mod p e F*, admits
+a solution in the field F^ or not. For this one introduces the Legendre
+symbol (§), which, for every rational number a relatively prime to p, is
+defined to be ( ^ 1 = 1 or — 1, according as x2 == a mod p has or does not
+have a solution. This symbol is multiplicative,
+(7)-(?)(?)•
+This is because the group F* is cyclic of order p — l and the subgroup F*2 of
+squares has index 2, i.e., ¥*p/¥f = Z/2Z. Since (|) = 1 «=> a e F*2,
+one also has ,a^ p_x
+I — ) == a ~^~ mod p.
+In the case of squarefree a, the Legendre symbol (^ j bears the following
+relation with prime factorization. I ^ J = 1 signifies that
+x2 — a == (x — a)(x + a) mod p
+for some a e Z. The conductor of Z[*Ja ] in the ring of integers ofQ(<Ja) is
+a divisor of 2 (see §2, exercise 4). We may therefore apply proposition (8.3)
+and obtain the
+(8.5) Proposition. Forsquarefreea and (p, 2a) = 1, we have the equivalence
+(- j = 1 4=^ p is totally split in Q(^/a).
+
+===== PDF PAGE 67 =====
+
+§ 8. Extensions of Dedekind Domains 51
+For the Legendre symbol, one has the following remarkable law, which
+like none other has left its mark on the development of algebraic number
+theory.
+(8.6) Theorem (Gauss's Reciprocity Law). For two distinct odd prime
+numbers £ and p, the following identity holds:
+One also has the two "supplementary theorems"
+(t)-<-,,¥- (f)-<-»
+vlzl
+— J == (—1) 2 mod p implies I — J = (— 1) 2 since p ^ 2.
+In order to determine (-), we work in the ring Z[i] of gaussian integers.
+Since (1 + i)2 = 2i, we find
+(1 + i)P = (l + /)((l + if) V = (1 + i)i*r-2^ ,
+and since (1 + i)p = 1 + ip mod p and (-) == 2 2 mod p, it follows that
+/2\ p-\ p-il-)(l+i)i~ = 1 + /(-l)~ mod p.
+From this, an easy computation yields
+/ 2 \ £H|. / 2 \ P+l
+(—j = (—1) 4 mod p, resp. (—j==(—1) 4 mod p,
+if ^r— is even, resp. odd. Since *—z— = p ^—^— = p ^—z—, we
+deduce (|) =(-1)^.
+In order to prove the first formula, we work in the ring Z[f ], where f is
+a primitive £-th root of unity. We consider the Gauss sum
+= £ (f)t*r
+<2G
+and show that
+^(t>
+
+===== PDF PAGE 68 =====
+
+52 Chapter I. Algebraic Integers
+For this, let a and b vary over the group (Z/£Z)*, put c = ab l and deduce
+from the identity (j\ = (^—) that
+(ly-xl^-zl^-rtfra,6x * 7 a,bX l / b,c
+cjz\x£' b b ^t
+Now ]TC ( j J = 0, as one sees by multiplying the sum with a symbol ( 4 ) =
+-1, and putting £ = f1 gives J2b Sb{c~l) = £ + £2 + • • • + H1'1 = -1,
+from which we indeed find that
+(^)r2 = (-l)(-l)+£- 1 =^.
+(I \ Ezl
+-j == £ 2 mod p and the identity
+(^) = (-l)¥, implies
+tp = t(t2)-t ==T(-i)— — {-\ mod p.
+On the other hand one has
+"-?(z)^-(f)?(?)r.(f).™-P.
+so that
+Multiplying by r and dividing by ±£ yields the claim. □
+We have proved Gauss's reciprocity law by a rather contrived calculation.
+In § 10, however, we will recognize the true reason why it holds in the law
+of decomposition of primes in the field Q(f) of £-th roots of unity. The
+Gauss sums do have a higher theoretical significance, though, as will become
+apparent later (see VII, §2 and §6).
+Exercise 1. If a and b are ideals of O, then one has a = a O Pi O and
+Exercise 2. For every integral ideal 21 of O, there exists a 0 e O such that the
+conductor $={a £(D\aO <Z o[6]} is prime to 21 and such that L = K(6).
+Exercise 3. If a prime ideal p of K is totally split in two separable extensions L \ K
+and L'\K, then it is also totally split in the composite extension.
+
+===== PDF PAGE 69 =====
+
+§9. Hilbert's Ramification Theory 53
+Exercise 4. A prime ideal p of K is totally split in the separable extension L \ K if
+and only if it is totally split in the Galois closure N\K of L\K.
+Exercise 5. For a number field K the statement of proposition (8.3) concerning the
+prime decomposition in the extension K{9) holds for all prime ideals p \ (O : 0[9]).
+Exercise 6. Given a positive integer b > 1, an integer a relatively prime to b is a
+quadratic residue mod b if and only if it is a quadratic residue modulo each prime
+divisor p of b, and if a == 1 mod 4 when 4\b, 8 \ b, resp. a == 1 mod 8 when 8|£.
+Exercise 7. Let (a, /?) = 1 and av = rv mod /?, v=l,...,/? — 1, 0 < rv < /?. Then
+the rv give a permutation ;r of the numbers 1, ..., p — 1. Show that sgn;r = (—).
+Exercise 8. Let an = ~J , where e = —^—, e' = —^— (an is the «-th
+Fibonacci number). If p is a prime number ^ 2,5, then one has
+tfp == (-) mod p.
+Exercise 9. Study the Legendre symbol (—) as a function of p > 3. Show that the
+property of 3 being a quadratic residue or nonresidue mod p depends only on the
+class of p mod 12.
+Exercise 10. Show that the number of solutions of x2 = a mod p equals 1 + (^).
+Exercise 11. Show that the number of solutions of the congruence ax2 + bx + c =
+0 mod /?, where (a, p) = 1, equals 1 + ( ^ ) .
+§ 9. Hilbert's Ramification Theory
+The question of prime decomposition in a finite extension L\K takes
+a particularly interesting and important turn once we assume L\K to be a
+Galois extension. The prime ideals are then subject to the action of the Galois
+group
+G = G(L\K).
+The "ramification theory" that arises from this assumption has been
+introduced into number theory by David Hubert (1862-1943). Given a in the
+ring O of integral elements of L, the conjugate a a, for every a e G, also
+belongs to O, i.e., G acts on O. If ^J is a prime ideal of O above p, then
+so is cr^J, for each a e G, because
+atyno = (7 op no) = ap = p.
+The ideals cr^J, for cr e G, are called the prime ideals conjugate to ^J.
+
+===== PDF PAGE 70 =====
+
+54 Chapter I. Algebraic Integers
+(9.1) Proposition. The Galois group G acts transitively on the set of all prime
+ideals tyofO lying above p, i.e., these prime ideals are all conjugates of each
+other.
+Proof: Let ^J and ty' be two prime ideals above p. Assume ty' / cr^J for
+any a e G. By the Chinese remainder theorem there exists x e O such that
+x == 0 mod *P' and x == 1 mod o *P for all a e G.
+Then the norm Nl\k{x) = YiaeG ax belongs to *P' D o = p. On the other
+hand, x £ <j^J for any a e G, hence crx ^ ^J for any a e G. Consequently
+FLr eG ^^?no = p, a contradiction. D
+(9.2) Definition. If *P is a prime ideal of (9, then the subgroup
+Gv = {a eG\a¥ = ¥]
+is called the decomposition group ofty over K. The fixed Geld
+Z<p = {i GL|ai=i for all a e G<p}
+is called the decomposition field ofty overK.
+The decomposition group encodes in group-theoretic language the number
+of different prime ideals into which a prime ideal p of o decomposes in O.
+For if ^3 is one of them and a varies over a system of representatives
+of the cosets in G/G«p, then cr^J varies over the different prime ideals
+above p, each one occurring precisely once, i.e., their number equals the
+index (G : G<p). In particular, one has
+G<p = 1 4=^ Zy = L ^=^ p is totally split,
+G<p = G 4=> Z<p = K 4=> p is nonsplit.
+The decomposition group of a prime ideal cr^J conjugate to ^J is the
+conjugate subgroup
+Ga<p = o G<p<j~ .
+In fact, for r e G, one has the equivalences
+TeGay<=> rc7<P = cr<P «=> cr-lray = y
+<=> a~lxa e G<p 4=> r e a G^cr"1.
+Remark: The decomposition group regulates the prime decomposition also
+in the case of a non-Galois extension. For subgroups U and V of a group G,
+consider the equivalence relation in G defined by
+a ^ a' 4=> cr' = uav for w e U, v e V.
+
+===== PDF PAGE 71 =====
+
+9. Hilbert's Ramification Theory 55
+The corresponding equivalence classes
+UcrV = {uav\u eU, v e V]
+are called the double cosets of G modd U9V. The set of these double cosets,
+which form a partition of G, is denoted U\G/V.
+Now let L\K be an arbitrary separable extension, and embed it into a
+Galois extension N\K with Galois group G. In G, consider the subgroup
+H = G(N\L). Let p be a prime ideal of K and Pp the set of prime ideals
+of L above p. If ^J is a prime ideal of N above p, then the rule
+H\G/G<$-^ Pp, HcrGy\—> a!]3nL,
+gives a well-defined bijection. The proof is left to the reader.
+In the Galois case, the inertia degrees /i, ..., fr and the ramification
+indices e\, ..., er in the prime decomposition
+of a prime ideal p of K are both independent of /,
+f\ = ••• = fr =/, <?i = ••• = er =e.
+In fact, writing *P = *Pi, we find *P; = offi for suitable 07 e G, and the
+isomorphism 07 : (9 -> (9 induces an isomorphism
+O/qj -A 0/or,-q}, fl mod qj h—► or,- fl mod ct/^J,
+so that
+/; = [ 0/a& : o/p] =[<9/?P:o/p], i = l, ...,r.
+Furthermore, since <J/(p(9) = p(9, we deduce from
+«p"ipo «=» a,cr)k/(p0) <=► (^?rip0
+the equality of the e\, i = 1, ..., r. Thus the prime decomposition of p in O
+takes on the following simple form in the Galois case:
+o
+where a varies over a system of representatives of G/Gy. The
+decomposition field Z<p of ^P over K has the following significance for the
+decomposition of p and the invariants e and /.
+(9.3) Proposition. Let tyz = ty H Z<p be the prime ideal of Z<$ below *p.
+Then we have:
+(i) ^Jz is nonsplit in L, i.e., *P is the only prime ideal ofL above tyz •
+(ii) *P over Z<p has ramification index e and inertia degree f.
+(iii) The ramification index and the inertia degree oftyz over K both equal 1.
+
+===== PDF PAGE 72 =====
+
+56 Chapter I. Algebraic Integers
+Proof: (i) Since G(L\Z<$) = G<p, the prime ideals above <Pz are the a <p,
+for a e G(L |Z«p), and they are all equal to *p.
+(ii) Since in the Galois case, ramification indices and inertia degrees are
+independent of the prime divisor, the fundamental identity in this case reads
+n = efr,
+where n := #G, r = (G : G<p). We see therefore that #G<p = [L : Z<p] = ef.
+Let e', resp. e", be the ramification index of *P over Z<p, resp. of ^Pz over /T.
+Then p = <P|" •... in Z<p and <#z = $K in L, so that p = $KV...., i.e.,
+e = eV. One also obviously gets the analogous identity for the inertia
+degrees / = /'/". The fundamental identity for the decomposition of *Pz
+in L then reads [L : Z<p] = e'f9 i.e., we have e'/' = ef•> and therefore«' = «, /' = /,«" = /" = l. D
+The ramification index e and the inertia degree / admit a further
+interesting group-theoretic interpretation. Since a O — O and <r^3 = ^J,
+every a e G<p induces an automorphism
+a : O/ty —► O/ty, fl mod qj h—> aa mod <p,
+of the residue class field (9/<p. Putting /c(<P) = O/ty and /c(p) = o/p, we
+obtain the
+(9.4) Proposition. The extension k OP) | /c (p) is normal and admits a surjective
+homomorphism
+Gv—►G(ic(?P)k(P)).
+Proof: The inertia degree of *Pz over K equals 1, i.e., Z<p has the same
+residue class field /c(p) as /T with respect to p. Therefore we may, and
+do, assume that Z<p = K, i.e., G<p = G. Let 0 e O be a representative
+of an element 0 e K0P) and /(X), resp. g(X), the minimal polynomial
+of 0 over K, resp. of 0 over /c(p). Then 6—6 mod *P is a zero of the
+polynomial f(X) = /(X) mod p, i.e., g(X) dividesJ(X). Since L\K is
+normal, /(X) splits over O into linear factors. Hence /(X) splits into linear
+factors over /c(*P), and the same is true of g(X). In other words, /c(*P)|/c(p)
+is a normal extension.
+Now let 6 be a primitive element for the maximal separable subextension
+of /c(<P)|/c(p) and
+a € G(*(?P)k(P)) = G(*(p)(0)|ir(p)) .
+
+===== PDF PAGE 73 =====
+
+9. Hilbert's Ramification Theory 57
+Then a^ isa root of g(X), and hence of f(X), i.e., there exists a zero 9'
+of f(X) such that 9' = o9 mod <p. 9' is a conjugate of #, i.e., 9' = a 9
+for some a e G(L\K). Since cr9 == a9 mod *p, the automorphism a is
+mapped by the homomorphism in question to a. This proves the surjectivity.
+□
+(9.5) Definition. The kernel /<pCG<p of the homomorphism
+G<p _^G(/c(<P)k(p))
+is called the inertia group ofty overK. The fixed field
+T?p = {x e L\ ax = x for all a e 7<p}
+is called the inertia field of *P over /T.
+This inertia field 7^ appears in the tower of fields
+K c Z<pC r^cL,
+and we have the exact sequence
+1 —► IV —► G<p —► G(*CP)I*(P)) —► 1.
+Its properties are expressed in the
+(9.6) Proposition. The extension Ty \ Zy is normal, and one has
+G(Ty\Zy) = G(*CP)k(P)) , G(L\TV) = IV.
+If the residue Geld extension tfCP)k(p) is separable, then one has
+#Iy = [L : T<p] = e, (G<p : 7<p) = |T<p : Z<p] = /.
+In this case one finds for the prime ideal ^t ofTy below ^3:
+(i) 77ie ramification index ofty over tyr is e and the inertia degree is 1.
+(ii) 77ie ramification index oftyr over tyz is 1, and the inertia degree is f.
+Proof: The first two claims follow from the identity #G<p = ef. So we only
+have to show statements (i) and (ii). Using the fundamental identity, they all
+follow from k(^t) = ^OP). As the inertia group Iy of *P over K is also the
+inertia group of ty over T<$, it follows from an application of proposition (9.4)
+to the extension L\Ty that G(k(^)\k(^t)) = 1, hence k(^t) = icffl). □
+
+===== PDF PAGE 74 =====
+
+58 Chapter I. Algebraic Integers
+In the diagram
+K —> Z<p —> T<p —> L
+we have indicated the ramification indices of the individual field extensions
+on top, and the inertia degrees on the bottom. In the special case where the
+residue field extension /c(*P)|/c(p) is separable we find
+/<p = 1 <$=> Ty = L ^=^ p is unramified in L.
+In this case the Galois group G(/c(^J)|/c(p)) = G<p of the residue class field
+extension may be viewed as a subgroup of G = G(L\K).
+Hilbert's ramification theory, with its various refinements and
+generalizations, belongs naturally to the theory of valuations, which we will develop
+in the next chapter (see chap. II, §9).
+Exercise 1. If L \ K is a Galois extension of algebraic number fields with noncyclic
+Galois group, then there are at most finitely many nonsplit prime ideals of K.
+Exercise 2. If L\K is a Galois extension of algebraic number fields, and *P a prime
+ideal which is unramified over K (i.e., p = *pn K is unramified in L), then there is
+one and only one automorphism (p<$ e G(L\K) such that
+cp^a == aq mod *P for all a £ O,
+where q = [k(^P) : /c(p)]. It is called the Frobenius automorphism. The
+decomposition group G *p is cyclic and cp^ is a generator of G *p.
+Exercise 3. Let L\K be a solvable extension of prime degree p (not necessarily
+Galois). If the unramified prime ideal p in L has two prime factors ^3 and *$ of
+degree 1, then it is already totally split (theorem of F.K. Schmidt).
+Hint: Use the following result of Galois (see [75], chap. II, §3): if G is a transitive
+solvable permutation group of prime degree /?, then there is no nontrivial permutation
+a € G which fixes two distinct letters.
+Exercise 4. Let L \ K be a finite (not necessarily Galois) extension of algebraic number
+fields and N\K the normal closure of L \K. Show that a prime ideal p of K is totally
+split in L if and only if it is totally split in Af.
+Hint: Use the double coset decomposition H\G/Gy$, where G = G(N\K), H =
+G(N\L) and G«p is the decomposition group of a prime ideal ^3 over p.
+§ 10. Cyclotomic Fields
+The concepts and results of the theory as far as it has now been
+developed have reached a degree of abstraction which we will now balance
+
+===== PDF PAGE 75 =====
+
+§10. Cyclotomic Fields 59
+by something more concrete. We will put the insights of the general theory
+to the task and make them more explicit in the example of the w-th
+cyclotomic field Q(£), where £ is a primitive n-th root of unity. Among
+all number fields, this field occupies a special, central place. So studying it
+does not only furnish a worthwhile example but in fact an essential building
+block for the further theory.
+It will be our first goal to determine explicitly the ring of integers of the
+field Q(f). For this we need the
+(10.1) Lemma. Let n be a prime power tv and put X — 1 — ?. Then the
+principal ideal (A.) in the ring o of integers of Q(f) is a prime ideal of degree 1,
+and we have
+lo = (X)d, where d = <p(lv) = [Q(f) : Q].
+Furthermore, the basis 1, f, ..., t,d~x of Q(f )IQ ^as ^e discriminant
+Proof: The minimal polynomial of f over Q is the n-th cyclotomic
+polynomial
+MX) = (xlv - i)/(xr_1 -1) = xtv-l«-» + ■■■ + xev~l +1.
+Putting X — 1, we obtain the identity
+*= n a-?*)­
+ge(Z/nZr
+1 — t8
+But 1 - t;8 = sg(l — f), for the algebraic integer sg = -—— =
+1 + f H h ?g_1- If gf is an integer such that gg' = 1 mod £v, then
+is integral as well, i.e., £g is a unit. Consequently £ = s(l — f )^v\ with
+the unit e = ]~[g£g> hence £o = U)^(£V). Since [Q(f) : Q] = <p(.T), the
+fundamental identity (8.2) shows that (X) is a prime ideal of degree 1.
+Let f = £i, ..., & be the conjugates of f. Then the cyclotomic
+polynomial is 0„(X) = ]lf=i(x' " ft) md (see §2' P- n)
+±d(i, f,..., f^-1) - n (ft - &) - n ^(ft) - ^Q«)iQ(0;(f)) •
+
+===== PDF PAGE 76 =====
+
+60 Chapter I. Algebraic Integers
+Differentiating the equation
+(Xr~l - 1)0, (X) = Xlv - 1
+and substituting f for X yields
+G-1)0; (?) = n_1,
+with the primitive £-th root of unity £ = f£V . But Nq($)|q(£ - 1) = ±£,
+so that
+^Q(OIQ« " 1) = ^Q«)IQ« " 1)r"1 = ±^V_1 •
+Observing that f_1 has norm ±1 we obtain
+dd, f,..., ^) = ±^Q(rtlQ(0;(o) = ^,(M)-rl = ±*'
+with j=r-1(v-6-v-l). □
+The ring of integers of Q(f) is now determined, for arbitrary n, as follows.
+(10.2) Proposition. A Z-basis of the ring o of integers of Q(f) is given by
+1, f, ..., £d~l, with d = <p(n), in other words,
+o = Z + Zf + • • • + Zf d~1 = Z[f ].
+Proof: We first prove the proposition in the case where n is a prime
+power £v. Since d(l,f, ..., f^"1) = ±£5, (2.9) gives us
+£5e> c Z[f] c o.
+Putting X = 1 - f, lemma (10.1) tells us that o/Xo = Z/£Z, so that
+o = Z + A.O, and a fortiori
+Xo + Z[t;] = o.
+Multiplying this by X and substituting the result Xo — X2o + A.Z[f ], we
+obtain
+A2e> + Z[f] = e>.
+Iterating this procedure, we find
+A/e? + Z[?] = e> for all t>\.
+
+===== PDF PAGE 77 =====
+
+§10. Cyclotomic Fields 61
+For t = s (p(lv) this implies, in view of t o = A^(£V)e> (see (10.1)), that
+o = k'o + Z[f ] - ^5e> + Z[f ] = Z[f ].
+In the general case, let n = t\x • • • #""• Then ft = f ^V is a primitive ^-th
+root of unity, and one has
+Q(?)=Q(?l)-"Q(?r)
+and Q(ft) • • • Q(ft_i) fl Q(ft) = Q. By what we have just seen, for each
+i — 1, ..., r, the elements l,ft, ..., f-1~ , where d[ — (p(lvtl), form an
+integral basis of Q(ft)|Q. Since the discriminants d(l, ft, ..., fff/"1) = ±£f
+are pairwise relatively prime, we conclude successively from (2.11) that the
+elements f (l • • • ft7r, with jt — 0, ..., dx• — 1, form an integral basis of
+Q(f )|Q. But each one of these elements is a power of ft Therefore every
+a e o may be written as a polynomial a — /(f) with coefficients in Z.
+Since f has degree (p(n) over Q, the degree of the polynomial /(f) may be
+reduced to (p(n) — 1. In this way one obtains a representation
+Of = flO + fll? + • • • + ^(«)-lf ^M •
+Thus 1, f, ..., ft?^)-1 is indeed an integral basis. □
+Knowing that Z[f ] is the ring of integers of the field Q(f) we are now in
+a position to state explicitly the law of decomposition of prime numbers p
+into prime ideals of Q(f). It is of the most beautiful simplicity.
+(10.3) Proposition. Letn — \\p pvp be the prime factorization ofn and, for
+every prime number p, let fp be the smallest positive integer such that
+pfp = 1 mod n/pVp .
+Then one has in Q(f) the factorization
+P = (Pl-Pr)*'W'),
+where pi, ..., pr are distinct prime ideals, all of degree fp.
+Proof: Since o = Z[f], the conductor of Z[f] equals 1, and we may
+apply proposition (8.3) to any prime number p. As a consequence, every p
+
+===== PDF PAGE 78 =====
+
+62 Chapter I. Algebraic Integers
+decomposes into prime ideals in exactly the same way as the minimal
+polynomial <f>n(X) of f factors into irreducible polynomials mod p. All we
+have to show is therefore that
+c/>n(X) ee (Pl(X) • • • pr(X)Y{pVp) mod p,
+where p\(X), ..., pr(X) are distinct irreducible polynomials over Z/pZ of
+degree fp. In order to see this, put n — pvPm. As £;, resp. rjj, varies over
+primitive roots of unity of order m, resp. pvP, the products i=i rjj vary precisely
+over the primitive n-th roots of unity, i.e., one has the decomposition over o:
+4>n{X) = \\{X-^rjj).
+Since XpVp — 1 = (X - \)pVp mod p, one has rjj = 1 mod p, for any prime
+ideal p | p. In other words,
+MX) = FK* - ^(pVp) = -M*)^ mod p.
+i
+This implies the congruence
+(t>n{X)^(j>m{X)^Vp) mod p.
+Observing that /^ is the smallest positive integer such that pfp = \ mod m,
+it is obvious that this congruence reduces us to the case where p \ n, and
+hence (p(pVp) — <p(l) = 1.
+As the characteristic p of o/p does not divide n, the polynomials Xn - 1
+and nXn~l have no common root in o/p. So Xn — 1 mod p has no
+multiple roots. We therefore see that passing to the quotient o -> o/p
+maps the group /x„ of n-th roots of unity bijectively onto the group
+of n-th roots of unity of o/p. In particular, the primitive n-th root of
+unity f modulo p remains a primitive n-th root of unity. The smallest
+extension field of F^ = Z/pZ containing it is the field ¥ fp, because its
+multiplicative group F* fp is cyclic of order pfp — 1. ¥ fp is therefore the
+field of decomposition of the reduced cyclotomic polynomial
+0„(X) =0„(X) mod p.
+Being a divisor of Xn — 1 mod p, this polynomial has no multiple roots,and if _
+</>n(X) = pl(X)---pr(X)
+is its factorization into irreducibles over ¥p, then every ~pt(X) is the minimal
+polynomial of a primitive n-th root of unity £ e F*/p. Its degree is
+therefore fp. This proves the proposition. □
+Let us emphasize two special cases of the above law of decomposition:
+
+===== PDF PAGE 79 =====
+
+§10. Cyclotomic Fields 63
+(10.4) Corollary. A prime number p is ramified in Q(f) if and only if
+n = 0 mod p,
+except in the case where p — 2 — (4, n). A prime number p ^ 2 is totally
+split in Q (£) if and only if
+p = 1 mod n.
+The completeness of these results concerning the integral basis and the
+decomposition of primes in the field Q(f) will not be matched by our study
+of the group of units and the ideal class group. The problems arising in this
+context are in fact among the most difficult problems posed by algebraic
+number theory. At the same time one encounters here plenty of astonishing
+laws which are the subject of a theory which has been developed only
+recently, Iwasawa theory.
+The law of decomposition (10.3) in the cyclotomic field provides the
+proper explanation of Gauss's reciprocity law (8.6). This is based on the
+following
+(10.5) Proposition. Let I and p be odd prime numbers, I* = (— 1) ~ £9 and
+f a primitive £-th root of unity Then one has:
+p is totally split in Q (VI*) ^==> p splits in Q (f) into an even
+number of prime ideals.
+Proof: The little computation in §8, p. 51 has shown us that £* = r2 with
+r = £fl€(z//z)*(f)?fl. so that Q(V^*) Q Q(?)- If P is totally split in
+Q(V^*), say p = P1P2, then some automorphism a of Q(f) such that
+tfpi = P2 transforms the set of all prime ideals lying above pi bijectively
+into the set of prime ideals above p2. Therefore the number of prime ideals
+of Q(f) above p is even. Now assume conversely that this is the case. Then
+the index of the decomposition group Gp, or in other words, the degree
+[Zp : Q] of the decomposition field of a prime ideal p of Q(f) over p,
+is even. Since G(Q(f)|Q) is cyclic, it follows that Q(V^*) c Zp. The
+inertia degree of p n Zp over Q is 1 by (9.3), hence also the inertia degree
+of p H Q(>/F )• This implies that p is totally split in Q(v^* ). □
+From this proposition we obtain the reciprocity law for two odd prime
+numbers I and p,
+(?)(?h-»¥*
+
+===== PDF PAGE 80 =====
+
+64 Chapter I. Algebraic Integers
+as follows. It suffices to show that
+( —1\ Ezl
+— J = (-1) 2 (see §8, p.51)
+then gives
+By (8.5) and (10.5), we know that (—J = 1 if and only if p decomposes
+in the field Q(f) of £-th roots of unity into an even number of prime ideals.
+By (10.3), this number is r = ——, where / is the smallest positive integer
+such that pf == 1 mod £9 i.e., r is even if and only if / is a divisor
+of —^—. But this is tantamount to the condition p^-1)/2 == l mod £. Since
+an element in the cyclic group FJ has an order dividing —— if and only if
+it belongs to F|2, the last congruence is equivalent to (y) = 1. So we do
+have (—) = (j) as claimed.
+Historically, Gauss's reciprocity law marked the beginning of algebraic
+number theory. It was discovered by Euler, but first proven by Gauss. The
+quest for similar laws concerning higher power residues, i.e., the congruences
+xn == a mod p, with n > 2, dominated number theory for a long time.
+Since this problem required working with the n-th cyclotomic field, Kummer's
+attempts to solve it led to his seminal discovery of ideal theory. We have
+developed the basics of this theory in the preceding sections and tested it
+successfully in the example of cyclotomic fields. The further development
+of this theory has led to a totally comprehensive generalization of Gauss's
+reciprocity law, Artin's reciprocity law, one of the high points in the history
+of number theory, and of compelling charm. This law is the main theorem
+of class field theory, which we will develop in chapters IV-VI.
+Exercise 1. (Dirichlet's Prime Number Theorem). For every natural number n there
+are infinitely many prime numbers p = 1 mod n.
+Hint: Assume there are only finitely many. Let P be their product and consider the
+n-th cyclotomic polynomial </>rt. Not all numbers <f)n(xnP), for x e Z, can equal 1.
+Let p \(f)n(xnP) for suitable x. Deduce a contradiction from this. (Dirichlet's prime
+number theorem is valid more generally for prime numbers p = a mod n, provided
+(a,n) = 1 (see VII, (5.14) and VII, § 13)).
+
+===== PDF PAGE 81 =====
+
+§11. Localization 65
+Exercise 2. For every finite abelian group A there exists a Galois extension L\Q
+with Galois group G(L |Q) = A.
+Hint: Use exercise 1.
+Exercise 3. Every quadratic number field Q(Vd) is contained in some cyclotomic
+field Q(£rt), £rt a primitive n-\h root of unity.
+Exercise 4. Describe the quadratic subfields of Q(f„)|Q, in the case where n is odd.
+Exercise 5. Show that QKx/^T), Q(V2), (QKv^) are the quadratic subfields of
+Q(?n)IQfar/i = 2*,tf >3.
+§ 11. Localization
+To "localize" means to form quotients, the most familiar case being the
+passage from an integral domain A to its field of fractions
+K = l^\aeA, beA\ {0}}.
+More generally, choosing instead of A \ {0} any nonempty S c A \ {0}
+which is closed under multiplication, one again obtains a ring structure on
+the set
+AS"1 = J- eK\ae A, s e s\.
+The most important special case of such a multiplicative subset is the
+complement S = A \ p of a prime ideal p of A. In this case one writes Ap
+instead of AS~l, and one calls the ring Ap the localization of A at p. When
+dealing with problems that involve a single prime ideal p of A at a time it is
+often expedient to replace A by the localization Ap. This procedure forgets
+everything that has nothing to do with p, and brings out more clearly all the
+properties concerning p. For instance, the mapping
+q i—> qAp
+gives a 1-1-correspondence between the prime ideals q c p of A and the
+prime ideals of Ap. More generally for any multiplicative set 5, one has the
+(11.1) Proposition. The mappings
+q i—> qS"1 and Q\—> O. n A
+are mutually inverse 1-1 -correspondences between the prime ideals q c A\5
+of A and the prime ideals Q of AS~l.
+
+===== PDF PAGE 82 =====
+
+66 Chapter I. Algebraic Integers
+Proof: If q c A \ S is a prime ideal of A, then
+Q = q5"1 = J- \q eq, s e s}
+is a prime ideal of AS-1. Indeed, in obvious notation, the relation ^gQ,no! Qi.e., —- = -77, implies that s'W = gss' e q. Therefore aa! e q, because
+5"/; ^ q, and hence a or a' belong to q, which shows that j or — belong
+to £}. Furthermore one has
+q=QHA,
+since j = a e O.D A implies q = as e q, whence a e q because s £ q.
+Conversely, let £} be an arbitrary prime ideal of AS-1. Then q = Q(1A
+is obviously a prime ideal of A, and one has q c A \ S. In fact, if q were
+to contain an s e S, then we would have 1 = s • - e £J because y e AS-1.
+Furthermore one has
+& = qS~l.
+For if y e Q, then fl = ^5GQflA = q, hence j = a^ e qS~l. The
+mappings q h* qS_1 and £J h* £} n A are therefore inverses of each other,
+which proves the proposition. □
+Usually 5 will be the complement of a union [jpeX P over a set X °f
+prime ideals of A. In this case one writes
+MX) = { - | f,g e A, g # 0 mod p for p e x)
+instead of AS-1. The prime ideals of A(X) correspond by (11.1) 1-1 to
+the prime ideals of A which are contained in UpexP' a^ ^e others are
+being eliminated when passing from A to A(X). For instance, if X is finite
+or omits only finitely many prime ideals of A, then only the prime ideals
+from X survive in A(X).
+In the case that X consists of only one prime ideal p, the ring A(X) is
+the localization
+Ap = {j\f>8£M g#0modp}
+of A at p. Here we have the
+(11.2) Corollary. If pis a prime ideal of A, thenAp is a local ring,i.e., Ap has
+a unique maximal ideal, namely mp = pAp. There is a canonical embedding
+A/p c—> Ap/mp,
+identifying Ap/mp with the Geld of fractions of A/p. In particular, ifp is a
+maximal ideal of A, then one has
+A/pn = Ap/mn for/i > 1.
+
+===== PDF PAGE 83 =====
+
+§11. Localization 67
+Proof: Since the ideals of Ap correspond 1-1 to the ideals of A contained
+in p, the ideal mp = pAp is the unique maximal ideal. Let us consider the
+homomorphism
+/ : A/pn —> Ap/mp, a mod pn i—> a mod m£.
+For n = 1, / is injective because p = mpDA. Hence Ap/mpAp becomes the
+field of fractions of A /p. Let p be maximal and n > 1. For every s e A \ p
+one has pn + sA = A, i.e., s = s mod p" is a unit in A/pw. For n = 1 this
+is clear from the maximality of p, and for /i > 1 it follows by induction:
+A = p""1 + sA => p = pA = p(p"_1 + jA) ^pn +sA^pn -\-sA = A.
+Injectivity of /: let a e A be such that a e trip, i.e., (2 = 6/,s with b e pn,
+s £ p. Then (25" = 6Gp", so that <z 5 = 0 in A/pn, and hence ^ = 0 in A/pn.
+Surjectivity of /: let a/s e Ap, a e A, s £ p. Then by the above, there
+exists an a1 e A such that a == a's mod pn. Therefore a/s == a' mod pnAp,
+i.e., (2/51 mod trip lies in the image of /. □
+In a local ring with maximal ideal m, every element a £ m is a unit.
+Indeed, since the principal ideal (a) is not contained in any other maximal
+ideal, it has to be the whole ring. So we have
+A* = A\m.
+The simplest local rings, except for fields, are discrete valuation rings.
+(11.3) Definition. A discrete valuation ring is a principal ideal domain o with
+a unique maximal ideal p / 0.
+The maximal ideal is of the form p = (n) = no, for some prime
+element n. Since every element not contained in p is a unit, it follows
+that, up to associated elements, it is the only prime element of o. Every
+nonzero element of o may therefore be written as snn, for some e e o*,
+and n > 0. More generally, every element a ^ 0 of the field of fractions K
+may be uniquely written as
+a = snn, seo*, n eZ.
+The exponent n is called the valuation of a. It is denoted v(a), and it is
+obviously characterized by the equation
+(fl) = pu(fl).
+The valuation is a function
+v:K* —►Z.
+
+===== PDF PAGE 84 =====
+
+68 Chapter I. Algebraic Integers
+Extending it to K by the convention v(0) = oo, a simple calculation shows
+that it satisfies the conditions
+v(ab) = v(a) + v(b), v(a + b) > min{ v(a),v(b)].
+This innocuous looking function gives rise to a theory which will occupy all
+of the next chapter.
+The discrete valuation rings arise as localizations of Dedekind domains.
+This is a consequence of the
+(11.4) Proposition. Ifo is a Dedekind domain, and S c o \ {0} is a
+multiplicative subset, then o S~x is also a Dedekind domain.
+Proof: Let 21 be an ideal of oS~l and a = 21 n o. Then 21 = a S"1, because
+if j e 21, a e o and s e S, then one has a = 5" • j e 21 fl o = a, so that
+| = a • y € a5-1. As a is finitely generated, so is 21, i.e., oS~l is noetherian.
+It follows from (11.1) that every prime ideal of oS~l is maximal, because
+this holds in o. Finally, oS~l is integrally closed, for if x e K satisfies the
+equation
+s\ sn
+with coefficients |f e oS~l, then multiplying it with the n-th power
+of s = s\ ...sn shows that sx is integral over o, whence sx e o and
+therefore x e oS~l. This shows that oS~l is a Dedekind domain. □
+(11.5) Proposition. Let o be a noetherian integral domain, o is a Dedekind
+domain if and only if, for all prime ideals p ^ 0, the localizations op are
+discrete valuation rings.
+Proof: If o is a Dedekind domain, then so are the localizations op. The
+maximal ideal m = pop is the only nonzero prime ideal of op. Therefore,
+choosing any tz e m \ m2, one necessarily finds (n) = m, and furthermore
+mn = {nn). Thus op is a principal ideal domain, and hence a discrete
+valuation ring.
+Letting p vary over all prime ideals / 0 of o, we find in any case that
+p
+For if ^ G Hp op> with a,b e o, then
+a = {jc € o | xa e bo]
+
+===== PDF PAGE 85 =====
+
+§11. Localization 69
+is an ideal which cannot be contained in any prime ideal of o. In fact, for
+any p, we may write r — ^ with c e e>, s £ p, so that sa = be, hence
+s e a \ p. As a is not contained in any maximal ideal, it follows that a = o,
+hence a = 1 • a e b o, i.e., ~ e o.b
+Suppose now that the op are discrete valuation rings. Being principal ideal
+domains, they are integrally closed (see §2), so o = f]p op is also integrally
+closed. Finally, from (11.1) it follows that every prime ideal p / 0 of o is
+maximal because this is so in op. Therefore o is a Dedekind domain. □
+For a Dedekind domain e>, we have for each prime ideal p / 0 the discrete
+valuation ring op and the corresponding valuation
+vp : K* —► Z
+of the field of fractions. The significance of these valuations lies in their
+relation to the prime ideal factorization. If x e K* and
+(x) = Y\PVp
+p
+is the prime factorization of the principal ideal (x), then, for each p, one has
+vp = vp(x).
+In fact, for a fixed prime ideal q / 0 of o, the first equation above implies
+(because p oq = oq for p / q) that
+xoq = {T[pv>)oq = qv*oq=mvq\
+p
+Hence indeed vq(x) = vq. In view of this relation, the valuations vp are also
+called exponential valuations.
+The reader should check that the localization of the ring Z at the prime
+ideal (p) = pZ is given by
+The maximal ideal pZ(p) consists of all fractions a/b satisfying p \ a, p \ b,
+and the group of units consists of all fractions a/b satisfying p \ ab. The
+valuation associated to Z(/?),
+vp : Q —► Z U {oo},
+is called the /?-adic valuation of Q. The valuation vp(x) of an element
+x e Q* is given by
+Vp(x) = v,
+where x = pva/b with integers (2, b relatively prime to p.
+
+===== PDF PAGE 86 =====
+
+70 Chapter I. Algebraic Integers
+To end this section, we now want to compare a Dedekind domain o to
+the ring
+o(X) = J £ | f9g e o9 g # 0 mod p for p e x},
+where X is a set of prime ideals / 0 of o which contains almost all
+prime ideals of o. By (11.1), the prime ideals ^ 0 of o(X) are given as
+px = po(X), for p € X, and it is easily checked that o and o(X) have the
+same localizations
+op = o(X)Px.
+We denote by C/(o), resp. C/(o(X)), the ideal class groups of o, resp.
+o(X). They, as well as the groups of units o* and o(X)*, are related by the
+following
+(11.6) Proposition. There is a canonical exact sequence
+1 —* o* —► o(X)* —► 0 /T/o; —► C/(o) —► C/(o(X)) —► 1,
+p^x
+andonehasK*/o*p = Z.
+Proof: The first arrow is inclusion and the second one is induced by the
+inclusion o(X)* -> /T*, followed by the projections K* -> K*/o*. If
+a 6 e>(X)* belongs to the kernel, then a e op for p £ X, and also for p e X
+because op = o(X)Px, hence (2 e p|p o* = e>* (see the argument in the
+proof of (11.5)). This shows the exactness at o(X)*. The arrow
+0 K*/o*p —► Cl{o)
+is induced by mapping
+0 cxp mod o; h-> f[ pup(«p),P^X P^X
+where up : jST* -> Z is the exponential valuation of K associated to op. Let
+0p^x ofp mod o* be an element in the kernel, i.e.,
+npup(ap) = (a) = npUp(a).P^ P
+for some a e K*. Because of unique prime factorization, this means that
+tip(a) — 0 for p e X, and vp(ap) = vp(a) for p £ X. It follows
+that or € HpeX °p — o(X)* and or == ap mod o*. This shows exactnessin the middle. The arrow
+Cl(o) —► C/(o(X))
+
+===== PDF PAGE 87 =====
+
+§11. Localization 71
+comes from mapping a h* ao(X). The classes of prime ideals p e X
+are mapped onto the classes of prime ideals of o{X). Since Cl(o(X)) is
+generated by these classes, the arrow is surjective. For p <£ X we have
+po(X) = (1), and this means that the kernel consists of the classes of the
+ideals ]~[p^x Pvp- This, however, is visibly the image of the preceding arrow.
+Therefore the whole sequence is exact. Finally, the valuation vp : K* -> Z
+produces the isomorphism K*/o* = Z. □
+For the ring of integers o^ of an algebraic number field K, the proposition
+yields the following results. Let S denote a finite set of prime ideals of Ok
+(not any more a multiplicative subset), and let X be the set of all prime
+ideals that do not belong to S. We put
+osK=oK(X).
+The units of this ring are called the S-units, and the group ClsK = Cl(osK)
+the S-class group of K.
+(11.7) Corollary. For the group Ks = (osK)* of S-units of K there is an
+isomorphism
+Ks = fji(K) x z#5+r+J_1,
+where r and s are defined as in §5, p. 30.
+Proof: The torsion subgroup of Ks is the group ijl(K) of roots of unity
+in K. Since Cl(o) is finite, we obtain the following identities from the exact
+sequence (11.6) and from (7.4):
+rank(#5) = rank(e^) + rank( 0Z)=#S + r + j-l.
+peS
+This proves the corollary. □
+(11.8) Corollary. 77ie S-class group ClsK = Cl(osK) is finite.
+Exercise 1. Let A be an arbitrary ring, not necessarily an integral domain, let M be
+an A-module and S a multiplicatively closed subset of A such that 0 ^ S. In M x S
+consider the equivalence relation
+(m,s) ~ (m',sf) «=> 3s" g S such that s"(s'm - srri) = 0.
+Show that the set Ms of equivalence classes (m,s) forms an A-module, and that
+M —> Ms, a h-> (a, 1), is a homomorphism. In particular, A5 is a ring. It is called
+the localization of A with respect to S.
+
+===== PDF PAGE 88 =====
+
+72 Chapter I. Algebraic Integers
+Exercise 2. Show that, in the above situation, the prime ideals of As correspond 1-1
+to the prime ideals of A which are disjoint from S. If p c A and ps c As correspond
+in this way, then As/ps is the localization of A/p with respect to the image of S.
+Exercise 3. Let / : M —> N be a homomorphism of A-modules. Then the following
+conditions are equivalent:
+(i) / is injective (surjective).
+(ii) fp : Mp —> Np is injective (surjective) for every prime ideal p.
+(iii) /m : Mm —> Nm is injective (surjective) for every maximal ideal m.
+Exercise 4. Let S and T be two multiplicative subsets of A, and 7* the image of T
+in As. Then one has ASt = (As)t*­
+Exercise 5. Let / : A —► B be a homomorphism of rings and S a multiplicatively
+closed subset such that f(S) c B*. Then / induces a homomorphism As —> B.
+Exercise 6. Let A be an integral domain. If the localization As is integral over A,
+then As = A.
+Exercise 7 (Nakayama's Lemma). Let A be a local ring with maximal ideal m, let M
+be an A-module and N c M a submodule such that M/N is finitely generated. Then
+one has the implication:
+M = N + mM => M = N.
+§ 12. Orders
+The ring ok of integers of an algebraic number field K is our chief
+interest because of its excellent property of being a Dedekind domain. Due
+to important theoretical as well as practical circumstances, however, one is
+pushed to devise a theory of greater generality which comprises also the
+theory of rings of algebraic integers which, like the ring
+o = Z + ZV5 CQ(V5),
+are not necessarily integrally closed. These rings are the so-called orders.
+(12.1) Definition. Let K\Q be an algebraic number field of degree n. An order
+of K is a subring o of Ok which contains an integral basis of length n. The
+ring Ok is called the maximal order ofK.
+
+===== PDF PAGE 89 =====
+
+§12. Orders 73
+In concrete terms, orders are obtained as rings of the form
+o = Z[«i, ..., Qfr],
+where a?i, ..., ar are integers such that K = Q(«i, . ..,ar). Being a
+submodule of the free Z-module Ok, o does of course admit a Z-basis
+which, as Qo = /T, has to be at the same time a basis of K |Q, and therefore
+has length n. Orders arise often as rings of multipliers, and as such have their
+practical applications. For instance, if ai, ..., otn is any basis of K\Q_ and
+M = Zc*i H hZa„, then
+Om = {a € K I aM c M]
+is an order. The theoretical significance of orders, however, lies in the fact
+that they admit "singularities", which are excluded as long as only Dedekind
+domains with their "regular" localizations op are considered. We will explain
+what this means in the next section.
+In the preceding section we studied the localizations of a Dedekind
+domain ok- They are extension rings of Ok which are integrally closed,
+yet no longer integral over Z. Now we study orders. They are subrings
+of Ok which are integral over Z, yet no longer integrally closed. As a
+common generalization of both types of rings let us consider for now all
+one-dimensional noetherian integral domains. These are the noetherian
+integral domains in which every prime ideal p ^ 0 is a maximal ideal.
+The term "one-dimensional" refers to the general definition of the Krull
+dimension of a ring as being the maximal length d of a chain of prime
+ideals p0 g pi g • • • g p</.
+(12.2) Proposition. An order o ofK is a one-dimensional noetherian integral
+domain.
+Proof: Since o is a finitely generated Z-module of rank n = [K : Q],
+every ideal a is also a finitely generated Z-module, and a fortiori a finitely
+generated o-module. This shows that o is noetherian. If p / 0 is a prime
+ideal and a e p H Z, a / 0, then ao c p c o, i.e., p and o have the same
+rank n. Therefore o/p is a finite integral domain, hence a field, and thus pis a maximal ideal. □
+In what follows, we always let o be a one-dimensional noetherian integral
+domain and K its field of fractions. We set out by proving the following
+stronger version of the Chinese remainder theorem.
+
+===== PDF PAGE 90 =====
+
+74 Chapter I. Algebraic Integers
+(12.3) Proposition. If a^ 0 is an ideal ofo, then
+o/a = 0<Vaop = 0 op/aop.
+Proof: Let ap = o n aop. For almost all p one has p ^ a and therefore
+aop = Op, hence 5P = o. Furthermore, one has a = P|p ap = HpDa^p­
+Indeed, for any a e P|p ap, the ideal b = [x e o \ xa e a} does not belong
+to any of the maximal ideals p (in fact, one has spa e a for any sp <£ p),
+consequently, b = o, i.e., a = 1 • a € a, as claimed. (11.1) implies that,
+if P 2 a, then p is the only prime ideal containing ap. Therefore, given two
+distinct prime ideals p and q of o, the ideal ap+aq cannot be contained in any
+maximal ideal, whence ap + 5q = o. The Chinese remainder theorem (3.6)
+now gives the isomorphism
+o/a = @o/ap,
+and we have o/ap — op/aop, because p = p mod ap is the only maximalideal of o/ap. D
+For the ring o, the fractional ideals of o, in other words, the finitely
+generated nonzero e>-submodules of the field of fractions K, no longer form
+a group — unless o happens to be Dedekind. The way out is to restrict
+attention to the invertible ideals, i.e., to those fractional ideals a of o for
+which there exists a fractional ideal b such that
+ab = o.
+These form an abelian group, for trivial reasons. The inverse of a is still the
+fractional ideal
+a-1 = [x e K | xa c o) ,
+because it is the biggest ideal such that acT1 c o. The invertible ideals of o
+may be characterized as those fractional ideals which are "locally" principal:
+(12.4) Proposition. A fractional ideal a of o is invertible if and only if, for
+every prime ideal p / 0,
+ap = aop
+is a fractional principal ideal ofop.
+
+===== PDF PAGE 91 =====
+
+§ 12. Orders 75
+Proof: Let a be an invertible ideal and ab = o. Then 1 = Y^i=iai^i
+with m e a, b[ e b, and not all abi e op can lie in the maximal ideal
+pOp. Suppose a\b\ is a unit in op. Then ap = a\Op because, for x e ap,
+xb\ e apb = op, hence x = xb\(b\ai)~lai e a\Op.
+Conversely, assume ap = aop is a principal ideal apop, ap e K*, for
+every p. Then we may and do assume that ap e a. We claim that the
+fractional ideal a-1 = {x e K \ xa c o) is an inverse for a. If this were not
+the case, then we would have a maximal ideal p such that act-1 cpca
+Let a\, ..., an be generators of a. As a\ e apop, we may write at = flp^f,
+with ft, g o, 5/ G o \ p. Then 5/a/ e apo. Putting s = si • • -5W, we have
+5a/ € flp o for / = 1, ..., n, hence sa~la c o and therefore sa"1 g a-1.
+Consequently, s = 5a"^p € a-1 a c p, a contradiction. D
+We denote the group of invertible ideals of o by J(o). It contains the
+group P(p) of fractional principal ideals ao, a e K*.
+(12.5) Definition. The quotient group
+Pic(o) = J(o)/P(o)
+is called the Picard group of the ring o.
+In the case where o is a Dedekind domain, the Picard group is of course
+nothing but the ideal class group CIk- In general, we have the following
+description for J(o) and Pic(o).
+(12.6) Proposition. The correspondence a i-> (ap) = (aop) yields an
+isomorphism
+J(o) S 0P(op).
+p
+Identifying the subgroup P(o) with its image in the direct sum one gets
+Pic(o) = (©P(Op))/P(o).
+p
+Proof: For every a e J(o), ap = aop is a principal ideal by (12.4), and we
+have ap = op for almost all p because a lies in only finitely many maximal
+ideals p. We therefore obtain a homomorphism
+/(o)—►©/'(Op), ah->(ap).
+p
+
+===== PDF PAGE 92 =====
+
+76 Chapter I. Algebraic Integers
+It is injective, for if ap = op for all p, then a C Q op = o (see the proof
+of (11.5)), and one has to have a = o because otherwise there would exist
+a maximal ideal p such that a c p c o, i.e., ap c pop # op. In order to
+prove surjectivity, let (apOp) e 0p P(op) be given. Then the o-submodule
+p
+of K is a fractional ideal. Indeed, since apop = op for almost all p, there is
+some ceo such that cap e op for all p, i.e., ca c Q op = o. We have to
+show that one has
+aop = apop
+for every p. The inclusion c is trivial. In order to show that apOp c aop, let
+us choose c e o, c ^ 0, such that ca~xaq e o for the finitely many q which
+satisfy a~laq & oq. By the Chinese remainder theorem (12.3), we may finda e o such that
+a = c mod p and a e ca~laqoq for q # p.
+Then s = ac_1 is a unit in c?p and aps e P| aqoq = a, hence
+tfpOp = (^p^)Op c aop. D
+Passing from the ring o to its normalization 5, i.e., to the integral closure
+of o in K, one obtains a Dedekind domain. This is not all that easy to prove,
+however, because b is in general not a finitely generated o -module. But at
+any rate we have the
+(12.7) Lemma. Let obea one-dimensional noetherian integral domain and b
+its normalization. Then, for each ideal a # 0ofe>, the quotient b/ab is a finitely
+generated o-module.
+Proof: Let a e a, a / 0. Then b/ab is a quotient of b/ab. It thus suffices
+to show that b/ab is a finitely generated o-module. With this end, consider
+in o the descending chain of ideals containing ao
+am = (ambD o,ao).
+This chain becomes stationary. In fact, the prime ideals of the ring o/ao
+are not only maximal but also minimal in the sense that o/ao is a zero­
+dimensional noetherian ring. In such a ring every descending chain of ideals
+becomes stationary (see §3, exercise 7). If the chain am = am mod ao is
+stationary at n, then so is the chain am. We show that, for this n, we have
+6Ca no + ab.
+
+===== PDF PAGE 93 =====
+
+§ 12. Orders 77
+Let ft = - e b, b,c e o. Apply the descending chain condition to the
+ring o/co and the chain of ideals (am), where a — a mod co. Then
+(ah) = (a/z+1), i.e., we find some x e o such that a^ == xah+l mod co,
+hence (1 - xa)ah e co, and therefore
+b b (1 - jcfl)fl* *,j8 = -(1 -xa) + pxa = -r + A*a ea_/J0ffl5.c an c
+Let /* be the smallest positive integer such that /? e a~ho + ae>. It then
+suffices to show that h < n. Assume h > n. Writing
+u
+(*) f} = —r + au with w g o, u e o,
+a'2
+we have u — ah{^ — au) e ahb H o c a/* = a/,+1 because h > n, hence
+^ = ah+luf + am', w; G o, w; G S. Substituting this into (*) gives
+P = -T—r +a(u + uf) eal~ho + ad.an~l
+This contradicts the minimality of /*. So we do have b c a~wo + <ze>.
+S/a5 thus becomes a submodule of the o-module {a~no + ab)jab
+generated by cTn mod ad. It is therefore itself a finitely generated o-module,
+q.e.d. □
+(12.8) Proposition (Krull-Akizuki). Let o be a one-dimensional noetherian
+integral domain with field of fractions K. Let L\K be a finite extension and O
+the integral closure ofo in L. Then O is a Dedekind domain.
+Proof: The facts that O is integrally closed and that every nonzero prime
+ideal is maximal, are deduced as in (3.1). It remains to show that O is
+noetherian. Let co\, ..., con be a basis of L\K which is contained in O.
+Then the ring Oo = o[co\9 ..., con] is a finitely generated o-module and in
+particular is noetherian since o is noetherian. We argue as before that Oo is
+one-dimensional and are thus reduced to the case L = K. So let 21 be an
+ideal of O and a eSlflo, a /0; then by the above lemma O/aO is a
+finitely generated o-module. Since o is noetherian, so is the o-submodule
+21/00, and also the O-module 21. □
+Remark: The above proof is taken from Kaplansky's book [82] (see also
+[101]). It shows at the same time that proposition (8.1), which we had proved
+only in the case of a separable extension L\K, is valid for general finite
+extensions of the field of fractions of a Dedekind domain.
+
+===== PDF PAGE 94 =====
+
+78 Chapter I. Algebraic Integers
+Next we want to compare the one-dimensional noetherian integral
+domain o with its normalization b. The fact that b is a Dedekind domain is
+evident and does not require the lengthy proof of (12.8) provided we make
+the following hypothesis:
+(*) o is an integral domain whose normalization b is a finitely generated
+o -module.
+This condition will be assumed for all that follows. It avoids pathological
+situations and is satisfied in all interesting cases, in particular for the orders
+in an algebraic number field.
+The groups of units and the Picard groups of o and b are compared with
+each other by the following
+(12.9) Proposition. One has the canonical exact sequence
+1 —> o* —> b* —> 0 S*/e>* —> Pic(o) —> Pic(b) —> 1.
+p
+In the sum, p varies over the prime ideals ^ 0 ofo and bp denotes the integral
+closure ofop in K.
+Proof: If p varies over the prime ideals of b, we know from (12.6) that
+J(o) = 0P(Op).
+p
+If p is a prime ideal of o, then pe> splits in the Dedekind domain b into a
+product
+po^p*1---^,
+i.e., there are only finitely many prime ideals of b above p. The same holds
+for the integral closure bp of op. Since every nonzero prime ideal of bp
+has to lie above pop, the localization bp has only a finite number of prime
+ideals and is therefore a principal ideal domain (see §3, exercise 4). In view
+of (12.6), it follows that
+P(op) = J(bp) = 0P(Sp)
+fep
+and therefore
+J(o) = 0 0p(Sp) = 0P(ap).P P2P P
+
+===== PDF PAGE 95 =====
+
+§ 12. Orders 79
+Observing that P(R) = K*/R* for any integral domain J? with field of
+fractions K, we obtain the commutative exact diagram
+1 K*/o*
+K*/c -> ®k*/&;
+-» Pic(o)
+-> Pic{o)
+1
+1.
+For such a diagram one has in complete generality the well-known snake
+lemma: the diagram gives in a canonical way an exact sequence
+1 —> ker(or) —> ker(/J) —> ker(y)
+coker(a) coker(/J) —> coker(y) —> 1
+relating the kernels and cokernels of a,/J,y (see [23], chap. Ill, §3,
+lemma 3.3). In our particular case, a, /J, and therefore also y, are surjective,
+whereas
+ker(a) = S*/o* and ker(^) = 0 o*p/o*p.
+p
+This then yields the exact sequence
+1 0 ol/ol —► Pic(o) —► Pic{&) —► 1. D
+A prime ideal p 7^ 0 of o is called regular if op is integrally closed, and
+thus a discrete valuation ring. For the regular prime ideals, the summands
+SJ/o* in (12.9) are trivial. There are only finitely many non-regular prime
+ideals of 0, namely the divisors of the conductor of o. This is by definition
+the biggest ideal of o which is contained in 0, in other words,
+f = [a e o\ ad c 0}.
+Since b is a finitely generated o-module, we have f / 0.
+(12.10) Proposition. For any prime ideal p^Oofo one has
+p | f 4=> p is regular.
+If this is the case, then p = p<5 is a prime ideal ofo and op = dp.
+
+===== PDF PAGE 96 =====
+
+80 Chapter I. Algebraic Integers
+Proof: Assume p \ f, i.e., p ^ f, and let t e f \ p. Then to c o, hence
+d c -o c Op. If m = pop is the maximal ideal of op then, putting
+p = m fl d, p is a prime ideal of S such that p c p n o, hence p = p D o
+because p is maximal. Trivially, op c. dp, and if conversely j e Op, for
+a e d, s e d \ p, then ta e o and ts e o \ p, hence 7 = - e Op.
+Therefore op = Sp. Thus, by (11.5), op is a valuation ring, i.e., p is regular.
+One has furthermore that p = pe>. In fact, p is the only prime ideal of 0
+above p. For if q is another one, then Sp = op c Sq, and therefore
+p = 5fl pop Cofi qOq = q,
+hence p = q. Consequently, pe> = p^, with e > 1, and furthermore
+m = pop = (po)Op = p^Op = me, i.e., e = 1 and thus p = po.
+Conversely, assume op is a discrete valuation ring. Being a principal
+ideal domain, it is integrally closed, and since 0 is integral over o, hence a
+fortiori over op, we have <5 c op. Let jci, ..., xn be a system of generators
+of the o-module 0. We may write jc,- = |f, with az G o, 51/ G o \ p. Setting
+5- = 5"i • • • jw e o \ p, we find jjci, ..., 5"xw g o and therefore j& c o, i.e.,
+5 G f \ p. It follows that p \ f. D
+We now obtain the following simple description for the sum 0p 0J/0*
+in (12.9).
+(12.11) Proposition. 0p d\lo\ = (&/f)*/(o/f)\
+Proof: We apply the Chinese remainder theorem (12.3) repeatedly. We have
+(1) o/f = 0op/fop.
+p
+The integral closure dp of op possesses only the finitely many prime ideals
+that lie above pop. They give the localizations Sp, where p varies over the
+prime ideals above p of the ring 0. At the same time, dp is the localization
+of 0 with respect to the multiplicative subset 0 \ p. Since f is an ideal of o,
+it follows that fdp = fop. The Chinese remainder theorem yields
+Op/fOp = 0Op/fSp
+and
+(2) o/f = © e dp/fa* = eap/fap.P P2P P
+
+===== PDF PAGE 97 =====
+
+§ 12. Orders 81
+Passing to unit groups, we get from (1) and (2) that
+(3) (&/f)7(o/f)* = ®(oP/fdpr/(op/fop)\
+p
+For f c p we now consider the homomorphism
+(p:o*p-+ (op/fop)*/(op/fopy.
+It is surjective. In fact, if s mod fop is a unit in op/fop, then s is a unit in op.
+This is so because the units in any ring are precisely those elements that are
+not contained in any maximal ideal, and the preimages of the maximal ideals
+of op/fdp give precisely all the maximal ideals of op, since fdp c pdp.
+The kernel of (p is a subgroup of e>* which is contained in op, and which
+contains o*. It is therefore equal to o*. We now conclude that
+o;/o; = (op/foPr/(op/fop)\
+This remains true also for p ^ f because then both sides are equal to 1
+according to (12.10). The claim of the proposition now follows from (3). □
+Our study of one-dimensional noetherian integral domains was motivated
+by the consideration of orders. For them, (12.9) and (12.11) imply the
+following generalization of Dirichlet's unit theorem and of the theorem on
+the finiteness of the class group.
+(12.12) Theorem. Let o be an order in an algebraic number field K, Ok the
+maximal order, and f the conductor ofo.
+Then the groups o*K/o* andPicip) are finite and one has
+(o*K : o*) #(o/f)*
+where hx is the class number ofK.In particular, one has that
+rank(o*) = rank(o^) = r + s - 1.
+Proof: By (12.9) and (12.11), and since Pw(Ok) = CIk, we have the exact
+sequence
+1 —► o*^/o* —► (oK/f)*/(o/fy —► Pic(o) —► ClK —► 1.
+This gives the claim. D
+
+===== PDF PAGE 98 =====
+
+82 Chapter I. Algebraic Integers
+The definition of the Picard group of a one-dimensional noetherian integral
+domain o avoids the problem of the uniqueness of prime ideal decomposition
+by restricting attention to the invertible ideals, and thus leaving aside
+the information carried by noninvertibles. But there is another important
+generalization of the ideal class group which does take into account all prime
+ideals of o. It is based on an artificial re-introduction of the uniqueness of
+prime decomposition. This group is called the divisor class group, or Chow
+group of o. Its definition starts from the free abelian group
+Div(o) = ©Zp
+p
+on the set of all maximal ideals p of o (i.e., the set of all prime ideals ^ 0).
+This group is called the divisor group of o. Its elements are formal sums
+p
+with np e Z and np = 0 for almost all p, called divisors (or 0-cycles).
+Corollary (3.9) simply says that, in the case of a Dedekind domain, the
+divisor group Div{o) and the group of ideals are canonically isomorphic.
+The additive notation and the name of the group stem from function theory
+where divisors for analytic functions play the same role as ideals do for
+algebraic numbers (see chap. Ill, § 3).
+In order to define the divisor class group we have to associate to every
+/ e K* a "principal divisor" div(/). We use the case of a Dedekind domain
+to guide us. There the principal ideal (/) was given by
+(/) = np"p(/).
+p
+where vp : K* -> Z is the p-adic exponential valuation associated to the
+valuation ring op. In general, op is not anymore a discrete valuation ring.
+Nevertheless, op defines a homomorphism
+ordp : K* -> Z
+which generalizes the valuation function. If / = a/b e K*, with a,b e o,
+then we put
+ordp(f)=l0p(op/aop)-i0p(op/bop),
+where £0 (M) denotes the length of an op-module M, i.e., the maximal
+length of a strictly decreasing chain
+M = M0 ^ Mi ^ • • • ^ Mi = 0
+of Op-submodules. In the special case where op is a discrete valuation ring
+with maximal ideal m, the value v = vp(a) of a e op, for a ^ 0, is given
+by the equation
+aop = mv.
+
+===== PDF PAGE 99 =====
+
+§ 12. Orders 83
+It is equal to the length of the op -module op/mv, because the longest chain
+of submodules is
+op/mv D m/my D ---D mv/mv = (0).
+Thus the function ordp agrees with the exponential valuation vp in this case.
+The property of the function ordp to be a homomorphism follows from
+the fact (which is easily proved) that the length function £0p is multiplicative
+on short exact sequences of op -modules.
+Using the functions ordp : K* -> Z, we can now associate to every
+element / e K* the divisor
+div(/) = £ordp(/)p,
+p
+and thus obtain a canonical homomorphism
+div : K* —► Div(o).
+The elements div(/) are called principal divisors. They form a subgroup
+V(o) of Div(o). Two divisors D and D' which differ only by a principal
+divisor are called rationally equivalent.
+(12.13) Definition. The quotient group
+CHl(o)=Div(o)/V(o)
+is called the divisor class group or Chow group ofo.
+The Chow group is related to the Picard group by a canonical
+homomorphism
+div:«c(o) —► CH\o)
+which is defined as follows. If a is an invertible ideal, then, by (12.4), aop,
+for any prime ideal p ^ 0, is a principal ideal apop, ap e K*, and we put
+div(a) = J2 - ordp(ap)p.
+p
+This gives us a homomorphism
+div : J{o) —> Div{p)
+of the ideal group J(o) which takes principal ideals into principal divisors,
+and therefore induces a homomorphism
+div :Pic(o) -^CHl(o).
+In the special case of a Dedekind domain we obtain:
+
+===== PDF PAGE 100 =====
+
+84 Chapter I. Algebraic Integers
+(12.14) Proposition. Ifo is a Dedekind domain, then
+div :Pic(o) —► CH\o)
+is an isomorphism.
+Exercise 1. Show that
+C[X, Y]/(XY - X), C[X, Y]/(XY - 1),
+C[X, F]/(X2 - 73), C[X, r]/(72 - X2 - X3)
+are one-dimensional noetherian rings. Which ones are integral domains? Determine
+their normalizations.
+Hint: For instance in the last example, put t = X/Y and show that the homomor­
+phism C[X,Y] -> CM, Xh>r2-ljh> t(t2 - 1), has kernel (J1 - X2 - X3).
+Exercise 2. Let a and b be positive integers that are not perfect squares. Show that the
+fundamental unit of the order Z + Z+fa of the field Q(y/a) is also the fundamental
+unit of the order Z + Z^/a + Z^b + Z^fa^b in the field Q(v^, -v/3^).
+Exercise 3. Let AT be a number field of degree n = [K : Q]. A complete module
+in AT is a subgroup of the form
+M = Zdi + • • • + Zan,
+where c*i, ...,an are linearly independent elements of AT. Show that the ring of
+multipliers
+0={a e K | aM cm}
+is an order in K, but in general not the maximal order.
+Exercise 4. Determine the ring of multipliers O of the complete module M =
+Z + ZV2 in Q(\/2). Show that e = 1 + \/2 is a fundamental unit of O. Determine
+all integer solutions of "Pell's equation"
+x2 -2y2 = 7.
+Hint: N(jc + yV2) = x2 - 2j2, N(3 + V2) = AT(5 + 3^2) = 7.
+Exercise 5. In a one-dimensional noetherian integral domain the regular prime
+ideals ^ 0 are precisely the invertible prime ideals.
+§ 13. One-dimensional Schemes
+The first approach to the theory of algebraic number fields is dominated
+by the methods of arithmetic and algebra. But the theory may also be treated
+fundamentally from a geometric point of view, which will bring out novel
+aspects in a variety of ways. This geometric interpretation hinges on the
+possibility of viewing numbers as functions on a topological space.
+
+===== PDF PAGE 101 =====
+
+§13. One-dimensional Schemes 85
+In order to explain this, let us start from polynomials
+f(x) =anxn H \-a0
+with complex coefficients at eC, which may be immediately interpreted
+as functions on the complex plane. This property may be formulated in a
+purely algebraic way as follows. Let a e C be a point in the complex plane.
+The set of all functions f(x) in the polynomial ring C[x] which vanish at
+the point a forms the maximal ideal p = (x — a) of C[jc]. In this way the
+points of the complex plane correspond 1-1 to the maximal ideals of C[x].
+We denote the set of all these maximal ideals by
+M = Max(C[jt]).
+We may view M as a new kind of space and may interpret the elements f(x)
+of the ring C[x] as functions on M as follows. For every point p = (x — a)
+of M we have the canonical isomorphism
+CM/pAc,
+which sends the residue class f(x) mod p to fid). We may thus view this
+residue class
+f(P) := fix) mod p € /c(p)
+in the residue class field /c(p) = C[jc]/p as the "value" of / at the point
+p e M. The topology on C cannot be transferred to M by algebraic means.
+All that can be salvaged algebraically are the point sets defined by equations
+of the form
+fix) = 0
+(i.e., only the finite sets and M itself). These sets are defined to be the closed
+subsets. In the new formulation they are the sets
+V(f) = {p € M | f(p) = 0} = {p € M | p 2 (fix))} .
+The algebraic interpretation of functions given above leads to the
+following geometric perception of completely general rings. For an arbitrary
+ring o, one introduces the spectrum
+X = Spec(o)
+as being the set of all prime ideals p of o. The Zariski topology on X is
+defined by stipulating that the sets
+V(a) = {p|p2a}
+be the closed sets, where a varies over the ideals of o. This does make X into
+a topological space (observe that V(a) UV(b) = ^(ab)) which, however, is
+usually not Hausdorff. The closed points correspond to the maximal ideals
+of o.
+
+===== PDF PAGE 102 =====
+
+86 Chapter I. Algebraic Integers
+The elements / e o now play the role of functions on the topological
+space X: the "value" of / at the point p is defined to be
+f(p) := / mod p
+and is an element of the residue class field /c(p), i.e., in the field of fractions
+of o/p. So the values of / do not in general lie in a single field.
+Admitting also the non-maximal prime ideals as non-closed points, turns
+out to be extremely useful — and has an intuitive reason as well. For instance
+in the case of the ring o = C[x], the point p = (0) has residue class
+field K(p) = C(jc). The "value" of a polynomial / e C[x] at this point
+is f(x) itself, viewed as an element of C(jc). This element should be thought
+of as the value of / at the unknown place x — which one may imagine to
+be everywhere or nowhere at all. This intuition complies with the fact that
+the closure of the point p = (0) in the Zariski topology of X is the total
+space X. This is why p is also called the generic point of X.
+Example: The space X = Spec(Z) may be represented by a line.
+» • m » •—• m< ;jj:«ifo
+2 3 5 7 11 generic point
+For every prime number one has a closed point, and there is also the generic
+point (0), the closure of which is the total space X. The nonempty open sets
+in X are obtained by throwing out finitely many prime numbers p\, ..., pn.
+The integers a e Z are viewed as functions on X by defining the value of a
+at the point (p) to be the residue class
+a(p) = a mod p e Z/pZ.
+The fields of values are then
+Z/2Z, Z/3Z, Z/5Z, Z/7Z, Z/11Z,...,Q.
+Thus every prime field occurs exactly once.
+An important refinement of the geometric interpretation of elements of
+the ring o as functions on the space X = Spec(o) is obtained by forming
+the structure sheaf ox- This means the following. Let U / 0 be an open
+subset of X. If o is a one-dimensional integral domain, then the ring of
+"regular functions" on U is given by
+o(U) = {- |g(p)#0 forallpef/l,
+
+===== PDF PAGE 103 =====
+
+§13. One-dimensional Schemes 87
+in other words, it is the localization of o with respect to the multiplicative
+set S = o \ Upef/P (see §11)- ^ ^e general case> °(U) is defined to
+consist of all elements
+s = C?p) € ft ^p
+pe£/
+which locally are quotients of two elements of o. More precisely, this means
+that for every p e U, there exists a neighbourhood V c U of p, and elements
+f,geo such that, for each q e V, one has g(q) ^ 0 and sq = f/g
+in oq. These quotients have to be understood in the more general sense
+of commutative algebra (see §11, exercise 1). We leave it to the reader to
+check that one gets back the above definition in the case of a one-dimensional
+integral domain o.
+If V c U are two open sets of X, then the projection
+n °p —► n oppeU peV
+induces a homomorphism
+puv m.o(U) —► o(V),
+called the restriction from U to V. The system of rings o{U) and mappings
+puv is a sheaf on X. This notion means the following.
+(13.1) Definition. Let X be a topological space. A presheaf T of abelian
+groups (rings, etc.) consists of the following data.
+(1) For every open set U, an abelian group (a ring, etc.) T(U) is given.
+(2) For every inclusion U c. V, a homomorphism puv • F(U) -> F(V) is
+given, which is called restriction.
+These data are subject to the following conditions:
+(a) .F(0)=O,
+(b) puu is the identity id : F(U) -> T{U),
+(c) puw = Pvw ° Puv > for open sets W C.V C.U.
+The elements 5" g ^(U) are called the sections of the presheaf J7 over U.
+If V c [/, then one usually writes pf/v(^) = s\v- The definition of a
+presheaf can be reformulated most concisely in the language of categories.
+The open sets of the topological space X form a category Xtop in which only
+inclusions are admitted as morphisms. A presheaf of abelian groups (rings)
+is then simply a contravariant functor
+J7 : Xtop —> (ab), (rings)
+into the category of abelian groups (resp. rings) such that ^(0) = 0.
+
+===== PDF PAGE 104 =====
+
+88 Chapter I. Algebraic Integers
+(13.2) Definition. A presheafT on the topological space X is called a sheaf
+if, for all open coverings {[//} of the open sets U, one has:
+(i) Ifs,s' e F{U) are two sections such that s\ut = sf\ut for all i, thens = s'.
+(ii) If si e TiUi) is a family of sections such that
+for all i, j, then there exists a section s e T(U) such that s\ut = st for all i.
+The stalk of the sheaf T at the point iGlis defined to be the direct
+limit (see chap. IV, §2)
+Fx= lii§ T{U),
+Ubx
+where U varies over all open neighbourhoods of x. In other words, two
+sections su e T(U) and sy e T(V) are called equivalent in the disjoint
+union Uf/s* «?"W) if there exists a neighbourhood W c U D V of x such
+that su\w = sy\w- The equivalence classes are called germs of sections
+at x. They are the elements of Tx.
+We now return to the spectrum X — Spec(o) of a ring o and obtain the
+(13.3) Proposition. The rings o(U), together with the restriction mappings
+puv, form a sheaf onX.lt is denoted by Ox and called the structure sheaf
+on X. The stalk of Ox at the point p e X is the localization op, i.e.,
+ox,p = op.
+The proof of this proposition follows immediately from the definitions.
+The couple (X,Ox) is called an affine scheme. Usually, however, the
+structure sheaf Ox is dropped from the notation. Now let
+(p : o —> d
+be a homomorphism of rings and X = Spec(o), Xf = Spec(o'). Then <p
+induces a continuous map
+f:Xf-^X, f(p'):=<p-l(p')9
+and, for every open subset U of X, a homomorphism
+/*:o(J7)—►o(J7/), ^50/^,
+where U' = f~l(U). The maps /^ have the following two properties.
+
+===== PDF PAGE 105 =====
+
+§13. One-dimensional Schemes 89
+a) If V c U are open sets, then the diagram
+o(U) u—> o(U')
+Puv I I Pu'v'
+o(V) ^-> o(V')
+is commutative.
+b) For p' e U' Q X' and a e o(U) one has
+a(f(p'))=0 =► /£(a)(p') = 0.
+A continuous map / : X' -> X together with a family of homomorphisms
+/jy : o([/) -> o(£/') which satisfy conditions a) and b) is called a morphism
+from the scheme X' to the scheme X. When referring to such a morphism,
+the maps /^ are usually not written explicitly. One can show that every
+morphism between two affine schemes Xf = Spec(e/) and X = Spec(o) is
+induced in the way described above by a ring homomorphism (p : o -> of.
+The proofs of the above claims are easy, although some of them are a bit
+lengthy. The notion of scheme is the basis of a very extensive theory which
+occupies a central place in mathematics. As introductions into this important
+discipline let us recommend the books [51] and [104].
+We will now confine ourselves to considering noetherian integral
+domains o of dimension < 1, and propose to illustrate geometrically, via the
+scheme-theoretic interpretation, some of the facts treated in previous
+sections.
+1. Fields. If K is a field, then the scheme Spec^) consists of a single point
+(0) on top of which the field itself sits as the structure sheaf. One must
+not think that these one-point schemes are all the same because they differ
+essentially in their structure sheaves.
+2. Valuation rings. If o is a discrete valuation ring with maximal ideal p,
+then the scheme X = Spec(o) consists of two points, the closed point x = p
+with residue class field /c(p) = o/p, and the generic point rj = (0) with
+residue class field k(jj) = K, the field of fractions of o. One should think
+of X as a point x with an infinitesimal neighbourhood described by the
+generic point rj:
+Xl • ~J&h
+X
+This intuition is justified by the following observation.
+
+===== PDF PAGE 106 =====
+
+90 Chapter I. Algebraic Integers
+The discrete valuation rings arise as localizations
+/
+gOp = [-\f,g€0, g(P)^0]
+of Dedekind domains o. There is no neighbourhood of p in X = Spec(o)fon which all functions j e op are defined because, if o is not a local
+ring, we find by the Chinese remainder theorem for every point q ^ p,
+q ^ 0, an element g G o satisfying g = 0 mod q and g == 1 mod p.
+1 f
+Then - g op as a function is not defined at q. But every element j e op
+is defined on a sufficiently small neighbourhood; hence one may say that
+all elements ^ of the discrete valuation ring op are like functions defined
+on a "germ" of neighbourhoods of p. Thus Spec(op) may be thought of as
+such a "germ of neighbourhoods" of p.
+We want to point out a small discrepancy of intuitions. Considering the
+spectrum of the one-dimensional ring C[x], the points of which constitute the
+complex plane, we will not want to visualize the infinitesimal neighbourhood
+Xp = Spec(C[x]p) of a point p = (x — a) as a small line segment, but rather
+as a little disc:
+This two-dimensional nature is actually inherent in all discrete valuation
+rings with algebraically closed residue field. But the algebraic justification of
+this intuition is provided only by the introduction of a new topology, the etale
+topology, which is much finer than the Zariski topology (see [103], [132]).
+3. Dedekind rings. The spectrum X = Spec(e>) of a Dedekind domain o
+is visualized as a smooth curve. At each point p one may consider the
+localization op. The inclusion o ^-> op induces a morphism
+/:Zp = Spec(op)-^X,
+which extracts the scheme Xp from X as an "infinitesimal neighbourhood"
+of p:
+*p
+X = Spec(c)
+generic pom
+
+===== PDF PAGE 107 =====
+
+§13. One-dimensional Schemes 91
+4. Singularities. We now consider a one-dimensional noetherian integral
+domain o which is not a Dedekind domain, e.g., an order in an algebraic
+number field which is different from the maximal order. Again we view the
+scheme X = Spec(e>) as a curve. But now the curve will not be everywhere
+smooth, but will have singularities at certain points.
+X? = Spec(op)
+generic point
+X = Spec(tf)
+These are precisely the nongeneric points p for which the localization op is
+no longer a discrete valuation ring, that is to say, the maximal ideal pop is
+not generated by a single element. For example, in the one-dimensional ring
+o = C[x, y]/(y2 — x3), the closed points of the scheme X are given by the
+prime ideals
+p = (x -a,y-b) mod (y2x3)
+where (a,b) varies over the points of C2 which satisfy the equation
+b2-a3 = 0.
+> x
+The only singular point is the origin. It corresponds to the maximal ideal
+p0 = (x, y), where x — x mod (y2 — x3), y — y mod (y2 — x3) e o. The
+maximal ideal poOPo of the local ring is generated by the elements x, y, and
+cannot be generated by a single element.
+5. Normalization. Passing to the normalization o of a one-dimensional
+noetherian integral domain o means, in geometric terms, taking the resolution
+of the singularities that were just discussed. Indeed, if X = Spec(o) and
+
+===== PDF PAGE 108 =====
+
+92 Chapter I. Algebraic Integers
+X = Spec(S), then the inclusion o ^ o induces a morphism / : X -> X.
+Since 5 is a Dedekind domain, the scheme X is to be considered as smooth.
+If pe> = pe{ • • • p^r is the prime factorization of p in S, then pi, ..., pr are
+the different points of X that are mapped to p by /. One can show that p
+is a regular point of X — in the sense that op is a discrete valuation ring —
+if and only if r = 1, e\ = 1 and /i = (o/pi : o/p) = 1.
+6. Extensions. Let o be a Dedekind domain with field of fractions K.
+Let L\K be a finite separable extension, and (9 the integral closure of o
+in L. Let F = Spec(o), X = Spec ((9), and
+/:X—►r
+the morphism induced by the inclusion o c-> O. If p is a maximal ideal of o
+and
+pO = qjj1 • • • q3*
+the prime decomposition of p in (9, then ^Ji, ..., ^Jr are the different points
+of X which are mapped to p by /. The morphism / is a "ramified covering."
+It is graphically represented by the following picture:
+. Y
+t
+ramified points
+This picture, however, is a fair rendering of the algebraic situation only
+in the case where the residue class fields of o are algebraically closed (like
+
+===== PDF PAGE 109 =====
+
+§13. One-dimensional Schemes 93
+for the ring C[jc]). Then, from the fundamental identity J2i eifi — n^ there
+are exactly n = [L : K] points 9$i, ..., tyn of X lying above each point p
+of Y, except when p is ramified in o. At a point p of ramification, several
+of the points <Pi, ..., *#n coalesce. This also explains the terminology of
+ideals that "ramify."
+If L\K is Galois with Galois group G = G(L\K), then every
+automorphism a e G induces via a : O -> O an automorphism of schemes
+a : X -> X. Since the ring o is fixed, the diagram
+X-^-+X
+is commutative. Such an automorphism is called a covering transformation
+of the ramified covering X/Y. The group of covering transformations is
+denoted by Auty(X). We thus have a canonical isomorphism
+G(L\K) = Auty(X).
+In chap. II, §7, we will see that the composite of two unramified extensions
+of K is again unramified. The composite K, taken inside some algebraic
+closure K of K, of all unramified extensions L\K is called the maximal
+unramified extension of K. The integral closure b of o in K is still a one­
+dimensional integral domain, but in general no longer noetherian, and, as a
+rule, there will be infinitely many prime ideals lying above a given prime
+ideal p ^ 0 of o. The scheme Y = Spec(S) with the morphism
+f:Y —►r
+is called the universal covering of Y. It plays the same role for schemes
+that the universal covering space X —> X of a topological sgace plays in
+topology. There the group of covering transformations Aut^(X) is canoni­
+cally isomorphic to the fundamental group 7t\(X). Therefore we define in
+our present context the fundamental group of the scheme Y by
+7ri(Y)=AutY(Y) = G(K\K).
+This establishes a first link of Galois theory with classical topology. This
+link is pursued much further in etale topology.
+The geometric point of view of algebraic number fields explained in this
+section is corroborated very convincingly by the theory of function fields of
+algebraic curves over a finite field ¥p. In fact, a very close analogy exists
+between both theories.
+
+===== PDF PAGE 110 =====
+
+94 Chapter I. Algebraic Integers
+§ 14. Function Fields
+We conclude this chapter with a brief sketch of the theory of function
+fields. They represent a striking analogy with algebraic number fields, and
+since they are immediately related to geometry, they actually serve as an
+important model for the theory of algebraic number fields.
+The ring Z of integers with its field of fractions Q exhibits obvious
+analogies with the polynomial ring ¥p[t] over the field F^ with p elements
+and its field of fractions ¥p(t). Like Z, ¥p[t] is also a principal ideal domain.
+The prime numbers correspond to the monic irreducible polynomials p(t) e
+¥p[t]. Like the prime numbers they have finite fields ¥pd, d = deg(p(0),
+as their residue class rings. The difference is, however, that now all these
+fields have the same characteristic. The geometric character of the ring ¥p[t]
+becomes much more apparent in that, for an element / = f(t) e ¥p[t], the
+value of / at a point p = (p(t)) of the affine scheme X = Spec(Fp[f]) is
+actually given by the value f(a) e ¥p, if p(t) = t — a, or more generally
+by f{ot) e ¥pd, if a e ¥pd is a zero of p(t). This is due to the isomorphism
+¥p[t]/p^¥pd,
+which takes the residue class /(p) = / mod p to f{ot). In the analogy
+between, on the one hand, the progression of the prime numbers 2,3,5,7,
+and the growing of the cardinalities /?, p2, p3, p4, ... of the residue fields
+¥pd on the other, resides one of the most profound mysteries of arithmetic.
+One obtains the same arithmetic theory for the finite extensions K of ¥p(t)
+as for algebraic number fields. This is clear from what we have developed
+for arbitrary one-dimensional noetherian integral domains. But the crucial
+difference with the number field case is seen in that the function field K
+hides away a finite number of further prime ideals, besides the prime ideals
+of o, which must be taken into account in a fully-fledged development of
+the theory.
+This phenomenon appears already for the rational function field ¥p(t),
+where it is due to the fact that the choice of the unknown t which determines
+the ring of integrality ¥p[t] is totally arbitrary. A different choice, say
+t' = 1/f, determines a completely different ring ¥p[l/t], and thus completely
+different prime ideals. It is therefore crucial to build a theory which is
+independent of such choices. This may be done either via the theory of
+valuations, or scheme theoretically, i.e., in a geometric way.
+Let us first sketch the more naive method, via the theory of valuations.
+Let K be a finite extension of ¥p(t) and o the integral closure of ¥p[t] in K.
+
+===== PDF PAGE 111 =====
+
+14. Function Fields 95
+By §11, for every prime ideal p ^ 0 of o there is an associated normalized
+discrete valuation, i.e., a surjective function
+vp : K —> Z U {oo}
+satisfying the properties
+(i) up(0) = oo,
+(ii) vp(ab) =zVp(a) + Vp(b),
+(iii) vp(a + b) > m\n{vp(a), vp(b)}.
+The relation between the valuations and the prime decomposition in the
+Dedekind domain o is given by
+P
+The definition of a discrete valuation of K does not require the subring o to
+be given in advance, and in fact, aside from those arising from o, there are
+finitely many other discrete valuations of K. In the case of the field ¥p(t)
+there is one more valuation, besides the ones associated to the prime idealsf
+p = (p(t)) of ¥p[t], namely, the degree valuation Voq. For j e ¥p(t),
+f,g£ ¥p[t], it is defined by
+Voo(-)=deg(g)-deg(/).
+It is associated to the prime ideal p = jFp[j] of the ring F^lj], where
+y — \/t. One can show that this exhausts all normalized valuations of the
+field Wp(t).
+For an arbitrary finite extension K of Fp(t), instead of restricting attention
+to prime ideals, one now considers all normalized discrete valuations vp of K
+in the above sense, where the index p has kept only a symbolic value. As
+an analogue of the ideal group we form the "divisor group", i.e., the free
+abelian group generated by these symbols,
+Div(K) = {J2 wpP \np eZ, rip—Q for almost all p} .
+p
+We consider the mapping
+div : K* _> Div(K)9 div(/) = £ Vp(f)p9
+p
+the image of which is written V(K), and we define the divisor class group
+of K by
+Cl(K)=Div(K)/V(K).
+
+===== PDF PAGE 112 =====
+
+96 Chapter I. Algebraic Integers
+Unlike the ideal class group of an algebraic number field, this group is not
+finite. Rather, one has the canonical homomorphism
+deg :Cl(K) —► Z,
+which associates to the class of p the degree deg(p) = [/c(p) : ¥p] of the
+residue class field of the valuation ring of p, and which associates to the
+class of an arbitrary divisor a = ]Tp npp the sum
+deg(a) = £ np deg(p).
+p
+For a principal divisor div(/), / e AT*, we find by an easy calculation that
+deg(div(/)) = 0, so that the mapping deg is indeed well-defined. As an
+analogue of the finiteness of the class number of an algebraic number field,
+one obtains here the fact that, if not Cl(K) itself, the kernel Cl°(K) of
+deg is finite. The infinitude of the class group of function fields must not
+be considered as strange. On the contrary, it is rather the finiteness in the
+number field case that should be regarded as a deficiency which calls for
+correction. The adequate appreciation of this situation and its amendment
+will be explained in chap. Ill, § 1.
+The ideal, completely satisfactory framework for the theory of function
+fields is provided by the notion of scheme. In the last section we introduced
+affine schemes as pairs (X,Ox) consisting of a topological space X =
+Spec(o) and a sheaf of rings Ox on X. More generally, a scheme is a
+topological space X with a sheaf of rings ox such that, for every point of X,
+there exists a neighbourhood U which, together with the restriction Ojj of
+the sheaf Ox to [/, is isomorphic to an affine scheme in the sense of § 13.
+This generalization of affine schemes is the correct notion for a function
+field K. It shows all prime ideals at once, and misses none.
+In the case K = ¥p(t) for instance, the corresponding scheme (X,Ox)
+is obtained by gluing the two rings A = ¥p[u] and B = ¥p[v], or
+more precisely the two affine schemes U = Spec(A) and V = Spec(B).
+Removing from U the point po = («), and the point p^ = (v) from V,
+one has £/-{p0} = Spec(Fp[u, w"1]), V-{poo} = Spec(¥p[v, v"1]), and the
+isomorphism / : ¥p[u,u~~l] -> Wp[v,v~~l]9 u h> f"1, yields a bijection
+^.-V-lPooJ-^fZ-lPo}, p*-+rl(p).
+We now identify in the union U U V the points of V — {poo} with those
+of U — {po} by means of <p9 and obtain a topological space X. It is immediately
+obvious how to obtain a sheaf of rings Ox on X from the two sheaves Ojj
+and Oy. Removing from X the point p^, resp. po, one gets canonical
+isomorphisms
+(X-{Poo},oX-{Poo]) = (U,ov), (X-{p0},oX-{P0]) = (V,ov).
+
+===== PDF PAGE 113 =====
+
+14. Function Fields 97
+The pair (X,ox) is the scheme corresponding to the field Fp(t). It is called
+the projective line over F^ and denoted P^ .
+po Po
+More generally, one may similarly associate a scheme (X,Ox) to an
+arbitrary extension K\¥p(t). For the precise description of this procedure
+we refer the reader to [51].
+
+===== PDF PAGE 114 =====
+

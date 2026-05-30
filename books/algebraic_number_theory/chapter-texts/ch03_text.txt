@@ -1,0 +1,2647 @@
+
+===== PDF PAGE 199 =====
+
+Chapter III
+Riemann-Roch Theory
+§ 1. Primes
+Having set up the general theory of valued fields, we now return to
+algebraic number fields. We want to develop their basic theory from
+the valuation-theoretic point of view. This approach has two prominent
+advantages compared to the ideal-theoretic treatment given in the first
+chapter. The first one results from the possibility of passing to completions,
+thereby enacting the important "local-to-global principle". This will be done
+in chapter VI. The other advantage lies in the fact that the archimedean
+valuations bring into the picture the points at infinity, which were hitherto
+lacking, as the "primes at infinity". In this way a perfect analogy with the
+function fields is achieved. This is the task to which we now turn.
+(1.1) Definition. A prime (or place) p of an algebraic number Geld K is a
+class of equivalent valuations ofK. The nonarchimedean equivalence classes
+are called finite primes and the archimedean ones infinite primes.
+The infinite primes p are obtained, according to chap. II, (8.1), from the
+embeddings r : K -> C. There are two sorts of these: the real primes,
+which are given by embeddings r : K -> R, and the complex primes,
+which are induced by the pairs of complex conjugate non-real embeddings
+K -> C. p is real or complex depending whether the completion Kp is
+isomorphic to R or to C. The infinite primes will be referred to by the formal
+notation p | oo, the finite ones by p \ oo.
+In the case of a finite prime, the letter p has a multiple meaning: it also
+stands for the prime ideal of the ring o of integers of K, or for the maximal
+ideal of the associated valuation ring, or even for the maximal ideal of
+the completion. However, this will nowhere create any risk of confusion.
+We write p\p if p is the characteristic of the residue field /c(p) of the finite
+prime p. For an infinite prime we adopt the convention that the completion Kp
+also serves as its own "residue field, " i.e., we put
+K(p) := Kp, when p|oo.
+J. Neukirch, Algebraic Number Theory
+© Springer-Verlag Berlin Heidelberg 1999
+
+===== PDF PAGE 200 =====
+
+184 Chapter III. Riemann-Roch Theory
+To each prime p of K we now associate a canonical homomorphism
+vp : K* -> R
+from the multiplicative group K* of K. If p is finite, then vp is the p-adic
+exponential valuation which is normalized by the condition vp(K*) = Z. If p
+is infinite, then vp is given by
+vp(a) = -log|rfl|,
+where r : K -> C is an embedding which defines p.
+For an arbitrary prime p\p (p prime number or p = oo) we put
+furthermore
+fp = [K(p) :k(p)]9
+so that fp = [Kp : R] if p|oo, and
+[ eh , if p | oo.
+This convention suggests that we consider e as being an infinite prime
+number, and the extension C|R as being unramified with inertia degree 2.
+We define the absolute value | |p : K -> R by
+\a\p = K(p)-v<>M
+for a y£ 0 and |0|p = 0. If p is the infinite prime associated to the embedding
+r : K -> C, then one finds
+|fl|p = |rfl|, resp. |tf|p = |ttf|2,
+if p is real, resp. complex.
+If L | K is a finite extension of K, then we denote the primes of L by ^3
+and write ^J|p to signify that the valuations in the class ty, when restricted
+to K, give those of p. In the case of an infinite prime ^3, we define the
+inertia degree, resp. the ramification index, by
+/qj|p = [Ly : Kp], resp. ey\p = 1.
+For arbitrary primes <]3|p we then have the
+(1.2) Proposition, (i) £qj|p**pip/<piP = E<piptL^ : Kp\ = tL : K]9
+(ii)?rt(q}) = ?rt(p)/viP,
+(iii) t*p(fl) = ^qj|pVp(fl) forfl e K*9
+(iv) vp(A^L^|^p(^)) = fy\pvv(a) for a e L*,
+(v) \a\v = \NLvlKp(a)\p for a e L.
+
+===== PDF PAGE 201 =====
+
+§ 1. Primes 185
+The normalized valuations | |p satisfy the following product formula,
+which demonstrates how important it is to include the infinite primes.
+(1.3) Proposition. Given any a e K*, one has \a\p = 1 for almost all p,
+and
+p
+Proof: We have vp{a) = 0 and therefore \a\p = 1 for all pfoo which do not
+occur in the prime decomposition of the principal ideal (a) (see chap. I, § 11,
+p. 69). This therefore holds for almost all p. From (1.2) and formula (8.4)
+of chap. II,
+NK\q(a) = UNKp\qp(a)
+p\p
+(which includes the case p = oo, Qp = R), we obtain the product formula
+for K from the product formula for Q, which was proved already in
+chap. II, (2.1):
+nw\P = nn mp = nnia^^ = niawoi, = i. □p p p\p p p\p p
+We denote by J(o) the group of fractional ideals of K, by P(o) the
+subgroup of fractional principal ideals, and by
+Pic(o) = J(o)/P(o)
+the ideal class group CIk of K.
+Let us now extend the notion of fractional ideal of K by taking into
+account also the infinite primes.
+(1.4) Definition. A replete ideal of K is an element of the group
+j(o):=j(o)x n»;,
+Ploo
+where R^_ denotes the multiplicative group of positive real numbers.
+In order to unify notation, we put, for any infinite prime p and any real
+number veR,
+pv :=ev eR\.
+
+===== PDF PAGE 202 =====
+
+186 Chapter III. Riemann-Roch Theory
+Given a system of real numbers vp, p|oo, let ]~LooPVp alwaYs denote the
+vector
+p|oo p|oo
+and not the product of the quantities ev* in R. Then every replete ideal
+a e J(d) admits the unique product representation
+pfoo p|oo p
+where vp e Z for p { oo, and vp e R for p |oo. Put
+af = ]1 PVp and a^ = fl PVp>PJOO p|00
+so that a = af x aoo. af is a fractional ideal of K, and a^ is an element of
+ripioo "*+• At the same time' we wlQW af' resP- a°°' as replete ideals
+Of x f] 1, resp. (1) x a^.
+p|oo
+Thus for all elements of J(d) the decomposition
+<* = af • aoo
+applies. To a e AT* we associate the replete principal ideal
+[a] = Y\PVpia) = (*)* ]lPUp(fl)­P Ploo
+These replete ideals form a subgroup P(o) of J{6). The factor group
+P/c(6) = J(o)/P(o)
+is called the replete ideal class group, or replete Picard group.
+(1.5) Definition. The absolute norm of a replete ideal a = Ylp PVp 1S defined
+to be the positive real number
+W(a) = rWP)Vp­
+p
+The absolute norm is multiplicative and induces a surjective homomor­
+phism
+vi:j(p) -> r;.
+The absolute norm of a replete principal ideal [a] is equal to 1 in view of the
+product formula (1.3),
+p p
+We therefore obtain a surjective homomorphism
+m: Pic(p) -> r;
+on the replete Picard group.
+
+===== PDF PAGE 203 =====
+
+§ 1. Primes 187
+The relations between the replete ideals of a number field K and those of
+an extension field L are afforded by the two homomorphisms
+lL\K
+J{6K) T=^- J(ol),
+Nl\k
+which are defined by
+/L,/KnpVp)=nnr*ipVp,p p y\p
+nl\k(t\vv*) =nnpA,ipV*­¥ P ¥\P
+Here the various product signs have to be read according to our convention.
+These homomorphisms satisfy the
+(1.6) Proposition.
+(i) For a chain of fields K c L c M, one has Nm\k = Nl\k ° Nm\l and
+IM\K = lM\L °h\K'
+(ii) NL\K(iL\Ka) = a[L:K] foraeJ(oK)­
+(iii) W(AfL|*(2l)) = <tt(2l) for$LeJ(dL).
+(iv) If L\K is Galois with Galois group G, then for every prime ideal ty
+ofoL, one has NL\K{^)oL = YlaGG cr<p.
+(v) For any replete principal ideal [a] of K, resp. L, one has
+*l\k([<*]) = [a], resp. NLlK([a]) = [NL\K(a)].
+(vi) #L|tf(2lf) = A^L|A:(2t)f is the ideal of ^T generated by the norms
+NL\K(a) of alia e 2lf.
+Proof: (i) is based on the transitivity of inertia degree and ramification
+index, (ii) follows from (1.2) in view of the fundamental identity
+X^rpip f<$\pe<$\p = [L : K]. (iii) holds for any replete "prime ideal" ^3
+of L, by (1.2):
+W{NL\k($)) = W(pf™p) = Vl(p)f™> = Ol(qj),
+and therefore for all replete ideals of L.
+(iv) The prime ideal p lying below ty decomposes in the ring O of integers
+of L as p = (<Pi • • • tyrY, with prime ideals <J3,- = 07^3, 07 e G/Gy, which
+are conjugates of ^3 and thus have the same inertia degree /. Therefore
+nL\kW)o=pfo = uW = u n wv = n ^­*=1 /=1 reG<p oreG
+
+===== PDF PAGE 204 =====
+
+188 Chapter III. Riemann-Roch Theory
+(v) For any element a e K*, (1.2) implies that v^(a) = e<$\pvp(a). Hence
+kiKda]) = iL\K{npVp{a)) = n n r*,pUp(fl) = nr(fl) = w.p p q3|p ^p
+If, on the other hand, a e L*, then (1.2) and chap. II, (8.4) imply that
+vp(NLlK(a)) = J2y\P /qj|pv<p(a). Hence
+Wli*(M) = iVL|,(nr(fl)) = UPVp{NLlK(a)) = [Nl\k(<*)].V P
+(vi) Let cif be the ideal of K which is generated by all Nl\k{o), with a e 2lf.
+If 2lf is a principal ideal (a), then <Xf = {Nl\k{^)) = Nl\k(%), by (v).
+But the argument which yielded (v) applies equally well to the localizations
+Op | Op of the extension O \ o of maximal orders of L \ K. 0p has only a finite
+number of prime ideals, and is therefore a principal ideal domain (see chap. I,
+§3, exercise 4). We thus get
+(*)p = NL\K((%)p) =NL\K(%)p
+for all prime ideals p of e>, and consequently <Xf = A^/K^lf)- □
+Since the homomorphisms ii\K and Nl\k map replete principal ideals to
+replete principal ideals, they induce homomorphisms of the replete Picard
+groups of K and L, and we obtain the
+(1.7) Proposition. For every finite extension L\K, the following two
+diagrams are commutative:
+Pic(oL) ^—> r;
+NL\K [L:K]
+OX
+idlL\K
+Pic{6K)
+Let us now translate the notions we have introduced into the function­
+theoretic language of divisors. In chap. I, § 12, we defined the divisor group
+Div(o) to consist of all formal sums
+D= £vpp,
+pfoo
+where vp e Z, and vp = 0 for almost all p. Contained in this group is the
+group V(o) of principal divisors div(/) = £p{oo Up(/)P> which allowed us
+to define the divisor class group
+CH\o)=Div{o)/V(o).
+
+===== PDF PAGE 205 =====
+
+§ 1. Primes 189
+It follows from the main theorem of ideal theory, chap. I, (3.9), that this
+group is isomorphic to the ideal class group CIk , which is a finite group (see
+chap. I, (12.14)). We now extend these concepts as follows.
+(1.8) Definition. A replete divisor (or Arakelov divisor) of K is a formal
+sum
+D = £vpp,
+p
+where vp e Z for p \ oo, vp e R for p|oo, and vp = 0 for almost all p.
+The replete divisors form a group, which is denoted by Div(d). It admits
+a decomposition
+Div(6) = Div(o) x 0 Rp.
+p|oo
+On the right-hand side, the second factor is endowed with the canonical
+topology, the first one with the discrete topology. On the product we have the
+product topology, which makes Div(d) into a locally compact topological
+group.
+We now study the canonical homomorphism
+div : K* —* D/v(o), div(/) = £ vp(f)p.
+p
+The elements of the form div(/) are called replete principal divisors.
+Remark: The composite of the mapping div : K* -> Div{o) with the
+mapping
+Div(d) —> ft R> E ^pP ^ (Vp/p)p|oo ,Ploo p
+is equal, up to sign, to the logarithm map
+k:K*—> [J*, M/) = (...,log|/|p,...)'
+p|oo
+of Minkowski theory (see chap. I, §7, p. 39, and chap. Ill, §3, p. 211). By
+chap. I, (7.3), it maps the unit group e>* onto a complete lattice r = X(o*)
+in trace-zero space H = {(xp) e flpioo^ I £p|oo*P = °}­
+(1.9) Proposition. The kernel of div : K* -> Div(o) is the group /jl(K) of
+roots of unity in K, and its image V(d) is a discrete subgroup ofDiv(6).
+
+===== PDF PAGE 206 =====
+
+190 Chapter III. Riemann-Roch Theory
+Proof: By the above remark, the composite of div with the map Div(o) ->
+Flpioo^' ZlpvpP *-* (vp/p)p|oo, yields, up to sign, the homomorphism
+X : K* -> Ilpioo "*• By chap. I, (7.1), the latter fits into the exact sequence
+i —> fi(K) —> o* -^> r —> o,
+where f is a complete lattice in trace-zero space H c ]~L|oo^*Therefore /jl(K) is the kernel of div. Since f is a lattice, there
+exists a neighbourhood U of 0 in Ilpioo^ which contains no element
+of r except 0. Considering the isomorphism a : ]~[p|oo^ ~^ ©pioo^P'
+(Vp)p|oo h> X^pioo fp P> the set {0} x a [/ C Div(o) x 0p|oo Rp = Div(p)
+is a neighbourhood of 0 in Div{o) which contains no replete principal divisor
+except 0. This shows that V(o) = div(K*) lies discretely in Div(o). D
+(1.10) Definition. The factor group
+CHl(d)=Div(o)/V(o)
+is called the replete divisor class group (or Arakelov class group) of K.
+As V(o) is discrete in Div(o), and is therefore in particular closed,
+CHl (p) becomes a locally compact Hausdorff topological group with respect
+to the quotient topology. It is the correct analogue of the divisor class group
+of a function field (see chap. I, § 14). For the latter we introduced the degree
+map onto the group Z; for CHl(6) we obtain a degree map onto the
+group R. It is induced by the continuous homomorphism
+deg : Div(o) —> R
+which sends a replete divisor D = J2p vpP to the real number
+deg(D) = £VogW(p) =log(n^(P)Vp).p p
+From the product formula (1.3), we find for any replete principal divisor
+div(/,Ke V(p) that
+deg(div(/)) = £k)g W(P)u>(/) = log(n |/|pl) = 0.p p
+Thus we obtain a well-defined continuous homomorphism
+deg: CH\o) —>R.
+The kernel CHl (o)° of this map is made up from the unit group e>* and the
+ideal class group ClK = CH\o) of K as follows.
+
+===== PDF PAGE 207 =====
+
+§ 1. Primes 191
+(1.11) Proposition. Let r = k(o*) denote the complete lattice of units in
+trace-zero space H — {(xp) e Yl^R | X]p|ooxP = ^}. There is an exact
+sequence
+0 —► H/T —> CHl(o)° —> CHl(o) —> 0.
+Proof: Let Div(p)° be the kernel of deg : Div(p) -> R. Consider the exact
+sequence
+0 —> n -^ Div{p) —> Div(o) —> 0,
+p|oo
+where a((vp)) = X^oioo ~7~ P- Restricting to Div(o)° yields the exact
+commutative diagram
+0 —► k(o*) —^—+ V(p) ► V(o) —► 0
+0 ► H —^—+ Div(6)° > Div(o) —► 0.
+Via the snake lemma (see [23], chap. Ill, §3, (3.3)), this gives rise to the
+exact sequence
+0 —> //A(o*) —> CHl(d)° —> CHl(o) —> 0. D
+The two fundamental facts of algebraic number theory, the finiteness of
+the class number and Dirichlet's unit theorem, now merge into (and are
+in fact equivalent to) the simple statement that the kernel CHl(6)° of the
+degree map deg : CHl{o) -> R is compact.
+(1.12) Theorem. The group CHl(o)° is compact
+Proof: This follows immediately from the exact sequence
+0 —> H/T —> CHl(o)° —> CH\o) —> 0.
+As r is a complete lattice in the R-vector space //, the quotient H/T is a
+compact torus. In view of the finiteness of CHl(o), we obtain CH1(o)° as
+the union of the finitely many compact cosets of H/T in CHl(o)°. Thus
+CHl (p)° itself is compact. □
+
+===== PDF PAGE 208 =====
+
+192 Chapter III. Riemann-Roch Theory
+The correspondence between replete ideals and replete divisors is given
+by the two mutually inverse mappings
+div : J(q)
+Divip)
+Div(o), div(npVp) = £-vPP,
+p
+p
+np-v
+p
+These are topological isomorphisms once we equip
+j(o) = j(o) x n k+
+p|oo
+with the product topology of the discrete topology on J(o) and the canonical
+topology on Y\p\oo "*+• The image of a divisor D = J2P vpP ls also written
+as
+o(D) = Y\p-Vp­
+p
+The minus sign here is motivated by classical usage in function theory.
+Replete principal ideals correspond to replete principal divisors in such
+a way that P(o) becomes a discrete subgroup of J(o) by (1.9), and
+Pic{o) = J{o)/P(o) is a locally compact Hausdorff topological group.
+We obtain the following extension of chap. I, (12.14).
+(1.13) Proposition. The mapping div : J(o)
+topological isomorphism
+Div(o) induces a
+div :Pic(o) —> CHl(o).
+On the group J{o) we have the homomorphism 9T : J{<5) -> R^, and
+on the group Div{o) there is the degree map deg : Div(o) -> R. They are
+obviously related by the formula
+deg(div(a)) =-log?rt(a),
+and we get a commutative diagram
+0 ► Pic(p)°
+0 >CH\of
+01
+-> Pic{o)
+div =
++ CH\o) -^
+•log
+-»> 0
+-»> 0
+with exact rows. (1.12) now yields the
+
+===== PDF PAGE 209 =====
+
+§ 1. Primes 193
+(1.14) Corollary. The group
+Pic(o)° = {[a] € Picip) | ?rt(a) = 1}
+is compact.
+The preceding isomorphism result (1.13) invites a philosophical reflection.
+Throughout the historical development of algebraic number theory, a
+controversy persisted between the followers of Dedekind's ideal-theoretic
+approach, and the divisor-theoretic method of building up the theory from
+the valuation-theoretic notion of primes. Both theories are equivalent in the
+sense of the above isomorphism result, but they are also fundamentally
+different in nature. The controversy has finally given way to the realization
+that neither approach is dominant, that each one instead emanates from its
+own proper world, and that the relation between these worlds is expressed by
+an important mathematical principle. However, all this becomes evident only
+in higher dimensional arithmetic algebraic geometry. There, on an algebraic
+Z-scheme X, one studies on the one hand the totality of all vector bundles,
+and on the other, that of all irreducible subschemes of X. From the first, one
+constructs a series of groups Ki(X) which constitute the subject of algebraic
+^-theory. From the second is constructed a series of groups CHl(X),
+the subject of Chow theory. Vector bundles are by definition locally free
+Ox-modules. In the special case X = Spec(o) this includes the fractional
+ideals. The irreducible subschemes and their formal linear combinations,
+i.e., the cycles of X, are to be considered as generalizations of the primes
+and divisors. The isomorphism between divisor class group and ideal class
+group extends to the general setting as a homomorphic relation between the
+groups CHl(X) and K((X). Thus the initial controversy has been resolved
+into a seminal mathematical theory (for further reading, see [13]).
+Exercise 1 (Strong Approximation Theorem). Let S be a finite set of primes and
+let po be another prime of K which does not belong to S. Let ap e K be given
+numbers, for p e S. Then for every s > 0, there exists an x e K such that
+\x — ap\p < e for p e S, and |jc|p < 1 for p £ S U {p0}.
+Exercise 2. Let K be totally real, i.e., Kp — E for all p|oo. Let T be a proper
+nonempty subset of Hom(#\R). Then there exists a unit e of K satisfying re > 1
+for r e S and 0 < xe < 1 for r ^ S.
+Exercise 3. Show that the absolute norm 9T: Pic(Z) -> R*+ is an isomorphism.
+Exercise 4. Let K and L be number fields, and let r : K -> L be a homomorphism.
+Given any replete divisor D — J2<pvV*$ °f ^> define a replete divisor of K bythe rule
+t*(D) = E(E *W«pip)p.p v\p
+
+===== PDF PAGE 210 =====
+
+194 Chapter III. Riemann-Roch Theory
+where /<pip is the inertia degree of *P over zK and *£|p signifies rp = y$\rK. Show
+that r* induces a homomorphism
+t,:CH\6l)-+CH\ok).
+Exercise 5. Given any replete divisor D — ^ vpp ofK, define a replete divisor of
+L by the rule
+p <p\p
+where e<p|P denotes the ramification index of *p over K. Show that r* induces a
+homomorphism
+r^C//1^)-^//1^).
+Exercise 6. Show that r* o r* = [L : K] and that
+deg(r*D) = deg(D), deg(r*D) = [L : K] deg(D).
+§ 2. Different and Discriminant
+It is our intention to develop a framework for the theory of algebraic
+number fields which shows the complete analogy with the theory of function
+fields. This goal leads us naturally to the notions of different and discriminant,
+as we shall explain in § 3 and § 7. They control the ramification behaviour of
+an extension of valued fields.
+Let L\K be a finite separable field extension, o c K a Dedekind domain
+with field of fractions K, and let O c L be its integral closure in L.
+Throughout this section we assume systematically that the residue field
+extensions X\k of O\o are separable. The theory of the different originates
+from the fact that we are given a canonical nondegenerate symmetric bilinear
+form on the K -vector space L, v/z., the trace form
+T(x9y) = Tr{xy)
+(see chap. I, §2). It allows us to associate to every fractional ideal 21 of L
+the dual 0-module
+*2l={x eL\ Tr(xX) Co}.
+It is again a fractional ideal. For if a\, ...,an € O is a basis of L\K
+and d = det(Tr(ai(Xj)) its discriminant, then ad*$l c O for every nonzero
+cl G 21 fl o. Indeed, if x = X\ot\ + • • • -\-xn an e *2l, with x; e K, then the axi
+satisfy the system of linear equations Y%=\axi Triptiotj) = Tr(xaaj) e o.
+This implies dax\ e o and thus dax e O.
+
+===== PDF PAGE 211 =====
+
+§ 2. Different and Discriminant 195
+The notion of duality is justified by the isomorphism
+*2l -^ Hom0(21, o), x\—*(y\-+ Tr(xy)) .
+Indeed, since every o-homomorphism / : 21 —> o extends uniquely to a
+K -homomorphism / : L -> jRT in view of 21jRT = L, we may consider
+Homo (21, o) as a submodule of Hom/r(£, jRT), namely, the image of *2l with
+respect to L -> Hom/r(L, K), x \-^ (y h^ 7r(ry)). The module dual to O,
+*0 = Homo(0,o),
+will obviously occupy a distinguished place in this theory.
+(2.1) Definition. The fractional ideal
+£olo = *0 = {x e L | Tr(xO) c o)
+is called Dedekind's complementary module, or the inverse different. Its
+inverse,
+is called the different ofO\o.
+As do|o 2 O, the ideal 1)o\o ^ O is actually an integral ideal of L. We
+will frequently denote it by T)l\k, provided the intended subrings o, O are
+evident from the context. In the same way, we write <Ll\k instead of £o|e>­
+The different behaves in the following manner under change of rings o
+andO.
+(2.2) Proposition.
+(i) For a tower of fields K c L c M, one has Smia: = Smil^lia:­
+(ii) For any multiplicative subset S of o, one has T)s-i0^s-i0 = S~lT)o\0.
+(iii) If ^P|p are prime ideals of O, resp. o, and Oy\op are the associated
+completions, then
+Proof: (i) Let A = o c K, and let B c L, C c M be the integral closure
+of o in L, resp. M. It then suffices to show that
+£c\a = £c\b£b\a.
+
+===== PDF PAGE 212 =====
+
+196 Chapter III. Riemann-Roch Theory
+The inclusion 2 follows from
+TrM\K(^c\B^B\AC) = TrL]K TrM\L^C\B^B\AC)
+= TrL\K(<LB\ATrM\L{£c\BCJ) CA.
+In view of BC = C, the inclusion c is derived as follows:
+TrM\K(£c\AC) = TrL\K(BTrM\L(<Lc\AC)) c A,
+so that TvM\l(£c\aC) c (J^, and thus
+TrmL(Z-B\AZc\AC) = £-B\ATrMlL(£C\AC) c fl.
+This does indeed imply C^Ccia £ £c|£, and so £c|A c £c\b£b\a>
+(ii) is trivial.
+(iii) By (ii) we may assume that o is a discrete valuation ring. We show that
+£o\o is dense in <£>o<p\op- In order to do this, we use the formula
+TrL\K = JlTrLvlKp
+V\P
+(see chap. II, (8.4)). Let x e <Lq\0 and y e Oy. The approximation theorem
+allows us to find an rj in L which is close to y with respect to v$p, and close
+to 0 with respect to vyy, for ty' |p, ty' ^ <p. The left-hand side of the equation
+TrLlK(xrj) = TrLvlKp(xr}) + £ TrL lKp(xrj)
+then belongs to op, since TrL\K(xrj) G o c op, but the same is true of the
+elements 7>7.|/rp(x77) because they are close to zero with respect to vp.
+Therefore TrLv\Kp(xy) e op. This shows that <L0\0 c &Oy\op­
+If on the other hand x e £o<p|e>p> and if £ G L is sufficiently close
+to x with respect to v<p, and sufficiently close to 0 with respect to vyy,
+for <P' # qj, then £ G £0|e>. In fact, if y G 0, then 3>L^p(£)0 € op,
+since Tr^^Cry) G op. Likewise TrL^lKp(^y) e op for <J3'|<p, because
+these elements are close to 0. Therefore TrL\K(£y) e op D K = o, i.e.,
+£ € £e>|o- This shows that £e>|e> is dense in £ov\0p, in other words,
+£o\oOy = Co^iop, and so 1)o\oOy = ®ov\op> □
+If we put 2) = 1)l\k and 2)<p = 2)l^|ATp, and consider 2)<p at the same
+time as an ideal of O (i.e., as the ideal O Pi 2)<p), then (2.2), (iii) gives us the
+(2.3) Corollary. £> = fLpSV
+
+===== PDF PAGE 213 =====
+
+§ 2. Different and Discriminant 197
+The name "different" is explained by the following explicit description,
+which was Dedekind's original way to define it. Let a e O and let
+f(X) e o[X] be the minimal polynomial of a. We define the different
+of the element a by
+f/'(a) ifL = K(a),
+0 ifL #£(a).
+In the special case where O = o[a] we then obtain:
+Sl\k(<x) =
+(2.4) Proposition. IfO = o[a], then the different is the principal ideal
+®l\k = (Sl\k(<x)).
+Proof: Let f(X) = a$ + a\X -\ \-anXn be the minimal polynomial of a
+= bo + blX + --- + b„-lXn~l.X-a
+The dual basis of 1, a, ..., an~x with respect to Tr(xy) is then given by
+bo bn-\
+For if ot\, ...,a„ are the roots of /, then one has
+±1^^L-=X', 0<r<»-l.
+as the difference of the two sides is a polynomial of degree < n — 1 with
+roots «i, ... ,an, so is identically zero. We may write this equation in the
+f0mi /(*) j-1
+/'(«)■
+Considering now the coefficient of each of the powers of X, we obtain
+LX-a f'(a)l
+Tr{a'jh)=8»/'(a)­
+and the claim follows.
+As O = o + oa H h oa"_1, we get
+Colo = /'(«)_1 (ob0 + ■■■ + obH-i).
+From the recursive formulas
+bn-\ = 1,
+6«-2 -abn-\ — an-\,
+
+===== PDF PAGE 214 =====
+
+198 Chapter III. Riemann-Roch Theory
+it follows that
+bn-i = a1'1 + an-ial~2 + h ^-/+i,
+so that ob0 + ••• + obn-\ = o[a] = O; then £0\0 = ff(a)~lO, andthus®LlK = (f(a)). D
+The proof shows that the module *o[a] = {x e L \ Tri\K{xo[a\) C o},
+which is the dual of the o-module o[a], always admits the o-basis a1 /ff(a),
+i = 0, ..., n — 1. We exploit this for the following characterization of the
+different in the general case where O need not be monogenous.
+(2.5) Theorem. The different 1)l\k is the ideal generated by all differents
+of elements 8l\k(&) for a e O.
+Proof: Let a e O such that L = K(a), and let f(X) be the minimal
+polynomial of a. In order to show that ff(a) e T>l\k, we consider the
+"conductor" f = f0[a] = [x e L | xO c o[a]} of o[a] (see chap. I, § 12,
+p. 79). On putting b = f'(a), we have for x e L:
+x e f «=* xO c o[a] <=> b~lxO c b~lo[a] =*o[a]
+<=> Tr(b~lxO) c o *=> b~xx e ®l\K <=> x e b®l\K.
+Therefore (f'(a)) = f0[a]®L\K, so in particular, f(a) e T>l\k.
+1)l\k thus divides all the differents of elements 8l\k (a). In order to prove
+that T)l\k is in fact the greatest common divisor of all &l\k{u), it suffices
+to show that, for every prime ideal ^3, there exists an a e O such that
+L = K(a) and vv(PL]K) = vy(f'(a)).
+We think of L as embedded into the separable closure Kp of Kp in such
+a way that the absolute value | | of Kp defines the prime <p.
+By chap. II, (10.4), we find an element /3 in the valuation ring Oy of the
+completion Ly satisfying Oy = op|j8], and the proof loc.cit. shows that,
+for every element a e Oy which is sufficiently close to /?, one also has
+Oy = Op[a]. From (2.2), (iii) and (2.4), it follows that
+It therefore suffices to show that we can find an element a in O such that
+L = K(a) and
+vvp(8Lv\Kp(ct)) =vy(8L{K(a)) .
+For this, let o-i, ..., ar : L -> Kp be K -embeddings giving the primes ^3/ |p
+different from <p. Let a e op be an element such that
+(*) \Tfi-a\ = l for all x e Gp = G{Kp\Kp).
+
+===== PDF PAGE 215 =====
+
+§ 2. Different and Discriminant 199
+(Choose <z = l, resp. a = 0, according as the residue classes r/3 mod ^J
+which are conjugate over op/p are zero or not.) Using the Chinese remainder
+theorem, we now pick an a e O such that \a — fi\ and |oyof — a\, for
+/ = 2, ..., r, are very small. We may even assume that L = K(a) (if not,
+modify by a+7tvy, 7T g p, for v big, y e 0,L = K(y); for suitable v ^ /x,
+one then finds jfiT(a + ;rvy) = K(a + ^^y) = A^(y)). Since a is close to /J,
+we have 0<p = op[a]. Now
+$lv\kp(<x) = X\{a-ta),
+where r runs through the A^-embeddings Ly -> ATP different from 1.
+Furthermore,
+r
+$l\k(<x) = \\{ot-aa)= \\{ot- xa) \\ \\{a - t/yovoO,
+where a runs over the K -embeddings different from 1, and the t;7 are certain
+elements in Gp. But now
+| a — T//<7;a| = Ir/^Qf — a/of I = I?//1** — 0 +0 — a/of | = 1,
+since \a — a/of| is very small, and r^of is very close to t/71^ (see (*)).
+Therefore vv(SL\K(ot)) = v^(Ylr^\(a-ra)) = vy(8Lv\Kp(a)), as required.
+D
+The different characterizes the ramification behaviour of the extension
+L\K as follows.
+(2.6) Theorem. A prime ideal ty of L is ramified over K if and only if
+Let tys be the maximal power of ty dividing 1)l\k, and let e be the
+ramification index ofty over K. Then one has
+s = e — 1, iftyis tamely ramified,
+e <s <e — 1+ vy(e), ifty is wildly ramified.
+Proof: By (2.2), (iii), we may assume that o is a complete discrete valuation
+ring with maximal ideal p. Then, by chap. II, (10.4), we have O = o[a] for
+a suitable a e O. Let f(X) be the minimal polynomial of a. (2.4) says that
+s = v*p(f'(a)). Assume L \K is unramified. Then a = a mod ^3 is a simple
+zero of f(X) = f(X) mod p, so that /'(a) e O* and thus s = 0 = e-l.
+
+===== PDF PAGE 216 =====
+
+200 Chapter III. Riemann-Roch Theory
+By (2.2), (i) and chap. II, (7.5), we may now pass to the maximal
+unramified extension and assume that L\K is totally ramified. Then a may
+be chosen to be a prime element of O. In this case the minimal polynomial
+f(X)=a0Xe+alXe-l + ---+ae, a0=l,
+is an Eisenstein polynomial. Let us look at the derivative
+f(a) = ea0ae~l + (e - l)a\ae~2 -{ h ae-\.
+For / = 0, ..., e — 1, we find
+v<#((e — i)aiae~l~l) = evp(e — i) + evpfa) +e — i — 1 = -/ - 1 mod e,
+so that the individual terms of f'(a) have distinct valuations. Therefore
+s = vy(f'(a)) = min { vv((e - i)aiae~l~1)} .
+If now L\K is tamely ramified, i.e., if vp(e) = 0, then the minimum
+is obviously equal to e — 1, and for vp(e) > 1, we deduce thate < s < vy(e) + e — 1. □
+The geometric significance of the different, and thus also the way it fits
+into higher dimensional algebraic geometry, is brought out by the following
+characterization, which is due to E. Kahler. For an arbitrary extension B\A
+of commutative rings, consider the homomorphism
+/jl : B <8u £ —► B , x ® y i—> xy,
+whose kernel we denote by /. Then
+&B\A := 7//2 = l ®B®B B
+is a B <g) B -module, and hence in particular also a B -module, via the
+embedding B -> B ® B, b h> b® 1. It is called the module of differentials
+of B | A, and its elements are called Kahler differentials. If we put
+dx = x ® \ — \® x mod I2,
+then we obtain a mapping
+satisfying
+d(xy) = xdy + ydx,
+da = 0 for a e A.
+Such a map is called a derivation of B \A. One can show that d is universal
+among all derivations of B\A with values in B-modules. ^L^ consists of
+the linear combinations J2 yi dx[. The link with the different is now this.
+
+===== PDF PAGE 217 =====
+
+§ 2. Different and Discriminant 201
+(2.7) Proposition. The different £)e>|e> is the annihilator of the O­
+module £2q\0, i.e.,
+S)0|0 = {x e O\xdy = 0 for all y e O] .
+Proof: For greater notational clarity, let us put O = B and o = A. If A!
+is any commutative A-algebra and Br = B ®a A!', then it is easy to see
+that S2\i\A, = &b\a ®^ ^' ^us ^e m°dule of differentials is preserved
+under localization and completion, and we may therefore assume that A is
+a complete discrete valuation ring. Then we find by chap. II, (10.4), that
+B = A[x], and if f(X) e A[X] is the minimal polynomial of x, then Qb\a
+is generated by dx (exercise 3). The annihilator of dx is f'(x). On the other
+hand, by (2.4) we have T)b\a = (/'(*))• This proves the claim. □
+A most intimate connection holds between the different and the
+discriminant of O\o. The latter is defined as follows.
+(2.8) Definition. The discriminant do\0 is the ideal ofo which is generated
+by the discriminants d(a\, ..., an) of all the bases ot\, ..., an ofL\K which
+are contained in O.
+We will frequently write T)l\k instead of T>o\o- If «i, ...,aw is an
+integral basis of O\o, then Vl\k is the principal ideal generated by
+d{ot\, ... ,an) = di\K, because all other bases contained in O are transforms
+of the given one by matrices with entries in o. The discriminant is obtained
+from the different by taking the norm Nl\k (see § 1).
+(2.9) Theorem. The following relation exists between the discriminant and
+the different:
+Vl\k =NLIK(&l\k).
+Proof: If S is a multiplicative subset of o, then clearly Qs-lo\s~lo =
+S~lT>o\o and ^s~lo\s~lo — S~l1)o\o- We may therefore assume that o is
+a discrete valuation ring. Then, since o is a principal ideal domain, so is O
+(see chap.I, §3, exercise 4), and it admits an integral basis a\, ...,an
+(see chap. I, (2.10)). So we have T>l\k = (d(a\, ... ,an)). Dedekind's
+complementary module (£o|o is generated by the dual basis a[, ...,a'n
+which is characterized by TrL\K(ui&fj) = $ij> On the other hand, £e>|o is a
+principal ideal (/J) and admits the o-basis fia\9 ..., f3an of discriminant
+d(Pai9 ...,j8a„) = NL\K(P)2d(au ...9otn)­
+
+===== PDF PAGE 218 =====
+
+202 Chapter III. Riemann-Roch Theory
+But (NLlKtf)) = NLlK(£0\o) = NL\K(®l\K) = NL\K(®L\K)-\ and
+(d(au .. .,an)) = dL\K- One has d(au ...,an) = detftaya/))2,
+d(a[, ...,arn) = det((a/a'))2, for 07 e Hom/r(L,K), and Tr(ai<Xj) = 5/y.
+Then d(«i, ... ,a?w) • d(a[9 ... ,a„) = 1. Combining these yields
+dLl\K = W(ai' ...^/i)"1) = (d(a[9 ...,<)) = (d(/3ai, ...,/3aw))
+and hence NL\K(£>l\k) = Ql\k- □
+(2.10) Corollary. For a tower of fields K c L c M, one has
+t>M|tf = V[l\K]NL\K$M\l).
+Proof: Applying to £>M|/r = 2)m|l2)L|/t the norm AfM|/r = A^i* o NM\l,
+(1.6) gives
+?>M|* =^L|/,(^M|L)^L|/r(S^L]) =NLlK®M\L)*[X£]. □
+Putting D = cJlia: and c)<p = cJl^|ATp and viewing D«p also as the ideal
+Dq2 H 0 of K, the product formula (2.3) for the different, together with
+theorem (2.9), yields:
+(2.11) Corollary. D = ILp3?*­
+The extension L\K is called unramified if all prime ideals p of K are
+unramified. This amounts to requiring that all primes of K be unramified.
+In fact, the infinite primes are always to be regarded as unramified
+because e^\p = 1.
+(2.12) Corollary. A prime ideal p of K is ramified in L if and only ifp\d.
+In particular, the extension L\K is unramified if the discriminant d = (1).
+Combining this result with Minkowski theory leads to two important
+theorems on unramified extensions of number fields which belong to the
+classical body of algebraic number theory. The first of these results is the
+following.
+
+===== PDF PAGE 219 =====
+
+§ 2. Different and Discriminant 203
+(2.13) Theorem. Let K be an algebraic number field and let S be a finite
+set of primes of K. Then there exist only finitely many extensions L\K of
+given degree n which are unramified outside of S.
+Proof: If L \ K is an extension of degree n which is unramified outside of 5,
+then, by (2.12) and (2.6), its discriminant Dl\k is one of the finite number
+of divisors of the ideal a = \\^s pn(l+n\ It therefore suffices to show
+pfoo
+that there are only finitely many extensions L\K of degree n with given
+discriminant. We may assume without loss of generality that K = Q. For
+if L\K is an extension of degree n with discriminant d, then L\Q is an
+extension of degree m = n[K : Q] with discriminant (d) = ^^NkiqCO)­
+Finally, the discriminant of L(v^T) |Q differs from the discriminant of L \Q
+only by a constant factor. So we are reduced to proving that there exist
+only finitely many fields jST|Q of degree n containing \T-V with a given
+discriminant d. Such a field K has only complex embeddings r : K -> C.
+Choose one of them: to. In the Minkowski space
+kr = [y\c] +
+T
+(see chap. I, §5) consider the convex, centrally symmetric subset
+X={(zT)eKR\ |Im(zT0)| <Cy/\d\,
+|Re(zTo)| < 1, \zT\ < 1 forr ^ r0,r0} ,
+where C is an arbitrarily big constant which depends only on n. For a
+convenient choice of C, the volume will satisfy
+vol(X) > 2n/\d\ = 2n vol(oK),
+where voI(ok) is the volume of a fundamental mesh of the lattice jok
+in KR — see chap. I, (5.2). By Minkowski's lattice point theorem (chap. I,
+(4.4)), we thus find aeoj^,a^0, such that jet = (rot) e X, that is,
+(*) |lm(toa)| <Cy/\d~\, |Re(roa)| < 1» \ra\ < 1 f°r r ^r0,r0.
+This a is a primitive element of K, i.e., one has K = Q(a). Indeed,
+\Nk\q(<x)\ = Fir \ra\ — 1 implies |roa| > 1; thus Im(roof) ^ 0 so that
+the conjugates x^a and r oa of a have to be distinct. Since | xa \ < 1 for
+r ^ to, to, one has xqol ^ xa for all r ^ to. This implies K = Q(a),
+because if Q(a) ^ K then the restriction To|<Q(a) would admit an extension
+x different from to, contradicting roa ^ xa.
+Since the conjugates xa of a are subject to the conditions (*), which
+only depend on d and n, the coefficients of the minimal polynomial of a
+
+===== PDF PAGE 220 =====
+
+204 Chapter III. Riemann-Roch Theory
+are bounded once d and n are fixed. Thus every field /ST|Q of degree n with
+discriminant d is generated by one of the finitely many lattice points a in the
+bounded region X. Therefore there are only finitely many fields with givendegree and discriminant. □
+The second theorem alluded to above is in fact a strengthening of the first.
+It follows from the following bound on the discriminant.
+(2.14) Proposition. The discriminant of an algebraic number field K of
+degree n satisfies
+Proof: In Minkowski space Kr = [Y\T C] , r e Uom(K,C), consider the
+convex, centrally symmetric subset
+Xt = {(zT)eKR\ £ \zt\ <t).
+X
+Its volume IS +n
+vol(Xt) = 2rns — ­n\
+Leaving aside the proof of this formula for the moment (which incidentally
+was exercise 2 of chap. I, §5), we deduce the proposition from Minkowski's
+lattice point theorem (chap. I, (4.4)) as follows. Consider in ATr the lattice
+r = jo defined by o. By chap. I, (5.2), the volume of a fundamental mesh
+is vol(F) = VR/FT The inequality
+vol(Xr) >2"vol(r)
+therefore holds if and only if 2r7ts — > 2n*/\dK\, or equivalently if
+4\*
+<■-.!(-) Vi*+ e9
+for some e > 0. If this is the case, there exists an a e o, a ^ 0, such
+that ja G If. As this holds for all e > 0, and since Xt contains only
+finitely many lattice points, it continues to hold for 8 = 0. Applying now the
+inequality between arithmetic and geometric means,
+-Z\Zr\>(Y\Ur\)l/n,
+we obtain the desired result:
+1 < \NKn(a)\ =U\ra\ < ^(EM" < £ = ^QVWl
+<-(-) vWI.nn \7t /
+Given this, it remains to prove the following lemma. □
+
+===== PDF PAGE 221 =====
+
+§ 2. Different and Discriminant 205
+(2.15) Lemma. In Minkowski space K^ = [Y\r C ] , the domain
+Xt = {(zT)eKR\ £>rl <t)
+has volume
+vol(Xt) = 2rnst—
+Proof: vol(X,) is 2s times the Lebesgue volume Vol(f(Xt)) of the
+image f(Xt) under the mapping chap. I, (5.1),
+f:KR—>Y\R, (zr)i—►(*,),
+T
+where xp = zp, xG = Re(za), x^ = Im(za). Substituting x/, / = 1, ... ,r,
+instead of xp, and yy, zy, y = 1, ... ,s, instead of xa,x^, we see that f(Xt)
+is described by the inequality
+l*i I + • • • + \xr I + lyjyl + A + - • • + 2yfy* + z* < t.
+The factor 2 occurs because \z#\ = \za\ = \za\. Passing to polar coordinates
+yj = uj cos 0j, zj = Uj sin 0y, where 0 < 0y < In, 0 < wy, one sees that
+Vol(f(Xt)) is computed by the integral
+I(t) = I u\- -usdx\ • • • dxrdu\ • • • dusd6\ • • • d6s
+extended over the domain
+l*i H \-\xr\+2u\-\ h 2us <t.
+Restricting this domain of integration to x\ > 0, the integral gets divided
+by 2r. Substituting 2uj = Wj gives
+I(t) = 2r4-s(27t)sIr,s(t),
+where the integral
+Irs(t)= I w\ • — wsdx\ • • • dxrdw\ • •• dws
+has to be taken over the domain X[ > 0, wj > 0 and
+(*) x\-\ h xr + w\ -\ \-ws <t.
+Clearly 7r,5(0 = fr+25/r,5(l) = ^/r,5(l). Writingx2+- • +xr+u;i+- • -+ws
+< t — x\ instead of (*), Fubini's theorem yields
+Ir,s(l)= [ Ir-l,stt-Xl)dXl= [ 0 " ^l)""1 dxX • /r_lfJ(1)Jo Jo
+= -Ir-l,s CD­
+
+===== PDF PAGE 222 =====
+
+206 Chapter III. Riemann-Roch Theory
+By induction, this implies that
+/r,,(D = "7 ^7 TlT^d)'n(n — 1) • • • (n — r + 1)
+In the same way, one gets
+/o,5(D= f wdl-wtf^dw^s-dl),Jo
+and, doing the integration, induction shows that
+/o,s(l) = 7T—- /o,o(l) = 7^-tt •(2s)! (2s)!
+Together, this gives /r,5(l) = — and therefore indeed
+vol(X,) = 2JVol(/(X,)) = 2s2r4-s(2n)stnIr,s(l) = ^tn. D
+If we combine Stirling's formula,
+'U\n
+e >
+with the inequality (2.14), we obtain the inequality
+, /n\n j_n\ = y/2nnl-\ e^n, O<0<1,
+*i > a)7t\2s 1 2n-±e 6» .4 / 2nn
+This shows that the absolute value of the discriminant of an algebraic
+number field tends to infinity with the degree. In the proof of (2.13) we saw
+that there are only finitely many number fields with bounded degree and
+discriminant. So now, since the degree is bounded if the discriminant is, we
+may strengthen (2.13), obtaining
+(2.16) Hermite's Theorem. There exist only finitely many number fields
+with bounded discriminant.
+The expression an = ^7 (7)" satisfies
+an+i (K\xtl(^ , 1\"an V 4 / V nJ
+i.e., an+\ > an. Since a-i = ^ > 1, (2.14) yields
+
+===== PDF PAGE 223 =====
+
+§ 2. Different and Discriminant 207
+(2.17) Minkowski's Theorem. The discriminant of a number field K
+different from Q is ^ ±1.
+Combining this result with corollary (2.12), we obtain the
+(2.18) Theorem. The field Q does not admit any unramihed extensions.
+These last theorems are of fundamental importance for number theory.
+Their significance is seen especially clearly in the light of higher dimensional
+analogues. For instance, let us replace the finite field extensions L\K of a
+number field K by all smooth complete (i.e., proper) algebraic curves defined
+over K of a fixed genus g. If p is a prime ideal of K, then for any such
+curve X, one may define the "reduction mod p". This is a curve defined
+over the residue class field of p. One says that X has good reduction at the
+prime p if its reduction mod p is again a smooth curve. This corresponds
+to an extension L\K being unramified. In analogy to Hermite's theorem,
+the Russian mathematician IS. SafareviC: formulated the conjecture that there
+exist only finitely many smooth complete curves of genus g over K with
+good reduction outside a fixed finite set of primes S. This conjecture was
+proved in 1983 by the mathematician Gerd Faltings (see [35]). The impact
+of this result can be gauged by the non-expert from the fact that it was the
+basis for Faltings's proof of the famous Mordell Conjecture:
+Every algebraic equation
+f(x,y) = 0
+of genus g > 1 with coefficients in K admits only finitely many solutions
+inK.
+A 1-dimensional analogue of Minkowski's theorem (2.18) was proved
+in 1985 by the French mathematician J.-M. Fontaine: over the field Q, there
+are no smooth proper curves with good reduction mod p for all prime
+numbers p (see [39]).
+Exercise 1. Letd(a) = d(l,a, ... ,a*~1), for an element a e O such that L = K(a).
+Show that Z)L\K is generated by all discriminants of elements d(ct) if o is a complete
+discrete valuation ring and the residue field extension X\k is separable. In other
+words, Z)L\K equals the gcd of all discriminants of individual elements. This fails
+to hold in general. Counterexample: K = Q, L = Q(a), a3 — a2 — 2a, — 8 = 0.
+(See [60], chap. Ill, §25, p. 443. The untranslatable German catch phrase for this
+phenomenon is: there are "aufierwesentliche Diskriminantenteiler".)
+
+===== PDF PAGE 224 =====
+
+208 Chapter III. Riemann-Roch Theory
+Exercise 2. Let L \ K be a Galois extension of henselian fields with separable residue
+field extension X\k, and let G,, / > 0, be the z-th ramification group. Then, if
+^>l\k = Vs, one has
+oo
+j = E(#g.--i).
+1=0
+Hint: If O = o[x] (see chap. II, (10.4)), then s = vL(8L\K(x)) = J2°eG vL(x—ox).
+Exercise 3. The module of differentials &x0\0 is generated by a single element dx,
+x e O, and there is an exact sequence of O-modules
+0->£>o|o-><9-> flo,o-»0.
+Exercise 4. For a tower M 2 L D K of algebraic number fields there is an exact
+sequence of oM -modules
+0 -» Qlm <g> oM -> «i|Jf -» fli|L -> 0.
+Exercise 5. If f is a primitive p^rth root of unity, then
+§ 3. Riemann-Roch
+The notion of replete divisor introduced into our development of number
+theory in § 1 is a terminology reminiscent of the function-theoretic model.
+We now have to ask the question to what extent this point of view does
+justice to our goal to also couch the number-theoretic results in a geometric
+function-theoretic fashion, and conversely to give arithmetic significance to
+the classical theorems of function theory. Among the latter, the Riemann­
+Roch theorem stands out as the most important representative. If number
+theory is to proceed in a geometric manner, it must work towards finding an
+adequate way to incorporate this result as well. This is the task we are now
+going to tackle.
+First recall the classical situation in function theory. There the basic data is
+a compact Riemann surface X with the sheaf ox of holomorphic functions.
+To each divisor D = J2p^x vp? on % corresponds a line bundle o(D),
+i.e., an Ox -module which is locally free of rank 1. If U is an open subset
+of X and K{U) is the ring of meromorphic functions on [/, then the vector
+space o(D)(U) of sections of the sheaf o(D) over U is given as
+o(D)(U) = [f eK(U)\ ordP(f)>-vP for all P eU}.
+The Riemann-Roch problem is to calculate the dimension
+£(D) = dim H°(X,o(D))
+
+===== PDF PAGE 225 =====
+
+§3. Riemann-Roch 209
+of the vector space of global sections
+H°(X,o(D)) = o(D)(X).
+In its first version the Riemann-Roch theorem does not provide a formula for
+H°(X,o(D)) itself, but for the Euler-Poincare characteristic
+x(o(D)) = dim H°(X,o(D)) - dimHl(X,o(D)) .
+The formula reads
+X{o(D)) =deg(D) + l-g,
+where g is the genus of X. For the divisor D = 0, one has o(D) = ox
+and deg(D) = 0, so that x(°x) = 1 — g; then this equation may also be
+replaced by
+X(o(D)) = deg(D) + X(ox).
+The classical Riemann-Roch formula
+1(D) - IQC -D) = deg(D) + 1 - g
+is then obtained by using Serre duality, which states that Hl(X,o(D)) is
+dual to H°(X,a) <g> o(—D)), where a> = Q]^ is the so-called canonical
+module of X, and /C = div(a>) is the associated divisor (see for instance
+[51], chap. Ill, 7.12.1 and chap. IV, 1.1.3).
+In order to mimic this state of affairs in number theory, let us recall the
+explanations of chap. I, §14 and chap. Ill, §1. We endow the places p of
+an algebraic number field K with the role of points of a space X which
+should be conceived of as the analogue of a compact Riemann surface. The
+elements f e K* will be given the role of "meromorphic functions" on
+this space X. The order of the pole, resp. zero of / at the point p e X,
+for p \ oo, is defined to be the integer vp(f), and for p|oo it is the real
+number vp(f) = -log |r/|. In this way we associate to each f e K* the
+replete divisor
+div(/) = Evp(/)peDiv(5).
+p
+More precisely, for a given divisor D = ]T vpp, we are interested in the
+replete ideal
+o(D) = Y\p-Vp
+p
+and the set
+H°(o(D)) = {feK*\ div(/)>-D}
+= {/ € 0(D),I 0 # |/|p < grt(p)v> for p|oo},
+
+===== PDF PAGE 226 =====
+
+210 Chapter III. Riemann-Roch Theory
+where the relation D' > D between divisors D' = J2P VPP an(J D = J2P ypP
+is simply defined to mean v'p > vp for all p. Note that H°(o(D)) is no longer
+a vector space. An analogue of Hl(X, o(D)) is completely missing. Instead
+of attacking directly the problem of measuring the size of H°(o(D)), we
+proceed as in the function-theoretic model by looking at the "Euler-Poincare
+characteristic" of the replete ideal o(D). Before defining this, we want
+to establish the relation between the Minkowski space ATr = [rir^] >
+r g Hom(AT,C), and the product [~[p|oo^V The reader will allow us to
+explain this simple situation in the following sketch.
+We have the correspondences
+p:K p real prime, p = pp : Kp >
+a, a: K -> C i—> p complex prime, a = ap : Kp > C.
+There are the following isomorphisms
+^®qR —^ ATR, a®x i—> ((ra)x)r,
+K®QR-^ ]~[ kp> a®xh^ ((rpfl)*) |oo,
+p|oo
+rp being the canonical embedding K ^> Kp (see chap. II, (8.3)). They fit
+into the commutative diagram
+K®
+K®\
+= Ktr= nK x nicxc]+P or
+npp Yl[apxap]
+p|oo p real p complex
+where the arrow on the right is given by a h-> (aa, a a). Via this isomorphism,
+we identify KR with Y\ploo Kp:
+kr = n ^p •
+p|oo
+The scalar product (x, y) = Er x*y* on Kr is then transformed into
+(*,y) = E Wp + E (xpyp + xpyp).p real p complex
+The Haar measure /x on K^ which is determined by {x,y) becomes the
+product measure
+M = EI Mp»
+p|oo
+
+===== PDF PAGE 227 =====
+
+§3. Riemann-Roch 211
+where
+/xp = Lebesgue measure on Kp = R, if p real,
+/xp = 2 Lebesgue measure on Kp = C, if p complex.
+Indeed, the system 1/V2, i/«j2 is an orthonormal basis with respect to the
+scalar product xy + xy on Kp = C. Hence the square <2 = {z = x + iy \
+0 < x, y < 1/a/2} has volume /xp(<2) = 1, but Lebesgue volume 1/2.
+Finally, the logarithm map
+^[n<C*]+—»[M+- XH^(log|xT|)rr r
+studied in Minkowski theory is transformed into the mapping
+p|oo p|oo
+for one has the commutative diagram
+ripioo^p —>rUoK,
+where the arrow on the right,
+[f]R]+ = P]R xfltK xR]+—> Y\R,r pa p|oo
+is defined by x h-> x for p o p, and by (x,x) h-> 2x for cr «> p.
+This isomorphism takes the trace map x h> ^1txt on [Flr^] mio
+the trace map x h-> Ep|ooxp on FIpioo^' anc* hence the trace-zero space
+H = {x e [Y\T R] I Er ** = 0} into ^e trace-zero space
+H = {xe f[R| E *p = 0}.p|oo p|oo
+In this way we have translated all necessary invariants of the Minkowski
+space Kr to the product FIpioo ^p­
+To a given replete ideal
+a=Of • aoo = n pVp x n pVp
+PJOO p|<X)
+we now associate the following complete lattice ja in ATr. The fractional
+ideal <Xf c jRT is mapped by the embedding j : K -> Kr onto a
+
+===== PDF PAGE 228 =====
+
+212 Chapter III. Riemann-Roch Theory
+complete lattice jaf of K^ = Ylp^Kp. By componentwise multiplication,
+aoo = FIpioo Pvp = (., eVp, • • )p|oo yields an isomorphism
+Goo : KR -* Kr> (*p)p|oo *-> (£Vp*p)p|ocM
+with determinant
+(*) detfO = n eVpfv = U WVp = ^(Ooo) •p|oo p|oo
+The image of the lattice jaf under this map is a complete lattice
+ja := ciocjaf.
+Let vol(a) denote the volume of a fundamental mesh of ja with respect to
+the canonical measure. By (*), we then have
+vol(a) = OT(Ovol(Of).
+(3.1) Definition. If a is a replete ideal of K, then the real number
+x(a) = -logvol(a)
+will be called the Euler-Minkowski characteristic of a.
+The reason for this terminology will become clear in § 8.
+(3.2) Proposition. The Euler-Minkowski characteristic x(a) only depends
+on the class of a in Pic(p) = J(d)/P(d).
+Proof: Let [a] = [a]f • [a]^ = (a) x [a]^ be a replete principal ideal. Then
+one has
+[a]a = aaf x [aJooCioo­
+The lattice j(aaf) is the image of the lattice jaf under the linear map
+y'fl : ATr -> ATr, (jtp)pioo i-> (axp)p\00. The absolute value of the determinant
+of this mapping is obviously given by
+|deto-fl)| = n i^ip = n nprMa) = ma]oo)-1­p|oo p|oo
+For the canonical measure, we therefore have
+volOzcif) = ^tfltfloo)"1 vol(cif).
+Taken together with (*), this yields
+vol([a]a) = ^tfltflooCioo) volOzcif) = (n(aoo) vol(cif) = vol(a),
+so that x(M&) = xO*)- ^
+The explicit evaluation of the Euler-Minkowski characteristic results from
+a result of Minkowski theory, viz., proposition (5.2) of chap. I.
+
+===== PDF PAGE 229 =====
+
+§3. Riemann-Roch 213
+(3.3) Proposition. For every replete ideal a of K one has
+vol(a) = yi^d(rt(a).
+Proof: Multiplying by a replete principal ideal [a] we may assume, as
+vol([<z]a) = vol(a) and ^([tfja) = 9t(a), that af is an integral ideal of K. By
+chap. I, (5.2) the volume of a fundamental mesh of af is given by
+vol(af) = y/\dK\(o : af).
+Hence
+vol(a) = W(aoo) vol(af) = W(OVT4d <tt(af) = Tkfrl <tt(a). D
+In view of the commutative diagram in § 1, p. 192, we will now introduce
+the degree of the replete ideal a to be the real number
+deg(a) = - log 91(a) = deg(div(a)) .
+Observing that
+X(o) = -logyftdiTl
+we deduce from proposition (3.3) the first version of the Riemann-Roch
+theorem:
+(3.4) Proposition. For every replete ideal of K we have the formula
+X(a)=deg(a) + /(o).
+In function theory there is the following relationship between the Euler­
+Poincare characteristic and the genus g of the Riemann surface X in question:
+X(o) = dim//°(X,ox) - dimHl(X,ox) = 1 - g.
+There is no immediate analogue of Hl(X, ox) in arithmetic. However, there
+is an analogue of //°(X,ox). For each replete ideal a = ]~[pPVp °f ^
+number field K, we define
+//°(a) = {/ e K* | vp(f) > vp for all p} .
+This is a finite set because jH°(d) lies in the part of the lattice yaf c K^
+which is bounded by the conditions |/|p < e~v*>?*>, p\oo. As the analogue of
+the dimension, we put £(a) = 0 if H°(a) = 0, and in all other cases
+#//°(a)
+vol(VK)
+
+===== PDF PAGE 230 =====
+
+214 Chapter III. Riemann-Roch Theory
+where the normalizing factor vol(W) is the volume of the set
+W = {(zT)eKR = [Y\C]+\ |zr|<l}.r
+This volume is given explicitly by
+vol(W) = 2r(2n)s,
+where r, resp. s, is the number of real, resp. complex, primes of K (see the
+proof of chap. I, (5.3)). In particular, one has
+,0,-x ,~x „-x ,- #^^)
+H\o) = vl(K), so that *(o) = log ^n)*
+because |/|p < 1 for all p, and f~[p l/lp — 1 implies |/|p = 1 for all p, so
+that H°(o) is a finite subgroup of jRT* and thus must consist of all roots of
+unity. This normalization leads us necessarily to the following definition of
+the genus of a number field, which had already been proposed ad hoc by the
+French mathematician Andre Weil in 1939 (see [138]).
+(3.5) Definition. The genus of a number field K is defined to be the real
+g = l(o)-x(o) = log2r(2n)s
+Observe that the genus of the field of rational numbers Q is 0. Using this
+definition, the Riemann-Roch formula (3.4) takes the following shape:
+(3.6) Proposition. For every replete ideal a of K one has
+X(a) = deg(a)+£(o)-g.
+The analogue of the strong Riemann-Roch formula
+*(D) = deg(D) + l-g + *(/C-D),
+hinges on the following deep theorem of Minkowski theory, which is due
+to Serge Lang and which reflects an arithmetic analogue of Serre duality.
+As usual, let r, resp. s, denote the number of real, resp. complex, primes,
+and n = [K : Q].
+(3.7) Theorem (S. Lang). For replete ideals a = Y\ pv* e J(o), one has
+#//0(a-') = ^p^(a) + 0(m(a)l-»)
+if yi(a) -> oo. Here, as usual, 0(t) denotes a function such that 0(t)/t
+remains bounded as t -> oo.
+
+===== PDF PAGE 231 =====
+
+§3. Riemann-Roch 215
+For the proof of the theorem we need the following
+(3.8) Lemma. Let a\, ..., ah be fractional ideals representing the classes of
+the finite ideal class group Pic(o). Let c be a positive constant and
+21/ = {a = Y\pVp | Of = *M ^(P)Vp < c$t(a)f>/n for p\oo}.
+p
+Then the constant c can be chosen in such a way that
+Proof: Let 93 ^■ = {a e J(o) | cif = a/}. Multiplying by a suitable replete
+principal ideal [a], every a e J(p) may be transformed into a replete
+ideal a! = a[a] such that a'f = a/ for some /. Consequently, one has
+J(p) = \Jl=x*&iP(6). It therefore suffices to show that 93/ c 2l/P(o)
+for / = 1, ... ,/z, if the constant c is chosen conveniently. To do this, let
+a = a/Ooo € 93/, a^ = FIp|ooPVp e rip|ooR+- Then we find for the rePlete
+ideal
+a^ = a00?rt(O"i = Y\Pv'p,
+p|oo
+where v'p = vp - ± £q|oo /qvq> that Woo) = 1. and thus £p|oo fpvp = °­The vector
+(...,/„v;,...)€ n«
+p|oo
+therefore lies in the trace-zero space H = {(xp) e ]~[p|ooR I Epioo-^P = 0}­
+Inside it we have - see chap. I, (7.3) - the complete unit lattice X(o*). Thus
+there exists a lattice point X(u) = (...,— fpvp(u), ... )P|oo> u e o*, such
+that
+|/pVp -/pfp(w)| < /pc0
+with a constant Co depending only on the lattice X(o*). This implies
+vp-fp(w) = vp+~ E fqvq~vp(u) < - log91(aoo)+co = - log*tt(a)+ciP n q|oo n n
+with ci = Co — Mog^a/). Putting now b = a[u~l] = Y\pPnp> we §et
+bf = a/. This is because [u\ = (u) = (1) and
+/p^p = /p(vp - fp(w)) < — log 91(a) + nci,
+so that W(p)"p < ^^(aj/p/'1 for p|oo; then b e 21/, so that a = b[u] e21/ P (o), where c = enCl. D
+
+===== PDF PAGE 232 =====
+
+216 Chapter III. Riemann-Roch Theory
+Proof of (3.7): As 0(t) = 0(t) - 1, we may replace H0(a~l) by
+/TV1) = H°(a-l)\J{0} = {fea~l\ \f\p < grt(p)v> forp|oo}.
+We have to show that there are constants C,C such that
+(*) #^o(a-i}_2^rVWF\ <CVl(a)1-*
+for all a e J(o) satisfying <tt(a) > C". For a e^K*, the set H°(cTl) is
+mapped bijectively via x h-> ax onto the set H°([a]a~l). The numbers
+#H°(a~l) and 91(a) thus depend only on the class a mod P(o). As by the
+preceding lemma J(p) = U/=i 2l;P(o), it suffices to show (*) for a ranging
+over the set 21/.
+For this, we shall use the identification of Minkowski space
+kr = n %p
+p|oo
+with its canonical measure. Since <Xf = az for a = f]p PVp £ 21;, we have
+H°(oTl) = {/ e a;1 | |/|p < Vt(p)Vp forp|oo}.
+We therefore have to count the lattice points in r = jaj1 c ATr which fall
+into the domain
+Pa=Y\Dp
+p|oo
+where Dp = [x e Kp \ \x\p < ^(p)""}. Let F be a fundamental mesh of f.
+We consider the sets
+X = {y€r\(F + y)nPa^<d},
+Y = {yer\F + yQPa},
+X^Y = {yer\(F + y)ndPa^0}.
+As Y c m/>0 = ^(a-1) c X and as \JY^F+Y) £ Fa c (Jy^+y).
+one has
+#7 < #H°(a~l) < #X
+as well as
+This implies
+#//°(o_1)
+#7 vol(F) < vol(/>a) < #X vol(F).
+vol(/»„)
+vol(F)<#X-#F =#(X\7).
+
+===== PDF PAGE 233 =====
+
+§3. Riemann-Roch 217
+For the set Pa = Y\p\oo Dp> we now have
+vol(Pa) = n 2K(P)Vp II 2xK(P)Vp = 2r(2;r)^(a00)p real p complex
+(observe here that, under the identification Kp = C, one has the equation
+|jc|p = \x\2). For the fundamental mesh F, (3.3) yields
+vol(F) = /i^d(rt(af-1).
+From this we get
+#//>-*) - ^£ 91(a)<#(X \7).
+Having obtained this inequality, it suffices to show that there exist
+constants C, C such that
+#(X \Y) = #{y e r\ (F + y)ndPa^8} <C$l(a)1-*,
+for all a e 21/ with 91(a) > C". We choose C = 1 and find the constant C
+in the remainder of the proof. We parametrize the set Pa = Y\p\oo Dp ym ^
+mapping
+where / = [0,1], which is given by
+/ —> Dp, t i—> 2ap(t - 2), if P real,
+j2I —> Dp, (p,0) i—> <s/o^,(pcos2n0,psin2jt0), if p complex,
+where ap = 9rt(p)v*\ We bound the norm ||d<p(x)|| of the derivative
+dcp(x) :f->r(xe In). If dcp(x) = (aik), then \\dcp(x)\\ < wmax \aik\.
+Every partial derivative of cp is now bounded by 2ap, resp. In ^fa^. Since
+a 6 21/, we have that ap = 9rl(p)vp < c%l(a)f*/n, for all p|oo. It follows that
+I dcp(x)\\ < 2nnm3Lxalp/fp < d^l(a)l/n.
+The mean value theorem implies that
+(**) \\<P(x)-<p(y)\\ <cm*)l,n\\x-y\\,
+where || || is the euclidean norm. The boundary of Pa,
+dPa = U[dDpx [jDq],p q#P
+is parametrized by a finite number of boundary cubes In~l of In. We
+subdivide every edge of In~l into m = [^X(a)l^n] > C = 1 segments of
+
+===== PDF PAGE 234 =====
+
+218 Chapter III. Riemann-Roch Theory
+equal length and obtain for In l a decomposition into mn l small cubes of
+diameter < (n — l)1//2/m. From (**), the image of such a small cube under cp
+hasadiameter< {j^^cx*fl(a)l/n < (n-l)1/2^^ < {n-\)^2cx2 =: c2.
+The number of translates F + y,y e T, meeting a domain of diameter < c2
+is bounded by a constant C3 which depends only on c2 and the fundamental
+mesh F. The image of a small cube under q> thus meets at most c3
+translates F + y. Since there are precisely mn~l = [^fl(a)l^n]n~l cubes in
+(p(In~l), we see that cp(In~l) meets at most c3 [91(a) ^T-1 < c3Vl(a)l-n
+translates, and since the boundary dPa is covered by at most 2n such
+parts (p(In~l), we do indeed find that
+#{y e r\ (F + y)ndPa^0} <C^l(a)l~n
+for all a e 21/ with 91(a) > 1, where C = 2nc?> is a constant which is
+independent of a e 21/, as required. □
+From the theorem we have just proved, we now obtain the strong version
+of the Riemann-Roch theorem. We want to formulate it in the language of
+divisors. Let D = Y2p vpP be a replete divisor of K,
+H\D) = H°(o(D)) = {f e K* \ vp(f) > -vp},
+1(D) = i(o(D)) = log ; and X(D) = x(o(D)).vol(vr)
+We call the number
+i(D) = 1(D) - X(D)
+the index of specialty of D and get the
+(3.9) Theorem (Riemann-Roch). For every replete divisor D e Div(o) we
+have the formula
+i(D) = deg(D) + t(o)-g + i(D).
+The index of specialty i(D) satisfies
+i(D) = 0{e-inde^),
+in particular, i(D) ->• 0 fordeg(D) ->• oo.
+Proof: The formula for 1(D) follows from x(D) = deg(D) + l(o) - g
+and x(D) = 1(D) - i(D). Putting o_1 = o(D), we find by (3.7) that
+#H°(a~l) 91(a)
+2r(27ty j\dT\(l+^ama)-1/"),
+
+===== PDF PAGE 235 =====
+
+§3. Riemann-Roch 219
+for some function cp(a) which remains bounded as ^(a) -> oo, so that
+deg(D) = - logger1) = log^fl(a) -> oo. Taking logarithms and observing
+that log(l + O(0) = 0(t) and m(a)~l/n = exp(-^ degD), we obtain
+1(D) = t(a~x) = - log(v^d NOT1)) + 0(Vl(arl'n)
+= X(D) + 0(e-indQzD).
+Hence i(D) = 1(D) - *(£>) = 0(e~n d^D). D
+To conclude this section, let us study the variation of the Euler-Minkowski
+characteristic and of the genus when we change the field K. Let L\K be a
+finite extension and o, resp. O, the ring of integers of K, resp. L. In §2 we
+considered Dedekind's complementary module
+£l\k = {x eL\ Tr(xO) c o} ^ Hom0(0,o).
+It is a fractional ideal in L whose inverse is the different 1)l\k> From (2.6),
+it is divisible only by the prime ideals of L which are ramified over K.
+(3.10) Definition. The fractional ideal
+cok =£k\q = Homz(o,Z)
+is called the canonical module of the number field K.
+By (2.2) we have the
+(3.11) Proposition. The canonical modules ofL and K satisfy the relation
+The canonical module cok is related to the Euler-Minkowski
+characteristic x(o) and the genus g of K in the following way, by formula (3.3):
+voi(o) = yiST.
+(3.12) Proposition, dego)K = -2x(o) = 2g- 21(d).
+Proof: By (2.9) we know that ^iq(S)^iq) is the discriminant ideal
+Dk\q = (cIk), and therefore by (1.6), (iii):
+yi(coK) = WCD/hq)-1 = VKjOkiq)'1 = \dK\~],
+so that, as vol(o) = vV/H> we have indeed
+dego)K = - log^l(coK) = log \dK \ = 21ogvol(o) = -2/(o) = 2g-2£(o).
+□
+
+===== PDF PAGE 236 =====
+
+220 Chapter III. Riemann-Roch Theory
+As for the genus, we now obtain the following analogue of the Riemann­
+Hurwitz formula of function theory.
+(3.13) Proposition. Let L\K be a finite extension and gL, resp. g%, the
+genus of L, resp. K. Then one has
+gL - t{pL) = [L : K](gK - l(pK)) + | degCz^.
+In particular, in the case of an unramified extension L\K:
+X(oL) = [L:K]X(oK).
+Proof: Since col = £l\k&>k, one has
+VI(cdl) = WlikokW&lik) = n(coK)[L:K]yi(<!:LlK),
+so that
+degcoL = [L : K] dego)K + deg£L|/r •
+Thus the proposition follows from (3.12). □
+The Riemann-Hurwitz formula tells us in particular that, in the decision
+we took in § 1, we really had no choice but to consider the extension C|R
+as unramified. In fact, in function theory the module corresponding by
+analogy to the ideal <Ll\k takes account of precisely the branch points of
+the covering of Riemann surfaces in question. In order to obtain the same
+phenomenon in number theory we are forced to declare all the infinite
+primes ^3 of L unramified, since they do not occur in the ideal £l\k­
+Thus the fact that C |R is unramified appears to be forced by nature itself.
+Investigating the matter a little more closely, however, this turns out not to
+be the case. It is rather a consequence of a well-hidden initial choice that we
+made. In fact, in chap. I, §5, we equipped the Minkowski space
+KK = [UC] +
+with the "canonical metric"
+r
+Replacing it, for instance, by the "Minkowski metric"
+
+===== PDF PAGE 237 =====
+
+§3. Riemann-Roch 221
+aT = 1 if r = r, aT = \ if r ^ r, changes the whole picture. The Haar
+measures on K^ belonging to (, > and (,) are related as follows:
+VOlCanonical(^) = 2S VOlMinkowski (X) •
+Distinguishing the invariants of Riemann-Roch theory with respect to the
+Minkowski measure by a tilde, we get the relations
+X(a) = x(a) + log2*, 1(a) = £(a) + log2*
+(the latter in case that H°(a) ^ 0), whereas the genus remains unchanged.
+Substituting this into the Riemann-Hurwitz formula (3.13) preserves its shape
+only if one enriches <Ll\k into a replete ideal in which all infinite primes ^3
+such that Ly ^ Kp occur. This forces us to consider the extension C|R as
+ramified, to put ey\p = [Ly : Kp], fy\p = 1, and in particular
+ep = [Kp:R], fp = \.
+The following modifications ensue from this. For an infinite prime p one has
+to define
+vp(a) = -eplog \ra\, pv = ev'~e\ <tt(p) = e.
+The absolute norm as well as the degree of a replete ideal a remain unaltered:
+?tt(a) = ?rt(a), deg(a) = - log W(a) = deg(a).
+The canonical module cok however has to be changed:
+8>k=(»k n p21og2,
+p complex
+in order for the equation
+deg cbK = -2x(o) = 2g- 2l(o)
+to hold. By the same token, the ideal <Ll\k has to be replaced by the replete
+ideal
+Il\k=£l\k Jl ^P2l0g2
+5loo
+so that
+COL = &L\K lL\K(C0K) •
+In the same way as in (3.13), this yields the Riemann-Hurwitz formula
+8L - l(oL) = [L : K](gK - l(oK)) + i deg£L|^.
+In view of this sensitivity to the chosen metric on Minkowski space K^,
+the mathematician Uwe Jannsen proposes as analogues of the function fields
+
+===== PDF PAGE 238 =====
+
+222 Chapter III. Riemann-Roch Theory
+not just number fields K by themselves but number fields equipped with a
+metric of the type
+(*,y)K = J2arXTyT,
+T
+aT > 0, aT = a^, on ATr. Let these new objects be called metrized number
+fields. This idea does indeed do justice to the situation in question in a very
+precise manner, and it is of fundamental importance for algebraic number
+theory. We denote metrized number fields (K, ( , )k) as K and attach to
+them the following invariants. Let
+(*,y)K = E^r^ryr.r
+Let p = pr be the infinite prime corresponding to r : K -> C. We then put
+ap = ar. At the same time, we also use the letter p for the positive real
+number
+which we interpret as the replete ideal (1) x (1, • • •, 1, ea*, 1, ••-,!) e
+J(o) x f] K;. We put
+p|oo
+ep = 1/ofp and fp = ap[Kp : R],
+and we define the valuation vp of K* associated to p by
+vp(a) = -eplog\ra\.
+Further, we put
+<tt(p) = ef* and \a\p = yi(pyv>ia),
+so that again \a\p = \xa\ if p is real, and \a\p = \ra\2 if p is complex. For
+every replete ideal a of K, there is a unique representation a = f] pVp, which
+gives the absolute norm ^(a) = f] 9t(p)Vp, and the degree p
+p
+deg£(a) = -log ?rt(a).
+The canonical module of K is defined to be the replete ideal
+0)£ = a>K ' COoo € J(0 ) = J(o) x[Jl^,
+p|oo
+where cok is the inverse of the different T)k\q of K |Q, and
+p|oo
+
+===== PDF PAGE 239 =====
+
+§3. Riemann-Roch 223
+The Riemann-Roch theory may be transferred without^ any problem,
+using the definitions given above, to metrizedjnumber fields K = (K,(, )k)>
+Distinguishing their invariants by the suffix K yields the relations
+volf(X) = nV^7vol(X),r
+because Ta : (KR, ( , )K) -* (KR, ( , )), (xT) h> (^/o^xt), is an isometry
+with determinant Y\T y/ch, and therefore
+Xk(°k) = -logvol^(o^) = x(ok) -logYlyfc,
+x
+#H0(OK) ^ r_1>k(ok) = log = l(pK) ~ log 11 V^­
+vol^(W)
+The genus
+S£ = l>k(°K) ~ Xk(°k) = OpK) ~ x(pK) = log —
+does not depend on the choice of metric.
+Just as in function theory, there is then no longer one smallest field, but Q
+is replaced by the continuous family of metrized fields (Q,axy), a e R+,
+all of which have genus g = 0. One even has the
+(3.14) Proposition. The metrized fields (Q,ctxy) are the only metrized
+number fields of genus 0.
+Proof: We have
+Since n is transcendental, one has s = 0, i.e., K is totally real. Thus
+#Il(K) = 2 so that \dK\ = 4n~\ where n = r = [K : Q]. In view of the
+bound (2.14) on the discriminant
+1/9 Un /7T\«/2
+this can only happen if n < 6. But for this case one has sharper bounds, due
+to Odlyzko (see [111], table 2):
+n
+\dK\l/n
+= 3
+> 3,09
+4
+4,21
+5
+5,30
+6
+6,35
+This is not compatible with \c!k II//w = 4~ , so we may conclude that n < 2.
+But there is no real quadratic field with discriminant \cLk\ = 4 (see chap. I,
+§2, exercise 4). Hence n = 1, so that K = Q. □
+
+===== PDF PAGE 240 =====
+
+224 Chapter III. Riemann-Roch Theory
+^ An extension of metrized number fields is a pair K = {K, ( , )k),
+L = (L, ( , )i), such that K c L and the metrics
+(*,?>* = J2arXTyr, (x,y)L = J2^Xayax a
+satisfy the relation aT > fia whenever r = o\k. If ^3|p are infinite primes
+of L | K, ^J belonging to a and p to r = a \ k , we define the ramification
+index and inertia degree by
+*<pip = tfr/&7 and /qj|P = /V<*r[£<p : Kp].
+Thus the fundamental identity
+J2 e¥\P fv\p = [L : K]
+V\p
+is preserved. Also ^3 is unramified if and only if aT = f}a. For "replete prime
+ideals" p = ear, <p = ep°, we put
+V\p
+Finally we define the different of L \ K to be the replete ideal
+®L\K = ®L\K ' ®oo € /(0L) = /(oL) X \\ R\ ,
+<P|oo
+where Dlia: is the different of L | K and
+Soo = (ftp/ap)<p|oo € PI R+>
+<£|oo
+where /3<p = /Ja and ap = aT (^3 belongs to a and p to r = a | #). With this
+convention, we obtain the general Riemann-Hurwitz formula
+g~L - t~L(oL) = [L : K]{gg - lk(pK)) - \ deg©^.
+If we consider only number fields endowed with the Minkowski metric,
+then Ly ^ Kp is always ramified. In this way the convention found in
+many textbooks is no longer incompatible with the customs introduced in the
+present book.
+§ 4. Metrized O-Modules
+The Riemann-Roch theory which was presented in the preceding section
+in the case of replete ideals is embedded in a much more far-reaching
+
+===== PDF PAGE 241 =====
+
+§4. Metrized O-Modules 225
+theory which treats finitely generated o-modules. It is only in this setting
+that the theory displays its true nature, and becomes susceptible to the most
+comprehensive generalization. This theory is subject to a formalism which
+has been constructed by Alexander Grothendieck for higher dimensional
+algebraic varieties, and which we will now develop for number fields. In
+doing so, our principal attention will be focused as before on the kind of
+compactification which is accomplished by taking into account the infinite
+places. The effect is that a leading role is claimed by linear algebra — for
+which we refer to [15]. Our treatment is based on a course on "Arakelov
+Theory and Grothendieck-Riemann-Roch" taught by Gunter Tamme. There,
+however, proofs were not given directly, as we will do here, but usually
+deduced as special cases from the general abstract theory.
+Let K be an algebraic number field and o the ring of integers of K. For
+the passage from K to R and C, we start by considering the ring
+(1) Kc = K®qC.
+It admits the following two further interpretations, between which we will
+freely go back and forth in the sequel without further explanation. The set
+X(C) = Uom(KX)
+induces a canonical decomposition of rings
+(2) Kc = 0 C, flgz^ 0zc™.aeX(C) aeX(C)
+Alternatively, the right-hand side may be viewed as the set Cx(c) =
+Hom(X(C), C) of all functions x : X(C) -> C, i.e.,
+(3) Kc = Hom(X(C),C).
+The field K is embedded in Kc via
+K—>^ ®q C, a\—>a®\,
+and we identify it with its image. In the interpretation (2), the image of a e K
+appears as the tuple 0a a a of conjugates of a, and in the interpretation (3)
+as the function x(a) = a a.
+We denote the generator of the Galois group G(C|R) by Foo, or simply
+by F. This underlines the fact that it has a position analogous to the Frobenius
+automorphism Fp e G(FP\WP), in accordance with our decision of §1 to
+view the extension C|R as unramified. F induces an involution F on Kc
+
+===== PDF PAGE 242 =====
+
+226 Chapter III. Riemann-Roch Theory
+which, in the representation K<c = Hom(X(C),C) for x : X(C) ^ C, is
+given by
+(Fx)(a) = ^W).
+F is an automorphism of the R-algebra Kc- It is called the Frobenius
+correspondence. Sometimes we also consider, besides F, the involution
+z h> z on Kc which is given by
+z{a) = z(a).
+We call it the conjugation. Finally, we call an element x e Kc, that is, a
+function x : X(C) -> C, positive (written x > 0) if it takes real values, and
+ifx(a) > 0 for all a eX(C).
+By convention every o -module considered in the sequel will be supposed
+to be finitely generated. For every such o -module M, we put
+Mc = M ®z C.
+This is a module over the ring Kc = o <g>z C, and viewing o as a subring of
+jRTc _ as we agreed above — we may also write
+Mc = M ®0 Kc
+as M ®z C = M ®0 (o ®z C). The involution x h> Fx on A^ induces the
+involution
+F(a ®x)=a®Fx
+on Mc. In the representation Mc = M <g>z C, one clearly has
+F(a® z) = (3 <g> z .
+(4.1) Definition. A hermitian metric on the Kc-module Mc is a sesqui­
+linear mapping
+( , )M : Mc x Mc —► £c,
+i.e., a jRTc -linear form (jc, )>)m in tfje first variable satisfying
+{x,y)M = (y,x)M,
+such that one has (x,x)m > 0 for x ^ 0.
+Tfie metric ( , )m is called F-invariant if we fiave furthermore
+F(x,y)M = (Fx,Fy)M.
+
+===== PDF PAGE 243 =====
+
+§4. Metrized O-Modules 227
+This notion may be immediately reduced to the usual notion of a hermitian
+metric if we view the Kc -module M<c, by means of the decomposition
+K<c = 0a C, as a direct sum
+MC=M®0KC= © Ma
+oreX(C)
+of C-vector spaces
+The hermitian metric ( , )m then splits into the direct sum
+(x,y)M = 0 (xa,ya)Ma
+aeX(C)
+of hermitian scalar products ( , )mg on the C-vector spaces Ma. In this
+interpretation, the F-invariance of (x,y)M amounts to the commutativity of
+the diagrams
+Ma x Ma (')Ma > C
+FxF F
+(4.2) Definition. A metrized o-module is a finitely generated o-module M
+with an F -invariant hermitian metric on Mc.
+Example 1: Every fractional ideal a c K of o, in particular o itself, may
+be equipped with the trivial metric
+(x,y)=xy = 0 xGyG
+aeX(C)
+on a <g>z C = K ®q C = Kc- All the F-invariant hermitian metrics on a are
+obtained as
+<x(x,y) =axy = ®ot(a)xGya,a
+where a e Kc varies over the functions a : X(C) -> R+ such that
+a(a) = a(a).
+Example 2: Let L\K be a finite extension and 21 a fractional ideal of L,
+which we view as an o-module M. If 7(C) = Hom(L,C), we have the
+restriction map 7(C) -> X(C), r h> t|^-, and we write r\cr if a = t|^-.
+For the complexification Mc = 21 (g>z C = Lc, we obtain the decomposition
+Mc= 0 C= © Ma,rer(C) aeX(C)
+
+===== PDF PAGE 244 =====
+
+228 Chapter III. Riemann-Roch Theory
+where Ma = 0ria C. M is turned into a metrized o-module by fixing thestandard metrics
+(x,y)M0 = E^yr
+on the [L : K] -dimensional C-vector spaces Ma.
+If M and M' are metrized o-modules, then so is their direct sum M © M',
+the tensor product M ® M , the dual M = Hom0(M, o) and the rc-th exterior
+power /\nM. In fact, we have that
+(M © M')c = Mc © M^, (M ®0 M')c = Mc ®/rc M^ ,
+Mc = Hom^CMc^c), (A^)c = AV^c,
+and the metrics on these Kc -modules are given by
+{x@x',y@y')M®M' = (x,y)M + (x',yf)M>, resp.
+{x®x\y®y')M®M' = (x,y)M ' {x\y')M'i resp.
+(x,y)fi = {*,y)M, resp.
+(xi A...Axn,yi A...Ayn)AnM =det((xi,yj)M)­
+Here x, in the case of the module Mc, denotes the homomorphism
+x = ( ,x)M : Mc -> ^c­
+Among all o-modules M the projective ones play a special role. They
+are defined by the condition that for every exact sequence of o -modules
+F' -> F -> F/; the sequence
+HomcCM.F') —> Homo(M,F) —> Hom0(M,F//)
+is also exact. This is equivalent to any of the following conditions (the last
+two, because o is a Dedekind domain). For the proof, we refer the reader to
+standard textbooks of commutative algebra (see for instance [90], chap. IV,
+§3, or [16], chap. 7, §4).
+(4.3) Proposition. For any finitely generated o-module M the following
+conditions are equivalent:
+(i) M is projective,
+(ii) M is a direct summand of a finitely generated free o-module,
+(iii) M is locally free, i.e., M ®0 op is a free Op-module for any prime
+ideal p,
+(iv) M is torsion free, i.e., the map M -> M, x \-> ax, is injective for all
+nonzero a e o,
+(v) M = a © on for some ideal aofo and some integer n > 0.
+
+===== PDF PAGE 245 =====
+
+§4. Metrized O-Modules 229
+In order to distinguish them from projective o-modules, we will henceforth
+call arbitrary finitely generated o -modules coherent. The rank of a coherent
+o -module M is defined to be the dimension
+rk(M) = dimK(M®aK).
+The projective o-modules L of rank 1 are called invertible o-modules,
+because for them L <g>0 L -> o, a ® a h> a (a), is an isomorphism. The
+invertible o -modules are either fractional ideals of K, or isomorphic to a
+fractional ideal as o-modules. Indeed, if L is projective of rank 1 and a e L,
+a ^ 0, then, by (4.3), (iv), mapping
+L —> L®0K = K(a ®1), xi—> f(x)(a <g> 1),
+gives an injective o-module homomorphism L ^ f, x i-> /(x), onto a
+fractional ideal a c K.
+To see the connection with the Riemann-Roch theory of the last section,
+which we are about to generalize, we observe that every replete ideal
+* = n pVp n pVp = Afaoo
+pfcxD p|00
+of K defines an invertible, metrized o-module. In fact, the identity
+doo = Pip|oo PVp yields the function
+a : X(C) —> R+, a (or) = e2v*> ,
+where pa denotes as before the infinite place defined by a : K -> C. Since
+p- = pa, one has a (a) =a(cr)9 and we obtain on the complexification
+cifc = Of <8>z C = #c
+the F -invariant hermitian metric
+(*, y)a = otxy = 0 e2v^xaya
+aeX(C)
+(see example 1, p. 227). We denote the metrized o-module thus obtained
+byL(a).
+The ordinary fractional ideals, i.e., the replete ideals a such that
+0100 = 1, and in particular o itself, are thus equipped with the trivial
+metric (x,y)a = {x,y) =xy.
+(4.4) Definition. Two metrized o -modules M and Mf are called isometric
+if there exists an isomorphism
+f :M —> W
+of o -modules which induces an isometry fc : Mc -> M'c.
+
+===== PDF PAGE 246 =====
+
+230 Chapter III. Riemann-Roch Theory
+(4.5) Proposition.
+(i) Two replete ideals a and b define isometric metrized o-modules L(a)
+and L (b) if and only if they differ by a replete principal ideal [a]: a = b[a].
+(ii) Every invertible metrized o-module is isometric to an o-module L(a).
+(hi) L(ab) =L(a)®0L(b), L(a"1) = L(a).
+Proof: (i) Let a = \\p pv>, b = Y\P PMp> M = lip PVp{a), and let
+a(cr) = e2v»° , P(cr) = e2^ , y(a) = e2v*>la).
+If a = b[a], then vp = /jlp + vp(a); thus a = /3y, and af = bf(a). The
+o-module isomorphism bf -> af, x h> ax, takes the form ( , ){, to the form
+( , )a. Indeed, viewing a as embedded in Kc, we find a = 0a a^ and
+aa=®e-2v*>(a) = y-\a
+because vPa{a) = — log \cra\, so that
+(ax,ay)a = a(ax,ay) =ay~l(x,y) =P(x,y) = (x,y)b.
+Therefore bf -> af, x \-> ax, gives an isometry L(a) = L(b).
+Conversely, let g : L(b) -> L(a) be an isometry. Then the o-module
+homomorphism
+g •* bf -> af
+is given as multiplication by some element « e bf_1af = Hom0(bf, af). The
+identity
+P(x,y) = (x,y)h = (g(x),g(y))a = a(ax,ay) =ay~l{x,y)
+then implies that a = f)y, so that vp = /jlp + vp(a) for all p|oo. In view
+of af = bf(<z), this yields a = b[a].
+(ii) Let L be an invertible metrized o-module. As mentioned before, we have
+an isomorphism
+g : L —►Of
+for the underlying o -module onto a fractional ideal af. The isomorphism
+gc : Lc -> afc = Kc gives us the F -invariant hermitian metric
+h(x,y) = (gcl(x),g£l(y))L on Kc. It is of the form
+h(x,y) = axy
+for some function a : X(C) -> R!!J. such that a (a) = a (a). Putting now
+a (a) = e2v*°, with vPa e R, makes af with the metric h into the metrized
+
+===== PDF PAGE 247 =====
+
+§4. Metrized O-Modules 231
+o-module L(a) associated to the replete ideal a = <Xf]~[p|ooPVp' anc* ^ *s
+isometric to L(a).
+(iii) Let a = ]lpPVp> b = UpP^^ <*<» = e2Vpa> P(?) = e2fXpa• The
+isomorphism
+af ®o bf —^ cif bf, <z ® & i—► <z&,
+between the o-modules underlying L(a) ®0 L(b) and L(ab) then yields, as
+(ab,a'b')ab = afiaba'b' = a(a,af)P(b,bf) = (a,af)a(b,b')b, an isometry
+L(a)®oL(b) = L(ab).
+The o-module Hom0(cif, o) underlying L(a) is isomorphic, via the
+isomorphism
+g : dfT1 —> Hom0(af, o), a i—> (g(a) : x h> <zx) ,
+to the fractional ideal af *. For the induced K<c -isomorphism
+gc : Kc —> llomK<c(K<c,K<c)
+we have
+gc(x)(y) =xy = a~laxy = a~l{y,x)L{a),
+so that gcCO = &~lx, and thus
+= a~lxy = {x,y)L(a-\y
+Thus g gives an isometry L(a) = L(a_1). D
+(4.6) Definition. A short exact sequence
+0 _> Mr -^ M JU M" —► 0
+of metrized o-modules is by definition a short exact sequence of the
+underlying o-modules which splits isometrically, i.e., in the sequence
+0 —> M'c ^> Mc -^ M£ —> 0,
+M^ is mapped isometrically onto acM'c, and the orthogonal complement
+(acMp)1- is mapped isometrically onto M<£.
+The homomorphisms a, ft in a short exact sequence of metrized o-modules
+are called an admissible monomorphism, resp. epimorphism.
+To each projective metrized o -module M is associated its determinant
+detM, an invertible metrized o-module. The determinant is the highest
+exterior power of M, i.e.,
+detM = /\nM, n=±(M).
+
+===== PDF PAGE 248 =====
+
+232 Chapter III. Riemann-Roch Theory
+a(4.7) Proposition. If 0 -> Mf —> M —> M" -> 0 is a short exact
+sequence of projective metrized o -modules, we have a canonical isometry
+detM'®0detM" = detAf.
+Proof: Let n' = rk(M') and n" = rk(M"). We obtain an isomorphism
+k : detAf' ®e> detM" —^ detM
+of projective o -modules of rank 1 by mapping
+(m[ A ... A mfn,) ® (m" A ... A m^„) h> am'j A ... A am'n, A m" A ... A m^„,
+where m", ...,m^„ are preimages of m", . ..,m^„ under /? : M -> Af".
+This mapping does not depend on the choice of the preimages, for if, say,
+m![ + otm'n,+v where rnfn,+l e Mr, is another preimage of m", then
+am\ A ... A am'n,/\(m"x + otm'nl+l) A m^ A ... A m^„
+= am'j A ... A amjj/ A w'( A ... A m'^,,
+since am'j A ... A otmfn, A am^/+1 = 0. We show that the o-module
+isomorphism k is an isometry. According to the rules of multilinear algebra it
+induces an isomorphism
+k : det Mrc ® #c det M£ —^ det Mc
+of Kc-modules. Let x\9y\ e M'c, i = 1, . ..,ft', and Xj,yj e aM'^,
+j = 1, ..., n", and furthermore
+*' = M> / = A,o>/; x = Aj*j> y = Aj-yj'
+Then we have
+(k(x' ® Px),K(yf ® #y))detM = (<**' A x,ory' A y)dttM
+/(xfi,yfk)M> I o= det
+0 | (PxJ9Pyi)M»J
+= tet({x'i9y'k)M>) fct((PxJ9Pyt)M»)
+= (x\y')tetM'(Px,Py)detM"
+= (x' ® j8*, / ® Py)detM'®detM» •
+Thus k is an isometry. D
+
+===== PDF PAGE 249 =====
+
+§5. Grothendieck Groups 233
+Exercise 1. If M,N,L are metrized omodules, then one has canonical isometries
+M ®aN = N ®o M, (M ®0 N) ®0 L = M 0O (N 0O L),
+M0o(iV©L) = (M (8)o N) © (M (8)o L).
+Exercise 2. For any two projective metrized o-modules M,N, one has
+/\(M©AO = Q/\M®/\N.
+i+j=n
+Exercise 3. For any two projective metrized o-modules M,N, one has
+det(M 0c, N) = (detM)0rk(A° 0O (det AO0rk(M).
+Exercise 4. If M is a projective metrized o -module of rank n, and p > 0, then there
+is a canonical isometry
+det(^M) = (detM)0^.
+§ 5. Grothendieck Groups
+We will now manufacture two abelian groups from the collection of
+all metrized o-modules, resp. the collection of all projective metrized o­
+modules. We denote by {M} the isometry class of a metrized o-module M
+and form the free abelian group
+Fo(o) = 0Z{M}, resp. F°(o) = 0Z{M},{M} {M}
+on the isometry classes of projective, resp. coherent, metrized o-modules. In
+this group, we consider the subgroup
+*o(6)CF<>(6), resp. R\o) c F°(o),
+generated by all elements {Mf} — {M} + [M") which arise from a short exact
+sequence
+0 —> M' —> M —> M" —> 0
+of projective, resp. coherent, metrized o-modules.
+(5.1) Definition. The quotient groups
+K0(o) = F0(d)/Ro(o), resp. K°(o) = F\o)/R\o)
+are called the replete (or compactified) Grothendieck groups of o. If M
+is a metrized o-module, then [M] denotes the class it defines in K0(d),
+resp. K°(6).
+
+===== PDF PAGE 250 =====
+
+234 Chapter III. Riemann-Roch Theory
+The construction of the Grothendieck groups is such that a short exact
+sequence
+0 —> W —> M —> M" —> 0
+of metrized o-modules becomes an additive decomposition in the group:
+[M] = [M'] + [M"].
+In particular, one has
+[M' 0 M"] = [M'] + [M"].
+The tensor product even induces a ring structure on Ko(d), and K°(o) then
+becomes a Ko(o)-module: extending the product
+[M}{M'}:={M®0M'}
+by linearity, and observing that N ® M = M ®N and (M ® N) ® L =
+M <g) (Af <g) L), we find right away that F ° (p) is a commutative ring and Fo (o)
+is a subring. Furthermore the subgroups Ro(d) c F0(o) and /f°(o) c F°(d)
+turn out to be JF0(o)-submodules. For if
+0 —> M; —> M —> M" —¥ 0
+is a short exact sequence of coherent metrized o-modules, and N is a
+projective metrized o-module, then it is clear that
+0 —> N ®Mf —> N ®M —> N ®M" —^0
+is a short exact sequence of metrized o-modules as well, so that, along with
+a generator {Mf} — {M} + [M"), the element
+{N}({M'} - {M} + [M"}) = {N ® M'} -{N®M} + {N® M"}
+will also belong to Ro(o), resp. R°(o). This is why K0(o) = F0(o)/R0(o)
+is a ring and K°(o) = F°(d)/R°(6) is a K0(6)-module.
+Associating to the class [M] of a projective o-module M in Kq{6) its
+class in K°(d) (which again is denoted by [M]), defines a homomorphism
+K0(o)—>K°(o).
+It is called the Poincare homomorphism. We will show next that the
+Poincare homomorphism is an isomorphism. The proof is based on the
+following two lemmas.
+(5.2) Lemma. All coherent metrized o-modules M admit a "metrized
+projective resolution", i.e., a short exact sequence
+0—>£—>F—>M—>0
+of metrized o-modules in which E and F are projective.
+
+===== PDF PAGE 251 =====
+
+§5. Grothendieck Groups 235
+Proof: If ct\, ..., an is a system of generators of M, and F is the free
+o -module F = on, then
+F ► M, (Xi, . . . , Xn) I ► Y, xiai >
+1=1
+is a surjective o-module homomorphism. Its kernel E is torsion free, and
+hence a projective o-module by (4.3). In the exact sequence
+0 —> Ec —> Fc -^> Mc —> 0,
+we choose a section s : Mc -> Fc of /, so that Fc = Fc © sMc. We obtain
+a metric on Fc by transferring the metric of M<c to sMc, and by choosing
+any metric on Fc • This makes 0—>*F—>-F—>-M—>►() into a short exact
+sequence of metrized o-modules in which E and F are projective. □
+In a diagram of metrized projective resolutions of M
+0—¥ E ► F ► M —» 0
+0 —> F' ► F' > M —¥ 0
+the resolution in the top line will be called dominant if the vertical arrows
+are admissible epimorphisms.
+(5.3) Lemma. Let
+0 —¥ E' —¥ F' -^¥ M —¥ 0, 0 —¥ E" —> F" -^¥ M —> 0
+be two metrized projective resolutions of the metrized o-module M. Then,
+taking the o -module
+F = F'xM F" = {(xr,x") e Ff x F" \ /'(*') = f{x"))
+and the mapping f : F -> M, (x',jc") h> /'(*') = f"(x"), one obtains a
+third metrized projective resolution
+0—¥ E —¥ F —¥ M —>0
+with kernel E = Ef x F" which dominates both given ones.
+
+===== PDF PAGE 252 =====
+
+236 Chapter III. Riemann-Roch Theory
+Proof: Since Ff 0 F" is projective, so is F, being the kernel of thef'-f"homomorphism Ff 0 F" > M. Thus E is also projective, being the
+kernel of F -> M. We consider the commutative diagram
+0 —> Efc —> F^ +J=^t Mc —> 0t t s' II
+0 _> £c _> Fc <_■_.>■ Mc —> 0I I 5 II
+0 —> ££ —> F£ ^^> Mc —> 0,
+where the vertical arrows are induced by the surjective projections
+p JL+ p\ p JL+ p\
+The canonical isometries
+sf : Mc —> s'Mc, s" : Mc —> s"Mc
+give a section
+s : Mc —> F<c, sx = (sfx,s"x),
+of F which transfers the metric on Mc to a metric on sMc. Ec = E'€ x Ef^
+carries the sum of the metrics of E'c, F^., so that F<c = Ec 0 sMc also
+receives a metric, and
+0—> E —> F —> M —^ 0
+becomes a metrized projective resolution of M. It is trivial that the projections
+E -> E\ and E -> F" are admissible epimorphisms, and it remains to show
+this for the projections nf : F -> F', it" : F -> F". But we clearly have the
+exact sequence of e> -modules
+0 —> F" -U F = F' xM F" X F' —> 0,
+where *V = (0,x"). As the restriction of the metric of F to E — E1 x F"
+is the sum of the metrics on E' and E", we see that / : F^ -> /££ is an
+isometry. The orthogonal complement of /££ in Fc is the space
+Fi xMc s"Mc = {(x',s"a) eF'cx s"Mc \ f{xf) = a] .
+Indeed, on the one hand it is clearly mapped bijectively onto F'c, and on the
+other hand it is orthogonal to iE^. For if we write x' = s'a+e', with ef e E'c,
+then
+(x',s"a) = sa + (e',0)9
+
+===== PDF PAGE 253 =====
+
+§5. Grothendieck Groups 237
+where (ef, 0) e E<c and we find that, for all x" e /?£,
+[ix\(xf,s"a))F = ((0,x"),sa)F + ((0,x"),(e\0))E = 0.
+Finally, the projection F^ xmc s"Mc -> F^ is an isometry, for if (x',s"a),
+(/, s"6) e F^xMc s"Mc and x' = s'a + e', / = s'6 + d', with e\d' e E'c,
+then we get
+(*', s"a) = sa + (e\ 0), (/, s"b) = sb + (<*', 0)
+and
+((x\s"a)Ay\s"b)) F = (sa,sb) F + (saAd',0)) F + ((e\0),sb) F
++ ((e',0),(<*',0))£
+= (a,b)M + (e',d')E> = {sfa,s'b)F, + (e'^V
+= (s'a + ef,sfb + d')F> = (x\ y')F,. D
+(5.4) Theorem. The Poincare homomorphism
+K0(6) —> K\6)
+is an isomorphism.
+Proof: We define a mapping
+it : F\o) —> iTo(o)
+by choosing, for every coherent metrized o-module M, a metrized projective
+resolution
+0—>£—>F—>M—>0
+and associating to the class {M} in F°(d) the difference [F] — [£] of the
+classes [F] and [£] in ^0(0). To see that this mapping is well-defined let us
+first consider a commutative diagram
+0—> E ► F > M —> 0
+■«
+a -p
+0 —> E' ► Ff > M —> 0
+of two metrized projective resolutions of M, with the top one dominating the
+bottom one. Then E -> F induces an isometry ker(a)—> ker(/3), so that we
+have the following identity in Ko(6):
+[F] - [E] = [F'] + [ker(/J)] - [E'] - [ker(cx)] = [F'] - [£'].
+
+===== PDF PAGE 254 =====
+
+238 Chapter III. Riemann-Roch Theory
+If now 0 -> Ef -> F' -> M -> 0, and 0 -> £" -> F" -> M -> 0 are two
+arbitrary metrized projective resolutions of M, then by (5.3) we find a third
+one, 0->2?->F->Af->0, dominating both, such that
+[Ff]-[E'] = [F]-[E] = [F"]-[E"].
+This shows that the map n : F°(<5) -> A^(o) is well-defined. We now show
+that it factorizes via K°(o) = F°(d)/R°(d). Let 0 -> M' -> M-^M" -> 0
+be a short exact sequence of metrized coherent o-modules. By (5.2), we can
+pick a metrized projective resolution 0 -> E -> F—>M -> 0. Then clearly
+0 -> E" -> F—► Af " -> 0 is a short exact sequence of metrized o-modules
+as well, where we write f" = aof and E" = ker(/"). We thus get the
+commutative diagram
+0
+0 E" -> F f"
+M
+» M"
+0
+0
+and the snake lemma gives the exact sequence of o -modules
+0 M' 0.
+It is actually a short exact sequence of metrized o-modules, for E^ is mapped
+isometrically by / onto M, so that E"^ c E^ is mapped isometrically by /
+onto M£. We therefore obtain in Kq(o) the identity
+n{M'} - n{M} + ;r{M"} = [E"] - [E] - ([F] - [E]) + [F] - [E"] = 0.
+It shows that n : F°(d) -> ATo(o) does indeed factorize via a homomorphism
+tf°(g) —> tf0(6).
+It is the inverse of the Poincare homomorphism because the composed maps
+K0(d)—>K°(d)—>Ko(d) and K°(o)—> K0(o)K°(o)
+are the identity homomorphisms. Indeed, ifO—►£—>*F—>-M—>-0is
+a projective resolution of M, and M is projective, resp. coherent, then in
+K0(d), resp. K°(o)9 one has the identity [At] = [F] - [£]. D
+The preceding theorem shows that the Grothendieck group Ko(d) does not
+just accommodate all projective metrized o-modules, but in fact all coherent
+metrized o-modules. This fact has fundamental significance. For when
+
+===== PDF PAGE 255 =====
+
+§5. Grothendieck Groups 239
+dealing with projective modules, one is led very quickly to non-projective
+modules, for instance, to the residue class rings o/a. The corresponding
+classes in K°(d), however, can act out their important roles only inside the
+ring Ko(6), because only this ring can be immediately subjected to a more
+advanced theory.
+The following relationship holds between the Grothendieck ring Kq(6)
+and the replete Picard group Pic(d), which was introduced in § 1.
+(5.5) Proposition. Associating to a replete ideal a of K the metrized o­
+module L(a) yields a homomorphism
+Pic{6) —> Ko(6)\ [a]H-+[L(a)],
+into the unit group of the ring Ko(d).
+Proof: The correspondence [a] f-> [L(a)] is independent of the choice of
+a replete ideal a inside the class [a] e Pic(d). Indeed, if b is another
+representative, then we have a = b[a], for some replete principal ideal [a],
+and the metrized o-modules L(a) and L(b) are isometric by (4.5), (i), so that
+[L(a)] = [£(b)]. The correspondence is a multiplicative homomorphism as
+[L(ab)] = [L(a) ®0 L(b)] = [L(a)][L(b)]. □
+In the sequel, we simply denote the class of a metrized invertible o­
+module L(a) in K0(o) by [a]. In particular, to the replete ideal o = f|p P°
+corresponds the class 1 = [o] of the o -module o equipped with the trivial
+metric.
+(5.6) Proposition. Ko(d) is generated as an additive group by the
+elements [a].
+Proof: Let M be a projective metrized o-module. By (4.3), the underlying
+o-module admits as quotient a fractional ideal cif, i.e., we have an exact
+sequence
+0 —^Af —> M —► cif —^0
+of o -modules. This becomes an exact sequence of metrized o -modules once
+we restrict the metric from M to N and choose on cif the metric which is
+transferred via the isomorphism N^ = cifc • Thus cif becomes the metrized
+o -module L(a) corresponding to the replete ideal a of K, so that we get the
+
+===== PDF PAGE 256 =====
+
+240 Chapter III. Riemann-Roch Theory
+identity [M] = [N] + [a] in Ko(o). Induction on the rank shows that for
+every projective metrized o -module M, there is a decomposition
+[M] = [ai] + .-- + [ar]. □
+The elements [a] in Kq(o) satisfy the following remarkable relation.
+(5.7) Proposition. For any two replete ideals a and b of K we have in
+Ko(6) the equation
+([a]-l)([b]-l) = 0.
+Proof (Tamme): For every function a : X(C) -> C let us consider on the
+Kc -module Kc = 0aGx(C) ^ ^e form
+&xy = ®ot{a)xaya.
+■Cj)For every matrix A = I R ) of such functions, we consider on the
+Kc -module Kc 0 Kc the form
+(x 0 y,x' 0 y')A = axx' + yxy' + 8yx' + 0yy'.
+axy, resp. ( , )^, is an F-invariant metric on Kc, resp. on Kc 0 Kc, if
+and only if a is F-invariant (i.e., a(a) = a(a)) and a(a) e R^j_, resp. if all
+the functions a, f5, y, 8 are F-invariant, a(cr), ^(cr) G M!j_ and <5 = y, and if
+moreover detA = a/3 — yy > 0. We now assume this in what follows.
+Let a and b be fractional ideals of K. We have to prove the formula
+[a] + [b] = [ab] + l.
+We may assume that af and bf are integral ideals relatively prime to one
+another, because if necessary we may pass to replete ideals a' = a[a],
+b' = b[b] with corresponding ideals a'f = cif<2, b'f = bfb without changing the
+classes [a], [b], [ab] in Ko(d). We denote the o-module af, when metrized
+by axy, by (af,a), and the o-module af 0 bf, metrized by ( , )^, for
+A = I _ J, by (af 0 bf, A). Given any two matrices A = I _ I and
+(a' y'\A! = I _, ol we write
+if [(af 0 bf), A] = [(af 0 bf), Af] in A^o(<5)- We now consider the canonical
+exact sequence
+0 —> af —> af 0 bf —> bf —> 0.
+
+===== PDF PAGE 257 =====
+
+§5. Grothendieck Groups 241
+Once we equip cif ©bf with the metric ( , )a which is given by A = I _ ^ J,\Y P)
+we obtain the following exact sequence of metrized o-modules:
+(*) o —> (af,a) —> (af © bf, A) —> (bf, j8 - ^) —> 0.
+Indeed, in the exact sequence
+0 —> #c —> Kc © #c —> Kc —> 0,
+the restriction of ( , )a to Kc © {0} yields the metric axy on A^c,
+and the orthogonal complement V of Kc © {0} consists of all elements
+a + b e Kc® Kc such that
+(x © 0, a © b) = axa + yxb = 0,
+for all x e Kc, so that
+7 = {(-y/a)&ffi&|&€tfc}.
+The isomorphism V —> A^c, {—y /a)b®b i—^ fc, transfers the metric ( , )a
+on V into the metric <5xy, where S is determined by the rule
+S = (jr-l(l),jr-l(l))A = ((-y/a)l © 1, (-y/a)l © l)A
+YY Y -Y ^a a YY= <x-j -Y Y~ +P = P
+This shows that (*) is a short exact sequence of metrized o-modules, i.e.,
+\v fi) \o p-v-)'
+Replacing ft by ft + *£., we get
+/« y _\ (a 0\
+Applying the same procedure to the exact sequence 0 -> bf -> af 0 bf ->
+af -> 0 and the metric I _ , I on af © bf, we obtain
+("V ',)-('* ;)■
+Choosing
+p — p H , a =
+
+===== PDF PAGE 258 =====
+
+242 Chapter III. Riemann-Roch Theory
+makes the matrices on the left equal, and yields
+or, if we put 8 = ft + %£-,
+ft;)-(? ?)■
+which is valid for any F -invariant function 8 : X(C) -> R such that 8 > /3.
+This implies furthermore
+(***> (l ^)~(t e)
+for any two F-invariant functions 8,e:X(C)-> R+. For if /c : X(C) -> R
+is an F-invariant function such that k >8,k > s, then (**) gives
+V o <sy V ° */ V ° */
+Now putting 8 = fi and e = 1 in (***), we find
+[(af,a)] + [(bf,i8)] = [(aff^)] + [bf].
+For the replete ideals a = fjp pVp, b = fjp PVp> ^^ means
+(1) [a] + [b] = [aboo] + [bf],
+for if we put a (a) = e2Vpcr, ft (a) = e2fXpcr, then we have
+(a**) = L(a), (bf, jB) = L(b), (Of.ajB) = L(aboo).
+On the other hand, we obtain the formula
+(2) [a] + [bf] = [abf] + 1
+in the following manner. We have two exact sequences of coherent metrized
+o -modules:
+0 —> (cifbf,aO —> (cif,a) —> df/cifbf —> 0,
+0 —> (bf, 1) —> (o, 1) —> o/bf —> 0.
+As af and bf are relatively prime, i.e., cif + bf = o, it follows that
+ctf/cifbf —> o/bf
+
+===== PDF PAGE 259 =====
+
+§6. The Chern Character 243
+is an isomorphism, so that in the group K°(o) one has the identity
+[df/cifbf] = [o/bf], and therefore
+[(af,o0] - [(Ofbf.a)] = [(o, 1)] - [(bf, 1)],
+and so
+[a]-[abf] = l-[bf].
+From (1) and (2) it now follows that
+[a] + [b] = [aboo] + [bf] = [aboobf] + 1 = [ab] + 1.
+In view of the isomorphism Ko(o) = K°(d), this is indeed an identityin Ko(p). □
+§ 6. The Chern Character
+The Grothendieck ring Kq{o) is equipped with a canonical surjective
+homomorphism
+rk : K0(d) —> Z.
+Indeed, the rule which associates to every isometry class {M} of projective
+metrized o -modules the rank
+rk{M} = dimK (M®0K)
+extends by linearity to a ring homomorphism F0(o) -> Z. For a short exact
+sequence 0 -> M' -> M -> M" -> 0 of metrized o -modules one has
+rk(M) = rk(M') + rk(M"), and so rk({Mf) - {M} + [M"}) = 0. Thus rk is
+zero on the ideal Ro(p) and induces therefore a homomorphism Ko(o) -> Z.
+It is called the augmentation of Ko(o) and its kernel / = ker(rk) is called
+the augmentation ideal.
+(6.1) Proposition. The ideal /, resp. /2, is generated as an additive group
+by the elements [a] - 1, resp. ([a] - l)([b] - 1), where a, b vary over the
+replete ideals of K.
+Proof: By (5.6), every element § e Ko(6) is of the form
+r
+
+===== PDF PAGE 260 =====
+
+244 Chapter III. Riemann-Roch Theory
+If f 6 /, then rk(£) = E;=i nt = 0, and thus
+? = E«.-[«».-]-E''«- = En«([a.-]-l).
+The ideal /2 is therefore generated by the elements ([a] - l)([b] - 1). As
+[c]([a] - l)([b] - 1) = (([ca] - 1) - ([c] - 1)) ([b] - 1),
+these elements already form a system of generators of the abelian group /2.
+□
+By (5.7), this gives us the
+(6.2) Corollary. I2 = 0.
+We now define
+grK0(o) = Z®I
+and turn this additive group into a ring by putting xy = 0 for x, y e I.
+(6.3) Definition. The additive homomorphism
+Cl:Ko(d)—>I9 ci(£) = £-ik(£)
+is called the first Chern class. The mapping
+ch : K0(6) -> gr#o(o), ch(£) = rk(£) + ng),
+is caiied the Chern character of Ko(o).
+(6.4) Proposition. The Chern character
+ch:K0(d)—>grKo(d)
+is an isomorphism of rings.
+Proof: The mappings rk and c\ are homomorphisms of additive groups, and
+both are also multiplicative. For rk this is clear, and for c\ it is enough to
+check it on the generators x = [a], y = [b]. This works because
+c{(xy) =Xy-l = (x-l) + (y-l) + (x- l)(y - 1) = cx(x) + cx(y),
+because (x — l)(y — 1) = 0 by (5.7). Therefore ch is a ring homomorphism.
+The mapping
+Z 0 / —> K0(o)9 n 0 f i—> f + /i,
+is obviously an inverse mapping, so that ch is even an isomorphism. □
+
+===== PDF PAGE 261 =====
+
+§6. The Chern Character 245
+We obtain a complete and explicit description of the Chern character by
+taking into account another homomorphism, as well as the homomorphism
+rk : Ko(o) -> Z, namely
+det: K0(6) —> Pic(6)
+which is induced by taking determinants detM of projective o-modules M
+as follows (see §4). detM is an invertible metrized o-module, and therefore
+of the form L(a) for some replete ideal a, which is well determined up
+to isomorphism. Denoting by [detM] the class of a in Pic(d), the linear
+extension of the map {M} h-> [detM] gives a homomorphism
+det: F0(6) —> Picip).
+It maps the subgroup Ro(6) to 1, because it is generated by the elements
+{M'} — {M} + [M"} which arise from short exact sequences
+0 —» M' —¥ M —¥ M" —¥ 0
+of projective metrized o-modules and which, by (4.7), satisfy
+det{M} = [detM] = [detM' ® detM"]
+= [det M'] [detM"] = det{M'} det{M"}.
+Thus we get an induced homomorphism det : Kq(6) -> Picip). It satisfies
+the following proposition.
+(6.5) Proposition, (i) The canonical homomorphism
+Pic(o) —¥ K0(dT
+is injective.
+(ii) The restriction of det to /,
+det: / —> Pic(p),
+is an isomorphism.
+Proof: (i) The composite of both mappings
+Picip) —¥ K0(o)* -^¥ Pic(o)
+is the identity, since for an invertible metrized o-module M, one clearly has
+detM = M. This gives (i).
+(ii) Next, viewing the elements of Pic(6) as elements of Ko(d),
+8 : Pic(p) —> /, S(x) = x - 1,
+gives us an inverse mapping to det : / -> Picip). In fact, one has
+deto<5 = id since det([a] - 1) = det[a] = [a], and 8 o det = id since
+<5(det([a] - 1)) = <5(det[a]) = 8([o\) = [a] - 1 and because of the fact that
+/ is generated by elements of the form [a] — 1 (see (6.1)). □
+
+===== PDF PAGE 262 =====
+
+246 Chapter III. Riemann-Roch Theory
+From the isomorphism det : / > Pic(o), we now obtain an
+isomorphism
+grK0(o) —^ Z®Pic(p)
+and the composite
+K0(o) -^ gr#0(o) ^^> Z®Pic(6)
+will again be called the Chern character of Kq{6). Observing that
+det(ci(£)) = det(£ - rk(£) • 1) = det(£), this yields the explicit description
+of the Grothendieck group Ko(o):
+(6.6) Theorem. The Chern character gives an isomorphism
+ch:K0(6) -^ Z®Pic(p)9 ch(£) = rk(£) 0 det(£).
+The expert should note that this homomorphism is a realization map
+from K-theory into Chow-theory. Identifying Pic{6) with the divisor
+class group CHl(o), we have to view Z © Pic(o) as the "replete" Chow
+ring CH(p).
+§ 7. Grothendieck-Riemann-Roch
+We now consider a finite extension L\K of algebraic number fields
+and study the relations between the Grothendieck groups of L and K.
+Let o, resp. O, be the ring of integers of K, resp. L, and write
+X(C) = Hom(A:,C), 7(C) = Hom(L,C). The inclusion i : o-> O and the
+surjection Y(C) -> X(C),cr t-> cr\K, give two canonical homomorphisms
+i* : K0(d) —> K0(O) and U : K0(6)—> K0(o),
+defined as follows.
+If M is a projective metrized o-module, then M ®0 O is a projective
+O -module. As
+(M ®0 0)C = M ®00®ZC = Mc ®Kc Lc,
+the hermitian metric on the Kc -module Mc extends canonically to an
+F -invariant metric of the Lc-module (M ®0 0)c- Therefore M ®0 O is
+automatically a metrized O-module, which we denote by /*M. If
+0 —> W —> M —> M" —> 0
+
+===== PDF PAGE 263 =====
+
+§ 7- Grothendieck-Riemann-Roch 247
+is a short exact sequence of projective metrized o-modules, then
+0 —> M' ®00 —> M ®00 —> M" ®00 —¥ 0
+is a short exact sequence of metrized O-modules, because O is a projective
+o -module and the metrics in the sequence
+0 —> Mfc —> Mc —> M£ —> 0
+simply extend Lc-sesquilinearly to metrics in the sequence of Lc -modules
+0 —> Mc ®Kc Lc —> Mc <8>*c Lc —> M^ <8>*c ^c —> 0.
+This is why mapping, in the usual way (i.e., via the representation
+K0(o) = F0(o)/Ro(p))9
+M h-» [i*M] = [M Oo O]
+gives a well-defined homomorphism
+/* 1^0(0)—>iTo(0).
+The reader may verify for himself that this is in fact a ring homomorphism.
+On the other hand, if M is a projective metrized O-module, then M
+is automatically also a projective o-module. For the complexification
+Mc = M <g>z C we have the decomposition
+Mc = © Mr = 0 0Mr = 0 Ma,rer(C) aeX(C)r|or aeX(C)
+where MT = M ®o,rC and
+Ma=M®o,aC = 0Mr.
+r|cr
+The C-vector spaces Mr carry hermitian metrics ( , >mt, and we define the
+metric ( , )mg on the C-vector space Ma to be the orthogonal sum
+(x,y)Ma = E (XT,yr)MT.
+rlor
+This gives a hermitian metric on the Kc-module Mc, whose F-invariance
+is clearly guaranteed by the F-invariance of the original metric ( , >m- We
+denote the metrized o -module M thus constructed by /*M.
+If 0 -> M' -> M -> M/; -> 0 is a short exact sequence of projective
+metrized O-modules, then
+0 —► UM' —> /*M —► i*M" —> 0
+is clearly an exact sequence of projective metrized o-modules. As before,
+this is why the correspondence
+M i—> [UM]
+gives us a well-defined (additive) homomorphism
+U:K0(d)—»Ko(o).
+
+===== PDF PAGE 264 =====
+
+248 Chapter III. Riemann-Roch Theory
+(7.1) Proposition (Projection Formula). The diagram
+K0(O) x K0(O) > K0(O)
+i* \i* i*
+K0(o) x K0(o) ► K0(o)
+is commutative, where the horizontal arrows are multiplication.
+Proof: If M, resp. N, is a projective metrized (9-module, resp. o-module,
+there is an isometry
+of projective metrized o-modules. Indeed, we have an isomorphism of the
+underlying o -modules
+M ®o (JV ®0 O) = M ®0N, a®(b®c)v-±ca®b.
+Tensoring with C, it induces an isomorphism
+Mc <8>lc (#c ®KC Lc) = Mc ®KC Nc •
+That this is an isometry of metrized Kc -modules results from the
+distributivity
+J2( » )mt( , )Na = {J2( » )mt)( , )ncx\g x\a
+by applying mathematical grammar. □
+The Riemann-Roch problem in Grothendieck's perspective is the task
+of computing the Chern character ch(/*M) for a projective metrized O­
+module M in terms of ch(M). By (6.6), this amounts to computing det(/*M)
+in terms of detM. But detM is an invertible metrized O -module and is
+therefore isometric by (4.5) to the metrized O-module L(2l) of a replete
+ideal 21 of L. Nl\k(%) 1S then a replete ideal of K, and we put
+NLlKmM):=L(NLlKm).
+This is an invertible metrized o -module which is well determined by M up
+to isometry. With this notation we first establish the following theorem.
+(7.2) Theorem. For any projective metrized O -module M one has:
+rk(/*M) = rk(M)rk(C7),
+det(/*M) = NL\K (det M) ®0 (det/*0)rk(M).
+Here we have rk(O) = [L : K].
+
+===== PDF PAGE 265 =====
+
+§7. Grothendieck-Riemann-Roch 249
+Proof: One has MK := M ®0 K = M ®Q O ®0 K = M ®Q L =: ML and
+therefore
+rk(/*M) = dimK(MK) = dimK(ML) = dimL(ML)[L : K] = rk(M)rk(0).
+In order to prove the second equation, we first reduce to a special case. Let
+A(M) = det(/*M) and p(M) = NL\K(detM) ®a (det/*0)rk(M).
+If 0 -> M' —► M -> M" -> 0 is a short exact sequence of projective
+metrized O-modules, one has
+(*) A(M) = \(Mf)®0k{M") and p(M) = p(M') ®0 p(M").
+The isomorphism on the left follows from the exact sequence 0 -> i*M' ->
+i*M -> iJA" -> 0 by (4.7), and the one on the right from (4.7) also, from
+the multiplicativity of the norm A^ia: and the additivity of the rank rk. As in
+the proof of (5.6), we now make use of the fact that every projective metrized
+O -module M projects via an admissible epimorphism onto a suitable O­
+module of the form L(2l) for some replete ideal 21. Thus (*) allows us to
+reduce by induction on rk(M) to the case M = L(2l). Here rk(M) = 1, so
+we have to establish the isomorphism
+det(/*L(2l)) =L(NLlKW)) ®odetoe>.
+For the underlying o -modules this amounts to the identity
+(**) det0 2lf = NL\K (2lf) det0 O,
+which has to be viewed as inside det# L and which is proved as follows.
+If O and o were principal ideal domains, it would be obvious. In fact, in that
+case we could choose a generator a of 2lf and an integral basis co\, ..., con
+of O over o. Since Ni\k{oi) is by definition the determinant det(ra) of the
+transformation Ta : L -> L, x h-> ax, we would get the equation
+aoo\ A ... Aacon = Ni\K{ot){a)\ A ... Acon),
+the left-hand side, resp. right-hand side, of which would, by (1.6), generate
+the left-hand side, resp. right-hand side, of (**). But we may always
+produce a principal ideal domain as desired by passing from O\o to the
+localization 0p|op for every prime ideal p of o (see chap. I, § 11 and §3,
+exercise 4). The preceding argument then shows that
+(detc 2lf)p = det0p 2lfp = A^*(2lfp) det0p Op = (NLlKm det0 0)p,
+and since this identity is valid for all prime ideals p of o, we deduce the
+equality (**).
+
+===== PDF PAGE 266 =====
+
+250 Chapter III. Riemann-Roch Theory
+In order to prove that the metrics agree on both sides of (**), we put
+M = L(2l), N = L(0), a = Nl\k(%) and we view M,N,a as metrized
+o-modules. One has Mc = Nc = Lc and ac = Kc, and we consider the
+metrics on the components
+r|cr r|cr
+where a e Hom(K,C) and r e Hom(L,C) is such that r\a. We have to
+show that, for £, r) e detc Ma and a, b e C, one has the identity
+{a^brj)detMa = {a,b)aa{t=,r])detNa.
+For this, let 2loo = T\yloo ^PVq3, so that one gets
+p|oo
+with vp = J2y\P fy\pv¥- Then
+(x,y)Na = E^yr, (x,y)Ma = J2elVVzxryr,
+(a,b)aa = e2v*>ab, vPa = £ fV\Pavvp = £ vyx •¥\Po T\G
+Let £ = x\ A ... A xn, r\ = y\ A ... A yn. We number the embeddings r |a,
+x\, ..., rn, put Vk = v?pTk and form the matrices
+A = (xiTk)9 B = (yiTk), D=[\ 0 ^ /
+Then, observing that
+det(D) = \\ev^ = 17 e/q3|p*Vq3 = ev»°,
+we do indeed get
+{aS,br))tetMa =ab{%, r))^iMa
+= abdet((AD)(BDY) = ab (dot D)2dQt(AB()
+= e2v*>ab(^ri)tetNa = {a,b)aa{^r])d&tNa .
+This proves our theorem. □
+Extending the formulas of (7.2) to the free abelian group
+F0(O) = ®Z{M}
+{M}
+by linearity, and passing to the quotient group Kq(0) = Fq(0)/Rq(0)
+yields the following corollary.
+
+===== PDF PAGE 267 =====
+
+§ 7. Grothendieck-Riemann-Roch 251
+(7.3) Corollary. For every class £ e K$(P), one has the formulas
+rk(/4) = [L:iHrk(£),
+det(/*£) = [det/*0]rk(^)^VL,/r(det^).
+The square of the metrized o -module det/*0 appearing in the second
+formula can be computed to be the discriminant Vl\k of the extension L \K,
+which we view as a metrized o-module with the trivial metric.
+(7.4) Proposition. There is a canonical isomorphism
+(deti„0)®2 = dL]K
+of metrized o-modules.
+Proof: Consider on O the bilinear trace map
+T : O x O —> o, (x,y) i—► TrL]K(xy).
+It induces an o -module homomorphism
+T :detO®detO —> o,
+given by
+r((ai A ... A an) ® (ft A ... A ^)) = det(7rL|if (a/)8;)).
+The image of T is the discriminant ideal ~0l\k> which, by definition, is
+generated by the discriminants
+d(cou ...,con) = det(TrLlK(a)iQ)j))
+of all bases of L\K which are contained in O. This is clear if O admits
+an integral basis over o, since the «/ and $ can be written in terms of
+such a basis with coefficients in o. If there is no such integral basis, it will
+exist after localizing Op\op at every prime ideal p (see chap. I, (2.10)). The
+image of
+7p : (detOp) ® (detOp) —► op
+is therefore the discriminant ideal of Op\op and at the same time the
+localization of the image of T. Since two ideals are equal when their
+localizations are, we find image(T') = c)L|/r- Furthermore, T has to be
+injective since (detO)®2 is an invertible o-module. Therefore T is an
+o -module isomorphism.
+
+===== PDF PAGE 268 =====
+
+252 Chapter III. Riemann-Roch Theory
+We now check that
+rc:(det(0)®2)c—>(dL\K)c
+is indeed an isometry. For Oc = 0®zC, we obtain the Kc-module
+decomposition
+0C=©0a,
+a
+where a varies over the set Hom(X, C), and the direct sum
+Oa = 0(O®o,rC) = 0Cr|or r|or
+is taken over all r G Hom(L, C) such that t\k = a. The mapping Oc -> A^c
+induced by Tvl\k • O -> o is given, for x = 0a xa, xa G Oa, by
+TrL\K(x) = £7ra(xa),a
+where Tra(xa) = J2r\a xo,x, the xa>r G C being the components of xa. The
+metric on (i*0)c = Oc is the orthogonal sum of the standard metrics
+(x,y)a = T,xTyT = Tra(xy)
+r|or
+on the C-vector spaces (UO)a = Oa = 0r|aC. Now let x/, yt e Oa,
+i = 1, ..., n, and write x = x\ A ... A xn, y = yi A ... A yn e det(C?a). The
+map 7c splits into the direct sum 7c = 0a Ta of the maps
+Ta : det(Oa) ®c det(Oa) -> (Pl\k)g = C
+which are given by
+TaO ® y) = det(7ra(x/^)) .
+For any two n -tuples x't, y[ e Oa we form the matrices
+A = {Tra(xiyj))9 A' = (Tr^x'tfj)), B = (Tr^x/x})), B' = {Tr^ty))).
+Then one has A A! = BB'', and we obtain
+[T0(x®y)Ja(x,®y,)){^K)a = Ta(x ® y) Ta(x' ® y')
+= det(Tra(xiyj)) det(7ra(x;y})) = det(AA') = det(fifi')
+= det(7ra(x;x})) det(7ra(y/y})) = det((*/,*;.)*) det((^,^-)a)
+This shows that 7c is an isometry. □
+
+===== PDF PAGE 269 =====
+
+§ 7. Grothendieck-Riemann-Roch 253
+We now set out to rewrite the results obtained in (7.2) and (7.4) in the
+language of Grothendieck's general formalism. For the homomorphism /*
+there is the commutative diagram
+K0(O) —^ Z
+(A \[L:K]
+K0(o) -^ Z,
+because [L : K] times the rank of an O-module M is its rank as o-module.
+Therefore /* induces a homomorphism
+U:I(6)—> 1(d)
+between the kernels of both rank homomorphisms, so that there is a
+homomorphism _
+U:grK0(O)—+grK0(o).
+It is called the Gysin map. (7.3) immediately gives the following explicit
+description of it.
+(7.5) Corollary. The diagram
+grK0(O) id^deS Z®Pic(P)
+U [L:K]®NL\K
+grK0(o) idedeS Z®Pic(o)
+is commutative.
+We now consider the following diagram
+— ch —K0(O) ► gr^o(C>)
+K0(6) > grK0(6)
+where the Gysin map /* on the right is explicitly given by (7.5), whereas
+the determination of the composite ch o /* is precisely the Riemann-Roch
+problem. The difficulty that confronts us here lies in the fact that the diagram
+is not commutative. In order to make it commute, we need a correction,
+which will be provided via the module of differentials (with trivial metric),
+by the Todd class, which is defined as follows.
+
+===== PDF PAGE 270 =====
+
+254 Chapter III. Riemann-Roch Theory
+The module £2X0\0 of differentials is only a coherent, and not a projective
+O-module. But its class [&q\0] is viewed as an element of K0(O) via the
+Poincare isomorphism
+K0(O) -^ K0(O),
+and since rko(^io) = 0» ^ ^es *& I(@)­
+(7.6) Definition. The Todd class ofO\o is defined to be the element
+Td(0|o) = l-id([^|0]) =l-i[^|0]€grA:o(0)®Z[I].
+Because of the factor i, the Todd class does not belong to the ring
+grKoiO) itself, but is only an element of grKoiO) ® Z[^]. The module
+of differentials ^^ is connected with the different 1)l\k of the extension
+L | K by the exact sequence
+0 —> Slia- —> O —> alolo —> 0
+of O-modules (with trivial metrics) (see §2, exercise 3). This implies that
+[£2q\0] = 1 — [&l\k]' We may therefore describe the Todd class also by the
+different:
+Td(0\o) = 1 + | WDl\k] ~ 1) = \ (1 + [2>li*]) •
+The main result now follows from (7.3) using the Todd class.
+(7.7) Theorem (Grothendieck-Riemann-Roch). The diagram
+KoiO) -™^ gr*0(<5)
+_ ch _K0(o) > gr K0(o)
+is commutative.
+Proof: For £ e Ko(0)9 we have to show the identity
+ch(i^) = iJ„(Td(0|o)ch(?)).
+
+===== PDF PAGE 271 =====
+
+§ 8. The Euler-Minkowski Characteristic255
+Decomposing ch(/*£) = rk(i*t-) © ci(/*£) and ch(£) = rk(£) 0 c\(£) and
+observing that
+Td(0|c))ch(5) = (l + i([S)L|ip]-l))(rk(5) + c1(5))
+= rk(§) + [d(f) + | ikCfXIDLUf] - 1)],
+it suffices to check the equations
+(a) ik(i^)=ik(?)rk(iJ,[0]),
+(b) ci(i^) - i*(ci(?)) +rk(?)c1(i*[0])
+and
+(c) rk(idO]) = i*(l),
+(d) 2d(/*[0]) =i*([S)L|jr]-l)
+in grATo(o). The equations (a) and (c) are clear because of rk(/*[C?]) =
+rk(i*(D) = [L : AT]. To show (b) and (d), we apply det to both sides and are
+reduced by the commutative diagram (7.5) to the equations
+(e) det(/*£) = tfL|*((det*)) [det/*0]rk(^ ,
+(f) mUO)*2 = NLlKm®L\K)­
+But (e) is the second identity of (7.3), and (f) follows from (7.4) and (2.9). □
+With this final theorem, the theory of algebraic integers can be integrated
+completely into a general programme of algebraic geometry as a special case.
+What is needed is the use of the geometric language for the objects considered.
+Thus the ring o is interpreted as the scheme X = Spec(o), the projective
+metrized o-modules as metrized vector bundles, the invertible o-modules as
+line bundles, the inclusion / : o -> O as morphism f : Y = Spec(O) —> X
+of schemes, the class Q\)\0 as the cotangent element, etc. In this way one
+realizes in the present context the old idea of viewing number theory as part
+of geometry.
+§ 8. The Euler-Minkowski Characteristic
+Considering the theorem of Grothendieck-Riemann-Roch in the special
+case of an extension K\Q, amounts to revisiting the Riemann-Roch theory
+
+===== PDF PAGE 272 =====
+
+256 Chapter III. Riemann-Roch Theory
+of §3 from our new point of view. At the center of that theory was the
+Euler-Minkowski characteristic
+X(a) = -logvol(a)
+of replete ideals a of K. Here, vol(a) was the canonical measure of a
+fundamental mesh of the lattice in Minkowski space K& = a<g>z R defined by
+a. This definition is properly explained in the theory of metrized modules of
+higher rank. More precisely, instead of considering a as a metrized o-module
+of rank 1, it should be viewed as a metrized Z -module of rank [K : Q].
+This point of view leads us necessarily to the following definition of the
+Euler-Minkowski characteristic.
+(8.1) Proposition. The degree map
+degK : Pic(o) —> R, deg^ ([a]) = - log <tt(a),
+extends uniquely to a homomorphism
+XK : K0(d) —> R
+on Ko(o), and thereby on K°(d). It is given by
+Xk = deg o det
+and called the Euler-Minkowski characteristic over K.
+Proof: Since, by (5.6), K0(o) is generated as an additive group by the
+elements [a] e Pic(6), the map deg^ on Pic(p) determines a unique
+homomorphism Kq(o) -> R which extends deg^. But such a homomorphism
+is given by the composite of the homomorphisms
+K0(o) -^ Pic(o) -^% R,
+_ — det —as the composite Pic(p) ^ ^0(0) —> Pic(p) is the identity. □
+Via the Poincare isomorphism Kq(o) > K°(6), we transfer the maps
+det and xk to the Grothendieck group K°(o) of coherent metrized o~
+modules. Then proposition (8.1) is equally valid for K°(d) as for K$(p).
+We define in what follows xk(M) = Xk([M]) for a metrized o-module M.
+If L\K is an extension of algebraic number fields and / : o -+ O the
+inclusion of the maximal orders of K, resp. L, then applying deg^ to the
+formula (7.2) and using
+degL(2l) = -log(rt(a) = -logVl(NLlK(m) = degK(NLlKm)
+(see (1.6), (iii)) gives the
+
+===== PDF PAGE 273 =====
+
+§ 8. The Euler-Minkowski Characteristic257
+(8.2) Theorem. For every coherent O-module M, the Riemann-Roch
+formula
+Xk(UM) = degL(detM) + rk(M) Xk(UO)
+is valid, and in particular, for an invertible metrized O-module M, we have
+Xk(UM) = degL(M) + xk(LO).
+We now specialize to the case of the base field K = Q, that is, we
+consider metrized Z -modules. Such a module is simply a finitely generated
+abelian group M together with a euclidean metric on the real vector space
+MM = M®ZR.
+Indeed, since Q has only a single embedding into C, i.e., Qc = C, a
+metric on M is simply given by a hermitian scalar product on the C-vector
+space M<c = Mr ® C. Restricting this to Mr gives a euclidean metric the
+sesquilinear extension of which reproduces the original metric.
+If M is a. projective metrized Z -module, then the underlying Z -module
+is a finitely generated free abelian group. The canonical map M -> M ® R,
+a v-+ a ® \, identifies M with a complete lattice in Mr. If ot\, ..., an is a
+Z-basis of M, then the set
+0 = {x\a\ H h .^a^ | JCi € R, 0 < JCj < 1}
+is a fundamental mesh of the lattice M. The euclidean metric ( ,)m
+defines a Haar measure on Mr. Once we choose an orthonormal basis
+ei, ..., en of Mr, this Haar measure can be expressed, via the isomorphism
+Mr —^> R", X\e\ H hxwew i—> (*i, ..., Jc«), by the Lebesgue measure
+on Rn. With respect to this measure, the volume of the fundamental mesh <P
+is given by
+vol(<P) = |det((a/,ay»|1/2.
+It will be denoted by vol(M) for short. It does not depend on the choice of
+Z-basis ofi, ..., an because a different choice is linked to the original one
+by a matrix with integer coefficients which also has an inverse with integer
+coefficients, hence has determinant of absolute value 1.
+A more elegant definition of vol(M) can be given in terms of the invertible
+metrized Z-module detM. detM^ is a one-dimensional R-vector space with
+metric ( , )detM, and with the lattice detM isomorphic to Z. If x e detM is
+a generator (for instance, x = ot\ A ... A an), then
+VOl(M) = ||x||detM = \/(*,*}detA#.
+
+===== PDF PAGE 274 =====
+
+258 Chapter III. Riemann-Roch Theory
+In the present case, where the base field is Q, the degree map
+deg : Pic(Z) —► R
+is an isomorphism (see § 1, exercise 3), and we call the unique homomorphism
+arising from this,
+X = degodet: AT°(Z) —> R,
+the Euler-Minkowski characteristic. It is computed explicitly as follows.
+(8.3) Proposition. For a coherent metrized Z -module M, one has
+X(M) = log#Mtor - logvol(M/Mtor).
+In this formula Mtor denotes the torsion subgroup of M and M/Mt0T
+the projective metrized Z -module which receives its metric from M via
+M ® R = M/Mtor ® R.
+Proof of (8.3): If M is a finite Z-module, then the determinant of the class
+[M] e K°(Z) is computed from a free resolution
+0—»£—»F-^M—»0,
+where F = Zn and E = ker(a) = Zn. If we equip F(g)R = £(g)R = R'2
+with the standard metric, the sequence becomes a short exact sequence of
+metrized Z-modules, because M ® R = 0. We therefore have in A^°(Z):
+[M] = [F]-[E].
+Let i4 be the matrix corresponding to the change of basis from the standard
+basis e\, ..., en of F to a Z-basis e^, ..., e'n of E. Then x = ^A...A^,
+resp. x' = e\ A ... A e'n, is a generator of detF, resp. det£, and
+x' = detA -x = (F : E)-x = #M -x.
+The metric || || on detE is the same as that on detF, so that
+X(E) = deg(det£) = -logll^H = -log(#M||x||) = -log#M + X(F),
+and then
+X(M) = X([F] - [E]) = X(F) - X(E) = log#M.
+For an arbitrary coherent metrized Z-module M we have the direct sum
+decomposition
+M = Mtor0M/Mtor
+
+===== PDF PAGE 275 =====
+
+§ 8. The Euler-Minkowski Characteristic259
+into metrized Z-modules. If ct\, ..., an is a basis of the lattice M/Mt0T,
+then x = ax A ... A an is a generator of detM/Mtor; then x(M/MtOT)
+= deg(det M/Mtor) = -log||jc|| = -logvol(M/Mtor). We therefore
+conclude that
+X (M) = X (After) + X (M/Mtor) = log #Mtor - log vol(M/Mtor). □
+The Euler-Minkowski characteristic of a replete ideal a,
+X(a) = -logvol(a),
+which we defined ad hoc in §3 via the Minkowski measure vol(a) now
+appears as a simple special case of the Euler-Minkowski characteristic for
+metrized Z -modules to which the detailed development of the theory has led
+us. Indeed, viewing the metrized o-module L(a) of rank 1 associated to a as
+the metrized Z-module i*L(a) of rank [K : Q], we get the
+(8.4) Proposition. x(<*) = x(i*L(a)).
+Proof: Let a = afCi^ = af Ilp|ooPVp- Tlle metric ( » )/*L(a) on the C-vector
+space Kc = YlreX(C) ^ ^s t^n given by
+(x,y)uL(a) =T,e2Vpzxryr,
+T
+where pr is the infinite place of K corresponding to the embedding
+r : K -> C. It results from the standard metric ( , ) via the F -invariant
+transformation
+T : Kc —> Kc, (xr)rGx(C) '—> (eVpzxT)reX(C)­
+Equivalently,
+{x,y)uL(a) = {Tx,Ty).
+The volume vol(/*L(a)) of a fundamental mesh of the lattice af in ATr with
+respect to the Haar measure defined by the euclidean metric on K^ is then
+the volume of a fundamental mesh of the lattice Taf with respect to the
+canonical measure defined by ( , ). Thus
+vol(/*L(a)) =vol(r<xf).
+In the representation K^ = ]"] (oo Kp, the canonical embedding
+KR = K ®Q R —> KC = K ®QC
+maps an element (xp)p\OQ to the element (xr)reX(C) with xT = rxPz. Here we
+extend r to KPz. The restriction of the transformation T : (xr) h-> (ev^xr)
+to ATK = Ilpioo kp is therefore given by (xp) \-> (ev*xp). The lattice Ta{ is
+
+===== PDF PAGE 276 =====
+
+260 Chapter III. Riemann-Roch Theory
+then the same lattice which was denoted a in §3. So we obtain
+vol(/*L(a)) = vol(a),
+i.e., xO\X(a)) = x(a). □
+Given this identification, the Riemann-Roch theorem (3.4) proven in §3
+for replete ideals a,
+X(a) = deg(a) + x(o),
+now appears as a special case of theorem (8.2), which says that
+x(i*L(aj) =deg(L(a)) +x(/*o).

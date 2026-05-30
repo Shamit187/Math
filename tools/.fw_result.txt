@@ -1,0 +1,5 @@
+﻿OK    : rule created
+Name  : Slow Books TTS (Tailscale 8765)
+State : Enabled=True Action=Allow Dir=Inbound
+Port  : TCP 8765
+From  : 100.64.0.0/255.192.0.0, fd7a:115c:a1e0::/48

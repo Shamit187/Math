@@ -1,0 +1,399 @@
+{
+  "chapters": [
+    {
+      "num": 1,
+      "roman": "I",
+      "title": "Algebraic Integers",
+      "start": 16,
+      "sections": [
+        {
+          "num": 1,
+          "title": "The Gaussian Integers",
+          "start": 16
+        },
+        {
+          "num": 2,
+          "title": "Integrality",
+          "start": 20
+        },
+        {
+          "num": 3,
+          "title": "Ideals",
+          "start": 31
+        },
+        {
+          "num": 4,
+          "title": "Lattices",
+          "start": 38
+        },
+        {
+          "num": 5,
+          "title": "Minkowski Theory",
+          "start": 43
+        },
+        {
+          "num": 6,
+          "title": "The Class Number",
+          "start": 49
+        },
+        {
+          "num": 7,
+          "title": "Dirichlet's Unit Theorem",
+          "start": 54
+        },
+        {
+          "num": 8,
+          "title": "Extensions of Dedekind Domains",
+          "start": 59
+        },
+        {
+          "num": 9,
+          "title": "Hilbert's Ramification Theory",
+          "start": 68
+        },
+        {
+          "num": 10,
+          "title": "Cyclotomic Fields",
+          "start": 73
+        },
+        {
+          "num": 11,
+          "title": "Localization",
+          "start": 80
+        },
+        {
+          "num": 12,
+          "title": "Orders",
+          "start": 87
+        },
+        {
+          "num": 13,
+          "title": "One-dimensional Schemes",
+          "start": 99
+        },
+        {
+          "num": 14,
+          "title": "Function Fields",
+          "start": 109
+        }
+      ],
+      "end": 114
+    },
+    {
+      "num": 2,
+      "roman": "II",
+      "title": "The Theory of Valuations",
+      "start": 114,
+      "sections": [
+        {
+          "num": 1,
+          "title": "The p-adic Numbers",
+          "start": 114
+        },
+        {
+          "num": 2,
+          "title": "The p-adic Absolute Value",
+          "start": 121
+        },
+        {
+          "num": 3,
+          "title": "Valuations",
+          "start": 131
+        },
+        {
+          "num": 4,
+          "title": "Completions",
+          "start": 138
+        },
+        {
+          "num": 5,
+          "title": "Local Fields",
+          "start": 149
+        },
+        {
+          "num": 6,
+          "title": "Henselian Fields",
+          "start": 158
+        },
+        {
+          "num": 7,
+          "title": "Unramified and Tamely Ramified Extensions",
+          "start": 167
+        },
+        {
+          "num": 8,
+          "title": "Extensions of Valuations",
+          "start": 175
+        },
+        {
+          "num": 9,
+          "title": "Galois Theory of Valuations",
+          "start": 181
+        },
+        {
+          "num": 10,
+          "title": "Higher Ramification Groups",
+          "start": 191
+        }
+      ],
+      "end": 198
+    },
+    {
+      "num": 3,
+      "roman": "III",
+      "title": "Riemann-Roch Theory",
+      "start": 198,
+      "sections": [
+        {
+          "num": 1,
+          "title": "Primes",
+          "start": 198
+        },
+        {
+          "num": 2,
+          "title": "Different and Discriminant",
+          "start": 209
+        },
+        {
+          "num": 3,
+          "title": "Riemann-Roch",
+          "start": 223
+        },
+        {
+          "num": 4,
+          "title": "Metrized o-Modules",
+          "start": 239
+        },
+        {
+          "num": 5,
+          "title": "Grothendieck Groups",
+          "start": 248
+        },
+        {
+          "num": 6,
+          "title": "The Chern Character",
+          "start": 258
+        },
+        {
+          "num": 7,
+          "title": "Grothendieck-Riemann-Roch",
+          "start": 261
+        },
+        {
+          "num": 8,
+          "title": "The Euler-Minkowski Characteristic",
+          "start": 270
+        }
+      ],
+      "end": 276
+    },
+    {
+      "num": 4,
+      "roman": "IV",
+      "title": "Abstract Class Field Theory",
+      "start": 276,
+      "sections": [
+        {
+          "num": 1,
+          "title": "Infinite Galois Theory",
+          "start": 276
+        },
+        {
+          "num": 2,
+          "title": "Projective and Inductive Limits",
+          "start": 280
+        },
+        {
+          "num": 3,
+          "title": "Abstract Galois Theory",
+          "start": 290
+        },
+        {
+          "num": 4,
+          "title": "Abstract Valuation Theory",
+          "start": 299
+        },
+        {
+          "num": 5,
+          "title": "The Reciprocity Map",
+          "start": 305
+        },
+        {
+          "num": 6,
+          "title": "The General Reciprocity Law",
+          "start": 314
+        },
+        {
+          "num": 7,
+          "title": "The Herbrand Quotient",
+          "start": 325
+        }
+      ],
+      "end": 332
+    },
+    {
+      "num": 5,
+      "roman": "V",
+      "title": "Local Class Field Theory",
+      "start": 332,
+      "sections": [
+        {
+          "num": 1,
+          "title": "The Local Reciprocity Law",
+          "start": 332
+        },
+        {
+          "num": 2,
+          "title": "The Norm Residue Symbol over Q_p",
+          "start": 342
+        },
+        {
+          "num": 3,
+          "title": "The Hilbert Symbol",
+          "start": 348
+        },
+        {
+          "num": 4,
+          "title": "Formal Groups",
+          "start": 356
+        },
+        {
+          "num": 5,
+          "title": "Generalized Cyclotomic Theory",
+          "start": 361
+        },
+        {
+          "num": 6,
+          "title": "Higher Ramification Groups",
+          "start": 367
+        }
+      ],
+      "end": 372
+    },
+    {
+      "num": 6,
+      "roman": "VI",
+      "title": "Global Class Field Theory",
+      "start": 372,
+      "sections": [
+        {
+          "num": 1,
+          "title": "Ideles and Idele Classes",
+          "start": 372
+        },
+        {
+          "num": 2,
+          "title": "Ideles in Field Extensions",
+          "start": 383
+        },
+        {
+          "num": 3,
+          "title": "The Herbrand Quotient of the Idele Class Group",
+          "start": 388
+        },
+        {
+          "num": 4,
+          "title": "The Class Field Axiom",
+          "start": 395
+        },
+        {
+          "num": 5,
+          "title": "The Global Reciprocity Law",
+          "start": 400
+        },
+        {
+          "num": 6,
+          "title": "Global Class Fields",
+          "start": 410
+        },
+        {
+          "num": 7,
+          "title": "The Ideal-Theoretic Version of Class Field Theory",
+          "start": 420
+        },
+        {
+          "num": 8,
+          "title": "The Reciprocity Law of the Power Residues",
+          "start": 429
+        }
+      ],
+      "end": 434
+    },
+    {
+      "num": 7,
+      "roman": "VII",
+      "title": "Zeta Functions and L-series",
+      "start": 434,
+      "sections": [
+        {
+          "num": 1,
+          "title": "The Riemann Zeta Function",
+          "start": 434
+        },
+        {
+          "num": 2,
+          "title": "Dirichlet L-series",
+          "start": 449
+        },
+        {
+          "num": 3,
+          "title": "Theta Series",
+          "start": 458
+        },
+        {
+          "num": 4,
+          "title": "The Higher-dimensional Gamma Function",
+          "start": 468
+        },
+        {
+          "num": 5,
+          "title": "The Dedekind Zeta Function",
+          "start": 472
+        },
+        {
+          "num": 6,
+          "title": "Hecke Characters",
+          "start": 485
+        },
+        {
+          "num": 7,
+          "title": "Theta Series of Algebraic Number Fields",
+          "start": 499
+        },
+        {
+          "num": 8,
+          "title": "Hecke L-series",
+          "start": 508
+        },
+        {
+          "num": 9,
+          "title": "Values of Dirichlet L-series at Integer Points",
+          "start": 519
+        },
+        {
+          "num": 10,
+          "title": "Artin L-series",
+          "start": 532
+        },
+        {
+          "num": 11,
+          "title": "The Artin Conductor",
+          "start": 542
+        },
+        {
+          "num": 12,
+          "title": "The Functional Equation of Artin L-series",
+          "start": 550
+        },
+        {
+          "num": 13,
+          "title": "Density Theorems",
+          "start": 557
+        }
+      ],
+      "end": 565
+    }
+  ],
+  "total_pages": 588,
+  "back_start": 565
+}
