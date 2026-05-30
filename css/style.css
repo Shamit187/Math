@@ -15,6 +15,8 @@
   --example-edge: #6ea866;
   --warn: #fdecea;
   --warn-edge: #c25a4e;
+  --reply: #f1ecfa;
+  --reply-edge: #8a6fbd;
   --code-bg: #f0eadb;
   --max-w: 760px;
   --serif: "Source Serif 4", "Source Serif Pro", Georgia, "Iowan Old Style", "Apple Garamond", "Times New Roman", serif;
@@ -38,6 +40,8 @@
   --example-edge: #6ea866;
   --warn: #3a1f1d;
   --warn-edge: #c25a4e;
+  --reply: #2a2438;
+  --reply-edge: #a690d6;
   --code-bg: #2e2a25;
 }
 
@@ -271,6 +275,35 @@ ul li, ol li { margin: 0.3rem 0; }
   border-color: var(--accent);
 }
 .box.definition .box-label { color: var(--accent); }
+
+.box.comment-response {
+  background: var(--reply);
+  border-color: var(--reply-edge);
+  position: relative;
+}
+.box.comment-response .box-label { color: var(--reply-edge); }
+.box.comment-response .box-label::before {
+  content: "↩ ";
+  font-weight: 700;
+}
+.box.comment-response .reply-quote {
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  border-left: 2px solid var(--reply-edge);
+  padding: 0.15rem 0 0.15rem 0.7rem;
+  margin: 0.2rem 0 0.8rem;
+  font-style: italic;
+  line-height: 1.5;
+}
+.box.comment-response .reply-quote::before {
+  content: "“";
+  margin-right: 0.05em;
+}
+.box.comment-response .reply-quote::after {
+  content: "”";
+  margin-left: 0.05em;
+}
 
 /* ---------- Math + figures ---------- */
 .katex-display {

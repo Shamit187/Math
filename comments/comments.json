@@ -9,6 +9,46 @@
       "block_excerpt": "Every continuous function is measurable. Every piecewise-continuous function is measurable. Almost every function you can write down is measurable. Non-measurable functions exist but you can't constru…",
       "created_at": "2026-05-22T09:34:32Z",
       "updated_at": "2026-05-22T09:34:32Z"
+    },
+    {
+      "id": "c_0eaa216594a8",
+      "book": "vector-db-embedding",
+      "page": "main",
+      "cid": "main-0580",
+      "text": "I am a bit unclear on this step",
+      "block_excerpt": "LA2M — Step 3: Merging For each vector x∈D1x \\in D_1x∈D1​: 💬0🔊 If xxx is a reference vector in cluster XiX_iXi​, map it directly to its counterpart y∈Yiy \\in Y_iy∈Yi​. If xxx is a non-reference vect…",
+      "created_at": "2026-05-27T09:14:17Z",
+      "updated_at": "2026-05-27T09:14:17Z"
+    },
+    {
+      "id": "c_41d319c1b9fb",
+      "book": "vector-db-embedding",
+      "page": "main",
+      "cid": "main-0610",
+      "text": "what happens in step 3, when I get datapoint that are very far from reference clusters?",
+      "block_excerpt": "Example — Querying an Integrated Database Suppose Alice has 10,000 scientific papers embedded with FastText (D1D_1D1​) and Bob has 8,000 papers embedded with NV-Embed-V2 (D2D_2D2​). They share 2,000 p…",
+      "created_at": "2026-05-27T09:16:59Z",
+      "updated_at": "2026-05-27T09:16:59Z"
+    },
+    {
+      "id": "c_b8a5e6176282",
+      "book": "vector-db-embedding",
+      "page": "main",
+      "cid": "main-0700",
+      "text": "A diagram to really show the details of the formulation would be nice",
+      "block_excerpt": "Theorem 1 — Upper Bound on Integration Error Let X^\\hat{X}X^ be the mean-centered reference matrix for a cluster. Let its minimum non-zero singular value be σmin⁡(X)\\sigma_{\\min}(X)σmin​(X). Let α\\alp…",
+      "created_at": "2026-05-27T15:20:48Z",
+      "updated_at": "2026-05-27T15:20:48Z"
+    },
+    {
+      "id": "c_d0af083273fd",
+      "book": "vector-db-embedding",
+      "page": "main",
+      "cid": "main-0838",
+      "text": "This formulation looks complicated. It may work, but I have no idea why it works",
+      "block_excerpt": "MLE intrinsic dimension estimator (Levina–Bickel) For each data point xix_ixi​, look at its KKK nearest neighbours and estimate the local intrinsic dimension as: 💬0🔊 d^ = [1N(K−1)∑i=1N∑j=1K−1log⁡TK(…",
+      "created_at": "2026-05-27T15:40:27Z",
+      "updated_at": "2026-05-27T15:40:27Z"
     }
   ]
 }

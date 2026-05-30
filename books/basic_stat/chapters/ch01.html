@@ -386,6 +386,32 @@
         explicitly. <em>In practice, just treat "measurable" as "fine"</em>.
       </p>
 </div>
+<div class="box comment-response" data-cid="ch01-2210" data-resolves="c_ee66fb45e59d">
+<span class="box-label">Added in response to a comment</span>
+<p class="reply-quote">What if the function turns a measurable set into a non-measurable one?</p>
+<p data-cid="ch01-2220">
+        Good catch — it can, and the definition is silent about it on purpose. Measurability is a one-way
+        constraint: it only restricts what <span class="tts-math" data-tts="f">$f$</span> does to <em>pre-images</em>, not images. A measurable
+        <span class="tts-math" data-tts="f">$f$</span> is perfectly allowed to take a measurable set
+        <span class="tts-math" data-tts="A">$A \subseteq \mathcal{X}$</span>
+        and send it to an image <span class="tts-math" data-tts="f of A">$f(A) \subseteq \mathbb{R}$</span> that is non-measurable.
+      </p>
+<p data-cid="ch01-2230">
+        The classic example is the Cantor function (the "devil's staircase"): it is continuous — so certainly
+        measurable — and yet maps a particular measurable subset of the Cantor set to a non-Lebesgue-measurable
+        set in <span class="tts-math" data-tts="the unit interval">$[0,1]$</span>. Continuity is no rescue.
+      </p>
+<p data-cid="ch01-2240">
+        Why doesn't this break anything? Because every probability question we'd ever pose has the form
+        <em>"did the output land in <span class="tts-math" data-tts="B">$B$</span>?"</em>, i.e. asks about
+        <span class="tts-math" data-tts="f inverse of B">$f^{-1}(B)$</span> for a Borel
+        <span class="tts-math" data-tts="B">$B$</span>. We never need to evaluate
+        <span class="tts-math" data-tts="P of f of A">$P(f(A))$</span> for an arbitrary input set
+        <span class="tts-math" data-tts="A">$A$</span> — the measure lives on
+        <span class="tts-math" data-tts="script X">$\mathcal{X}$</span>, not on the image side. So the
+        forward image being ugly is allowed; it just never enters the calculations.
+      </p>
+</div>
 <!-- ===================================================================== -->
 <h2 data-cid="ch01-940" id="s1-3">1.3 Events, probabilities, and random variables</h2>
 <p data-cid="ch01-950">Now we restrict to the case <span class="tts-math" data-tts="mu script X equals 1">$\mu(\mathcal{X}) = 1$</span> and rename things.</p>

@@ -533,6 +533,43 @@
     </p>
   </div>
 
+  <div class="box comment-response" data-cid="main-1350" data-resolves="c_0eaa216594a8">
+    <span class="box-label">Added in response to a comment</span>
+    <p class="reply-quote">I am a bit unclear on this step.</p>
+    <p data-cid="main-1351">
+      Here is the loop unrolled into something you can almost run in your head.
+      You have two piles of vectors: <span class="tts-math" data-tts="D 1">$D_1$</span> in Alice's space,
+      <span class="tts-math" data-tts="D 2">$D_2$</span> in Bob's space, plus the reference set
+      <span class="tts-math" data-tts="X">$X \subseteq D_1$</span> that was paired with
+      <span class="tts-math" data-tts="Y">$Y \subseteq D_2$</span> in Steps 1–2. Steps 1–2 also produced
+      <span class="tts-math" data-tts="n">$n$</span> small local isometries
+      <span class="tts-math" data-tts="f iso 1 through f iso n">$f^1_{\text{iso}}, \dots, f^n_{\text{iso}}$</span>,
+      one per cluster, each with a centroid <span class="tts-math" data-tts="c sub i">$c_i$</span>.
+    </p>
+    <p data-cid="main-1352">
+      Step 3 just walks every vector <span class="tts-math" data-tts="x in D 1">$x \in D_1$</span> and decides
+      what to do with it:
+    </p>
+    <ol>
+      <li><strong>Is <span class="tts-math" data-tts="x">$x$</span> one of the reference vectors?</strong>
+      If yes, we already know its partner in Bob's space — just look it up:
+      <span class="tts-math" data-tts="T of x equals y">$T(x) = y$</span> for the
+      <span class="tts-math" data-tts="y in Y">$y \in Y$</span> that was paired with it. No transform needed.</li>
+      <li><strong>Otherwise <span class="tts-math" data-tts="x">$x$</span> is a "new" vector</strong> with no known
+      counterpart. Find the cluster whose centroid is closest:
+      <span class="tts-math" data-tts="j star equals argmin over i of the norm of c sub i minus x">
+        $j^* = \arg\min_{i} \|c_i - x\|$</span>.
+      Then borrow that cluster's isometry and apply it:
+      <span class="tts-math" data-tts="T of x equals f iso sub j star of x">$T(x) = f^{j^*}_{\text{iso}}(x)$</span>.</li>
+    </ol>
+    <p data-cid="main-1353">
+      After the loop, every Alice-vector has a position in Bob's space. Stack that next to
+      <span class="tts-math" data-tts="D 2 minus Y">$D_2 \setminus Y$</span> (Bob's vectors minus the references,
+      to avoid double-counting) and you have one searchable database in a single embedding space. Queries arrive
+      in Bob's space and run as usual.
+    </p>
+  </div>
+
   <div class="box example" data-cid="main-0610">
     <span class="box-label">Example — Querying an Integrated Database</span>
     <p data-cid="main-0620">
@@ -559,6 +596,39 @@
       merged database and finds relevant papers from both collections — without
       either party ever seeing the other's raw paper text.</li>
     </ol>
+  </div>
+
+  <div class="box comment-response" data-cid="main-1360" data-resolves="c_41d319c1b9fb">
+    <span class="box-label">Added in response to a comment</span>
+    <p class="reply-quote">What happens in Step 3 when I get datapoints that are very far from any reference cluster?</p>
+    <p data-cid="main-1361">
+      Mechanically, nothing special: the algorithm still picks the cluster whose centroid
+      <span class="tts-math" data-tts="c sub i">$c_i$</span>
+      is closest to <span class="tts-math" data-tts="x">$x$</span> and applies that cluster's isometry
+      <span class="tts-math" data-tts="f iso sub j star">$f^{j^*}_{\text{iso}}$</span>. There is no fallback branch, no
+      "reject", no global model — argmin always returns something.
+    </p>
+    <p data-cid="main-1362">
+      Semantically, that is exactly where the integration error
+      <span class="tts-math" data-tts="beta">$\beta$</span>
+      starts to bite. The local isometry was fitted on
+      <span class="tts-math" data-tts="X sub j star">$X_{j^*}$</span>, vectors whose pairwise distances are short
+      (Hypothesis B). When <span class="tts-math" data-tts="x">$x$</span> sits well outside that ball, applying
+      the same rotation+translation is a linear extrapolation — and Theorem 1 (next section) shows the upper bound
+      grows roughly with the distance from <span class="tts-math" data-tts="x">$x$</span> to the cluster, scaled
+      by <span class="tts-math" data-tts="1 over sigma min of X">$1/\sigma_{\min}(X)$</span>. A far-out point gets
+      placed somewhere; whether it lands near its true counterpart depends on whether the cluster's local geometry
+      happens to extend out that far.
+    </p>
+    <p data-cid="main-1363">
+      Practical implications: (i) the quality of LA2M depends on the reference set
+      <span class="tts-math" data-tts="O intersection">$O_\cap$</span> covering the data manifold well — sparse
+      coverage means many vectors are "far" from every cluster; (ii) you can detect suspect placements at query
+      time by thresholding on <span class="tts-math" data-tts="the norm of c sub j star minus x">$\|c_{j^*} - x\|$</span>
+      and treating those results with lower confidence; (iii) Section 6 ("Handling rank-deficient references via
+      PCA" and "Generating reference vectors when none are given") discusses ways to enrich the reference set or
+      reshape clusters so that fewer query vectors are stranded.
+    </p>
   </div>
 
   <h3 data-cid="main-0630">Benefits and Properties</h3>
@@ -648,6 +718,126 @@
       <span class="tts-math" data-tts="c sub Y">$c_Y$</span>
       are the centroids of
       <span class="tts-math" data-tts="X and Y">$X$ and $Y$</span>.
+    </p>
+  </div>
+
+  <div class="box comment-response" data-cid="main-1370" data-resolves="c_b8a5e6176282">
+    <span class="box-label">Added in response to a comment</span>
+    <p class="reply-quote">A diagram to really show the details of the formulation would be nice.</p>
+    <p data-cid="main-1371">
+      The figure below shows where each term in the bound lives. The source space
+      <span class="tts-math" data-tts="emb 1">$\text{emb}_1$</span> (left) holds the reference cluster
+      <span class="tts-math" data-tts="X">$X$</span> around its centroid
+      <span class="tts-math" data-tts="c sub X">$c_X$</span>, and a non-reference vector
+      <span class="tts-math" data-tts="z">$z$</span> sitting some distance away. The target space
+      <span class="tts-math" data-tts="emb 2">$\text{emb}_2$</span> (right) holds the corresponding cluster
+      <span class="tts-math" data-tts="Y">$Y$</span> with centroid
+      <span class="tts-math" data-tts="c sub Y">$c_Y$</span>. The isometry
+      <span class="tts-math" data-tts="f iso">$f_{\text{iso}}$</span> lands every reference point near its
+      partner — but with a small residual
+      <span class="tts-math" data-tts="alpha">$\alpha$</span>. When the same isometry is applied to
+      <span class="tts-math" data-tts="z">$z$</span>, the result
+      <span class="tts-math" data-tts="T of z">$T(z)$</span> drifts away from the ideal
+      <span class="tts-math" data-tts="emb 2 of o z">$\text{emb}_2(o_z)$</span> by
+      <span class="tts-math" data-tts="delta of z">$\delta(z)$</span>.
+    </p>
+    <figure data-cid="main-1372">
+      <svg viewbox="0 0 640 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagram of Theorem 1: source-space cluster X with non-reference z on the left, target-space cluster Y on the right, with arrows for the isometry, alignment error alpha, integration error delta, and the lever-arm distance from z to the cluster centroid.">
+        <defs>
+          <marker id="arrow" markerHeight="6" markerWidth="6" orient="auto" refX="5" refY="3" viewbox="0 0 6 6">
+            <path d="M0,0 L6,3 L0,6 z" fill="#5a5a5a"></path>
+          </marker>
+          <marker id="arrow-r" markerHeight="6" markerWidth="6" orient="auto" refX="5" refY="3" viewbox="0 0 6 6">
+            <path d="M0,0 L6,3 L0,6 z" fill="#c25a4e"></path>
+          </marker>
+          <marker id="arrow-p" markerHeight="6" markerWidth="6" orient="auto" refX="5" refY="3" viewbox="0 0 6 6">
+            <path d="M0,0 L6,3 L0,6 z" fill="#8a6fbd"></path>
+          </marker>
+        </defs>
+
+        <rect fill="#fbf7ef" height="260" rx="8" stroke="#e6dfd0" width="270" x="15" y="35"></rect>
+        <text fill="#5a5a5a" font-family="Inter, sans-serif" font-size="12" font-style="italic" x="30" y="55">source space  emb₁</text>
+
+        <ellipse cx="100" cy="180" fill="#e8f1ff" opacity="0.55" rx="55" ry="32" stroke="#6e9bd6" stroke-dasharray="3,3"></ellipse>
+        <circle cx="78" cy="170" fill="#3c5d8c" r="3"></circle>
+        <circle cx="92" cy="195" fill="#3c5d8c" r="3"></circle>
+        <circle cx="115" cy="172" fill="#3c5d8c" r="3"></circle>
+        <circle cx="125" cy="190" fill="#3c5d8c" r="3"></circle>
+        <circle cx="105" cy="160" fill="#3c5d8c" r="3"></circle>
+        <text fill="#3c5d8c" font-family="Source Serif 4, serif" font-size="13" font-style="italic" x="60" y="232">cluster X</text>
+
+        <circle cx="100" cy="180" fill="none" r="5" stroke="#3c5d8c" stroke-width="1.5"></circle>
+        <line stroke="#3c5d8c" stroke-width="1.5" x1="95" x2="105" y1="180" y2="180"></line>
+        <line stroke="#3c5d8c" stroke-width="1.5" x1="100" x2="100" y1="175" y2="185"></line>
+        <text fill="#3c5d8c" font-family="Source Serif 4, serif" font-size="12" font-style="italic" x="73" y="153">cₓ</text>
+
+        <circle cx="235" cy="100" fill="#8a4a2b" r="4"></circle>
+        <text fill="#8a4a2b" font-family="Source Serif 4, serif" font-size="14" font-style="italic" x="244" y="98">z</text>
+
+        <line marker-end="url(#arrow)" stroke="#5a5a5a" stroke-dasharray="4,3" stroke-width="1" x1="105" x2="230" y1="178" y2="103"></line>
+        <text fill="#5a5a5a" font-family="Inter, sans-serif" font-size="11" x="142" y="130">‖z − cₓ‖</text>
+
+        <path d="M 295 165 Q 320 145 345 165" fill="none" stroke="#5a6a3d" stroke-width="1.5" marker-end="url(#arrow)"></path>
+        <text fill="#5a6a3d" font-family="Source Serif 4, serif" font-size="13" font-style="italic" x="305" y="142">f_iso</text>
+
+        <rect fill="#fbf7ef" height="260" rx="8" stroke="#e6dfd0" width="270" x="355" y="35"></rect>
+        <text fill="#5a5a5a" font-family="Inter, sans-serif" font-size="12" font-style="italic" x="370" y="55">target space  emb₂</text>
+
+        <ellipse cx="450" cy="180" fill="#eef7ec" opacity="0.55" rx="55" ry="32" stroke="#6ea866" stroke-dasharray="3,3"></ellipse>
+        <circle cx="428" cy="170" fill="#3f6b3b" r="3"></circle>
+        <circle cx="442" cy="195" fill="#3f6b3b" r="3"></circle>
+        <circle cx="465" cy="172" fill="#3f6b3b" r="3"></circle>
+        <circle cx="475" cy="190" fill="#3f6b3b" r="3"></circle>
+        <circle cx="455" cy="160" fill="#3f6b3b" r="3"></circle>
+
+        <circle cx="424" cy="168" fill="none" r="4" stroke="#c25a4e" stroke-width="1.2"></circle>
+        <circle cx="446" cy="198" fill="none" r="4" stroke="#c25a4e" stroke-width="1.2"></circle>
+        <circle cx="471" cy="173" fill="none" r="4" stroke="#c25a4e" stroke-width="1.2"></circle>
+        <line stroke="#c25a4e" stroke-width="1" x1="428" x2="424" y1="170" y2="168"></line>
+        <line stroke="#c25a4e" stroke-width="1" x1="442" x2="446" y1="195" y2="198"></line>
+        <line stroke="#c25a4e" stroke-width="1" x1="465" x2="471" y1="172" y2="173"></line>
+        <text fill="#c25a4e" font-family="Source Serif 4, serif" font-size="13" font-style="italic" x="375" y="265">residual α (per-reference miss)</text>
+
+        <text fill="#3f6b3b" font-family="Source Serif 4, serif" font-size="13" font-style="italic" x="408" y="232">cluster Y</text>
+
+        <circle cx="450" cy="180" fill="none" r="5" stroke="#3f6b3b" stroke-width="1.5"></circle>
+        <line stroke="#3f6b3b" stroke-width="1.5" x1="445" x2="455" y1="180" y2="180"></line>
+        <line stroke="#3f6b3b" stroke-width="1.5" x1="450" x2="450" y1="175" y2="185"></line>
+        <text fill="#3f6b3b" font-family="Source Serif 4, serif" font-size="12" font-style="italic" x="455" y="155">c_y</text>
+
+        <circle cx="582" cy="115" fill="#8a6fbd" r="4"></circle>
+        <text fill="#8a6fbd" font-family="Source Serif 4, serif" font-size="12" font-style="italic" x="540" y="108">T(z)</text>
+        <circle cx="568" cy="92" fill="#8a4a2b" r="4"></circle>
+        <text fill="#8a4a2b" font-family="Source Serif 4, serif" font-size="12" font-style="italic" x="500" y="85">emb₂(o_z) ideal</text>
+
+        <line marker-end="url(#arrow-r)" stroke="#c25a4e" stroke-width="1.6" x1="582" x2="571" y1="113" y2="94"></line>
+        <text fill="#c25a4e" font-family="Source Serif 4, serif" font-size="13" font-weight="700" x="585" y="100">δ(z)</text>
+
+        <text fill="#5a5a5a" font-family="Inter, sans-serif" font-size="11" text-anchor="middle" x="320" y="320">long lever arm  ‖z − cₓ‖   ×   small σ_min(X)   ⟹   large δ(z)</text>
+      </svg>
+      <figcaption>Theorem 1 visualised. The non-reference vector
+        <span class="tts-math" data-tts="z">$z$</span> sits a long lever-arm
+        <span class="tts-math" data-tts="the norm of z minus c sub X">$\|z - c_X\|$</span> from the source-side
+        cluster centroid (left). The isometry <span class="tts-math" data-tts="f iso">$f_{\text{iso}}$</span> is
+        fitted on the reference points, but each pair still misses by a residual
+        <span class="tts-math" data-tts="alpha">$\alpha$</span> in the target space (right, red rings around blue
+        targets). When that residual is extrapolated out along the lever arm, scaled by
+        <span class="tts-math" data-tts="1 over sigma min of X">$1/\sigma_{\min}(X)$</span> (how thinly the
+        cluster spans its directions), it becomes the integration error
+        <span class="tts-math" data-tts="delta of z">$\delta(z)$</span> — the gap between the predicted position
+        <span class="tts-math" data-tts="T of z">$T(z)$</span> and the ideal
+        <span class="tts-math" data-tts="emb 2 of o z">$\text{emb}_2(o_z)$</span>.
+      </figcaption>
+    </figure>
+    <p data-cid="main-1373">
+      Three knobs control how bad <span class="tts-math" data-tts="delta of z">$\delta(z)$</span> gets: the model
+      mismatch <span class="tts-math" data-tts="alpha plus alpha star">$\alpha + \alpha^*$</span> (the
+      <em>vertical</em> red gaps you see at each reference), the cluster's thinness
+      <span class="tts-math" data-tts="1 over sigma min of X">$1/\sigma_{\min}(X)$</span> (how dramatically
+      that gap amplifies as you move out), and the lever arm
+      <span class="tts-math" data-tts="the norm of z minus c sub X">$\|z - c_X\|$</span> (how far out you
+      actually extrapolated). Make the cluster fatter (bigger <span class="tts-math" data-tts="sigma min">$\sigma_{\min}$</span>)
+      or keep <span class="tts-math" data-tts="z">$z$</span> closer to the references and the error shrinks.
     </p>
   </div>
 
@@ -781,6 +971,55 @@
       per dataset. Experiments (Fig. 7) confirm that recall@100 peaks exactly when
       <span class="tts-math" data-tts="absolute value of X">$|X|$</span>
       matches this intrinsic dimension.
+    </p>
+  </div>
+
+  <div class="box comment-response" data-cid="main-1380" data-resolves="c_d0af083273fd">
+    <span class="box-label">Added in response to a comment</span>
+    <p class="reply-quote">This formulation looks complicated. It may work, but I have no idea why it works.</p>
+    <p data-cid="main-1381">
+      The formula looks scary, but it falls out of one simple geometric fact: in a
+      <span class="tts-math" data-tts="d">$d$</span>-dimensional space, a ball of radius
+      <span class="tts-math" data-tts="r">$r$</span> has volume proportional to
+      <span class="tts-math" data-tts="r to the d">$r^d$</span>. So if points are scattered roughly uniformly
+      around <span class="tts-math" data-tts="x sub i">$x_i$</span>, the number of neighbours within distance
+      <span class="tts-math" data-tts="r">$r$</span> grows like
+      <span class="tts-math" data-tts="r to the d">$r^d$</span>. Flip that: to capture
+      <span class="tts-math" data-tts="j">$j$</span> neighbours you need radius
+      <span class="tts-math" data-tts="T sub j proportional to j to the one over d">$T_j \propto j^{1/d}$</span>.
+    </p>
+    <p data-cid="main-1382">
+      Take logs and the relationship becomes linear:
+      <span class="tts-math" data-tts="log T sub K minus log T sub j approximately equals one over d times log K over j">
+        $$\log T_K - \log T_j \;\approx\; \tfrac{1}{d}\log(K/j).$$
+      </span>
+      So <span class="tts-math" data-tts="log of T sub K over T sub j">$\log(T_K/T_j)$</span> is just a noisy
+      reading of <span class="tts-math" data-tts="one over d">$1/d$</span> times a known constant. Averaging
+      that quantity over <span class="tts-math" data-tts="j equals 1 through K minus 1">$j = 1, \dots, K-1$</span>
+      smooths the noise, and taking the reciprocal undoes the
+      <span class="tts-math" data-tts="one over d">$1/d$</span> to give an estimate of
+      <span class="tts-math" data-tts="d">$d$</span>. Averaging again across
+      <span class="tts-math" data-tts="N">$N$</span> sample points stabilises it further. That is the entire
+      content of the formula.
+    </p>
+    <p data-cid="main-1383">
+      Why "MLE"? Levina &amp; Bickel formalised the same picture by modelling neighbour arrivals as a Poisson
+      process with rate proportional to <span class="tts-math" data-tts="r to the d minus 1">$r^{d-1}$</span>
+      (the surface area of a <span class="tts-math" data-tts="d">$d$</span>-sphere). Writing the likelihood of
+      the observed distances <span class="tts-math" data-tts="T 1 through T K">$T_1, \dots, T_K$</span> and
+      maximising over <span class="tts-math" data-tts="d">$d$</span> yields exactly the inner bracket, with
+      <span class="tts-math" data-tts="T sub K">$T_K$</span> playing the role of a "cutoff radius". The
+      reciprocal of that maximum-likelihood estimate is the dimension.
+    </p>
+    <p data-cid="main-1384">
+      Why bother? Because the relevant dimension for sizing LA2M's clusters is <em>local</em>, not ambient. Text
+      embeddings live in 1500+ ambient dimensions but, on real corpora, individual neighbourhoods often look
+      ~30-dimensional. (I3) said we need
+      <span class="tts-math" data-tts="absolute value of X greater than or equal to d">$|X| \geq d$</span>
+      for conditioning — using local
+      <span class="tts-math" data-tts="d hat">$\hat{d}$</span> instead of ambient
+      <span class="tts-math" data-tts="d">$d$</span> shrinks that requirement by ~50× and lets clusters stay
+      small enough to keep alignment error <span class="tts-math" data-tts="alpha">$\alpha$</span> low.
     </p>
   </div>
 
