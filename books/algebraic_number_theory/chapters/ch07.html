@@ -10,7 +10,7 @@
 <link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
-<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/><link href="/css/tts.css" rel="stylesheet"/>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/><link href="/css/tts.css" rel="stylesheet"/><link href="/css/quiz.css" rel="stylesheet"/>
 </head>
 <body data-book="algebraic_number_theory" data-page="ch07">
 <header class="site-header">
@@ -39,6 +39,7 @@
 <li><a href="#s7-12">7.12 Functional Equation of Artin L-series</a></li>
 <li><a href="#s7-13">7.13 Density Theorems</a></li>
 <li><a href="#summary">Summary</a></li>
+<li><a href="#quiz">Knowledge check</a></li>
 </ol>
 </aside>
 <article class="content">
@@ -83,6 +84,37 @@ $$\zeta(s)=\prod_{p}\frac{1}{1-p^{-s}},$$
 
 <p data-cid="ch07-130">Why is this true? Convergence is the comparison <span class="tts-math" data-tts="the absolute value of one over n to the s equals one over n to the sigma">$|n^{-s}|=n^{-\sigma}$</span> with <span class="tts-math" data-tts="sigma equals the real part of s">$\sigma=\operatorname{Re}(s)$</span>. The Euler product is unique prime factorization in disguise: expand each geometric factor <span class="tts-math" data-tts="one over, one minus p to the minus s, equals one plus p to the minus s plus p to the minus two s plus dot dot dot">$\frac{1}{1-p^{-s}}=1+p^{-s}+p^{-2s}+\cdots$</span> and multiply over primes <span class="tts-math" data-tts="p less than or equal to N">$p\le N$</span>; the cross-terms are exactly <span class="tts-math" data-tts="n to the minus s">$n^{-s}$</span> for <span class="tts-math" data-tts="n">$n$</span> built from those primes, each appearing once because factorization is unique. The difference from <span class="tts-math" data-tts="zeta of s">$\zeta(s)$</span> is the tail <span class="tts-math" data-tts="the sum over n greater than N of n to the minus s, goes to zero">$\sum_{n&gt;N}n^{-s}\to 0$</span>.</p>
 
+<figure data-cid="ch07-135" style="max-width:440px">
+<svg viewBox="0 0 440 230" role="img" aria-label="Many prime factors one over one minus p to the minus s feeding into a single product equal to zeta of s" xmlns="http://www.w3.org/2000/svg">
+  <text x="14" y="22" fill="currentColor" font-family="Inter, sans-serif" font-size="11" font-weight="600">prime factors</text>
+  <!-- prime factor boxes -->
+  <g font-family="Inter, sans-serif" font-size="11" fill="currentColor">
+    <rect x="14" y="34" width="120" height="26" rx="5" fill="none" stroke="currentColor" stroke-opacity="0.55"/>
+    <text x="74" y="51" text-anchor="middle">1/(1−2⁻ˢ)</text>
+    <rect x="14" y="68" width="120" height="26" rx="5" fill="none" stroke="currentColor" stroke-opacity="0.55"/>
+    <text x="74" y="85" text-anchor="middle">1/(1−3⁻ˢ)</text>
+    <rect x="14" y="102" width="120" height="26" rx="5" fill="none" stroke="currentColor" stroke-opacity="0.55"/>
+    <text x="74" y="119" text-anchor="middle">1/(1−5⁻ˢ)</text>
+    <rect x="14" y="136" width="120" height="26" rx="5" fill="none" stroke="currentColor" stroke-opacity="0.55"/>
+    <text x="74" y="153" text-anchor="middle">1/(1−7⁻ˢ)</text>
+    <text x="74" y="185" text-anchor="middle" font-size="14">⋮</text>
+  </g>
+  <!-- arrows converging -->
+  <g stroke="currentColor" stroke-opacity="0.5" fill="none" stroke-width="1.2">
+    <path d="M134 47 C 200 47, 220 105, 290 113"/>
+    <path d="M134 81 C 200 81, 230 108, 290 115"/>
+    <path d="M134 115 L 290 115"/>
+    <path d="M134 149 C 200 149, 230 122, 290 117"/>
+  </g>
+  <!-- product node -->
+  <text x="222" y="62" fill="currentColor" font-family="Inter, sans-serif" font-size="14">∏</text>
+  <circle cx="350" cy="115" r="44" fill-opacity="0.15" style="fill:var(--accent)"/>
+  <circle cx="350" cy="115" r="44" fill="none" style="stroke:var(--accent)" stroke-width="2"/>
+  <text x="350" y="120" text-anchor="middle" fill="currentColor" font-family="Inter, sans-serif" font-size="15" font-weight="600">ζ(s)</text>
+</svg>
+<figcaption>Each prime contributes one geometric factor; their product over all primes is the zeta function, <span class="tts-math" data-tts="zeta of s equals the product over primes p of one over, one minus p to the minus s">$\zeta(s)=\prod_p\frac{1}{1-p^{-s}}$</span> — unique factorization made analytic.</figcaption>
+</figure>
+
 <div class="box pause" data-cid="ch07-140">
 <span class="box-label">Pause</span>
 <p data-cid="ch07-150">Euler's identity already shows <span class="tts-math" data-tts="zeta of s is not zero">$\zeta(s)\ne 0$</span> for <span class="tts-math" data-tts="real part of s greater than one">$\operatorname{Re}(s)&gt;1$</span> (no factor vanishes and the product converges). So <em>all the interesting zeros must come from analytic continuation</em>. Getting that continuation, and the symmetry <span class="tts-math" data-tts="s maps to one minus s">$s\leftrightarrow 1-s$</span>, is the work of the rest of the section.</p>
@@ -97,6 +129,37 @@ $$\Gamma(s)=\int_{0}^{\infty}e^{-y}\,y^{s}\,\frac{dy}{y}.$$
 <span class="box-label">Proposition (1.2) — properties of <span class="tts-math" data-tts="the gamma function">$\Gamma$</span></span>
 <p data-cid="ch07-190"><span class="tts-math" data-tts="the gamma function">$\Gamma$</span> extends to a meromorphic function on <span class="tts-math" data-tts="the complex numbers">$\mathbb{C}$</span>, is nowhere zero, and has simple poles at <span class="tts-math" data-tts="s equals minus n, for n equals zero, one, two, and so on">$s=-n$</span> with residue <span class="tts-math" data-tts="minus one to the n over n factorial">$(-1)^{n}/n!$</span>. It satisfies <span class="tts-math" data-tts="gamma of s plus one equals s times gamma of s">$\Gamma(s+1)=s\,\Gamma(s)$</span>, the reflection formula <span class="tts-math" data-tts="gamma of s times gamma of one minus s equals pi over sine pi s">$\Gamma(s)\Gamma(1-s)=\frac{\pi}{\sin\pi s}$</span>, and Legendre's duplication formula <span class="tts-math" data-tts="gamma of s times gamma of s plus one half equals two to the one minus two s, times root pi, times gamma of two s">$\Gamma(s)\Gamma\!\left(s+\tfrac12\right)=2^{1-2s}\sqrt{\pi}\,\Gamma(2s)$</span>. Special values: <span class="tts-math" data-tts="gamma of one half equals root pi">$\Gamma(\tfrac12)=\sqrt{\pi}$</span>, <span class="tts-math" data-tts="gamma of k plus one equals k factorial">$\Gamma(k+1)=k!$</span>.</p>
 </div>
+
+<figure data-cid="ch07-195" style="max-width:420px">
+<svg viewBox="0 0 420 200" role="img" aria-label="The completed zeta Z of s equals a gamma factor times zeta, whose gamma poles at even negatives force trivial zeros of zeta" xmlns="http://www.w3.org/2000/svg">
+  <!-- real axis -->
+  <line x1="20" y1="120" x2="400" y2="120" stroke="currentColor" stroke-width="1"/>
+  <polygon points="400,120 392,116 392,124" fill="currentColor"/>
+  <text x="392" y="138" fill="currentColor" font-family="Inter, sans-serif" font-size="11">s</text>
+  <!-- tick labels for even negatives -->
+  <g font-family="Inter, sans-serif" font-size="10" fill="currentColor" text-anchor="middle">
+    <line x1="70" y1="116" x2="70" y2="124" stroke="currentColor"/><text x="70" y="138">−6</text>
+    <line x1="140" y1="116" x2="140" y2="124" stroke="currentColor"/><text x="140" y="138">−4</text>
+    <line x1="210" y1="116" x2="210" y2="124" stroke="currentColor"/><text x="210" y="138">−2</text>
+    <line x1="280" y1="116" x2="280" y2="124" stroke="currentColor"/><text x="280" y="138">0</text>
+  </g>
+  <!-- gamma poles (above) -->
+  <text x="20" y="40" fill="currentColor" font-family="Inter, sans-serif" font-size="11">Γ(s/2): poles ↑</text>
+  <g fill="none" stroke="currentColor" stroke-opacity="0.7" stroke-width="1.4">
+    <path d="M70 120 C 70 80, 70 60, 70 48"/>
+    <path d="M140 120 C 140 80, 140 60, 140 48"/>
+    <path d="M210 120 C 210 80, 210 60, 210 48"/>
+  </g>
+  <!-- trivial zeros of zeta (below), the hero -->
+  <text x="20" y="186" fill="currentColor" font-family="Inter, sans-serif" font-size="11">ζ(s): zeros ●</text>
+  <g style="fill:var(--accent)">
+    <circle cx="70" cy="120" r="5"/>
+    <circle cx="140" cy="120" r="5"/>
+    <circle cx="210" cy="120" r="5"/>
+  </g>
+</svg>
+<figcaption>Because the completed <span class="tts-math" data-tts="capital Z of s equals pi to the minus s over two, gamma of s over two, times zeta of s">$Z(s)=\pi^{-s/2}\Gamma(s/2)\zeta(s)$</span> is finite and nonzero in the left half-plane, each pole of the gamma factor at <span class="tts-math" data-tts="s equals minus two, minus four, minus six">$s=-2,-4,-6$</span> forces a compensating trivial zero of <span class="tts-math" data-tts="zeta of s">$\zeta(s)$</span>.</figcaption>
+</figure>
 
 <p data-cid="ch07-200">Substituting <span class="tts-math" data-tts="y maps to pi n squared y">$y\mapsto\pi n^{2}y$</span> in the gamma integral and summing over <span class="tts-math" data-tts="n">$n$</span> relates <span class="tts-math" data-tts="the gamma function">$\Gamma$</span> and <span class="tts-math" data-tts="zeta">$\zeta$</span>. Here is the one line that does it: replacing <span class="tts-math" data-tts="y by pi n squared y">$y$ by $\pi n^{2}y$</span> in <span class="tts-math" data-tts="gamma of s equals the integral from zero to infinity of e to the minus y, y to the s, d y over y">$\Gamma(s)=\int_{0}^{\infty}e^{-y}y^{s}\frac{dy}{y}$</span> (the measure <span class="tts-math" data-tts="d y over y">$\frac{dy}{y}$</span> is scale-invariant, so it does not change) gives</p>
 <span class="tts-math" data-tts="the integral from zero to infinity of e to the minus pi n squared y, times y to the s, times d y over y, equals pi n squared to the minus s, times gamma of s">
@@ -135,6 +198,30 @@ $$L(f,s)=\int_{0}^{\infty}\big(f(y)-f(\infty)\big)\,y^{s}\,\frac{dy}{y},$$
 <p data-cid="ch07-276">Why integrate against <span class="tts-math" data-tts="y to the s, times d y over y">$y^{s}\,\frac{dy}{y}$</span>, of all things? Because the Mellin transform is nothing but <em>Fourier analysis on the multiplicative group</em> <span class="tts-math" data-tts="the positive reals under multiplication">$\mathbb{R}_{+}^{*}$</span> of positive reals. On the additive line, Fourier analysis integrates against <span class="tts-math" data-tts="e to the i x xi, times d x">$e^{ix\xi}\,dx$</span> with translation-invariant measure <span class="tts-math" data-tts="d x">$dx$</span>. Here the group law is multiplication, so the invariant ("Haar") measure is the scale-invariant <span class="tts-math" data-tts="d y over y">$\frac{dy}{y}$</span> — it is unchanged under <span class="tts-math" data-tts="y maps to c y">$y\mapsto cy$</span> — and the characters of <span class="tts-math" data-tts="the positive reals">$\mathbb{R}_{+}^{*}$</span> are the powers <span class="tts-math" data-tts="y to the s">$y^{s}$</span>. So <span class="tts-math" data-tts="s">$s$</span> plays the role of <em>frequency</em>, and <span class="tts-math" data-tts="L of f comma s">$L(f,s)$</span> is the "Fourier coefficient of <span class="tts-math" data-tts="f">$f$</span> at frequency <span class="tts-math" data-tts="s">$s$</span>".</p>
 <p data-cid="ch07-278">This is exactly why the engine produces functional equations. The multiplicative group has an obvious symmetry, inversion <span class="tts-math" data-tts="y maps to one over y">$y\mapsto1/y$</span>; on the frequency side this turns into the additive symmetry <span class="tts-math" data-tts="s maps to k minus s">$s\mapsto k-s$</span>. A theta series is a function on <span class="tts-math" data-tts="the positive reals">$\mathbb{R}_{+}^{*}$</span> whose behaviour under <span class="tts-math" data-tts="y maps to one over y">$y\mapsto1/y$</span> is known (Poisson summation). Feed that multiplicative symmetry through the Mellin transform and out comes the additive symmetry <span class="tts-math" data-tts="s maps to k minus s">$s\leftrightarrow k-s$</span> of the L-series. Theta law in, functional equation out.</p>
 </div>
+
+<figure data-cid="ch07-279" style="max-width:460px">
+<svg viewBox="0 0 460 150" role="img" aria-label="Flow from the theta transformation through the Mellin transform to the functional equation s to k minus s" xmlns="http://www.w3.org/2000/svg">
+  <!-- node 1: theta law -->
+  <rect x="8" y="48" width="124" height="54" rx="6" fill="none" stroke="currentColor" stroke-opacity="0.6"/>
+  <text x="70" y="70" text-anchor="middle" fill="currentColor" font-family="Inter, sans-serif" font-size="11" font-weight="600">theta law</text>
+  <text x="70" y="88" text-anchor="middle" fill="currentColor" font-family="Inter, sans-serif" font-size="11">θ(−1/τ)=√(τ/i)·θ(τ)</text>
+  <!-- node 2: Mellin -->
+  <rect x="168" y="48" width="118" height="54" rx="6" fill="none" stroke="currentColor" stroke-opacity="0.6"/>
+  <text x="227" y="70" text-anchor="middle" fill="currentColor" font-family="Inter, sans-serif" font-size="11" font-weight="600">Mellin transform</text>
+  <text x="227" y="88" text-anchor="middle" fill="currentColor" font-family="Inter, sans-serif" font-size="11">∫ θ · yˢ dy/y</text>
+  <!-- node 3: functional eqn (hero) -->
+  <rect x="322" y="48" width="130" height="54" rx="6" fill-opacity="0.15" style="fill:var(--accent); stroke:var(--accent)" stroke-width="2"/>
+  <text x="387" y="70" text-anchor="middle" fill="currentColor" font-family="Inter, sans-serif" font-size="11" font-weight="600">functional eqn</text>
+  <text x="387" y="88" text-anchor="middle" fill="currentColor" font-family="Inter, sans-serif" font-size="11">s ↔ k − s</text>
+  <!-- arrows -->
+  <g stroke="currentColor" fill="none" stroke-width="1.4">
+    <path d="M132 75 L 162 75"/><polygon points="168,75 160,71 160,79" fill="currentColor"/>
+    <path d="M286 75 L 316 75"/><polygon points="322,75 314,71 314,79" fill="currentColor"/>
+  </g>
+  <text x="150" y="40" text-anchor="middle" fill="currentColor" font-family="Inter, sans-serif" font-size="10" font-opacity="0.7">y ↦ 1/y</text>
+</svg>
+<figcaption>The pipeline of the chapter: the multiplicative symmetry <span class="tts-math" data-tts="theta of minus one over tau equals root tau over i, times theta of tau">$\theta(-1/\tau)=\sqrt{\tau/i}\,\theta(\tau)$</span>, fed through the Mellin transform, becomes the additive symmetry <span class="tts-math" data-tts="s maps to k minus s">$s\leftrightarrow k-s$</span> of the completed L-function.</figcaption>
+</figure>
 
 <div class="box definition" data-cid="ch07-280">
 <span class="box-label">Theorem (1.4) — the Mellin principle</span>
@@ -178,6 +265,36 @@ $$\zeta(1-s)=2(2\pi)^{-s}\Gamma(s)\cos\!\Big(\frac{\pi s}{2}\Big)\zeta(s).$$
 </span>
 </div>
 
+<figure data-cid="ch07-385" style="max-width:360px">
+<svg viewBox="0 0 360 260" role="img" aria-label="The complex plane with reflection axis at real part one half relating s and one minus s with equal completed values" xmlns="http://www.w3.org/2000/svg">
+  <!-- axes -->
+  <line x1="20" y1="200" x2="340" y2="200" stroke="currentColor" stroke-width="1"/>
+  <polygon points="340,200 332,196 332,204" fill="currentColor"/>
+  <text x="332" y="218" fill="currentColor" font-family="Inter, sans-serif" font-size="11">Re</text>
+  <line x1="180" y1="240" x2="180" y2="20" stroke="currentColor" stroke-width="1"/>
+  <polygon points="180,20 176,28 184,28" fill="currentColor"/>
+  <text x="188" y="28" fill="currentColor" font-family="Inter, sans-serif" font-size="11">Im</text>
+  <!-- ticks: 0, 1/2, 1 -->
+  <g font-family="Inter, sans-serif" font-size="10" fill="currentColor" text-anchor="middle">
+    <text x="180" y="216">0</text>
+    <line x1="250" y1="196" x2="250" y2="204" stroke="currentColor"/><text x="250" y="216">½</text>
+    <line x1="320" y1="196" x2="320" y2="204" stroke="currentColor"/><text x="320" y="216">1</text>
+  </g>
+  <!-- reflection axis Re=1/2 (hero) -->
+  <line x1="250" y1="24" x2="250" y2="236" style="stroke:var(--accent)" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="250" y="248" text-anchor="middle" fill="currentColor" font-family="Inter, sans-serif" font-size="10">Re = ½</text>
+  <!-- mirrored pair: s at Re=0.8, 1-s at Re=0.2 (heights mirror across axis horizontally) -->
+  <circle cx="306" cy="90" r="5" style="fill:var(--accent)"/>
+  <text x="316" y="86" fill="currentColor" font-family="Inter, sans-serif" font-size="11">s</text>
+  <circle cx="194" cy="90" r="5" style="fill:var(--accent)"/>
+  <text x="160" y="86" fill="currentColor" font-family="Inter, sans-serif" font-size="11">1−s</text>
+  <!-- reflection arrow -->
+  <path d="M299 90 C 270 64, 230 64, 201 90" fill="none" stroke="currentColor" stroke-opacity="0.6" stroke-width="1.2"/>
+  <text x="250" y="60" text-anchor="middle" fill="currentColor" font-family="Inter, sans-serif" font-size="10">Λ(s)=Λ(1−s)</text>
+</svg>
+<figcaption>The functional equation is a mirror symmetry about the critical line: <span class="tts-math" data-tts="capital lambda of s equals capital lambda of one minus s">$\Lambda(s)=\Lambda(1-s)$</span>, reflecting <span class="tts-math" data-tts="s">$s$</span> to <span class="tts-math" data-tts="one minus s">$1-s$</span> across <span class="tts-math" data-tts="real part of s equals one half">$\operatorname{Re}(s)=\tfrac12$</span>.</figcaption>
+</figure>
+
 <h3 data-cid="ch07-390">Special values and Bernoulli numbers</h3>
 <p data-cid="ch07-400">The famous evaluations <span class="tts-math" data-tts="zeta of two equals pi squared over six">$\zeta(2)=\frac{\pi^{2}}{6}$</span>, <span class="tts-math" data-tts="zeta of four equals pi to the fourth over ninety">$\zeta(4)=\frac{\pi^{4}}{90}$</span>, <span class="tts-math" data-tts="zeta of six equals pi to the sixth over nine hundred forty five, and so on">$\zeta(6)=\frac{\pi^{6}}{945},\dots$</span> are explained through the functional equation by the values at negative integers, which are <strong>Bernoulli numbers</strong>. These come from</p>
 <span class="tts-math" data-tts="F of t equals t e to the t, over e to the t minus one, equals the sum from k equals zero of B sub k, times t to the k over k factorial">
@@ -208,6 +325,49 @@ $$\zeta(2k)=(-1)^{k-1}\frac{2^{2k-1}B_{2k}}{(2k)!}\,\pi^{2k}.$$
 <span class="box-label">Where the zeros live</span>
 <p data-cid="ch07-470">Euler's product gives <span class="tts-math" data-tts="zeta of s is not zero">$\zeta(s)\ne0$</span> for <span class="tts-math" data-tts="real part of s greater than one">$\operatorname{Re}(s)&gt;1$</span>. The functional equation then forces the only zeros in <span class="tts-math" data-tts="real part of s less than zero">$\operatorname{Re}(s)&lt;0$</span> to be the <em>trivial zeros</em> at <span class="tts-math" data-tts="s equals minus two, minus four, minus six, and so on">$s=-2,-4,-6,\dots$</span> (poles of <span class="tts-math" data-tts="gamma of s over two">$\Gamma(s/2)$</span>). <strong>Trivial zeros</strong> — a phrase we will reuse for L-series and Hecke L-series throughout the chapter — always mean the same thing: zeros <em>forced by the poles of the archimedean gamma factor</em> in the completed L-function, not by anything arithmetic. Since the completed <span class="tts-math" data-tts="capital Z of s">$Z(s)$</span> is finite and nonzero there, wherever the gamma factor <span class="tts-math" data-tts="gamma of s over two">$\Gamma(s/2)$</span> has a pole the bare <span class="tts-math" data-tts="zeta of s">$\zeta(s)$</span> must have a compensating zero. They carry no deep information; they are bookkeeping. Everything else lies in the <strong>critical strip</strong> <span class="tts-math" data-tts="real part of s between zero and one">$0&lt;\operatorname{Re}(s)&lt;1$</span>. The <strong>Riemann Hypothesis</strong> asserts these nontrivial zeros all lie on <span class="tts-math" data-tts="real part of s equals one half">$\operatorname{Re}(s)=\tfrac12$</span> — still unproven, and intimately tied to the distribution of primes.</p>
 </div>
+
+<figure data-cid="ch07-475" style="max-width:440px">
+<svg viewBox="0 0 440 260" role="img" aria-label="The complex plane showing the critical strip, the critical line at real part one half, the pole at one, and the trivial zeros at minus two, minus four, minus six" xmlns="http://www.w3.org/2000/svg">
+  <!-- critical strip shading 0<Re<1 -->
+  <rect x="250" y="20" width="70" height="200" fill-opacity="0.12" style="fill:var(--accent)"/>
+  <!-- axes -->
+  <line x1="20" y1="120" x2="420" y2="120" stroke="currentColor" stroke-width="1"/>
+  <polygon points="420,120 412,116 412,124" fill="currentColor"/>
+  <text x="410" y="138" fill="currentColor" font-family="Inter, sans-serif" font-size="11">Re</text>
+  <line x1="250" y1="232" x2="250" y2="14" stroke="currentColor" stroke-width="0.8" stroke-opacity="0.5"/>
+  <!-- ticks: negatives and 0,1/2,1 -->
+  <g font-family="Inter, sans-serif" font-size="10" fill="currentColor" text-anchor="middle">
+    <line x1="40" y1="116" x2="40" y2="124" stroke="currentColor"/><text x="40" y="138">−6</text>
+    <line x1="110" y1="116" x2="110" y2="124" stroke="currentColor"/><text x="110" y="138">−4</text>
+    <line x1="180" y1="116" x2="180" y2="124" stroke="currentColor"/><text x="180" y="138">−2</text>
+    <text x="250" y="138">0</text>
+    <text x="320" y="138">1</text>
+  </g>
+  <!-- Re=0 line -->
+  <line x1="250" y1="20" x2="250" y2="220" stroke="currentColor" stroke-opacity="0.4" stroke-width="0.8"/>
+  <!-- Re=1 line: Euler-product region boundary -->
+  <line x1="320" y1="20" x2="320" y2="220" stroke="currentColor" stroke-opacity="0.4" stroke-width="0.8"/>
+  <text x="356" y="34" fill="currentColor" font-family="Inter, sans-serif" font-size="10" text-anchor="middle">Re&gt;1: Euler</text>
+  <text x="356" y="46" fill="currentColor" font-family="Inter, sans-serif" font-size="10" text-anchor="middle">product</text>
+  <!-- critical line Re=1/2 (hero) -->
+  <line x1="285" y1="20" x2="285" y2="220" style="stroke:var(--accent)" stroke-width="2"/>
+  <text x="285" y="234" fill="currentColor" font-family="Inter, sans-serif" font-size="10" text-anchor="middle">Re=½</text>
+  <!-- trivial zeros -->
+  <g style="fill:var(--accent)">
+    <circle cx="40" cy="120" r="5"/>
+    <circle cx="110" cy="120" r="5"/>
+    <circle cx="180" cy="120" r="5"/>
+  </g>
+  <text x="110" y="100" fill="currentColor" font-family="Inter, sans-serif" font-size="10" text-anchor="middle">trivial zeros</text>
+  <!-- pole at s=1 -->
+  <g style="stroke:var(--accent)" stroke-width="2">
+    <line x1="315" y1="115" x2="325" y2="125"/>
+    <line x1="325" y1="115" x2="315" y2="125"/>
+  </g>
+  <text x="320" y="106" fill="currentColor" font-family="Inter, sans-serif" font-size="10" text-anchor="middle">pole</text>
+</svg>
+<figcaption>The landscape of <span class="tts-math" data-tts="zeta of s">$\zeta(s)$</span>: the Euler product converges for <span class="tts-math" data-tts="real part of s greater than one">$\operatorname{Re}(s)&gt;1$</span>, a simple pole sits at <span class="tts-math" data-tts="s equals one">$s=1$</span>, trivial zeros at <span class="tts-math" data-tts="s equals minus two, minus four, minus six">$s=-2,-4,-6$</span>, and the nontrivial zeros are conjectured to lie on the critical line <span class="tts-math" data-tts="real part of s equals one half">$\operatorname{Re}(s)=\tfrac12$</span> inside the strip <span class="tts-math" data-tts="zero less than real part of s less than one">$0&lt;\operatorname{Re}(s)&lt;1$</span>.</figcaption>
+</figure>
 
 <!-- ======================= 7.2 ======================= -->
 <h2 id="s7-2" data-cid="ch07-480">7.2 Dirichlet L-series</h2>
@@ -724,6 +884,30 @@ $$d\big(P_{L\mid K}(\sigma)\big)=\frac{\#\{\sigma\}}{\#G}.$$
 </span>
 </div>
 
+<figure data-cid="ch07-2145" style="max-width:380px">
+<svg viewBox="0 0 380 240" role="img" aria-label="A pie chart of the Galois group split into conjugacy classes, the fraction of primes with a given Frobenius class equal to the class size over the group order" xmlns="http://www.w3.org/2000/svg">
+  <!-- pie centered at 120,120 r=90; |G|=6 (S3): classes of size 1,2,3 -->
+  <!-- class size 3 (half), 0deg..180deg : highlighted hero -->
+  <path d="M120 120 L 210 120 A 90 90 0 0 1 30 120 Z" fill-opacity="0.3" style="fill:var(--accent); stroke:var(--accent)" stroke-width="1.5"/>
+  <!-- class size 2 (third of full = 120deg): 180..300 -->
+  <path d="M120 120 L 30 120 A 90 90 0 0 1 165 42.06 Z" fill="none" stroke="currentColor" stroke-width="1.2"/>
+  <!-- class size 1 (sixth = 60deg): 300..360 -->
+  <path d="M120 120 L 165 42.06 A 90 90 0 0 1 210 120 Z" fill="none" stroke="currentColor" stroke-width="1.2"/>
+  <!-- labels -->
+  <text x="120" y="185" text-anchor="middle" fill="currentColor" font-family="Inter, sans-serif" font-size="11" font-weight="600">3/6</text>
+  <text x="78" y="92" text-anchor="middle" fill="currentColor" font-family="Inter, sans-serif" font-size="11">2/6</text>
+  <text x="172" y="88" text-anchor="middle" fill="currentColor" font-family="Inter, sans-serif" font-size="11">1/6</text>
+  <!-- legend -->
+  <g font-family="Inter, sans-serif" font-size="10" fill="currentColor">
+    <text x="240" y="70">conjugacy class {σ}</text>
+    <text x="240" y="90">fraction of primes =</text>
+    <text x="240" y="108" font-weight="600">|{σ}| / |G|</text>
+    <text x="240" y="146">e.g. G = S₃, |G| = 6</text>
+  </g>
+</svg>
+<figcaption>Frobenius elements equidistribute across conjugacy classes: the density of primes whose Frobenius lies in the class of <span class="tts-math" data-tts="sigma">$\sigma$</span> equals <span class="tts-math" data-tts="the size of the conjugacy class of sigma over the order of G">$\#\{\sigma\}/\#G$</span>.</figcaption>
+</figure>
+
 <div class="box intuition" data-cid="ch07-2150">
 <span class="box-label">How Chebotarev reduces to Dirichlet</span>
 <p data-cid="ch07-2160">First, if <span class="tts-math" data-tts="G is generated by sigma">$G=\langle\sigma\rangle$</span> is cyclic, <span class="tts-math" data-tts="L over K">$L\mid K$</span> is abelian and <span class="tts-math" data-tts="the set of primes with Frobenius sigma">$P_{L\mid K}(\sigma)$</span> is exactly the primes in one ray class — density <span class="tts-math" data-tts="one over the order of G">$1/\#G$</span> by (13.2). In general, pass to the cyclic subextension <span class="tts-math" data-tts="E over K">$E\mid K$</span> fixed by <span class="tts-math" data-tts="sigma">$\sigma$</span> (where Frobenius is <span class="tts-math" data-tts="sigma">$\sigma$</span> of order <span class="tts-math" data-tts="f">$f$</span>), count primes there with density <span class="tts-math" data-tts="one over f">$1/f$</span>, then transport up to <span class="tts-math" data-tts="K">$K$</span> through the centralizer <span class="tts-math" data-tts="the centralizer of sigma">$Z(\sigma)$</span>: the map <span class="tts-math" data-tts="P maps to P intersect E">$\mathfrak P\mapsto\mathfrak P\cap E$</span> has fibers of size <span class="tts-math" data-tts="the order of the centralizer over f">$\#Z(\sigma)/f$</span>, giving <span class="tts-math" data-tts="the density equals the order of the centralizer over f, divided by the order of G over f, which equals the order of the centralizer over the order of G, which equals the size of the conjugacy class over the order of G">$d=\frac{\#Z(\sigma)/f}{\#G/f}=\frac{\#Z(\sigma)}{\#G}=\frac{\#\{\sigma\}}{\#G}$</span>. So Chebotarev is genuinely "Dirichlet for nonabelian extensions".</p>
@@ -759,6 +943,129 @@ $$d\big(P_{L\mid K}(\sigma)\big)=\frac{\#\{\sigma\}}{\#G}.$$
 <div class="box pause" data-cid="ch07-2250">
 <span class="box-label">Looking ahead</span>
 <p data-cid="ch07-2260">Two open horizons close the book. The <strong>Artin conjecture</strong> (holomorphy of <span class="tts-math" data-tts="the Artin L-series of L over K, khi, s">$\mathcal L(L\mid K,\chi,s)$</span> for irreducible <span class="tts-math" data-tts="khi">$\chi$</span>) and Kronecker's dream of characterizing <span class="tts-math" data-tts="the primes split in L over K">$P(L\mid K)$</span> for nonabelian <span class="tts-math" data-tts="L over K">$L\mid K$</span> are both subsumed in the <strong>Langlands program</strong> — the conjectural dictionary between Galois representations and automorphic forms, of which Hecke's theta-to-L-series correspondence (Jacobi's <span class="tts-math" data-tts="theta">$\theta$</span> is a modular form of weight <span class="tts-math" data-tts="one half">$\tfrac12$</span>) was an early and seminal instance.</p>
+</div>
+
+<h2 id="quiz" data-cid="ch07-2300">Knowledge check</h2>
+<p data-cid="ch07-2310">These are designed to make you think — the wrong options are deliberately tempting. Decide on your answer before revealing the explanation.</p>
+
+<div class="box quiz" data-cid="ch07-2320">
+<span class="box-label">Question 1</span>
+<p data-cid="ch07-2330">Using <span class="tts-math" data-tts="zeta of one minus k equals minus B sub k over k">$\zeta(1-k)=-B_{k}/k$</span> with <span class="tts-math" data-tts="B two equals one sixth">$B_{2}=\tfrac16$</span>, what is the value of <span class="tts-math" data-tts="zeta of minus one">$\zeta(-1)$</span>?</p>
+<ol class="quiz-options" data-cid="ch07-2340">
+<li><span class="tts-math" data-tts="zero">$0$</span>, since <span class="tts-math" data-tts="minus one">$-1$</span> is a trivial zero of <span class="tts-math" data-tts="zeta">$\zeta$</span>.</li>
+<li><span class="tts-math" data-tts="minus one sixth">$-\tfrac16$</span>, reading off <span class="tts-math" data-tts="minus B two equals minus one sixth">$-B_{2}$</span> directly without dividing by <span class="tts-math" data-tts="k">$k$</span>.</li>
+<li><span class="tts-math" data-tts="minus one twelfth">$-\tfrac{1}{12}$</span>, taking <span class="tts-math" data-tts="k equals two">$k=2$</span> so that <span class="tts-math" data-tts="minus B two over two equals minus one over twelve">$-B_{2}/2$</span>.</li>
+<li><span class="tts-math" data-tts="one half">$\tfrac12$</span>, taking <span class="tts-math" data-tts="k equals one">$k=1$</span> and <span class="tts-math" data-tts="minus B one">$-B_{1}$</span>.</li>
+</ol>
+<details class="quiz-answer">
+<summary>Reveal answer &amp; explanation</summary>
+<p data-cid="ch07-2350"><strong>Answer: C.</strong> The point <span class="tts-math" data-tts="s equals minus one">$s=-1$</span> is <span class="tts-math" data-tts="one minus k">$1-k$</span> with <span class="tts-math" data-tts="k equals two">$k=2$</span>, so <span class="tts-math" data-tts="zeta of minus one equals minus B two over two equals minus one sixth over two equals minus one twelfth">$\zeta(-1)=-B_{2}/2=-\tfrac{1/6}{2}=-\tfrac{1}{12}$</span>. B forgets the division by <span class="tts-math" data-tts="k">$k$</span> in the formula. A confuses the trivial zeros, which sit at the <em>even</em> negatives <span class="tts-math" data-tts="minus two, minus four, and so on">$-2,-4,\dots$</span> (poles of <span class="tts-math" data-tts="gamma of s over two">$\Gamma(s/2)$</span>); <span class="tts-math" data-tts="minus one">$-1$</span> is odd and is not a zero. D uses the wrong index <span class="tts-math" data-tts="k equals one">$k=1$</span>, which corresponds to <span class="tts-math" data-tts="s equals zero">$s=0$</span>, not <span class="tts-math" data-tts="s equals minus one">$s=-1$</span>.</p>
+</details>
+</div>
+
+<div class="box quiz" data-cid="ch07-2360">
+<span class="box-label">Question 2</span>
+<p data-cid="ch07-2370">Which statement about the zeros of <span class="tts-math" data-tts="zeta of s">$\zeta(s)$</span> in <span class="tts-math" data-tts="real part of s less than zero">$\operatorname{Re}(s)&lt;0$</span> is correct?</p>
+<ol class="quiz-options" data-cid="ch07-2380">
+<li>They lie at <span class="tts-math" data-tts="s equals minus one, minus two, minus three, and so on">$s=-1,-2,-3,\dots$</span>, one at every negative integer, from the Bernoulli vanishing.</li>
+<li>They lie at <span class="tts-math" data-tts="s equals minus two, minus four, minus six, and so on">$s=-2,-4,-6,\dots$</span> and are forced by the poles of the gamma factor <span class="tts-math" data-tts="gamma of s over two">$\Gamma(s/2)$</span> in the completed <span class="tts-math" data-tts="capital Z of s">$Z(s)$</span>.</li>
+<li>They are the nontrivial zeros, conjecturally on <span class="tts-math" data-tts="real part of s equals one half">$\operatorname{Re}(s)=\tfrac12$</span>, reflected by the functional equation.</li>
+<li>They come from the Euler product, which vanishes whenever some factor <span class="tts-math" data-tts="one minus p to the minus s">$1-p^{-s}$</span> does.</li>
+</ol>
+<details class="quiz-answer">
+<summary>Reveal answer &amp; explanation</summary>
+<p data-cid="ch07-2390"><strong>Answer: B.</strong> In <span class="tts-math" data-tts="capital Z of s equals pi to the minus s over two, gamma of s over two, zeta of s">$Z(s)=\pi^{-s/2}\Gamma(s/2)\zeta(s)$</span> the completed function is finite and nonzero for <span class="tts-math" data-tts="real part of s less than zero">$\operatorname{Re}(s)&lt;0$</span>, so wherever <span class="tts-math" data-tts="gamma of s over two">$\Gamma(s/2)$</span> has a pole — at <span class="tts-math" data-tts="s equals minus two, minus four, and so on">$s=-2,-4,\dots$</span> — the bare <span class="tts-math" data-tts="zeta">$\zeta$</span> must have a compensating <em>trivial</em> zero. A wrongly includes the odd negatives; <span class="tts-math" data-tts="s over two">$s/2$</span> hits a gamma pole only at even <span class="tts-math" data-tts="s">$s$</span>, and odd negatives give nonzero <span class="tts-math" data-tts="zeta of one minus k">$\zeta(1-k)$</span>. C describes the nontrivial zeros, which live in the critical strip <span class="tts-math" data-tts="real part of s between zero and one">$0&lt;\operatorname{Re}(s)&lt;1$</span>, not in <span class="tts-math" data-tts="real part of s less than zero">$\operatorname{Re}(s)&lt;0$</span>. D is impossible: the Euler product only converges (and proves nonvanishing) for <span class="tts-math" data-tts="real part of s greater than one">$\operatorname{Re}(s)&gt;1$</span>, so it cannot produce any zeros at all.</p>
+</details>
+</div>
+
+<div class="box quiz" data-cid="ch07-2400">
+<span class="box-label">Question 3</span>
+<p data-cid="ch07-2410">A Dirichlet character is written mod <span class="tts-math" data-tts="fifteen">$15$</span>, but its values turn out to depend only on the residue mod <span class="tts-math" data-tts="five">$5$</span> (it ignores the residue mod <span class="tts-math" data-tts="three">$3$</span>). What is its conductor?</p>
+<ol class="quiz-options" data-cid="ch07-2420">
+<li><span class="tts-math" data-tts="forty five">$45$</span> — the product of the written modulus and the period.</li>
+<li><span class="tts-math" data-tts="fifteen">$15$</span> — the modulus we originally chose to write it with.</li>
+<li><span class="tts-math" data-tts="three">$3$</span> — the divisor the character actually ignores.</li>
+<li><span class="tts-math" data-tts="five">$5$</span> — the smallest modulus on which the character is genuinely defined.</li>
+</ol>
+<details class="quiz-answer">
+<summary>Reveal answer &amp; explanation</summary>
+<p data-cid="ch07-2430"><strong>Answer: D.</strong> The conductor is the <em>true period</em> — the least modulus through which the character genuinely factors. Since the values depend only on the residue mod <span class="tts-math" data-tts="five">$5$</span>, it factors through <span class="tts-math" data-tts="the units mod five">$(\mathbb{Z}/5\mathbb{Z})^{*}$</span> and has conductor <span class="tts-math" data-tts="five">$5$</span>. B is the modulus you happened to write it with, not its intrinsic period. C names the divisor that is ignored, which is the complement of the answer. A invents a larger modulus; conductors always <em>divide</em> the modulus you started with, they never exceed it.</p>
+</details>
+</div>
+
+<div class="box quiz" data-cid="ch07-2440">
+<span class="box-label">Question 4</span>
+<p data-cid="ch07-2450">Why does the Mellin transform <span class="tts-math" data-tts="the integral of f of y times y to the s, times d y over y">$\int f(y)y^{s}\frac{dy}{y}$</span> — rather than an ordinary Fourier integral — produce functional equations from a theta series?</p>
+<ol class="quiz-options" data-cid="ch07-2460">
+<li>It is Fourier analysis on the <em>multiplicative</em> group <span class="tts-math" data-tts="the positive reals">$\mathbb{R}_{+}^{*}$</span>, whose inversion symmetry <span class="tts-math" data-tts="y maps to one over y">$y\mapsto1/y$</span> becomes the additive symmetry <span class="tts-math" data-tts="s maps to k minus s">$s\mapsto k-s$</span>.</li>
+<li>It is the ordinary additive Fourier transform in disguise, and Parseval's identity gives the symmetry directly.</li>
+<li>The measure <span class="tts-math" data-tts="d y over y">$\frac{dy}{y}$</span> is translation-invariant on the additive line, so shifting <span class="tts-math" data-tts="y">$y$</span> reflects <span class="tts-math" data-tts="s">$s$</span>.</li>
+<li>Because <span class="tts-math" data-tts="y to the s">$y^{s}$</span> is a Schwartz function, the transform is automatically self-dual under <span class="tts-math" data-tts="s maps to one minus s">$s\mapsto1-s$</span>.</li>
+</ol>
+<details class="quiz-answer">
+<summary>Reveal answer &amp; explanation</summary>
+<p data-cid="ch07-2470"><strong>Answer: A.</strong> The Mellin transform is Fourier analysis on <span class="tts-math" data-tts="the positive reals under multiplication">$\mathbb{R}_{+}^{*}$</span>: the Haar measure is the scale-invariant <span class="tts-math" data-tts="d y over y">$\frac{dy}{y}$</span> and the characters are the powers <span class="tts-math" data-tts="y to the s">$y^{s}$</span>, so <span class="tts-math" data-tts="s">$s$</span> is the frequency. The multiplicative inversion <span class="tts-math" data-tts="y maps to one over y">$y\mapsto1/y$</span> — exactly the theta law's symmetry — turns into the additive reflection <span class="tts-math" data-tts="s maps to k minus s">$s\mapsto k-s$</span>. B is the central misconception: it is <em>multiplicative</em>, not additive Fourier. C mislocates the invariance — <span class="tts-math" data-tts="d y over y">$\frac{dy}{y}$</span> is scale-invariant on the multiplicative group, not translation-invariant on the additive line. D misuses "Schwartz": <span class="tts-math" data-tts="y to the s">$y^{s}$</span> is a character, not a Schwartz function, and self-duality is not automatic.</p>
+</details>
+</div>
+
+<div class="box quiz" data-cid="ch07-2480">
+<span class="box-label">Question 5</span>
+<p data-cid="ch07-2490">For an imaginary quadratic field one has <span class="tts-math" data-tts="r one equals zero, r two equals one, regulator equals one">$r_{1}=0,\ r_{2}=1,\ R=1$</span>. The analytic class number formula gives the residue of <span class="tts-math" data-tts="zeta sub K">$\zeta_{K}$</span> at <span class="tts-math" data-tts="s equals one">$s=1$</span> as which of the following?</p>
+<ol class="quiz-options" data-cid="ch07-2500">
+<li><span class="tts-math" data-tts="two pi w over h root the absolute discriminant">$\dfrac{2\pi w}{h\sqrt{|d_{K}|}}$</span>, with <span class="tts-math" data-tts="h and w">$h$ and $w$</span> swapped.</li>
+<li><span class="tts-math" data-tts="two pi h R over w root the absolute discriminant, with the regulator left in">$\dfrac{2\pi hR}{w\sqrt{|d_{K}|}}$</span>, keeping a nontrivial regulator factor.</li>
+<li><span class="tts-math" data-tts="two pi h over w root the absolute discriminant">$\dfrac{2\pi h}{w\sqrt{|d_{K}|}}$</span>, from <span class="tts-math" data-tts="two to the r one, two pi to the r two, h R over w root the absolute discriminant">$\frac{2^{r_{1}}(2\pi)^{r_{2}}hR}{w\sqrt{|d_{K}|}}$</span> with these values.</li>
+<li><span class="tts-math" data-tts="four pi h over w the absolute discriminant">$\dfrac{4\pi h}{w\,|d_{K}|}$</span>, using <span class="tts-math" data-tts="two to the r one equals two">$2^{r_{1}}=2$</span> and the discriminant without a square root.</li>
+</ol>
+<details class="quiz-answer">
+<summary>Reveal answer &amp; explanation</summary>
+<p data-cid="ch07-2510"><strong>Answer: C.</strong> Substituting <span class="tts-math" data-tts="r one equals zero, r two equals one, regulator equals one">$r_{1}=0,\ r_{2}=1,\ R=1$</span> gives <span class="tts-math" data-tts="two to the zero equals one, two pi to the one equals two pi, R equals one">$2^{0}=1,\ (2\pi)^{1}=2\pi,\ R=1$</span>, leaving <span class="tts-math" data-tts="two pi h over w root the absolute discriminant">$\frac{2\pi h}{w\sqrt{|d_{K}|}}$</span>. B forgets that <span class="tts-math" data-tts="R equals one">$R=1$</span> here, leaving a phantom regulator. A swaps the roles of the class number <span class="tts-math" data-tts="h">$h$</span> (numerator) and the root-of-unity count <span class="tts-math" data-tts="w">$w$</span> (denominator). D wrongly sets <span class="tts-math" data-tts="two to the r one equals two">$2^{r_{1}}=2$</span> (it is <span class="tts-math" data-tts="two to the zero equals one">$2^{0}=1$</span>) and drops the square root on the discriminant.</p>
+</details>
+</div>
+
+<div class="box quiz" data-cid="ch07-2520">
+<span class="box-label">Question 6</span>
+<p data-cid="ch07-2530">Which statement about Artin L-series is <strong>FALSE</strong>?</p>
+<ol class="quiz-options" data-cid="ch07-2540">
+<li>The Artin L-series satisfies a functional equation relating <span class="tts-math" data-tts="s">$s$</span> to <span class="tts-math" data-tts="one minus s">$1-s$</span> via Brauer's theorem and the Hecke case.</li>
+<li>For every irreducible <span class="tts-math" data-tts="khi not equal to one">$\chi\ne1$</span>, the Artin L-series <span class="tts-math" data-tts="the Artin L-series of L over K, khi, s">$\mathcal{L}(L\mid K,\chi,s)$</span> is known to be entire.</li>
+<li>In the abelian case <span class="tts-math" data-tts="the Artin L-series equals a Hecke L-series">$\mathcal{L}(L\mid K,\chi,s)=L(\tilde\chi,s)$</span> for a Größencharakter <span class="tts-math" data-tts="khi tilde">$\tilde\chi$</span>.</li>
+<li>The Euler factor at <span class="tts-math" data-tts="the prime ideal p">$\mathfrak p$</span> uses the inertia invariants <span class="tts-math" data-tts="V to the inertia invariants">$V^{I_{\mathfrak P}}$</span>, which equal all of <span class="tts-math" data-tts="V">$V$</span> only when <span class="tts-math" data-tts="the prime ideal p">$\mathfrak p$</span> is unramified.</li>
+</ol>
+<details class="quiz-answer">
+<summary>Reveal answer &amp; explanation</summary>
+<p data-cid="ch07-2550"><strong>Answer: B.</strong> This is the false statement: holomorphy of <span class="tts-math" data-tts="the Artin L-series for irreducible khi">$\mathcal{L}(L\mid K,\chi,s)$</span> for all irreducible <span class="tts-math" data-tts="khi not equal to one">$\chi\ne1$</span> is the <strong>Artin conjecture</strong>, proved only in the abelian/solvable case and open in general. A is true — the functional equation holds unconditionally, since Brauer reduces it to Hecke L-series even where holomorphy is unknown. C is exactly Theorem (10.6). D is correct: at an unramified prime <span class="tts-math" data-tts="I sub P">$I_{\mathfrak P}$</span> is trivial so <span class="tts-math" data-tts="V to the inertia invariants equals V">$V^{I_{\mathfrak P}}=V$</span>, and the space shrinks only at ramified primes.</p>
+</details>
+</div>
+
+<div class="box quiz" data-cid="ch07-2560">
+<span class="box-label">Question 7</span>
+<p data-cid="ch07-2570">At a ramified prime <span class="tts-math" data-tts="the prime ideal p">$\mathfrak p$</span> with nontrivial inertia <span class="tts-math" data-tts="I sub P">$I_{\mathfrak P}$</span> acting nontrivially on <span class="tts-math" data-tts="V">$V$</span>, which is true of the inertia invariants <span class="tts-math" data-tts="V to the inertia invariants">$V^{I_{\mathfrak P}}$</span>?</p>
+<ol class="quiz-options" data-cid="ch07-2580">
+<li><span class="tts-math" data-tts="V to the inertia invariants equals V">$V^{I_{\mathfrak P}}=V$</span>, because inertia invariants only shrink the space at the infinite places.</li>
+<li><span class="tts-math" data-tts="V to the inertia invariants equals V">$V^{I_{\mathfrak P}}=V$</span> always, since Frobenius is still defined on all of <span class="tts-math" data-tts="V">$V$</span>.</li>
+<li><span class="tts-math" data-tts="V to the inertia invariants equals zero">$V^{I_{\mathfrak P}}=0$</span> at every ramified prime, so the Euler factor is trivial.</li>
+<li><span class="tts-math" data-tts="V to the inertia invariants is a proper subspace of V">$V^{I_{\mathfrak P}}\subsetneq V$</span>, so the local Euler factor uses only the part of <span class="tts-math" data-tts="V">$V$</span> fixed by inertia.</li>
+</ol>
+<details class="quiz-answer">
+<summary>Reveal answer &amp; explanation</summary>
+<p data-cid="ch07-2590"><strong>Answer: D.</strong> Inertia invariants <span class="tts-math" data-tts="V to the inertia invariants">$V^{I_{\mathfrak P}}$</span> are precisely how ramification enters: when <span class="tts-math" data-tts="I sub P">$I_{\mathfrak P}$</span> acts nontrivially, the fixed subspace is a <em>proper</em> subspace, and Frobenius acts there. A and B both assert <span class="tts-math" data-tts="V to the inertia invariants equals V">$V^{I_{\mathfrak P}}=V$</span> — true only at <em>unramified</em> primes; the whole purpose of using invariants is that the space genuinely shrinks at ramified ones. C overshoots: the invariants need not be zero — only the inertia-moved part is cut away, and what inertia fixes survives.</p>
+</details>
+</div>
+
+<div class="box quiz" data-cid="ch07-2600">
+<span class="box-label">Question 8</span>
+<p data-cid="ch07-2610">In the Dirichlet density <span class="tts-math" data-tts="d of M equals the limit of the sum over p in M of the absolute norm of p to the minus s, over log one over s minus one">$d(M)=\lim_{s\to1^{+}}\frac{\sum_{\mathfrak p\in M}\mathfrak N(\mathfrak p)^{-s}}{\log\frac{1}{s-1}}$</span>, why may primes of residue degree <span class="tts-math" data-tts="at least two">$\ge2$</span> be ignored?</p>
+<ol class="quiz-options" data-cid="ch07-2620">
+<li>Their contribution <span class="tts-math" data-tts="the sum of the absolute norm of p to the minus s">$\sum\mathfrak N(\mathfrak p)^{-s}$</span> converges at <span class="tts-math" data-tts="s equals one">$s=1$</span>, so it vanishes once divided by the diverging <span class="tts-math" data-tts="log one over s minus one">$\log\frac{1}{s-1}$</span>.</li>
+<li>They form a set of natural density zero, hence cannot appear in any Dirichlet density.</li>
+<li>There are only finitely many of them in any number field.</li>
+<li>Their norms <span class="tts-math" data-tts="the absolute norm of p">$\mathfrak N(\mathfrak p)$</span> are never prime, so they are excluded from the sum by definition.</li>
+</ol>
+<details class="quiz-answer">
+<summary>Reveal answer &amp; explanation</summary>
+<p data-cid="ch07-2630"><strong>Answer: A.</strong> A prime of residue degree <span class="tts-math" data-tts="at least two">$\ge2$</span> has <span class="tts-math" data-tts="the absolute norm at least p squared">$\mathfrak N(\mathfrak p)\ge p^{2}$</span>, so <span class="tts-math" data-tts="the sum over such primes of the absolute norm of p to the minus s">$\sum\mathfrak N(\mathfrak p)^{-s}$</span> is dominated by <span class="tts-math" data-tts="the sum of p to the minus two s">$\sum p^{-2s}$</span> and stays <em>finite</em> at <span class="tts-math" data-tts="s equals one">$s=1$</span>; dividing a bounded quantity by <span class="tts-math" data-tts="log one over s minus one">$\log\frac{1}{s-1}\to\infty$</span> sends it to <span class="tts-math" data-tts="zero">$0$</span>. B invokes <em>natural</em> density, a different and stronger notion than Dirichlet density — they need not even agree, and the argument here is purely about convergence at <span class="tts-math" data-tts="s equals one">$s=1$</span>. C is false: there are infinitely many higher-degree primes. D is false: their norms are prime powers <span class="tts-math" data-tts="p to the f">$p^{f}$</span> and they are perfectly legitimate terms in the sum.</p>
+</details>
 </div>
 
 <nav class="chapter-nav">

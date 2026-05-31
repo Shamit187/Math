@@ -2,5 +2,16 @@
   "title": "Sublime: Sublinear Error & Space for Unbounded Skewed Streams",
   "authors": "Navid Eslami, Ioana O. Bercea, Rasmus Pagh, Niv Dayan",
   "venue": "SIGMOD 2026",
-  "description": "A framework generalising frequency estimation sketches to handle skewed, unbounded data streams with dynamic counter sizing."
+  "description": "A framework generalising frequency estimation sketches to handle skewed, unbounded data streams with dynamic counter sizing.",
+  "year": 2026,
+  "topics": [
+    "Computer Science/Algorithms/Streaming and Sketches"
+  ],
+  "tags": [
+    "streaming algorithms",
+    "frequency estimation",
+    "sketches",
+    "data streams",
+    "sublinear algorithms"
+  ]
 }

@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
 <link rel="stylesheet" href="/css/style.css" />
+<link rel="stylesheet" href="/css/catalog.css" />
 </head>
 <body data-book="" data-page="root">
 <header class="site-header">
@@ -17,92 +18,63 @@
   </nav>
 </header>
 
-<main class="layout">
-  <aside class="sidebar">
-    <h4>Navigation</h4>
-    <ol>
-      <li><a href="#about">What this is</a></li>
-      <li><a href="#books">Books</a></li>
-      <li><a href="#papers">Papers</a></li>
-    </ol>
+<section class="hero" style="max-width:1100px;margin:0 auto;padding:2rem 1.5rem 0.5rem;">
+  <div class="kicker">A growing library</div>
+  <h1 style="margin:0.2rem 0;">Slow Books</h1>
+  <p class="subtitle" style="max-width:640px;">Math, statistics, CS and more — dense textbooks and papers walked through at the pace they should have been written. Search, browse by topic, or filter by tag.</p>
+</section>
+
+<main class="catalog-layout">
+  <aside class="catalog-facets" id="facets">
+    <div class="facet-group" id="type-facet">
+      <h4>Type</h4>
+      <div class="type-toggle">
+        <button data-type="" class="active">All <span class="cnt"></span></button>
+        <button data-type="book">Books <span class="cnt"></span></button>
+        <button data-type="paper">Papers <span class="cnt"></span></button>
+      </div>
+    </div>
+    <div class="facet-group" id="topic-facet">
+      <h4>Topics</h4>
+      <div class="topic-tree" id="topic-tree"></div>
+    </div>
+    <div class="facet-group" id="tag-facet">
+      <h4>Tags</h4>
+      <div class="tag-list" id="tag-list"></div>
+    </div>
   </aside>
 
-  <article class="content">
-    <section class="hero">
-      <div class="kicker">A growing library</div>
-      <h1>Slow Books</h1>
-      <p class="subtitle">Math and statistics textbooks rush. These companion guides slow them down — every definition unpacked, every step spelled out, with read-aloud TTS and comments on any paragraph.</p>
-    </section>
+  <section class="catalog-main">
+    <div class="catalog-toolbar">
+      <div class="search-wrap">
+        <input id="search" type="search" placeholder="Search titles, authors, tags, topics…" autocomplete="off" />
+      </div>
+      <button class="filters-toggle" id="filters-toggle">Filters</button>
+      <label class="sort-wrap">Sort
+        <select id="sort">
+          <option value="relevance">Relevance</option>
+          <option value="title">Title (A–Z)</option>
+          <option value="year_desc">Newest</option>
+          <option value="year_asc">Oldest</option>
+        </select>
+      </label>
+    </div>
+    <div class="active-filters" id="active-filters"></div>
+    <div class="result-meta" id="result-meta"></div>
+    <ul class="catalog-grid" id="results"></ul>
+    <div class="catalog-more"><button id="load-more" hidden>Load more</button></div>
+    <div class="catalog-empty" id="empty" hidden></div>
 
-    <h2 id="about">What this is</h2>
-    <p>
-      A site served locally that walks through dense textbooks and research papers at the pace they should have
-      been written. Every paragraph has a comment button — leave notes on anything that doesn't land, and the
-      explanation gets rewritten in response. A TTS player reads blocks aloud at adjustable speed.
-    </p>
-
-    <h2 id="books">Books</h2>
-    <ul class="content-list" id="books-list">
-      <li style="color:var(--ink-soft);font-size:0.88rem;padding:0.5rem 0">Loading…</li>
-    </ul>
-
-    <h2 id="papers">Papers</h2>
-    <ul class="content-list" id="papers-list">
-      <li style="color:var(--ink-soft);font-size:0.88rem;padding:0.5rem 0">Loading…</li>
-    </ul>
-
-    <p style="margin-top:1.5rem;color:var(--ink-soft);font-size:0.88rem;">
+    <p style="margin-top:2.5rem;color:var(--ink-soft);font-size:0.82rem;font-family:var(--sans);">
       Add a book by creating <code>books/&lt;slug&gt;/</code> with an <code>index.html</code>, <code>chapters/</code>,
-      and a <code>meta.json</code>. Add a paper by creating <code>papers/&lt;slug&gt;/index.html</code>.
+      and a <code>meta.json</code>; add a paper under <code>papers/&lt;slug&gt;/</code>. Give each <code>meta.json</code>
+      a <code>"topics"</code> array (e.g. <code>["Mathematics/Number Theory/…"]</code>) and a <code>"tags"</code> array
+      to make it findable here.
     </p>
-  </article>
+  </section>
 </main>
 
 <script src="/js/main.js"></script>
-<script>
-(async function () {
-  const booksList  = document.getElementById("books-list");
-  const papersList = document.getElementById("papers-list");
-
-  function empty(el, msg) {
-    el.innerHTML = `<li style="color:var(--ink-soft);font-size:0.88rem;padding:0.5rem 0">${msg}</li>`;
-  }
-
-  function bookCard(item, idx) {
-    const sub = item.subtitle ? `<span class="sub">${item.subtitle}</span>` : "";
-    const badge = item.type === "paper"
-      ? `<span class="badge paper">paper</span>`
-      : `<span class="badge book">${item.n_chapters} ch.</span>`;
-    return `<li><a href="${item.url}">
-      <span class="num">${String(idx + 1).padStart(2, "0")}</span>
-      <span class="title">${item.title}</span>
-      ${badge}
-      ${sub}
-    </a></li>`;
-  }
-
-  try {
-    const r = await fetch("/api/books");
-    if (!r.ok) throw new Error("api error");
-    const { books } = await r.json();
-
-    const booksData  = books.filter(b => !b.type || b.type === "book");
-    const papersData = books.filter(b => b.type === "paper");
-
-    booksList.innerHTML  = booksData.length
-      ? booksData.map(bookCard).join("")
-      : "";
-    papersList.innerHTML = papersData.length
-      ? papersData.map(bookCard).join("")
-      : "";
-
-    if (!booksData.length)  empty(booksList,  "No books yet — add one under <code>books/</code>.");
-    if (!papersData.length) empty(papersList, "No papers yet — add one under <code>papers/</code>.");
-  } catch (_) {
-    empty(booksList,  "Could not load content — is the server running?");
-    empty(papersList, "");
-  }
-})();
-</script>
+<script src="/js/home.js"></script>
 </body>
 </html>

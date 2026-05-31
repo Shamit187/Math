@@ -10,7 +10,7 @@
 <link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
-<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/><link href="/css/tts.css" rel="stylesheet"/>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/><link href="/css/tts.css" rel="stylesheet"/><link href="/css/quiz.css" rel="stylesheet"/>
 </head>
 <body data-book="algebraic_number_theory" data-page="ch06">
 <header class="site-header">
@@ -34,6 +34,7 @@
 <li><a href="#s6-7">6.7 The Ideal-Theoretic Version</a></li>
 <li><a href="#s6-8">6.8 The Reciprocity Law of the Power Residues</a></li>
 <li><a href="#summary">Summary</a></li>
+<li><a href="#quiz">Knowledge check</a></li>
 </ol>
 </aside>
 <article class="content">
@@ -79,6 +80,52 @@ The word "restricted" is doing all the work — and it is exactly what the prime
 $$I_K = {\prod_\mathfrak{p}}' \, K_\mathfrak{p}^* \quad (\text{w.r.t. } \mathfrak{o}_\mathfrak{p}^*).$$
 </span>
 </div>
+<figure data-cid="ch06-132" style="max-width:460px">
+<svg viewBox="0 0 460 200" role="img" aria-label="A comb of local groups, one tooth per place, with almost all components lying in the compact unit subgroup and only finitely many sticking out" xmlns="http://www.w3.org/2000/svg">
+  <!-- baseline -->
+  <line x1="20" y1="150" x2="440" y2="150" stroke="currentColor" stroke-width="1"/>
+  <!-- shaded unit band -->
+  <rect x="20" y="120" width="420" height="30" style="fill:var(--accent)" fill-opacity="0.15"/>
+  <text x="446" y="138" fill="currentColor" font-family="Inter, sans-serif" font-size="9" text-anchor="end" opacity="0.8">units o_p*</text>
+  <!-- teeth: places.  Two non-unit (hero) teeth stick out above the band -->
+  <!-- p=infinity (non-unit) -->
+  <line x1="50" y1="150" x2="50" y2="55" style="stroke:var(--accent)" stroke-width="2.5"/>
+  <circle cx="50" cy="55" r="4" style="fill:var(--accent)"/>
+  <text x="50" y="168" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">∞</text>
+  <!-- p=2 (unit) -->
+  <line x1="95" y1="150" x2="95" y2="128" stroke="currentColor" stroke-width="2"/>
+  <circle cx="95" cy="128" r="3.5" fill="currentColor"/>
+  <text x="95" y="168" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">2</text>
+  <!-- p=3 (non-unit, hero) -->
+  <line x1="140" y1="150" x2="140" y2="70" style="stroke:var(--accent)" stroke-width="2.5"/>
+  <circle cx="140" cy="70" r="4" style="fill:var(--accent)"/>
+  <text x="140" y="168" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">3</text>
+  <!-- remaining unit teeth -->
+  <line x1="185" y1="150" x2="185" y2="128" stroke="currentColor" stroke-width="2"/>
+  <circle cx="185" cy="128" r="3.5" fill="currentColor"/>
+  <text x="185" y="168" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">5</text>
+  <line x1="230" y1="150" x2="230" y2="128" stroke="currentColor" stroke-width="2"/>
+  <circle cx="230" cy="128" r="3.5" fill="currentColor"/>
+  <text x="230" y="168" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">7</text>
+  <line x1="275" y1="150" x2="275" y2="128" stroke="currentColor" stroke-width="2"/>
+  <circle cx="275" cy="128" r="3.5" fill="currentColor"/>
+  <text x="275" y="168" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">11</text>
+  <line x1="320" y1="150" x2="320" y2="128" stroke="currentColor" stroke-width="2"/>
+  <circle cx="320" cy="128" r="3.5" fill="currentColor"/>
+  <text x="320" y="168" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">13</text>
+  <line x1="365" y1="150" x2="365" y2="128" stroke="currentColor" stroke-width="2"/>
+  <circle cx="365" cy="128" r="3.5" fill="currentColor"/>
+  <text x="365" y="168" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">17</text>
+  <line x1="410" y1="150" x2="410" y2="128" stroke="currentColor" stroke-width="2"/>
+  <circle cx="410" cy="128" r="3.5" fill="currentColor"/>
+  <text x="410" y="168" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">…</text>
+  <!-- annotation -->
+  <text x="50" y="44" fill="currentColor" font-family="Inter, sans-serif" font-size="9" text-anchor="middle" opacity="0.8">√2</text>
+  <text x="140" y="59" fill="currentColor" font-family="Inter, sans-serif" font-size="9" text-anchor="middle" opacity="0.8">1/3</text>
+  <text x="230" y="30" fill="currentColor" font-family="Inter, sans-serif" font-size="10" text-anchor="middle">almost all components are units</text>
+</svg>
+<figcaption>An idèle is one tooth per place: almost every component lies in the compact unit group <span class="tts-math" data-tts="o sub p star">$\mathfrak{o}_\mathfrak{p}^*$</span> (shaded band), and only finitely many — here at <span class="tts-math" data-tts="infinity and 3">$\infty$</span> and <span class="tts-math" data-tts="3">$3$</span> — escape it.</figcaption>
+</figure>
 <div class="box example" data-cid="ch06-135">
 <span class="box-label">A concrete idèle of <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span></span>
 <p data-cid="ch06-136">Take <span class="tts-math" data-tts="K equals Q">$K=\mathbb{Q}$</span>. The places of <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span> are the primes <span class="tts-math" data-tts="2, 3, 5, 7, and so on">$2,3,5,7,\dots$</span> together with the one infinite (real) place. Consider the idèle <span class="tts-math" data-tts="alpha">$\alpha$</span> whose components are</p>
@@ -107,6 +154,34 @@ $$C_K = I_K / K^*$$
 </div>
 <p data-cid="ch06-210">
 That the diagonal <span class="tts-math" data-tts="K star">$K^*$</span> makes sense as a subgroup is itself a theorem in disguise: it relies on the fact that a nonzero element of <span class="tts-math" data-tts="K">$K$</span> is a unit at almost all primes (it has only finitely many zeros and poles). So principal idèles automatically satisfy the restricted-product condition.</p>
+<figure data-cid="ch06-215" style="max-width:440px">
+<svg viewBox="0 0 440 170" role="img" aria-label="The short exact sequence one to K star to I K to C K to one, with K star embedded diagonally into the idele group and C K the quotient" xmlns="http://www.w3.org/2000/svg">
+  <!-- exact sequence row -->
+  <text x="24" y="60" fill="currentColor" font-family="Inter, sans-serif" font-size="14" text-anchor="middle">1</text>
+  <text x="92" y="60" fill="currentColor" font-family="Inter, sans-serif" font-size="14" text-anchor="middle">K*</text>
+  <text x="200" y="60" fill="currentColor" font-family="Inter, sans-serif" font-size="14" text-anchor="middle">I_K</text>
+  <text x="320" y="60" fill="currentColor" font-family="Inter, sans-serif" font-size="14" style="fill:var(--accent)" text-anchor="middle">C_K</text>
+  <text x="416" y="60" fill="currentColor" font-family="Inter, sans-serif" font-size="14" text-anchor="middle">1</text>
+  <!-- arrows -->
+  <line x1="36" y1="55" x2="74" y2="55" stroke="currentColor" stroke-width="1.2"/>
+  <polygon points="74,55 67,52 67,58" fill="currentColor"/>
+  <line x1="112" y1="55" x2="178" y2="55" stroke="currentColor" stroke-width="1.2"/>
+  <polygon points="178,55 171,52 171,58" fill="currentColor"/>
+  <text x="145" y="46" fill="currentColor" font-family="Inter, sans-serif" font-size="9" text-anchor="middle">diagonal</text>
+  <line x1="224" y1="55" x2="300" y2="55" style="stroke:var(--accent)" stroke-width="1.2"/>
+  <polygon points="300,55 293,52 293,58" style="fill:var(--accent)"/>
+  <text x="262" y="46" fill="currentColor" font-family="Inter, sans-serif" font-size="9" text-anchor="middle">mod K*</text>
+  <line x1="340" y1="55" x2="404" y2="55" stroke="currentColor" stroke-width="1.2"/>
+  <polygon points="404,55 397,52 397,58" fill="currentColor"/>
+  <!-- diagonal embedding illustration -->
+  <text x="92" y="100" fill="currentColor" font-family="Inter, sans-serif" font-size="9" text-anchor="middle">a</text>
+  <text x="200" y="100" fill="currentColor" font-family="Inter, sans-serif" font-size="9" text-anchor="middle">(a, a, a, …)</text>
+  <line x1="100" y1="95" x2="160" y2="95" stroke="currentColor" stroke-opacity="0.5" stroke-width="1"/>
+  <polygon points="160,95 153,92 153,98" fill="currentColor" fill-opacity="0.5"/>
+  <text x="200" y="128" fill="currentColor" font-family="Inter, sans-serif" font-size="9" text-anchor="middle" opacity="0.8">same a in every component</text>
+</svg>
+<figcaption>The idèle class group as a quotient: <span class="tts-math" data-tts="one to K star to I sub K to C sub K to one">$1\to K^*\to I_K\to C_K\to 1$</span>, where <span class="tts-math" data-tts="K star">$K^*$</span> sits inside diagonally as <span class="tts-math" data-tts="a maps to the constant tuple a, a, a">$a\mapsto(a,a,a,\dots)$</span>.</figcaption>
+</figure>
 
 <h3 data-cid="ch06-220">From idèles back to ideals</h3>
 <p data-cid="ch06-230">
@@ -299,6 +374,37 @@ $$[\alpha, L|K] = \prod_\mathfrak{p}(\alpha_\mathfrak{p}, L_\mathfrak{P}|K_\math
 </span>
 <p data-cid="ch06-970">Almost all factors are <span class="tts-math" data-tts="1">$1$</span> because almost all <span class="tts-math" data-tts="L P over K p">$L_\mathfrak{P}|K_\mathfrak{p}$</span> are unramified and almost all <span class="tts-math" data-tts="alpha p">$\alpha_\mathfrak{p}$</span> are units, so the product converges.</p>
 </div>
+<figure data-cid="ch06-975" style="max-width:440px">
+<svg viewBox="0 0 440 220" role="img" aria-label="Local norm residue symbols at every place combine via a product into the single global reciprocity map on the idele class group, landing in the abelianized Galois group" xmlns="http://www.w3.org/2000/svg">
+  <!-- local sources -->
+  <text x="60" y="30" fill="currentColor" font-family="Inter, sans-serif" font-size="10" text-anchor="middle">local symbols</text>
+  <text x="60" y="52" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">(·, L_∞|K_∞)</text>
+  <text x="60" y="82" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">(·, L_2|K_2)</text>
+  <text x="60" y="112" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">(·, L_3|K_3)</text>
+  <text x="60" y="142" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">(·, L_5|K_5)</text>
+  <text x="60" y="170" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">⋮</text>
+  <!-- collecting node (product) -->
+  <circle cx="235" cy="100" r="16" fill="none" style="stroke:var(--accent)" stroke-width="2"/>
+  <text x="235" y="105" fill="currentColor" font-family="Inter, sans-serif" font-size="16" text-anchor="middle" style="fill:var(--accent)">∏</text>
+  <!-- arrows from locals into product -->
+  <line x1="110" y1="48" x2="220" y2="92" stroke="currentColor" stroke-opacity="0.7" stroke-width="1"/>
+  <line x1="110" y1="78" x2="221" y2="95" stroke="currentColor" stroke-opacity="0.7" stroke-width="1"/>
+  <line x1="110" y1="108" x2="219" y2="100" stroke="currentColor" stroke-opacity="0.7" stroke-width="1"/>
+  <line x1="110" y1="138" x2="221" y2="107" stroke="currentColor" stroke-opacity="0.7" stroke-width="1"/>
+  <line x1="110" y1="162" x2="222" y2="112" stroke="currentColor" stroke-opacity="0.7" stroke-width="1"/>
+  <!-- global output arrow -->
+  <line x1="251" y1="100" x2="335" y2="100" style="stroke:var(--accent)" stroke-width="2"/>
+  <polygon points="335,100 326,96 326,104" style="fill:var(--accent)"/>
+  <text x="293" y="92" fill="currentColor" font-family="Inter, sans-serif" font-size="10" text-anchor="middle">global</text>
+  <!-- target -->
+  <text x="385" y="96" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">C_K</text>
+  <text x="385" y="110" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">→</text>
+  <text x="385" y="128" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">G^ab</text>
+  <text x="235" y="150" fill="currentColor" font-family="Inter, sans-serif" font-size="9" text-anchor="middle" opacity="0.8">almost all factors = 1</text>
+  <text x="235" y="200" fill="currentColor" font-family="Inter, sans-serif" font-size="10" text-anchor="middle">[α, L|K] = ∏_p (α_p, L_P|K_p)</text>
+</svg>
+<figcaption>Local-to-global assembly: the local norm residue symbols at every place multiply into the single global map <span class="tts-math" data-tts="the global symbol alpha, L over K equals the product over p of the local symbols">$[\alpha,L|K]=\prod_\mathfrak{p}(\alpha_\mathfrak{p},L_\mathfrak{P}|K_\mathfrak{p})$</span> on the class group <span class="tts-math" data-tts="C sub K to the abelianized Galois group">$C_K\to G(L|K)^{\mathrm{ab}}$</span>.</figcaption>
+</figure>
 <div class="box pause" data-cid="ch06-980">
 <span class="box-label">Proposition 5.3 — the crucial vanishing</span>
 <p data-cid="ch06-990">For every root of unity <span class="tts-math" data-tts="zeta">$\zeta$</span> and every <em>principal</em> idèle <span class="tts-math" data-tts="a in K star">$a\in K^*$</span>, one has <span class="tts-math" data-tts="bracket a, K adjoin zeta over K equals 1">$[a, K(\zeta)|K]=1$</span>. The proof reduces to <span class="tts-math" data-tts="K equals Q">$K=\mathbb{Q}$</span> and a prime-power root of unity, where it becomes an explicit and beautiful computation: the Frobenius contributions at the unramified primes, the wild contribution at <span class="tts-math" data-tts="the prime ell">$\ell$</span>, and the sign at infinity all <strong>multiply to <span class="tts-math" data-tts="1">$1$</span></strong> — precisely the product formula <span class="tts-math" data-tts="a equals the sign of a times the product of p to the valuation of a">$a = \mathrm{sgn}(a)\prod p^{v_p(a)}$</span> in disguise. We flag this as a computation to <em>take on faith</em> here: the honest verification is a careful place-by-place tally (one term per prime dividing <span class="tts-math" data-tts="a">$a$</span>, one wild term, one sign), and the punchline is simply that it reassembles the product formula. Read it as "the product formula reappearing" and move on — the structure, not the bookkeeping, is the point.</p>
@@ -364,6 +470,26 @@ $$G(H|K) \cong \mathrm{Cl}_K, \qquad [H:K]=h_K.$$
 </span>
 <p data-cid="ch06-1230">So the Galois group of the Hilbert class field <em>is</em> the ideal class group, and its degree is the class number.</p>
 </div>
+<figure data-cid="ch06-1235" style="max-width:400px">
+<svg viewBox="0 0 400 210" role="img" aria-label="A two-step tower with K at the bottom and the Hilbert class field H on top, the extension unramified everywhere, its Galois group isomorphic to the ideal class group, and ideals of K becoming principal in H" xmlns="http://www.w3.org/2000/svg">
+  <!-- tower line -->
+  <line x1="120" y1="170" x2="120" y2="60" style="stroke:var(--accent)" stroke-width="2.5"/>
+  <!-- nodes -->
+  <circle cx="120" cy="170" r="4" fill="currentColor"/>
+  <text x="105" y="175" fill="currentColor" font-family="Inter, sans-serif" font-size="13" text-anchor="end">K</text>
+  <circle cx="120" cy="60" r="4" style="fill:var(--accent)"/>
+  <text x="105" y="65" fill="currentColor" font-family="Inter, sans-serif" font-size="13" text-anchor="end" style="fill:var(--accent)">H</text>
+  <!-- edge labels -->
+  <text x="132" y="118" fill="currentColor" font-family="Inter, sans-serif" font-size="11">Gal(H|K) ≅ Cl_K</text>
+  <text x="132" y="135" fill="currentColor" font-family="Inter, sans-serif" font-size="10" opacity="0.85">degree h_K</text>
+  <!-- unramified annotation -->
+  <text x="120" y="40" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle" style="fill:var(--accent)">unramified everywhere</text>
+  <!-- principal ideal theorem note -->
+  <line x1="40" y1="190" x2="360" y2="190" stroke="currentColor" stroke-opacity="0.25" stroke-width="0.5"/>
+  <text x="200" y="205" fill="currentColor" font-family="Inter, sans-serif" font-size="10" text-anchor="middle">every ideal of K becomes principal in H</text>
+</svg>
+<figcaption>The Hilbert class field <span class="tts-math" data-tts="H">$H$</span>: the maximal everywhere-unramified abelian extension, with <span class="tts-math" data-tts="the Galois group of H over K isomorphic to the ideal class group">$G(H|K)\cong\mathrm{Cl}_K$</span> and every ideal of <span class="tts-math" data-tts="K">$K$</span> capitulating (becoming principal) upstairs.</figcaption>
+</figure>
 <div class="box intuition" data-cid="ch06-1240">
 <span class="box-label">Kronecker's Jugendtraum (Thm. 6.10, 6.11)</span>
 <p data-cid="ch06-1250">The existence theorem tells us ray class fields <em>exist</em> but not how to <em>generate</em> them. Over <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span> we generate them with values of <span class="tts-math" data-tts="e to the 2 pi i z">$e^{2\pi i z}$</span> at rational points (roots of unity). Over an <strong>imaginary quadratic</strong> field <span class="tts-math" data-tts="K">$K$</span>, Kronecker's "dream of his youth" delivers an analogous explicit construction: the <span class="tts-math" data-tts="j-invariant">$j$</span>-invariant <span class="tts-math" data-tts="j of an ideal a">$j(\mathfrak{a})$</span> of the elliptic curve <span class="tts-math" data-tts="C modulo a">$\mathbb{C}/\mathfrak{a}$</span> (with complex multiplication by <span class="tts-math" data-tts="the ring of integers o sub K">$\mathfrak{o}_K$</span>) generates the Hilbert class field, and Weber functions generate the higher ray class fields. This is the analytic theory of complex multiplication — beautiful, genuinely beyond our scope here, and the subject of a whole separate book. Treat it as a signpost, not a result we will prove.</p>
@@ -396,6 +522,42 @@ $$J_K^\mathfrak{m}/H_\mathfrak{m} \;\xrightarrow{\ \sim\ }\; G(L|K), \qquad H_\m
 <span class="box-label">Two beautiful special cases</span>
 <p data-cid="ch06-1360">For the cyclotomic field <span class="tts-math" data-tts="Q of mu m over Q">$\mathbb{Q}(\mu_m)|\mathbb{Q}$</span>, the decomposition law says <span class="tts-math" data-tts="p splits completely if and only if p is congruent to 1 mod m">$p$</span> splits completely iff <span class="tts-math" data-tts="p congruent to 1 mod m">$p\equiv 1\bmod m$</span>. For the Hilbert class field (Cor. 7.4): <strong>a prime ideal splits completely in the Hilbert class field iff it is principal.</strong> The class group governs splitting exactly.</p>
 </div>
+<figure data-cid="ch06-1365" style="max-width:460px">
+<svg viewBox="0 0 460 130" role="img" aria-label="A number line of primes coloured by how they split in Q adjoin i, primes congruent to 1 mod 4 split while primes congruent to 3 mod 4 stay inert, showing reciprocity governing splitting" xmlns="http://www.w3.org/2000/svg">
+  <!-- number line -->
+  <line x1="20" y1="60" x2="440" y2="60" stroke="currentColor" stroke-width="1"/>
+  <polygon points="440,60 432,56 432,64" fill="currentColor"/>
+  <!-- primes: split (accent, hollow up) vs inert (currentColor, solid down).  p splits in Q(i) iff p = 1 mod 4 -->
+  <!-- 5 (1 mod4 split) -->
+  <circle cx="60" cy="60" r="5" fill="none" style="stroke:var(--accent)" stroke-width="2"/>
+  <text x="60" y="82" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">5</text>
+  <!-- 7 (3 mod4 inert) -->
+  <circle cx="115" cy="60" r="4" fill="currentColor"/>
+  <text x="115" y="82" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">7</text>
+  <!-- 11 (3 inert) -->
+  <circle cx="170" cy="60" r="4" fill="currentColor"/>
+  <text x="170" y="82" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">11</text>
+  <!-- 13 (1 split) -->
+  <circle cx="225" cy="60" r="5" fill="none" style="stroke:var(--accent)" stroke-width="2"/>
+  <text x="225" y="82" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">13</text>
+  <!-- 17 (1 split) -->
+  <circle cx="280" cy="60" r="5" fill="none" style="stroke:var(--accent)" stroke-width="2"/>
+  <text x="280" y="82" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">17</text>
+  <!-- 19 (3 inert) -->
+  <circle cx="335" cy="60" r="4" fill="currentColor"/>
+  <text x="335" y="82" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">19</text>
+  <!-- 23 (3 inert) -->
+  <circle cx="390" cy="60" r="4" fill="currentColor"/>
+  <text x="390" y="82" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">23</text>
+  <!-- legend -->
+  <circle cx="40" cy="105" r="5" fill="none" style="stroke:var(--accent)" stroke-width="2"/>
+  <text x="52" y="109" fill="currentColor" font-family="Inter, sans-serif" font-size="10" text-anchor="start">splits: p ≡ 1 (mod 4)</text>
+  <circle cx="260" cy="105" r="4" fill="currentColor"/>
+  <text x="272" y="109" fill="currentColor" font-family="Inter, sans-serif" font-size="10" text-anchor="start">inert: p ≡ 3 (mod 4)</text>
+  <text x="230" y="28" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">how p splits in Z[i]</text>
+</svg>
+<figcaption>Reciprocity made visual: in <span class="tts-math" data-tts="Q adjoin i">$\mathbb{Q}(i)$</span> a prime <span class="tts-math" data-tts="p">$p$</span> splits exactly when <span class="tts-math" data-tts="p is congruent to 1 mod 4">$p\equiv 1\bmod 4$</span> and stays inert when <span class="tts-math" data-tts="p is congruent to 3 mod 4">$p\equiv 3\bmod 4$</span> — the Frobenius reading off the residue class.</figcaption>
+</figure>
 <div class="box definition" data-cid="ch06-1370">
 <span class="box-label">Theorem 7.5 — the Principal Ideal Theorem</span>
 <p data-cid="ch06-1380">In the Hilbert class field <span class="tts-math" data-tts="K one">$K_1$</span> of <span class="tts-math" data-tts="K">$K$</span>, <strong>every ideal of <span class="tts-math" data-tts="K">$K$</span> becomes principal.</strong> Note this does <em>not</em> say <span class="tts-math" data-tts="K one">$K_1$</span> has class number <span class="tts-math" data-tts="1">$1$</span> — only that ideals of the base capitulate. The proof is a stunning reduction: via the transfer map (<span class="tts-math" data-tts="Verlagerung">$\mathrm{Ver}$</span>) and the identification <span class="tts-math" data-tts="G of K one over K equals the ideal class group">$G(K_1|K)=\mathrm{Cl}_K$</span>, the statement becomes the purely group-theoretic <strong>Principal Ideal Theorem 7.6:</strong> for a finitely generated group <span class="tts-math" data-tts="G">$G$</span> with <span class="tts-math" data-tts="G mod G prime finite">$(G:G')&lt;\infty$</span>, the transfer <span class="tts-math" data-tts="Ver from G mod G prime to G prime mod G double prime">$\mathrm{Ver}: G/G'\to G'/G''$</span> is <em>trivial</em>. Witt's elegant proof uses the augmentation ideal of the group ring.</p>
@@ -475,6 +637,113 @@ This chapter built the global theory in one disciplined sweep, mirroring the abs
 </div>
 <p data-cid="ch06-1710">
 Next we leave the algebraic edifice and turn to the analytic side — zeta and L-functions — where the same arithmetic reappears encoded in special values and functional equations.</p>
+
+<h2 id="quiz" data-cid="ch06-1800">Knowledge check</h2>
+<p data-cid="ch06-1810">These are designed to make you think — the wrong options are deliberately tempting. Decide on your answer before revealing the explanation.</p>
+
+<div class="box quiz" data-cid="ch06-1820">
+<span class="box-label">Question 1</span>
+<p data-cid="ch06-1830">A student writes: "the idèle group is the restricted product <span class="tts-math" data-tts="the restricted product over p of K p with respect to o p">${\prod_\mathfrak{p}}' K_\mathfrak{p}$</span> with respect to the rings of integers <span class="tts-math" data-tts="o p">$\mathfrak{o}_\mathfrak{p}$</span>." Exactly one thing in that sentence is wrong. What is it?</p>
+<ol class="quiz-options" data-cid="ch06-1840">
+<li>Nothing — that is precisely the definition of <span class="tts-math" data-tts="I sub K">$I_K$</span>.</li>
+<li>The restriction must be with respect to the unit groups <span class="tts-math" data-tts="o p star">$\mathfrak{o}_\mathfrak{p}^*$</span>, and the local factors must be <span class="tts-math" data-tts="K p star">$K_\mathfrak{p}^*$</span>, not <span class="tts-math" data-tts="K p">$K_\mathfrak{p}$</span>; as written it describes the adèle <em>ring</em>.</li>
+<li>The product should be unrestricted, since idèles are allowed to be non-integral at every place at once.</li>
+<li>The restriction is fine, but the local factors should be the rings of integers <span class="tts-math" data-tts="o p">$\mathfrak{o}_\mathfrak{p}$</span> themselves.</li>
+</ol>
+<details class="quiz-answer">
+<summary>Reveal answer &amp; explanation</summary>
+<p data-cid="ch06-1850"><strong>Answer: B.</strong> The idèle group is multiplicative: <span class="tts-math" data-tts="I sub K equals the restricted product over p of K p star with respect to o p star">$I_K = {\prod_\mathfrak{p}}' K_\mathfrak{p}^*$</span> restricted with respect to the <em>unit</em> groups <span class="tts-math" data-tts="o p star">$\mathfrak{o}_\mathfrak{p}^*$</span>. The sentence as written — additive factors <span class="tts-math" data-tts="K p">$K_\mathfrak{p}$</span> restricted by <span class="tts-math" data-tts="o p">$\mathfrak{o}_\mathfrak{p}$</span> — is the adèle ring <span class="tts-math" data-tts="A sub K">$\mathbb{A}_K$</span>, not the idèle group. A is the classic adèle/idèle confusion. C is false: an idèle must be a unit (lie in <span class="tts-math" data-tts="o p star">$\mathfrak{o}_\mathfrak{p}^*$</span>) at almost all places, so the full product is wrong. D drops to non-invertible factors, which cannot form a group under multiplication.</p>
+</details>
+</div>
+
+<div class="box quiz" data-cid="ch06-1860">
+<span class="box-label">Question 2</span>
+<p data-cid="ch06-1870">Which object does Artin reciprocity (Thm. 5.5) place in canonical correspondence with the abelianized Galois group <span class="tts-math" data-tts="G of L over K abelianized">$G(L|K)^{\mathrm{ab}}$</span>, for a finite Galois <span class="tts-math" data-tts="L over K">$L|K$</span>?</p>
+<ol class="quiz-options" data-cid="ch06-1880">
+<li>The idèle group modulo norms, <span class="tts-math" data-tts="I sub K modulo the norm of I sub L">$I_K/N_{L|K}I_L$</span>.</li>
+<li>The idèle class group modulo the norm group, <span class="tts-math" data-tts="C sub K modulo the norm of C sub L">$C_K/N_{L|K}C_L$</span>.</li>
+<li>The full idèle class group <span class="tts-math" data-tts="C sub K">$C_K$</span> itself.</li>
+<li>The multiplicative group <span class="tts-math" data-tts="K star modulo its norms">$K^*/N_{L|K}L^*$</span> of principal idèles modulo norms.</li>
+</ol>
+<details class="quiz-answer">
+<summary>Reveal answer &amp; explanation</summary>
+<p data-cid="ch06-1890"><strong>Answer: B.</strong> Reciprocity gives <span class="tts-math" data-tts="G of L over K abelianized is isomorphic to C sub K modulo the norm of C sub L">$G(L|K)^{\mathrm{ab}}\cong C_K/N_{L|K}C_L$</span> — the idèle <em>class</em> group quotiented by the norm group. A tempts because <span class="tts-math" data-tts="I sub K modulo the norm of I sub L">$I_K/N I_L$</span> does decompose into local pieces (the norm-everywhere principle of §3), but that idèle quotient is not the Galois group; one must first pass to classes by quotienting out <span class="tts-math" data-tts="K star">$K^*$</span>. C forgets the quotient by norms entirely — <span class="tts-math" data-tts="C sub K">$C_K$</span> alone is infinite and maps onto every abelianized Galois group at once, not a single one. D uses principal idèles only, which is the cyclic Hasse-norm statement, not the reciprocity isomorphism.</p>
+</details>
+</div>
+
+<div class="box quiz" data-cid="ch06-1900">
+<span class="box-label">Question 3</span>
+<p data-cid="ch06-1910">In the small Hilbert class field <span class="tts-math" data-tts="H over K">$H|K$</span>, which statement correctly describes how a prime <span class="tts-math" data-tts="p">$\mathfrak{p}$</span> of <span class="tts-math" data-tts="K">$K$</span> behaves?</p>
+<ol class="quiz-options" data-cid="ch06-1920"><li><span class="tts-math" data-tts="p">$\mathfrak{p}$</span> splits completely in <span class="tts-math" data-tts="H">$H$</span> if and only if <span class="tts-math" data-tts="p">$\mathfrak{p}$</span> is principal; and <span class="tts-math" data-tts="H over K">$H|K$</span> is unramified at every place including infinity.</li>
+<li><span class="tts-math" data-tts="p">$\mathfrak{p}$</span> splits completely if and only if <span class="tts-math" data-tts="p">$\mathfrak{p}$</span> is non-principal; <span class="tts-math" data-tts="H over K">$H|K$</span> is unramified.</li>
+<li><span class="tts-math" data-tts="p">$\mathfrak{p}$</span> splits completely if and only if <span class="tts-math" data-tts="p">$\mathfrak{p}$</span> is principal; but <span class="tts-math" data-tts="H over K">$H|K$</span> is ramified exactly at the primes dividing the class number.</li>
+<li>Every <span class="tts-math" data-tts="p">$\mathfrak{p}$</span> splits completely, because <span class="tts-math" data-tts="H over K">$H|K$</span> is the maximal unramified abelian extension.</li>
+</ol>
+<details class="quiz-answer">
+<summary>Reveal answer &amp; explanation</summary>
+<p data-cid="ch06-1930"><strong>Answer: A.</strong> By Cor. 7.4 a prime splits completely in the Hilbert class field iff its ideal class is trivial, i.e. iff it is principal — the Frobenius/Artin class being trivial is exactly the splitting condition. And <span class="tts-math" data-tts="H">$H$</span> is by definition the maximal abelian extension unramified <em>everywhere, including the infinite places</em>, with <span class="tts-math" data-tts="G of H over K isomorphic to the class group">$G(H|K)\cong\mathrm{Cl}_K$</span>. B reverses the decomposition law (the common slip: trivial class means split, not non-split). C contradicts the defining unramifiedness of the Hilbert class field — it is unramified at <em>all</em> places, never ramified at primes dividing <span class="tts-math" data-tts="h sub K">$h_K$</span>. D confuses "maximal unramified" with "everything splits"; only principal primes split completely.</p>
+</details>
+</div>
+
+<div class="box quiz" data-cid="ch06-1940">
+<span class="box-label">Question 4</span>
+<p data-cid="ch06-1950">Let <span class="tts-math" data-tts="p">$p$</span> be a prime not dividing <span class="tts-math" data-tts="m">$m$</span>. In which of these abelian extensions of <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span> does <span class="tts-math" data-tts="p">$p$</span> split completely exactly when <span class="tts-math" data-tts="p is congruent to 1 mod m">$p\equiv 1\bmod m$</span>?</p>
+<ol class="quiz-options" data-cid="ch06-1960">
+<li>The Hilbert class field of <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span>.</li>
+<li>The quadratic field <span class="tts-math" data-tts="Q of the square root of m">$\mathbb{Q}(\sqrt{m})$</span>.</li>
+<li>The cyclotomic field <span class="tts-math" data-tts="Q of the m-th roots of unity">$\mathbb{Q}(\mu_m)$</span>, the ray class field mod <span class="tts-math" data-tts="m">$(m)$</span>.</li>
+<li>The cyclotomic <span class="tts-math" data-tts="Z hat">$\hat{\mathbb{Z}}$</span>-extension <span class="tts-math" data-tts="Q tilde">$\tilde{\mathbb{Q}}$</span>.</li>
+</ol>
+<details class="quiz-answer">
+<summary>Reveal answer &amp; explanation</summary>
+<p data-cid="ch06-1970"><strong>Answer: C.</strong> For <span class="tts-math" data-tts="Q of the m-th roots of unity over Q">$\mathbb{Q}(\mu_m)|\mathbb{Q}$</span> the decomposition law reads off splitting from the class of <span class="tts-math" data-tts="p">$p$</span> in <span class="tts-math" data-tts="the unit group of Z mod m">$(\mathbb{Z}/m\mathbb{Z})^*$</span>: <span class="tts-math" data-tts="p">$p$</span> splits completely iff its Frobenius is trivial, i.e. iff <span class="tts-math" data-tts="p is congruent to 1 mod m">$p\equiv 1\bmod m$</span>. A is empty content: <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span> has class number <span class="tts-math" data-tts="1">$1$</span>, so its Hilbert class field is <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span> itself and every prime "splits." B gives a congruence modulo the discriminant via a quadratic-residue condition, not <span class="tts-math" data-tts="p congruent to 1 mod m">$p\equiv1\bmod m$</span>. D is an infinite extension in which no finite prime splits completely.</p>
+</details>
+</div>
+
+<div class="box quiz" data-cid="ch06-1980">
+<span class="box-label">Question 5</span>
+<p data-cid="ch06-1990">Which statement about the idèle class group <span class="tts-math" data-tts="C sub K">$C_K$</span> is <strong>false</strong>?</p>
+<ol class="quiz-options" data-cid="ch06-2000">
+<li>The norm-one subgroup <span class="tts-math" data-tts="C K zero">$C_K^0$</span> is compact, a fact encoding both finiteness of the class number and the unit rank.</li>
+<li>For a Galois extension <span class="tts-math" data-tts="L over K">$L|K$</span> the Galois fixed points satisfy <span class="tts-math" data-tts="C sub L to the G equals C sub K">$C_L^G = C_K$</span>.</li>
+<li>The closed finite-index subgroups of <span class="tts-math" data-tts="C sub K">$C_K$</span> are exactly those containing some congruence subgroup <span class="tts-math" data-tts="C K superscript m">$C_K^\mathfrak{m}$</span>.</li>
+<li>Killing the unit and archimedean information turns <span class="tts-math" data-tts="C sub K">$C_K$</span> into the ideal class group, and like the ideal class group <span class="tts-math" data-tts="C sub K">$C_K$</span> is finite.</li>
+</ol>
+<details class="quiz-answer">
+<summary>Reveal answer &amp; explanation</summary>
+<p data-cid="ch06-2010"><strong>Answer: D.</strong> The first clause is true (Prop. 1.3 — the quotient by <span class="tts-math" data-tts="I K to the infinity times K star">$I_K^\infty K^*$</span> is <span class="tts-math" data-tts="the class group">$\mathrm{Cl}_K$</span>), but the conclusion is false: <span class="tts-math" data-tts="C sub K">$C_K$</span> is <em>not</em> finite — it has the continuous absolute-norm map onto <span class="tts-math" data-tts="the positive reals">$\mathbb{R}_+^*$</span> and splits as <span class="tts-math" data-tts="C K zero times the positive reals">$C_K^0\times\mathbb{R}_+^*$</span>. Only the <em>norm-one</em> part is compact and only the ideal-class quotient is finite. A is exactly Theorem 1.6. B is the genuine Galois descent (Prop. 2.5, via Hilbert 90) that the ideal class group famously lacks. C is Prop. 1.8, the cofinality of congruence subgroups. The tempting false statement smuggles a true premise in front of a wrong conclusion.</p>
+</details>
+</div>
+
+<div class="box quiz" data-cid="ch06-2020">
+<span class="box-label">Question 6</span>
+<p data-cid="ch06-2030">In deriving quadratic reciprocity (Thm. 8.4) from the Hilbert symbol product formula <span class="tts-math" data-tts="the product over all places of the Hilbert symbol a b equals 1">$\prod_\mathfrak{p}\left(\frac{a,b}{\mathfrak{p}}\right)=1$</span> over <span class="tts-math" data-tts="Q with n equals 2">$\mathbb{Q},\,n=2$</span> for odd coprime <span class="tts-math" data-tts="a, b">$a,b$</span>, what exactly produces the answer?</p>
+<ol class="quiz-options" data-cid="ch06-2040">
+<li>The odd-prime symbols reassemble into <span class="tts-math" data-tts="a over b and b over a">$\left(\frac{a}{b}\right),\left(\frac{b}{a}\right)$</span>, and only the explicit local symbols at <span class="tts-math" data-tts="2 and infinity">$2$</span> and <span class="tts-math" data-tts="infinity">$\infty$</span> survive on the other side.</li>
+<li>One needs a separate deep input beyond the local Hilbert symbols — the analytic class number formula — to evaluate the surviving factors.</li>
+<li>Every local symbol including those at odd primes must be computed explicitly; there is no reassembly into residue symbols.</li>
+<li>The surviving bad places are <span class="tts-math" data-tts="3 and infinity">$3$</span> and <span class="tts-math" data-tts="infinity">$\infty$</span>, since <span class="tts-math" data-tts="3">$3$</span> is the smallest odd prime.</li>
+</ol>
+<details class="quiz-answer">
+<summary>Reveal answer &amp; explanation</summary>
+<p data-cid="ch06-2050"><strong>Answer: A.</strong> The whole derivation is bookkeeping on the product formula: symbols at odd primes dividing <span class="tts-math" data-tts="a">$a$</span> collect into <span class="tts-math" data-tts="b over a">$\left(\frac{b}{a}\right)$</span> and those dividing <span class="tts-math" data-tts="b">$b$</span> into <span class="tts-math" data-tts="a over b">$\left(\frac{a}{b}\right)$</span>, leaving only the two "bad" places <span class="tts-math" data-tts="p dividing n times infinity">$\mathfrak{p}\mid n\infty$</span> — here <span class="tts-math" data-tts="2 and infinity">$2$</span> and <span class="tts-math" data-tts="infinity">$\infty$</span> — whose explicit symbols give <span class="tts-math" data-tts="minus one to the power a minus one over two times b minus one over two">$(-1)^{\frac{a-1}{2}\frac{b-1}{2}}$</span> and the sign factor. B is the misconception the chapter warns against: no extra ingredient is needed, just the explicit local symbols. C misses that residue symbols are precisely the reassembled product of odd-prime Hilbert symbols. D miscounts the bad places — for <span class="tts-math" data-tts="n equals 2">$n=2$</span> they are the primes dividing <span class="tts-math" data-tts="n">$n$</span> (namely <span class="tts-math" data-tts="2">$2$</span>) together with <span class="tts-math" data-tts="infinity">$\infty$</span>, not <span class="tts-math" data-tts="3">$3$</span>.</p>
+</details>
+</div>
+
+<div class="box quiz" data-cid="ch06-2060">
+<span class="box-label">Question 7</span>
+<p data-cid="ch06-2070">Why is the restricted product (rather than the full direct product or the direct sum) the right construction for <span class="tts-math" data-tts="I sub K">$I_K$</span>?</p>
+<ol class="quiz-options" data-cid="ch06-2080">
+<li>The full product is too small and the direct sum too big; the restricted product is the unique one that is a group.</li>
+<li>The full product fails to be locally compact in the right topology, while the direct sum forgets the integral structure; the restricted product allows finitely many "large" components yet forces the rest into the compact <span class="tts-math" data-tts="o p star">$\mathfrak{o}_\mathfrak{p}^*$</span>, making <span class="tts-math" data-tts="I sub K">$I_K$</span> locally compact.</li>
+<li>The restricted product is just the full product with the subspace topology, chosen so that <span class="tts-math" data-tts="K star">$K^*$</span> embeds continuously.</li>
+<li>Only the restricted product makes the diagonal embedding of <span class="tts-math" data-tts="K star">$K^*$</span> dense, which is what discreteness of <span class="tts-math" data-tts="K star">$K^*$</span> requires.</li>
+</ol>
+<details class="quiz-answer">
+<summary>Reveal answer &amp; explanation</summary>
+<p data-cid="ch06-2090"><strong>Answer: B.</strong> "Restricted" means all but finitely many components lie in <span class="tts-math" data-tts="o p star">$\mathfrak{o}_\mathfrak{p}^*$</span>. Because each <span class="tts-math" data-tts="o p star">$\mathfrak{o}_\mathfrak{p}^*$</span> is compact, this Goldilocks object is locally compact — the full product carries the wrong (non-locally-compact) topology and the direct sum throws away the integral structure. A inverts the sizing (the full product is too <em>big</em>, the sum too <em>small</em>) and all three are groups, so that is not the distinction. C is wrong on the key point: the restricted-product topology is strictly <em>finer</em> than the subspace topology from <span class="tts-math" data-tts="the full product">$\prod K_\mathfrak{p}$</span>, which is exactly what makes inversion continuous. D inverts the truth: <span class="tts-math" data-tts="K star">$K^*$</span> embeds <em>discretely</em> (and closed), not densely — by the product formula.</p>
+</details>
+</div>
 
 <nav class="chapter-nav">
 <a href="ch05.html"><span class="label">← Previous</span><span class="title">V. Local Class Field Theory</span></a>

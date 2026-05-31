@@ -1,0 +1,48 @@
+/* Knowledge-check quiz blocks — used at the end of chapter pages.
+   Built on the existing .box component; theme-aware via CSS variables. */
+
+.box.quiz {
+  background: var(--bg-elev);
+  border-color: var(--accent-soft);
+}
+.box.quiz .box-label { color: var(--accent); }
+
+/* The list of answer choices */
+.quiz-options {
+  list-style: upper-alpha;
+  margin: 0.6rem 0 0.4rem;
+  padding-left: 1.6rem;
+}
+.quiz-options > li {
+  margin: 0.35rem 0;
+  padding-left: 0.25rem;
+}
+
+/* The hidden answer + explanation */
+.quiz-answer {
+  margin-top: 0.7rem;
+  border-top: 1px dashed var(--rule);
+  padding-top: 0.5rem;
+}
+.quiz-answer > summary {
+  cursor: pointer;
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--accent);
+  list-style: none;
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.quiz-answer > summary::-webkit-details-marker { display: none; }
+.quiz-answer > summary::before {
+  content: "▶";
+  font-size: 0.7rem;
+  transition: transform 0.15s ease;
+}
+.quiz-answer[open] > summary::before { transform: rotate(90deg); }
+.quiz-answer[open] > summary { margin-bottom: 0.4rem; }
+.quiz-answer > summary:hover { color: var(--accent-soft); }

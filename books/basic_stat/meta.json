@@ -2,5 +2,8 @@
   "title": "Theoretical Statistics",
   "subtitle": "R. W. Keener",
   "description": "A slow companion guide for Keener's graduate-level statistics textbook — every definition unpacked, every step spelled out.",
-  "n_chapters": 20
+  "n_chapters": 20,
+  "year": 2010,
+  "topics": ["Mathematics/Statistics/Theoretical Statistics"],
+  "tags": ["statistics", "estimation", "hypothesis testing", "Bayesian inference", "asymptotics", "exponential families", "decision theory", "measure theory"]
 }

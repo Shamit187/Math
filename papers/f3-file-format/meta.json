@@ -2,5 +2,16 @@
   "title": "F3: The Open-Source Data File Format for the Future",
   "authors": "Xinyu Zeng, Ruijun Meng, Martin Prammer, Wes McKinney, Jignesh M. Patel, Andrew Pavlo, Huanchen Zhang",
   "venue": "SIGMOD 2025",
-  "description": "A next-generation columnar storage format addressing limitations of Parquet and ORC for modern data analytics."
+  "description": "A next-generation columnar storage format addressing limitations of Parquet and ORC for modern data analytics.",
+  "year": 2025,
+  "topics": [
+    "Computer Science/Databases/Storage Formats"
+  ],
+  "tags": [
+    "columnar storage",
+    "file formats",
+    "Parquet",
+    "analytics",
+    "compression"
+  ]
 }

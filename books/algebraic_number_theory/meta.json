@@ -2,5 +2,8 @@
   "title": "Algebraic Number Theory",
   "subtitle": "Jürgen Neukirch",
   "description": "A slow companion guide to Neukirch's Algebraic Number Theory — the standard graduate text, walked through one idea at a time: every definition motivated, every piece of machinery explained before it's used.",
-  "n_chapters": 7
+  "n_chapters": 7,
+  "year": 1999,
+  "topics": ["Mathematics/Number Theory/Algebraic Number Theory"],
+  "tags": ["algebraic number theory", "p-adic numbers", "valuations", "class field theory", "Dedekind domains", "ramification", "zeta and L-functions", "Galois theory"]
 }

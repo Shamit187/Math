@@ -10,7 +10,7 @@
 <link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
-<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/><link href="/css/tts.css" rel="stylesheet"/>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/><link href="/css/tts.css" rel="stylesheet"/><link href="/css/quiz.css" rel="stylesheet"/>
 </head>
 <body data-book="algebraic_number_theory" data-page="ch02">
 <header class="site-header">
@@ -36,6 +36,7 @@
 <li><a href="#s2-9">2.9 Galois Theory of Valuations</a></li>
 <li><a href="#s2-10">2.10 Higher Ramification Groups</a></li>
 <li><a href="#summary">Summary</a></li>
+<li><a href="#quiz">Knowledge check</a></li>
 </ol>
 </aside>
 <article class="content">
@@ -140,6 +141,43 @@ $$\varprojlim_n \mathbb{Z}/p^n\mathbb{Z} = \Big\{ (x_n)_n \in \prod_{n} \mathbb{
 <p data-cid="ch02-340">Let <span class="tts-math" data-tts="F a polynomial in x sub 1 through x sub n with integer coefficients">$F(x_1,\dots,x_n) \in \mathbb{Z}[x_1,\dots,x_n]$</span>. Then the congruence <span class="tts-math" data-tts="F congruent to 0 mod p to the v">$F \equiv 0 \pmod{p^v}$</span> is solvable for every <span class="tts-math" data-tts="v at least 1">$v \ge 1$</span> <strong>if and only if</strong> <span class="tts-math" data-tts="F equals 0">$F = 0$</span> has a solution in p-adic integers.</p>
 <p data-cid="ch02-350">So an infinite tower of congruences mod <span class="tts-math" data-tts="p, p squared, p cubed">$p, p^2, p^3, \dots$</span> is packaged into one single equation over <span class="tts-math" data-tts="Z sub p">$\mathbb{Z}_p$</span>. The proof is a compactness/diagonal argument: since each <span class="tts-math" data-tts="Z mod p Z">$\mathbb{Z}/p\mathbb{Z}$</span> is finite, you extract a coherent subsequence of approximate solutions that converges to a genuine p-adic solution. No real analysis is needed: the approximate solutions form an <em>infinite, finitely-branching tree</em> (each solution mod <span class="tts-math" data-tts="p to the v">$p^v$</span> has finitely many liftings mod <span class="tts-math" data-tts="p to the v plus 1">$p^{v+1}$</span>), and an infinite path through that tree — guaranteed by König's lemma, essentially the pigeonhole principle — is exactly the p-adic solution.</p>
 </div>
+<figure data-cid="ch02-355" style="max-width:440px">
+<svg viewBox="0 0 440 250" role="img" aria-label="The 2-adic tree: a root splitting repeatedly into two branches, residues mod 2, mod 4, mod 8; a highlighted path down the tree is one 2-adic integer" xmlns="http://www.w3.org/2000/svg">
+  <!-- edges: root to level1 -->
+  <line x1="220" y1="34" x2="120" y2="92" stroke="currentColor" stroke-width="1"/>
+  <line x1="220" y1="34" x2="320" y2="92" stroke="currentColor" stroke-width="1"/>
+  <!-- level1 to level2 -->
+  <line x1="120" y1="92" x2="70" y2="150" stroke="currentColor" stroke-width="1"/>
+  <line x1="120" y1="92" x2="170" y2="150" stroke="currentColor" stroke-width="1"/>
+  <line x1="320" y1="92" x2="270" y2="150" stroke="currentColor" stroke-width="1"/>
+  <line x1="320" y1="92" x2="370" y2="150" stroke="currentColor" stroke-width="1"/>
+  <!-- level2 to level3 (short stubs, faint) -->
+  <g stroke="currentColor" stroke-opacity="0.45" stroke-width="0.8">
+    <line x1="70" y1="150" x2="48" y2="200"/><line x1="70" y1="150" x2="92" y2="200"/>
+    <line x1="170" y1="150" x2="148" y2="200"/><line x1="170" y1="150" x2="192" y2="200"/>
+    <line x1="270" y1="150" x2="248" y2="200"/><line x1="270" y1="150" x2="292" y2="200"/>
+    <line x1="370" y1="150" x2="348" y2="200"/><line x1="370" y1="150" x2="392" y2="200"/>
+  </g>
+  <!-- highlighted coherent path: root -> right -> its left -> that left -->
+  <g style="stroke:var(--accent)" stroke-width="2.5" fill="none">
+    <line x1="220" y1="34" x2="320" y2="92"/>
+    <line x1="320" y1="92" x2="270" y2="150"/>
+    <line x1="270" y1="150" x2="248" y2="200"/>
+  </g>
+  <!-- nodes -->
+  <circle cx="220" cy="34" r="6" fill="currentColor"/>
+  <g fill="currentColor"><circle cx="120" cy="92" r="5"/><circle cx="70" cy="150" r="4"/><circle cx="170" cy="150" r="4"/><circle cx="370" cy="150" r="4"/></g>
+  <g style="fill:var(--accent)"><circle cx="320" cy="92" r="5"/><circle cx="270" cy="150" r="4"/><circle cx="248" cy="200" r="4"/></g>
+  <!-- labels -->
+  <text x="108" y="86" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="end">0</text>
+  <text x="332" y="86" fill="currentColor" font-family="Inter, sans-serif" font-size="11">1</text>
+  <text x="430" y="38" fill="currentColor" font-family="Inter, sans-serif" font-size="10" text-anchor="end" opacity="0.7">mod 2</text>
+  <text x="430" y="96" fill="currentColor" font-family="Inter, sans-serif" font-size="10" text-anchor="end" opacity="0.7">mod 4</text>
+  <text x="430" y="154" fill="currentColor" font-family="Inter, sans-serif" font-size="10" text-anchor="end" opacity="0.7">mod 8</text>
+  <text x="220" y="232" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">one path = one coherent tuple = one element of Z_2</text>
+</svg>
+<figcaption>The 2-adic tree: each residue mod <span class="tts-math" data-tts="2 to the n">$2^n$</span> splits into two residues mod <span class="tts-math" data-tts="2 to the n plus 1">$2^{n+1}$</span>, and an infinite downward path is exactly a coherent tuple in <span class="tts-math" data-tts="the inverse limit of Z mod 2 to the n Z, which is Z sub 2">$\varprojlim \mathbb{Z}/2^n\mathbb{Z} = \mathbb{Z}_2$</span>.</figcaption>
+</figure>
 <div class="box warn" data-cid="ch02-360">
 <span class="box-label">Watch out</span>
 <p data-cid="ch02-370">Solvability in <span class="tts-math" data-tts="Z sub p">$\mathbb{Z}_p$</span> for all <span class="tts-math" data-tts="p">$p$</span> (and in <span class="tts-math" data-tts="R">$\mathbb{R}$</span>) does <em>not</em> guarantee a solution in <span class="tts-math" data-tts="Z">$\mathbb{Z}$</span>; that stronger statement (the Hasse principle) holds for quadratic forms but fails in general. p-adic solvability is a powerful necessary test, not always sufficient.</p>
@@ -184,6 +222,32 @@ $$\prod_{p \le \infty} |a|_p = 1,$$
 <span class="box-label">Example — Ostrowski's classification of norms on Q (3.7)</span>
 <p data-cid="ch02-510">Every nontrivial absolute value on <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span> is <em>equivalent</em> (induces the same topology — made precise in §2.3) to exactly one of: the ordinary <span class="tts-math" data-tts="absolute value at infinity">$|\cdot|_\infty$</span>, or a p-adic <span class="tts-math" data-tts="absolute value at p">$|\cdot|_p$</span>. So the "points" of <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span> are precisely the primes together with one <em>archimedean</em> point at infinity — "archimedean" meaning the absolute value of the integers <span class="tts-math" data-tts="1, 2, 3, and so on">$1,2,3,\dots$</span> is unbounded, the usual feature of <span class="tts-math" data-tts="the absolute value at infinity">$|\cdot|_\infty$</span> that the p-adic ones lack (also §2.3). There are no surprises hiding.</p>
 </div>
+<figure data-cid="ch02-515" style="max-width:460px">
+<svg viewBox="0 0 460 110" role="img" aria-label="The places of the rationals drawn as points on a line: one dot for each prime 2, 3, 5, 7, 11 and a single dot at infinity for the real place" xmlns="http://www.w3.org/2000/svg">
+  <!-- axis -->
+  <line x1="20" y1="58" x2="440" y2="58" stroke="currentColor" stroke-width="1"/>
+  <!-- finite places (primes) -->
+  <g fill="currentColor">
+    <circle cx="60" cy="58" r="5"/><circle cx="120" cy="58" r="5"/>
+    <circle cx="180" cy="58" r="5"/><circle cx="240" cy="58" r="5"/>
+    <circle cx="300" cy="58" r="5"/>
+  </g>
+  <text x="345" y="62" fill="currentColor" font-family="Inter, sans-serif" font-size="14" text-anchor="middle">···</text>
+  <!-- infinite (archimedean) place: the hero -->
+  <circle cx="400" cy="58" r="6.5" style="fill:var(--accent)"/>
+  <!-- prime labels -->
+  <g fill="currentColor" font-family="Inter, sans-serif" font-size="12" text-anchor="middle">
+    <text x="60" y="80">2</text><text x="120" y="80">3</text>
+    <text x="180" y="80">5</text><text x="240" y="80">7</text>
+    <text x="300" y="80">11</text>
+  </g>
+  <text x="400" y="80" style="fill:var(--accent)" font-family="Inter, sans-serif" font-size="14" text-anchor="middle">∞</text>
+  <!-- captions on the line -->
+  <text x="160" y="30" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">nonarchimedean places  |·|_p</text>
+  <text x="400" y="30" style="fill:var(--accent)" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">real place</text>
+</svg>
+<figcaption>Ostrowski: the places of <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span> are one point per prime, carrying <span class="tts-math" data-tts="the p-adic absolute value">$|\cdot|_p$</span>, plus a single archimedean point <span class="tts-math" data-tts="infinity">$\infty$</span> carrying <span class="tts-math" data-tts="the absolute value at infinity">$|\cdot|_\infty$</span>.</figcaption>
+</figure>
 
 <h3 data-cid="ch02-520">Rebuilding Q_p analytically</h3>
 <p data-cid="ch02-530">Now complete <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span> with respect to <span class="tts-math" data-tts="absolute value at p">$|\cdot|_p$</span> exactly as one builds <span class="tts-math" data-tts="R">$\mathbb{R}$</span> from <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span>. Take the ring <span class="tts-math" data-tts="R">$R$</span> of Cauchy sequences, the maximal ideal <span class="tts-math" data-tts="m">$\mathfrak{m}$</span> of nullsequences, and define</p>
@@ -200,6 +264,28 @@ $$\mathbb{Q}_p := R/\mathfrak{m}.$$
 <span class="box-label">Watch out — geometry of an ultrametric space</span>
 <p data-cid="ch02-580">In an ultrametric world every triangle is isosceles, every point of a ball is its center, and two balls are either nested or disjoint. The closed unit ball <span class="tts-math" data-tts="Z sub p">$\mathbb{Z}_p$</span> is <em>both</em> open and closed. Your Euclidean intuition about "size" must be retrained.</p>
 </div>
+<figure data-cid="ch02-585" style="max-width:420px">
+<svg viewBox="0 0 420 230" role="img" aria-label="Ultrametric balls: a large disk containing several smaller disks, each pairwise disjoint or fully nested, with marked points showing every point is a center" xmlns="http://www.w3.org/2000/svg">
+  <!-- big ball (radius 1) -->
+  <circle cx="170" cy="115" r="100" fill="none" stroke="currentColor" stroke-width="1.2"/>
+  <!-- nested medium ball (hero) -->
+  <circle cx="135" cy="100" r="48" style="fill:var(--accent)" fill-opacity="0.13" stroke="none"/>
+  <circle cx="135" cy="100" r="48" fill="none" style="stroke:var(--accent)" stroke-width="2"/>
+  <!-- smaller ball nested inside the hero -->
+  <circle cx="120" cy="92" r="20" fill="none" style="stroke:var(--accent)" stroke-width="1.5"/>
+  <!-- disjoint sibling ball -->
+  <circle cx="215" cy="150" r="38" fill="none" stroke="currentColor" stroke-width="1.2"/>
+  <circle cx="215" cy="150" r="16" fill="none" stroke="currentColor" stroke-width="0.9" stroke-opacity="0.7"/>
+  <!-- "every point is a center": three points in the hero ball -->
+  <g style="fill:var(--accent)"><circle cx="135" cy="100" r="3"/><circle cx="150" cy="118" r="3"/><circle cx="118" cy="80" r="3"/></g>
+  <!-- labels -->
+  <text x="170" y="30" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">disjoint OR nested — never crossing</text>
+  <text x="118" y="172" style="fill:var(--accent)" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">every point a center</text>
+  <text x="395" y="120" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="end">Z_p</text>
+  <line x1="270" y1="115" x2="375" y2="118" stroke="currentColor" stroke-width="0.6" stroke-opacity="0.5"/>
+</svg>
+<figcaption>Non-archimedean geometry: any two balls are disjoint or nested, and any point of a ball serves as its center — so the inequality <span class="tts-math" data-tts="the absolute value of x plus y is at most the max of the absolute value of x and the absolute value of y">$|x+y|\le\max\{|x|,|y|\}$</span> reshapes all of <span class="tts-math" data-tts="Q sub p">$\mathbb{Q}_p$</span>.</figcaption>
+</figure>
 
 <!-- ============================ 2.3 ============================ -->
 <h2 id="s2-3" data-cid="ch02-590">2.3 Valuations</h2>
@@ -256,6 +342,35 @@ $$\mathfrak{o}^*/U^{(n)} \cong (\mathfrak{o}/\mathfrak{p}^n)^*, \qquad U^{(n)}/U
 <span class="box-label">Definition (4.1) — completion</span>
 <p data-cid="ch02-850"><span class="tts-math" data-tts="K with absolute value">$(K,|\cdot|)$</span> is <strong>complete</strong> if every Cauchy sequence converges. From any valued field one forms its <strong>completion</strong> <span class="tts-math" data-tts="K hat">$\hat{K}$</span> as Cauchy sequences modulo nullsequences; it is complete, contains <span class="tts-math" data-tts="K">$K$</span> as a dense subfield, and is unique up to canonical isomorphism.</p>
 </div>
+<figure data-cid="ch02-855" style="max-width:440px">
+<svg viewBox="0 0 440 150" role="img" aria-label="Completion fills gaps: rational points densely scattered on a line, a Cauchy sequence of them marching toward a new limit point not among the rationals" xmlns="http://www.w3.org/2000/svg">
+  <!-- line -->
+  <line x1="20" y1="78" x2="420" y2="78" stroke="currentColor" stroke-width="1"/>
+  <!-- dense rational ticks -->
+  <g stroke="currentColor" stroke-width="0.8" stroke-opacity="0.5">
+    <line x1="40" y1="72" x2="40" y2="84"/><line x1="75" y1="72" x2="75" y2="84"/>
+    <line x1="120" y1="72" x2="120" y2="84"/><line x1="170" y1="72" x2="170" y2="84"/>
+    <line x1="225" y1="72" x2="225" y2="84"/><line x1="290" y1="72" x2="290" y2="84"/>
+    <line x1="360" y1="72" x2="360" y2="84"/><line x1="400" y1="72" x2="400" y2="84"/>
+  </g>
+  <!-- Cauchy sequence closing in on the limit -->
+  <g fill="currentColor">
+    <circle cx="120" cy="78" r="4"/><circle cx="200" cy="78" r="4"/>
+    <circle cx="255" cy="78" r="3.5"/><circle cx="288" cy="78" r="3"/>
+    <circle cx="305" cy="78" r="2.6"/><circle cx="314" cy="78" r="2.2"/>
+  </g>
+  <!-- labels for sequence terms -->
+  <g fill="currentColor" font-family="Inter, sans-serif" font-size="10" text-anchor="middle">
+    <text x="120" y="62">x_1</text><text x="200" y="62">x_2</text><text x="255" y="62">x_3</text>
+  </g>
+  <!-- the new limit point: hero -->
+  <line x1="322" y1="64" x2="322" y2="92" style="stroke:var(--accent)" stroke-width="2"/>
+  <circle cx="322" cy="78" r="4.5" style="fill:var(--accent)"/>
+  <text x="322" y="112" style="fill:var(--accent)" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">new limit ∈ K-hat</text>
+  <text x="120" y="132" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">Q dense, but with gaps</text>
+</svg>
+<figcaption>Completion fills the gaps: <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span> sits densely inside <span class="tts-math" data-tts="K hat">$\hat{K}$</span>, and a Cauchy sequence <span class="tts-math" data-tts="x sub 1, x sub 2, x sub 3, and so on">$x_1,x_2,x_3,\dots$</span> with no rational limit now converges to a brand-new point of <span class="tts-math" data-tts="K hat">$\hat{K}$</span>.</figcaption>
+</figure>
 
 <div class="box pause" data-cid="ch02-860">
 <span class="box-label">Pause — Ostrowski's theorem (4.2)</span>
@@ -385,6 +500,41 @@ $$(0,\,3), \qquad (1,\,1), \qquad (2,\,0).$$
 </ul>
 <p data-cid="ch02-1338">Reading off: <span class="tts-math" data-tts="f">$f$</span> has one root <span class="tts-math" data-tts="alpha">$\alpha$</span> with <span class="tts-math" data-tts="w of alpha equals 2">$w(\alpha)=2$</span> and one root <span class="tts-math" data-tts="beta">$\beta$</span> with <span class="tts-math" data-tts="w of beta equals 1">$w(\beta)=1$</span> — different valuations, so <span class="tts-math" data-tts="f">$f$</span> is reducible over <span class="tts-math" data-tts="Q sub p">$\mathbb{Q}_p$</span>. Sanity check via the coefficients: <span class="tts-math" data-tts="w of alpha plus w of beta equals v of a sub 0 equals 3">$w(\alpha)+w(\beta) = v_p(a_0) = 3$</span> (product of roots is <span class="tts-math" data-tts="a sub 0">$a_0$</span>), matching <span class="tts-math" data-tts="2 plus 1">$2+1$</span>.</p>
 </div>
+<figure data-cid="ch02-1339" style="max-width:400px">
+<svg viewBox="0 0 400 270" role="img" aria-label="Newton polygon of x squared plus p x plus p cubed: three plotted points at heights 3, 1, 0, with the lower convex hull two segments of slopes minus 2 and minus 1" xmlns="http://www.w3.org/2000/svg">
+  <!-- axes -->
+  <line x1="55" y1="220" x2="360" y2="220" stroke="currentColor" stroke-width="1"/>
+  <line x1="55" y1="220" x2="55" y2="30" stroke="currentColor" stroke-width="1"/>
+  <!-- gridlines -->
+  <g stroke="currentColor" stroke-opacity="0.25" stroke-width="0.5">
+    <line x1="55" y1="160" x2="360" y2="160"/>
+    <line x1="55" y1="100" x2="360" y2="100"/>
+    <line x1="55" y1="40" x2="360" y2="40"/>
+    <line x1="155" y1="30" x2="155" y2="220"/>
+    <line x1="255" y1="30" x2="255" y2="220"/>
+  </g>
+  <!-- axis tick labels: x = i -->
+  <g fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">
+    <text x="55" y="238">0</text><text x="155" y="238">1</text><text x="255" y="238">2</text>
+  </g>
+  <!-- y ticks: v(a_i) -->
+  <g fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="end">
+    <text x="48" y="224">0</text><text x="48" y="164">1</text>
+    <text x="48" y="104">2</text><text x="48" y="44">3</text>
+  </g>
+  <text x="372" y="224" fill="currentColor" font-family="Inter, sans-serif" font-size="11">i</text>
+  <text x="55" y="22" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">v(a_i)</text>
+  <!-- lower convex hull: (0,3)->(1,1)->(2,0)  hero -->
+  <polyline points="55,40 155,160 255,220" fill="none" style="stroke:var(--accent)" stroke-width="2.5"/>
+  <!-- plotted points: (0,3),(1,1),(2,0) -->
+  <g fill="currentColor"><circle cx="55" cy="40" r="4.5"/><circle cx="155" cy="160" r="4.5"/><circle cx="255" cy="220" r="4.5"/></g>
+  <!-- slope labels -->
+  <text x="92" y="92" style="fill:var(--accent)" font-family="Inter, sans-serif" font-size="11">slope −2</text>
+  <text x="200" y="178" style="fill:var(--accent)" font-family="Inter, sans-serif" font-size="11">slope −1</text>
+  <text x="200" y="260" fill="currentColor" font-family="Inter, sans-serif" font-size="10" text-anchor="middle">−slope = root valuation (2 and 1)</text>
+</svg>
+<figcaption>Newton polygon of <span class="tts-math" data-tts="x squared plus p x plus p cubed">$x^2+px+p^3$</span>: the lower hull of the points <span class="tts-math" data-tts="0 comma 3, 1 comma 1, 2 comma 0">$(0,3),(1,1),(2,0)$</span> has slopes <span class="tts-math" data-tts="negative 2 and negative 1">$-2,-1$</span>, so the roots have valuations <span class="tts-math" data-tts="2 and 1">$2$ and $1$</span>.</figcaption>
+</figure>
 
 <h3 data-cid="ch02-1340">Ramification index and inertia degree</h3>
 <p data-cid="ch02-1350">Let <span class="tts-math" data-tts="L over K">$L|K$</span> be finite, <span class="tts-math" data-tts="K">$K$</span> henselian, <span class="tts-math" data-tts="w">$w$</span> the unique extension of <span class="tts-math" data-tts="v">$v$</span>. Two invariants compare <span class="tts-math" data-tts="L">$L$</span> to <span class="tts-math" data-tts="K">$K$</span>:</p>
@@ -406,6 +556,36 @@ $$e = (w(L^*) : v(K^*)), \qquad f = [\lambda : k].$$
 <p data-cid="ch02-1367"><strong>Ramified:</strong> <span class="tts-math" data-tts="Q sub p adjoin the square root of p over Q sub p">$\mathbb{Q}_p(\sqrt{p})\,|\,\mathbb{Q}_p$</span>. We saw <span class="tts-math" data-tts="the square root of p has valuation one half">$w(\sqrt{p}) = \tfrac{1}{2}$</span>, so the value group grows from <span class="tts-math" data-tts="the integers">$\mathbb{Z}$</span> to <span class="tts-math" data-tts="one half times the integers">$\tfrac{1}{2}\mathbb{Z}$</span>: index <span class="tts-math" data-tts="e equals 2">$e=2$</span>. The residue field stays <span class="tts-math" data-tts="F sub p">$\mathbb{F}_p$</span>, so <span class="tts-math" data-tts="f equals 1">$f=1$</span>. Check: <span class="tts-math" data-tts="e times f equals 2 equals the degree">$ef = 2 = [L:K]$</span>.</p>
 <p data-cid="ch02-1368"><strong>Unramified:</strong> <span class="tts-math" data-tts="Q sub p adjoin a primitive ell-th root of unity over Q sub p">$\mathbb{Q}_p(\zeta_\ell)\,|\,\mathbb{Q}_p$</span> for a prime <span class="tts-math" data-tts="ell different from p">$\ell \ne p$</span>. No new valuations appear, so <span class="tts-math" data-tts="e equals 1">$e=1$</span>; instead the residue field grows to <span class="tts-math" data-tts="F sub p adjoin a primitive ell-th root of unity">$\mathbb{F}_p(\zeta_\ell)$</span>, and <span class="tts-math" data-tts="f">$f$</span> equals the multiplicative order of <span class="tts-math" data-tts="p mod ell">$p \bmod \ell$</span> (the least <span class="tts-math" data-tts="f">$f$</span> with <span class="tts-math" data-tts="p to the f congruent to 1 mod ell">$p^f \equiv 1 \pmod \ell$</span>).</p>
 </div>
+<figure data-cid="ch02-1369" style="max-width:420px">
+<svg viewBox="0 0 420 250" role="img" aria-label="The e times f picture for a local extension L over K: a tower where the prime p O equals capital P to the e, ramification e stretches vertically and residue degree f grows the residue field, with e times f equal to the degree of L over K" xmlns="http://www.w3.org/2000/svg">
+  <!-- K (bottom) -->
+  <line x1="60" y1="210" x2="200" y2="210" stroke="currentColor" stroke-width="2"/>
+  <text x="44" y="214" fill="currentColor" font-family="Inter, sans-serif" font-size="13" text-anchor="end">K</text>
+  <text x="130" y="230" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">prime p, residue field k</text>
+  <!-- L (top) -->
+  <line x1="60" y1="50" x2="200" y2="50" stroke="currentColor" stroke-width="2"/>
+  <text x="44" y="54" fill="currentColor" font-family="Inter, sans-serif" font-size="13" text-anchor="end">L</text>
+  <text x="130" y="38" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">𝔭O = 𝔓^e,  residue field λ</text>
+  <!-- ramification: the e-fold stretch (hero) drawn as e stacked rungs -->
+  <g style="stroke:var(--accent)" stroke-width="2">
+    <line x1="130" y1="210" x2="130" y2="50"/>
+  </g>
+  <g style="stroke:var(--accent)" stroke-width="1.4">
+    <line x1="120" y1="170" x2="140" y2="170"/>
+    <line x1="120" y1="130" x2="140" y2="130"/>
+    <line x1="120" y1="90" x2="140" y2="90"/>
+  </g>
+  <text x="152" y="134" style="fill:var(--accent)" font-family="Inter, sans-serif" font-size="12">e  (ramification)</text>
+  <!-- residue degree f: growth sideways -->
+  <line x1="260" y1="210" x2="260" y2="50" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3"/>
+  <text x="270" y="210" fill="currentColor" font-family="Inter, sans-serif" font-size="12">k</text>
+  <text x="270" y="50" fill="currentColor" font-family="Inter, sans-serif" font-size="12">λ, [λ:k]=f</text>
+  <text x="300" y="134" fill="currentColor" font-family="Inter, sans-serif" font-size="12">f  (residue)</text>
+  <!-- ef = [L:K] -->
+  <text x="210" y="246" fill="currentColor" font-family="Inter, sans-serif" font-size="12" text-anchor="middle">e · f = [L : K]</text>
+</svg>
+<figcaption>A local extension <span class="tts-math" data-tts="L over K">$L|K$</span>: the prime factors as <span class="tts-math" data-tts="p O sub K equals capital P to the e">$\mathfrak{p}\mathcal{O} = \mathfrak{P}^e$</span> (ramification <span class="tts-math" data-tts="e">$e$</span>, the vertical stretch) while the residue field grows by degree <span class="tts-math" data-tts="f">$f$</span>, and <span class="tts-math" data-tts="e times f equals the degree of L over K">$ef = [L:K]$</span>.</figcaption>
+</figure>
 <div class="box definition" data-cid="ch02-1370">
 <span class="box-label">Proposition (6.8) — the fundamental identity</span>
 <p data-cid="ch02-1380">Always <span class="tts-math" data-tts="the degree of L over K is at least e times f">$[L:K] \ge ef$</span>, and if <span class="tts-math" data-tts="v">$v$</span> is discrete with <span class="tts-math" data-tts="L over K separable">$L|K$</span> separable,</p>
@@ -598,6 +778,114 @@ $$G^t(L|K)\,H/H = G^t(L'|K).$$
 <div class="box intuition" data-cid="ch02-2070">
 <span class="box-label">The one-sentence takeaway</span>
 <p data-cid="ch02-2080">Every prime <span class="tts-math" data-tts="p">$p$</span> gives a magnifying glass — the completion <span class="tts-math" data-tts="K sub v">$K_v$</span> — through which a global field's arithmetic near that prime becomes a clean, almost-geometric local theory; ramification groups measure exactly how violently an extension distorts the picture under that magnifying glass.</p>
+</div>
+
+<h2 id="quiz" data-cid="ch02-2100">Knowledge check</h2>
+<p data-cid="ch02-2110">These are designed to make you think — the wrong options are deliberately tempting. Decide on your answer before revealing the explanation.</p>
+
+<div class="box quiz" data-cid="ch02-2120">
+<span class="box-label">Question 1</span>
+<p data-cid="ch02-2130">Compute the p-adic absolute value <span class="tts-math" data-tts="the absolute value, at 2, of the fraction 40 over 9">$\left|\tfrac{40}{9}\right|_2$</span>. (Recall <span class="tts-math" data-tts="40 equals 2 cubed times 5">$40 = 2^3{\cdot}5$</span> and <span class="tts-math" data-tts="9 equals 3 squared">$9 = 3^2$</span>.)</p>
+<ol class="quiz-options" data-cid="ch02-2140">
+<li><span class="tts-math" data-tts="one eighth">$\tfrac{1}{8}$</span></li>
+<li><span class="tts-math" data-tts="8">$8$</span></li>
+<li><span class="tts-math" data-tts="one half">$\tfrac{1}{2}$</span></li>
+<li><span class="tts-math" data-tts="40 over 9">$\tfrac{40}{9}$</span></li>
+</ol>
+<details class="quiz-answer">
+<summary>Reveal answer &amp; explanation</summary>
+<p data-cid="ch02-2150"><strong>Answer: A.</strong> Write <span class="tts-math" data-tts="40 over 9 equals 2 cubed times 5 over 9">$\tfrac{40}{9} = 2^3{\cdot}\tfrac{5}{9}$</span>, where <span class="tts-math" data-tts="5 over 9">$\tfrac{5}{9}$</span> has numerator and denominator both prime to <span class="tts-math" data-tts="2">$2$</span>. So <span class="tts-math" data-tts="v sub 2 of 40 over 9 equals 3">$v_2(\tfrac{40}{9}) = 3$</span> and <span class="tts-math" data-tts="the absolute value at 2 equals 2 to the minus 3 equals one eighth">$|\cdot|_2 = 2^{-3} = \tfrac{1}{8}$</span>. (B) <span class="tts-math" data-tts="8">$8$</span> drops the minus sign in the exponent — a high power of <span class="tts-math" data-tts="p">$p$</span> makes a number p-adically <em>small</em>, not large. (C) <span class="tts-math" data-tts="one half">$\tfrac{1}{2}$</span> reads off <span class="tts-math" data-tts="v sub 2 equals 1">$v_2 = 1$</span>, forgetting that <span class="tts-math" data-tts="40">$40$</span> carries three factors of <span class="tts-math" data-tts="2">$2$</span>. (D) <span class="tts-math" data-tts="40 over 9">$\tfrac{40}{9}$</span> is the ordinary archimedean size, ignoring that we are measuring 2-adically.</p>
+</details>
+</div>
+
+<div class="box quiz" data-cid="ch02-2160">
+<span class="box-label">Question 2</span>
+<p data-cid="ch02-2170">Which statement about <span class="tts-math" data-tts="Z localized at p">$\mathbb{Z}_{(p)}$</span> and <span class="tts-math" data-tts="Z sub p">$\mathbb{Z}_p$</span> is correct?</p>
+<ol class="quiz-options" data-cid="ch02-2180">
+<li><span class="tts-math" data-tts="Z localized at p equals Z sub p">$\mathbb{Z}_{(p)} = \mathbb{Z}_p$</span>; the two notations are interchangeable.</li>
+<li><span class="tts-math" data-tts="Z sub p">$\mathbb{Z}_p$</span> is the subring of fractions with denominator prime to <span class="tts-math" data-tts="p">$p$</span>, and <span class="tts-math" data-tts="Z localized at p">$\mathbb{Z}_{(p)}$</span> is its completion.</li>
+<li><span class="tts-math" data-tts="Z localized at p">$\mathbb{Z}_{(p)}$</span> is the subring of <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span> of fractions with denominator prime to <span class="tts-math" data-tts="p">$p$</span>, and it sits strictly inside <span class="tts-math" data-tts="Z sub p">$\mathbb{Z}_p$</span>.</li>
+<li><span class="tts-math" data-tts="Z localized at p">$\mathbb{Z}_{(p)}$</span> is uncountable while <span class="tts-math" data-tts="Z sub p">$\mathbb{Z}_p$</span> is countable.</li>
+</ol>
+<details class="quiz-answer">
+<summary>Reveal answer &amp; explanation</summary>
+<p data-cid="ch02-2190"><strong>Answer: C.</strong> The localization <span class="tts-math" data-tts="Z localized at p">$\mathbb{Z}_{(p)}$</span> is the small ring of rationals <span class="tts-math" data-tts="a over b">$a/b$</span> with <span class="tts-math" data-tts="b prime to p">$(b,p)=1$</span>; the p-adic integers <span class="tts-math" data-tts="Z sub p">$\mathbb{Z}_p$</span> are the much larger ring of full infinite p-adic series, and <span class="tts-math" data-tts="Z localized at p sits inside Z sub p">$\mathbb{Z}_{(p)} \subset \mathbb{Z}_p$</span>. (A) is the headline confusion the two look-alike subscripts invite. (B) swaps the roles of the two rings. (D) is backwards on cardinality: <span class="tts-math" data-tts="Z localized at p">$\mathbb{Z}_{(p)} \subset \mathbb{Q}$</span> is countable, whereas <span class="tts-math" data-tts="Z sub p">$\mathbb{Z}_p$</span> is uncountable.</p>
+</details>
+</div>
+
+<div class="box quiz" data-cid="ch02-2200">
+<span class="box-label">Question 3</span>
+<p data-cid="ch02-2210">In a nonarchimedean field, suppose <span class="tts-math" data-tts="the absolute value of x equals 3 and the absolute value of y equals 7">$|x| = 3$</span> and <span class="tts-math" data-tts="the absolute value of y equals 7">$|y| = 7$</span> (in some normalization). What can you conclude about <span class="tts-math" data-tts="the absolute value of x plus y">$|x+y|$</span>?</p>
+<ol class="quiz-options" data-cid="ch02-2220">
+<li><span class="tts-math" data-tts="the absolute value of x plus y equals 10">$|x+y| = 10$</span>.</li>
+<li><span class="tts-math" data-tts="the absolute value of x plus y equals 7 exactly">$|x+y| = 7$</span> exactly.</li>
+<li><span class="tts-math" data-tts="the absolute value of x plus y is at most 7, and could be anything from 0 up to 7">$|x+y| \le 7$</span>, with no sharper conclusion.</li>
+<li><span class="tts-math" data-tts="the absolute value of x plus y is at least 7">$|x+y| \ge 7$</span>.</li>
+</ol>
+<details class="quiz-answer">
+<summary>Reveal answer &amp; explanation</summary>
+<p data-cid="ch02-2230"><strong>Answer: B.</strong> The strong triangle inequality gives <span class="tts-math" data-tts="the absolute value of x plus y at most the max of 3 and 7 equals 7">$|x+y| \le \max\{3,7\} = 7$</span>, but because <span class="tts-math" data-tts="the absolute value of x is not equal to the absolute value of y">$|x| \ne |y|$</span> the isosceles rule upgrades this to <em>equality</em>: <span class="tts-math" data-tts="the absolute value of x plus y equals the max equals 7">$|x+y| = \max\{|x|,|y|\} = 7$</span>. (A) is the ordinary archimedean triangle equality, which fails here. (C) states only the inequality and misses that distinct absolute values force equality. (D) gets the direction of the bound wrong — the ultrametric inequality caps <span class="tts-math" data-tts="the absolute value of the sum">$|x+y|$</span> at the max, it does not bound it below.</p>
+</details>
+</div>
+
+<div class="box quiz" data-cid="ch02-2240">
+<span class="box-label">Question 4</span>
+<p data-cid="ch02-2250">Consider <span class="tts-math" data-tts="f of x equals x squared plus 1">$f(x) = x^2 + 1$</span> over <span class="tts-math" data-tts="Q sub 5">$\mathbb{Q}_5$</span>. Does <span class="tts-math" data-tts="f">$f$</span> have a root in <span class="tts-math" data-tts="Z sub 5">$\mathbb{Z}_5$</span>, and why?</p>
+<ol class="quiz-options" data-cid="ch02-2260">
+<li>No — <span class="tts-math" data-tts="x squared plus 1">$x^2+1$</span> is irreducible over <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span>, so it stays irreducible over every <span class="tts-math" data-tts="Q sub p">$\mathbb{Q}_p$</span>.</li>
+<li>Yes — every monic polynomial over <span class="tts-math" data-tts="Z sub p">$\mathbb{Z}_p$</span> has a root in <span class="tts-math" data-tts="Z sub p">$\mathbb{Z}_p$</span>.</li>
+<li>No — Hensel's lemma needs <span class="tts-math" data-tts="f">$f$</span> to be reducible mod <span class="tts-math" data-tts="p">$p$</span>, and <span class="tts-math" data-tts="x squared plus 1">$x^2+1$</span> has degree <span class="tts-math" data-tts="2">$2$</span>.</li>
+<li>Yes — <span class="tts-math" data-tts="x squared plus 1 mod 5">$x^2+1$</span> has the simple root <span class="tts-math" data-tts="x equals 2 mod 5">$x \equiv 2 \pmod 5$</span>, with nonzero derivative, so Hensel lifts it.</li>
+</ol>
+<details class="quiz-answer">
+<summary>Reveal answer &amp; explanation</summary>
+<p data-cid="ch02-2270"><strong>Answer: D.</strong> Mod <span class="tts-math" data-tts="5">$5$</span> we have <span class="tts-math" data-tts="2 squared plus 1 equals 5 congruent to 0">$2^2+1 = 5 \equiv 0$</span> and likewise <span class="tts-math" data-tts="3">$x \equiv 3$</span>; the derivative <span class="tts-math" data-tts="f prime equals 2 x">$f'(x) = 2x$</span> is <span class="tts-math" data-tts="4 mod 5, nonzero">$2{\cdot}2 = 4 \not\equiv 0 \pmod 5$</span>, so the residue root is simple and Hensel's lemma lifts it to <span class="tts-math" data-tts="Z sub 5">$\mathbb{Z}_5$</span> (indeed <span class="tts-math" data-tts="Q sub 5 contains the square root of minus 1">$\sqrt{-1} \in \mathbb{Q}_5$</span>). (A) confuses irreducibility over <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span> with irreducibility over <span class="tts-math" data-tts="Q sub p">$\mathbb{Q}_p$</span> — a polynomial can split locally even when globally irreducible. (C) inverts the hypothesis: Hensel wants a <em>coprime/simple</em> factorization mod <span class="tts-math" data-tts="p">$\mathfrak{p}$</span>, here a simple root, not irreducibility. (B) is false — e.g. <span class="tts-math" data-tts="x squared minus p">$x^2 - p$</span> has no root in <span class="tts-math" data-tts="Z sub p">$\mathbb{Z}_p$</span>.</p>
+</details>
+</div>
+
+<div class="box quiz" data-cid="ch02-2280">
+<span class="box-label">Question 5</span>
+<p data-cid="ch02-2290">Determine the ramification index <span class="tts-math" data-tts="e">$e$</span> and inertia degree <span class="tts-math" data-tts="f">$f$</span> for <span class="tts-math" data-tts="Q sub 7 adjoin a primitive cube root of unity over Q sub 7">$\mathbb{Q}_7(\zeta_3)\,|\,\mathbb{Q}_7$</span>.</p>
+<ol class="quiz-options" data-cid="ch02-2300">
+<li><span class="tts-math" data-tts="e equals 1 and f equals 1">$e=1,\ f=1$</span> (trivial extension).</li>
+<li><span class="tts-math" data-tts="e equals 1 and f equals 2">$e=1,\ f=2$</span> (unramified).</li>
+<li><span class="tts-math" data-tts="e equals 2 and f equals 1">$e=2,\ f=1$</span> (ramified).</li>
+<li><span class="tts-math" data-tts="e equals 2 and f equals 2">$e=2,\ f=2$</span>.</li>
+</ol>
+<details class="quiz-answer">
+<summary>Reveal answer &amp; explanation</summary>
+<p data-cid="ch02-2310"><strong>Answer: A.</strong> Adjoining a prime-to-<span class="tts-math" data-tts="p">$p$</span> root of unity (here <span class="tts-math" data-tts="ell equals 3 different from p equals 7">$\ell=3 \ne p=7$</span>) is unramified, so <span class="tts-math" data-tts="e equals 1">$e=1$</span>, and <span class="tts-math" data-tts="f">$f$</span> is the order of <span class="tts-math" data-tts="7 mod 3">$7 \bmod 3$</span>. Since <span class="tts-math" data-tts="7 congruent to 1 mod 3">$7 \equiv 1 \pmod 3$</span>, that order is <span class="tts-math" data-tts="1">$1$</span>, so <span class="tts-math" data-tts="f equals 1">$f=1$</span> and <span class="tts-math" data-tts="Q sub 7 already contains a primitive cube root of unity">$\zeta_3 \in \mathbb{Q}_7$</span> already — the extension is trivial. (B) correctly spots "unramified" but forgets to check the order of <span class="tts-math" data-tts="p mod ell">$p \bmod \ell$</span>, which is <span class="tts-math" data-tts="1">$1$</span> not <span class="tts-math" data-tts="2">$2$</span>. (C) confuses this with a <em>p</em>-power cyclotomic extension like <span class="tts-math" data-tts="Q sub 7 adjoin a 7th root of unity">$\mathbb{Q}_7(\zeta_7)$</span>, which would be ramified. (D) compounds both errors.</p>
+</details>
+</div>
+
+<div class="box quiz" data-cid="ch02-2320">
+<span class="box-label">Question 6</span>
+<p data-cid="ch02-2330">Take <span class="tts-math" data-tts="f of x equals x cubed plus 3 x plus 9, p squared">$f(x) = x^3 + 3x + 9$</span> over <span class="tts-math" data-tts="Q sub 3">$\mathbb{Q}_3$</span>, with coefficients <span class="tts-math" data-tts="a sub 0 equals 9, a sub 1 equals 3, a sub 2 equals 0, a sub 3 equals 1">$a_0=9,\ a_1=3,\ a_2=0,\ a_3=1$</span>. Using <span class="tts-math" data-tts="v sub 3">$v_3$</span>, the relevant Newton-polygon vertices are <span class="tts-math" data-tts="the point 0 comma 2, the point 1 comma 1, and the point 3 comma 0">$(0,2),\ (1,1),\ (3,0)$</span> (the <span class="tts-math" data-tts="x squared">$x^2$</span> term is absent). The lower convex hull is the single segment from <span class="tts-math" data-tts="0 comma 2">$(0,2)$</span> to <span class="tts-math" data-tts="3 comma 0">$(3,0)$</span>. What does this tell you about the roots' valuations?</p>
+<ol class="quiz-options" data-cid="ch02-2340">
+<li>All three roots have valuation <span class="tts-math" data-tts="negative two thirds">$-\tfrac{2}{3}$</span>, the slope of the segment.</li>
+<li>There are two roots of valuation <span class="tts-math" data-tts="1">$1$</span> and one of valuation <span class="tts-math" data-tts="0">$0$</span>.</li>
+<li>The roots have valuations <span class="tts-math" data-tts="2, 1, and 0">$2,\ 1,\ 0$</span>, read off the three plotted heights.</li>
+<li>All three roots have valuation <span class="tts-math" data-tts="two thirds">$\tfrac{2}{3}$</span>, the negative of the slope.</li>
+</ol>
+<details class="quiz-answer">
+<summary>Reveal answer &amp; explanation</summary>
+<p data-cid="ch02-2350"><strong>Answer: D.</strong> A single segment of slope <span class="tts-math" data-tts="0 minus 2 over 3 minus 0 equals negative two thirds">$\tfrac{0-2}{3-0} = -\tfrac{2}{3}$</span> and horizontal length <span class="tts-math" data-tts="3">$3$</span> means all <span class="tts-math" data-tts="3">$3$</span> roots share valuation equal to <em>minus</em> the slope, namely <span class="tts-math" data-tts="two thirds">$\tfrac{2}{3}$</span>. (A) reports the slope itself with the wrong sign — the convention is that a segment of slope <span class="tts-math" data-tts="minus m">$-m$</span> gives roots of valuation <span class="tts-math" data-tts="positive m">$+m$</span>. (C) confuses the plotted coefficient heights <span class="tts-math" data-tts="v of a sub i">$v(a_i)$</span> with the root valuations — the polygon's <em>vertices</em> are not the answer; its <em>slopes</em> are. (B) invents a two-segment polygon, but the taut lower hull from <span class="tts-math" data-tts="0 comma 2">$(0,2)$</span> to <span class="tts-math" data-tts="3 comma 0">$(3,0)$</span> passes <em>below</em> <span class="tts-math" data-tts="1 comma 1">$(1,1)$</span> (the line has height <span class="tts-math" data-tts="4 thirds at x equals 1">$\tfrac{4}{3}$</span> there, above <span class="tts-math" data-tts="1">$1$</span>) — wait, check: the hull is a single segment precisely because <span class="tts-math" data-tts="1 comma 1">$(1,1)$</span> lies above it, so there is no break. A sanity check: the three valuations sum to <span class="tts-math" data-tts="3 times two thirds equals 2 equals v of a sub 0">$3{\cdot}\tfrac{2}{3} = 2 = v_3(a_0)$</span>.</p>
+</details>
+</div>
+
+<div class="box quiz" data-cid="ch02-2360">
+<span class="box-label">Question 7</span>
+<p data-cid="ch02-2370">Which of the following statements is <strong>FALSE</strong>?</p>
+<ol class="quiz-options" data-cid="ch02-2380">
+<li>The geometric series <span class="tts-math" data-tts="1 plus p plus p squared and so on">$1 + p + p^2 + \cdots$</span> converges in <span class="tts-math" data-tts="Q sub p">$\mathbb{Q}_p$</span> to <span class="tts-math" data-tts="1 over 1 minus p">$\tfrac{1}{1-p}$</span>.</li>
+<li>For a single prime of a complete discretely-valued field, with <span class="tts-math" data-tts="L over K separable">$L|K$</span> separable, <span class="tts-math" data-tts="the degree of L over K equals e times f">$[L:K] = ef$</span> with no sum.</li>
+<li>The ordinary absolute value <span class="tts-math" data-tts="absolute value at infinity">$|\cdot|_\infty$</span> on <span class="tts-math" data-tts="Q">$\mathbb{Q}$</span> is nonarchimedean.</li>
+<li>Over a complete nonarchimedean field, a valuation extends <em>uniquely</em> to every finite extension.</li>
+</ol>
+<details class="quiz-answer">
+<summary>Reveal answer &amp; explanation</summary>
+<p data-cid="ch02-2390"><strong>Answer: C.</strong> The ordinary absolute value <em>is</em> archimedean: <span class="tts-math" data-tts="the absolute value at infinity of the integers 1, 2, 3, and so on">$|n|_\infty$</span> grows without bound over <span class="tts-math" data-tts="n in N">$n\in\mathbb{N}$</span>, which is exactly the archimedean property — the p-adic absolute values are the nonarchimedean ones. So C is the false statement. (A) is true: p-adically <span class="tts-math" data-tts="the absolute value at p of p to the n equals p to the minus n goes to 0">$|p^n|_p = p^{-n}\to 0$</span>, so the series converges (the everyday intuition that "p is big" uses the wrong absolute value). (B) is true — uniqueness of the extension means a single <span class="tts-math" data-tts="e f">$ef$</span> term, the local form of the fundamental identity. (D) is true: completeness (indeed henselian-ness) is precisely equivalent to unique extension of the valuation.</p>
+</details>
 </div>
 
 <nav class="chapter-nav">

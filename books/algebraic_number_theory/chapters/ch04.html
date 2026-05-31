@@ -10,7 +10,7 @@
 <link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
-<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/><link href="/css/tts.css" rel="stylesheet"/>
+<link href="/css/style.css" rel="stylesheet"/><link href="/css/comments.css" rel="stylesheet"/><link href="/css/tts.css" rel="stylesheet"/><link href="/css/quiz.css" rel="stylesheet"/>
 </head>
 <body data-book="algebraic_number_theory" data-page="ch04">
 <header class="site-header">
@@ -33,6 +33,7 @@
 <li><a href="#s4-6">4.6 The General Reciprocity Law</a></li>
 <li><a href="#s4-7">4.7 The Herbrand Quotient</a></li>
 <li><a href="#summary">Summary</a></li>
+<li><a href="#quiz">Knowledge check</a></li>
 </ol>
 </aside>
 <article class="content">
@@ -123,6 +124,40 @@ Hausdorff is easy: if <span class="tts-math" data-tts="sigma is not equal to tau
 Let <span class="tts-math" data-tts="Omega over k">$\Omega\mid k$</span> be Galois. The assignment <span class="tts-math" data-tts="K maps to the Galois group of Omega over K">$K \mapsto G(\Omega\mid K)$</span> is a bijection between intermediate fields <span class="tts-math" data-tts="K">$K$</span> and <strong>closed</strong> subgroups of <span class="tts-math" data-tts="G">$G$</span>. Under it, the <strong>open</strong> subgroups correspond precisely to the <strong>finite</strong> subextensions.
 </p>
 </div>
+<figure data-cid="ch04-225" style="max-width:460px">
+<svg viewBox="0 0 460 240" role="img" aria-label="The order-reversing Galois correspondence: a lattice of intermediate fields on the left mirrored by a lattice of closed subgroups on the right, joined by crossing arrows" xmlns="http://www.w3.org/2000/svg">
+  <!-- left: fields, bottom = k, top = Omega -->
+  <text x="100" y="20" fill="currentColor" font-family="Inter, sans-serif" font-size="11" font-weight="600" text-anchor="middle">fields</text>
+  <text x="360" y="20" fill="currentColor" font-family="Inter, sans-serif" font-size="11" font-weight="600" text-anchor="middle">closed subgroups</text>
+  <!-- field lattice nodes -->
+  <line x1="100" y1="60" x2="100" y2="200" stroke="currentColor" stroke-opacity="0.35" stroke-width="1"/>
+  <circle cx="100" cy="60" r="3" fill="currentColor"/>
+  <circle cx="100" cy="130" r="3" fill="currentColor"/>
+  <circle cx="100" cy="200" r="3" fill="currentColor"/>
+  <text x="86" y="64" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="end">Ω</text>
+  <text x="86" y="134" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="end">K</text>
+  <text x="86" y="204" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="end">k</text>
+  <!-- subgroup lattice nodes -->
+  <line x1="360" y1="60" x2="360" y2="200" stroke="currentColor" stroke-opacity="0.35" stroke-width="1"/>
+  <circle cx="360" cy="60" r="3" fill="currentColor"/>
+  <circle cx="360" cy="130" r="3" fill="currentColor"/>
+  <circle cx="360" cy="200" r="3" fill="currentColor"/>
+  <text x="374" y="64" fill="currentColor" font-family="Inter, sans-serif" font-size="11">1</text>
+  <text x="374" y="134" fill="currentColor" font-family="Inter, sans-serif" font-size="11">G(Ω|K)</text>
+  <text x="374" y="204" fill="currentColor" font-family="Inter, sans-serif" font-size="11">G</text>
+  <!-- crossing arrows: order-reversing bijection (hero) -->
+  <defs>
+    <marker id="ar-gc" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" style="fill:var(--accent)"/>
+    </marker>
+  </defs>
+  <line x1="115" y1="60" x2="345" y2="200" style="stroke:var(--accent)" stroke-width="1.5" marker-end="url(#ar-gc)"/>
+  <line x1="115" y1="130" x2="345" y2="130" style="stroke:var(--accent)" stroke-width="1.5" marker-end="url(#ar-gc)"/>
+  <line x1="115" y1="200" x2="345" y2="60" style="stroke:var(--accent)" stroke-width="1.5" marker-end="url(#ar-gc)"/>
+  <text x="230" y="115" fill="currentColor" font-family="Inter, sans-serif" font-size="10" text-anchor="middle" font-style="italic">K ↦ G(Ω|K)</text>
+</svg>
+<figcaption>The bijection of Theorem 4.1.2 is order-<em>reversing</em>: the bigger the field <span class="tts-math" data-tts="K">$K$</span>, the smaller the closed subgroup <span class="tts-math" data-tts="the Galois group of Omega over K">$G(\Omega\mid K)$</span>, with <span class="tts-math" data-tts="k at the bottom going to all of G at the top">$k\mapsto G$</span> and <span class="tts-math" data-tts="Omega at the top going to the trivial group">$\Omega\mapsto 1$</span>.</figcaption>
+</figure>
 <p data-cid="ch04-230">
 Two facts power the proof. Every open subgroup is automatically closed (it is the complement of the union of its other cosets). And a closed subgroup <span class="tts-math" data-tts="H">$H$</span> equals <span class="tts-math" data-tts="the Galois group of Omega over K">$G(\Omega\mid K)$</span> for <span class="tts-math" data-tts="K">$K$</span> its fixed field, because the finite-Galois theorem makes <span class="tts-math" data-tts="H">$H$</span> dense in <span class="tts-math" data-tts="the Galois group of Omega over K">$G(\Omega\mid K)$</span>, and a closed dense subgroup is everything. The "open <span class="tts-math" data-tts="if and only if">$\Leftrightarrow$</span> finite" part uses compactness: only finitely many cosets can cover a compact group.
 </p>
@@ -165,6 +200,49 @@ The <strong>inductive limit</strong> is the disjoint union <span class="tts-math
 A projective limit is a "coherent infinite memory": an element is a choice at every stage that is consistent under the bonding maps — like a decimal expansion, where each truncation determines the shorter ones. An inductive limit is a "growing union": an element lives at <em>some</em> finite stage and you forget where it came from once two stages agree.
 </p>
 </div>
+<figure data-cid="ch04-355" style="max-width:460px">
+<svg viewBox="0 0 460 200" role="img" aria-label="Two cone diagrams side by side: a projective limit with arrows pointing inward to the limit on the left, and an inductive limit with arrows pointing outward from the colimit on the right" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="ar-lim" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="currentColor"/>
+    </marker>
+    <marker id="ar-limh" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" style="fill:var(--accent)"/>
+    </marker>
+  </defs>
+  <!-- LEFT: projective limit, arrows point IN to the limit -->
+  <text x="115" y="18" fill="currentColor" font-family="Inter, sans-serif" font-size="11" font-weight="600" text-anchor="middle">projective limit</text>
+  <text x="115" y="180" fill="currentColor" font-family="Inter, sans-serif" font-size="10" text-anchor="middle" font-style="italic">arrows point inward</text>
+  <circle cx="40" cy="60" r="3" fill="currentColor"/>
+  <circle cx="40" cy="105" r="3" fill="currentColor"/>
+  <circle cx="40" cy="150" r="3" fill="currentColor"/>
+  <text x="28" y="64" fill="currentColor" font-family="Inter, sans-serif" font-size="10" text-anchor="end">X₁</text>
+  <text x="28" y="109" fill="currentColor" font-family="Inter, sans-serif" font-size="10" text-anchor="end">X₂</text>
+  <text x="28" y="154" fill="currentColor" font-family="Inter, sans-serif" font-size="10" text-anchor="end">X₃</text>
+  <circle cx="170" cy="105" r="4" style="fill:var(--accent)"/>
+  <text x="178" y="100" fill="currentColor" font-family="Inter, sans-serif" font-size="11">lim←</text>
+  <line x1="160" y1="101" x2="52" y2="62" style="stroke:var(--accent)" stroke-width="1.5" marker-end="url(#ar-limh)"/>
+  <line x1="160" y1="105" x2="52" y2="105" style="stroke:var(--accent)" stroke-width="1.5" marker-end="url(#ar-limh)"/>
+  <line x1="160" y1="109" x2="52" y2="148" style="stroke:var(--accent)" stroke-width="1.5" marker-end="url(#ar-limh)"/>
+  <!-- divider -->
+  <line x1="230" y1="35" x2="230" y2="160" stroke="currentColor" stroke-opacity="0.25" stroke-width="0.5"/>
+  <!-- RIGHT: inductive limit, arrows point OUT from the colimit -->
+  <text x="345" y="18" fill="currentColor" font-family="Inter, sans-serif" font-size="11" font-weight="600" text-anchor="middle">inductive limit</text>
+  <text x="345" y="180" fill="currentColor" font-family="Inter, sans-serif" font-size="10" text-anchor="middle" font-style="italic">arrows point outward</text>
+  <circle cx="420" cy="60" r="3" fill="currentColor"/>
+  <circle cx="420" cy="105" r="3" fill="currentColor"/>
+  <circle cx="420" cy="150" r="3" fill="currentColor"/>
+  <text x="432" y="64" fill="currentColor" font-family="Inter, sans-serif" font-size="10">X₁</text>
+  <text x="432" y="109" fill="currentColor" font-family="Inter, sans-serif" font-size="10">X₂</text>
+  <text x="432" y="154" fill="currentColor" font-family="Inter, sans-serif" font-size="10">X₃</text>
+  <circle cx="290" cy="105" r="4" fill="currentColor"/>
+  <text x="262" y="100" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="end">lim→</text>
+  <line x1="300" y1="101" x2="408" y2="62" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar-lim)"/>
+  <line x1="300" y1="105" x2="408" y2="105" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar-lim)"/>
+  <line x1="300" y1="109" x2="408" y2="148" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar-lim)"/>
+</svg>
+<figcaption>Inverse versus direct: the projective limit <span class="tts-math" data-tts="the projective limit, lim with a left arrow">$\varprojlim$</span> receives compatible arrows <em>inward</em> from the system; the inductive limit <span class="tts-math" data-tts="the inductive limit, lim with a right arrow">$\varinjlim$</span> emits arrows <em>outward</em> to it.</figcaption>
+</figure>
 <div class="box pause" data-cid="ch04-360">
 <span class="box-label">Pause — compactness is the key feature</span>
 <p data-cid="ch04-370">
@@ -222,6 +300,47 @@ $$\widehat{\mathbb{Z}} = \varprojlim_{n} \mathbb{Z}/n\mathbb{Z} \;=\; \prod_{p} 
 the last equality by the Chinese remainder theorem passed to the limit. The ordinary integers <span class="tts-math" data-tts="Z">$\mathbb{Z}$</span> sit inside <span class="tts-math" data-tts="Z hat">$\widehat{\mathbb{Z}}$</span> as a <em>dense</em> subring via the diagonal <span class="tts-math" data-tts="a maps to the tuple a, a, a, and so on">$a \mapsto (a,a,a,\dots)$</span> — dense but not equal, which is the abstract shadow of "<span class="tts-math" data-tts="open angle phi close angle is not equal to G">$\langle\varphi\rangle \neq G$</span>".
 </p>
 </div>
+<figure data-cid="ch04-505" style="max-width:460px">
+<svg viewBox="0 0 460 230" role="img" aria-label="The tower of finite fields with Galois groups Z mod n, joined by reduction maps Z mod nm to Z mod n, forming a cone whose projective limit is Z hat" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="ar-zhat" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="currentColor"/>
+    </marker>
+    <marker id="ar-zhath" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" style="fill:var(--accent)"/>
+    </marker>
+  </defs>
+  <!-- field tower row -->
+  <text x="40" y="50" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">𝔽p</text>
+  <text x="140" y="50" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">𝔽p²</text>
+  <text x="245" y="50" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">𝔽pⁿ</text>
+  <text x="340" y="50" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">…</text>
+  <line x1="58" y1="46" x2="118" y2="46" stroke="currentColor" stroke-opacity="0.5" stroke-width="1" marker-end="url(#ar-zhat)"/>
+  <line x1="160" y1="46" x2="220" y2="46" stroke="currentColor" stroke-opacity="0.5" stroke-width="1" marker-end="url(#ar-zhat)"/>
+  <line x1="262" y1="46" x2="320" y2="46" stroke="currentColor" stroke-opacity="0.5" stroke-width="1" marker-end="url(#ar-zhat)"/>
+  <text x="230" y="30" fill="currentColor" font-family="Inter, sans-serif" font-size="9" text-anchor="middle">⊂ finite fields ⊂</text>
+  <!-- Galois group row -->
+  <circle cx="40" cy="100" r="3" fill="currentColor"/>
+  <circle cx="140" cy="100" r="3" fill="currentColor"/>
+  <circle cx="245" cy="100" r="3" fill="currentColor"/>
+  <text x="40" y="118" fill="currentColor" font-family="Inter, sans-serif" font-size="10" text-anchor="middle">Z/1</text>
+  <text x="140" y="118" fill="currentColor" font-family="Inter, sans-serif" font-size="10" text-anchor="middle">Z/2</text>
+  <text x="245" y="118" fill="currentColor" font-family="Inter, sans-serif" font-size="10" text-anchor="middle">Z/n</text>
+  <text x="340" y="104" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">…</text>
+  <!-- reduction maps Z/nm -> Z/n point left (toward base) -->
+  <line x1="128" y1="100" x2="52" y2="100" stroke="currentColor" stroke-width="1" marker-end="url(#ar-zhat)"/>
+  <line x1="233" y1="100" x2="152" y2="100" stroke="currentColor" stroke-width="1" marker-end="url(#ar-zhat)"/>
+  <line x1="322" y1="100" x2="257" y2="100" stroke="currentColor" stroke-width="1" marker-end="url(#ar-zhat)"/>
+  <text x="195" y="92" fill="currentColor" font-family="Inter, sans-serif" font-size="9" text-anchor="middle" font-style="italic">Z/nm → Z/n</text>
+  <!-- the limit (hero) -->
+  <circle cx="245" cy="190" r="5" style="fill:var(--accent)"/>
+  <text x="258" y="194" fill="currentColor" font-family="Inter, sans-serif" font-size="12" font-weight="600">Ẑ = lim← Z/n</text>
+  <line x1="241" y1="178" x2="60" y2="112" style="stroke:var(--accent)" stroke-width="1.3" marker-end="url(#ar-zhath)"/>
+  <line x1="244" y1="178" x2="142" y2="112" style="stroke:var(--accent)" stroke-width="1.3" marker-end="url(#ar-zhath)"/>
+  <line x1="245" y1="178" x2="245" y2="112" style="stroke:var(--accent)" stroke-width="1.3" marker-end="url(#ar-zhath)"/>
+</svg>
+<figcaption>Each layer <span class="tts-math" data-tts="F p to the n">$\mathbb{F}_{p^n}$</span> has Galois group <span class="tts-math" data-tts="Z mod n">$\mathbb{Z}/n\mathbb{Z}$</span>; the reduction maps <span class="tts-math" data-tts="Z mod n m to Z mod n">$\mathbb{Z}/nm\mathbb{Z}\to\mathbb{Z}/n\mathbb{Z}$</span> form a cone whose projective limit is <span class="tts-math" data-tts="Z hat">$\widehat{\mathbb{Z}}$</span>, a compatible thread of residues at every modulus.</figcaption>
+</figure>
 <div class="box example" data-cid="ch04-510">
 <span class="box-label">Example — Frobenius generates <span class="tts-math" data-tts="Z hat">$\widehat{\mathbb{Z}}$</span></span>
 <p data-cid="ch04-520">
@@ -394,6 +513,37 @@ The restriction <span class="tts-math" data-tts="Frob of L tilde over K maps ont
 This is the secret behind the whole reciprocity construction. The reciprocity map will be <em>defined</em> on Frobenius elements (where there is an obvious right answer: Frobenius corresponds to a prime element). Proposition 4.4.4 says every Galois automorphism is the restriction of <em>some</em> Frobenius, so the definition reaches everyone; Proposition 4.4.5 says the construction is forced and consistent. Hold the diagram in your head: a tower <span class="tts-math" data-tts="K, then Sigma equals L, then L tilde equals Sigma tilde">$K \subseteq \Sigma,\ L \subseteq \tilde L = \tilde\Sigma$</span> with <span class="tts-math" data-tts="sigma equal to the Frobenius over Sigma at the top">$\sigma=\varphi_\Sigma$</span> on top.
 </p>
 </div>
+<figure data-cid="ch04-885" style="max-width:440px">
+<svg viewBox="0 0 440 250" role="img" aria-label="An element sigma of the Galois group of L over K is lifted to a Frobenius in the bigger group of L tilde over K, with arrows down to the residue side recording its positive-integer degree" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="ar-fr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="currentColor"/>
+    </marker>
+    <marker id="ar-frh" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" style="fill:var(--accent)"/>
+    </marker>
+  </defs>
+  <!-- bigger group on top -->
+  <rect x="120" y="30" width="200" height="44" rx="6" fill="none" stroke="currentColor" stroke-opacity="0.5" stroke-width="1"/>
+  <text x="220" y="49" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">G(L̃|K)</text>
+  <circle cx="190" cy="60" r="4" style="fill:var(--accent)"/>
+  <text x="178" y="64" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="end" font-style="italic">φ</text>
+  <!-- smaller group below -->
+  <rect x="120" y="150" width="200" height="44" rx="6" fill="none" stroke="currentColor" stroke-opacity="0.5" stroke-width="1"/>
+  <text x="220" y="169" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">G(L|K)</text>
+  <circle cx="190" cy="180" r="3.5" fill="currentColor"/>
+  <text x="178" y="184" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="end" font-style="italic">σ</text>
+  <!-- lift arrow (hero): sigma lifted up to phi -->
+  <line x1="190" y1="170" x2="190" y2="74" style="stroke:var(--accent)" stroke-width="1.6" marker-end="url(#ar-frh)"/>
+  <text x="200" y="124" fill="currentColor" font-family="Inter, sans-serif" font-size="10" font-style="italic">lift φ|L = σ</text>
+  <!-- residue / degree side -->
+  <text x="395" y="56" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">d(φ) ∈ ℕ</text>
+  <line x1="324" y1="58" x2="358" y2="58" stroke="currentColor" stroke-width="1" marker-end="url(#ar-fr)"/>
+  <text x="395" y="72" fill="currentColor" font-family="Inter, sans-serif" font-size="9" text-anchor="middle">degree ≥ 1</text>
+  <text x="220" y="225" fill="currentColor" font-family="Inter, sans-serif" font-size="10" text-anchor="middle" font-style="italic">every σ is the restriction of some Frobenius φ</text>
+</svg>
+<figcaption>Lifting (Prop. 4.4.4): an arbitrary <span class="tts-math" data-tts="sigma in the Galois group of L over K">$\sigma\in G(L\mid K)$</span> is the restriction of a Frobenius <span class="tts-math" data-tts="phi in the Galois group of L tilde over K">$\varphi\in G(\tilde L\mid K)$</span> whose degree <span class="tts-math" data-tts="d sub K of phi">$d_K(\varphi)\in\mathbb{N}$</span> is a positive integer — the count of unramified layers the lift advances.</figcaption>
+</figure>
 <p data-cid="ch04-890">
 The second new datum is a <strong>henselian valuation</strong>, the abstract version of a discrete valuation that "reproduces itself" up every finite extension.
 </p>
@@ -479,6 +629,32 @@ $$r_{L\mid K}(\varphi_{L\mid K}) = \pi_K \ \bmod\ N_{L\mid K}A_L.$$
 Moreover <span class="tts-math" data-tts="r sub L over K">$r_{L\mid K}$</span> is an <strong>isomorphism</strong> here. The check uses the valuation: <span class="tts-math" data-tts="v sub K induces an isomorphism from A sub K modulo the norm group to Z mod n Z">$v_K$</span> induces <span class="tts-math" data-tts="A sub K modulo the norm group is isomorphic to Z mod n">$A_K/N_{L\mid K}A_L \cong \mathbb{Z}/n\mathbb{Z}$</span> (with <span class="tts-math" data-tts="n equals the degree of L over K">$n=[L:K]$</span>), matching <span class="tts-math" data-tts="the Galois group of L over K which is cyclic of order n">$G(L\mid K)\cong\mathbb{Z}/n\mathbb{Z}$</span>, and Frobenius <span class="tts-math" data-tts="maps to 1">$\mapsto 1$</span> on both sides.
 </p>
 </div>
+<figure data-cid="ch04-1093" style="max-width:460px">
+<svg viewBox="0 0 460 200" role="img" aria-label="The abstract reciprocity map r from K star modulo the norm group of L star to the abelianized Galois group of L over K, with uniformizer mapping to Frobenius in the unramified model" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="ar-rec" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" style="fill:var(--accent)"/>
+    </marker>
+  </defs>
+  <!-- left box: norm-residue quotient -->
+  <rect x="20" y="60" width="160" height="60" rx="6" fill="none" stroke="currentColor" stroke-opacity="0.6" stroke-width="1"/>
+  <text x="100" y="86" fill="currentColor" font-family="Inter, sans-serif" font-size="12" text-anchor="middle">K* / N(L*)</text>
+  <text x="100" y="104" fill="currentColor" font-family="Inter, sans-serif" font-size="9" text-anchor="middle">norm residue group</text>
+  <!-- right box: abelianized Galois group -->
+  <rect x="280" y="60" width="160" height="60" rx="6" fill="none" stroke="currentColor" stroke-opacity="0.6" stroke-width="1"/>
+  <text x="360" y="86" fill="currentColor" font-family="Inter, sans-serif" font-size="12" text-anchor="middle">G(L|K)ᵃᵇ</text>
+  <text x="360" y="104" fill="currentColor" font-family="Inter, sans-serif" font-size="9" text-anchor="middle">abelianized Galois group</text>
+  <!-- the reciprocity arrow (hero) -->
+  <line x1="184" y1="90" x2="276" y2="90" style="stroke:var(--accent)" stroke-width="2" marker-end="url(#ar-rec)"/>
+  <text x="230" y="80" fill="currentColor" font-family="Inter, sans-serif" font-size="13" text-anchor="middle" font-style="italic" font-weight="600">r</text>
+  <!-- annotation: uniformizer -> Frobenius -->
+  <text x="60" y="160" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">π</text>
+  <text x="400" y="160" fill="currentColor" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">φ</text>
+  <line x1="72" y1="156" x2="388" y2="156" style="stroke:var(--accent)" stroke-opacity="0.6" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#ar-rec)"/>
+  <text x="230" y="150" fill="currentColor" font-family="Inter, sans-serif" font-size="10" text-anchor="middle" font-style="italic">uniformizer ↦ Frobenius (unramified)</text>
+</svg>
+<figcaption>The reciprocity map <span class="tts-math" data-tts="r from K star modulo the norm of L star to the abelianized Galois group of L over K">$r\colon K^\times/N_{L\mid K}L^\times \to G(L\mid K)^{\mathrm{ab}}$</span> is an isomorphism; in the unramified model a uniformizer <span class="tts-math" data-tts="pi">$\pi$</span> maps to the Frobenius <span class="tts-math" data-tts="phi">$\varphi$</span>.</figcaption>
+</figure>
 <div class="box example" data-cid="ch04-1095">
 <span class="box-label">The whole story in one concrete case — unramified <span class="tts-math" data-tts="p-adic">$p$</span>-adic fields</span>
 <p data-cid="ch04-1097">
@@ -659,6 +835,106 @@ The abstraction pays off exactly as promised. Chapter V instantiates <span class
 </p>
 </div>
 
+<h2 id="quiz" data-cid="ch04-1600">Knowledge check</h2>
+<p data-cid="ch04-1610">These are designed to make you think — the wrong options are deliberately tempting. Decide on your answer before revealing the explanation.</p>
+<div class="box quiz" data-cid="ch04-1620">
+<span class="box-label">Question 1</span>
+<p data-cid="ch04-1630">In the absolute Galois group <span class="tts-math" data-tts="G equals the Galois group of F p bar over F p">$G = G(\overline{\mathbb{F}}_p\mid\mathbb{F}_p)$</span>, what is the precise relationship between the cyclic group <span class="tts-math" data-tts="open angle phi close angle generated by Frobenius">$\langle\varphi\rangle$</span> generated by the Frobenius and the whole group <span class="tts-math" data-tts="G">$G$</span>?</p>
+<ol class="quiz-options" data-cid="ch04-1640">
+<li><span class="tts-math" data-tts="open angle phi close angle equals G">$\langle\varphi\rangle = G$</span>, since Frobenius already realizes every automorphism of <span class="tts-math" data-tts="F p bar">$\overline{\mathbb{F}}_p$</span>.</li>
+<li><span class="tts-math" data-tts="open angle phi close angle">$\langle\varphi\rangle$</span> is a proper but dense subgroup; it is the copy of <span class="tts-math" data-tts="Z">$\mathbb{Z}$</span> sitting densely inside <span class="tts-math" data-tts="G isomorphic to Z hat">$G\cong\widehat{\mathbb{Z}}$</span>.</li>
+<li><span class="tts-math" data-tts="open angle phi close angle">$\langle\varphi\rangle$</span> is a proper <em>closed</em> subgroup whose fixed field strictly contains <span class="tts-math" data-tts="F p">$\mathbb{F}_p$</span>.</li>
+<li><span class="tts-math" data-tts="open angle phi close angle">$\langle\varphi\rangle$</span> is open of finite index, with <span class="tts-math" data-tts="G modulo open angle phi close angle">$G/\langle\varphi\rangle$</span> a nontrivial finite group.</li>
+</ol>
+<details class="quiz-answer">
+<summary>Reveal answer &amp; explanation</summary>
+<p data-cid="ch04-1650"><strong>Answer: B.</strong> Under <span class="tts-math" data-tts="G isomorphic to Z hat">$G\cong\widehat{\mathbb{Z}}$</span>, Frobenius maps to <span class="tts-math" data-tts="1">$1$</span> and <span class="tts-math" data-tts="open angle phi close angle">$\langle\varphi\rangle$</span> to the dense subring <span class="tts-math" data-tts="Z inside Z hat">$\mathbb{Z}\subset\widehat{\mathbb{Z}}$</span> — dense (it has the same fixed field, namely <span class="tts-math" data-tts="F p">$\mathbb{F}_p$</span>) but not all of <span class="tts-math" data-tts="G">$G$</span>. A is the central misconception the §4.1 example is built to demolish: the automorphism <span class="tts-math" data-tts="psi">$\psi$</span> with a "limit exponent" lies outside <span class="tts-math" data-tts="open angle phi close angle">$\langle\varphi\rangle$</span>. C is wrong because <span class="tts-math" data-tts="open angle phi close angle">$\langle\varphi\rangle$</span> is <em>not</em> closed — its closure is all of <span class="tts-math" data-tts="G">$G$</span>, and a closed subgroup having the same fixed field as <span class="tts-math" data-tts="G">$G$</span> would have to equal <span class="tts-math" data-tts="G">$G$</span>. D fails because density forces the closure to be everything, so no open subgroup of finite index can contain it as a dense piece.</p>
+</details>
+</div>
+<div class="box quiz" data-cid="ch04-1660">
+<span class="box-label">Question 2</span>
+<p data-cid="ch04-1670">Which description correctly distinguishes the projective limit from the inductive limit, and correctly classifies <span class="tts-math" data-tts="Z hat">$\widehat{\mathbb{Z}}$</span>?</p>
+<ol class="quiz-options" data-cid="ch04-1680">
+<li><span class="tts-math" data-tts="Z hat">$\widehat{\mathbb{Z}}$</span> is the inductive limit of the <span class="tts-math" data-tts="Z mod n">$\mathbb{Z}/n\mathbb{Z}$</span>, generalizing union; its elements live at one finite stage.</li>
+<li>Both limits coincide for the system <span class="tts-math" data-tts="Z mod n">$\{\mathbb{Z}/n\mathbb{Z}\}$</span>, so the distinction is immaterial for <span class="tts-math" data-tts="Z hat">$\widehat{\mathbb{Z}}$</span>.</li>
+<li><span class="tts-math" data-tts="Z hat">$\widehat{\mathbb{Z}}$</span> is the projective limit of the <span class="tts-math" data-tts="Z mod n">$\mathbb{Z}/n\mathbb{Z}$</span>: an element is a compatible thread of residues, generalizing intersection.</li>
+<li><span class="tts-math" data-tts="Z hat">$\widehat{\mathbb{Z}}$</span> is the projective limit, and projective limits are always exact, which is why <span class="tts-math" data-tts="Z hat">$\widehat{\mathbb{Z}}$</span> behaves well.</li>
+</ol>
+<details class="quiz-answer">
+<summary>Reveal answer &amp; explanation</summary>
+<p data-cid="ch04-1690"><strong>Answer: C.</strong> <span class="tts-math" data-tts="Z hat">$\widehat{\mathbb{Z}} = \varprojlim_n \mathbb{Z}/n\mathbb{Z}$</span> consists of coherent threads of residues — the "coherent infinite memory" picture — and projective limits generalize intersection. A swaps the two limits: an inductive limit generalizes union and its elements live at a single finite stage, which is exactly what threads in <span class="tts-math" data-tts="Z hat">$\widehat{\mathbb{Z}}$</span> do <em>not</em> do. B is false: for this non-trivial directed system the two limits are genuinely different objects. D states the correct limit but tacks on a false reason — projective limit is exact only for <em>compact</em> groups (Prop. 4.2.7); it is the <em>inductive</em> limit that is always exact.</p>
+</details>
+</div>
+<div class="box quiz" data-cid="ch04-1700">
+<span class="box-label">Question 3</span>
+<p data-cid="ch04-1710">For a finite cyclic <span class="tts-math" data-tts="L over K">$L\mid K$</span>, which statement about the cohomology groups <span class="tts-math" data-tts="H zero and H minus one">$H^0$</span> and <span class="tts-math" data-tts="H minus one">$H^{-1}$</span> is correct?</p>
+<ol class="quiz-options" data-cid="ch04-1720">
+<li><span class="tts-math" data-tts="H zero equals A sub K modulo the norm group">$H^0 = A_K/N_{L\mid K}A_L$</span> measures failure of <em>injectivity</em> of the norm; <span class="tts-math" data-tts="H minus one">$H^{-1}$</span> measures failure of surjectivity.</li>
+<li><span class="tts-math" data-tts="H zero equals A sub K modulo the norm group">$H^0 = A_K/N_{L\mid K}A_L$</span> measures failure of <em>surjectivity</em> of the norm; <span class="tts-math" data-tts="H minus one">$H^{-1} = {}_N A_L/I_G A_L$</span> measures how far norm-one elements stray from conjugate-ratios.</li>
+<li>Both <span class="tts-math" data-tts="H zero and H minus one">$H^0$</span> and <span class="tts-math" data-tts="H minus one">$H^{-1}$</span> measure surjectivity of the norm, differing only by a sign convention from Tate cohomology.</li>
+<li><span class="tts-math" data-tts="H zero">$H^0$</span> is the kernel of the norm and <span class="tts-math" data-tts="H minus one">$H^{-1}$</span> its cokernel, so Hilbert 90 is the statement <span class="tts-math" data-tts="H zero equals 1">$H^0 = 1$</span>.</li>
+</ol>
+<details class="quiz-answer">
+<summary>Reveal answer &amp; explanation</summary>
+<p data-cid="ch04-1730"><strong>Answer: B.</strong> <span class="tts-math" data-tts="H zero">$H^0 = A_K/N_{L\mid K}A_L$</span> is the norm <em>cokernel</em>: it vanishes exactly when the norm is surjective. <span class="tts-math" data-tts="H minus one">$H^{-1} = {}_N A_L/I_G A_L$</span> vanishes exactly when every norm-one element is an obvious conjugate-ratio <span class="tts-math" data-tts="a to the sigma minus 1">$a^{\sigma-1}$</span>. A inverts the roles — the easy slip of reading "<span class="tts-math" data-tts="H zero">$H^0$</span>" as an injectivity (kernel) measure when it is really about surjectivity (cokernel). C collapses the two into one notion, erasing the distinct content of the <span class="tts-math" data-tts="i equals minus 1">$i=-1$</span> term. D mislabels Hilbert 90, which is the vanishing of <span class="tts-math" data-tts="H minus one">$H^{-1}$</span> (norm-one elements are conjugate-ratios), not of <span class="tts-math" data-tts="H zero">$H^0$</span>.</p>
+</details>
+</div>
+<div class="box quiz" data-cid="ch04-1740">
+<span class="box-label">Question 4</span>
+<p data-cid="ch04-1750">Which statement about the Herbrand quotient <span class="tts-math" data-tts="h of G comma A equals the order of H zero over the order of H minus one">$h(G,A) = \#H^0(G,A)/\#H^{-1}(G,A)$</span> is <strong>FALSE</strong>?</p>
+<ol class="quiz-options" data-cid="ch04-1760">
+<li>For a short exact sequence <span class="tts-math" data-tts="1 to A to B to C to 1">$1\to A\to B\to C\to 1$</span>, <span class="tts-math" data-tts="h of B equals h of A times h of C">$h(G,B) = h(G,A)\,h(G,C)$</span> whenever two of the three are defined.</li>
+<li>For any finite <span class="tts-math" data-tts="G-module">$G$</span>-module <span class="tts-math" data-tts="A">$A$</span>, <span class="tts-math" data-tts="h of G comma A equals 1">$h(G,A) = 1$</span>.</li>
+<li>It is computed for finite cyclic <span class="tts-math" data-tts="G">$G$</span>, using the 2-periodicity that closes the cohomology into a hexagon.</li>
+<li>It directly outputs the two orders <span class="tts-math" data-tts="the order of H zero and the order of H minus one">$\#H^0$</span> and <span class="tts-math" data-tts="the order of H minus one">$\#H^{-1}$</span> separately, which is what makes Axiom 6.1 checkable.</li>
+</ol>
+<details class="quiz-answer">
+<summary>Reveal answer &amp; explanation</summary>
+<p data-cid="ch04-1770"><strong>Answer: D.</strong> The Herbrand quotient outputs only the <em>ratio</em> of the two orders, not each separately — that lossiness is the price of its good behaviour. To finish verifying Axiom 6.1 you still pair it with <span class="tts-math" data-tts="H minus one equals 1">$H^{-1}=1$</span> (often Hilbert 90) to recover <span class="tts-math" data-tts="the order of H zero equals the degree">$\#H^0 = [L:K]$</span>. A is true and is the whole point — multiplicativity across exact sequences. B is true and crucial: finite modules contribute trivially, letting you discard torsion "noise." C is true: <span class="tts-math" data-tts="h">$h$</span> is defined for finite cyclic <span class="tts-math" data-tts="G">$G$</span> where 2-periodicity gives the exact hexagon of Prop. 7.1.</p>
+</details>
+</div>
+<div class="box quiz" data-cid="ch04-1780">
+<span class="box-label">Question 5</span>
+<p data-cid="ch04-1790">In the unramified model — <span class="tts-math" data-tts="K">$K$</span> a p-adic field, <span class="tts-math" data-tts="L over K">$L\mid K$</span> unramified of degree <span class="tts-math" data-tts="n">$n$</span>, <span class="tts-math" data-tts="A equals K bar star">$A_K = K^\times$</span> — what does the reciprocity map <span class="tts-math" data-tts="r">$r$</span> do, and why is it an isomorphism?</p>
+<ol class="quiz-options" data-cid="ch04-1800">
+<li>It sends Frobenius to a prime element <span class="tts-math" data-tts="pi">$\pi$</span>; the valuation <span class="tts-math" data-tts="v sub K">$v_K$</span> identifies <span class="tts-math" data-tts="K star modulo the norm group">$K^\times/N_{L\mid K}L^\times$</span> with <span class="tts-math" data-tts="Z mod n">$\mathbb{Z}/n\mathbb{Z}$</span>, matching <span class="tts-math" data-tts="G of L over K">$G(L\mid K)$</span>.</li>
+<li>It sends Frobenius to a unit of <span class="tts-math" data-tts="K">$K$</span>; the units generate <span class="tts-math" data-tts="K star modulo the norm group">$K^\times/N_{L\mid K}L^\times$</span> because prime elements are already norms.</li>
+<li>It sends Frobenius to <span class="tts-math" data-tts="0 in Z mod n">$0\in\mathbb{Z}/n\mathbb{Z}$</span>, since unramified means the valuation contributes nothing to the class.</li>
+<li>It is only a homomorphism here, not an isomorphism; bijectivity needs the totally ramified case where Axiom 6.1 does the work.</li>
+</ol>
+<details class="quiz-answer">
+<summary>Reveal answer &amp; explanation</summary>
+<p data-cid="ch04-1810"><strong>Answer: A.</strong> The chain <span class="tts-math" data-tts="Frobenius maps to pi maps to 1">$\varphi\mapsto\pi\mapsto 1$</span> runs <span class="tts-math" data-tts="G of L over K is isomorphic to K star modulo the norm group is isomorphic to Z mod n">$G(L\mid K)\cong K^\times/N_{L\mid K}L^\times\xrightarrow{v_K}\mathbb{Z}/n\mathbb{Z}$</span>; norms from the unramified <span class="tts-math" data-tts="L">$L$</span> have valuation divisible by <span class="tts-math" data-tts="n">$n$</span>, so the valuation modulo <span class="tts-math" data-tts="n">$n$</span> pins down the class and the map is an isomorphism (Prop. 5.7). B is backwards: Frobenius corresponds to a <em>prime element</em> of valuation <span class="tts-math" data-tts="1">$1$</span>, not a unit; units form the kernel of <span class="tts-math" data-tts="v sub K">$v_K$</span>. C confuses the unramified case with the ramified one — here the valuation is precisely the nonzero datum (Frobenius has <span class="tts-math" data-tts="d-value 1">$d_K=1$</span>). D is false: the unramified case is exactly where the isomorphism already holds under the weak Axiom 5.1, before any totally-ramified work.</p>
+</details>
+</div>
+<div class="box quiz" data-cid="ch04-1820">
+<span class="box-label">Question 6</span>
+<p data-cid="ch04-1830">What is the actual difference between the weak axiom (5.1) and the Class Field Axiom (6.1), and what does each one deliver?</p>
+<ol class="quiz-options" data-cid="ch04-1840">
+<li>Axiom 5.1 constrains all cyclic extensions and gives the isomorphism; Axiom 6.1 is the weaker unramified-only version used to define the map.</li>
+<li>The two axioms are equivalent restatements; the numbering merely separates the local and global cases.</li>
+<li>Axiom 5.1 vanishes cohomology only for unramified extensions and suffices to build the reciprocity homomorphism; Axiom 6.1 fixes <span class="tts-math" data-tts="the order of H zero equals the degree and H minus one equals 1">$\#H^0=[L:K]$</span>, <span class="tts-math" data-tts="H minus one equals 1">$\#H^{-1}=1$</span> for all cyclic extensions, upgrading the map to an isomorphism.</li>
+<li>Axiom 6.1 only constrains unramified extensions but with an exact count, whereas Axiom 5.1 covers all Galois extensions qualitatively.</li>
+</ol>
+<details class="quiz-answer">
+<summary>Reveal answer &amp; explanation</summary>
+<p data-cid="ch04-1850"><strong>Answer: C.</strong> The weak Axiom 5.1 only kills <span class="tts-math" data-tts="H zero and H minus one">$H^0,H^{-1}$</span> on the units for <em>unramified</em> extensions — just enough to define <span class="tts-math" data-tts="r sub L over K">$r_{L\mid K}$</span> and get the unramified isomorphism. The strong Axiom 6.1 pins the orders for <em>all cyclic</em> extensions, and that is what makes <span class="tts-math" data-tts="r sub L over K">$r_{L\mid K}$</span> an isomorphism in general (and implies 5.1, Prop. 6.2). A swaps which axiom is which. B is false: they are genuinely different in strength — 6.1 is strictly stronger and implies 5.1, not vice versa. D mis-scopes 6.1 (it covers all cyclic, not just unramified) and overstates 5.1 (it is restricted to unramified, not all Galois).</p>
+</details>
+</div>
+<div class="box quiz" data-cid="ch04-1860">
+<span class="box-label">Question 7</span>
+<p data-cid="ch04-1870">Neukirch builds class field theory abstractly — from a profinite <span class="tts-math" data-tts="G">$G$</span> with a Frobenius datum and a henselian valuation — rather than directly over number fields. What is the genuine payoff of this abstraction?</p>
+<ol class="quiz-options" data-cid="ch04-1880">
+<li>It avoids group cohomology entirely, replacing it with elementary commutative algebra.</li>
+<li>The reciprocity theorem is proved once for the abstract setup, then instantiated to yield both local and global class field theory from the same machine.</li>
+<li>It proves a strictly stronger theorem than the classical one, valid for non-abelian extensions where the classical reciprocity fails.</li>
+<li>It removes the need to verify any axioms in concrete cases, since the abstract group already encodes the arithmetic.</li>
+</ol>
+<details class="quiz-answer">
+<summary>Reveal answer &amp; explanation</summary>
+<p data-cid="ch04-1890"><strong>Answer: B.</strong> The architecture is "prove once, instantiate twice": the General Reciprocity Law (Thm. 6.3) holds for any data satisfying the Class Field Axiom, so feeding it <span class="tts-math" data-tts="A equals K bar star">$A=\bar k^\times$</span> over a p-adic base gives local class field theory (ch. V) and feeding it the idele class module gives global (ch. VI). A overstates the case: the theory still uses <span class="tts-math" data-tts="H zero and H minus one">$H^0,H^{-1}$</span> and the Herbrand quotient — it avoids heavy cohomological <em>dimension</em> theory, not cohomology itself. C confuses the scope: reciprocity is intrinsically about the <em>abelian</em> quotient <span class="tts-math" data-tts="G abelianized">$G(L\mid K)^{\mathrm{ab}}$</span>, and abstraction does not extend it to non-abelian extensions. D is the opposite of the truth: the abstraction <em>relocates</em> the real work into verifying Axiom 6.1 in each concrete case, which is exactly what the Herbrand quotient (§4.7) is built to do.</p>
+</details>
+</div>
 <nav class="chapter-nav">
 <a href="ch03.html"><span class="label">← Previous</span><span class="title">III. Riemann–Roch Theory</span></a>
 <a class="next" href="ch05.html"><span class="label">Next →</span><span class="title">V. Local Class Field Theory</span></a>

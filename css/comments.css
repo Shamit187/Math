@@ -216,3 +216,45 @@
 .cmt-storage-badge.online { color: #3f6b3b; border-color: #b2cca8; }
 [data-theme="dark"] .cmt-storage-badge.online { color: var(--example-edge); border-color: var(--example-edge); }
 .cmt-storage-badge.offline { color: var(--ink-soft); }
+
+/* "Address comments" header button — launches Claude Code in a terminal */
+.cmt-address-btn {
+  margin-left: 0.7rem;
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid var(--accent-soft);
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.cmt-address-btn:hover { background: var(--accent); color: #fff; }
+.cmt-address-btn:disabled { opacity: 0.55; cursor: default; background: transparent; color: var(--ink-soft); }
+
+/* Transient status toast */
+.cmt-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 1.5rem;
+  transform: translateX(-50%) translateY(1rem);
+  background: var(--bg-elev);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  line-height: 1.4;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 1000;
+  max-width: 90vw;
+}
+.cmt-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.cmt-toast.err { border-left-color: var(--warn-edge); }

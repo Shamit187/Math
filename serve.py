@@ -23,16 +23,24 @@ Routing:
   /books/<book>/             -> ROOT/books/<book>/index.html
   /books/<book>/<path>       -> ROOT/books/<book>/<path>
   /api/health                -> healthcheck
-  /api/books                 -> list of books detected on disk
+  /api/books                 -> flat list of books/papers detected on disk
+  /api/catalog               -> faceted search (q, type, tag, topic, sort, page)
   /api/comments              -> GET (filter by book and/or page), POST
   /api/comments/<id>         -> DELETE, PATCH
+  /api/address-comments      -> POST (localhost only): open a PowerShell window
+                                running Claude Code to revise the page from its
+                                reader comments
 """
 import json
 import logging
+import re
+import subprocess
 import sys
+import threading
 import time
 import uuid
 import webbrowser
+from collections import Counter
 from pathlib import Path
 
 from flask import Flask, jsonify, request, send_from_directory, abort, Response
@@ -144,43 +152,241 @@ def _read_meta(path: Path) -> dict:
     return {}
 
 
+# ---------- catalog: a cached, faceted index of every book and paper ----------
+# Built once from each item's meta.json and rebuilt only when a meta.json (or the
+# set of content dirs) changes, so it stays fast at thousands of items. Every
+# query is filtered/sorted/paginated server-side and returns facet counts, which
+# is what keeps the homepage navigable as the library saturates.
+_catalog_lock = threading.Lock()
+_catalog_cache = {"sig": None, "items": None, "checked": 0.0}
+_CATALOG_TTL = 2.0  # seconds between change-checks (avoids re-stat'ing every request)
+
+
+def _topic_paths(meta) -> list:
+    """meta['topics'] is one or more 'Field/Subfield/Subject' strings; return a
+    list of cleaned segment-lists."""
+    raw = meta.get("topics") or []
+    if isinstance(raw, str):
+        raw = [raw]
+    out = []
+    for p in raw:
+        parts = [seg.strip() for seg in str(p).split("/") if seg.strip()]
+        if parts:
+            out.append(parts)
+    return out
+
+
+def _item_from_dir(d: Path, kind: str) -> dict:
+    meta = _read_meta(d)
+    year = meta.get("year")
+    try:
+        year = int(year) if year is not None else None
+    except (TypeError, ValueError):
+        year = None
+    item = {
+        "slug": d.name,
+        "type": kind,
+        "title": meta.get("title", d.name),
+        "subtitle": meta.get("subtitle", ""),
+        "authors": meta.get("authors", ""),
+        "venue": meta.get("venue", ""),
+        "year": year,
+        "description": meta.get("description", ""),
+        "topics": _topic_paths(meta),
+        "tags": [str(t).strip() for t in (meta.get("tags") or []) if str(t).strip()],
+    }
+    if kind == "book":
+        chapters = sorted((d / "chapters").glob("ch*.html")) if (d / "chapters").exists() else []
+        item["n_chapters"] = len(chapters)
+        item["url"] = f"/books/{d.name}/"
+    else:
+        item["url"] = f"/papers/{d.name}/"
+    return item
+
+
+def _content_dirs():
+    for base, kind in ((ROOT / "books", "book"), (ROOT / "papers", "paper")):
+        if not base.exists():
+            continue
+        for d in sorted(base.iterdir()):
+            if not d.is_dir() or d.name.startswith("_"):
+                continue
+            if kind == "paper" and not (d / "index.html").exists():
+                continue
+            yield d, kind
+
+
+def _catalog_signature() -> tuple:
+    sig = []
+    for d, kind in _content_dirs():
+        mf = d / "meta.json"
+        sig.append((str(d), kind, mf.stat().st_mtime_ns if mf.exists() else 0))
+    return tuple(sig)
+
+
+def get_catalog() -> list:
+    """Return the cached catalog, rebuilding only when content/meta changes.
+    The change-check itself is throttled to once per _CATALOG_TTL so a busy
+    homepage doesn't re-stat thousands of meta.json files on every request."""
+    now = time.monotonic()
+    with _catalog_lock:
+        if _catalog_cache["items"] is not None and (now - _catalog_cache["checked"]) < _CATALOG_TTL:
+            return _catalog_cache["items"]
+        _catalog_cache["checked"] = now
+        sig = _catalog_signature()
+        if _catalog_cache["sig"] != sig:
+            items = []
+            for d, kind in _content_dirs():
+                it = _item_from_dir(d, kind)
+                it["_hay"] = " ".join([
+                    it["title"], it["subtitle"], it["authors"], it["venue"],
+                    it["description"], " ".join(it["tags"]),
+                    " ".join("/".join(p) for p in it["topics"]),
+                ]).lower()
+                it["_tagset"] = {t.lower() for t in it["tags"]}
+                items.append(it)
+            _catalog_cache["items"] = items
+            _catalog_cache["sig"] = sig
+        return _catalog_cache["items"]
+
+
+def _public_item(it: dict) -> dict:
+    return {k: v for k, v in it.items() if not k.startswith("_")}
+
+
+def _topic_prefix_match(it: dict, prefix: list) -> bool:
+    if not prefix:
+        return True
+    low = [p.lower() for p in prefix]
+    for path in it["topics"]:
+        if len(path) >= len(low) and [s.lower() for s in path[:len(low)]] == low:
+            return True
+    return False
+
+
+def _build_topic_tree(items: list) -> list:
+    """Nested topic tree with a distinct-item count at every node."""
+    roots = {}
+    for it in items:
+        for path in it["topics"]:
+            cur, acc = roots, []
+            for part in path:
+                acc = acc + [part]
+                node = cur.get(part)
+                if node is None:
+                    node = {"name": part, "path": "/".join(acc), "slugs": set(), "children": {}}
+                    cur[part] = node
+                node["slugs"].add(it["slug"])
+                cur = node["children"]
+
+    def to_list(children):
+        out = []
+        for name in sorted(children):
+            n = children[name]
+            out.append({
+                "name": n["name"],
+                "path": n["path"],
+                "count": len(n["slugs"]),
+                "children": to_list(n["children"]),
+            })
+        return out
+
+    return to_list(roots)
+
+
+def _tag_facets(items: list, limit: int = 60) -> list:
+    c = Counter()
+    for it in items:
+        for t in dict.fromkeys(it["tags"]):  # dedup within an item, keep case
+            c[t] += 1
+    return [{"name": t, "count": n} for t, n in c.most_common(limit)]
+
+
 @app.route("/api/books")
 def list_books():
-    out = []
+    # Back-compat: the flat list, now enriched with topics/tags/year.
+    return jsonify({"books": [_public_item(it) for it in get_catalog()]})
 
-    books_dir = ROOT / "books"
-    if books_dir.exists():
-        for d in sorted(books_dir.iterdir()):
-            if not d.is_dir():
-                continue
-            meta = _read_meta(d)
-            chapters = sorted((d / "chapters").glob("ch*.html")) if (d / "chapters").exists() else []
-            out.append({
-                "slug": d.name,
-                "type": "book",
-                "title": meta.get("title", d.name),
-                "subtitle": meta.get("subtitle", ""),
-                "description": meta.get("description", ""),
-                "url": f"/books/{d.name}/",
-                "n_chapters": len(chapters),
-            })
 
-    papers_dir = ROOT / "papers"
-    if papers_dir.exists():
-        for d in sorted(papers_dir.iterdir()):
-            if not d.is_dir() or d.name.startswith("_") or not (d / "index.html").exists():
-                continue
-            meta = _read_meta(d)
-            out.append({
-                "slug": d.name,
-                "type": "paper",
-                "title": meta.get("title", d.name),
-                "subtitle": meta.get("subtitle", ""),
-                "authors": meta.get("authors", ""),
-                "venue": meta.get("venue", ""),
-                "description": meta.get("description", ""),
-                "url": f"/papers/{d.name}/",
-            })
+@app.route("/api/catalog")
+def api_catalog():
+    """Faceted search over the whole library.
+
+    Query params: q, type (book|paper), tag (repeatable, AND), topic (a
+    Field/Subfield path prefix), sort (relevance|title|year_desc|year_asc),
+    offset, limit. Returns the page of items plus facet counts (each facet is
+    computed ignoring its own dimension, so selections narrow the others)."""
+    items = get_catalog()
+
+    q = (request.args.get("q") or "").strip().lower()
+    tokens = [t for t in re.split(r"\s+", q) if t]
+    typ = (request.args.get("type") or "").strip().lower()
+    if typ not in ("book", "paper"):
+        typ = ""
+    topic_parts = [s.strip() for s in (request.args.get("topic") or "").split("/") if s.strip()]
+    tags = [t.strip().lower() for t in request.args.getlist("tag") if t.strip()]
+    sort = (request.args.get("sort") or "relevance").strip()
+    try:
+        offset = max(0, int(request.args.get("offset", 0)))
+    except (TypeError, ValueError):
+        offset = 0
+    try:
+        limit = int(request.args.get("limit", 24))
+    except (TypeError, ValueError):
+        limit = 24
+    limit = max(1, min(limit, 200))
+
+    def passes(it, ignore=()):
+        if "type" not in ignore and typ and it["type"] != typ:
+            return False
+        if "topic" not in ignore and topic_parts and not _topic_prefix_match(it, topic_parts):
+            return False
+        if "tag" not in ignore and tags and not all(tg in it["_tagset"] for tg in tags):
+            return False
+        if "q" not in ignore and tokens and not all(tok in it["_hay"] for tok in tokens):
+            return False
+        return True
+
+    def score(it):
+        s = 0
+        title = it["title"].lower()
+        tagblob = " ".join(it["tags"]).lower()
+        for tok in tokens:
+            if tok in title:
+                s += 5
+            if tok in tagblob:
+                s += 3
+            s += 1
+        return s
+
+    filtered = [it for it in items if passes(it)]
+    if sort == "title":
+        filtered.sort(key=lambda it: it["title"].lower())
+    elif sort == "year_desc":
+        filtered.sort(key=lambda it: (-(it["year"] if it["year"] is not None else -99999), it["title"].lower()))
+    elif sort == "year_asc":
+        filtered.sort(key=lambda it: (it["year"] if it["year"] is not None else 99999, it["title"].lower()))
+    elif tokens:  # relevance (default) with an active query
+        filtered.sort(key=lambda it: (-score(it), it["title"].lower()))
+    else:
+        filtered.sort(key=lambda it: it["title"].lower())
+
+    total = len(filtered)
+    page = [_public_item(it) for it in filtered[offset:offset + limit]]
+
+    topic_items = [it for it in items if passes(it, ignore=("topic",))]
+    tag_items = [it for it in items if passes(it, ignore=("tag",))]
+    type_items = [it for it in items if passes(it, ignore=("type",))]
+    facets = {
+        "topics": _build_topic_tree(topic_items),
+        "tags": _tag_facets(tag_items),
+        "types": {
+            "all": len(type_items),
+            "book": sum(1 for it in type_items if it["type"] == "book"),
+            "paper": sum(1 for it in type_items if it["type"] == "paper"),
+        },
+    }
+    return jsonify({"total": total, "offset": offset, "limit": limit, "items": page, "facets": facets})
 
     return jsonify({"books": out})
 
@@ -250,6 +456,113 @@ def update_comment(cid):
             _save(data)
             return jsonify({"comment": c})
     return jsonify({"error": "not found"}), 404
+
+
+# ---------- "address comments" — hand a page's comments to Claude Code ----------
+_SLUG_RE = re.compile(r"^[A-Za-z0-9_-]+$")
+
+
+def _ps_single_quote(s: str) -> str:
+    """Quote a string for use inside a PowerShell single-quoted literal."""
+    return "'" + s.replace("'", "''") + "'"
+
+
+@app.route("/api/address-comments", methods=["POST"])
+def address_comments():
+    """Open a PowerShell window on the desktop and run Claude Code to revise the
+    page that the comments refer to.
+
+    This launches `claude --dangerously-skip-permissions`, i.e. it runs an agent
+    that can edit files with no prompts — so it is restricted to requests coming
+    from the local machine, and the command is built entirely server-side from a
+    validated book/page (no raw browser text reaches the shell)."""
+    remote = request.remote_addr or ""
+    if remote not in ("127.0.0.1", "::1", "localhost"):
+        return jsonify({"error": "address-comments is only available on localhost"}), 403
+    if not sys.platform.startswith("win"):
+        return jsonify({"error": "address-comments currently supports Windows/PowerShell only"}), 400
+
+    body = request.get_json(silent=True) or {}
+    book = (body.get("book") or "").strip()
+    page = (body.get("page") or "").strip()
+    if not _SLUG_RE.match(book) or not _SLUG_RE.match(page):
+        return jsonify({"error": "invalid book or page"}), 400
+
+    # Resolve the actual page file the comments point at. A chapter page (chNN)
+    # must map to its own chapter file; only the book/paper home pages fall back
+    # to index.html, so a bogus page slug 404s instead of silently retargeting.
+    candidates = [ROOT / "books" / book / "chapters" / f"{page}.html"]
+    if page == "index":
+        candidates.append(ROOT / "books" / book / "index.html")
+    if page == "main":
+        candidates.append(ROOT / "papers" / book / "index.html")
+        candidates.append(ROOT / "books" / book / "index.html")
+    target = next((c for c in candidates if c.exists()), None)
+    if target is None:
+        return jsonify({"error": f"no page file found for book={book}, page={page}"}), 404
+    rel = target.relative_to(ROOT).as_posix()
+
+    pending = [c for c in _load()["comments"]
+               if c.get("book") == book and c.get("page") == page]
+
+    # NOTE: keep this prompt free of double-quote characters. It is passed through
+    # subprocess -> powershell.exe -Command inside a single-quoted PowerShell string;
+    # embedded double quotes survive Windows command-line quoting poorly, whereas a
+    # quote-free instruction transports cleanly. (Apostrophes are fine — they are
+    # doubled by _ps_single_quote.)
+    prompt = (
+        "You are working in the Slow Books project (your current directory is the project root). "
+        "A reader has left comments that need to be addressed. "
+        f"Read comments/comments.json and find every comment whose book field equals {book} and whose "
+        f"page field equals {page}. "
+        f"Those comments are about the chapter file {rel}; each comment's cid field is the data-cid of the exact "
+        "block it refers to, and its text field is the reader's question or confusion. "
+        "For each such comment, revise that page to resolve the confusion: clarify the prose, and/or add a "
+        "box intuition (or a box comment-response whose data-resolves attribute is set to the comment id) "
+        "immediately after the referenced block. "
+        "Follow CLAUDE.md exactly: wrap every math expression in a tts-math span with a plain-English data-tts "
+        "reading, give any new block a data-cid that preserves the increasing order, and escape the angle-bracket "
+        "and ampersand characters inside math. "
+        "Do not delete or rewrite unrelated content. Once a comment is fully addressed, remove that entry from "
+        "comments/comments.json so it is not handled again. Finish with a short summary of what you changed."
+    )
+
+    # Launch Claude INTERACTIVELY (not headless -p). Headless/print mode is
+    # non-interactive, so it cannot complete Claude's subscription sign-in — the
+    # Pro/Max OAuth login and the first-run --dangerously-skip-permissions trust
+    # prompt both need a real TTY — which is why a -p terminal could never "sort
+    # out the subscription". An interactive session authenticates normally and
+    # starts pre-loaded on the prompt below.
+    #
+    # We still launch PowerShell WITHOUT -NoExit, so the console closes once the
+    # Claude session ends (type /exit when the comments are addressed): on a clean
+    # exit it shows a confirmation and closes; on a non-zero exit it stays open so
+    # the error remains visible.
+    ps_lines = [
+        f"Set-Location -LiteralPath {_ps_single_quote(str(ROOT))}",
+        f"Write-Host {_ps_single_quote('Addressing reader comments on ' + rel + '. Type /exit when done to close this window.')} -ForegroundColor Cyan",
+        f"claude --dangerously-skip-permissions {_ps_single_quote(prompt)}",
+        "if ($LASTEXITCODE -eq 0) { Write-Host 'Claude session ended - closing.' -ForegroundColor Green; "
+        "Start-Sleep -Seconds 2 } "
+        "else { Write-Host ('Claude exited with code ' + $LASTEXITCODE + '.') -ForegroundColor Red; "
+        "Read-Host 'Press Enter to close' }",
+    ]
+    ps_script = "; ".join(ps_lines)
+
+    CREATE_NEW_CONSOLE = 0x00000010
+    try:
+        subprocess.Popen(
+            ["powershell", "-Command", ps_script],
+            creationflags=CREATE_NEW_CONSOLE,
+            cwd=str(ROOT),
+        )
+    except FileNotFoundError:
+        return jsonify({"error": "powershell not found on PATH"}), 500
+    except Exception as exc:
+        logging.getLogger(__name__).error("address-comments launch failed: %s", exc, exc_info=True)
+        return jsonify({"error": "failed to launch terminal"}), 500
+
+    return jsonify({"ok": True, "page_file": rel, "pending_comments": len(pending)})
 
 
 # ---------- highlights API ----------

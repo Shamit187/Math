@@ -2,5 +2,14 @@
   "title": "Paper Title",
   "authors": "Author One, Author Two",
   "venue": "Journal / Conference, Year",
-  "description": "One-sentence description shown on the homepage."
+  "description": "One-sentence description shown on the homepage.",
+  "year": 2026,
+  "topics": [
+    "Field/Subfield/Subject"
+  ],
+  "tags": [
+    "tag one",
+    "tag two",
+    "tag three"
+  ]
 }

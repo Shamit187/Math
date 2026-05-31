@@ -139,6 +139,78 @@
     return d.comments.length !== before;
   }
 
+  // ---------- "Address comments" — hand this page off to Claude Code ----------
+  function toast(msg, isErr) {
+    let t = document.querySelector(".cmt-toast");
+    if (!t) {
+      t = document.createElement("div");
+      t.className = "cmt-toast";
+      document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    t.classList.toggle("err", !!isErr);
+    t.classList.add("show");
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.classList.remove("show"), 6000);
+  }
+
+  async function onAddressClick(e) {
+    const btn = e.currentTarget;
+    if (!backendOnline) {
+      toast("Backend not running — start it with: python serve.py", true);
+      return;
+    }
+    const n = (await listComments(PAGE)).length;
+    if (n === 0) {
+      toast("No comments on this page yet.", true);
+      return;
+    }
+    const ok = confirm(
+      `Launch Claude Code in a new terminal to address the ${n} comment(s) on this page?\n\n` +
+      `It runs:  claude --dangerously-skip-permissions\n` +
+      `and will edit this chapter's HTML to resolve the comments.`
+    );
+    if (!ok) return;
+    const label = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = "Launching…";
+    try {
+      const r = await fetch(`${API_BASE}/address-comments`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ book: BOOK, page: PAGE }),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (r.ok) {
+        toast(
+          `Claude launched in a terminal for ${d.page_file || PAGE} ` +
+          `(${d.pending_comments != null ? d.pending_comments : n} comment(s)). Watch the new window.`
+        );
+      } else {
+        toast(d.error || "Failed to launch.", true);
+      }
+    } catch (err) {
+      console.error(err);
+      toast("Could not reach the backend.", true);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = label;
+    }
+  }
+
+  function ensureAddressButton() {
+    const nav = document.querySelector(".site-header nav");
+    if (!nav || nav.querySelector(".cmt-address-btn")) return;
+    const btn = document.createElement("button");
+    btn.className = "cmt-address-btn";
+    btn.type = "button";
+    btn.textContent = "Address comments";
+    btn.title =
+      "Launch Claude Code in a terminal to revise this page based on its reader comments.";
+    btn.addEventListener("click", onAddressClick);
+    nav.insertBefore(btn, nav.firstChild);
+  }
+
   // ---------- UI ----------
   function excerptOf(el) {
     const t = (el.textContent || "").trim().replace(/\s+/g, " ");
@@ -319,6 +391,7 @@
 
   async function init() {
     await probe();
+    ensureAddressButton();
     // Pre-load all comments for this page so we can mark blocks that have them
     const all = await listComments(PAGE);
     const byCid = new Map();

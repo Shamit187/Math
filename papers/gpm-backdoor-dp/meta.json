@@ -2,5 +2,16 @@
   "title": "GPM: The Gaussian Pancake Mechanism",
   "authors": "Haochen Sun, Xi He",
   "venue": "arXiv 2509.23834, 2026",
-  "description": "Planting undetectable backdoors in differential privacy mechanisms via numerical implementation flaws."
+  "description": "Planting undetectable backdoors in differential privacy mechanisms via numerical implementation flaws.",
+  "year": 2026,
+  "topics": [
+    "Computer Science/Security and Privacy/Differential Privacy"
+  ],
+  "tags": [
+    "differential privacy",
+    "backdoors",
+    "security",
+    "floating point",
+    "privacy attacks"
+  ]
 }
