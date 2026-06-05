@@ -1,0 +1,6 @@
+{
+  "title": "PNUTS: Yahoo!'s Hosted Data Serving Platform",
+  "authors": "Brian F. Cooper, Raghu Ramakrishnan, Utkarsh Srivastava, Adam Silberstein, Philip Bohannon, Hans-Arno Jacobsen, Nick Puz, Daniel Weaver, Ramana Yerneni",
+  "venue": "PVLDB 2008",
+  "description": "Describes PNUTS, Yahoo!'s massively parallel and geographically distributed hosted database platform, which provides per-record timeline consistency using asynchronous replication over a pub/sub message broker, enabling low-latency reads and writes for hundreds of millions of web application records across global datacenters."
+}

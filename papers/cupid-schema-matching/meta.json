@@ -1,0 +1,6 @@
+{
+  "title": "Generic Schema Matching with Cupid",
+  "authors": "Jayant Madhavan, Philip A. Bernstein, Erhard Rahm",
+  "venue": "VLDB 2001",
+  "description": "Proposes Cupid, a generic schema matching algorithm that combines linguistic name normalization and structural tree-based similarity to automatically discover mappings between heterogeneous database schemas."
+}

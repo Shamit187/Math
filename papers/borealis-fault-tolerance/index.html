@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Fault-Tolerance in the Borealis Distributed Stream Processing System · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="borealis-fault-tolerance" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/borealis-fault-tolerance/">Borealis Fault-Tolerance</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. The Problem: Streams in the Wild</a></li>
+    <li><a href="#s2">2. Model and Design Goals</a></li>
+    <li><a href="#s3">3. Stable vs. Tentative: The Data Model</a></li>
+    <li><a href="#s4">4. SUnion: Serializing Replicas</a></li>
+    <li><a href="#s5">5. The Three-State Machine</a></li>
+    <li><a href="#s6">6. Reconciliation: Checkpoint vs. Undo/Redo</a></li>
+    <li><a href="#s7">7. Experimental Results</a></li>
+    <li><a href="#s8">8. Lasting Impact</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">SIGMOD 2005 · Scientific Paper</div>
+    <h1>Fault-Tolerance in the Borealis Distributed Stream Processing System</h1>
+    <div class="paper-meta">
+      <span class="authors">Magdalena Balazinska, Hari Balakrishnan, Samuel Madden, Michael Stonebraker</span>
+      <span class="venue">ACM SIGMOD, June 2005, Baltimore, Maryland</span>
+    </div>
+  </section>
+
+  <!-- ABSTRACT -->
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    Borealis is a distributed stream processing engine that must keep producing results even when nodes crash, network links fail, or partitions split the system. This paper presents a replication-based fault-tolerance protocol that trades the degree of output inconsistency against availability using a user-specified time threshold. Replicas are kept in sync by a deterministic serializing operator called SUnion, which orders tuples from multiple input streams into a canonical sequence. When an upstream neighbor becomes unavailable, a node may continue processing on partial inputs, emitting <em>tentative</em> tuples that can be corrected later. After the failure heals, nodes reconcile their internal state via either checkpoint/redo or undo/redo techniques and stabilize their outputs. Experiments show that checkpoint/redo achieves faster reconciliation while undo/redo consumes less memory, and that continuously processing new tuples during both failure and reconciliation (the "Process &amp; Process" strategy) best satisfies the availability requirement while producing the fewest tentative tuples.
+  </div>
+
+  <!-- SECTION 1 -->
+  <h2 data-cid="main-020" id="s1">1. The Problem: Streams in the Wild</h2>
+
+  <p data-cid="main-030">
+    Imagine a network-monitoring application that ingests packet-header streams from hundreds of routers simultaneously. The application joins these streams, computes traffic anomaly scores, and pushes alerts to a security dashboard — all in real time. Traditional database systems are useless here: data arrives continuously, results must be produced within seconds, and the volume is far too large to store-and-query in the classic sense. What is needed is a <em>stream processing engine (SPE)</em>, a system that evaluates continuous queries over time-windowed data as it flows through a directed graph of operators.
+  </p>
+
+  <p data-cid="main-040">
+    Borealis, the successor to Aurora and Medusa developed at MIT and Brandeis, is exactly such an engine. But stream processing at scale is inherently distributed: data sources are geographically dispersed, and the operator graph is spread across many processing nodes to handle load. Distributed systems fail. Nodes crash. Links partition. The question the authors address is: <em>how can a distributed SPE keep producing useful results despite failures, without necessarily halting until every fault is repaired?</em>
+  </p>
+
+  <div class="box intuition" data-cid="main-050">
+    <span class="box-label">Intuition — why streaming fault-tolerance is different from database fault-tolerance</span>
+    <p data-cid="main-060">
+      In a traditional database, correctness means serializability: either a transaction committed or it did not. A database can simply refuse to answer queries while it recovers. In a stream engine, refusing to produce output <em>is itself a failure</em>: the intrinsic value of a stream result is its timeliness. A security system that stops alerting for 30 seconds during a router failure may miss the attack window entirely. The designers of Borealis therefore deliberately separate two orthogonal concerns: <strong>availability</strong> (does the system keep producing output at all?) and <strong>consistency</strong> (are those outputs correct?). Neither fully implies the other, and both must be managed explicitly.
+    </p>
+  </div>
+
+  <p data-cid="main-070">
+    Prior work on high-availability streaming either ignored network failures entirely (handling only node crashes) or required that at least one fully connected copy of the query network exist to continue processing, which is an extremely strong assumption. Borealis relaxes both constraints, offering a configurable trade-off governed by a single user-specified parameter: the maximum delay
+    <span class="tts-math" data-tts="X">$X$</span>.
+    Any new input tuple must be processed and a result produced within delay
+    <span class="tts-math" data-tts="X">$X$</span>,
+    regardless of what other streams are doing. Choosing a larger
+    <span class="tts-math" data-tts="X">$X$</span>
+    gives the system more time to wait for a stable upstream replica, thus producing fewer wrong answers but sacrificing timeliness. Choosing a smaller
+    <span class="tts-math" data-tts="X">$X$</span>
+    keeps latency tight but forces the system to proceed on partial information, producing more tentative tuples.
+  </p>
+
+  <!-- SECTION 2 -->
+  <h2 data-cid="main-080" id="s2">2. Model and Design Goals</h2>
+
+  <p data-cid="main-090">
+    The system model is a directed acyclic graph of operators — filters, aggregates, joins, unions — spread across
+    <span class="tts-math" data-tts="G">$G$</span>
+    processing nodes. Each node may have
+    <span class="tts-math" data-tts="N">$N$</span>
+    replicas (including itself), and the system tolerates up to
+    <span class="tts-math" data-tts="N minus 1">$N - 1$</span>
+    simultaneous node failures. Failures are either <em>fail-stop</em> (node crashes cleanly) or <em>network partitions</em> (nodes lose connectivity to one another). Data sources and clients communicate with the SPE through proxies that log input tuples persistently before forwarding, so all replicas eventually see the same input sequence despite source failures.
+  </p>
+
+  <div class="box definition" data-cid="main-100">
+    <span class="box-label">Definition — Tentative vs. Stable Tuples</span>
+    <p data-cid="main-110">
+      A <strong>stable</strong> tuple is the result of processing a complete, consistent set of inputs. It is immutable. A <strong>tentative</strong> tuple is the result of processing a <em>subset</em> of inputs (because some upstream streams were unavailable); it may subsequently be amended. An <strong>undo</strong> tuple signals that a suffix of previously emitted tuples should be deleted and replaced. Tentative tuples are marked as such so downstream nodes can decide whether to act on them immediately or wait for stabilization.
+    </p>
+  </div>
+
+  <p data-cid="main-120">
+    The core design goal is to minimize the number of tentative tuples
+    <span class="tts-math" data-tts="N sub tentative">$N_{\text{tentative}}$</span>
+    produced, subject to the constraint that the processing delay for every new tuple remains below
+    <span class="tts-math" data-tts="X">$X$</span>.
+    Because tentative tuples are a proxy for replica inconsistency, minimizing them directly reduces the downstream burden of reconciliation. The authors also require <em>eventual consistency</em>: once all failures heal, every client must eventually receive the correct, complete, stable output stream.
+  </p>
+
+  <!-- SECTION 3 -->
+  <h2 data-cid="main-130" id="s3">3. Stable vs. Tentative: The Data Model</h2>
+
+  <p data-cid="main-140">
+    Borealis extends the standard stream tuple to include two fields: <code>tuple_type</code> (STABLE, TENTATIVE, UNDO, BOUNDARY, etc.) and <code>tuple_time</code>, a logical timestamp. Tuples on a stream are never re-ordered within that stream because nodes communicate over reliable in-order channels (TCP). The challenge arises at <em>operators with multiple input streams</em> — joins and unions — where tuples from different streams may arrive at wildly different rates.
+  </p>
+
+  <p data-cid="main-150">
+    To handle multi-stream ordering, the authors introduce <em>boundary tuples</em>: periodic heartbeats sent by data sources with a guaranteed property — no tuple with a
+    <span class="tts-math" data-tts="tuple underscore time">$\texttt{tuple\_time}$</span>
+    smaller than the boundary's will ever arrive after it on that stream. Boundary tuples play the role of "punctuation" in the stream, allowing operators to close and output time windows as soon as all inputs for that window have been seen. Without them, a join would have to wait indefinitely for the slower stream.
+  </p>
+
+  <div class="box example" data-cid="main-160">
+    <span class="box-label">Example — Why a Join Blocks Without Boundaries</span>
+    <p data-cid="main-170">
+      Suppose a join combines a fast stock-price stream (1000 tuples/s) with a slow reference stream (1 tuple/s). The join cannot output a result for time window
+      <span class="tts-math" data-tts="t">[t,</span>
+      <span class="tts-math" data-tts="t plus d">t+d]</span>
+      until it knows no more tuples in that window will arrive from the slow stream. Without boundaries, it must buffer the fast stream indefinitely. With boundaries, the slow stream periodically asserts "I have sent all tuples up to time
+      <span class="tts-math" data-tts="t">$t$</span>,"
+      allowing the join to flush the window safely.
+    </p>
+  </div>
+
+  <!-- SECTION 4 -->
+  <h2 data-cid="main-180" id="s4">4. SUnion: The Key to Replica Consistency</h2>
+
+  <p data-cid="main-190">
+    The central technical contribution is a new operator called <strong>SUnion</strong> (Serializing Union). Its purpose is deceptively simple but crucial: given multiple input streams (one per replica of an upstream operator), SUnion merges them into a single output stream with a <em>deterministic, canonical ordering</em> that all replicas produce identically.
+  </p>
+
+  <p data-cid="main-200">
+    Why does ordering matter? Because the state of a stateful operator — like an aggregate computing a running sum — depends on the sequence of inputs it has processed, not just the set. If replica A processes tuple
+    <span class="tts-math" data-tts="p">$p$</span>
+    before tuple
+    <span class="tts-math" data-tts="q">$q$</span>
+    and replica B processes them in the opposite order, their internal states diverge even though both processed the same tuples. SUnion ensures that every downstream replica sees tuples in the same order, so their states remain identical and they produce identical outputs.
+  </p>
+
+  <div class="box definition" data-cid="main-210">
+    <span class="box-label">Definition — How SUnion Works</span>
+    <p data-cid="main-220">
+      SUnion places incoming tuples into fixed-width time <em>buckets</em> based on their
+      <code>tuple_time</code> value. It then sorts the contents of each bucket using a deterministic function (typically by increasing <code>tuple_time</code>, with ties broken by a secondary rule). A bucket is declared <em>stable</em> only after boundary tuples from all input streams guarantee that no further tuples with timestamps in that bucket can arrive. At that point, SUnion forwards the bucket's contents to downstream operators as stable tuples, in the canonical order.
+    </p>
+  </div>
+
+  <p data-cid="main-230">
+    SUnion is similar to the <em>Input Manager</em> in the STREAM system, but with a critical difference: it explicitly distinguishes failures (missing data that will never arrive) from delays (data that is late but will eventually arrive). This distinction is what allows Borealis to implement the availability/consistency trade-off: a delayed SUnion can choose to forward tentative results when the delay budget
+    <span class="tts-math" data-tts="X">$X$</span>
+    is about to expire, rather than blocking forever.
+  </p>
+
+  <!-- SECTION 5 -->
+  <h2 data-cid="main-240" id="s5">5. The Three-State Machine</h2>
+
+  <p data-cid="main-250">
+    Each node in Borealis runs a state machine with three states: <strong>STABLE</strong>, <strong>UP_FAILURE</strong>, and <strong>STABILIZATION</strong>. Understanding these states is the key to understanding the whole fault-tolerance protocol.
+  </p>
+
+  <div class="box definition" data-cid="main-260">
+    <span class="box-label">Definition — Node States</span>
+    <p data-cid="main-270">
+      <strong>STABLE:</strong> All upstream neighbors are reachable and sending stable data. The node processes tuples normally and passes stable results downstream.<br/><br/>
+      <strong>UP_FAILURE:</strong> At least one upstream neighbor has become unavailable. The node must decide whether to suspend (block), delay new tuples, or process them tentatively. It emits tentative tuples marked as such.<br/><br/>
+      <strong>STABILIZATION:</strong> The failed upstream neighbor has come back (or a STABLE replica has been found). The node must reconcile its internal state by correcting the tentative tuples it emitted during UP_FAILURE, and stabilize its output before returning to STABLE.
+    </p>
+  </div>
+
+  <p data-cid="main-280">
+    The transitions are managed by two auxiliary operators inserted into every query network. <strong>SUnion</strong>, placed at each node's inputs, handles upstream monitoring and data ordering. <strong>SOutput</strong>, placed at each output stream crossing a node boundary, handles output stabilization — it buffers output tuples, generates the undo tuple when stabilization begins, and forwards the corrected stable versions when reconciliation completes.
+  </p>
+
+  <div class="box intuition" data-cid="main-290">
+    <span class="box-label">Intuition — Why "Process During Failure" Beats "Block"</span>
+    <p data-cid="main-300">
+      Blocking during UP_FAILURE produces zero tentative tuples but violates the delay bound
+      <span class="tts-math" data-tts="X">$X$</span>
+      for any failure lasting longer than
+      <span class="tts-math" data-tts="X">$X$</span>.
+      Delaying tuples (buffering new arrivals) keeps the door open to finding a stable replica in time, producing fewer tentatives than immediate processing, but also eventually violates
+      <span class="tts-math" data-tts="X">$X$</span>
+      for long failures. Processing immediately produces the most tentatives but always meets the delay bound. For a distributed chain of nodes, the authors find that <em>Process during both UP_FAILURE and STABILIZATION</em> is the strategy that best maximizes availability while minimizing tentative tuples — a counter-intuitive result that falls out of the cascade effect in reconciliation.
+    </p>
+  </div>
+
+  <!-- SECTION 6 -->
+  <h2 data-cid="main-310" id="s6">6. Reconciliation: Checkpoint vs. Undo/Redo</h2>
+
+  <p data-cid="main-320">
+    After a failure heals, the node enters STABILIZATION and must reconcile its state: revert to what it should have computed had all inputs been available, then re-process. The paper explores two approaches borrowed and adapted from traditional database recovery theory.
+  </p>
+
+  <div class="box definition" data-cid="main-330">
+    <span class="box-label">Checkpoint/Redo Reconciliation</span>
+    <p data-cid="main-340">
+      Periodically during STABLE operation, the system takes a full snapshot (checkpoint) of every operator's state and the boundary tuple identifiers at that point. SUnion buffers all input tuples received after the checkpoint. When reconciliation begins, the node reloads the checkpoint and replays all buffered inputs from that snapshot forward. The replay is deterministic and, with the full set of inputs now available, produces the correct stable output. This approach requires storing the operator state snapshot (size
+      <span class="tts-math" data-tts="S">$S$</span>)
+      plus all tuples buffered since the checkpoint.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-350">
+    <span class="box-label">Undo/Redo Reconciliation</span>
+    <p data-cid="main-360">
+      Rather than checkpointing state, each operator implements an <em>undo</em> method. When a tentative tuple must be retracted, the operator scans backward through its input buffer to the oldest tuple that still contributes to the current window — the <em>stream marker</em> — undoes its effects, and reprocesses forward from there. SUnion buffers only the tentative input tuples (not stable ones, which can be discarded). This consumes less memory than checkpoint/redo because there is no need to store a full state snapshot, but it requires more CPU time during reconciliation because the state must be rebuilt by re-processing rather than loading from a snapshot.
+    </p>
+  </div>
+
+  <div class="box pause" data-cid="main-370">
+    <span class="box-label">Pause and Compare</span>
+    <p data-cid="main-380">
+      Both approaches have the same goal — restore the node to the correct state — but they differ in their time/space trade-off. Checkpoint/redo's reconciliation time is roughly
+      <span class="tts-math" data-tts="S times p sub copy plus the quantity D plus 0.5 l, times lambda times p sub proc">$S \cdot p_{\text{copy}} + (D + 0.5l)\lambda \cdot p_{\text{proc}}$</span>,
+      where
+      <span class="tts-math" data-tts="D">$D$</span>
+      is the failure duration,
+      <span class="tts-math" data-tts="l">$l$</span>
+      is the checkpoint interval, and
+      <span class="tts-math" data-tts="lambda">$\lambda$</span>
+      is the aggregate tuple rate. Undo/redo's time is dominated by replaying the entire undo log plus re-processing, so it is slower when the operator state is large. In experiments, checkpoint/redo is faster for large operator state sizes; undo/redo uses less memory (no state snapshot needed) and can propagate reconciliation only along the paths actually affected by the failure.
+    </p>
+  </div>
+
+  <!-- SECTION 7 -->
+  <h2 data-cid="main-390" id="s7">7. Experimental Results</h2>
+
+  <p data-cid="main-400">
+    The authors implement both mechanisms in the Borealis prototype and run experiments on single nodes and multi-node chains. The basic setup is a query network of three input streams, an SUnion, a Join, and an SOutput, processing 3000 tuples/s in aggregate. Failures are simulated by temporarily disconnecting one input stream.
+  </p>
+
+  <p data-cid="main-410">
+    The key finding from single-node experiments is that, for failures shorter than
+    <span class="tts-math" data-tts="alpha X">$\alpha X$</span>
+    (where
+    <span class="tts-math" data-tts="alpha">$\alpha$</span>
+    is roughly 0.9 in the experiment), the node can simply delay new tuples and produce zero tentative output, because it is likely to find a stable replica before the delay budget expires. For longer failures, the node must process and accept tentative output. The number of tentative tuples grows linearly with both the delay parameter
+    <span class="tts-math" data-tts="alpha X">$\alpha X$</span>
+    and the failure duration.
+  </p>
+
+  <p data-cid="main-420">
+    For multi-node chains of length 1 through 4, the Process &amp; Process strategy (process new tuples without delay during both UP_FAILURE and STABILIZATION) dominates: it keeps
+    <span class="tts-math" data-tts="Delay sub new">$\text{Delay}_{\text{new}}$</span>
+    bounded by
+    <span class="tts-math" data-tts="k times X">$k \cdot X$</span>
+    where
+    <span class="tts-math" data-tts="k">$k$</span>
+    is the chain length, while minimizing
+    <span class="tts-math" data-tts="N sub tentative">$N_{\text{tentative}}$</span>.
+    Strategies that suspend tuples during STABILIZATION compound their delays multiplicatively at each node — for a chain of 4, this can push
+    <span class="tts-math" data-tts="Delay sub new">$\text{Delay}_{\text{new}}$</span>
+    far beyond
+    <span class="tts-math" data-tts="X">$X$</span>.
+  </p>
+
+  <div class="box example" data-cid="main-430">
+    <span class="box-label">Example — Reconciliation Overhead</span>
+    <p data-cid="main-440">
+      With a 5-second failure and a state size of 1000 tuples, checkpoint/redo reconciliation completes in roughly 1 second (dominated by the cost of copying the state snapshot), while undo/redo takes about 1.5 seconds (dominated by rebuilding the state by re-processing the undo log). However, the SUnion serialization delay adds a latency overhead proportional to the bucket size: at a 200 ms boundary interval, the average end-to-end delay is about 234 ms — a modest price for deterministic replica ordering.
+    </p>
+  </div>
+
+  <!-- SECTION 8 -->
+  <h2 data-cid="main-450" id="s8">8. Lasting Impact</h2>
+
+  <p data-cid="main-460">
+    Borealis's fault-tolerance paper introduced several ideas that have become standard vocabulary in the stream processing literature. The notion of tentative vs. stable outputs — and the explicit use of undo tuples to correct downstream state — prefigures the <em>speculative execution</em> and <em>retraction</em> mechanisms in Apache Flink and Apache Beam. The SUnion operator's design, which separates the ordering problem from the failure-detection problem, influenced the "watermark" abstraction central to the Dataflow model (Google, 2015), which uses punctuation-like signals to close time windows without blocking.
+  </p>
+
+  <p data-cid="main-470">
+    The configurable availability/consistency trade-off — governed by a single user-visible parameter
+    <span class="tts-math" data-tts="X">$X$</span>
+    — also anticipated the CAP theorem's practical consequences (Brewer, 2000; Gilbert &amp; Lynch, 2002) for streaming systems: you cannot simultaneously have perfect consistency, perfect availability, and tolerance to partitions. Borealis made this trade-off explicit and quantifiable, giving operators a concrete dial to turn rather than a binary choice.
+  </p>
+
+  <div class="box warn" data-cid="main-480">
+    <span class="box-label">Caveat — Scope of the Approach</span>
+    <p data-cid="main-490">
+      The paper assumes operators are <em>convergent-capable</em> — their state converges to a consistent value regardless of input order, given the same final input set. Arbitrary operators, such as those with external side effects or non-monotone window functions that can produce different outputs depending on arrival order even after undo, require additional mechanisms beyond what SUnion provides. The authors acknowledge this and leave it as future work.
+    </p>
+  </div>
+
+  <!-- REFERENCES -->
+  <h2 data-cid="main-500" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-510">Abadi et al. (2003). Aurora: A new model and architecture for data stream management. <em>VLDB Journal</em>, 12(2).</li>
+    <li data-cid="main-520">Abadi et al. (2005). The design of the Borealis stream processing engine. In <em>CIDR</em>.</li>
+    <li data-cid="main-530">Brewer, E. A. (2001). Lessons from giant-scale services. <em>IEEE Internet Computing</em>, 5(4):46–55.</li>
+    <li data-cid="main-540">Hwang, J.-H., Balazinska, M., Rasin, A., Cetintemel, U., Stonebraker, M., and Zdonik, S. (2005). High-availability algorithms for distributed stream processing. In <em>21st ICDE</em>.</li>
+    <li data-cid="main-550">Motwani et al. (2003). Query processing, approximation, and resource management in a data stream management system. In <em>CIDR</em>.</li>
+    <li data-cid="main-560">Shah, M., Hellerstein, J., and Brewer, E. (2004). Highly-available, fault-tolerant, parallel dataflows. In <em>SIGMOD</em>.</li>
+    <li data-cid="main-570">Tucker, P. A. and Maier, D. (2003). Dealing with disorder. In <em>23rd PODS</em>.</li>
+    <li data-cid="main-580">Elmozahy, E. N., Alvisi, L., Wang, Y.-M., and Johnson, D. B. (2002). A survey of rollback-recovery protocols in message-passing systems. <em>ACM Comput. Surv.</em>, 34(3):375–408.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script>
+</body>
+</html>

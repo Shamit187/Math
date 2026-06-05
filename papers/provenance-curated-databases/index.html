@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Provenance Management in Curated Databases · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="provenance-curated-databases" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/provenance-curated-databases/">Provenance in Curated Databases</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. What Is a Curated Database?</a></li>
+    <li><a href="#s2">2. Why Provenance Matters</a></li>
+    <li><a href="#s3">3. The Provenance Problem: Fine-Grained Lineage</a></li>
+    <li><a href="#s4">4. Four Storage Strategies</a></li>
+    <li><a href="#s5">5. Provenance Queries: Src, Hist, Mod</a></li>
+    <li><a href="#s6">6. Implementation: CPDB</a></li>
+    <li><a href="#s7">7. Experimental Evaluation</a></li>
+    <li><a href="#s8">8. Impact and Open Problems</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">SIGMOD 2006 · Scientific Paper</div>
+    <h1>Provenance Management in Curated Databases</h1>
+    <div class="paper-meta">
+      <span class="authors">Peter Buneman, Adriane P. Chapman, James Cheney</span>
+      <span class="venue">ACM SIGMOD, June 27–29, 2006, Chicago, Illinois</span>
+    </div>
+  </section>
+
+  <!-- ABSTRACT -->
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    Curated databases in bioinformatics and other scientific disciplines are constructed by the "sweat of the brow" of scientists who manually assimilate, interpret, and copy data from multiple sources. General-purpose database systems provide almost no support for tracking where this data came from. This paper proposes and evaluates a practical approach to <em>provenance tracking</em> for data that is manually copied among databases, recording each user action (insert, delete, copy-paste) in a queryable auxiliary provenance store. The authors define four storage strategies — naïve, transactional, hierarchical, and hierarchical-transactional — that differ in the granularity and efficiency of provenance representation. Experiments on a real bioinformatics system (MiMI) show that the most efficient strategy (hierarchical-transactional) reduces storage overhead by a factor of 5 relative to the naïve approach, while decreasing per-operation processing overhead to less than 6% of the base dataset manipulation cost. Three provenance queries — Src (who first created this data?), Hist (which transactions copied this data?), and Mod (which transactions modified this data?) — are defined and shown to be answerable efficiently from the stored provenance tables.
+  </div>
+
+  <!-- SECTION 1 -->
+  <h2 data-cid="main-020" id="s1">1. What Is a Curated Database?</h2>
+
+  <p data-cid="main-030">
+    There are hundreds of public-domain databases in molecular biology alone — SwissProt, GenBank, PubMed, OMIM, NCBI, and dozens more. A few contain raw experimental measurements. Most contain <em>curated</em> data: information that has been organized, interpreted, re-interpreted, and annotated from other sources by domain experts called curators or annotators. The UniProt consortium, for example, employs upwards of seventy scientists whose full-time job is to review, add to, and cross-reference protein databases published by the consortium.
+  </p>
+
+  <p data-cid="main-040">
+    At the other end of the scale are tiny, single-scientist databases: a molecular biologist who maintains a personal database of proteins relevant to her research, populated by browsing SwissProt, OMIM, NCBI, and PubMed and copy-pasting records she finds interesting. These databases are highly valued — they have replaced journal publications as the primary medium of scientific communication in some subfields. But they are maintained entirely manually: no system records where the data came from, who changed it, or when.
+  </p>
+
+  <div class="box example" data-cid="main-050">
+    <span class="box-label">Example — The Provenance Problem in Practice</span>
+    <p data-cid="main-060">
+      A molecular biologist studies how cholesterol efflux affects coronary artery disease. She maintains a database of proteins that may play a role, populating it by copy-pasting records from SwissProt and other sources. One year later, she notices a discrepancy: two post-translational modification (PTM) annotations in her database contradict each other. She cannot remember which source database she originally copied them from. She searches for the original data, but the source database has since been updated and no longer gives the same result. She has no choice but to discard the suspect data or spend hours manually tracking down the correct values. If she had already published a paper based on the erroneous data, the situation is worse. Had provenance been tracked automatically, she could have traced each annotation back to its source with a single query.
+    </p>
+  </div>
+
+  <!-- SECTION 2 -->
+  <h2 data-cid="main-070" id="s2">2. Why Provenance Matters</h2>
+
+  <p data-cid="main-080">
+    The authors argue that provenance — information describing the creation, recording, ownership, processing, or version history of data — is essential for assessing the integrity and scientific value of curated data. Without provenance, several important tasks become difficult or impossible:
+  </p>
+
+  <p data-cid="main-090">
+    <strong>Error tracing:</strong> When an anomaly is found, provenance allows you to trace it to its source database and determine whether the error is in your local copy or in the original. <strong>Credit attribution:</strong> Provenance records who created and who curated each data element, enabling proper scientific credit. <strong>Data availability:</strong> If a source database disappears, provenance from multiple downstream databases can be combined to partially reconstruct the lost source — a form of distributed archiving. <strong>Integrity assessment:</strong> Knowing which transactions modified a piece of data allows a user to assess whether the current value is trustworthy or the result of a suspicious sequence of edits.
+  </p>
+
+  <div class="box intuition" data-cid="main-100">
+    <span class="box-label">Intuition — "Why" vs. "Where" Provenance</span>
+    <p data-cid="main-110">
+      The database literature distinguishes two broad kinds of provenance. <em>Why-provenance</em> asks: which tuples in the source contributed to this result? This is the natural notion for SQL queries computed from existing data (e.g., the output of a SELECT...FROM...JOIN depends on specific source rows). <em>Where-provenance</em> asks: from which specific location in which source database did this value come? For curated databases, where-provenance is what matters: the biologist copied row 600046 from OMIM's table, not from an automated computation. This paper focuses entirely on where-provenance for manually copy-pasted data — an important and under-studied problem at the time.
+    </p>
+  </div>
+
+  <!-- SECTION 3 -->
+  <h2 data-cid="main-120" id="s3">3. The Provenance Problem: Fine-Grained Lineage</h2>
+
+  <p data-cid="main-130">
+    The authors model the curator's actions as a sequence of atomic update operations over a tree-structured data model (which subsumes relational tables, XML, and most scientific database formats). The three primitive operations are:
+  </p>
+
+  <div class="box definition" data-cid="main-140">
+    <span class="box-label">Definition — Atomic Update Operations</span>
+    <p data-cid="main-150">
+      Let
+      <span class="tts-math" data-tts="T">$T$</span>
+      be the target database and
+      <span class="tts-math" data-tts="S">$S$</span>
+      be a source database. An atomic update is one of:
+      <br/><br/>
+      <strong>ins {a : v} into p</strong> — Insert a new child labeled
+      <span class="tts-math" data-tts="a">$a$</span>
+      with value
+      <span class="tts-math" data-tts="v">$v$</span>
+      at location
+      <span class="tts-math" data-tts="p">$p$</span>
+      in
+      <span class="tts-math" data-tts="T">$T$</span>.
+      <br/><br/>
+      <strong>del a from p</strong> — Delete the child labeled
+      <span class="tts-math" data-tts="a">$a$</span>
+      at location
+      <span class="tts-math" data-tts="p">$p$</span>.
+      <br/><br/>
+      <strong>copy q into p</strong> — Copy the subtree rooted at location
+      <span class="tts-math" data-tts="q">$q$</span>
+      (in a source database
+      <span class="tts-math" data-tts="S">$S$</span>
+      or in
+      <span class="tts-math" data-tts="T">$T$</span>)
+      to location
+      <span class="tts-math" data-tts="p">$p$</span>
+      in
+      <span class="tts-math" data-tts="T">$T$</span>.
+    </p>
+  </div>
+
+  <p data-cid="main-160">
+    Each operation generates one or more provenance records stored in an auxiliary table
+    <span class="tts-math" data-tts="Prov">$\text{Prov}$</span>
+    with schema (Tid, Op, Loc, Src), where Tid is the transaction number, Op is the operation type (I for insert, D for delete, C for copy), Loc is the target location in
+    <span class="tts-math" data-tts="T">$T$</span>,
+    and Src is the source location in
+    <span class="tts-math" data-tts="S">$S$</span>
+    (for copies; null for inserts and deletes).
+  </p>
+
+  <!-- SECTION 4 -->
+  <h2 data-cid="main-170" id="s4">4. Four Storage Strategies</h2>
+
+  <p data-cid="main-180">
+    The naïve approach stores one provenance record per atomic operation. This maximizes information but is expensive: a single copy-paste of a subtree with 100 nodes generates 100 provenance records. The authors develop three optimizations.
+  </p>
+
+  <div class="box definition" data-cid="main-190">
+    <span class="box-label">Strategy N — Naïve Provenance</span>
+    <p data-cid="main-200">
+      One record in Prov per node touched by each operation. For a copy of a subtree with
+      <span class="tts-math" data-tts="c">$c$</span>
+      nodes,
+      <span class="tts-math" data-tts="c">$c$</span>
+      records are created. Storage cost for a transaction
+      <span class="tts-math" data-tts="t">$t$</span>
+      is
+      <span class="tts-math" data-tts="i plus d plus c">$i + d + c$</span>
+      where
+      <span class="tts-math" data-tts="i">$i$</span>
+      is the number of inserts,
+      <span class="tts-math" data-tts="d">$d$</span>
+      the deletes, and
+      <span class="tts-math" data-tts="c">$c$</span>
+      the nodes in copied subtrees.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-210">
+    <span class="box-label">Strategy T — Transactional Provenance</span>
+    <p data-cid="main-220">
+      Update operations are grouped into transactions by the user. Only the <em>net effect</em> of each transaction is stored: intermediate states are discarded. If the user copies data from
+      <span class="tts-math" data-tts="S sub 1">$S_1$</span>,
+      then deletes it and re-copies from
+      <span class="tts-math" data-tts="S sub 2">$S_2$</span>,
+      only the final copy from
+      <span class="tts-math" data-tts="S sub 2">$S_2$</span>
+      is recorded. This reduces storage significantly (by roughly a factor of 2.5 relative to naïve) at the cost of losing the intermediate edit history.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-230">
+    <span class="box-label">Strategy H — Hierarchical Provenance</span>
+    <p data-cid="main-240">
+      Exploits a key observation: the provenance of a child node can often be <em>inferred</em> from its parent's provenance. If a parent node at location
+      <span class="tts-math" data-tts="p">$p$</span>
+      was copied from source location
+      <span class="tts-math" data-tts="q">$q$</span>,
+      then all children of
+      <span class="tts-math" data-tts="p">$p$</span>
+      were also copied from the corresponding children of
+      <span class="tts-math" data-tts="q">$q$</span>
+      — unless explicitly overridden. Strategy H stores only the provenance records that <em>cannot</em> be inferred from ancestors. For a complete subtree copy, this reduces the
+      <span class="tts-math" data-tts="c">$c$</span>
+      records down to 1 (just the root of the copy). The full Prov table can be reconstructed from HProv as a recursive view.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-250">
+    <span class="box-label">Strategy HT — Hierarchical-Transactional Provenance</span>
+    <p data-cid="main-260">
+      Combines both optimizations: group operations into transactions (discarding intermediate states) and apply hierarchical inference to minimize stored records. This is the most compact representation. Storage is
+      <span class="tts-math" data-tts="i plus d plus C">$i + d + C$</span>
+      where
+      <span class="tts-math" data-tts="C">$C$</span>
+      is the number of roots of copied subtrees appearing in the final transaction output — often much smaller than the total number of copied nodes.
+    </p>
+  </div>
+
+  <!-- SECTION 5 -->
+  <h2 data-cid="main-270" id="s5">5. Provenance Queries: Src, Hist, Mod</h2>
+
+  <p data-cid="main-280">
+    The provenance store is not just a log — it is designed to answer specific scientific questions. The authors define three query families over the Prov table.
+  </p>
+
+  <div class="box definition" data-cid="main-290">
+    <span class="box-label">Definition — Src, Hist, Mod</span>
+    <p data-cid="main-300">
+      Let
+      <span class="tts-math" data-tts="t sub now">$t_{\text{now}}$</span>
+      be the most recent transaction number.
+      <br/><br/>
+      <strong>Src(p)</strong> = the transaction that first inserted the data now at location
+      <span class="tts-math" data-tts="p">$p$</span>.
+      This answers: "Who originally entered this value?"
+      <br/><br/>
+      <strong>Hist(p)</strong> = all transactions
+      <span class="tts-math" data-tts="u">$u$</span>
+      such that
+      <span class="tts-math" data-tts="u">$u$</span>
+      was involved in copying the data now at
+      <span class="tts-math" data-tts="p">$p$</span>
+      to its current location. This answers: "Which databases has this data passed through?"
+      <br/><br/>
+      <strong>Mod(p)</strong> = all transactions
+      <span class="tts-math" data-tts="q">$q$</span>
+      such that
+      <span class="tts-math" data-tts="q">$q$</span>
+      modified some data under
+      <span class="tts-math" data-tts="p">$p$</span>
+      at any point. This answers: "Who has ever touched the subtree rooted here?"
+    </p>
+  </div>
+
+  <p data-cid="main-310">
+    All three queries are defined formally as Datalog rules over the Prov (or HProv) table, using a reflexive, transitive closure relation Trace
+    <span class="tts-math" data-tts="the predicate Trace of p, t, q, u">$\text{Trace}(p, t, q, u)$</span>
+    that says "the data at location
+    <span class="tts-math" data-tts="p">$p$</span>
+    at the end of transaction
+    <span class="tts-math" data-tts="t">$t$</span>
+    came from location
+    <span class="tts-math" data-tts="q">$q$</span>
+    at the end of transaction
+    <span class="tts-math" data-tts="u">$u$</span>."
+    The implementation computes Trace on the fly by querying the provenance store directly rather than materializing the full closure, which would be prohibitively large.
+  </p>
+
+  <!-- SECTION 6 -->
+  <h2 data-cid="main-320" id="s6">6. Implementation: CPDB</h2>
+
+  <p data-cid="main-330">
+    The authors build a prototype called CPDB (Copy-Paste Database) that connects to both source and target databases and tracks provenance automatically. The key design choice is to <em>not require changes to the source databases</em>: source databases are wrapped in a uniform XML view layer that exposes their data as trees, using wrappers that implement a minimal API (treeFromDB, copyNode, etc.). The target database exposes a complementary API (addNode, deleteNode, pasteNode).
+  </p>
+
+  <p data-cid="main-340">
+    When the user browses a source database and copies a subtree, CPDB intercepts the operation, writes the data to the target database, and simultaneously writes the provenance link to the provenance store
+    <span class="tts-math" data-tts="P">$P$</span>
+    — a MySQL table with columns (Tid, Op, Loc, Src). In the transactional variant, provenance links are accumulated in a temporary list (provlist) and written to
+    <span class="tts-math" data-tts="P">$P$</span>
+    only when the user commits. In the hierarchical variant, redundant child links are identified and suppressed before writing to HProv.
+  </p>
+
+  <p data-cid="main-350">
+    The system is demonstrated on MiMI (Michigan Molecular Interactions), a protein interaction database running Timber (a native XML database). The source database is OrganelleDB (protein localization information) running MySQL. Both are real, publicly available scientific databases — making this one of the earliest published evaluations of provenance management on a live bioinformatics workflow.
+  </p>
+
+  <!-- SECTION 7 -->
+  <h2 data-cid="main-360" id="s7">7. Experimental Evaluation</h2>
+
+  <p data-cid="main-370">
+    Five experiments measure storage consumption and processing time across the four provenance strategies, using random sequences of copy-paste operations at 3500 and 14,000 steps.
+  </p>
+
+  <p data-cid="main-380">
+    <strong>Storage:</strong> The naïve strategy requires the most records. After 3500 steps, naïve provenance for an all-copy workload requires about 8000 rows in Prov. Hierarchical provenance requires only about 2000 rows — a 4x reduction — because subtree copies are collapsed to a single root record. Transactional provenance reduces this further by grouping five operations per commit. The hierarchical-transactional approach achieves the smallest tables, roughly 5x smaller than naïve for the mixed workload.
+  </p>
+
+  <p data-cid="main-390">
+    <strong>Processing overhead:</strong> The naïve approach adds about 28–30% overhead per add or copy operation relative to the base dataset manipulation time. Hierarchical provenance reduces this to about 4–6% for adds (hierarchical inference is more expensive for inserts than for copies) but is extremely fast for copies. The hierarchical-transactional strategy achieves less than 6% overhead per operation — below the authors' stated target of acceptability.
+  </p>
+
+  <div class="box example" data-cid="main-400">
+    <span class="box-label">Example — Query Performance</span>
+    <p data-cid="main-410">
+      For the Src, Hist, and Mod queries, all strategies complete in under a few hundred milliseconds on the 14,000-step dataset. The getSrc and getHist queries are slightly faster for hierarchical provenance (about 15% faster than naïve) because fewer records need to be scanned. The getMod query is about 20% slower than naïve for hierarchical provenance, because computing Mod requires visiting all descendants of a node — including those not listed in HProv (whose provenance must be inferred). Transactional provenance is fastest for all three queries: a factor of 2.5 faster than naïve, because it stores only 40% as many records.
+    </p>
+  </div>
+
+  <!-- SECTION 8 -->
+  <h2 data-cid="main-420" id="s8">8. Impact and Open Problems</h2>
+
+  <p data-cid="main-430">
+    This paper is one of the founding documents of database provenance research. It precisely defined the problem of tracking where-provenance for manually curated data, built a working system on real scientific databases, and demonstrated that the overhead is manageable. Its influence can be traced directly to the W3C PROV standard (2013), which specifies a universal data model for provenance across the Web; to the scientific workflow provenance systems built on top of VisTrails and Taverna; and to the lineage-tracking features now built into tools like Apache Spark (which tracks the RDD lineage graph) and dbt (which generates lineage documentation for SQL data pipelines).
+  </p>
+
+  <p data-cid="main-440">
+    Several open problems identified by the authors remain active research areas. First, <em>bulk updates</em>: when a curator applies a bulk XQuery transformation that copies thousands of records, naïve provenance storage is proportional to the query result size rather than the query size — potentially enormous. Approximate provenance (storing XPath expressions that over-approximate the actual links) is proposed as a direction. Second, <em>schema evolution</em>: when a source database changes its schema, old provenance links may become uninterpretable. Third, <em>aggregation and join provenance</em>: the paper explicitly excludes SQL GROUP BY and SUM operations, noting that the provenance of an aggregate is not simply "copied from" any single location.
+  </p>
+
+  <div class="box warn" data-cid="main-450">
+    <span class="box-label">Scope Caveat</span>
+    <p data-cid="main-460">
+      The approach tracks only provenance for data that moves through the CPDB interface. If a curator bypasses the system and edits the target database directly through a separate tool, those changes are invisible to the provenance store. The system's value is therefore contingent on the curator using only the CPDB interface — a usability requirement the authors acknowledge as a significant practical constraint.
+    </p>
+  </div>
+
+  <!-- REFERENCES -->
+  <h2 data-cid="main-470" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-480">Bhagwat, D., Chiticariu, L., Tan, W. C., and Vijayvargiya, G. (2004). An annotation management system for relational databases. In <em>VLDB</em>, pp. 900–911.</li>
+    <li data-cid="main-490">Bose, R. and Frew, J. (2005). Lineage retrieval for scientific data processing: a survey. <em>ACM Comput. Surv.</em>, 37(1):1–28.</li>
+    <li data-cid="main-500">Buneman, P., Khanna, S., and Tan, W.-C. (2001). Why and where: A characterization of data provenance. In <em>ICDT</em>, pp. 316–330.</li>
+    <li data-cid="main-510">Buneman, P., Davidson, S., Fan, W., Hara, C., and Tan, W.-C. (2002). Keys for XML. <em>Computer Networks</em>, 39(5).</li>
+    <li data-cid="main-520">Buneman, P., Khanna, S., Tajima, K., and Tan, W. C. (2004). Archiving scientific data. <em>ACM Trans. Database Syst.</em>, 29:2–42.</li>
+    <li data-cid="main-530">Bader, G., Betel, D., and Hogue, C. W. (2003). BIND: The biomolecule interaction network database. <em>Nucleic Acids Research</em>, 31(1):248–250.</li>
+    <li data-cid="main-540">Simmhan, Y., Plale, B., and Gannon, D. (2005). A survey of data provenance in e-science. <em>SIGMOD Record</em>, 34(3):31–36.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "title": "Fast Algorithms for Mining Association Rules",
+  "authors": "Rakesh Agrawal, Ramakrishnan Srikant",
+  "venue": "VLDB 1994",
+  "description": "Presents the Apriori and AprioriTid algorithms for mining association rules, which outperform prior methods by orders of magnitude by exploiting the anti-monotone property of support to prune candidate itemsets."
+}

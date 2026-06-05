@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Access Path Selection in a Relational Database Management System · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="selinger-access-path-selection" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/selinger-access-path-selection/">Access Path Selection</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. The Problem</a></li>
+    <li><a href="#s2">2. System R and the Storage Layer</a></li>
+    <li><a href="#s3">3. The Cost Model</a></li>
+    <li><a href="#s4">4. Single-Table Access Paths</a></li>
+    <li><a href="#s5">5. Selectivity Factors</a></li>
+    <li><a href="#s6">6. Join Order and Join Methods</a></li>
+    <li><a href="#s7">7. Interesting Orders and Dynamic Programming</a></li>
+    <li><a href="#s8">8. Nested Queries</a></li>
+    <li><a href="#s9">9. Why It Mattered</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">Scientific Paper · SIGMOD 1979</div>
+    <h1>Access Path Selection in a Relational Database Management System</h1>
+    <div class="paper-meta">
+      <span class="authors">P. Griffiths Selinger, M. M. Astrahan, D. D. Chamberlin, R. A. Lorie, T. G. Price</span>
+      <span class="venue">Proceedings of ACM SIGMOD 1979 · IBM Research Division, San Jose</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    In a high-level query language like SQL, requests are stated non-procedurally: the user says <em>what</em> data to retrieve, not <em>how</em> to retrieve it. The System R optimizer is responsible for choosing both the order in which tables are joined and the physical access path—segment scan or index—used for each table. From the many possible plans, it selects the one that minimizes total access cost. This paper describes how that optimizer works: the statistics it maintains, the cost formulas it applies to single-table and multi-table queries, the dynamic-programming algorithm it uses to explore join orderings, and how it handles nested subqueries. The result is a query optimizer whose ideas—selectivity factors, interesting orders, and bottom-up dynamic programming—became the blueprint for virtually every relational optimizer that followed.
+  </div>
+
+  <!-- ═══ SECTION 1 ═══ -->
+  <h2 data-cid="main-020" id="s1">1. The Problem: Choosing How to Execute a Query</h2>
+
+  <p data-cid="main-030">
+    When you write a SQL statement like <code>SELECT NAME, SAL FROM EMP WHERE TITLE = 'CLERK' AND LOC = 'DENVER'</code>, you are describing a <em>what</em>, not a <em>how</em>. The database engine must figure out the how on its own. For a single table, that means deciding whether to read every row (a full segment scan), or to use an index. For a query that joins three tables, it must also decide which pair to join first, which pair second, and by what method to perform each join. The number of possible execution plans grows explosively with the number of tables, and choosing badly can cost orders of magnitude more than choosing well.
+  </p>
+
+  <p data-cid="main-040">
+    System R was an experimental relational database management system built by IBM's San Jose Research Laboratory starting in 1975. It was one of the first systems to take the promise of non-procedural SQL seriously—meaning the system, not the user, would pick the execution strategy. The paper by Selinger et al. is the definitive description of how System R's OPTIMIZER component makes those decisions. It remains one of the most-cited papers in database research because the architecture it describes—cost-based, statistics-driven, exhaustive-with-pruning dynamic programming—is still the dominant paradigm in modern query optimizers.
+  </p>
+
+  <div class="box intuition" data-cid="main-050">
+    <span class="box-label">Intuition — Why access path choice matters so much</span>
+    <p data-cid="main-060">
+      Imagine a table EMP with one million rows, indexed on SALARY. You issue the query <code>WHERE SALARY = 50000</code>. If exactly 10 employees earn $50,000, using the index costs roughly 10 disk reads. A full segment scan costs roughly 50,000 disk reads (one per page). That is a factor of 5,000 difference—in a real system, the difference between a sub-second response and a query that runs for several minutes.
+    </p>
+  </div>
+
+  <!-- ═══ SECTION 2 ═══ -->
+  <h2 data-cid="main-070" id="s2">2. System R and Its Storage Layer</h2>
+
+  <p data-cid="main-080">
+    System R processes each SQL statement in four phases: parsing, optimization, code generation, and execution. The OPTIMIZER runs during the second phase. It looks up the tables and columns in the System R catalog, checks for type compatibility, and then performs access path selection. The output of the optimizer is a plan expressed in the Access Specification Language (ASL), which the CODE GENERATOR translates into machine code.
+  </p>
+
+  <p data-cid="main-090">
+    The physical storage of data is managed by the Research Storage System (RSS), which presents a tuple-oriented interface to the rest of System R. Two types of scans are available. A <strong>segment scan</strong> reads every non-empty page of a segment and returns all tuples belonging to a given relation—it is essentially a full table scan. An <strong>index scan</strong> uses a B-tree index to locate only tuples matching a predicate. Index scans come in two flavors: <em>clustered</em> and <em>non-clustered</em>. A clustered index physically orders data pages to match the index order, so a range scan reads pages roughly once. A non-clustered index may require a separate disk I/O for each matching tuple, since the data pages are scattered in arbitrary order.
+  </p>
+
+  <div class="box definition" data-cid="main-100">
+    <span class="box-label">Definition — Clustered vs. Non-Clustered Index</span>
+    <p data-cid="main-110">
+      An index on column C is <strong>clustered</strong> if the physical ordering of data pages in the segment corresponds to the ordering of C values in the index. For a clustered index, a range scan touches each data page at most once. For a <strong>non-clustered</strong> index, consecutive index entries may point to tuples on completely different pages, so in the worst case each tuple retrieval requires a separate page fetch.
+    </p>
+  </div>
+
+  <p data-cid="main-120">
+    The optimizer also uses the concept of a <strong>sargable predicate</strong> (Search ARGument able). A predicate is sargable if it can be evaluated inside the RSS—i.e., it can be expressed as a boolean combination of simple comparisons involving index key columns. Sargable predicates can be pushed into the index scan as "search arguments" (SARGS), filtering tuples without ever returning them to the optimizer layer. Non-sargable predicates (for example, those involving arithmetic on a column) must be evaluated after each tuple is returned.
+  </p>
+
+  <!-- ═══ SECTION 3 ═══ -->
+  <h2 data-cid="main-130" id="s3">3. The Cost Model</h2>
+
+  <p data-cid="main-140">
+    The optimizer's central objective is to minimize <em>total access cost</em>, which it estimates using a weighted formula that captures both disk I/O and CPU work. The cost formula for any access path is:
+  </p>
+
+  <p data-cid="main-150">
+    <span class="tts-math" data-tts="COST equals PAGE FETCHES plus W times RSI CALLS">
+    $$\text{COST} = \text{PAGE FETCHES} + W \times \text{RSI CALLS}$$
+    </span>
+  </p>
+
+  <p data-cid="main-160">
+    Here, PAGE FETCHES is the number of disk pages read, RSI CALLS is the number of tuples retrieved from the storage system (a proxy for CPU time), and <span class="tts-math" data-tts="W">$W$</span> is an adjustable weight between 0 and 1 that blends I/O cost and CPU cost into a single scalar. Because System R spends most of its CPU time inside the RSS, the RSI CALLS count is a good approximation of CPU utilization.
+  </p>
+
+  <div class="box intuition" data-cid="main-170">
+    <span class="box-label">Intuition — Why a single cost number?</span>
+    <p data-cid="main-180">
+      Combining I/O and CPU into one number lets the optimizer compare plans on a single dimension. In 1979, disk I/O dominated, so <span class="tts-math" data-tts="W">$W$</span> was set close to zero—essentially treating I/O as the only cost that mattered. Modern optimizers still use variants of this idea, though today the blending of CPU, memory, and I/O cost is far more sophisticated.
+    </p>
+  </div>
+
+  <p data-cid="main-190">
+    To compute a cost prediction, the optimizer needs statistics about the data. It maintains the following in the System R catalog. For each relation <span class="tts-math" data-tts="T">$T$</span>:
+  </p>
+  <ul data-cid="main-200">
+    <li><span class="tts-math" data-tts="NCARD of T">$\text{NCARD}(T)$</span> — the cardinality (number of tuples) of relation <span class="tts-math" data-tts="T">$T$</span>.</li>
+    <li><span class="tts-math" data-tts="TCARD of T">$\text{TCARD}(T)$</span> — the number of pages in the segment holding tuples of <span class="tts-math" data-tts="T">$T$</span>.</li>
+    <li><span class="tts-math" data-tts="P of T">$P(T)$</span> — the fraction of data pages that hold tuples of <span class="tts-math" data-tts="T">$T$</span>, defined as <span class="tts-math" data-tts="TCARD of T divided by the total number of non-empty pages in the segment">$\text{TCARD}(T) / (\text{non-empty pages in segment})$</span>.</li>
+  </ul>
+  <p data-cid="main-210">
+    For each index <span class="tts-math" data-tts="I">$I$</span> on relation <span class="tts-math" data-tts="T">$T$</span>:
+  </p>
+  <ul data-cid="main-220">
+    <li><span class="tts-math" data-tts="ICARD of I">$\text{ICARD}(I)$</span> — the number of distinct key values in index <span class="tts-math" data-tts="I">$I$</span>.</li>
+    <li><span class="tts-math" data-tts="NINDX of I">$\text{NINDX}(I)$</span> — the number of pages in index <span class="tts-math" data-tts="I">$I$</span>.</li>
+  </ul>
+  <p data-cid="main-230">
+    These statistics are not updated on every INSERT or DELETE (that would create locking bottlenecks). Instead, they are refreshed periodically via an UPDATE STATISTICS command, so cost estimates may be stale. The optimizer is designed to be robust to moderate inaccuracy in these numbers.
+  </p>
+
+  <!-- ═══ SECTION 4 ═══ -->
+  <h2 data-cid="main-240" id="s4">4. Single-Table Access Paths and Their Costs</h2>
+
+  <p data-cid="main-250">
+    For a query that references only one table, the optimizer enumerates every available access path (each index, plus the segment scan) and computes a predicted cost for each. It also tracks the ordering of tuples that each path produces—this will matter later for joins and ORDER BY clauses. The cost formulas, taken from Table 2 of the paper, are:
+  </p>
+
+  <div class="box example" data-cid="main-260">
+    <span class="box-label">Cost Formulas — Single Relation (Table 2 in the paper)</span>
+    <ul data-cid="main-270">
+      <li><strong>Unique index matching an equality predicate:</strong> <span class="tts-math" data-tts="1 plus 1 plus W">$1 + 1 + W$</span> — one page to traverse the index, one page to fetch the data tuple, plus CPU cost for one RSI call.</li>
+      <li><strong>Clustered index matching one or more boolean factors:</strong> <span class="tts-math" data-tts="F of preds times the quantity NINDX of I plus TCARD, plus W times RSICARD">$F(\text{preds}) \times (\text{NINDX}(I) + \text{TCARD}) + W \times \text{RSICARD}$</span></li>
+      <li><strong>Non-clustered index matching one or more boolean factors:</strong> <span class="tts-math" data-tts="F of preds times the quantity NINDX of I plus NCARD, plus W times RSICARD">$F(\text{preds}) \times (\text{NINDX}(I) + \text{NCARD}) + W \times \text{RSICARD}$</span></li>
+      <li><strong>Segment scan:</strong> <span class="tts-math" data-tts="TCARD over P plus W times RSICARD">$\text{TCARD}/P + W \times \text{RSICARD}$</span></li>
+    </ul>
+    <p data-cid="main-280">
+      Here <span class="tts-math" data-tts="F of preds">$F(\text{preds})$</span> is the selectivity factor (fraction of tuples expected to satisfy the predicate), and RSICARD is the expected number of tuples returned by the RSS for this access path. For non-clustered indexes, the formula uses NCARD (total tuple count) rather than TCARD (page count) because scattered tuples may each require a separate page read.
+    </p>
+  </div>
+
+  <p data-cid="main-290">
+    The distinction between clustered and non-clustered indexes is crucial. A clustered index on a column where the query has a range predicate—say, <code>SALARY BETWEEN 40000 AND 60000</code>—will read a contiguous run of pages and is highly efficient. A non-clustered index on the same query must follow one pointer per matching tuple, and if many tuples match, it can be slower than a full segment scan.
+  </p>
+
+  <!-- ═══ SECTION 5 ═══ -->
+  <h2 data-cid="main-300" id="s5">5. Selectivity Factors: Estimating How Many Rows Match</h2>
+
+  <p data-cid="main-310">
+    The selectivity factor <span class="tts-math" data-tts="F">$F$</span> for a predicate is the optimizer's estimate of the fraction of tuples that will satisfy it. It is the key parameter that feeds into the cost formulas. Table 1 of the paper lists how <span class="tts-math" data-tts="F">$F$</span> is computed for different predicate types:
+  </p>
+
+  <div class="box example" data-cid="main-320">
+    <span class="box-label">Selectivity Factor Rules (Table 1)</span>
+    <ul data-cid="main-330">
+      <li><strong>column = value:</strong> If an index exists on that column, <span class="tts-math" data-tts="F equals 1 over ICARD of the column index">$F = 1/\text{ICARD}(\text{column index})$</span> (assumes uniform distribution). Otherwise, <span class="tts-math" data-tts="F equals 1 over 10">$F = 1/10$</span> as a default.</li>
+      <li><strong>column &gt; value:</strong> If the column is arithmetic and the value is known, linear interpolation over the key range is used: <span class="tts-math" data-tts="F equals the high key value minus the given value, divided by the quantity high key value minus low key value">$F = (\text{high key} - \text{value}) / (\text{high key} - \text{low key})$</span>. Otherwise, <span class="tts-math" data-tts="F equals 1 over 3">$F = 1/3$</span>.</li>
+      <li><strong>column BETWEEN value1 AND value2:</strong> <span class="tts-math" data-tts="F equals value2 minus value1 over high key minus low key">$F = (\text{value2} - \text{value1}) / (\text{high key} - \text{low key})$</span> if arithmetic; otherwise <span class="tts-math" data-tts="F equals 1 over 4">$F = 1/4$</span>.</li>
+      <li><strong>column IN (list):</strong> <span class="tts-math" data-tts="F equals the number of items in the list, times the selectivity for column equals value">$F = (\text{list length}) \times F(\text{col} = \text{val})$</span>, capped at <span class="tts-math" data-tts="one half">$1/2$</span>.</li>
+      <li><strong>pred1 AND pred2:</strong> <span class="tts-math" data-tts="F equals F of pred1 times F of pred2">$F = F(\text{pred1}) \times F(\text{pred2})$</span> (independence assumed).</li>
+      <li><strong>pred1 OR pred2:</strong> <span class="tts-math" data-tts="F equals F of pred1 plus F of pred2 minus F of pred1 times F of pred2">$F = F(\text{pred1}) + F(\text{pred2}) - F(\text{pred1}) \times F(\text{pred2})$</span>.</li>
+      <li><strong>NOT pred:</strong> <span class="tts-math" data-tts="F equals 1 minus F of pred">$F = 1 - F(\text{pred})$</span>.</li>
+    </ul>
+  </div>
+
+  <p data-cid="main-340">
+    These formulas make strong simplifying assumptions—most notably column-value independence and uniform value distribution—that are often violated in practice. The paper acknowledges this, and subsequent decades of database research have produced increasingly sophisticated cardinality estimators (histograms, sketches, machine learning models). But the 1979 formulas were a workable starting point, and the insight that the optimizer must estimate selectivity at all was itself a significant contribution.
+  </p>
+
+  <div class="box pause" data-cid="main-350">
+    <span class="box-label">Pause and Reflect</span>
+    <p data-cid="main-360">
+      The independence assumption for AND predicates says: if 10% of rows have TITLE = 'CLERK' and 20% of rows have LOC = 'DENVER', then roughly 2% of rows satisfy both. This is wrong whenever columns are correlated—for example, if clerks are disproportionately located in Denver. The optimizer cannot know about such correlations without additional statistics. This tension between accurate cardinality estimation and the cost of collecting statistics remains one of the central unsolved problems in query optimization today.
+    </p>
+  </div>
+
+  <!-- ═══ SECTION 6 ═══ -->
+  <h2 data-cid="main-370" id="s6">6. Join Order Selection and Join Methods</h2>
+
+  <p data-cid="main-380">
+    For queries that join multiple tables, the optimizer must choose both the order in which tables are joined and the method used for each join. System R supports two join methods:
+  </p>
+
+  <div class="box definition" data-cid="main-390">
+    <span class="box-label">Definition — Nested Loop Join</span>
+    <p data-cid="main-400">
+      The <strong>nested loop join</strong> picks one relation as the <em>outer</em> and another as the <em>inner</em>. For each tuple of the outer relation, a scan is opened on the inner relation to retrieve matching tuples. The outer tuple and each matching inner tuple together form a result tuple. The cost is roughly the cost of scanning the outer once, plus the cost of scanning the inner once <em>per outer tuple</em>.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-410">
+    <span class="box-label">Definition — Merging Scans (Sort-Merge Join)</span>
+    <p data-cid="main-420">
+      The <strong>merging scans</strong> method requires both the outer and inner relations to be sorted (or scanned) in join-column order. By advancing pointers into each sorted stream, matching tuples can be found in a single pass. This method is highly efficient when both inputs are already ordered—for example, when each has a clustered index on the join column. If one or both inputs are not sorted, a sort step must be performed first, but that sort is amortized if subsequent operations also benefit from the ordering.
+    </p>
+  </div>
+
+  <p data-cid="main-430">
+    The cost of a nested loop join of two relations is:
+  </p>
+
+  <p data-cid="main-440">
+    <span class="tts-math" data-tts="C nested loop join of path1 and path2 equals C outer of path1 plus N times C inner of path2">
+    $$C_{\text{NL}}(\text{path1}, \text{path2}) = C_{\text{outer}}(\text{path1}) + N \times C_{\text{inner}}(\text{path2})$$
+    </span>
+  </p>
+
+  <p data-cid="main-450">
+    where <span class="tts-math" data-tts="N">$N$</span> is the number of qualifying tuples from the outer relation, and <span class="tts-math" data-tts="C inner of path2">$C_{\text{inner}}(\text{path2})$</span> is the cost of one scan of the inner relation. Similarly, the cost of a merge scan join is:
+  </p>
+
+  <p data-cid="main-460">
+    <span class="tts-math" data-tts="C merge join of path1 and path2 equals C outer of path1 plus N times C inner of path2">
+    $$C_{\text{merge}}(\text{path1}, \text{path2}) = C_{\text{outer}}(\text{path1}) + N \times C_{\text{inner}}(\text{path2})$$
+    </span>
+  </p>
+
+  <p data-cid="main-470">
+    where for the merge join, the inner scan is the cost of scanning the contiguous group of matching rows in the (sorted) inner relation, rather than the entire inner table. The merging scans method exploits clustering in the join column, making the effective inner scan cost very small.
+  </p>
+
+  <!-- ═══ SECTION 7 ═══ -->
+  <h2 data-cid="main-480" id="s7">7. Interesting Orders and Dynamic Programming</h2>
+
+  <p data-cid="main-490">
+    For a query joining <span class="tts-math" data-tts="n">$n$</span> tables, there are <span class="tts-math" data-tts="n factorial">$n!$</span> possible orderings in which to join them. Even for <span class="tts-math" data-tts="n equals 5">$n = 5$</span>, that is 120 orderings. Evaluating every possible plan naively would be intractable. The optimizer uses a bottom-up <strong>dynamic programming</strong> approach that systematically builds optimal solutions for subsets of tables, reusing subproblem solutions as it grows to larger subsets.
+  </p>
+
+  <p data-cid="main-500">
+    The key insight that makes this tractable is the <strong>principle of optimality</strong>: the best plan for joining tables <span class="tts-math" data-tts="T sub 1 through T sub k">$T_1, \ldots, T_k$</span> can be found by taking the best plan for joining <span class="tts-math" data-tts="T sub 1 through T sub k minus 1">$T_1, \ldots, T_{k-1}$</span> and joining it to <span class="tts-math" data-tts="T sub k">$T_k$</span> using the best available method. Because the cost of joining the composite relation to <span class="tts-math" data-tts="T sub k">$T_k$</span> depends only on the ordering and cardinality of the composite—not on how the composite was built—the dynamic programming decomposition is valid.
+  </p>
+
+  <div class="box definition" data-cid="main-510">
+    <span class="box-label">Definition — Interesting Order</span>
+    <p data-cid="main-520">
+      A tuple ordering is called an <strong>interesting order</strong> if it matches a column specified in the query's GROUP BY or ORDER BY clause, or a join column used in a merging-scan join. The optimizer must track not only the cheapest unordered access path for each relation, but also the cheapest access path that produces each interesting ordering—because a plan that is more expensive at one step may save cost later by avoiding a sort.
+    </p>
+  </div>
+
+  <p data-cid="main-530">
+    For example, suppose a query has <code>ORDER BY DNO</code> and EMP has an index on DNO. Scanning EMP via the DNO index costs more than a full segment scan (assume the index is non-clustered). But the DNO index produces tuples in DNO order, which is an interesting order. If the next step is a merge join on DNO, the sorted output can be used directly with no additional sort. So the optimizer must keep the DNO-order path alive even if it loses the raw-cost comparison against the segment scan.
+  </p>
+
+  <p data-cid="main-540">
+    The algorithm works as follows: first, find the cheapest access path for each single relation for each interesting ordering and for the unordered case. Then, for each pair of relations, find the cheapest way to join any one of the single-relation solutions to any access path on the other relation, considering both nested loop and merging scan methods, for each interesting ordering and the unordered case. Continue for triples, quadruples, and so on, pruning dominated solutions at each level. The final answer is the cheapest solution for all <span class="tts-math" data-tts="n">$n$</span> tables joined together.
+  </p>
+
+  <div class="box warn" data-cid="main-550">
+    <span class="box-label">Heuristic: Join Order Pruning</span>
+    <p data-cid="main-560">
+      To further reduce the search space, System R applies a heuristic: when building join orderings for a relation <span class="tts-math" data-tts="T sub j">$T_j$</span>, it only considers orderings in which every relation to the left of <span class="tts-math" data-tts="T sub j">$T_j$</span> has a join predicate connecting it to at least one other relation to its left. This prevents Cartesian products from being introduced too early—Cartesian products generate enormous intermediate results and are almost never the right choice. The paper calls such orderings those in which <span class="tts-math" data-tts="T sub j">$T_j$</span> has a join predicate with <span class="tts-math" data-tts="T sub i">$T_i$</span> for some <span class="tts-math" data-tts="i less than j">$i &lt; j$</span>.
+    </p>
+  </div>
+
+  <p data-cid="main-570">
+    The number of solutions that must be stored is at most <span class="tts-math" data-tts="2 to the power n">$2^n$</span> (the number of subsets of <span class="tts-math" data-tts="n">$n$</span> tables) times the number of interesting orderings. For typical queries with 2–8 tables, this is very manageable. The paper reports that 8-table joins have been optimized in a few seconds on a 370/158 mainframe using only a few thousand bytes of storage.
+  </p>
+
+  <!-- ═══ SECTION 8 ═══ -->
+  <h2 data-cid="main-580" id="s8">8. Nested Queries</h2>
+
+  <p data-cid="main-590">
+    SQL allows subqueries to appear inside predicates, as in <code>WHERE SALARY &gt; (SELECT AVG(SALARY) FROM EMPLOYEE)</code>. System R calls these <em>nested queries</em> or subqueries. The OPTIMIZER arranges for subqueries to be evaluated before the top-level query block whenever possible. If the subquery returns a single value (a scalar subquery), that value is substituted into the predicate as if it were a literal constant.
+  </p>
+
+  <p data-cid="main-600">
+    More complex are <em>correlated subqueries</em>, where the subquery references a column from the outer query block. For example:
+  </p>
+
+  <div class="box example" data-cid="main-610">
+    <span class="box-label">Example — Correlated Subquery</span>
+    <pre><code>SELECT NAME
+FROM EMPLOYEE X
+WHERE SALARY &gt; (SELECT SALARY FROM EMPLOYEE
+                WHERE EMPLOYEE_NUMBER = X.MANAGER)</code></pre>
+    <p data-cid="main-620">
+      For each candidate tuple from EMPLOYEE X, the subquery must be re-evaluated using X.MANAGER as a parameter. This re-evaluation is expensive—ideally done once per unique value of X.MANAGER rather than once per outer tuple. If the referenced relation is ordered on the correlated column, the optimizer can make the re-evaluation conditional, reusing the previous result whenever the correlated value hasn't changed.
+    </p>
+  </div>
+
+  <!-- ═══ SECTION 9 ═══ -->
+  <h2 data-cid="main-630" id="s9">9. Why This Paper Mattered</h2>
+
+  <p data-cid="main-640">
+    The Selinger et al. paper made several contributions that proved durable. First, it demonstrated that a cost-based optimizer, driven by statistics gathered from the data, could reliably choose good execution plans without user guidance. Before System R, the conventional wisdom was that hand-tuned procedural access patterns were necessary for performance. The paper showed that non-procedural query languages and automatic optimization were not just theoretically appealing but practically viable.
+  </p>
+
+  <p data-cid="main-650">
+    Second, the concept of the <em>selectivity factor</em> gave the optimizer a principled way to estimate intermediate result sizes—the key quantity that determines which join order is cheapest. Even though the independence assumption is often violated, it was good enough that the optimizer selected the correct plan in the large majority of cases.
+  </p>
+
+  <p data-cid="main-660">
+    Third, the notion of <em>interesting orders</em> was a key insight: the optimizer should not just track cheapest cost, but cheapest cost for each possible output ordering. This allowed the optimizer to avoid unnecessary sorts by leveraging index-ordered scans and merge joins, and it is still the correct formulation of the multi-objective optimization problem in relational query execution.
+  </p>
+
+  <p data-cid="main-670">
+    Fourth, the bottom-up dynamic programming framework provided a sound algorithmic foundation for join order enumeration. The paper proved that the search space could be systematically pruned using the principle of optimality, and the resulting algorithm was efficient enough to run at compile time in a real system. Every major commercial relational database engine—IBM DB2, Oracle, SQL Server, PostgreSQL—implements a variant of this algorithm today.
+  </p>
+
+  <div class="box intuition" data-cid="main-680">
+    <span class="box-label">Intuition — The lasting impact</span>
+    <p data-cid="main-690">
+      It is hard to overstate how foundational this paper is. When you run a complex SQL query on any modern database and it completes in milliseconds, you are benefiting directly from the ideas here: the optimizer is silently enumerating access paths, estimating selectivities, tracking interesting orders, and applying dynamic programming to find the cheapest join order. The vocabulary of "access path", "selectivity", "interesting order", and "cardinality estimate" still structures how database engineers think about and discuss query optimization.
+    </p>
+  </div>
+
+  <!-- ═══ REFERENCES ═══ -->
+  <h2 data-cid="main-700" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-710">Astrahan, M. M. et al. (1976). System R: A Relational Approach to Database Management. <em>ACM Transactions on Database Systems</em>, 1(2), 97–137.</li>
+    <li data-cid="main-720">Blasgen, M. W. and Eswaran, K. P. (1976). On the Evaluation of Queries in a Relational Database System. IBM Research Report RJ1745.</li>
+    <li data-cid="main-730">Bayer, R. and McCreight, E. (1972). Organization and Maintenance of Large Ordered Indices. <em>Acta Informatica</em>, 1(3), 173–189.</li>
+    <li data-cid="main-740">Chamberlin, D. D. et al. (1976). SEQUEL 2: A Unified Approach to Data Definition, Manipulation, and Control. <em>IBM Journal of Research and Development</em>, 20(6), 560–575.</li>
+    <li data-cid="main-750">Codd, E. F. (1970). A Relational Model of Data for Large Shared Data Banks. <em>Communications of the ACM</em>, 13(6), 377–387.</li>
+    <li data-cid="main-760">Lorie, R. A. and Nilsson, J. F. (1978). An Access Specification Language for a Relational Database System. IBM Research Report RJ2218.</li>
+    <li data-cid="main-770">Stonebraker, M. R. et al. (1976). The Design and Implementation of INGRES. <em>ACM Transactions on Database Systems</em>, 1(3), 189–222.</li>
+    <li data-cid="main-780">Wong, E. and Youssefi, K. (1976). Decomposition — A Strategy for Query Processing. <em>ACM Transactions on Database Systems</em>, 1(3), 223–241.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script>
+</body>
+</html>

@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>No Free Lunch in Data Privacy · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="no-free-lunch-data-privacy" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/no-free-lunch-data-privacy/">No Free Lunch in Data Privacy</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. Differential Privacy: The Promise</a></li>
+    <li><a href="#s2">2. The Discriminant and Utility</a></li>
+    <li><a href="#s3">3. The No-Free-Lunch Theorem</a></li>
+    <li><a href="#s4">4. Non-Privacy and Why Assumptions Are Needed</a></li>
+    <li><a href="#s5">5. Evidence of Participation</a></li>
+    <li><a href="#s6">6. Social Networks: Where Differential Privacy Fails</a></li>
+    <li><a href="#s7">7. Contingency Tables: The Prior-Release Problem</a></li>
+    <li><a href="#s8">8. What the Paper Recommends</a></li>
+    <li><a href="#s9">9. Lasting Impact</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">Scientific Paper · SIGMOD 2011</div>
+    <h1>No Free Lunch in Data Privacy</h1>
+    <div class="paper-meta">
+      <span class="authors">Daniel Kifer, Ashwin Machanavajjhala</span>
+      <span class="venue">ACM SIGMOD International Conference on Management of Data · 2011</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    Differential privacy has become the gold standard for privacy-preserving query answering over
+    statistical databases. It guarantees that the distribution of noisy query answers changes very
+    little with the addition or deletion of any single tuple. It is frequently accompanied by
+    popularized claims that it provides privacy without any assumptions about the data and that it
+    protects against attackers who know all but one record. This paper critically analyzes these
+    claims. Using a <em>no-free-lunch theorem</em> — which defines non-privacy as a game between
+    an attacker and a data curator — the authors prove it is impossible to provide both privacy and
+    utility without making assumptions about how the data is generated. They then clarify when those
+    assumptions hold (independent tuples), show concrete privacy breaches in social networks and
+    contingency table settings, and propose modifications to differential privacy that account for
+    prior data releases and correlated records.
+  </div>
+
+  <h2 data-cid="main-020" id="s1">1. Differential Privacy: The Promise</h2>
+
+  <p data-cid="main-030">
+    Differential privacy, introduced by Dwork, McSherry, Nissim, and Smith around 2006, is one
+    of the most celebrated ideas in modern data management. The core guarantee is elegant: if you
+    add noise calibrated to the <em>sensitivity</em> of a query (how much the query answer can
+    change when one record is added or removed), then the output distribution of your algorithm
+    changes only slightly between any two neighboring databases. An attacker who sees the noisy
+    output cannot tell — with much confidence — whether any particular individual's record was
+    included.
+  </p>
+
+  <div class="box definition" data-cid="main-040">
+    <span class="box-label">Definition — Unbounded Differential Privacy</span>
+    <p data-cid="main-050">
+      A randomized algorithm
+      <span class="tts-math" data-tts="script A">$\mathcal{A}$</span>
+      satisfies <em>unbounded epsilon-differential privacy</em> if for any set
+      <span class="tts-math" data-tts="S">$S$</span>
+      and any pair of databases
+      <span class="tts-math" data-tts="D sub 1, D sub 2">$D_1, D_2$</span>
+      where
+      <span class="tts-math" data-tts="D sub 1">$D_1$</span>
+      can be obtained from
+      <span class="tts-math" data-tts="D sub 2">$D_2$</span>
+      by adding or removing one tuple:
+      <span class="tts-math" data-tts="the probability that script A of D sub 1 is in S is at most e to the power epsilon times the probability that script A of D sub 2 is in S">
+      $$P(\mathcal{A}(D_1) \in S) \leq e^\epsilon \cdot P(\mathcal{A}(D_2) \in S)$$
+      </span>
+      A smaller
+      <span class="tts-math" data-tts="epsilon">$\epsilon$</span>
+      means stronger privacy (but also more noise and less utility).
+      <em>Bounded differential privacy</em> uses the same definition but restricts
+      <span class="tts-math" data-tts="D sub 1">$D_1$</span>
+      and
+      <span class="tts-math" data-tts="D sub 2">$D_2$</span>
+      to differ by changing exactly one tuple's value (not adding or removing it).
+    </p>
+  </div>
+
+  <p data-cid="main-060">
+    The canonical mechanism for achieving differential privacy is the <em>Laplace mechanism</em>:
+    add noise drawn from a Laplace distribution with scale proportional to the query's
+    sensitivity. For a count query
+    <span class="tts-math" data-tts="q of D">$q(D)$</span>
+    with global sensitivity 1 (adding one record changes the count by at most 1), the perturbed
+    output is
+    <span class="tts-math" data-tts="q of D plus Laplace of 1 over epsilon">$q(D) + \text{Laplace}(1/\epsilon)$</span>.
+    This adds noise with standard deviation
+    <span class="tts-math" data-tts="square root of 2 over epsilon">$\sqrt{2}/\epsilon$</span>.
+    For typical values like
+    <span class="tts-math" data-tts="epsilon equals 0.1">$\epsilon = 0.1$</span>,
+    this can be substantial noise, but for
+    <span class="tts-math" data-tts="epsilon equals 1">$\epsilon = 1$</span>
+    on a large database, the signal-to-noise ratio is often acceptable.
+  </p>
+
+  <p data-cid="main-070">
+    Several bold claims have accompanied differential privacy's rise:
+    <em>"It makes no assumptions about how data are generated."</em>
+    <em>"It protects an individual's information even if an attacker knows about all other individuals in the data."</em>
+    <em>"It is robust to arbitrary background knowledge."</em>
+    This paper examines each of these claims with mathematical precision and shows they are
+    at best misleading, and in some settings, demonstrably false.
+  </p>
+
+  <h2 data-cid="main-080" id="s2">2. The Discriminant and Utility</h2>
+
+  <p data-cid="main-090">
+    To analyze the trade-off between privacy and utility formally, the paper introduces the
+    concept of a <em>discriminant</em> — a measure of how useful a privacy-infusing query
+    processor actually is.
+  </p>
+
+  <div class="box definition" data-cid="main-100">
+    <span class="box-label">Definition — Discriminant</span>
+    <p data-cid="main-110">
+      Given an integer
+      <span class="tts-math" data-tts="k greater than 1">$k > 1$</span>,
+      a privacy-infusing query processor
+      <span class="tts-math" data-tts="script A">$\mathcal{A}$</span>,
+      and a constant
+      <span class="tts-math" data-tts="c">$c$</span>,
+      we say the discriminant
+      <span class="tts-math" data-tts="omega of k comma script A is at least c">$\omega(k, \mathcal{A}) \geq c$</span>
+      if there exist
+      <span class="tts-math" data-tts="k">$k$</span>
+      possible database instances
+      <span class="tts-math" data-tts="D sub 1 through D sub k">$D_1, \ldots, D_k$</span>
+      and disjoint sets
+      <span class="tts-math" data-tts="S sub 1 through S sub k">$S_1, \ldots, S_k$</span>
+      such that for each
+      <span class="tts-math" data-tts="i from 1 to k">$i = 1, \ldots, k$</span>:
+      <span class="tts-math" data-tts="the probability that script A of D sub i is in S sub i is at least c">
+      $$P(\mathcal{A}(D_i) \in S_i) \geq c$$
+      </span>
+      where the randomness is only over
+      <span class="tts-math" data-tts="script A">$\mathcal{A}$</span>.
+      Intuitively, the discriminant measures how reliably
+      <span class="tts-math" data-tts="script A">$\mathcal{A}$</span>
+      can distinguish which of
+      <span class="tts-math" data-tts="k">$k$</span>
+      possible databases it is operating on.
+    </p>
+  </div>
+
+  <p data-cid="main-120">
+    A discriminant close to 1 is good for utility: it means the algorithm reliably gives
+    informative answers that let us distinguish between meaningfully different database states
+    (e.g., "this database has 0 cancer patients" vs. "this database has 10,000 cancer patients").
+    Algorithms with very low discriminants are essentially useless — their outputs tell us nothing
+    about the data. The discriminant is a <em>lower bound</em> on utility: if the discriminant
+    is close to 1, there exists at least one question the algorithm can answer accurately.
+  </p>
+
+  <h2 data-cid="main-130" id="s3">3. The No-Free-Lunch Theorem</h2>
+
+  <p data-cid="main-140">
+    The paper formalizes "non-privacy" as a game between a data curator and an attacker.
+    The curator has a database
+    <span class="tts-math" data-tts="D">$D$</span>
+    drawn from some data-generating mechanism
+    <span class="tts-math" data-tts="script P">$\mathcal{P}$</span>.
+    The curator publishes the output of a privacy-infusing algorithm
+    <span class="tts-math" data-tts="script A of D">$\mathcal{A}(D)$</span>.
+    The attacker — who knows
+    <span class="tts-math" data-tts="script A of D">$\mathcal{A}(D)$</span>
+    — then tries to guess the value of some sensitive query
+    <span class="tts-math" data-tts="q of D">$q(D)$</span>.
+    Non-privacy is achieved if the attacker guesses correctly with high probability.
+  </p>
+
+  <div class="box definition" data-cid="main-150">
+    <span class="box-label">Theorem 2.1 — No Free Lunch</span>
+    <p data-cid="main-160">
+      Let
+      <span class="tts-math" data-tts="q">$q$</span>
+      be a sensitive query with
+      <span class="tts-math" data-tts="k">$k$</span>
+      possible outcomes. Let
+      <span class="tts-math" data-tts="script A">$\mathcal{A}$</span>
+      be a privacy-infusing query processor with discriminant
+      <span class="tts-math" data-tts="omega of k comma script A greater than 1 minus epsilon">$\omega(k, \mathcal{A}) > 1 - \epsilon$</span>
+      for some
+      <span class="tts-math" data-tts="epsilon greater than 0">$\epsilon > 0$</span>.
+      Then there exists a data-generating mechanism
+      <span class="tts-math" data-tts="script P">$\mathcal{P}$</span>
+      over database instances
+      <span class="tts-math" data-tts="D">$D$</span>
+      such that
+      <span class="tts-math" data-tts="q of D">$q(D)$</span>
+      is uniformly distributed but the attacker wins with probability at least
+      <span class="tts-math" data-tts="1 minus epsilon">$1 - \epsilon$</span>
+      when given
+      <span class="tts-math" data-tts="script A of D">$\mathcal{A}(D)$</span>.
+    </p>
+  </div>
+
+  <p data-cid="main-170">
+    Let's unpack this theorem slowly. It says: if your query processor is at all useful (has
+    a high discriminant), then there exists <em>some data-generating mechanism</em> under which
+    an attacker can completely break privacy. The attacker's strategy is simple: observe the
+    output of
+    <span class="tts-math" data-tts="script A">$\mathcal{A}$</span>,
+    determine which of the
+    <span class="tts-math" data-tts="k">$k$</span>
+    designated output sets
+    <span class="tts-math" data-tts="S sub i">$S_i$</span>
+    the output falls in, and guess
+    <span class="tts-math" data-tts="q of D equals i">$q(D) = i$</span>.
+    If the discriminant is high, this strategy works well.
+  </p>
+
+  <p data-cid="main-180">
+    The theorem is not an attack on any particular mechanism. It is a universal impossibility
+    result: <em>for any useful mechanism, there is some world in which it fails to provide
+    privacy</em>. The word "some" is crucial — the theorem does not say differential privacy
+    always fails. It says you cannot rule out failure without restricting what kind of world
+    you are in (i.e., without making assumptions about the data-generating mechanism).
+  </p>
+
+  <div class="box intuition" data-cid="main-190">
+    <span class="box-label">The intuition in plain English</span>
+    <p data-cid="main-200">
+      Suppose you release a noisy count of cancer patients in a database. If the world is such
+      that the number of cancer patients varies a great deal between databases (say, anywhere
+      from 0 to 20,000), and your noisy count is accurate enough to distinguish between these
+      cases (high discriminant), then an attacker who knows your data-generating mechanism can
+      perfectly reconstruct the count from your noisy answer. The noisy answer is useful precisely
+      because it conveys information — and an attacker who knows <em>which databases were possible</em>
+      can use that same information to learn private facts. You cannot be useful and uninformative
+      at the same time. Privacy without assumptions about the data is a logical impossibility.
+    </p>
+  </div>
+
+  <h2 data-cid="main-210" id="s4">4. Non-Privacy and Why Assumptions Are Needed</h2>
+
+  <p data-cid="main-220">
+    The no-free-lunch theorem shows that privacy and utility require assumptions. What assumptions
+    does differential privacy implicitly rely on? The paper identifies the key assumption:
+    <strong>records are independent of each other</strong>.
+  </p>
+
+  <p data-cid="main-230">
+    When records are independent — when each person's data is generated independently of everyone
+    else's — adding or removing one record genuinely changes the database in a limited, localized
+    way. The differential privacy guarantee (that
+    <span class="tts-math" data-tts="script A of D sub 1">$\mathcal{A}(D_1)$</span>
+    and
+    <span class="tts-math" data-tts="script A of D sub 2">$\mathcal{A}(D_2)$</span>
+    have similar distributions) then means that the attacker cannot infer whether any one person's
+    record was included. Deleting a record removes exactly that person's contribution and nothing
+    else.
+  </p>
+
+  <p data-cid="main-240">
+    But when records are <em>correlated</em> — when one person's data influences others' data —
+    removing a single record from the database does not remove all evidence of that person's
+    participation. The records of correlated others still carry information about the deleted
+    person. In this case, the differential privacy guarantee, which compares databases differing
+    by one record, is too weak: it does not account for the indirect evidence that remains in
+    correlated tuples.
+  </p>
+
+  <div class="box example" data-cid="main-250">
+    <span class="box-label">Example — Family disease correlation</span>
+    <p data-cid="main-260">
+      Suppose Bob is in a database, and all members of Bob's immediate family have contracted a
+      highly contagious disease. A weaker attacker who knows nothing about the family's health
+      can ask "how many people in Bob's family have this disease?" The answer is almost certainly
+      0 or 10 (the family size). Adding Laplace noise at level
+      <span class="tts-math" data-tts="1 over epsilon">$1/\epsilon$</span>
+      produces a noisy answer, say 12. This noisy answer is
+      <span class="tts-math" data-tts="e to the power 10 epsilon">$e^{10\epsilon}$</span>
+      times more likely when the true answer is 10 (Bob is sick) than when it is 0 (Bob is healthy).
+      A <em>stronger</em> attacker who already knows that 9 family members are sick can update
+      their belief by a factor of at most
+      <span class="tts-math" data-tts="e to the power epsilon">$e^\epsilon$</span>
+      — differential privacy does limit the stronger attacker's inference. But it does not limit
+      the weaker attacker's inference. More counterintuitively, protecting against stronger
+      (more informed) attackers does not always protect against weaker ones when data are correlated.
+    </p>
+  </div>
+
+  <h2 data-cid="main-270" id="s5">5. Evidence of Participation</h2>
+
+  <p data-cid="main-280">
+    The paper proposes a key conceptual distinction: the difference between the <em>presence of
+    a tuple</em> in a database and the <em>participation of an individual</em> in the
+    data-generating process. Differential privacy limits inference about the former. What
+    matters for genuine privacy is limiting inference about the latter.
+  </p>
+
+  <p data-cid="main-290">
+    In a world of independent records, these two things coincide: if Alice did not participate,
+    her tuple is not in the database, and vice versa. But in a social network, Bob's
+    participation (his actions, friendships, communications) affects other people's records.
+    Bob's friendship causes edges to form between his contacts. Even if you delete the tuple
+    "Bob" from the network, the edges between his former contacts — edges that Bob caused to
+    form — remain as evidence of Bob's participation. Differential privacy by deleting one
+    tuple (Bob's node) does not hide those edges.
+  </p>
+
+  <p data-cid="main-300">
+    The paper proposes a guideline for evaluating privacy mechanisms: <em>can the mechanism
+    hide the evidence of an individual's participation from an attacker who had little prior
+    information about that participation?</em> This is called the <em>participation-based
+    guideline</em>. When tuples are independent, this guideline reduces to standard differential
+    privacy. When tuples are correlated, stronger guarantees are needed.
+  </p>
+
+  <h2 data-cid="main-310" id="s6">6. Social Networks: Where Differential Privacy Fails</h2>
+
+  <p data-cid="main-320">
+    Section 3 of the paper makes the abstract argument concrete by simulating three popular
+    social network generation models: the Forest Fire model (Leskovec et al.), the Copying
+    model, and the MVS (Marsili-Vega-Redondo-Slanina) model.
+  </p>
+
+  <p data-cid="main-330">
+    The setup is this. Suppose a social network has two communities that initially do not
+    interact (they share at most one edge). Bob has an edge to someone in Community 2. This
+    edge causes friends-of-friends links to form: Bob introduces Alice to Charlie, who introduces
+    more people, and so on. The network grows according to one of the three models. The question
+    is: how different is the expected number of cross-community edges in a network where Bob's
+    initial edge exists versus a network where it does not?
+  </p>
+
+  <p data-cid="main-340">
+    Under the Forest Fire model with typical parameters, after the network grows to 50 nodes,
+    the expected number of cross-community edges with Bob's initial edge is approximately 240,
+    versus approximately 119 without it. The difference
+    <span class="tts-math" data-tts="Y equals 240 minus 119 equals 121">$Y = 240 - 119 = 121$</span>.
+    To hide Bob's initial edge with
+    <span class="tts-math" data-tts="epsilon">$\epsilon$</span>-differential privacy,
+    you would need to add Laplace noise of scale
+    <span class="tts-math" data-tts="Y over epsilon equals 121 over epsilon">$Y/\epsilon$</span>
+    to the cross-community edge count — adding over 1200 units of noise for
+    <span class="tts-math" data-tts="epsilon equals 0.1">$\epsilon = 0.1$</span>.
+    For a network of only 50 nodes with roughly 119 cross-community edges, this noise completely
+    drowns the signal, making the query answer useless. Any meaningful answer would reveal Bob's
+    participation.
+  </p>
+
+  <div class="box warn" data-cid="main-350">
+    <span class="box-label">The catch with unknown network models</span>
+    <p data-cid="main-360">
+      The correct noise level
+      <span class="tts-math" data-tts="Y">$Y$</span>
+      depends on the network generation model and its parameters. But in practice, we do not know
+      which model generated the network or what the parameters are. You cannot set
+      <span class="tts-math" data-tts="epsilon">$\epsilon$</span>
+      reliably without knowing
+      <span class="tts-math" data-tts="Y">$Y$</span>,
+      and you cannot know
+      <span class="tts-math" data-tts="Y">$Y$</span>
+      without knowing the model. This means you cannot apply differential privacy meaningfully
+      to social network data without assuming you know how the network was generated.
+      The "no assumptions" claim is refuted: assumptions are unavoidable.
+    </p>
+  </div>
+
+  <h2 data-cid="main-370" id="s7">7. Contingency Tables: The Prior-Release Problem</h2>
+
+  <p data-cid="main-380">
+    Section 4 addresses a second setting where differential privacy's guarantees break down:
+    when deterministic statistics about the data have been previously released. This is a
+    realistic scenario — government agencies routinely release exact marginal counts before
+    applying differential privacy to finer-grained queries.
+  </p>
+
+  <p data-cid="main-390">
+    The key example: a table
+    <span class="tts-math" data-tts="T">$T$</span>
+    has one attribute
+    <span class="tts-math" data-tts="R">$R$</span>
+    taking values
+    <span class="tts-math" data-tts="r sub 1 through r sub k">$r_1, \ldots, r_k$</span>.
+    Suppose
+    <span class="tts-math" data-tts="k minus 1">$k - 1$</span>
+    disjunctive count queries have been answered exactly: each query gives the count for two
+    values of
+    <span class="tts-math" data-tts="R">$R$</span>
+    combined. This does not allow exact reconstruction of the table (there are
+    <span class="tts-math" data-tts="k">$k$</span>
+    unknowns but only
+    <span class="tts-math" data-tts="k minus 1">$k - 1$</span>
+    linear equations). Now, an analyst also wants the individual counts, answered with differential
+    privacy noise.
+  </p>
+
+  <p data-cid="main-400">
+    The problem is that the previous exact answers create correlations between the noisy answers
+    to the new queries. Each noisy answer leaks a small amount of information about each count.
+    By averaging multiple noisy estimates (derived via simple linear algebra from the exact
+    previously-released answers plus the new noisy answers), an attacker can estimate any
+    individual count with variance
+    <span class="tts-math" data-tts="2 divided by k times epsilon squared">$2/(k\epsilon^2)$</span>
+    rather than the expected
+    <span class="tts-math" data-tts="2 over epsilon squared">$2/\epsilon^2$</span>.
+    When
+    <span class="tts-math" data-tts="k">$k$</span>
+    is large (for example,
+    <span class="tts-math" data-tts="k equals 2 to the power d">$k = 2^d$</span>
+    for a
+    <span class="tts-math" data-tts="d">$d$</span>-bit attribute), the variance becomes negligible and the entire table can be
+    reconstructed with high probability — a complete privacy breach.
+  </p>
+
+  <p data-cid="main-410">
+    The paper's proposed solution is <em>generalized differential privacy with induced
+    neighbors</em>. Rather than comparing all pairs of databases that differ by one record
+    (the standard neighbor relation), the algorithm is required to be stable between pairs of
+    databases that are "as similar as possible" subject to consistency with the previously
+    released query answers. This makes the noise calibration depend on the prior statistics,
+    preventing the averaging attack.
+  </p>
+
+  <h2 data-cid="main-420" id="s8">8. What the Paper Recommends</h2>
+
+  <p data-cid="main-430">
+    Rather than abandoning differential privacy, the paper offers constructive guidance:
+  </p>
+
+  <p data-cid="main-440">
+    <strong>For independent records</strong> (each person's data generated independently of
+    others'), differential privacy is well-suited. Deleting one record genuinely hides that
+    person's participation. The independence assumption is reasonable for many standard tabular
+    datasets (medical records, survey data without social network effects). Use it confidently.
+  </p>
+
+  <p data-cid="main-450">
+    <strong>For correlated data</strong> (social networks, family health data, spatially
+    correlated geographic data), the evidence of participation depends on the data-generating
+    mechanism. You must either (a) model that mechanism explicitly and calibrate noise accordingly,
+    or (b) accept that differential privacy provides a weaker guarantee than advertised, or (c)
+    use the participation-based guideline to choose a definition of neighbors appropriate to
+    your setting.
+  </p>
+
+  <p data-cid="main-460">
+    <strong>For prior data releases</strong>, use the induced-neighbor formulation of differential
+    privacy that accounts for previously released exact statistics. The paper provides efficient
+    algorithms (based on the exponential mechanism and a modified Laplace mechanism) for this
+    generalized setting, though computing the sensitivity in the fully general case is NP-hard,
+    and efficient special cases (e.g., 2-dimensional contingency tables with fixed row and column
+    sums) are characterized.
+  </p>
+
+  <h2 data-cid="main-470" id="s9">9. Lasting Impact</h2>
+
+  <p data-cid="main-480">
+    This paper, along with related work by Dwork and Naor that it builds on and simplifies,
+    fundamentally shifted the conversation about what differential privacy does and does not
+    guarantee. Before this paper, it was common to hear researchers describe differential
+    privacy as assumption-free. After this paper, the community broadly accepted that
+    differential privacy's guarantees are conditional on the independence assumption, and that
+    applying it to social networks or databases with prior releases requires more care.
+  </p>
+
+  <p data-cid="main-490">
+    The participation-based guideline influenced subsequent privacy definitions for graph data.
+    The notion of "edge differential privacy" (making the mechanism stable to the addition or
+    removal of a single edge, rather than a single node) is one response to the concerns raised
+    here. Later work on Pufferfish privacy (Kifer and Machanavajjhala, 2014) developed a
+    general framework that makes the data-generating model explicit and required, directly
+    formalizing the lesson of this paper: privacy guarantees must be relative to a stated model
+    of how the data came to be.
+  </p>
+
+  <p data-cid="main-500">
+    In the age of large-scale machine learning and data-driven systems, the paper's core message
+    is more relevant than ever. Federated learning systems, synthetic data generators, and
+    query interfaces that claim differential privacy guarantees all implicitly rely on assumptions
+    about independence. The no-free-lunch theorem is a permanent reminder that there is no
+    privacy mechanism that is universally correct without knowing something about the world
+    the data came from.
+  </p>
+
+  <h2 data-cid="main-510" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-520">C. Dwork, F. McSherry, K. Nissim, and A. Smith. Calibrating noise to sensitivity in private data analysis. In <em>TCC</em>, pages 265–284, 2006.</li>
+    <li data-cid="main-530">C. Dwork and A. Naor. On the difficulties of disclosure prevention in statistical databases or the case for differential privacy. <em>JPC</em>, 2(1), 2010.</li>
+    <li data-cid="main-540">C. Dwork. Differential privacy. In <em>ICALP</em>, 2006.</li>
+    <li data-cid="main-550">T. Dalenius. Towards a methodology for statistical disclosure control. <em>Statistik Tidskrift 15</em>, 1977.</li>
+    <li data-cid="main-560">F. McSherry and K. Talwar. Mechanism design via differential privacy. In <em>FOCS</em>, 2007.</li>
+    <li data-cid="main-570">J. Leskovec, J. Kleinberg, and C. Faloutsos. Graph evolution: Densification and shrinking diameters. <em>TKDD</em>, 1(1), 2007.</li>
+    <li data-cid="main-580">R. Kumar, P. Raghavan, S. Rajagopalan, D. Sivakumar, A. Tomkins, and E. Upfal. Stochastic models for the web graph. In <em>FOCS</em>, 2000.</li>
+    <li data-cid="main-590">D. Kifer and B.-R. Lin. Towards an axiomatization of statistical privacy and utility. In <em>PODS</em>, 2010.</li>
+    <li data-cid="main-600">S. R. Kasiviswanathan and A. Smith. A note on differential privacy: Defining resistance to arbitrary side information. arXiv:0803.3946, 2008.</li>
+    <li data-cid="main-610">V. Rastogi, M. Hay, G. Miklau, and D. Suciu. Relationship privacy: Output perturbation for queries with joins. In <em>PODS</em>, 2009.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script>
+</body>
+</html>

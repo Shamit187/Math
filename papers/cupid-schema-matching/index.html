@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Generic Schema Matching with Cupid · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/>
+<link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="cupid-schema-matching" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/cupid-schema-matching/">Cupid</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. The Schema Matching Problem</a></li>
+    <li><a href="#s2">2. A Taxonomy of Matching Techniques</a></li>
+    <li><a href="#s3">3. The Cupid Approach: Overview</a></li>
+    <li><a href="#s4">4. Linguistic Matching</a></li>
+    <li><a href="#s5">5. Structural Matching</a></li>
+    <li><a href="#s6">6. The TreeMatch Algorithm</a></li>
+    <li><a href="#s7">7. Combining Similarities and Generating Mappings</a></li>
+    <li><a href="#s8">8. Extending to General Schemas</a></li>
+    <li><a href="#s9">9. Experimental Comparison</a></li>
+    <li><a href="#s10">10. Impact and Legacy</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">Scientific Paper · VLDB 2001</div>
+    <h1>Generic Schema Matching with Cupid</h1>
+    <div class="paper-meta">
+      <span class="authors">Jayant Madhavan, Philip A. Bernstein, Erhard Rahm</span>
+      <span class="venue">Proceedings of the 27th VLDB Conference, Roma, Italy, 2001</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    Schema matching — automatically finding correspondences between elements of two different database schemas — is a critical step in data integration, XML message mapping, and data warehouse loading. Most existing tools either use linguistic name matching or structural analysis, but rarely combine both well. This paper investigates the problem of <em>generic</em> schema matching: matching outside any particular data model or application. The authors present a taxonomy of past approaches, then propose Cupid, a new algorithm that discovers mappings between schema elements using their names, data types, constraints, and structural context. Cupid's key innovations include a thesaurus-based linguistic normalization phase, a bottom-up structural tree-matching algorithm that propagates similarity between nodes' leaf sets, and a bias toward leaf structure (where real data content resides). Experimental comparison with two other systems — DIKE and MOMIS-ARTEMIS — demonstrates that Cupid produces correct mappings in cases those systems miss, including context-dependent mappings that distinguish the same element name appearing in different structural contexts.
+  </div>
+
+  <h2 data-cid="main-020" id="s1">1. The Schema Matching Problem</h2>
+
+  <p data-cid="main-030">
+    Imagine you are building a data warehouse that consolidates purchase order information from two suppliers. Supplier A uses an XML schema called PO; supplier B uses a schema called PurchaseOrder. Both describe purchase orders, but their structures differ: what PO calls <code>Lines</code> with sub-element <code>Item</code>, PurchaseOrder calls <code>Items</code> with sub-element <code>Item</code>. What PO calls <code>Qty</code> (a shorthand), PurchaseOrder calls <code>Quantity</code>. What PO calls <code>Uom</code> (unit of measure), PurchaseOrder calls <code>UnitOfMeasure</code>.
+  </p>
+
+  <p data-cid="main-040">
+    A human expert can quickly see these correspondences. An algorithm must discover them automatically. This is the schema matching problem.
+  </p>
+
+  <div class="box definition" data-cid="main-050">
+    <span class="box-label">Definition — Schema Matching</span>
+    <p data-cid="main-060">
+      Given two input schemas <em>S1</em> and <em>S2</em> in any data model, and optionally an initial mapping and auxiliary information (dictionaries, thesauri), produce a set of <em>mapping elements</em> — pairs (<em>e1</em>, <em>e2</em>) where <em>e1</em> is an element of <em>S1</em> and <em>e2</em> is an element of <em>S2</em> — indicating that these elements are semantically related. The mapping should pass user validation; the goal is automatic discovery, not replacement of human review.
+    </p>
+  </div>
+
+  <p data-cid="main-070">
+    Schema matching is inherently hard for three reasons. First, schemas are <em>subjective</em>: two different designers modeling the same domain will produce different schemas, and there may be multiple reasonable mappings. Second, schemas can differ in <em>naming conventions</em>: the same concept might be spelled out fully or abbreviated, use synonyms, or employ domain-specific jargon. Third, schemas can differ in <em>structure</em>: what one schema models as a single flat table, another might model as a nested hierarchy with foreign keys.
+  </p>
+
+  <p data-cid="main-080">
+    The paper's broader motivation is the <em>Model Management</em> vision of Bernstein, Halevy, and Pottinger: a general system for managing database models and schemas, where operations like Match, Merge, and Compose can be applied to schemas as first-class objects. Cupid is the Match operation implementation for that vision.
+  </p>
+
+  <h2 data-cid="main-090" id="s2">2. A Taxonomy of Matching Techniques</h2>
+
+  <p data-cid="main-100">
+    The paper organizes past schema matching approaches along several orthogonal axes. Understanding this taxonomy helps appreciate what makes Cupid different.
+  </p>
+
+  <p data-cid="main-110">
+    <strong>Schema-based vs. Instance-based.</strong> Schema-based matchers use only the structural information in the schema (names, types, constraints, hierarchy). Instance-based matchers also look at actual data values to infer correspondences. Cupid is purely schema-based — a deliberate choice, since instance data is often unavailable (e.g., when matching two schema files before any data has been loaded).
+  </p>
+
+  <p data-cid="main-120">
+    <strong>Element-level vs. Structure-level.</strong> Element-level matchers compare individual schema elements in isolation. Structure-level matchers compare combinations of elements — how they relate to their neighbors in the schema. Cupid is both: it begins with element-level linguistic matching, then uses structural analysis to refine those initial scores.
+  </p>
+
+  <p data-cid="main-130">
+    <strong>Linguistic vs. Constraint-based.</strong> Linguistic matchers use names, annotations, and text descriptions. Constraint-based matchers use data types, uniqueness constraints, referential integrity, cardinalities. Cupid uses both — names are the primary signal, but data type compatibility initializes the structural similarity.
+  </p>
+
+  <div class="box intuition" data-cid="main-140">
+    <span class="box-label">Intuition — Why One Approach Is Never Enough</span>
+    <p data-cid="main-150">
+      Pure linguistic matching fails when schemas use different abbreviations (Qty vs. Quantity) or when the same word appears in multiple contexts with different meanings (a schema might have both a Bill-of-Materials "Item" and an Invoice "Item" — which pairs with which?). Pure structural matching fails when schemas have similar names but very different structures, or when the structures are similar but names are totally different. Cupid combines both signals, using each to guide and constrain the other.
+    </p>
+  </div>
+
+  <h2 data-cid="main-160" id="s3">3. The Cupid Approach: Overview</h2>
+
+  <p data-cid="main-170">
+    Cupid computes two similarity coefficients for each pair of schema elements <em>(s, t)</em> where <em>s</em> is from schema S1 and <em>t</em> is from schema S2:
+  </p>
+
+  <p data-cid="main-180">
+    <strong>lsim(s, t)</strong> — the <em>linguistic similarity</em>, computed in Phase 1 from names, data types, and text annotations. Values are in the interval <span class="tts-math" data-tts="the interval from 0 to 1">[0, 1]</span>, with 1 being a perfect linguistic match.
+  </p>
+
+  <p data-cid="main-190">
+    <strong>ssim(s, t)</strong> — the <em>structural similarity</em>, computed in Phase 2 from the similarity of the structural contexts (ancestors, siblings, and descendant leaves) of the two elements. Also in <span class="tts-math" data-tts="the interval from 0 to 1">[0, 1]</span>.
+  </p>
+
+  <p data-cid="main-200">
+    The final <em>weighted similarity</em> is:
+  </p>
+
+  <p data-cid="main-210">
+    <span class="tts-math" data-tts="wsim of s and t equals w sub struct times ssim of s and t plus the quantity 1 minus w sub struct, times lsim of s and t">
+    $$\text{wsim}(s,t) = w_{\text{struct}} \times \text{ssim}(s,t) + (1 - w_{\text{struct}}) \times \text{lsim}(s,t)$$
+    </span>
+  </p>
+
+  <p data-cid="main-220">
+    where <span class="tts-math" data-tts="w sub struct">$w_{\text{struct}}$</span> is a tunable constant in <span class="tts-math" data-tts="the interval from 0 to 1">[0, 1]</span> that controls how much weight to give structural vs. linguistic evidence. A mapping element is generated for a pair <em>(s, t)</em> when <span class="tts-math" data-tts="wsim of s and t is at least th sub accept">$\text{wsim}(s,t) \geq th_{\text{accept}}$</span>, where <span class="tts-math" data-tts="th sub accept">$th_{\text{accept}}$</span> is an acceptability threshold.
+  </p>
+
+  <p data-cid="main-230">
+    The crucial design choice is that Cupid is <em>biased toward leaves</em>. Leaf nodes in a schema tree are the atomic elements — column values, XML attributes — where the actual data content lives. Non-leaf nodes (tables, XML elements with children) are structural containers. The authors observe that most schema content resides in leaves, and structural similarity between non-leaves is most reliably computed from the similarity of their leaf descendants rather than their immediate children.
+  </p>
+
+  <h2 data-cid="main-240" id="s4">4. Linguistic Matching</h2>
+
+  <p data-cid="main-250">
+    The first phase of Cupid computes linguistic similarity between pairs of schema elements. It proceeds in three steps: normalization, categorization, and comparison.
+  </p>
+
+  <p data-cid="main-260">
+    <strong>Normalization</strong> transforms schema element names into a canonical token set. This involves tokenization (splitting on punctuation, case changes — e.g., "ItemNumber" becomes ["Item", "Number"]), expansion (looking up abbreviations and acronyms in a thesaurus — "Qty" expands to "Quantity", "Uom" expands to "UnitOfMeasure"), and elimination of prepositions and articles. The result is a set of normalized tokens for each element name.
+  </p>
+
+  <p data-cid="main-270">
+    <strong>Categorization</strong> groups schema elements into categories based on their data types and linguistic content. For example, one category might contain elements representing monetary amounts (those with names tokenizing to words like "price", "cost", "amount" and with numeric data types). Categorization reduces the number of comparisons needed: only elements in the same or compatible categories are compared.
+  </p>
+
+  <p data-cid="main-280">
+    <strong>Comparison</strong> computes lsim coefficients between elements in the same categories. The thesaurus provides synonym and hypernym relationships, allowing "Bill" and "Invoice" to be recognized as synonyms, and "City" and "Municipality" as related. Sub-string matching catches cases where the thesaurus is incomplete.
+  </p>
+
+  <div class="box example" data-cid="main-290">
+    <span class="box-label">Example — Linguistic Matching at Work</span>
+    <p data-cid="main-300">
+      The PO schema has element <code>Uom</code>; the PurchaseOrder schema has <code>UnitOfMeasure</code>. After normalization: Uom expands (via thesaurus) to ["Unit", "Of", "Measure"] → tokens ["unit", "measure"]. UnitOfMeasure tokenizes directly to ["unit", "of", "measure"] → tokens ["unit", "measure"]. The token sets are identical after elimination of "of", so lsim = 1. Similarly, <code>Qty</code> expands to ["quantity"] which matches <code>Quantity</code>'s tokens exactly. The thesaurus entry that "Bill" and "Invoice" are synonyms allows the system to recognize that POBillTo maps linguistically to InvoiceTo even though the names share no common tokens.
+    </p>
+  </div>
+
+  <h2 data-cid="main-310" id="s5">5. Structural Matching</h2>
+
+  <p data-cid="main-320">
+    After Phase 1 produces lsim coefficients, Phase 2 refines them by computing structural similarity. The key insight is that two schema elements that appear in similar structural contexts are more likely to be semantically related than two elements with similar names but very different contexts.
+  </p>
+
+  <p data-cid="main-330">
+    Cupid models schemas as <em>schema trees</em>. A simple relational schema maps naturally: the root represents the schema, each table is a child of the root, and each column is a leaf child of its table. An XML schema similarly maps to a tree of elements. The matching algorithm is defined on these trees.
+  </p>
+
+  <p data-cid="main-340">
+    The structural similarity of two <em>leaf</em> nodes <em>s</em> and <em>t</em> is initialized to the <em>data type compatibility</em> of their corresponding data types. Identical data types get compatibility 0.5 (a max of 0.5 leaves room for increases as structural evidence accumulates). Compatible types (e.g., INTEGER and FLOAT) get lower values. Incompatible types get 0.
+  </p>
+
+  <p data-cid="main-350">
+    For <em>non-leaf</em> nodes, structural similarity is computed as the fraction of leaves in the two subtrees that have at least one <em>strong link</em> — a link to a leaf in the other subtree with weighted similarity above the acceptance threshold:
+  </p>
+
+  <p data-cid="main-360">
+    <span class="tts-math" data-tts="ssim of s and t equals the size of the set of leaves x in leaves of s such that there exists a y in leaves of t with stronglink of x and y, union the set of leaves x in leaves of t such that there exists a y in leaves of s with stronglink of y and x, all divided by the size of leaves of s union leaves of t">
+    $$\text{ssim}(s,t) = \frac{|\{x \mid x \in \text{leaves}(s) \wedge \exists y \in \text{leaves}(t),\, \text{stronglink}(x,y)\}| \;\cup\; |\{x \mid x \in \text{leaves}(t) \wedge \exists y \in \text{leaves}(s),\, \text{stronglink}(y,x)\}|}{|\text{leaves}(s) \cup \text{leaves}(t)|}$$
+    </span>
+  </p>
+
+  <p data-cid="main-370">
+    In plain words: two non-leaf nodes are structurally similar to the degree that their leaf descendants "match" each other. A node whose leaves all have strongly-matching counterparts in the other subtree gets a high structural similarity score.
+  </p>
+
+  <h2 data-cid="main-380" id="s6">6. The TreeMatch Algorithm</h2>
+
+  <p data-cid="main-390">
+    The TreeMatch algorithm computes structural similarities in <em>post-order</em> traversal — leaves first, then their parents, then grandparents, up to the roots. This bottom-up order ensures that when a non-leaf node's structural similarity is computed, all leaves in its subtree have already been compared.
+  </p>
+
+  <p data-cid="main-400">
+    The algorithm has a mutual feedback mechanism. When a pair of leaf nodes <em>(s, t)</em> has high weighted similarity (<span class="tts-math" data-tts="wsim of s and t is at least th sub high">$\text{wsim}(s,t) \geq th_{\text{high}}$</span>), the structural similarity of all leaf pairs in the same subtrees is increased by a factor <span class="tts-math" data-tts="c sub inc">$c_{\text{inc}}$</span>. The rationale: if the leaves of two subtrees are highly similar, the leaves of the same subtrees in other positions are also likely to be related, so they deserve a structural boost.
+  </p>
+
+  <p data-cid="main-410">
+    Conversely, when a pair of leaf nodes has low weighted similarity (<span class="tts-math" data-tts="wsim of s and t is less than th sub low">$\text{wsim}(s,t) < th_{\text{low}}$</span>), the structural similarities of other leaf pairs in those subtrees are decreased by a factor <span class="tts-math" data-tts="c sub dec">$c_{\text{dec}}$</span>. This propagates negative evidence: if the leaves of two subtrees mostly don't match, it is unlikely that other leaves in those subtrees are related either.
+  </p>
+
+  <div class="box intuition" data-cid="main-420">
+    <span class="box-label">Intuition — Mutual Reinforcement</span>
+    <p data-cid="main-430">
+      Think of the algorithm as building a case from multiple pieces of evidence. If I find that POBillTo and InvoiceTo have leaves City and Street that both match strongly (because their names are identical and their data types match), then I should increase my confidence that <em>other</em> leaves of POBillTo and InvoiceTo — like PostalCode and ZipCode — also correspond, even if their name similarity alone is low. The structural boost propagates this confidence. This is why context matters: the algorithm learns that POBillTo and InvoiceTo are in the same structural neighborhood, so their leaves are likely related.
+    </p>
+  </div>
+
+  <p data-cid="main-440">
+    The post-order traversal ensures that these similarity updates are computed before the parent nodes are processed. The result is a mutually consistent set of similarity scores: leaves that appear together in a well-matched subtree reinforce each other's scores.
+  </p>
+
+  <h2 data-cid="main-450" id="s7">7. Combining Similarities and Generating Mappings</h2>
+
+  <p data-cid="main-460">
+    After TreeMatch completes, each pair <em>(s, t)</em> has both an lsim and an ssim score. The final weighted similarity is computed as above. Mapping elements are generated for pairs where wsim exceeds the acceptance threshold.
+  </p>
+
+  <p data-cid="main-470">
+    For leaf elements, mapping generation is straightforward: for each leaf <em>t</em> in the target schema, find the leaf <em>s</em> in the source schema with the highest weighted similarity above the threshold, and report the mapping element <em>(s, t)</em>.
+  </p>
+
+  <p data-cid="main-480">
+    For non-leaf elements, a second post-order traversal is needed: after the leaf-level mappings may have changed leaf similarity scores during TreeMatch, non-leaf structural similarities must be recomputed to reflect the final state.
+  </p>
+
+  <p data-cid="main-490">
+    The resulting mapping may be 1:n — one source element mapping to multiple target elements — since Cupid allows a single source leaf to map to many target leaves. Whether 1:1 mappings are required depends on the downstream tool consuming the match result (e.g., a query discovery module might require 1:1 mappings).
+  </p>
+
+  <h2 data-cid="main-500" id="s8">8. Extending to General Schemas</h2>
+
+  <p data-cid="main-510">
+    Real schemas are rarely pure trees. Relational schemas have foreign keys that create cross-table references. XML schemas have shared types referenced by multiple elements. UML schemas have class hierarchies and associations.
+  </p>
+
+  <p data-cid="main-520">
+    Cupid handles these by converting general schemas to <em>schema trees</em> via a pre-order traversal that expands each element's multiple paths into separate tree nodes (one per path). For example, if an XML element <code>Address</code> is referenced by both <code>DeliverTo</code> and <code>InvoiceTo</code>, the schema tree gets two copies of the Address subtree — one under DeliverTo and one under InvoiceTo. This expansion enables context-dependent matching: <code>DeliverTo.City</code> can match a different target than <code>InvoiceTo.City</code>.
+  </p>
+
+  <p data-cid="main-530">
+    Referential integrity constraints (foreign keys in relational schemas, ID/IDREF pairs in XML DTDs) are modeled as <em>join view nodes</em> — virtual nodes that aggregate the source table's foreign key column and reference the target table's primary key. These nodes allow Cupid to match a join relationship in one schema against a flat relationship in the other: if one schema expresses a customer-order relationship as a foreign key join and another expresses it as a nested element, the join view node makes them structurally comparable.
+  </p>
+
+  <h2 data-cid="main-540" id="s9">9. Experimental Comparison</h2>
+
+  <p data-cid="main-550">
+    Cupid was compared against DIKE (a rule-based schema-based matcher using a Lexical Synonymy Property Dictionary) and MOMIS-ARTEMIS (a linguistic and structural matcher that works on ER models, using ODB-Tools for name affinity and clustering). The comparison used both canonical test schemas designed to isolate specific properties, and real-world XML purchase order schemas (CIDX and Excel formats from BizTalk.org).
+  </p>
+
+  <p data-cid="main-560">
+    Key findings from the canonical example comparison:
+  </p>
+
+  <p data-cid="main-570">
+    All three systems correctly handle identical schemas and schemas with same names but different data types. Cupid and DIKE handle different nesting (item 5 in the paper's Table 1); MOMIS-ARTEMIS does not. Only Cupid handles type-substitution / context-dependent mappings (item 6) — distinguishing between two elements with the same name appearing under different parents, and mapping each to its correct counterpart.
+  </p>
+
+  <p data-cid="main-580">
+    In the real-world CIDX-Excel purchase order example, Cupid correctly identifies all the expected XML-attribute matching pairs, including the difficult case of <code>CIDXline</code> mapping to <code>Excel.itemNumber</code> (which has no supporting thesaurus entry — the match was made purely from data-type and structural similarity). DIKE misses several mappings because it requires explicit LSPD dictionary entries. MOMIS-ARTEMIS clusters related elements together and misses attribute-level matches when elements with the same name (like Street1–Street4 in one schema) are not mapped 1:1.
+  </p>
+
+  <h2 data-cid="main-590" id="s10">10. Impact and Legacy</h2>
+
+  <p data-cid="main-600">
+    The Cupid paper became a foundational reference for the schema matching community. Its taxonomy of matching techniques — schema-based vs. instance-based, element-level vs. structure-level, linguistic vs. constraint-based, individual vs. combinational — remains the standard framework for classifying and comparing matching approaches.
+  </p>
+
+  <p data-cid="main-610">
+    The specific ideas of leaf-biased structural similarity and post-order bottom-up propagation with mutual reinforcement were influential. They appeared in subsequent work on ontology matching, XML schema integration, and mediation systems throughout the 2000s.
+  </p>
+
+  <p data-cid="main-620">
+    Perhaps most importantly, the paper demonstrated that schema matching could be studied as an independent computational problem — not just as a component inside a larger integration system. This framing enabled subsequent benchmark efforts, public datasets, and systematic algorithm comparisons that advanced the field considerably. The Ontology Alignment Evaluation Initiative (OAEI), which began in 2004 and continues today, follows the competitive evaluation spirit of this paper's comparative study.
+  </p>
+
+  <h2 data-cid="main-630" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-640">Bergamaschi, S., Castano, S., and Vincini, M. (1999). Semantic Integration of Semistructured and Structured Data Sources. SIGMOD Record 28(1): 54–59.</li>
+    <li data-cid="main-650">Bernstein, P.A., Halevy, A., and Pottinger, R.A. (2000). A Vision for Management of Complex Models. SIGMOD Record 29(4): 55–63.</li>
+    <li data-cid="main-660">Castano, S. and De Antonellis, V. (1999). A Schema Analysis and Reconciliation Tool Environment. IDEAS'99: 53–62.</li>
+    <li data-cid="main-670">Doan, A., Domingos, P., and Halevy, A. (2001). Reconciling Schemas of Disparate Data Sources: A Machine-Learning Approach. SIGMOD 2001: 509–520.</li>
+    <li data-cid="main-680">Li, W.S. and Clifton, C. (2000). SEMINT: A tool for identifying attribute correspondences in heterogeneous databases using neural networks. Data and Knowledge Engineering, 33(1): 49–84.</li>
+    <li data-cid="main-690">Madhavan, J., Bernstein, P.A., and Rahm, E. (2001). Generic Schema Matching using Cupid. MSR Tech. Report MSR-TR-2001-58.</li>
+    <li data-cid="main-700">Palopoli, L.G., Terracina, G., and Ursino, D. (2000). The System DIKE. ADBIS-DASFAA 2000: 108–117.</li>
+    <li data-cid="main-710">Miller, R.J., Haas, L.M., and Hernandez, M.A. (2000). Schema Mapping as Query Discovery. VLDB 2000: 77–88.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script>
+<script src="/js/highlights.js"></script>
+</body>
+</html>

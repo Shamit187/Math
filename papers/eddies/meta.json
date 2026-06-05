@@ -1,0 +1,6 @@
+{
+  "title": "Eddies: Continuously Adaptive Query Processing",
+  "authors": "Ron Avnur, Joseph M. Hellerstein",
+  "venue": "SIGMOD 2000",
+  "description": "Introduces the eddy, a query processing operator that continuously reorders pipelined joins on a tuple-by-tuple basis using fluid dynamics and lottery scheduling to adapt to changing selectivities and resource costs at runtime."
+}

@@ -1,0 +1,6 @@
+{
+  "title": "Access Path Selection in a Relational Database Management System",
+  "authors": ["P. Griffiths Selinger", "M. M. Astrahan", "D. D. Chamberlin", "R. A. Lorie", "T. G. Price"],
+  "venue": "SIGMOD 1979",
+  "description": "The foundational paper describing how IBM's System R optimizer chooses join orders and access paths—segment scans vs. indexes—to minimize total cost for SQL queries."
+}

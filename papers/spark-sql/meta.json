@@ -1,0 +1,6 @@
+{
+  "title": "Spark SQL: Relational Data Processing in Spark",
+  "authors": "Michael Armbrust, Reynold S. Xin, Cheng Lian, Yin Huai, Davies Liu, Joseph K. Bradley, Xiangrui Meng, Tomer Kaftan, Michael J. Franklin, Ali Ghodsi, Matei Zaharia",
+  "venue": "SIGMOD 2015",
+  "description": "Spark SQL integrates relational processing into Apache Spark through a declarative DataFrame API and the Catalyst extensible optimizer, enabling seamless mixing of SQL queries with procedural Spark programs over diverse data sources."
+}

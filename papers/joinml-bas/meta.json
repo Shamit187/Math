@@ -1,0 +1,22 @@
+{
+  "title": "Accelerating Approximate Analytical Join Queries over Unstructured Data with Statistical Guarantees",
+  "authors": "Yuxuan Zhu, Tengjun Jin, Chenghao Mo, Daniel Kang",
+  "venue": "Proc. ACM Manag. Data, Vol. 4, No. 3 (SIGMOD 2026), Article 127 · https://doi.org/10.1145/3802004",
+  "description": "JoinML accelerates analytical join queries over unstructured data with LLM/ML join predicates. Weighted Wander Join (WWJ) turns embeddings into approximate indices for importance sampling, and Blocking-augmented Sampling (BaS) splits the space into a blocking regime and a sampling regime, adaptively allocating an Oracle budget to deliver valid confidence intervals while cutting RMSE by up to 19x.",
+  "year": 2026,
+  "topics": [
+    "Computer Science/Databases/Approximate Query Processing"
+  ],
+  "tags": [
+    "approximate query processing",
+    "joins",
+    "unstructured data",
+    "importance sampling",
+    "blocking",
+    "entity matching",
+    "LLM",
+    "embeddings",
+    "confidence intervals",
+    "bootstrap"
+  ]
+}

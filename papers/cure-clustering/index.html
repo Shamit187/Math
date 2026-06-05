@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CURE: An Efficient Clustering Algorithm for Large Databases · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="cure-clustering" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/cure-clustering/">CURE Clustering</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. Introduction</a></li>
+    <li><a href="#s2">2. What Traditional Algorithms Get Wrong</a></li>
+    <li><a href="#s3">3. The CURE Algorithm</a></li>
+    <li><a href="#s4">4. Representative Points and Shrinking</a></li>
+    <li><a href="#s5">5. Scaling to Large Databases</a></li>
+    <li><a href="#s6">6. Handling Outliers</a></li>
+    <li><a href="#s7">7. Complexity</a></li>
+    <li><a href="#s8">8. Experimental Results</a></li>
+    <li><a href="#s9">9. Legacy and Impact</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">Scientific Paper · SIGMOD 1998</div>
+    <h1>CURE: An Efficient Clustering Algorithm for Large Databases</h1>
+    <div class="paper-meta">
+      <span class="authors">Sudipto Guha, Rajeev Rastogi, Kyuseok Shim</span>
+      <span class="venue">Proceedings of ACM SIGMOD, Seattle, WA, 1998</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    Clustering is one of the oldest tasks in data mining: group similar points together, separate dissimilar ones. But by 1998 the dominant algorithms had accumulated two well-known failure modes. Partitional algorithms (like k-means) assume clusters are roughly spherical and similarly sized — they break down on elongated or irregular shapes. Hierarchical algorithms are more flexible in shape but are often fragile in the presence of outliers and too slow for large databases. CURE — Clustering Using REpresentatives — is designed to overcome both weaknesses simultaneously. Each cluster is represented not by a single centroid but by a fixed number of <em>well-scattered</em> representative points that are then <em>shrunk</em> toward the cluster's mean by a fraction <span class="tts-math" data-tts="alpha">$\alpha$</span>. The scattered points capture complex geometry; the shrinking dampens the influence of outliers. For large databases, CURE adds a pipeline of random sampling and partitioning that reduces computation from <span class="tts-math" data-tts="O of n squared log n">$O(n^2 \log n)$</span> for the full dataset to a fixed cost over a manageable sample — without sacrificing cluster quality.
+  </div>
+
+  <h2 data-cid="main-020" id="s1">1. Introduction</h2>
+  <p data-cid="main-030">
+    Clustering has a deceptively simple goal: given <span class="tts-math" data-tts="n">$n$</span> data points in a <span class="tts-math" data-tts="d">$d$</span>-dimensional metric space, partition them into <span class="tts-math" data-tts="k">$k$</span> groups such that points within each group are more similar to each other than to points in other groups. The difficulty is that "similar" and "group" are not defined by the problem statement — they must be encoded in the algorithm's design choices.
+  </p>
+  <p data-cid="main-040">
+    The paper's motivating setting is large corporate databases — retail transaction logs, financial data, telecom records — where <span class="tts-math" data-tts="n">$n$</span> can be hundreds of thousands or millions of points, clusters can be elongated or irregularly shaped, and the data almost certainly contains noise (outlier) points that belong to no meaningful cluster at all. A clustering algorithm that works on clean, spherical toy data is not the same as an algorithm that works on this kind of data.
+  </p>
+
+  <h2 data-cid="main-050" id="s2">2. What Traditional Algorithms Get Wrong</h2>
+  <p data-cid="main-060">
+    To understand what CURE is fixing, it helps to see the two dominant paradigms and their failure modes.
+  </p>
+
+  <div class="box definition" data-cid="main-070">
+    <span class="box-label">Definition — Square-error (partitional) clustering</span>
+    <p data-cid="main-080">
+      Minimize the total within-cluster squared distance to the cluster mean:
+      <span class="tts-math" data-tts="E equals the sum from i equals 1 to k, of the sum over all points p in cluster C sub i, of the squared distance from p to m sub i">
+      $$E = \sum_{i=1}^{k} \sum_{p \in C_i} \|p - m_i\|^2$$
+      </span>
+      where <span class="tts-math" data-tts="m sub i">$m_i$</span> is the mean of cluster <span class="tts-math" data-tts="C sub i">$C_i$</span>. This favors compact, spherical clusters of similar size.
+    </p>
+  </div>
+
+  <p data-cid="main-090">
+    The square-error criterion has a well-known pathology with unequal cluster sizes. Suppose your data has one large cluster and two small ones. The square-error objective can <em>lower its value</em> by splitting the large cluster into three pieces and merging it with the small ones, because the slight reduction in within-cluster variance in the large cluster is mathematically more valuable (it is weighted by many points) than the damage done to the small clusters. The algorithm is optimizing a mathematical objective that diverges from the actual goal.
+  </p>
+
+  <div class="box definition" data-cid="main-100">
+    <span class="box-label">Definition — Hierarchical clustering distance measures</span>
+    <p data-cid="main-110">
+      Three common ways to measure the distance between two clusters <span class="tts-math" data-tts="C sub i and C sub j">$C_i$</span> and <span class="tts-math" data-tts="C sub j">$C_j$</span>:
+      <ul>
+        <li><span class="tts-math" data-tts="d sub mean of C sub i and C sub j equals the norm of m sub i minus m sub j">$d_\text{mean}(C_i, C_j) = \|m_i - m_j\|$</span> — distance between centroids</li>
+        <li><span class="tts-math" data-tts="d sub ave of C sub i and C sub j equals one over n sub i times n sub j, times the sum over all p in C sub i and p prime in C sub j of the norm of p minus p prime">$d_\text{ave}(C_i, C_j) = \frac{1}{n_i n_j} \sum_{p \in C_i} \sum_{p' \in C_j} \|p - p'\|$</span> — average pairwise distance</li>
+        <li><span class="tts-math" data-tts="d sub min of C sub i and C sub j equals the minimum over all p in C sub i and p prime in C sub j of the norm of p minus p prime">$d_\text{min}(C_i, C_j) = \min_{p \in C_i, p' \in C_j} \|p - p'\|$</span> — nearest-neighbor distance</li>
+      </ul>
+    </p>
+  </div>
+
+  <p data-cid="main-120">
+    Centroid-based distance (<span class="tts-math" data-tts="d sub mean">$d_\text{mean}$</span>) inherits the spherical-cluster assumption — it works fine when clusters are compact but goes wrong for elongated shapes, which it tends to split. Nearest-neighbor distance (<span class="tts-math" data-tts="d sub min">$d_\text{min}$</span>) is great for non-spherical shapes but suffers from the "chaining effect": a sparse string of outlier points connecting two genuine clusters acts as a bridge, causing the algorithm to merge them prematurely. Both extremes are unsatisfying.
+  </p>
+
+  <div class="box intuition" data-cid="main-130">
+    <span class="box-label">Intuition — CURE's middle ground</span>
+    <p data-cid="main-140">
+      CURE's representative-point approach sits between the two extremes. A single centroid is too compact — it loses all shape information. Tracking all points is too sensitive — a single outlier near the boundary causes trouble. A fixed number of well-scattered points captures the cluster's geometry without letting any single rogue point dominate. Shrinking those points toward the centroid then softens the influence of points that ended up scattered far from the cluster core, which are typically outliers.
+    </p>
+  </div>
+
+  <h2 data-cid="main-150" id="s3">3. The CURE Algorithm</h2>
+  <p data-cid="main-160">
+    CURE is a hierarchical agglomerative clustering algorithm. It starts with every point as its own cluster and repeatedly merges the closest pair of clusters until only <span class="tts-math" data-tts="k">$k$</span> clusters remain. The distinctive feature is how it defines "closest pair": not by the distance between centroids or nearest neighbors, but by the distance between the clusters' <em>representative points</em>.
+  </p>
+  <p data-cid="main-170">
+    The distance between two clusters <span class="tts-math" data-tts="u and v">$u$</span> and <span class="tts-math" data-tts="v">$v$</span> is:
+  </p>
+  <p data-cid="main-180">
+    <span class="tts-math" data-tts="the distance between u and v equals the minimum over all p in u dot rep and q in v dot rep, of the distance from p to q">
+    $$\text{dist}(u, v) = \min_{p \in u.\text{rep},\; q \in v.\text{rep}} \text{dist}(p, q)$$
+    </span>
+  </p>
+  <p data-cid="main-190">
+    where <span class="tts-math" data-tts="u dot rep">$u.\text{rep}$</span> and <span class="tts-math" data-tts="v dot rep">$v.\text{rep}$</span> are the sets of representative points for clusters <span class="tts-math" data-tts="u">$u$</span> and <span class="tts-math" data-tts="v">$v$</span> respectively. This is the same structure as nearest-neighbor distance, but now "nearest neighbor" means the nearest of the representative points — not the nearest of all points. This gives flexibility without the full fragility of <span class="tts-math" data-tts="d sub min">$d_\text{min}$</span>.
+  </p>
+
+  <div class="box definition" data-cid="main-200">
+    <span class="box-label">Definition — Representative Points and Shrinking</span>
+    <p data-cid="main-210">
+      For a cluster <span class="tts-math" data-tts="u">$u$</span> with mean <span class="tts-math" data-tts="u dot mean">$u.\text{mean}$</span>, the <span class="tts-math" data-tts="c">$c$</span> representative points are chosen iteratively:
+      <ol>
+        <li>The first representative is the point in <span class="tts-math" data-tts="u">$u$</span> farthest from the mean.</li>
+        <li>Each subsequent representative is the point farthest from the set of already-chosen representatives.</li>
+        <li>Each chosen point <span class="tts-math" data-tts="p">$p$</span> is then shrunk: its stored position becomes <span class="tts-math" data-tts="p plus alpha times the quantity u dot mean minus p">$p + \alpha \cdot (u.\text{mean} - p)$</span>, moving it a fraction <span class="tts-math" data-tts="alpha">$\alpha$</span> of the way toward the mean.</li>
+      </ol>
+      The result is <span class="tts-math" data-tts="c">$c$</span> points spread across the cluster's extent, each pulled slightly inward. <span class="tts-math" data-tts="alpha equals 0">$\alpha = 0$</span> gives the original scattered points; <span class="tts-math" data-tts="alpha equals 1">$\alpha = 1$</span> collapses all representatives to the mean (recovering centroid-based clustering).
+    </p>
+  </div>
+
+  <h2 data-cid="main-220" id="s4">4. Representative Points and Shrinking</h2>
+  <p data-cid="main-230">
+    Why does shrinking work? The key intuition is about outliers. An outlier is a point that happens to be near a cluster but does not truly belong to it. When choosing the farthest-first scattered points, outliers tend to be selected — they are, by definition, far from the cluster core. Without shrinking (<span class="tts-math" data-tts="alpha equals 0">$\alpha = 0$</span>), these outlier representatives sit at the fringe and make the cluster look larger than it is, causing inappropriate merges with neighboring clusters. After shrinking, outlier representatives move significantly toward the center (because they are far from the mean, the shift <span class="tts-math" data-tts="alpha times the quantity mean minus p">$\alpha \cdot (\text{mean} - p)$</span> is large), while inlier representatives barely move. The shrinking is a simple, elegant way to downweight extremes without explicitly identifying them.
+  </p>
+  <p data-cid="main-240">
+    The paper experimentally finds that <span class="tts-math" data-tts="alpha">$\alpha$</span> in the range 0.2 to 0.7 consistently identifies the correct clusters on their test datasets, regardless of the exact value. Very small <span class="tts-math" data-tts="alpha">$\alpha$</span> (near zero) degenerates toward the all-points approach and is sensitive to outliers. Large <span class="tts-math" data-tts="alpha">$\alpha$</span> (near one) degenerates toward centroid-based clustering and fails on elongated clusters.
+  </p>
+
+  <div class="box example" data-cid="main-250">
+    <span class="box-label">Example — Elongated clusters</span>
+    <p data-cid="main-260">
+      Consider a dataset with two elongated ellipsoidal clusters connected by a thin chain of outlier points. With centroid-based distance (BIRCH), the centroids of both ellipsoids are pulled toward their respective long axes, and the algorithm merges them prematurely. With nearest-neighbor distance, the chain of outlier points acts as a bridge and the two ellipsoids merge. CURE with <span class="tts-math" data-tts="alpha equals 0.3">$\alpha = 0.3$</span> and <span class="tts-math" data-tts="c equals 10">$c = 10$</span> correctly separates them: the representatives capture the geometry (so the clusters look elongated, not spherical), and the shrinking dampens the chain effect (the outlier points in the chain, now shrunk inward, are no longer as close to the other cluster's representatives).
+    </p>
+  </div>
+
+  <h2 data-cid="main-270" id="s5">5. Scaling to Large Databases</h2>
+  <p data-cid="main-280">
+    The hierarchical clustering algorithm described in Section 3 has time complexity <span class="tts-math" data-tts="O of n squared log n">$O(n^2 \log n)$</span> for general dimensionality and <span class="tts-math" data-tts="O of n squared">$O(n^2)$</span> for low dimensionality. For databases of hundreds of thousands of points, this is prohibitively slow. CURE addresses this with a pipeline:
+  </p>
+  <ol data-cid="main-290">
+    <li><strong>Random sampling.</strong> Draw a random sample <span class="tts-math" data-tts="S">$S$</span> of size <span class="tts-math" data-tts="s">$s$</span> from the full database. The sample is the input to the clustering algorithm. Chernoff bounds guarantee that for an appropriate sample size, with high probability the sample contains at least <span class="tts-math" data-tts="f times the size of every cluster u">$f \cdot |u|$</span> points from every cluster <span class="tts-math" data-tts="u">$u$</span> — that is, a constant fraction of each cluster's members.</li>
+    <li><strong>Partitioning.</strong> Divide the sample into <span class="tts-math" data-tts="p">$p$</span> partitions of size <span class="tts-math" data-tts="s over p">$s/p$</span>. Partially cluster each partition until the number of clusters in each partition reduces to <span class="tts-math" data-tts="n over p q">$n/(pq)$</span> for a constant <span class="tts-math" data-tts="q">$q$</span>.</li>
+    <li><strong>Outlier elimination (first pass).</strong> After partial clustering, discard very small clusters (those with 1 or 2 points).</li>
+    <li><strong>Final clustering.</strong> Run a second pass to cluster the partial clusters from all partitions into the final <span class="tts-math" data-tts="k">$k$</span> clusters.</li>
+    <li><strong>Labeling data on disk.</strong> The final <span class="tts-math" data-tts="k">$k$</span> clusters have representative points. Scan the full database and assign each point to the cluster whose representatives are closest.</li>
+  </ol>
+  <p data-cid="main-300">
+    The partitioning step reduces the time complexity of the first clustering pass from <span class="tts-math" data-tts="O of n squared over p squared, times q minus 1 over q, times log of n over p">$O\!\left(\tfrac{n^2}{p^2}\cdot\tfrac{q-1}{q}\cdot\log\tfrac{n}{p}\right)$</span> — an improvement factor of approximately <span class="tts-math" data-tts="q minus 1 over p q, plus 1 over q squared">$\frac{q-1}{pq} + \frac{1}{q^2}$</span> over clustering without partitioning. With <span class="tts-math" data-tts="p equals 5">$p = 5$</span> partitions and <span class="tts-math" data-tts="q equals 3">$q = 3$</span>, the speedup relative to the naïve single-pass approach is substantial.
+  </p>
+
+  <div class="box definition" data-cid="main-310">
+    <span class="box-label">Theorem 4.1 — Sample size bound</span>
+    <p data-cid="main-320">
+      For a cluster <span class="tts-math" data-tts="u">$u$</span>, if the sample size <span class="tts-math" data-tts="s">$s$</span> satisfies:
+      <span class="tts-math" data-tts="s is greater than or equal to f times N plus N over the size of u, times log of 1 over delta, plus N over the size of u times the square root of the quantity log of 1 over delta squared plus 2 f times the size of u times log of 1 over delta">
+      $$s \geq fN + \frac{N}{|u|}\!\left(\log\frac{1}{\delta}\right) + \frac{N}{|u|}\sqrt{\!\left(\log\frac{1}{\delta}\right)^2 + 2f|u|\log\frac{1}{\delta}}$$
+      </span>
+      then the probability that the sample contains fewer than <span class="tts-math" data-tts="f times the size of u">$f|u|$</span> points belonging to cluster <span class="tts-math" data-tts="u">$u$</span> is less than <span class="tts-math" data-tts="delta">$\delta$</span>.
+    </p>
+  </div>
+
+  <h2 data-cid="main-330" id="s6">6. Handling Outliers</h2>
+  <p data-cid="main-340">
+    Outlier detection is built into CURE's pipeline at two points. In the first pass (after partially clustering each partition), any cluster containing only 1 or 2 points is classified as an outlier cluster and discarded. This works because outlier points, by definition, merge slowly — they are far from other points — and as a result accumulate few neighbors during the early hierarchical merging steps.
+  </p>
+  <p data-cid="main-350">
+    Near the end of the clustering (when few clusters remain), a second outlier elimination pass is run. At this stage, very small groups are again removed. The paper acknowledges that the exact fraction of initial clusters at which the first elimination triggers is dataset-dependent; empirically, a fraction of around <span class="tts-math" data-tts="one third">$1/3$</span> of the initial clusters works well.
+  </p>
+  <p data-cid="main-360">
+    Random sampling also passively helps with outliers: a random sample drawn from a dataset with sparse outliers will, with high probability, include very few outlier points (since they make up a small fraction of the whole). The effects of outliers are therefore doubly dampened: they are underrepresented in the sample, and those that do appear tend to form small singleton clusters that are eliminated.
+  </p>
+
+  <h2 data-cid="main-370" id="s7">7. Complexity</h2>
+  <p data-cid="main-380">
+    The worst-case time complexity of CURE's hierarchical clustering algorithm on input of size <span class="tts-math" data-tts="n">$n$</span> is <span class="tts-math" data-tts="O of n squared log n">$O(n^2 \log n)$</span>. For low-dimensional data (two dimensions), this reduces to <span class="tts-math" data-tts="O of n squared">$O(n^2)$</span>. The space complexity is <span class="tts-math" data-tts="O of n">$O(n)$</span> because both the heap and the kd-tree require linear space.
+  </p>
+  <p data-cid="main-390">
+    When CURE is run on a random sample of size <span class="tts-math" data-tts="s">$s$</span> (rather than the full dataset of size <span class="tts-math" data-tts="n">$n$</span>), the time complexity of the clustering phase is <span class="tts-math" data-tts="O of s squared log s">$O(s^2 \log s)$</span> and the labeling phase is <span class="tts-math" data-tts="O of n">$O(n)$</span>. Since <span class="tts-math" data-tts="s">$s$</span> is a fixed fraction of the dataset (around 2.5% in the paper's experiments), the clustering phase cost is essentially constant as <span class="tts-math" data-tts="n">$n$</span> grows, while the labeling phase grows linearly — giving CURE an overall near-linear scaling behaviour for the total pipeline.
+  </p>
+
+  <h2 data-cid="main-400" id="s8">8. Experimental Results</h2>
+  <p data-cid="main-410">
+    Experiments used two datasets of 100,000 points each. Dataset 1 contains one large cluster, two small circles, and two ellipsoids connected by a chain of outliers — specifically designed to stress-test algorithms. Dataset 2 contains 100 equal-size clusters arranged on a grid, matching BIRCH's strong case.
+  </p>
+  <p data-cid="main-420">
+    Key findings on clustering quality:
+  </p>
+  <ul data-cid="main-430">
+    <li>BIRCH fails to identify Dataset 1's clusters: it splits the large cluster and merges the ellipsoids, because it uses centroid-based distances and the centroids of the ellipsoids happen to be close to the large cluster's centroid.</li>
+    <li>The MST method (all-points, nearest-neighbor distance) merges both ellipsoids into one cluster because the chain of outlier points bridges them.</li>
+    <li>CURE with default parameters (<span class="tts-math" data-tts="s equals 2500, c equals 10, alpha equals 0.3">$s = 2500,\; c = 10,\; \alpha = 0.3$</span>) correctly finds all five clusters in Dataset 1.</li>
+    <li>On Dataset 2 (compact equal-size clusters, BIRCH's favorable case), CURE also clusters correctly, confirming it does not sacrifice performance on easy cases.</li>
+  </ul>
+  <p data-cid="main-440">
+    Key findings on execution time:
+  </p>
+  <ul data-cid="main-450">
+    <li>CURE's execution time is always lower than BIRCH's for the same dataset, even though BIRCH was specifically designed for scalability.</li>
+    <li>As the number of points grows from 100,000 to 500,000, CURE's execution time grows slowly (since its sample size stays fixed at 2500), while BIRCH's time grows much more rapidly because BIRCH scans the entire dataset during preclustering.</li>
+    <li>With 5 partitions, CURE's clustering time on the full data is approximately 20 seconds; BIRCH takes over 120 seconds on the same machine for 500,000 points.</li>
+  </ul>
+
+  <h2 data-cid="main-460" id="s9">9. Legacy and Impact</h2>
+  <p data-cid="main-470">
+    CURE's influence spread in two directions. In algorithms, the idea of representing a cluster by multiple scattered points inspired subsequent work on density-based and model-based clustering in high dimensions. The representative-point idea is recognizable in modern spectral clustering (which uses eigenvectors to characterize cluster shape) and in k-medoids variants. The use of Chernoff bounds to justify random sampling as a preprocessing step became standard methodology for large-scale data mining algorithms throughout the 2000s.
+  </p>
+  <p data-cid="main-480">
+    In systems, the pipeline of sample → partial cluster → eliminate outliers → full cluster → label-from-disk became a template for scalable unsupervised learning. The key architectural insight — that you do not need to cluster everything to learn the cluster structure — was absorbed into stream clustering algorithms, mini-batch k-means, and eventually online learning frameworks. Scikit-learn's AgglomerativeClustering and HDBSCAN both trace conceptual lineage to this work.
+  </p>
+  <p data-cid="main-490">
+    The shrink parameter <span class="tts-math" data-tts="alpha">$\alpha$</span> is also worth reflecting on as a design philosophy. Rather than trying to explicitly detect and remove outliers before clustering, CURE absorbs outlier robustness directly into the distance measure. This is an early example of a principle that recurs throughout modern machine learning: instead of preprocessing away bad data, design representations and objective functions that are intrinsically less sensitive to it.
+  </p>
+
+  <h2 data-cid="main-500" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-510">Guha, S., Rastogi, R., and Shim, K. (1997). CURE: A clustering algorithm for large databases. Technical report, Bell Laboratories, Murray Hill, 1997.</li>
+    <li data-cid="main-520">Zhang, T., Ramakrishnan, R., and Livny, M. (1996). BIRCH: An efficient data clustering method for very large databases. <em>Proceedings of ACM SIGMOD</em>, Montreal, Canada, 1996.</li>
+    <li data-cid="main-530">Ester, M., Kriegel, H.-P., Sander, J., and Xu, X. (1996). A density-based algorithm for discovering clusters in large spatial databases with noise. <em>Proceedings of KDD-96</em>, Portland, Oregon, 1996.</li>
+    <li data-cid="main-540">Ng, R. T., and Han, J. (1994). Efficient and effective clustering methods for spatial data mining. <em>Proceedings of VLDB</em>, Santiago, Chile, 1994.</li>
+    <li data-cid="main-550">Jain, A. K., and Dubes, R. C. (1988). <em>Algorithms for Clustering Data.</em> Prentice Hall, Englewood Cliffs, New Jersey, 1988.</li>
+    <li data-cid="main-560">Motwani, R., and Raghavan, P. (1995). <em>Randomized Algorithms.</em> Cambridge University Press, 1995.</li>
+    <li data-cid="main-570">Olson, C. F. (1993). Parallel algorithms for hierarchical clustering. Technical report, University of California at Berkeley, 1993.</li>
+    <li data-cid="main-580">Vitter, J. S. (1985). Random sampling with a reservoir. <em>ACM Transactions on Mathematical Software</em>, 11(1):37–57, 1985.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script>
+</body>
+</html>

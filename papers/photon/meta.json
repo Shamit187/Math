@@ -1,0 +1,6 @@
+{
+  "title": "Photon: Fault-tolerant and Scalable Joining of Continuous Data Streams",
+  "authors": "Rajagopal Ananthanarayanan, Venkatesh Basker, Sumit Das, Ashish Gupta, Haifeng Jiang, Tianhao Qiu, Alexey Reznichenko, Deomid Ryabkov, Manpreet Singh, Shivakumar Venkataraman",
+  "venue": "SIGMOD 2013",
+  "description": "Photon is Google's geographically-distributed stream-joining system that achieves exactly-once semantics for joining ad click events with query events using a Paxos-based IdRegistry as the coordination backbone."
+}

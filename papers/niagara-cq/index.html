@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NiagaraCQ: A Scalable Continuous Query System for Internet Databases · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/>
+<link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="niagara-cq" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/niagara-cq/">NiagaraCQ</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. What Are Continuous Queries?</a></li>
+    <li><a href="#s2">2. The Scalability Challenge</a></li>
+    <li><a href="#s3">3. Incremental Group Optimization</a></li>
+    <li><a href="#s4">4. Expression Signatures and Groups</a></li>
+    <li><a href="#s5">5. Query Split with Intermediate Files</a></li>
+    <li><a href="#s6">6. Selection and Join Grouping</a></li>
+    <li><a href="#s7">7. Timer-Based Queries and Event Detection</a></li>
+    <li><a href="#s8">8. System Architecture and Implementation</a></li>
+    <li><a href="#s9">9. Experimental Results</a></li>
+    <li><a href="#s10">10. Impact and Legacy</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">Scientific Paper · SIGMOD 2000</div>
+    <h1>NiagaraCQ: A Scalable Continuous Query System for Internet Databases</h1>
+    <div class="paper-meta">
+      <span class="authors">Jianjun Chen, David J. DeWitt, Feng Tian, Yuan Wang</span>
+      <span class="venue">ACM SIGMOD International Conference on Management of Data, 2000</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    Continuous queries are persistent queries that run indefinitely, notifying users whenever new results become available as data sources change. While a single continuous query is straightforward to support, handling <em>millions</em> of them simultaneously — as required by an Internet-scale system — demands fundamentally different techniques. NiagaraCQ addresses this by <em>grouping</em> structurally similar queries together so they can share computation. The core innovation is an <em>incremental group optimization</em> strategy: new queries are merged into existing groups without re-examining all installed queries. This, combined with a query-split scheme using materialized intermediate files, an incremental evaluation strategy that re-processes only changed data, and memory caching, allows NiagaraCQ to scale to very large numbers of continuous queries. Preliminary experiments on XML stock data demonstrate significant execution time reductions compared to non-grouped approaches.
+  </div>
+
+  <h2 data-cid="main-020" id="s1">1. What Are Continuous Queries?</h2>
+
+  <p data-cid="main-030">
+    An ordinary database query is <em>one-shot</em>: you ask a question, the system scans its data, returns an answer, and forgets the question. A <em>continuous query</em> is a persistent subscription: you register a question once, and the system keeps watching the data sources and notifies you whenever a new answer appears.
+  </p>
+
+  <div class="box example" data-cid="main-040">
+    <span class="box-label">Example — A Continuous Query</span>
+    <p data-cid="main-050">
+      The paper's motivating example: "Notify me whenever the price of Dell or Micron stock drops by more than 5% and the price of Intel stock remains unchanged over the next three months." A user submits this once. The system then continuously monitors the relevant data source (a live XML feed of stock prices) and fires a notification whenever the condition is satisfied — for as long as the query's subscription is active.
+    </p>
+  </div>
+
+  <p data-cid="main-060">
+    Continuous queries are especially valuable on the Internet, where data changes constantly: stock prices tick every few seconds, news feeds update hourly, sensor readings stream continuously. Rather than polling repeatedly, users register a continuous query and let the system do the watching.
+  </p>
+
+  <p data-cid="main-070">
+    NiagaraCQ is a sub-system of the <em>Niagara</em> project — a distributed database for querying XML data across the Internet using XML-QL (an XML-native query language analogous to SQL). NiagaraCQ handles the continuous query layer: it installs queries, detects when data sources change, and fires the relevant queries against the new data.
+  </p>
+
+  <p data-cid="main-080">
+    The paper distinguishes two types of continuous queries by how they are triggered. <strong>Change-based</strong> queries fire immediately whenever relevant data changes — good for traders who need instant notification. <strong>Timer-based</strong> queries fire only at user-specified time intervals (hourly, daily) — appropriate for users who want periodic summaries and do not need instantaneous updates. NiagaraCQ supports both uniformly.
+  </p>
+
+  <h2 data-cid="main-090" id="s2">2. The Scalability Challenge</h2>
+
+  <p data-cid="main-100">
+    Supporting one continuous query is easy: run it every time the data changes. Supporting ten is manageable. But the paper targets <em>millions</em> of simultaneous continuous queries. At that scale, naive per-query execution is impossible.
+  </p>
+
+  <div class="box warn" data-cid="main-110">
+    <span class="box-label">The Scalability Wall</span>
+    <p data-cid="main-120">
+      Consider 10,000 users each submitting a query like "notify me when Intel stock changes." Each query scans the same XML file, applies the same selection predicate structure (<code>Symbol = "INTC"</code>), and returns essentially the same result. Executing each of these 10,000 queries independently means scanning the same XML file 10,000 times per update event. The execution time grows linearly with the number of queries — a system that takes 1 millisecond per query will spend 10 full seconds per update event just on this one type of query.
+    </p>
+  </div>
+
+  <p data-cid="main-130">
+    Previous group optimization approaches existed but were designed for small, static sets of queries. They could not scale to millions of dynamically added and removed queries because they required re-examining all queries whenever a new one arrived.
+  </p>
+
+  <p data-cid="main-140">
+    NiagaraCQ's answer is <em>incremental group optimization</em>: new queries are merged into existing groups without disturbing or re-evaluating the rest of the query population. The system's overhead for adding a new query is proportional only to the number of existing groups (which is much smaller than the number of queries), not to the total query count.
+  </p>
+
+  <h2 data-cid="main-150" id="s3">3. Incremental Group Optimization</h2>
+
+  <p data-cid="main-160">
+    The central idea is that many continuous queries over the same data source share the same <em>structural skeleton</em> — they differ only in specific constant values. Two queries "notify me when Intel stock changes" and "notify me when Microsoft stock changes" have identical structure; only the symbol constant differs.
+  </p>
+
+  <p data-cid="main-170">
+    NiagaraCQ groups such queries together and executes the shared structural part <em>once</em>, then routes results to the individual query subscribers. The mechanism has three components: an <em>expression signature</em> that captures the structural skeleton, a <em>group constant table</em> that lists each query's specific constants, and a <em>group plan</em> that executes the shared computation.
+  </p>
+
+  <div class="box definition" data-cid="main-180">
+    <span class="box-label">Definition — Expression Signature</span>
+    <p data-cid="main-190">
+      An expression signature is derived from a query plan by replacing all constant values with a generic placeholder. Two queries have the same expression signature if and only if their query plans have the same syntactic structure after this substitution. Queries with the same signature can share computation: they differ only in which constant values trigger the notification, not in how the data is filtered or joined.
+    </p>
+  </div>
+
+  <div class="box example" data-cid="main-200">
+    <span class="box-label">Example — Grouping Stock Queries</span>
+    <p data-cid="main-210">
+      Query A: "Where &lt;Quotes&gt;&lt;Quote&gt;&lt;Symbol&gt;INTC&lt;/Symbol&gt;... construct $g" in quotes.xml.
+      Query B: "Where &lt;Quotes&gt;&lt;Quote&gt;&lt;Symbol&gt;MSFT&lt;/Symbol&gt;... construct $g" in quotes.xml.
+      Both have the same expression signature (symbol equals some constant). NiagaraCQ creates one group. The group plan scans quotes.xml once, and a <em>Split</em> operator routes each result tuple to the correct destination (query A's buffer if symbol is INTC, query B's buffer if symbol is MSFT) based on a <em>group constant table</em> that maps INTC to destination i and MSFT to destination j.
+    </p>
+  </div>
+
+  <p data-cid="main-220">
+    When a new query arrives, the group optimizer traverses its query plan bottom-up, trying to match each sub-plan's signature against existing group signatures. If a match is found, the new query is merged into that group — its constants are added to the group constant table, and the group plan is reused. If no match is found, a new group is created. This traversal is efficient: it requires only one pass over the new query's plan.
+  </p>
+
+  <h2 data-cid="main-230" id="s4">4. Expression Signatures and Groups</h2>
+
+  <p data-cid="main-240">
+    A group in NiagaraCQ has three parts working together:
+  </p>
+
+  <p data-cid="main-250">
+    The <strong>group signature</strong> is the expression signature common to all queries in the group — the structural template. The <strong>group constant table</strong> stores the specific constant value and destination buffer for each individual query in the group. The <strong>group plan</strong> is the shared XML-QL query plan that processes all queries in the group simultaneously.
+  </p>
+
+  <p data-cid="main-260">
+    The group constant table is itself stored as an XML file and treated like any other data source by the query engine. The group plan joins the actual data (e.g., quotes.xml) against the constant table to filter and route results. This elegantly reuses the general-purpose XML-QL query engine without requiring specialized modifications for grouping — an important practical advantage.
+  </p>
+
+  <div class="box intuition" data-cid="main-270">
+    <span class="box-label">Intuition — The Constant Table as a Join</span>
+    <p data-cid="main-280">
+      Think of it this way: instead of executing "is symbol = INTC?" and "is symbol = MSFT?" as two separate queries, NiagaraCQ executes one query: "join quotes.xml against the constant table on the symbol column." The join naturally produces one output tuple per matching query. The Split operator then routes each output to the right subscriber. This converts N separate scans of quotes.xml into one scan followed by one join — a dramatic savings when N is large.
+    </p>
+  </div>
+
+  <h2 data-cid="main-290" id="s5">5. Query Split with Intermediate Files</h2>
+
+  <p data-cid="main-300">
+    A potential bottleneck arises from the group plan's architecture. The group plan processes the shared (lower) part of the query and then must feed results to the individual (upper) parts of each query in the group. If these upper parts run in the same process as the group plan, they must all consume the shared output at the same rate — one very slow individual query can block all others.
+  </p>
+
+  <p data-cid="main-310">
+    NiagaraCQ solves this with a <em>query split</em> scheme. The group plan writes its output to <em>materialized intermediate files</em> — one per group, on local disk — rather than piping it directly to the upper query parts. Each individual query then reads from its designated intermediate file independently, at its own pace. The intermediate files are themselves monitored by the event detection system: when the group plan updates an intermediate file, only the individual queries whose intermediate file was updated are fired.
+  </p>
+
+  <div class="box example" data-cid="main-320">
+    <span class="box-label">Example — Why Intermediate Files Help</span>
+    <p data-cid="main-330">
+      Suppose 100 queries are grouped together. 99 are simple selection queries (fast), and 1 involves a complex multi-table join (slow). Without intermediate files, the slow join query blocks the group plan from advancing, starving the 99 fast queries. With intermediate files, the group plan writes its output and exits immediately. Each query then independently reads the output file and processes it at its own speed. The 99 fast queries complete quickly; the slow join query catches up when it can.
+    </p>
+  </div>
+
+  <p data-cid="main-340">
+    The intermediate files also handle timer-based queries cleanly: since the group plan's output is materialized, individual queries can re-read it at any future scheduled time without requiring the group plan to re-run. This is an important advantage: timer-based continuous queries need to fire at user-specified intervals, even if data has not changed since the last firing. Intermediate files retain the data for later use.
+  </p>
+
+  <h2 data-cid="main-350" id="s6">6. Selection and Join Grouping</h2>
+
+  <p data-cid="main-360">
+    The paper describes how incremental group optimization applies to queries with both selection predicates and join operators.
+  </p>
+
+  <p data-cid="main-370">
+    For <strong>selection predicates</strong>, NiagaraCQ focuses on predicates of the form "Attribute op Constant" (where op is =, &lt;, or &gt;). Equal-valued predicates are highly selective and are preferred for grouping. Range predicates (e.g., <code>Change_Ratio &gt; 5%</code>) are handled via <em>virtual intermediate files</em>: rather than storing actual tuples, a virtual intermediate file stores the range bounds and retrieves tuples dynamically when needed, avoiding duplicate storage when multiple queries have overlapping ranges.
+  </p>
+
+  <p data-cid="main-380">
+    For <strong>join operators</strong>, the group optimizer has two strategies. It can push the selection predicate below the join (group by selection signature first, then share the join), which avoids expensive joins but produces separate intermediate files per selection group and requires many join groups. Or it can pull the selection above the join (group by join signature first, share the join, then apply selections individually), which shares an expensive join across many queries but may produce a large intermediate file. NiagaraCQ uses a cost model to choose between these strategies, and the paper implements the pull-selection approach for its experiments.
+  </p>
+
+  <h2 data-cid="main-390" id="s7">7. Timer-Based Queries and Event Detection</h2>
+
+  <p data-cid="main-400">
+    Timer-based continuous queries are more challenging to group than change-based queries because different users may specify different firing intervals. Two users may submit structurally identical queries — one wants hourly updates, the other wants daily updates. They share the same expression signature but different time information.
+  </p>
+
+  <p data-cid="main-410">
+    NiagaraCQ groups timer-based queries the same way as change-based queries, but records the time interval at installation time. An <em>event list</em> maintains the scheduled firing times for all installed timer-based queries, sorted in time order. When a timer event fires, the Event Detector checks whether the relevant data source has been modified since the query's last firing time. If yes, the group plan is executed and results are stored in intermediate files; the upper-query parts are then scheduled for execution. If the data source has not changed, the query is simply skipped — no unnecessary computation.
+  </p>
+
+  <p data-cid="main-420">
+    Grouping timer-based queries yields significant savings because the shared group plan is executed only once per firing, regardless of how many queries in the group have the same firing time. The individual per-query upper parts are then executed independently, but they are small queries that are cheap to run.
+  </p>
+
+  <h2 data-cid="main-430" id="s8">8. System Architecture and Implementation</h2>
+
+  <p data-cid="main-440">
+    NiagaraCQ was implemented as a sub-system of the Niagara project in Java (JDK 1.2), with an IBM XML parser (IBM XML4J) for processing XML documents.
+  </p>
+
+  <p data-cid="main-450">
+    The system has three major components. The <strong>Continuous Query Manager (CQM)</strong> is the core coordinator: it accepts new continuous query registrations, invokes the Group Optimizer to perform incremental grouping, and invokes the Niagara Query Engine to execute fired queries. The <strong>Event Detector (ED)</strong> monitors data sources and timer events. For push-based sources, the Data Manager notifies the Event Detector directly. For pull-based sources, the Event Detector polls periodically. When both data-change and timer conditions are satisfied, the Event Detector notifies the CQM to fire the relevant queries. The <strong>Data Manager (DM)</strong> handles all disk I/O, maintaining local cached copies of remote XML source files and computing delta files (just the changed portions) to support incremental evaluation.
+  </p>
+
+  <p data-cid="main-460">
+    The incremental evaluation mechanism is important for performance: when a data source changes, NiagaraCQ computes a delta file containing only the modified tuples using an XML-specific diff operation. Queries are then run against the delta file rather than the full data source. Since typical data changes are small relative to the full source, this dramatically reduces computation — the key enabler for handling millions of queries.
+  </p>
+
+  <h2 data-cid="main-470" id="s9">9. Experimental Results</h2>
+
+  <p data-cid="main-480">
+    Experiments were conducted on a Sun Ultra 6000 with 1 GB of RAM running JDK 1.2 on Solaris 2.6, using two XML files: quotes.xml (~2 MB, about 5000 NASDAQ stocks) and companies.xml (~1 MB, company profile data).
+  </p>
+
+  <p data-cid="main-490">
+    The critical comparison is <em>grouped</em> vs. <em>non-grouped</em> execution as the number of installed queries N grows from a few hundred to 10,000. The paper studies four query types reflecting different expression signature structures:
+  </p>
+
+  <p data-cid="main-500">
+    For Type-1 queries (equal selection on Symbol), the non-grouped approach's execution time grows linearly with N — completely impractical at scale. The grouped approach's execution time is nearly constant as N grows (when the number of fired queries F is fixed), because the shared computation is executed only once regardless of N. The individual per-query upper parts scale with F (the number that actually fire), not with N (the total installed). At N = 10,000, the grouped approach is many times faster than the non-grouped approach.
+  </p>
+
+  <p data-cid="main-510">
+    For Type-4 queries (join plus selection), the advantage of grouping is even more dramatic. The group optimizer pushes the selection below the join, creating 100 selection groups and 100 corresponding join groups. Each join group shares its join computation across all queries with the same join structure. The execution time with grouping grows sub-linearly with N, while non-grouped execution becomes completely infeasible at large N.
+  </p>
+
+  <div class="box intuition" data-cid="main-520">
+    <span class="box-label">Intuition — Why the Savings Are So Large for Joins</span>
+    <p data-cid="main-530">
+      A join between quotes.xml and companies.xml is an expensive operation — it requires matching millions of rows. Without grouping, this join must be recomputed for each individual query. With grouping, the join is computed once for all queries sharing the same join predicate structure, and the results are written to an intermediate file. Subsequent queries simply read the intermediate file and apply their individual selection predicates. The ratio of saving grows with the cost of the shared computation.
+    </p>
+  </div>
+
+  <h2 data-cid="main-540" id="s10">10. Impact and Legacy</h2>
+
+  <p data-cid="main-550">
+    NiagaraCQ appeared at the same SIGMOD 2000 conference as the Eddies paper, and together they represent two complementary approaches to the problem of efficient, adaptive data processing: Eddies adapts single queries to changing conditions; NiagaraCQ scales many persistent queries by sharing computation.
+  </p>
+
+  <p data-cid="main-560">
+    The paper's most lasting contribution is the conceptual framework of <em>continuous query grouping</em> — the observation that large populations of user-defined persistent queries will exhibit structural similarity that can be exploited for shared computation. This idea influenced the design of publish-subscribe systems, stream processing engines (including early versions of systems like Aurora and Borealis), and modern event-driven data platforms.
+  </p>
+
+  <p data-cid="main-570">
+    The query-split scheme — materializing intermediate results to a file that is then monitored like any other data source — is a practical engineering idea that cleanly integrates continuous and one-shot query processing without requiring a special-purpose query engine. This design pattern (write to a file, watch the file) reappears in many modern data pipeline systems.
+  </p>
+
+  <p data-cid="main-580">
+    The distinction between change-based and timer-based continuous queries, and the unified treatment of both in a single framework, established terminology and design patterns that the stream processing community refined over the following decade.
+  </p>
+
+  <h2 data-cid="main-590" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-600">Terry, D., Goldberg, D., Nichols, D., and Oki, B. (1992). Continuous Queries over Append-Only Databases. SIGMOD 1992: 321–330.</li>
+    <li data-cid="main-610">Deutsch, A., Fernandez, M., Florescu, D., Levy, A., and Suciu, D. (1998). XML-QL: A Query Language for XML. W3C Technical Note.</li>
+    <li data-cid="main-620">Hanson, E.N., Carnes, C., Huang, M., Konyala, M., Noroha, S., Parthasarathy, J.B., Park, A., and Vernon, A. (1999). Scalable Trigger Processing. 15th ICDE, pp. 266–275, Sydney.</li>
+    <li data-cid="main-630">Chakravarthy, U. and Minker, J. (1986). Multiple Query Processing in Deductive Databases using Query Graphs. VLDB 1986: 384–391.</li>
+    <li data-cid="main-640">Rosenthal, A. and Chakravarthy, U. (1988). Anatomy of a Modular Multiple Query Optimizer. VLDB 1988: 230–239.</li>
+    <li data-cid="main-650">Sellis, T. (1986). Multiple Query Optimization. ACM Transactions on Database Systems, 10(3).</li>
+    <li data-cid="main-660">Liu, L., Pu, C., Ranga, R., and Zhou, T. (1996). Differential Evaluation of Continual Queries. ICDCS 1996: 458–465.</li>
+    <li data-cid="main-670">Zhao, Y., Deshpande, P., Naughton, J.F., and Shukla, A. (1998). Simultaneous Optimization and Evaluation of Multiple Dimensional Queries. SIGMOD 1998: 271–282.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script>
+<script src="/js/highlights.js"></script>
+</body>
+</html>

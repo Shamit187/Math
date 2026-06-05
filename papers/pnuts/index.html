@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PNUTS: Yahoo!'s Hosted Data Serving Platform · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="pnuts" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/pnuts/">PNUTS</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. The Web-Scale Data Problem</a></li>
+    <li><a href="#s2">2. Why Not Serializability?</a></li>
+    <li><a href="#s3">3. Per-Record Timeline Consistency</a></li>
+    <li><a href="#s4">4. The Consistency API</a></li>
+    <li><a href="#s5">5. System Architecture</a></li>
+    <li><a href="#s6">6. Yahoo! Message Broker</a></li>
+    <li><a href="#s7">7. Record-Level Mastering</a></li>
+    <li><a href="#s8">8. Data Storage and Tablets</a></li>
+    <li><a href="#s9">9. Experimental Results</a></li>
+    <li><a href="#s10">10. Impact and Legacy</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">PVLDB 2008 · Distributed Systems</div>
+    <h1>PNUTS: Yahoo!'s Hosted Data Serving Platform</h1>
+    <div class="paper-meta">
+      <span class="authors">Brian F. Cooper, Raghu Ramakrishnan, Utkarsh Srivastava, Adam Silberstein, Philip Bohannon, Hans-Arno Jacobsen, Nick Puz, Daniel Weaver, Ramana Yerneni</span>
+      <span class="venue">Proceedings of the VLDB Endowment, Vol. 1, No. 2 · PVLDB 2008</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    PNUTS is Yahoo!'s massively parallel, geographically distributed hosted database system, designed to serve the data needs of Yahoo!'s web applications at planetary scale. It provides data storage organized as hashed or ordered tables, low latency for large numbers of concurrent requests including updates and queries, and a novel per-record consistency model that sits between eventual consistency and full serializability. PNUTS uses asynchronous replication over a topic-based publish/subscribe message broker — the Yahoo! Message Broker (YMB) — which serves simultaneously as the replication mechanism and the database's redo log. Record-level mastering assigns each record a designated master replica, and all writes are forwarded to that master, ensuring that all replicas see updates in the same order for each record while allowing different records to have different masters in different geographic regions. The first version served Yahoo!'s social applications in production at the time of writing.
+  </div>
+
+  <h2 data-cid="main-020" id="s1">1. The Web-Scale Data Problem</h2>
+
+  <p data-cid="main-030">
+    Building a data platform for a site the size of Yahoo! in 2008 means confronting three simultaneous requirements that are largely in tension with each other. First, <em>scalability</em>: popular applications like Flickr and del.icio.us may grow by orders of magnitude in a few months, and adding capacity must not require taking the system offline or reengineering the application. Second, <em>response time and geographic scope</em>: Yahoo's internal SLAs for page load time are extremely strict, and users are scattered across every continent. Data must be co-located near users to provide low-latency reads. Third, <em>high availability</em>: if a datacenter loses power, the system must continue serving requests. Downtime means lost advertising revenue — Yahoo! cannot render ads and therefore cannot get paid.
+  </p>
+
+  <p data-cid="main-040">
+    A traditional relational database can satisfy any two of these requirements, but not all three simultaneously. Full serializability over a geographically distributed system requires coordination protocols (like two-phase commit) that add hundreds of milliseconds of latency — unacceptable when the entire database portion of a web request must complete in 50–100 ms. NoSQL systems of the era (Amazon Dynamo, for example) solved the latency problem by providing only <em>eventual consistency</em>: all updates are eventually applied to all replicas, but in potentially different orders, and a reader may see a stale or even internally inconsistent view.
+  </p>
+
+  <div class="box intuition" data-cid="main-050">
+    <span class="box-label">Intuition — Why Eventual Consistency Is Too Weak</span>
+    <p data-cid="main-060">
+      Consider a photo-sharing application. Alice has a record that contains both her list of photos and the set of people allowed to view them. She makes two updates: first, she removes her mother from the viewer list; second, she posts new spring-break photos. Under eventual consistency, these two updates might be applied to different replicas in different orders. A replica that applies update 2 before update 1 will, for some period, show Alice's spring-break photos to her mother — a clear privacy violation. PNUTS was designed specifically to prevent this class of anomaly.
+    </p>
+  </div>
+
+  <h2 data-cid="main-070" id="s2">2. Why Not Full Serializability?</h2>
+
+  <p data-cid="main-080">
+    Full serializability guarantees that every execution is equivalent to some serial ordering of the committed transactions. This is the gold standard of correctness, but it is extremely expensive to achieve at geographic scale. A key observation from the Yahoo! team's production experience is that web applications almost never perform multi-record transactions. When a user changes their avatar, posts a photo, or accepts a friend request, the application typically manipulates exactly one record. Multi-record atomicity would require cross-datacenter coordination, and the latency cost is prohibitive.
+  </p>
+
+  <p data-cid="main-090">
+    Moreover, web applications can tolerate relaxed consistency in many contexts. If one user cannot immediately see another user's change to their status message, no harm is done — the worst case is that the display is slightly stale for a few seconds. The PNUTS team observed that the key consistency requirement for most Yahoo! applications is not global serializability but a per-record guarantee: for any given record, all replicas must see the same sequence of updates in the same order. This observation is the foundation of PNUTS's novel consistency model.
+  </p>
+
+  <h2 data-cid="main-100" id="s3">3. Per-Record Timeline Consistency</h2>
+
+  <p data-cid="main-110">
+    PNUTS provides <strong>per-record timeline consistency</strong>: all replicas of a given record apply all updates to that record in the same order. The timeline of a record looks like a sequence of versions:
+  </p>
+
+  <p data-cid="main-120">
+    Each record carries a <em>sequence number</em> that increments on every write. When a new insert creates a generation (e.g., version 1.0), and each subsequent update creates a new version within that generation (1.1, 1.2, …), any replica returning a version of the record always moves forward along this timeline — it never goes backward. This is the key property that prevents the photo-sharing anomaly: because Alice's master sees both updates in order and propagates them in order, no replica can apply update 2 before update 1.
+  </p>
+
+  <div class="box definition" data-cid="main-130">
+    <span class="box-label">Definition — Per-Record Timeline Consistency</span>
+    <p data-cid="main-140">
+      For every record <span class="tts-math" data-tts="r">$r$</span>, there exists a global timeline of versions <span class="tts-math" data-tts="v sub 1 less than v sub 2 less than v sub 3, and so on">$v_1 < v_2 < v_3 < \cdots$</span> totally ordered by sequence number. Every replica of <span class="tts-math" data-tts="r">$r$</span> stores some prefix of this timeline and only ever advances forward — it never returns a version earlier than one it has already returned. Different records may have different timelines, and PNUTS makes no guarantees about the relative ordering of updates across different records.
+    </p>
+  </div>
+
+  <p data-cid="main-150">
+    This is strictly weaker than serializability (which would require consistent ordering across records) but strictly stronger than eventual consistency (which permits replicas to apply updates in different orders). The PNUTS team argues this is exactly the right trade-off for web workloads: applications that need strong consistency for a single record can get it cheaply, while applications that need cross-record atomicity must use application-level logic or accept relaxed guarantees.
+  </p>
+
+  <h2 data-cid="main-160" id="s4">4. The Consistency API</h2>
+
+  <p data-cid="main-170">
+    PNUTS exposes a rich API that lets applications choose, on a per-call basis, exactly how much consistency they need. This is unusual — most systems expose a single consistency level and ask the application to live with it. PNUTS's API has five key operations:
+  </p>
+
+  <div class="box definition" data-cid="main-180">
+    <span class="box-label">Definition — PNUTS Read Operations</span>
+    <p data-cid="main-190">
+      <strong>Read-any:</strong> Returns a possibly stale version of the record from the nearest replica. Lowest latency; appropriate when display freshness is unimportant (e.g., showing a friend's status message).
+    </p>
+    <p data-cid="main-200">
+      <strong>Read-critical(required_version):</strong> Returns a version of the record that is strictly no older than <em>required_version</em>. Used when an application has just written a record and wants to confirm its own write is reflected in subsequent reads. The write call returns the new sequence number, which is passed to read-critical.
+    </p>
+    <p data-cid="main-210">
+      <strong>Read-latest:</strong> Returns the most current version of the record, reflecting all writes that have succeeded. Higher latency than read-any if the local copy is stale, since the system must locate a more recent version.
+    </p>
+    <p data-cid="main-220">
+      <strong>Write:</strong> Unconditionally replaces the current record. Equivalent to a single-row ACID transaction. Suitable for blind writes (e.g., updating a user's status).
+    </p>
+    <p data-cid="main-230">
+      <strong>Test-and-set-write(required_version):</strong> Performs the write only if the current version of the record equals <em>required_version</em>. This implements optimistic concurrency control and allows serializable single-record transactions: read the record, compute a new value, write only if nothing has changed since the read.
+    </p>
+  </div>
+
+  <div class="box example" data-cid="main-240">
+    <span class="box-label">Example — Implementing a Counter with Test-and-Set</span>
+    <p data-cid="main-250">
+      Two users simultaneously try to increment a page-view counter stored as a PNUTS record. Both read the current value (say, 42) and want to write 43. With a blind Write, one write clobbers the other and the counter ends up at 43 instead of 44. With test-and-set-write, the second writer's write is rejected because the record has changed since its read — it retries, reads 43, and writes 44. The result is correct without requiring distributed locking.
+    </p>
+  </div>
+
+  <h2 data-cid="main-260" id="s5">5. System Architecture</h2>
+
+  <p data-cid="main-270">
+    PNUTS divides the world into <em>regions</em>. Each region is a geographically co-located set of servers (a datacenter or cluster of datacenters) that contains a complete copy of every table. Within a region, three components collaborate to store and serve data.
+  </p>
+
+  <p data-cid="main-280">
+    The <strong>storage unit</strong> is the server that actually holds data. For hash-organized tables, it uses a UNIX filesystem-based hash table; for ordered tables, it uses MySQL with InnoDB. Storage units respond to get() (point lookup by primary key) and scan() (range scan over ordered keys) requests from routers, and respond to set() (update) requests by first committing the update to the message broker.
+  </p>
+
+  <p data-cid="main-290">
+    The <strong>router</strong> maps primary keys to storage units using an in-memory <em>interval mapping</em>: for hash tables, the hash space <span class="tts-math" data-tts="from 0 to 2 to the power n minus 1">$[0, 2^n)$</span> is divided into intervals, each assigned to a tablet on a specific storage unit. For ordered tables, the key space is divided into contiguous string intervals. The router caches the interval mapping and polls the tablet controller for updates. Routers are stateless and can be replaced instantly on failure.
+  </p>
+
+  <p data-cid="main-300">
+    The <strong>tablet controller</strong> manages the authoritative interval-to-storage-unit mapping. It handles load balancing (moving tablets from overloaded to underloaded servers), failure recovery (reassigning tablets from failed servers to healthy ones), and tablet splitting (when a tablet grows too large). The controller is a single active/standby pair and does not sit on the data path, so it is not a performance bottleneck.
+  </p>
+
+  <div class="box intuition" data-cid="main-310">
+    <span class="box-label">Intuition — Why Not a Persistent Log?</span>
+    <p data-cid="main-320">
+      Traditional databases use a write-ahead log (WAL) on disk to ensure durability: before any data page is modified, the change is written to the log, so that on crash recovery the log can replay all committed changes. PNUTS has no traditional WAL. Instead, it uses the Yahoo! Message Broker as both the replication channel and the durability log. When a storage unit commits a write, it publishes the update to YMB. The update is considered durable as soon as YMB has acknowledged its receipt. Recovery simply replays updates from YMB. This is a bold architectural choice that trades WAL complexity for message-broker complexity — but the message broker was already needed for replication, so the design achieves both goals with one component.
+    </p>
+  </div>
+
+  <h2 data-cid="main-330" id="s6">6. Yahoo! Message Broker: Replication Engine and Redo Log</h2>
+
+  <p data-cid="main-340">
+    The Yahoo! Message Broker (YMB) is a topic-based publish/subscribe system. In PNUTS, each tablet of each table has a corresponding YMB topic. When a storage unit commits a write, it publishes the update to that topic. All replicas of the tablet (in all regions) subscribe to the topic and receive the update asynchronously.
+  </p>
+
+  <p data-cid="main-350">
+    YMB provides two crucial guarantees. First, <em>at-least-once delivery</em>: if the message broker receives a published message, it guarantees delivery to all subscribers, even in the presence of broker machine failures. It achieves this by logging messages to multiple disks before acknowledging the publisher. Second, <em>partial ordering within a cluster</em>: messages published to a single YMB cluster are delivered to all subscribers in the order they were published. This is sufficient for per-record timeline consistency, because all updates to a single record are routed through the same YMB cluster (the cluster in the record's master region).
+  </p>
+
+  <p data-cid="main-360">
+    YMB clusters in different regions are isolated from each other. Messages flow from a source YMB cluster to a destination YMB cluster through a relay. This isolation means that global ordering across regions would require additional coordination, which PNUTS deliberately avoids. The per-record timeline guarantee is maintained because the record's designated master is always in a single region, and all updates to that record are serialized through that region's YMB cluster before propagating to others.
+  </p>
+
+  <h2 data-cid="main-370" id="s7">7. Record-Level Mastering</h2>
+
+  <p data-cid="main-380">
+    The mastership of each record is stored as a hidden metadata field inside the record itself. When a storage unit receives a set() request, it reads the record to check whether it is the master for that record. If it is, it applies the update locally and publishes it to YMB. If it is not, it forwards the request to the master replica.
+  </p>
+
+  <p data-cid="main-390">
+    This design has an important consequence: mastership is per-record, not per-tablet or per-table. A one-week trace of updates to 9.8 million user IDs in Yahoo!'s user database showed that on average, 85% of writes to a given record originated in the same datacenter. This high locality means that the record's master is almost always in the same region as the writer, so writes are served locally without cross-region latency. The 15% of writes that are "remote" (originating outside the master region) incur the cost of cross-region forwarding, typically 50–300 ms depending on geographic distance.
+  </p>
+
+  <div class="box example" data-cid="main-400">
+    <span class="box-label">Example — Mastership Migration</span>
+    <p data-cid="main-410">
+      A user moves from Wisconsin to California. Initially, their record is mastered in a West Coast datacenter (low latency for California). After the move, most of their writes now originate from the East Coast. The system detects this pattern by tracking the origin region of the last <span class="tts-math" data-tts="N">$N$</span> updates (in the current implementation <span class="tts-math" data-tts="N equals 3">$N = 3$</span>) and publishes a message to YMB indicating the new master region. The mastership migrates automatically, without application involvement.
+    </p>
+  </div>
+
+  <h2 data-cid="main-420" id="s8">8. Data Storage and Tablet Organization</h2>
+
+  <p data-cid="main-430">
+    PNUTS supports two table organizations: <em>hashed tables</em> and <em>ordered tables</em>. In a hashed table, the primary key space is divided by an <span class="tts-math" data-tts="n">$n$</span>-bit hash function <span class="tts-math" data-tts="H">$H$</span> into intervals of the hash space <span class="tts-math" data-tts="from 0 to 2 to the n minus 1">$[0, 2^n)$</span>. Each interval is a tablet. This provides excellent load balancing for point lookups: the hash function naturally distributes keys uniformly across storage units. In an ordered table, the key space is divided into contiguous string intervals by key value, enabling efficient range scans.
+  </p>
+
+  <p data-cid="main-440">
+    A typical tablet in the planned production scale holds about 500 MB of data, which means a 500-terabyte database requires roughly 1,000 tablets per region. The interval mapping — which maps each tablet to a storage unit — fits in memory on a router (a few hundred megabytes for 1,000 tablets with 100-byte keys). This makes routing decisions extremely fast: a router resolves any primary key to its storage unit by a single binary search of the in-memory mapping.
+  </p>
+
+  <p data-cid="main-450">
+    Schema flexibility is provided by storing records as parsed JSON objects. New attributes can be added to any record at any time without halting query activity, and records are not required to have values for all attributes. This is important for Yahoo!'s rapidly evolving web applications, which add new features (and thus new record attributes) frequently.
+  </p>
+
+  <h2 data-cid="main-460" id="s9">9. Experimental Results</h2>
+
+  <p data-cid="main-470">
+    The PNUTS team set up a three-region test cluster: two regions on the US West Coast ("West 1" and "West 2") and one on the East Coast ("East"). Each region had 5 storage units, 2 message brokers, 1 router, and 1 tablet controller. The workload was synthetically generated 1 KB records replicated across all three regions, with 300 total client threads (100 per region) issuing 1,200–3,600 requests per second.
+  </p>
+
+  <p data-cid="main-480">
+    <strong>Insertion latency:</strong> For hash tables, inserting a record into the master region (West 1) required 75.6 ms on average. Inserting from the non-master West 2 region required 131.5 ms (the extra cost of cross-region forwarding within the West Coast is modest). Inserting from the geographically distant East region required 315.5 ms — the dominant cost being the round-trip to forward the request to the master.
+  </p>
+
+  <p data-cid="main-490">
+    <strong>Read/write ratio impact:</strong> As the fraction of writes increases, average latency increases because writes must be forwarded to the master while reads can be served locally. When 20% of requests are writes originating outside the master region, average latency is substantially higher than when writes are all local. Cross-region writes from East to West required 324.4 ms on average, versus 92.0 ms for locally-mastered writes.
+  </p>
+
+  <div class="box intuition" data-cid="main-500">
+    <span class="box-label">Intuition — Latency Budget Arithmetic</span>
+    <p data-cid="main-510">
+      The typical budget for the database portion of a Yahoo! web request is 50–100 ms. A local read-any call (serving from the nearest replica's in-memory cache) costs well under 10 ms. A read-latest call that must fetch from the master might cost 90 ms for a West Coast request. A cross-continent write might cost 320 ms — exceeding the budget entirely. This is why the API distinguishes read-any from read-latest, and why record-level mastering (placing the master near the most frequent writer) is architecturally critical.
+    </p>
+  </div>
+
+  <p data-cid="main-520">
+    <strong>Scalability:</strong> Adding more storage units per region reduces average latency roughly linearly. This is expected: more storage units provide more aggregate disk seek capacity, reducing individual request latency. The roughly linear relationship validates the claim that PNUTS scales horizontally.
+  </p>
+
+  <h2 data-cid="main-530" id="s10">10. Impact and Legacy</h2>
+
+  <p data-cid="main-540">
+    PNUTS appeared at a pivotal moment in distributed systems research. In 2007, Amazon had published the Dynamo paper introducing eventual consistency. In 2006, Google had published BigTable, showing how to store vast amounts of data on commodity hardware. PNUTS carved out a third position: richer consistency than eventual, cheaper than serializable, and hosted as a shared service rather than a per-application deployment.
+  </p>
+
+  <p data-cid="main-550">
+    The per-record timeline consistency model was influential. It articulated precisely what a web application actually needs from its data store — not global serializability, but a guarantee that for any single record, history is consistent. This framing influenced subsequent systems including Google Spanner (which provides external consistency but acknowledges the cost) and Facebook's TAO (which provides similar per-object consistency for social graph data).
+  </p>
+
+  <p data-cid="main-560">
+    The architectural decision to use a pub/sub message broker as both the replication channel and the redo log was elegant and practical. It eliminated the need for a separate WAL infrastructure, leveraged an existing Yahoo! component (YMB was already deployed as part of the Sherpa platform), and naturally supported asynchronous geographic replication. This pattern — event-sourcing the database through a durable message log — became widespread in subsequent distributed systems design, most visibly in systems like Apache Kafka-based architectures.
+  </p>
+
+  <p data-cid="main-570">
+    The PNUTS paper also contributed a careful taxonomy of consistency levels that is more nuanced than the simple "strong vs. eventual" dichotomy: read-any, read-critical, and read-latest each serve a different point in the latency/freshness trade-off space, and exposing this choice to the application is itself an important design principle.
+  </p>
+
+  <h2 data-cid="main-580" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-590">P. Bernstein, V. Hadzilacos, and N. Goodman. <em>Concurrency Control and Recovery in Database Systems.</em> Addison-Wesley, 1987.</li>
+    <li data-cid="main-600">F. Chang et al. Bigtable: A distributed storage system for structured data. In <em>OSDI</em>, 2006.</li>
+    <li data-cid="main-610">G. DeCandia et al. Dynamo: Amazon's highly available key-value store. In <em>SOSP</em>, 2007.</li>
+    <li data-cid="main-620">D. J. Dean and S. Ghemawat. MapReduce: Simplified data processing on large clusters. In <em>OSDI</em>, 2004.</li>
+    <li data-cid="main-630">P. Helland. Life beyond distributed transactions: an apostate's opinion. In <em>CIDR</em>, 2007.</li>
+    <li data-cid="main-640">D. Kossmann. The state of the art in distributed query processing. <em>ACM Computing Surveys</em>, 32(4):422–469, 2000.</li>
+    <li data-cid="main-650">E. Pacitti, P. Minet, and E. Simon. Fast algorithms for maintaining replica consistency in lazy master replicated databases. In <em>VLDB</em>, 1999.</li>
+    <li data-cid="main-660">A. Silberstein, B. F. Cooper, U. Srivastava, E. Vee, R. Yerneni, and R. Ramakrishnan. Efficient bulk insertion into a distributed ordered table. In <em>SIGMOD</em>, 2008.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script>
+</body>
+</html>

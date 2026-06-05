@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Database Architecture Optimized for the new Bottleneck: Memory Access · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="monetdb-memory-access" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/monetdb-memory-access/">MonetDB: Memory Access</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. Introduction</a></li>
+    <li><a href="#s2">2. The Memory Bottleneck</a></li>
+    <li><a href="#s3">3. The Reality Check Experiment</a></li>
+    <li><a href="#s4">4. Vertical Data Layout</a></li>
+    <li><a href="#s5">5. Query Processing Algorithms</a></li>
+    <li><a href="#s6">6. Radix Clustering</a></li>
+    <li><a href="#s7">7. The Join Algorithms</a></li>
+    <li><a href="#s8">8. Cost Models</a></li>
+    <li><a href="#s9">9. Overall Results</a></li>
+    <li><a href="#s10">10. Legacy and Impact</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">Scientific Paper · VLDB 1999</div>
+    <h1>Database Architecture Optimized for the new Bottleneck: Memory Access</h1>
+    <div class="paper-meta">
+      <span class="authors">Peter Boncz, Stefan Manegold, Martin L. Kersten</span>
+      <span class="venue">Proceedings of the 25th VLDB Conference, Edinburgh, Scotland, 1999</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    Through the 1990s, database performance tuning was synonymous with minimizing disk I/O. But by 1999, something had changed: main memory had become large enough to hold entire databases, and disks had become fast enough that a well-buffered system rarely hit them. The new bottleneck was the CPU's access to main memory. Processor speeds were growing at roughly 70% per year, while DRAM speeds improved by barely 50% over the entire decade. A simple scan experiment on the MonetDB system reveals the consequence: a database server running a trivial in-memory table scan spends 95% of its time <em>waiting for memory</em>, not doing computation. This paper diagnoses the bottleneck through hardware event counters (TLB misses, L1 misses, L2 misses), translates the diagnosis into architectural guidelines (columnar vertical decomposition), and introduces a family of cache-conscious radix algorithms for equi-join that exploit the memory hierarchy from TLB all the way to L1 cache.
+  </div>
+
+  <h2 data-cid="main-020" id="s1">1. Introduction</h2>
+  <p data-cid="main-030">
+    The traditional database performance model pictures a slow disk and a fast CPU separated by a memory buffer pool. The optimizer minimizes the number of page reads; everything else is considered free. This model was accurate when disk access took millions of CPU cycles and memory access took just a handful. By the late 1990s, it had become dangerously wrong.
+  </p>
+  <p data-cid="main-040">
+    Processor speeds had been roughly doubling every 18 months (Moore's law, as popularly applied to clock speed). DRAM speeds had not kept pace. The physics of DRAM chips forces a trade-off between capacity and speed, and the market had chosen capacity. The result was a widening "memory gap": by 1999, accessing a single word from main memory took over 100 CPU cycles on high-end workstations. A 250 MHz CPU can execute 250 million instructions per second; waiting 100 cycles for one memory access is 400 nanoseconds of dead time.
+  </p>
+  <p data-cid="main-050">
+    The memory system's response to this gap — a hierarchy of progressively faster, progressively smaller caches — helps only if the access pattern is <em>local</em>. If a program accesses memory randomly, no cache can help: every access misses every level of cache and goes all the way to main memory. Database query processing, with its joins over large relations and its record-at-a-time tuple layout, is one of the worst-case access patterns imaginable for a cache hierarchy.
+  </p>
+
+  <h2 data-cid="main-060" id="s2">2. The Memory Bottleneck</h2>
+  <p data-cid="main-070">
+    The paper identifies three distinct components of memory performance, each with its own characteristics:
+  </p>
+
+  <div class="box definition" data-cid="main-080">
+    <span class="box-label">Definition — The Memory Hierarchy Components</span>
+    <p data-cid="main-090">
+      <strong>L1 cache</strong> (on-die, ~32 KB, 1–4 ns): Contains the most recently accessed cache lines. A cache line is 16–32 bytes on 1990s hardware. If successive memory accesses fall within the same cache line (stride smaller than line size), L1 gives essentially free performance.
+      <br><br>
+      <strong>L2 cache</strong> (on-die or close, ~4 MB, 10–25 ns): Holds recently used L1 lines that were evicted. Accesses that miss L1 but hit L2 cost about 6–10× more than L1 hits.
+      <br><br>
+      <strong>TLB</strong> (Translation Lookaside Buffer, ~64 entries): Holds the virtual-to-physical page address translations for recently accessed pages. A TLB miss requires a hardware page-table walk — on some architectures more expensive than a main memory access. If a query accesses more than 64 distinct pages simultaneously, TLB misses begin to dominate.
+      <br><br>
+      <strong>Main memory</strong> (DRAM, ~400 ns): The penalty for a full cache miss from L2 to main memory is measured in hundreds of CPU cycles.
+    </p>
+  </div>
+
+  <p data-cid="main-100">
+    The paper models the execution cost per iteration of a simple scan as:
+  </p>
+  <p data-cid="main-110">
+    <span class="tts-math" data-tts="T of s equals T sub CPU plus T sub L2 of s plus T sub Mem of s">
+    $$T(s) = T_{CPU} + T_{L2}(s) + T_{Mem}(s)$$
+    </span>
+  </p>
+  <p data-cid="main-120">
+    with
+  </p>
+  <p data-cid="main-130">
+    <span class="tts-math" data-tts="T sub L2 of s equals M sub L1 of s times l sub L2, where M sub L1 of s equals the minimum of s over L S sub L1 and 1">
+    $$T_{L2}(s) = M_{L1}(s) \cdot l_{L2}, \quad M_{L1}(s) = \min\!\left(\frac{s}{LS_{L1}},\; 1\right)$$
+    </span>
+  </p>
+  <p data-cid="main-140">
+    <span class="tts-math" data-tts="T sub Mem of s equals M sub L2 of s times l sub Mem, where M sub L2 of s equals the minimum of s over L S sub L2 and 1">
+    $$T_{Mem}(s) = M_{L2}(s) \cdot l_{Mem}, \quad M_{L2}(s) = \min\!\left(\frac{s}{LS_{L2}},\; 1\right)$$
+    </span>
+  </p>
+  <p data-cid="main-150">
+    where <span class="tts-math" data-tts="s">$s$</span> is the stride in bytes (the gap between consecutive memory accesses), <span class="tts-math" data-tts="L S sub L1">$LS_{L1}$</span> and <span class="tts-math" data-tts="L S sub L2">$LS_{L2}$</span> are the L1 and L2 cache line sizes, and <span class="tts-math" data-tts="l sub L2">$l_{L2}$</span> and <span class="tts-math" data-tts="l sub Mem">$l_{Mem}$</span> are the latencies for L2 and main memory accesses in CPU cycles. When <span class="tts-math" data-tts="s">$s$</span> exceeds the L2 cache line size (typically 64–128 bytes), every iteration is a guaranteed cache miss.
+  </p>
+
+  <h2 data-cid="main-160" id="s3">3. The Reality Check Experiment</h2>
+  <p data-cid="main-170">
+    To demonstrate the severity of the bottleneck concretely, the authors perform a "reality check" scan: sequentially read 200,000 bytes from an in-memory buffer, with varying stride <span class="tts-math" data-tts="s">$s$</span>. The Y-axis measures elapsed time; the X-axis is the stride in bytes.
+  </p>
+  <p data-cid="main-180">
+    The results are striking. On all tested machines (Sun LX, Sun Ultra, Sun Ultra-2, SGI Origin 2000), elapsed time is nearly flat and minimal for small strides (data fits within a cache line, so successive accesses hit L1). Time jumps sharply at the L1 cache line boundary (typically 16–32 bytes), then jumps again at the L2 line boundary (64–128 bytes), then plateaus as every access becomes a full main-memory fetch.
+  </p>
+
+  <div class="box intuition" data-cid="main-190">
+    <span class="box-label">Intuition — What this means for row-store databases</span>
+    <p data-cid="main-200">
+      A conventional row-store tuple for the TPC-D "Item" table is about 80 bytes wide. A query that scans a single integer column (4 bytes) of that table accesses one integer every 80 bytes — a stride of 80 bytes, which is right in the danger zone where L2 misses begin. The CPU fetches a 64-byte cache line, uses 4 of those bytes, and discards the rest. It is 94% wasted memory bandwidth. With 200,000 tuples, the scan spends nearly all its time waiting for memory, not computing.
+    </p>
+  </div>
+
+  <h2 data-cid="main-210" id="s4">4. Vertical Data Layout</h2>
+  <p data-cid="main-220">
+    The architectural response is <em>vertical fragmentation</em>: store each column of a relational table in a separate array, rather than storing all columns of each row together. MonetDB implements this through <em>Binary Association Tables</em> (BATs).
+  </p>
+
+  <div class="box definition" data-cid="main-230">
+    <span class="box-label">Definition — Binary Association Table (BAT)</span>
+    <p data-cid="main-240">
+      A BAT stores one column of a relation as an array of fixed-size two-field records: (OID, value). The OID (Object Identifier) acts as the row key; the value is the column value for that row. Because all entries have the same fixed width, the array is dense and contiguous in memory. A BAT for an integer column has a stride of exactly 8 bytes (4 for OID, 4 for value), rather than the 80-byte stride of the full row tuple. The entire column fits in far fewer cache lines, and sequential scans become maximally cache-friendly.
+    </p>
+  </div>
+
+  <p data-cid="main-250">
+    MonetDB further reduces memory footprint using two techniques. First, <em>virtual OIDs</em>: when OID values are dense and ascending (1000, 1001, 1002, …), there is no need to store them explicitly. MonetDB computes OIDs on the fly from array position, saving 4 bytes per entry — a 50% reduction in BAT width for many columns. Second, <em>byte encodings</em>: columns with low domain cardinality (e.g., a shipmode column with 7 possible values) are stored as 1- or 2-byte integers rather than variable-length strings, without requiring a decoding step during selection since equality predicates can be translated to integer comparisons at query compile time.
+  </p>
+  <p data-cid="main-260">
+    The result for the TPC-D "shipmode" column: storage per value shrinks from 8 bytes (in a standard BAT) to 1 byte (after byte-encoding and virtual-OID). That is an 8× improvement in data density, meaning 8× more shipmode values fit in a given amount of cache.
+  </p>
+
+  <h2 data-cid="main-270" id="s5">5. Query Processing Algorithms</h2>
+  <p data-cid="main-280">
+    For sequential scans and selections with low selectivity (most of the relation must be visited), vertical layout combined with a simple scan is optimal: the memory access pattern is stride-1 on a narrow array. The paper focuses most of its algorithmic contribution on the harder operator: the equi-join.
+  </p>
+  <p data-cid="main-290">
+    Hash-join has long been the default for main-memory databases. The standard algorithm builds a hash table on the inner relation, then probes it for each tuple of the outer relation. The problem: if the inner relation's hash table does not fit in L2 cache (which it usually does not for large relations), every probe generates a random memory access — there are no locality guarantees from hashing. With the inner relation spanning thousands of cache lines, each probe is a cache miss.
+  </p>
+
+  <div class="box warn" data-cid="main-300">
+    <span class="box-label">Why standard hash-join thrashes cache</span>
+    <p data-cid="main-310">
+      A hash function maps each probe key to a bucket in the hash table. If the hash table has <span class="tts-math" data-tts="H">$H$</span> buckets spread over main memory, then on average each probe touches a different page. If <span class="tts-math" data-tts="H">$H$</span> exceeds the number of TLB entries (64), then each probe also causes a TLB miss — the virtual-to-physical address lookup must be performed for each bucket. The combination of cache miss and TLB miss makes each probe cost hundreds of CPU cycles. For a join of tens of millions of tuples, this dominates completely.
+    </p>
+  </div>
+
+  <h2 data-cid="main-320" id="s6">6. Radix Clustering</h2>
+  <p data-cid="main-330">
+    The solution is to cluster both relations before joining, so that matching tuples are physically adjacent in memory and the join can be computed with purely sequential access. MonetDB introduces <em>radix-cluster</em>: a multi-pass algorithm that groups tuples by the low-order bits of their join key.
+  </p>
+  <p data-cid="main-340">
+    Radix-cluster on <span class="tts-math" data-tts="B">$B$</span> bits is done in <span class="tts-math" data-tts="P">$P$</span> passes, each processing <span class="tts-math" data-tts="B sub p">$B_p$</span> bits (with <span class="tts-math" data-tts="the sum from p equals 1 to P of B sub p equals B">$\sum_{p=1}^{P} B_p = B$</span>). After clustering, tuples are grouped into <span class="tts-math" data-tts="H equals 2 to the power B">$H = 2^B$</span> clusters of approximately <span class="tts-math" data-tts="C over H tuples each, where C is the relation cardinality">$C/H$</span> tuples each. Tuples with the same low-order <span class="tts-math" data-tts="B">$B$</span> bits in their join key are physically co-located.
+  </p>
+  <p data-cid="main-350">
+    The key insight behind using multiple passes: each pass writes tuples into <span class="tts-math" data-tts="H sub p equals 2 to the power B sub p">$H_p = 2^{B_p}$</span> output buckets simultaneously. If <span class="tts-math" data-tts="H sub p">$H_p$</span> exceeds the number of TLB entries, writing into that many simultaneous buckets causes TLB trashing. By using multiple passes with fewer bits per pass, the number of simultaneously active output buckets stays below the TLB capacity, avoiding TLB misses. The extra I/O of an additional pass is cheaper than the TLB thrashing it prevents.
+  </p>
+  <p data-cid="main-360">
+    The total execution cost for radix-cluster on <span class="tts-math" data-tts="P">$P$</span> passes, <span class="tts-math" data-tts="B">$B$</span> bits, and relation cardinality <span class="tts-math" data-tts="C">$C$</span> is modeled as:
+  </p>
+  <p data-cid="main-370">
+    <span class="tts-math" data-tts="T sub c of P, B, C equals P times the quantity C times w sub c plus M sub L1,c of B over P, C times l sub L2, plus M sub L2,c of B over P, C times l sub Mem, plus M sub TLB,c of B over P, C times l sub TLB">
+    $$T_c(P,B,C) = P \cdot \!\left(C w_c + M_{L1,c}\!\!\left(\tfrac{B}{P}, C\right) l_{L2} + M_{L2,c}\!\!\left(\tfrac{B}{P}, C\right) l_{Mem} + M_{TLB,c}\!\!\left(\tfrac{B}{P}, C\right) l_{TLB}\right)$$
+    </span>
+  </p>
+  <p data-cid="main-380">
+    where <span class="tts-math" data-tts="w sub c">$w_c$</span> is the per-tuple computation cost, <span class="tts-math" data-tts="l sub L2, l sub Mem, l sub TLB">$l_{L2}, l_{Mem}, l_{TLB}$</span> are latencies in CPU cycles for L2, main memory, and TLB misses, and the <span class="tts-math" data-tts="M">$M$</span> functions count the expected number of misses per relation pass.
+  </p>
+
+  <h2 data-cid="main-390" id="s7">7. The Join Algorithms</h2>
+  <p data-cid="main-400">
+    Two join algorithms build on radix-cluster:
+  </p>
+
+  <div class="box definition" data-cid="main-410">
+    <span class="box-label">Definition — Partitioned Hash-Join and Radix-Join</span>
+    <p data-cid="main-420">
+      <strong>Partitioned hash-join</strong>: Radix-cluster both relations on <span class="tts-math" data-tts="B">$B$</span> bits to create <span class="tts-math" data-tts="H equals 2 to the B">$H = 2^B$</span> cluster pairs. For each pair, build a hash table on the inner cluster and probe with the outer cluster. Because each cluster is small (approximately <span class="tts-math" data-tts="C over H">$C/H$</span> tuples), the hash table fits in cache, and probing is cache-friendly.
+      <br><br>
+      <strong>Radix-join</strong>: Radix-cluster both relations on <span class="tts-math" data-tts="B">$B$</span> bits. For each pair of matching clusters, use a simple nested-loop join — no hash table. This works because after radix-clustering, matching tuples are already sorted by their low-order bits, so a sequential scan of each cluster pair finds all matches. Cluster size must be small enough to fit in L1 cache (about 8 tuples per cluster for optimal performance).
+    </p>
+  </div>
+
+  <p data-cid="main-430">
+    The choice between them depends on relation cardinality. Radix-join needs more clustering bits (to get cluster sizes small enough for nested-loop), making the clustering phase more expensive. Partitioned hash-join needs fewer clustering bits (clusters just need to fit in L2 or TLB size), but the hash table overhead becomes expensive when clusters get very small. The paper identifies four regimes based on optimal cluster size: "phash L2" (clusters fit in L2), "phash TLB" (clusters fit within TLB pages), "phash L1" (clusters fit in L1), and "radix" (optimal for the radix-join).
+  </p>
+
+  <h2 data-cid="main-440" id="s8">8. Cost Models</h2>
+  <p data-cid="main-450">
+    A distinctive feature of this paper is its commitment to <em>quantitative} analytical models. Rather than just reporting benchmark numbers, the authors develop cost models that predict performance from hardware parameters: cache line sizes, cache capacities, TLB size, memory latency, and CPU speed. These models are validated against actual hardware event counter measurements using the MIPS R10000 performance counters available on the SGI Origin2000.
+  </p>
+  <p data-cid="main-460">
+    The radix-join cost model is:
+  </p>
+  <p data-cid="main-470">
+    <span class="tts-math" data-tts="T sub r of B, C equals C times the ceiling of C over H times w sub r, plus C times w sub r prime, plus M sub L1,r of B, C times l sub L2, plus M sub L2,r of B, C times l sub Mem, plus M sub TLB,r of B, C times l sub TLB">
+    $$T_r(B, C) = C\!\left\lceil\frac{C}{H}\right\rceil w_r + C w_r' + M_{L1,r}(B,C) l_{L2} + M_{L2,r}(B,C) l_{Mem} + M_{TLB,r}(B,C) l_{TLB}$$
+    </span>
+  </p>
+  <p data-cid="main-480">
+    The paper calibrated the model on the Origin2000 with <span class="tts-math" data-tts="l sub TLB equals 228 nanoseconds">$l_{TLB} = 228\,\text{ns}$</span>, <span class="tts-math" data-tts="l sub L2 equals 24 nanoseconds">$l_{L2} = 24\,\text{ns}$</span>, <span class="tts-math" data-tts="l sub Mem equals 412 nanoseconds">$l_{Mem} = 412\,\text{ns}$</span>, and <span class="tts-math" data-tts="w sub c equals 50 nanoseconds">$w_c = 50\,\text{ns}$</span>. The predictions match measured performance closely across all tested cardinalities and bit widths — the model lines in the paper's plots trace through the data points with remarkable accuracy.
+  </p>
+  <p data-cid="main-490">
+    This kind of hardware-grounded modeling was unusual for database systems papers in 1999, which more typically reported relative speedup ratios without explaining the mechanism. The MonetDB approach — measure the actual hardware events, build a model from those events, validate the model — became increasingly standard in systems research over the following decade.
+  </p>
+
+  <h2 data-cid="main-500" id="s9">9. Overall Results</h2>
+  <p data-cid="main-510">
+    The comparison of all join strategies is summarized in the paper's Figure 13, plotting elapsed time versus relation cardinality. Key findings:
+  </p>
+  <ul data-cid="main-520">
+    <li>Simple hash-join and sort-merge join, which perform random memory accesses, are slowest across all cardinalities.</li>
+    <li>All four radix-cluster-based strategies significantly outperform the random-access alternatives.</li>
+    <li>The phash-L2 strategy is optimal for small cardinalities (below about 250,000 tuples), where the hash table fits comfortably in L2.</li>
+    <li>Radix-join wins for large cardinalities (above about 1 million tuples), where the extra clustering cost is amortized and the nested-loop over tiny clusters becomes extremely cache-efficient.</li>
+    <li>The vertical (columnar) BAT storage format, combined with virtual OIDs and byte encoding, achieves roughly 8× reduction in memory footprint for typical OLAP columns compared to row-store layout.</li>
+  </ul>
+  <p data-cid="main-530">
+    The paper also cites an external validation: the Drill Down Benchmark, where a commercial row-store database running with a large buffer pool (nearly memory-resident) was measured to be 40× slower than MonetDB on the same workload. After incorporating the cache-optimization techniques described in the paper, MonetDB further improved its own result by almost another order of magnitude on that benchmark.
+  </p>
+
+  <h2 data-cid="main-540" id="s10">10. Legacy and Impact</h2>
+  <p data-cid="main-550">
+    This paper provided the theoretical and empirical foundation for a transformation that reshaped database systems over the following 20 years: the shift from row-oriented to column-oriented storage for analytical workloads.
+  </p>
+  <p data-cid="main-560">
+    The columnar storage idea did not originate here — it appeared in earlier work on vertical partitioning and the Decomposed Storage Model (DSM). What this paper added was the detailed, hardware-grounded justification: cache line analysis, TLB miss counting, and validated cost models that explained precisely why columnar storage wins for analytical queries and by how much. That quantitative grounding made the case impossible to dismiss.
+  </p>
+  <p data-cid="main-570">
+    The radix-join algorithm introduced here became a staple of main-memory database implementation. It is used in MonetDB, DuckDB, and many analytical engines. The broader principle — that join algorithms must be designed with the memory hierarchy in mind, not just I/O cost — is now considered foundational. Cache-conscious join algorithms appear in textbooks that would have laughed at the idea in 1990.
+  </p>
+  <p data-cid="main-580">
+    The paper also established a methodological precedent: using hardware performance counters to validate analytical cost models. This approach — instrument the hardware, not just the software — became standard in systems papers through the 2000s and 2010s and is now expected in top-tier systems research. The Boncz, Manegold, Kersten paper is one of the earliest examples of doing it rigorously for a database problem.
+  </p>
+
+  <h2 data-cid="main-590" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-600">Apers, P. M. G., van den Berg, C. A., Flokstra, J., Boncz, P. A., Kersten, M. L., and Wilschut, A. N. (1992). PRISMA/DB: A Parallel Main Memory Relational DBMS. <em>IEEE Transactions on Knowledge and Data Engineering</em>, 4(6):541–554, 1992.</li>
+    <li data-cid="main-610">Boncz, P., Quak, W., and Kersten, M. (1996). Monet and its Geographical Extensions. <em>Proceedings of EDBT</em>, Avignon, France, 1996.</li>
+    <li data-cid="main-620">Shatdahl, A., Kant, C., and Naughton, J. (1994). Cache Conscious Algorithms for Relational Query Processing. <em>Proceedings of VLDB</em>, Santiago, Chile, 1994.</li>
+    <li data-cid="main-630">Copeland, G. P., and Khoshafian, S. (1985). A Decomposition Storage Model. <em>Proceedings of ACM SIGMOD</em>, Austin, TX, 1985.</li>
+    <li data-cid="main-640">Manegold, S., Boncz, P., and Kersten, M. (1999). Optimizing Main-Memory Join on Modern Hardware. Technical Report INS-R9912, CWI, Amsterdam, 1999.</li>
+    <li data-cid="main-650">Mowry, T. C. (1994). Tolerating Latency Through Software-Controlled Data Prefetching. PhD thesis, Stanford University, 1994.</li>
+    <li data-cid="main-660">Nyberg, C., Barclay, T., Cvetanovic, Z., Gray, J., and Lomet, D. (1994). AlphaSort: A RISC Machine Sort. <em>Proceedings of ACM SIGMOD</em>, Minneapolis, MN, 1994.</li>
+    <li data-cid="main-670">Listgarten, S., and Neimat, M.-A. (1996). Modelling Costs for a MM-DBMS. <em>Proceedings of the Workshop on Real-Time Databases</em>, Newport Beach, CA, 1996.</li>
+    <li data-cid="main-680">Knuth, D. E. (1968). <em>The Art of Computer Programming, Volume 1.</em> Addison-Wesley, Reading, MA, 1968.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script>
+</body>
+</html>

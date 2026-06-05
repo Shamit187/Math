@@ -1,0 +1,6 @@
+{
+  "title": "BIRCH: An Efficient Data Clustering Method for Very Large Databases",
+  "authors": "Tian Zhang, Raghu Ramakrishnan, Miron Livny",
+  "venue": "SIGMOD 1996",
+  "description": "Presents BIRCH, a clustering algorithm that uses an in-memory CF tree to summarize large datasets incrementally, achieving linear I/O cost and superior quality and speed compared to prior methods."
+}

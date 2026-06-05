@@ -1,0 +1,6 @@
+{
+  "title": "WebTables: Exploring the Power of Tables on the Web",
+  "authors": "Michael J. Cafarella, Alon Halevy, Daisy Zhe Wang, Eugene Wu, Yang Zhang",
+  "venue": "PVLDB 2008",
+  "description": "Presents the WebTables system, which extracts 154 million high-quality relational tables from a web crawl of 14.1 billion HTML tables and introduces the Attribute Correlation Statistics Database (ACSDb) to enable schema auto-complete, attribute synonym finding, and join-graph traversal at web scale."
+}

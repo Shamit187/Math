@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Privacy Integrated Queries · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="privacy-integrated-queries" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/privacy-integrated-queries/">Privacy Integrated Queries</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. Introduction</a></li>
+    <li><a href="#s2">2. What Is Differential Privacy?</a></li>
+    <li><a href="#s3">3. The Laplace Mechanism</a></li>
+    <li><a href="#s4">4. Stable Transformations</a></li>
+    <li><a href="#s5">5. Composition Theorems</a></li>
+    <li><a href="#s6">6. PINQ Implementation</a></li>
+    <li><a href="#s7">7. Applications and Results</a></li>
+    <li><a href="#s8">8. Impact and Legacy</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">Scientific Paper · SIGMOD 2009</div>
+    <h1>Privacy Integrated Queries: An Extensible Platform for Privacy-Preserving Data Analysis</h1>
+    <div class="paper-meta">
+      <span class="authors">Frank McSherry</span>
+      <span class="venue">ACM SIGMOD 2009, Providence, Rhode Island</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    This paper reports on the design and implementation of PINQ — Privacy Integrated Queries — a
+    platform for privacy-preserving data analysis. PINQ gives analysts a SQL-like programming
+    interface to raw, unscrubbed data while providing unconditional guarantees of
+    <em>differential privacy</em> for any and all uses of the platform. Rather than relying on
+    the expertise or diligence of analysts to protect privacy, PINQ's structural guarantees make
+    differential privacy a property of the platform itself. The system is built on top of C#'s
+    LINQ language, comprises just 613 lines of code in its core, and supports a rich set of
+    transformations including Where, Select, GroupBy, and Join, as well as noisy aggregation
+    operators like NoisyCount, NoisySum, NoisyAvg, and NoisyMed.
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 1 -->
+  <h2 data-cid="main-020" id="s1">1. Introduction</h2>
+
+  <p data-cid="main-030">
+    Vast quantities of individual records are collected and analyzed every day — medical histories,
+    search logs, purchase records, location traces. These data carry genuine value for research,
+    policy, and business, yet they also carry genuine risk: careless disclosure can harm the
+    people whose records appear in the data and jeopardize future data-sharing arrangements.
+    How do you let analysts query sensitive data freely while ensuring that no individual's
+    privacy is at risk?
+  </p>
+
+  <p data-cid="main-040">
+    Prior work on privacy-preserving data analysis faced a recurring problem: each published
+    technique came with its own definition of "private", its own assumptions, and its own proofs.
+    An analyst wanting to combine two published algorithms had no guarantee that the combination
+    was still private. Expert evaluation was required at every step. This made privacy technology
+    accessible only to specialists, and meant that even specialists could — and did — get things wrong.
+  </p>
+
+  <p data-cid="main-050">
+    McSherry's answer is PINQ. The key insight is to build privacy into the platform rather than
+    into each individual algorithm. An analyst writes ordinary LINQ-style queries using PINQ's
+    protected data types. The platform automatically ensures that every query that executes
+    satisfies differential privacy — the strongest formal privacy guarantee in common use —
+    regardless of what the query does or what other queries have already been run. No privacy
+    expertise is required of the analyst, and no trust is placed in the analyst either.
+  </p>
+
+  <div class="box intuition" data-cid="main-060">
+    <span class="box-label">Core Intuition</span>
+    <p data-cid="main-070">
+      Think of PINQ as a trusted intermediary sitting between curious analysts and sensitive data.
+      Analysts submit programs; PINQ runs them, but only releases answers that have been carefully
+      blurred by random noise calibrated to the query's "reach". The blurring is small enough that
+      useful statistics emerge, but large enough that no individual record can be blamed for any
+      particular output value.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 2 -->
+  <h2 data-cid="main-080" id="s2">2. What Is Differential Privacy?</h2>
+
+  <p data-cid="main-090">
+    Differential privacy is a mathematical condition on randomized computations. Before we state
+    the definition, it helps to understand what it is trying to capture. Suppose Alice's medical
+    record is in a database. Alice is worried that some analysis of the database will reveal
+    something about her specifically — perhaps her diagnosis, her medications, or her test results.
+    Differential privacy promises Alice something strong: the statistical distribution of any
+    output of the computation is nearly the same whether her record is included or not.
+    Whatever the analyst learns, they could have learned almost as well without Alice's data.
+    Participation in the database causes Alice essentially no additional risk.
+  </p>
+
+  <div class="box definition" data-cid="main-100">
+    <span class="box-label">Definition — Epsilon-Differential Privacy</span>
+    <p data-cid="main-110">
+      A randomized computation <em>M</em> provides
+      <span class="tts-math" data-tts="epsilon">$\epsilon$</span>-differential
+      privacy if for any two data sets <em>A</em> and <em>B</em> that differ by at most one record
+      (i.e., <span class="tts-math" data-tts="the symmetric difference of A and B has size at most 1">$|A \oplus B| \leq 1$</span>),
+      and for any set of possible outputs
+      <span class="tts-math" data-tts="S">$S$</span>:
+    </p>
+    <p data-cid="main-120">
+      <span class="tts-math" data-tts="the probability that M of A is in S is at most e to the power epsilon, times the probability that M of B is in S">
+      $$\Pr[M(A) \in S] \;\leq\; \Pr[M(B) \in S] \times \exp(\epsilon \times |A \oplus B|)$$
+      </span>
+    </p>
+    <p data-cid="main-130">
+      When <span class="tts-math" data-tts="epsilon">$\epsilon$</span> is small (say 0.1 or 1.0),
+      <span class="tts-math" data-tts="e to the power epsilon">$\exp(\epsilon)$</span> is close to 1,
+      meaning the output distributions for <em>A</em> and <em>B</em> are nearly identical.
+      An adversary who sees the output cannot reliably distinguish whether Alice's record was present.
+    </p>
+  </div>
+
+  <p data-cid="main-140">
+    The <span class="tts-math" data-tts="symmetric difference of A and B">$A \oplus B$</span>
+    notation means the set of records in one but not both of <em>A</em> and <em>B</em>.
+    The definition is about <em>any</em> two datasets differing in one record —
+    not just random or benign pairs. This makes the guarantee unconditional: it holds regardless
+    of what other data the adversary has, regardless of their prior knowledge, and regardless of
+    how they might try to combine outputs from multiple queries.
+  </p>
+
+  <div class="box intuition" data-cid="main-150">
+    <span class="box-label">Why the Exponential?</span>
+    <p data-cid="main-160">
+      The bound uses a multiplicative factor
+      <span class="tts-math" data-tts="e to the power epsilon times the symmetric difference size">$\exp(\epsilon \times |A \oplus B|)$</span>
+      rather than an additive one. For small
+      <span class="tts-math" data-tts="epsilon">$\epsilon$</span>, this is approximately
+      <span class="tts-math" data-tts="1 plus epsilon">$1 + \epsilon$</span> —
+      a tiny multiplicative perturbation. Multiplicative bounds are much stronger than additive ones:
+      they ensure that no output event becomes dramatically more likely because of any single person's data.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 3 -->
+  <h2 data-cid="main-170" id="s3">3. The Laplace Mechanism</h2>
+
+  <p data-cid="main-180">
+    The simplest differentially private algorithm is noisy counting. Suppose you want to know
+    how many records in a dataset satisfy some predicate. The true count differs by at most 1
+    between any two neighbouring datasets (one record can change the count by exactly 1).
+    We say the count has <em>sensitivity</em> 1. To make releasing the count
+    <span class="tts-math" data-tts="epsilon">$\epsilon$</span>-private, we add random noise drawn
+    from the Laplace distribution.
+  </p>
+
+  <div class="box definition" data-cid="main-190">
+    <span class="box-label">Definition — The Laplace Distribution</span>
+    <p data-cid="main-200">
+      The Laplace distribution centered at 0 with scale parameter
+      <span class="tts-math" data-tts="b">$b$</span> has probability density
+      <span class="tts-math" data-tts="p of x proportional to e to the power negative absolute value of x">$p(x) \propto \exp(-|x|)$</span>,
+      scaled appropriately. Its tails decay exponentially, so large errors are rare.
+      To achieve <span class="tts-math" data-tts="epsilon">$\epsilon$</span>-differential privacy
+      when adding noise to a function of sensitivity 1, we sample noise from
+      <span class="tts-math" data-tts="Laplace with scale 1 over epsilon">$\mathrm{Laplace}(1/\epsilon)$</span>.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-210">
+    <span class="box-label">Theorem 1 — Noisy Count is Differentially Private</span>
+    <p data-cid="main-220">
+      The mechanism
+      <span class="tts-math" data-tts="M of X equals the size of X plus Laplace of 1 over epsilon">$M(X) = |X| + \mathrm{Laplace}(1/\epsilon)$</span>
+      provides <span class="tts-math" data-tts="epsilon">$\epsilon$</span>-differential privacy.
+    </p>
+    <p data-cid="main-230">
+      The proof is clean. For datasets <em>A</em> and <em>B</em> differing by one record, the
+      Laplace density at any output value <em>x</em> satisfies
+      <span class="tts-math" data-tts="the probability that M of A equals x is at most e to the power epsilon, times the probability that M of B equals x">
+        $$\Pr[M(A) = x] \;\leq\; \Pr[M(B) = x] \times \exp(\epsilon \times |A \oplus B|)$$
+      </span>
+      because shifting the center of the Laplace distribution by
+      <span class="tts-math" data-tts="delta">$\delta$</span> scales the density at any point by at most
+      <span class="tts-math" data-tts="e to the power epsilon times delta">$\exp(\epsilon \cdot \delta)$</span>.
+    </p>
+  </div>
+
+  <p data-cid="main-240">
+    In practice this means: if you want to count how many users searched for a particular term,
+    PINQ returns the true count plus a random number centered at zero. If
+    <span class="tts-math" data-tts="epsilon equals 0.1">$\epsilon = 0.1$</span>,
+    the noise has standard deviation roughly
+    <span class="tts-math" data-tts="10 times the square root of 2, approximately 14.1">$10\sqrt{2} \approx 14.1$</span>.
+    For a term with hundreds of thousands of users, this noise is statistically negligible.
+    For a rare term with only a handful of users, the answer is noisy — which is by design,
+    because reporting an exact count of 3 would reveal individual-level information.
+  </p>
+
+  <div class="box example" data-cid="main-250">
+    <span class="box-label">Example — PINQ NoisyCount in C#</span>
+    <p data-cid="main-260">
+      A minimal PINQ program to count distinct IP addresses that searched for a term:
+    </p>
+    <pre><code>var agent = new PINQAgentBudget(1.0);   // total epsilon budget
+var data  = new PINQueryable&lt;SearchRecord&gt;(rawdata, agent);
+
+var users = from record in data
+            where record.Query == argv[0]
+            group record by record.IPAddress;
+
+Console.WriteLine(argv[0] + ": " + users.NoisyCount(0.1));</code></pre>
+    <p data-cid="main-270">
+      The call <code>NoisyCount(0.1)</code> adds
+      <span class="tts-math" data-tts="Laplace of 1 over 0.1, that is Laplace of 10">$\mathrm{Laplace}(1/0.1) = \mathrm{Laplace}(10)$</span>
+      noise to the true count, consuming 0.1 units of the analyst's
+      <span class="tts-math" data-tts="epsilon">$\epsilon$</span>-budget.
+      The PINQAgent tracks usage automatically; if budget runs out, subsequent queries are rejected.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 4 -->
+  <h2 data-cid="main-280" id="s4">4. Stable Transformations</h2>
+
+  <p data-cid="main-290">
+    The deeper contribution of PINQ is not just noisy counting — it is a general framework
+    for composing privacy-preserving computations. The key concept is <em>transformation stability</em>.
+    Most analyses consist of a pipeline: first filter the data, then group it, then aggregate it.
+    If each transformation in the pipeline is "stable" — meaning a small change in the input
+    causes only a bounded small change in the output — then privacy guarantees propagate through
+    the whole pipeline.
+  </p>
+
+  <div class="box definition" data-cid="main-300">
+    <span class="box-label">Definition — c-Stable Transformation</span>
+    <p data-cid="main-310">
+      A transformation <em>T</em> is <em>c</em>-stable if for any two input datasets <em>A</em> and <em>B</em>:
+      <span class="tts-math" data-tts="the symmetric difference of T of A and T of B is at most c times the symmetric difference of A and B">
+      $$|T(A) \oplus T(B)| \;\leq\; c \times |A \oplus B|$$
+      </span>
+      The stability constant <em>c</em> measures how much one changed record can ripple through the transformation.
+    </p>
+  </div>
+
+  <p data-cid="main-320">
+    For example, <strong>Where</strong> (filtering by a predicate) has stability 1: removing one
+    record from the input removes at most one record from the output. <strong>Select</strong>
+    (applying a per-record function) is also 1-stable: one input record becomes exactly one
+    output record. <strong>GroupBy</strong> is 2-stable: adding or removing one record can change
+    the group it belongs to, either adding or deleting it from the group, giving a symmetric
+    difference of at most 2. A restricted form of <strong>Join</strong> — where each input dataset
+    is pre-grouped on the join key so each record participates in at most one join pair — is
+    also 2-stable.
+  </p>
+
+  <div class="box definition" data-cid="main-330">
+    <span class="box-label">Theorem 2 — Composition of Stable Transformation with DP Mechanism</span>
+    <p data-cid="main-340">
+      If <em>M</em> provides
+      <span class="tts-math" data-tts="epsilon">$\epsilon$</span>-differential privacy,
+      and <em>T</em> is a <em>c</em>-stable transformation, then the composed computation
+      <span class="tts-math" data-tts="M composed with T">$M \circ T$</span> provides
+      <span class="tts-math" data-tts="epsilon times c">$(\epsilon \cdot c)$</span>-differential
+      privacy.
+    </p>
+    <p data-cid="main-350">
+      The proof follows directly from the definitions: applying <em>T</em> can increase the
+      "distance" between datasets by a factor of at most <em>c</em>, and the differential privacy
+      condition scales accordingly.
+    </p>
+  </div>
+
+  <p data-cid="main-360">
+    This theorem is what makes PINQ genuinely extensible. An analyst can chain Where, Select,
+    GroupBy, and Join operations in any order. PINQ tracks the accumulated stability factor
+    automatically, and the final aggregation uses a noise parameter scaled by that factor.
+    The analyst never has to think about sensitivity or stability directly — the platform does it.
+  </p>
+
+  <div class="box warn" data-cid="main-370">
+    <span class="box-label">Caveat — Stability Compounds Multiplicatively</span>
+    <p data-cid="main-380">
+      Composing a 2-stable GroupBy with another 2-stable GroupBy gives a 4-stable pipeline,
+      requiring 4× as much noise. Long chains of transformations can erode the
+      <span class="tts-math" data-tts="epsilon">$\epsilon$</span>-budget quickly. This is not
+      a flaw — it reflects the real privacy cost of complex transformations — but analysts must
+      be mindful when designing pipelines.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 5 -->
+  <h2 data-cid="main-390" id="s5">5. Composition Theorems</h2>
+
+  <p data-cid="main-400">
+    A platform that supports only one query per dataset would be too restrictive for real analysis.
+    Analysts need to run many queries. PINQ's composition theorems govern how privacy costs
+    accumulate when multiple analyses touch the same data.
+  </p>
+
+  <div class="box definition" data-cid="main-410">
+    <span class="box-label">Theorem 3 — Sequential Composition</span>
+    <p data-cid="main-420">
+      If mechanisms
+      <span class="tts-math" data-tts="M sub 1 through M sub k">$M_1, \ldots, M_k$</span>
+      each provide
+      <span class="tts-math" data-tts="epsilon sub i">$\epsilon_i$</span>-differential privacy
+      (possibly adaptively, using results of prior queries), then their sequential composition
+      provides
+      <span class="tts-math" data-tts="the sum of all epsilon sub i">$\left(\sum_i \epsilon_i\right)$</span>-differential
+      privacy.
+    </p>
+    <p data-cid="main-430">
+      This is the key result for online, interactive analysis: each query's privacy cost adds up.
+      PINQ tracks the running sum against a budget the data provider has set. Once the budget
+      is exhausted, no further queries are permitted.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-440">
+    <span class="box-label">Theorem 4 — Parallel Composition</span>
+    <p data-cid="main-450">
+      If mechanisms
+      <span class="tts-math" data-tts="M sub i">$M_i$</span> each provide
+      <span class="tts-math" data-tts="epsilon">$\epsilon$</span>-differential privacy
+      and are applied to <em>disjoint</em> subsets
+      <span class="tts-math" data-tts="D sub i">$D_i$</span> of the data domain, then the
+      combined result provides only
+      <span class="tts-math" data-tts="epsilon">$\epsilon$</span>-differential privacy overall —
+      the costs do <em>not</em> add.
+    </p>
+    <p data-cid="main-460">
+      This is a powerful optimization. For example, computing noisy counts separately for each
+      of 50 US states costs only
+      <span class="tts-math" data-tts="epsilon">$\epsilon$</span> total — not
+      <span class="tts-math" data-tts="50 times epsilon">$50\epsilon$</span> — because each
+      person's record contributes to exactly one state's count. PINQ exposes this via the
+      Partition operator, which lets analysts declare disjoint sub-populations and analyse
+      them independently at no extra privacy cost.
+    </p>
+  </div>
+
+  <div class="box pause" data-cid="main-470">
+    <span class="box-label">Pause — Sequential vs. Parallel</span>
+    <p data-cid="main-480">
+      The difference is striking: running 50 queries on overlapping data costs
+      <span class="tts-math" data-tts="50 epsilon">$50\epsilon$</span>;
+      running 50 queries on non-overlapping partitions costs only
+      <span class="tts-math" data-tts="epsilon">$\epsilon$</span>.
+      Before moving on, make sure this distinction is clear. Parallel composition is the key
+      that makes GroupBy-Aggregate analyses practical: each record participates in exactly one
+      group, so all groups can be measured simultaneously at flat cost.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 6 -->
+  <h2 data-cid="main-490" id="s6">6. PINQ Implementation</h2>
+
+  <p data-cid="main-500">
+    PINQ is implemented as a thin layer in C# on top of LINQ — Microsoft's Language Integrated
+    Query framework, which allows SQL-like operations on any enumerable data sequence. The
+    entire privacy-enforcement core is just 613 lines of code. The design has two central types.
+  </p>
+
+  <p data-cid="main-510">
+    A <code>PINQueryable&lt;T&gt;</code> is a privacy-protected wrapper around a LINQ
+    <code>IQueryable&lt;T&gt;</code>. It supports all the same transformations (Where, Select,
+    GroupBy, Join) but each transformation returns a new <code>PINQueryable</code> annotated
+    with the appropriate stability constant. Aggregations — NoisyCount, NoisySum, NoisyAvg,
+    NoisyMed — invoke the Laplace mechanism with noise calibrated to the accumulated stability.
+  </p>
+
+  <p data-cid="main-520">
+    A <code>PINQAgent</code> is the data provider's policy object. Before any aggregation
+    executes, PINQ calls the agent's <code>Alert(epsilon)</code> method with the proposed
+    <span class="tts-math" data-tts="epsilon">$\epsilon$</span> charge. The agent decides whether
+    to accept or reject. A simple budget agent maintains a running total and rejects any query
+    that would push the total over the pre-set limit. Data providers can implement more
+    sophisticated agents — rate limiting, role-based access, or per-user budgets — all without
+    touching the analysis code.
+  </p>
+
+  <div class="box example" data-cid="main-530">
+    <span class="box-label">Example — Fixed Budget PINQAgent</span>
+    <pre><code>public class PINQAgentBudget : PINQAgent {
+    private double budget;
+    public override bool Alert(double epsilon) {
+        if (budget &lt; epsilon) return false;
+        budget -= epsilon;
+        return true;
+    }
+    public PINQAgentBudget(double b) { budget = b; }
+}</code></pre>
+    <p data-cid="main-540">
+      This 8-line class enforces a total
+      <span class="tts-math" data-tts="epsilon">$\epsilon$</span>-budget for all analyses
+      conducted against a dataset. Once the budget is spent, all further queries return an
+      access-denied error. The data provider sets the budget once and trusts the platform to
+      enforce it — no per-query reasoning required.
+    </p>
+  </div>
+
+  <p data-cid="main-550">
+    One important security concern is that LINQ predicates (the functions passed to Where,
+    Select, GroupBy, etc.) are general C# code. A malicious analyst could craft a predicate
+    that reads data through side channels — writing to files, throwing exceptions that reveal
+    record contents, or calling arbitrary external code. PINQ mitigates this by restricting
+    predicates through a <code>Purify</code> function that rewrites input methods to remove
+    dangerous operations, rejecting predicates it cannot sanitize.
+  </p>
+
+  <!-- ═══════════════════════════════════════════ SECTION 7 -->
+  <h2 data-cid="main-560" id="s7">7. Applications and Results</h2>
+
+  <p data-cid="main-570">
+    The paper demonstrates PINQ on a large web search log dataset, developing a progressive
+    three-stage analysis. Stage 1 counts distinct IP addresses that searched for a given query
+    term — a single NoisyCount call. Stage 2 uses the Partition operator to measure how many
+    times each IP address issued the query, at flat privacy cost. Stage 3 joins the search data
+    with a proprietary IP-to-location mapping to visualize geographic distributions of search
+    behaviour.
+  </p>
+
+  <p data-cid="main-580">
+    The results show that the Laplace noise is practically negligible for popular queries.
+    For "google" (356,743 distinct users), the noise adds standard deviation roughly
+    <span class="tts-math" data-tts="10 times the square root of 2, about 14">$10\sqrt{2} \approx 14$</span>,
+    an error of roughly 0.004%. For rare queries like "baidu" (300 distinct users), the noise
+    is proportionally larger but still small enough to reveal the order of magnitude. The
+    geographic visualization is particularly striking: a map showing where searches for "cricket"
+    originate — dense in South Asia, sparse in North America — is generated with full differential
+    privacy guarantees, despite involving a Join on proprietary geographic data.
+  </p>
+
+  <p data-cid="main-590">
+    Beyond the main example, the paper reports PINQ implementations of k-means clustering,
+    perceptron classification, contingency table measurement, and association rule mining —
+    demonstrating that the platform is broadly applicable to standard machine learning workloads,
+    not just simple counts.
+  </p>
+
+  <!-- ═══════════════════════════════════════════ SECTION 8 -->
+  <h2 data-cid="main-600" id="s8">8. Impact and Legacy</h2>
+
+  <p data-cid="main-610">
+    PINQ is a landmark paper for several reasons. First, it is the first system to offer
+    <em>unconditional</em> end-to-end differential privacy guarantees for arbitrary interactive
+    data analyses — not just for pre-specified classes of queries, not just with additional
+    assumptions about analyst behavior, but for anything the analyst writes. Second, it
+    demonstrates that such guarantees are compatible with a rich, practical programming model:
+    LINQ-style queries, multiple data sources, joins, groupby-aggregate, text processing,
+    and even external library calls.
+  </p>
+
+  <p data-cid="main-620">
+    Third, the stability-composition framework is genuinely reusable. Researchers building new
+    differentially private algorithms can express them as pipelines of PINQ-compatible
+    transformations, inheriting privacy proofs for free rather than re-deriving them from
+    first principles. This significantly lowers the barrier to building and deploying
+    privacy-preserving analytics.
+  </p>
+
+  <p data-cid="main-630">
+    The ideas in PINQ directly influenced Google's production differential privacy library,
+    Apple's local differential privacy deployment in iOS telemetry, and the U.S. Census Bureau's
+    use of differential privacy in the 2020 Census. The budget-tracking paradigm — measure
+    privacy cost in a common currency of epsilon, track it against a fixed budget, enforce
+    atomically at aggregation time — has become the standard architecture for production
+    differential privacy systems.
+  </p>
+
+  <div class="box warn" data-cid="main-640">
+    <span class="box-label">What PINQ Does Not Do</span>
+    <p data-cid="main-650">
+      PINQ only operates on data from a distance: analysts cannot retrieve raw records, only
+      aggregates. This restriction is significant but not unusual — most production analytics
+      systems operate similarly, with analysts writing queries that produce summaries rather
+      than examining individual rows. What PINQ adds is a formal, enforceable, unconditional
+      privacy guarantee on top of that existing restriction.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ REFERENCES -->
+  <h2 data-cid="main-660" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-670">C. Dwork, F. McSherry, K. Nissim, and A. Smith. Calibrating noise to sensitivity in private data analysis. In <em>TCC</em>, 2006, pp. 265–284.</li>
+    <li data-cid="main-680">C. Dwork. Differential privacy. In <em>ICALP</em>, 2006, pp. 1–12.</li>
+    <li data-cid="main-690">A. Blum, C. Dwork, F. McSherry, and K. Nissim. Practical privacy: The SuLQ framework. In <em>PODS</em>, 2005, pp. 128–138.</li>
+    <li data-cid="main-700">B. Barak, K. Chaudhuri, C. Dwork, S. Kale, F. McSherry, and K. Talwar. Privacy, accuracy, and consistency too: A holistic solution to contingency table release. In <em>PODS</em>, 2007, pp. 273–282.</li>
+    <li data-cid="main-710">J. Mirkovic. Privacy-safe network trace sharing via secure queries. In <em>NDA</em>, 2008.</li>
+    <li data-cid="main-720">P. Samarati and L. Sweeney. Generalizing data to provide anonymity when disclosing information. In <em>PODS</em>. ACM Press, 1998, p. 188.</li>
+    <li data-cid="main-730">S. R. Ganta, S. P. Kasiviswanathan, and A. Smith. Composition attacks and auxiliary information in data privacy. In <em>KDD</em>, 2008, pp. 265–273.</li>
+    <li data-cid="main-740">F. McSherry and K. Talwar. Mechanism design via differential privacy. In <em>FOCS</em>, 2007, pp. 94–103.</li>
+    <li data-cid="main-750">Y. Yu, M. Isard, D. Fetterly, M. Budiu, Ú. Erlingsson, P. K. Gunda, and J. Currey. DryadLINQ: A system for general-purpose distributed data-parallel computing using a high-level language. In <em>OSDI</em>, 2008.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script>
+</body>
+</html>

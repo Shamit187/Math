@@ -1,0 +1,6 @@
+{
+  "title": "The R*-tree: An Efficient and Robust Access Method for Points and Rectangles",
+  "authors": ["Norbert Beckmann", "Hans-Peter Kriegel", "Ralf Schneider", "Bernhard Seeger"],
+  "venue": "SIGMOD 1990",
+  "description": "Presents the R*-tree, which improves on all known R-tree variants by jointly minimizing area, margin, and overlap of bounding rectangles, plus a novel Forced Reinsert mechanism that dynamically reorganizes the tree on overflow."
+}

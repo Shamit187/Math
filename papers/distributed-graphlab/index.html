@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Distributed GraphLab: A Framework for Machine Learning and Data Mining in the Cloud · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="distributed-graphlab" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/distributed-graphlab/">Distributed GraphLab</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. Why MapReduce Is Not Enough for ML</a></li>
+    <li><a href="#s2">2. The GraphLab Abstraction</a></li>
+    <li><a href="#s3">3. The Data Graph and Update Functions</a></li>
+    <li><a href="#s4">4. Consistency Models</a></li>
+    <li><a href="#s5">5. Distributed Design: The Atom Graph</a></li>
+    <li><a href="#s6">6. Two Execution Engines</a></li>
+    <li><a href="#s7">7. Fault Tolerance via Snapshots</a></li>
+    <li><a href="#s8">8. Applications and Evaluation</a></li>
+    <li><a href="#s9">9. Lasting Impact</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">Scientific Paper · PVLDB 2012</div>
+    <h1>Distributed GraphLab: A Framework for Machine Learning and Data Mining in the Cloud</h1>
+    <div class="paper-meta">
+      <span class="authors">Yucheng Low, Joseph Gonzalez, Aapo Kyrola, Danny Bickson, Carlos Guestrin, Joseph M. Hellerstein</span>
+      <span class="venue">Proceedings of the VLDB Endowment, Vol. 5, No. 8 · 2012</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    High-level data parallel frameworks such as MapReduce simplify large-scale data processing,
+    but they do not naturally or efficiently support the graph-structured, asynchronous, iterative
+    computation patterns common in machine learning and data mining (MLDM) algorithms. GraphLab,
+    introduced in 2010 for the shared-memory setting, provides an abstraction that naturally
+    expresses these patterns while enforcing serializability. This paper extends GraphLab to the
+    substantially more challenging distributed setting. Key contributions include: a two-phase
+    atom-based distributed graph representation for efficient load balancing, a pipelined
+    distributed locking engine that hides network latency, a chromatic engine using graph coloring
+    for synchronous-like execution, asynchronous fault tolerance via a variant of the
+    Chandy-Lamport snapshot algorithm expressed using GraphLab primitives, and comprehensive
+    evaluation on Amazon EC2 showing 20–60x speedup over Hadoop and performance competitive
+    with hand-tuned MPI implementations on Netflix recommendation, video co-segmentation,
+    and named entity recognition tasks.
+  </div>
+
+  <h2 data-cid="main-020" id="s1">1. Why MapReduce Is Not Enough for ML</h2>
+
+  <p data-cid="main-030">
+    MapReduce is a magnificent tool for a particular class of problems: embarrassingly parallel
+    transformations and aggregations over large collections of independent records. Given a
+    billion web pages, you can count word frequencies, build inverted indexes, or extract named
+    entities — each page independently, results combined at the end. The framework handles
+    parallelism, fault tolerance, and data movement automatically.
+  </p>
+
+  <p data-cid="main-040">
+    Machine learning algorithms, however, have a fundamentally different structure. They are
+    not embarrassingly parallel. They are iterative: each step depends on the results of the
+    previous step. They have <em>graph-structured dependencies</em>: updating a parameter for
+    one vertex requires reading the current values of neighboring vertices. And they benefit
+    enormously from <em>asynchronous execution</em>: if we update parameters in parallel using
+    the most recent available values rather than waiting for a global synchronization barrier,
+    many algorithms converge much faster.
+  </p>
+
+  <div class="box example" data-cid="main-050">
+    <span class="box-label">Example — PageRank as a graph algorithm</span>
+    <p data-cid="main-060">
+      PageRank is defined recursively. The rank of a webpage
+      <span class="tts-math" data-tts="v">$v$</span>
+      is:
+      <span class="tts-math" data-tts="R of v equals alpha over n plus 1 minus alpha, times the sum over u linking to v of w sub u v times R of u">
+      $$\mathbf{R}(v) = \frac{\alpha}{n} + (1-\alpha) \sum_{u \text{ links to } v} w_{u,v} \times \mathbf{R}(u)$$
+      </span>
+      where
+      <span class="tts-math" data-tts="alpha">$\alpha$</span>
+      is the random-jump probability and
+      <span class="tts-math" data-tts="w sub u v">$w_{u,v}$</span>
+      is the link weight. Computing PageRank requires iterating this equation until convergence.
+      Each iteration requires reading the current ranks of all linking pages — which are being
+      simultaneously updated by other iterations. In a synchronous (Pregel-style) system, all
+      vertices update at the same time using values from the previous step. In an asynchronous
+      (GraphLab-style) system, each vertex uses the most recent available values. Experiments
+      show asynchronous PageRank converges in roughly half the wall-clock time.
+    </p>
+  </div>
+
+  <p data-cid="main-070">
+    The paper lists four properties of MLDM algorithms that existing distributed frameworks
+    fail to support simultaneously: (1) <em>graph-structured computation</em> with sparse
+    dependencies; (2) <em>asynchronous iterative computation</em> with parameter updates using
+    the most recent values; (3) <em>dynamic computation</em> where some parameters converge
+    quickly and computation should focus on the remainder; (4) <em>serializability</em>, the
+    guarantee that the parallel execution is equivalent to some sequential execution, which
+    many algorithms require for correctness (e.g., Gibbs sampling) or improved convergence
+    (e.g., ALS for collaborative filtering).
+  </p>
+
+  <h2 data-cid="main-080" id="s2">2. The GraphLab Abstraction</h2>
+
+  <p data-cid="main-090">
+    GraphLab addresses all four properties through a clean three-part abstraction: the
+    <em>data graph</em>, the <em>update function</em>, and the <em>sync operation</em>.
+    These correspond roughly to data, computation, and global aggregation.
+  </p>
+
+  <div class="box definition" data-cid="main-100">
+    <span class="box-label">The GraphLab Abstraction</span>
+    <p data-cid="main-110">
+      <strong>Data Graph:</strong>
+      <span class="tts-math" data-tts="G equals the triple V comma E comma D">$G = (V, E, D)$</span>
+      — a directed graph where each vertex
+      <span class="tts-math" data-tts="v in V">$v \in V$</span>
+      stores user data
+      <span class="tts-math" data-tts="D sub v">$D_v$</span>
+      and each edge
+      <span class="tts-math" data-tts="u v in E">$uv \in E$</span>
+      stores data
+      <span class="tts-math" data-tts="D sub u to v">$D_{u \to v}$</span>.
+      The graph structure is static (it does not change during execution), but vertex and edge
+      data are mutable.
+      <br/>
+      <strong>Update Function:</strong>
+      <span class="tts-math" data-tts="f of v comma S sub v mapping to S sub v prime comma script T">$f(v, \mathcal{S}_v) \to (\mathcal{S}_v', \mathcal{T})$</span>
+      — a user-defined stateless procedure that reads all data in the <em>scope</em>
+      <span class="tts-math" data-tts="S sub v">$\mathcal{S}_v$</span>
+      of vertex
+      <span class="tts-math" data-tts="v">$v$</span>
+      (vertex data plus adjacent edge and vertex data), writes the updated scope
+      <span class="tts-math" data-tts="S sub v prime">$\mathcal{S}_v'$</span>,
+      and returns a set
+      <span class="tts-math" data-tts="script T">$\mathcal{T}$</span>
+      of vertices to schedule for future updates.
+      <br/>
+      <strong>Sync Operation:</strong> Maintains global aggregates (e.g., convergence estimators)
+      by applying a commutative, associative Map-Reduce across all vertices' scopes.
+    </p>
+  </div>
+
+  <p data-cid="main-120">
+    The execution model is a simple loop: while there are scheduled vertices, pick one, apply
+    its update function, add the returned vertices to the schedule. This single-loop semantics
+    makes the abstraction easy to reason about sequentially, even though the actual execution
+    may be highly parallel.
+  </p>
+
+  <h2 data-cid="main-130" id="s3">3. The Data Graph and Update Functions</h2>
+
+  <p data-cid="main-140">
+    The <em>scope</em>
+    <span class="tts-math" data-tts="S sub v">$\mathcal{S}_v$</span>
+    of vertex
+    <span class="tts-math" data-tts="v">$v$</span>
+    is the set of data that an update function can read and write: the data on
+    <span class="tts-math" data-tts="v">$v$</span>
+    itself, the data on all edges incident to
+    <span class="tts-math" data-tts="v">$v$</span>,
+    and the data on all neighboring vertices. This is deliberately local: an update function
+    cannot directly access the data of a vertex two hops away, or global aggregates (those
+    require the sync operation). This locality is the key property that makes the framework
+    amenable to distributed execution.
+  </p>
+
+  <p data-cid="main-150">
+    An update function that returns neighboring vertices in
+    <span class="tts-math" data-tts="script T">$\mathcal{T}$</span>
+    is scheduling those neighbors for future updates. This expresses <em>adaptive computation</em>:
+    a vertex that changed significantly can trigger its neighbors to recompute, while a vertex
+    that has converged need not schedule anyone. This is fundamentally more expressive than
+    Pregel's BSP model, where all vertices communicate via messages in synchronized super-steps.
+    In Pregel, you cannot decide to skip a vertex or prioritize one over another based on the
+    current state of the computation. In GraphLab, you can.
+  </p>
+
+  <div class="box intuition" data-cid="main-160">
+    <span class="box-label">Push vs pull for data access</span>
+    <p data-cid="main-170">
+      Pregel is a <em>push</em> model for data: a vertex sends messages to its neighbors, and
+      those neighbors receive the messages and update themselves. GraphLab is a <em>pull</em>
+      model: a vertex directly reads the data of its neighbors when it executes. The difference
+      matters for dynamic computation. In Pregel, if vertex
+      <span class="tts-math" data-tts="u">$u$</span>
+      has changed, it must explicitly send a message to all its neighbors to trigger their
+      update. In GraphLab, if vertex
+      <span class="tts-math" data-tts="v">$v$</span>
+      is scheduled for an update, it simply reads the current values of its neighbors — whether
+      or not they explicitly sent messages. This makes it natural for an update function to read
+      the latest neighbor values and decide whether to reschedule based on what it finds.
+    </p>
+  </div>
+
+  <h2 data-cid="main-180" id="s4">4. Consistency Models</h2>
+
+  <p data-cid="main-190">
+    The power of the GraphLab abstraction comes from its consistency guarantees. The runtime
+    guarantees a <em>serializable execution</em>: the parallel execution produces the same
+    result as some sequential execution of update functions. This is achieved through three
+    <em>consistency models</em> that trade off consistency strength against parallelism.
+  </p>
+
+  <div class="box definition" data-cid="main-200">
+    <span class="box-label">The Three Consistency Models</span>
+    <p data-cid="main-210">
+      <strong>Full Consistency:</strong> An executing update function has exclusive read-write
+      access to its entire scope (vertex + all adjacent edges + all adjacent vertices). No two
+      update functions can run simultaneously unless their scopes are disjoint. This provides
+      the strongest guarantee but limits parallelism: concurrently executing updates must be at
+      least two hops apart in the graph.
+      <br/>
+      <strong>Edge Consistency:</strong> An executing update function has exclusive read-write
+      access to its central vertex and all incident edges, but only read access to adjacent
+      vertices. Two update functions can overlap on adjacent vertices (both reading a vertex),
+      but neither can be writing it. This is sufficient for many ML algorithms (e.g., PageRank
+      only writes to the central vertex's data) and allows much more parallelism.
+      <br/>
+      <strong>Vertex Consistency:</strong> An executing update function has exclusive write
+      access only to the central vertex's data. Adjacent vertex and edge data can be read and
+      written by other concurrent updates. Maximum parallelism but weakest consistency.
+    </p>
+  </div>
+
+  <p data-cid="main-220">
+    Most ML algorithms in practice require only edge consistency. The ALS (Alternating Least
+    Squares) collaborative filtering algorithm requires full consistency for correctness. Gibbs
+    sampling requires full consistency for statistical correctness. The framework lets the
+    algorithm designer choose the appropriate level.
+  </p>
+
+  <h2 data-cid="main-230" id="s5">5. Distributed Design: The Atom Graph</h2>
+
+  <p data-cid="main-240">
+    Extending the shared-memory GraphLab to a distributed cluster requires solving graph
+    partitioning at scale. The naive approach — partition the graph across machines, then
+    acquire locks for cross-machine scope access — suffers from high network latency on every
+    lock acquisition.
+  </p>
+
+  <p data-cid="main-250">
+    The distributed GraphLab uses a two-phase partitioning scheme. In the first phase, the
+    graph is partitioned into many small pieces called <em>atoms</em> — far more atoms than
+    machines (typically
+    <span class="tts-math" data-tts="k">$k$</span>
+    is much larger than the number of machines). Each atom is stored as a compressed journal
+    file (a log of graph construction commands like
+    <code>AddVertex</code> and <code>AddEdge</code>)
+    on a distributed file system such as HDFS or Amazon S3. Each atom also records its
+    <em>ghosts</em>: vertices adjacent to the partition boundary that actually belong to other
+    atoms. In the second phase, a fast balanced partition of the <em>atom meta-graph</em>
+    (a graph where atoms are nodes and edges represent cross-atom adjacency) is computed and
+    assigned to machines. Each machine loads only the atoms assigned to it.
+  </p>
+
+  <p data-cid="main-260">
+    This two-phase approach allows the expensive graph partitioning to be done once and reused
+    across different cluster sizes. To add more machines, only the atom-to-machine assignment
+    changes; the atom files stay the same. Ghosts (shadow copies of boundary vertices) act as
+    caches: when a machine needs to access a neighboring vertex on another machine, it first
+    checks its local ghost cache, avoiding a network round trip unless the value has changed.
+  </p>
+
+  <h2 data-cid="main-270" id="s6">6. Two Execution Engines</h2>
+
+  <p data-cid="main-280">
+    Distributed GraphLab implements two execution engines to support different application
+    profiles.
+  </p>
+
+  <p data-cid="main-290">
+    <strong>Chromatic Engine.</strong> This engine uses graph coloring: vertices are assigned
+    colors such that no two adjacent vertices share the same color. The engine executes all
+    vertices of one color simultaneously, then moves to the next color. Because no two
+    simultaneously executing vertices are adjacent, there are no scope conflicts — no locking
+    is needed within a color-step. This gives synchronous-like execution semantics (all color
+    steps complete before the next begins) with good cache locality and low communication
+    overhead. It is optimal for algorithms on bipartite graphs (two-colorable) such as
+    collaborative filtering (users vs. movies) and topic models.
+  </p>
+
+  <p data-cid="main-300">
+    <strong>Locking Engine.</strong> This engine supports fully asynchronous, dynamic computation
+    with vertex prioritization. It acquires distributed locks for each update function's scope
+    using a non-blocking, callback-based protocol. To hide network latency, it uses
+    <em>pipelined locking</em>: each machine maintains a pipeline of vertices for which locks
+    have been requested. Lock acquisition requests are chained in a continuation-passing style
+    across machines. The machine does not wait idle for a lock to arrive; instead, it processes
+    other pipeline entries while waiting, and executes the update function as soon as all required
+    locks have been granted. A pipeline length of 1,000 (processing 1,000 lock requests in
+    flight simultaneously) achieves a factor-of-three reduction in runtime compared to a naive
+    sequential locking implementation.
+  </p>
+
+  <div class="box pause" data-cid="main-310">
+    <span class="box-label">Pause: why pipelining works here</span>
+    <p data-cid="main-320">
+      The key insight is that lock acquisition latency (a network round trip) and lock-holding
+      computation (running the update function) can be overlapped for <em>different</em> vertices.
+      While vertex A's lock request is in flight over the network, the machine can be executing
+      the update for vertex B (whose locks have already arrived). This is the same pipelining
+      principle used in CPU instruction pipelines and in high-throughput network protocols.
+      The "pipeline" is simply a queue of in-progress lock requests at different stages of
+      completion. The longer the pipeline, the more latency is hidden, but with diminishing
+      returns as the pipeline becomes long enough to saturate the local compute capacity.
+    </p>
+  </div>
+
+  <h2 data-cid="main-330" id="s7">7. Fault Tolerance via Snapshots</h2>
+
+  <p data-cid="main-340">
+    A 64-machine EC2 cluster can experience machine failures during a multi-hour computation.
+    Distributed GraphLab implements fault tolerance via distributed <em>snapshots</em> — checkpoints
+    of the complete graph state from which computation can restart.
+  </p>
+
+  <p data-cid="main-350">
+    Two snapshot strategies are provided. A <em>synchronous snapshot</em> suspends all computation,
+    flushes all communication channels, saves all modified data to a distributed file system,
+    and resumes. This is correct but expensive: the pause can last tens of seconds on a large
+    cluster.
+  </p>
+
+  <p data-cid="main-360">
+    The more elegant solution is an <em>asynchronous snapshot</em>, implemented as a variant of
+    the Chandy-Lamport algorithm expressed using GraphLab's own update function mechanism. The
+    snapshot algorithm is itself a GraphLab update function (Algorithm 5 in the paper): when
+    a vertex is visited for snapshot, it saves its data, marks itself as snapshotted, and
+    schedules its neighbors for snapshotting if they have not been visited yet. By prioritizing
+    snapshot updates over algorithm updates, the snapshot propagates through the graph while
+    computation continues. The resulting snapshot is consistent (it reflects some valid
+    sequential execution state) without ever stopping the computation. In multi-tenant
+    cloud experiments where a machine was artificially delayed by 15 seconds, the asynchronous
+    snapshot incurred only a 3-second runtime penalty versus a 16-second penalty for the
+    synchronous snapshot.
+  </p>
+
+  <h2 data-cid="main-370" id="s8">8. Applications and Evaluation</h2>
+
+  <p data-cid="main-380">
+    The paper evaluates Distributed GraphLab on three real MLDM applications.
+  </p>
+
+  <p data-cid="main-390">
+    <strong>Netflix Movie Recommendation (ALS).</strong> Collaborative filtering via ALS
+    on a bipartite graph of
+    <span class="tts-math" data-tts="0.5 million users and 99 million rating edges">$0.5M$</span>
+    users and
+    <span class="tts-math" data-tts="99 million edges">$99M$</span>
+    rating edges. The ALS algorithm factorizes the sparse user-movie matrix
+    <span class="tts-math" data-tts="R">$R$</span>
+    as the product of two low-rank matrices:
+    <span class="tts-math" data-tts="R approximately equals U times V transpose">
+    $$R \approx U \times V^T$$
+    </span>
+    where
+    <span class="tts-math" data-tts="U">$U$</span>
+    and
+    <span class="tts-math" data-tts="V">$V$</span>
+    are rank-
+    <span class="tts-math" data-tts="d">$d$</span>
+    matrices. Each vertex update solves a local least-squares problem using its neighbors'
+    current values. GraphLab outperforms Hadoop by 40–60x and is competitive with a
+    carefully hand-tuned MPI implementation. The chromatic engine is used (the bipartite
+    graph is two-colorable, so no locking conflicts arise).
+  </p>
+
+  <p data-cid="main-400">
+    <strong>Video Co-Segmentation (CoSeg).</strong> A graph of 10.5 million super-pixels
+    extracted from 1,740 high-resolution video frames, with edges connecting spatially and
+    temporally adjacent super-pixels. The algorithm uses Loopy Belief Propagation with a
+    Gaussian Mixture Model to label each super-pixel. GraphLab's locking engine with dynamic
+    scheduling is the only distributed abstraction supporting the required dynamic asynchronous
+    computation. GraphLab achieves excellent weak scaling (the runtime increases by only 11%
+    as the problem size grows 16x from 16 to 64 machines).
+  </p>
+
+  <p data-cid="main-410">
+    <strong>Named Entity Recognition (NER).</strong> A bipartite graph of 2 million noun-phrase
+    tokens and 200 million edges to their contexts in a large web crawl. The CoEM algorithm
+    alternates between estimating entity types given contexts and context types given entities.
+    GraphLab achieves a 20–30x speedup over Hadoop. An optimized MPI implementation outperforms
+    GraphLab here due to the extremely high communication-to-computation ratio, which stresses
+    GraphLab's current communication layer — an area the authors identify for future improvement.
+  </p>
+
+  <p data-cid="main-420">
+    On the EC2 cost dimension, GraphLab is approximately two orders of magnitude more cost-effective
+    than Hadoop for the Netflix application — achieving the same result quality in far less time
+    and therefore billing far fewer instance-hours.
+  </p>
+
+  <h2 data-cid="main-430" id="s9">9. Lasting Impact</h2>
+
+  <p data-cid="main-440">
+    Distributed GraphLab was one of the founding contributions to what became the
+    <em>graph-parallel</em> paradigm for large-scale machine learning. The abstraction of
+    update functions operating on local scopes, combined with principled consistency models
+    and dynamic scheduling, directly influenced systems that followed.
+  </p>
+
+  <p data-cid="main-450">
+    GraphLab itself evolved into <em>GraphX</em> in Apache Spark (a graph processing layer built
+    on Spark's RDD abstraction), and into <em>PowerGraph</em> (a successor paper by the same
+    group addressing power-law graphs). The GraphLab company was spun off as Turi (later
+    acquired by Apple), which developed into a suite of machine learning tools. The core ideas
+    — data graph, update functions, consistency models — appeared in Google's TensorFlow
+    computation graphs, in PyTorch Geometric and Deep Graph Library for graph neural networks,
+    and in distributed training frameworks generally.
+  </p>
+
+  <p data-cid="main-460">
+    The paper's demonstration that a clean graph abstraction could match hand-tuned MPI performance
+    on real machine learning tasks was a landmark result. It showed that the right level of
+    abstraction for MLDM was not the flat key-value pairs of MapReduce but the graph-structured,
+    scope-local computation model of GraphLab — a lesson that shaped an entire generation of
+    ML infrastructure.
+  </p>
+
+  <h2 data-cid="main-470" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-480">Y. Low, J. Gonzalez, A. Kyrola, D. Bickson, C. Guestrin, and J. M. Hellerstein. GraphLab: A new parallel framework for machine learning. In <em>UAI</em>, pages 340–349, 2010.</li>
+    <li data-cid="main-490">G. Malewicz, M. H. Austern, A. J. C. Bik, J. Dehnert, I. Horn, N. Leiser, and G. Czajkowski. Pregel: a system for large-scale graph processing. In <em>SIGMOD</em>, pages 135–146, 2010.</li>
+    <li data-cid="main-500">J. Dean and S. Ghemawat. MapReduce: simplified data processing on large clusters. In <em>OSDI</em>, 2004.</li>
+    <li data-cid="main-510">K. M. Chandy and L. Lamport. Distributed snapshots: determining global states of distributed systems. <em>ACM Trans. Comput. Syst.</em>, 3(1):63–75, 1985.</li>
+    <li data-cid="main-520">G. Karypis and V. Kumar. Multilevel k-way partitioning scheme for irregular graphs. <em>J. Parallel Distrib. Comput.</em>, 48(1):96–129, 1998.</li>
+    <li data-cid="main-530">L. Page, S. Brin, R. Motwani, and T. Winograd. The PageRank citation ranking: Bringing order to the web. Technical Report 1999-66, Stanford InfoLab, 1999.</li>
+    <li data-cid="main-540">G. Elidan, I. McGraw, and D. Koller. Informed scheduling for asynchronous belief propagation. In <em>UAI</em>, pages 165–173, 2006.</li>
+    <li data-cid="main-550">Y. Zhou, D. Wilkinson, R. Schreiber, and R. Pan. Large-scale parallel collaborative filtering for the Netflix prize. In <em>AAIM</em>, pages 337–348, 2008.</li>
+    <li data-cid="main-560">A. Asuncion, P. Smyth, and M. Welling. Asynchronous distributed learning of topic models. In <em>NIPS</em>, pages 81–88, 2008.</li>
+    <li data-cid="main-570">A. J. Smola and S. Narayanamurthy. An architecture for parallel topic models. <em>PVLDB</em>, 3(1):703–710, 2010.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script>
+</body>
+</html>

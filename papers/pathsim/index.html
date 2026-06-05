@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PathSim: Meta Path-Based Top-K Similarity Search in Heterogeneous Information Networks · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="pathsim" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/pathsim/">PathSim</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. Heterogeneous Information Networks</a></li>
+    <li><a href="#s2">2. What Is a Meta Path?</a></li>
+    <li><a href="#s3">3. Why Existing Similarity Measures Fail</a></li>
+    <li><a href="#s4">4. PathSim: The Similarity Formula</a></li>
+    <li><a href="#s5">5. The Commuting Matrix</a></li>
+    <li><a href="#s6">6. Efficient Top-K Search</a></li>
+    <li><a href="#s7">7. Experiments</a></li>
+    <li><a href="#s8">8. Lasting Impact</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">Scientific Paper · PVLDB 2011</div>
+    <h1>PathSim: Meta Path-Based Top-K Similarity Search in Heterogeneous Information Networks</h1>
+    <div class="paper-meta">
+      <span class="authors">Yizhou Sun, Jiawei Han, Xifeng Yan, Philip S. Yu, Tianyi Wu</span>
+      <span class="venue">Proceedings of the VLDB Endowment, Vol. 4, No. 11 · 2011</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    Similarity search is a primitive operation in database and web search engines. With the advent
+    of large-scale <em>heterogeneous information networks</em> — networks containing multiple types
+    of objects and multiple types of links, such as bibliographic networks and social media networks —
+    existing similarity measures designed for homogeneous networks cannot be directly applied.
+    Two objects connected by many paths in a heterogeneous network may be similar in very different
+    ways depending on the types of links followed. This paper introduces the concept of
+    <em>meta path-based similarity</em>, where a meta path specifies a sequence of relation types
+    at the schema level. Under this framework, the authors define a novel similarity measure
+    called <em>PathSim</em> that finds peer objects sharing not only strong connectivity but also
+    comparable visibility (balance of exposure) in the network. PathSim is more meaningful than
+    random-walk-based measures in many peer-finding scenarios. To support efficient top-k query
+    processing, the paper proposes algorithms that partially materialize short meta paths and
+    concatenate them online, with a co-clustering-based pruning strategy to avoid exhaustive
+    pairwise comparisons.
+  </div>
+
+  <h2 data-cid="main-020" id="s1">1. Heterogeneous Information Networks</h2>
+
+  <p data-cid="main-030">
+    Most classical graph algorithms and similarity measures assume a <em>homogeneous network</em>:
+    all nodes are the same type of thing (web pages, people, products) and all edges represent
+    the same kind of relationship (links, friendships, purchases). Real-world data networks are
+    rarely like this. A bibliographic database such as DBLP contains four types of objects —
+    papers, authors, venues (conferences and journals), and terms — and multiple types of links
+    connecting them: an author <em>writes</em> a paper, a paper is <em>published-in</em> a venue,
+    a paper <em>uses</em> a term, a paper <em>cites</em> another paper.
+  </p>
+
+  <div class="box definition" data-cid="main-040">
+    <span class="box-label">Definition — Information Network and Network Schema</span>
+    <p data-cid="main-050">
+      An <em>information network</em> is a directed graph
+      <span class="tts-math" data-tts="G equals the pair V comma E">$G = (V, E)$</span>
+      with an object type mapping
+      <span class="tts-math" data-tts="phi mapping V to script A">$\phi: V \to \mathcal{A}$</span>
+      and a link type mapping
+      <span class="tts-math" data-tts="psi mapping E to script R">$\psi: E \to \mathcal{R}$</span>,
+      where each vertex belongs to exactly one object type and each edge belongs to exactly one
+      relation type. When
+      <span class="tts-math" data-tts="the size of script A is greater than 1, or the size of script R is greater than 1">$|\mathcal{A}| > 1$ or $|\mathcal{R}| > 1$</span>,
+      the network is <em>heterogeneous</em>. The <em>network schema</em>
+      <span class="tts-math" data-tts="T sub G equals the pair script A comma script R">$T_G = (\mathcal{A}, \mathcal{R})$</span>
+      is a directed graph over object types with edges labeled by relation types.
+    </p>
+  </div>
+
+  <p data-cid="main-060">
+    The challenge that heterogeneity introduces for similarity search is semantic ambiguity.
+    Two authors in DBLP can be connected by many different paths. The path
+    <em>author — paper — author</em> (abbreviated APA) counts co-authorship. The path
+    <em>author — paper — venue — paper — author</em> (APVPA) connects authors who publish
+    in the same venues. The path <em>author — paper — term — paper — author</em> (APTPA)
+    connects authors whose papers use the same vocabulary. Each path tells a different story
+    about what "similar" means. Blindly mixing all paths — as a random walk on the full
+    heterogeneous graph would do — conflates these distinct notions and gives results
+    that are hard to interpret.
+  </p>
+
+  <h2 data-cid="main-070" id="s2">2. What Is a Meta Path?</h2>
+
+  <p data-cid="main-080">
+    A <em>meta path</em> is the paper's key organizing concept. It lifts the idea of a path
+    from the object level (specific nodes) to the schema level (types of nodes and edges).
+  </p>
+
+  <div class="box definition" data-cid="main-090">
+    <span class="box-label">Definition — Meta Path</span>
+    <p data-cid="main-100">
+      A meta path
+      <span class="tts-math" data-tts="script P">$\mathcal{P}$</span>
+      is a path defined on the network schema
+      <span class="tts-math" data-tts="T sub G equals the pair script A comma script R">$T_G = (\mathcal{A}, \mathcal{R})$</span>
+      of the form
+      <span class="tts-math" data-tts="A sub 1, via R sub 1, to A sub 2, via R sub 2, continuing, via R sub l, to A sub l plus 1">
+      $$A_1 \xrightarrow{R_1} A_2 \xrightarrow{R_2} \cdots \xrightarrow{R_l} A_{l+1}$$
+      </span>
+      which defines a composite relation
+      <span class="tts-math" data-tts="R equals R sub 1 composed with R sub 2 composed with dot dot dot composed with R sub l">$R = R_1 \circ R_2 \circ \cdots \circ R_l$</span>
+      between types
+      <span class="tts-math" data-tts="A sub 1">$A_1$</span>
+      and
+      <span class="tts-math" data-tts="A sub l plus 1">$A_{l+1}$</span>.
+      A <em>path instance</em>
+      <span class="tts-math" data-tts="p">$p$</span>
+      is an actual sequence of nodes in
+      <span class="tts-math" data-tts="G">$G$</span>
+      that follows the meta path schema.
+    </p>
+  </div>
+
+  <p data-cid="main-110">
+    A meta path is <em>symmetric</em> if the relation it defines is symmetric, i.e., if
+    <span class="tts-math" data-tts="A sub 1">$A_1$</span> equals
+    <span class="tts-math" data-tts="A sub l plus 1">$A_{l+1}$</span>
+    and the sequence of relation types reads the same forward and backward. The meta path
+    <span class="tts-math" data-tts="A P A">$APA$</span>
+    (author–paper–author) is symmetric. PathSim is defined only for symmetric meta paths,
+    because similarity between peers of the same type should be symmetric.
+  </p>
+
+  <div class="box example" data-cid="main-120">
+    <span class="box-label">Example — Meta paths in DBLP</span>
+    <p data-cid="main-130">
+      In the DBLP bibliographic network with authors (A), papers (P), venues (C), and terms (T):
+      <ul>
+        <li><em>APA</em>: two authors are similar if they have co-authored papers. This is a length-2 symmetric meta path.</li>
+        <li><em>APCPA</em>: two authors are similar if they have published in the same venues (conferences/journals). They need not have co-authored anything.</li>
+        <li><em>APTPA</em>: two authors are similar if their papers use similar vocabulary.</li>
+        <li><em>APAPA</em>: two authors are similar if they have co-authors in common.</li>
+      </ul>
+      Each meta path defines a different similarity <em>semantics</em>. A user selects the meta path
+      that matches their notion of "similar" for a given application.
+    </p>
+  </div>
+
+  <h2 data-cid="main-140" id="s3">3. Why Existing Similarity Measures Fail</h2>
+
+  <p data-cid="main-150">
+    Given a meta path, the naive way to measure similarity between two objects
+    <span class="tts-math" data-tts="x sub i">$x_i$</span>
+    and
+    <span class="tts-math" data-tts="x sub j">$x_j$</span>
+    is to count the number of path instances between them:
+    <span class="tts-math" data-tts="s of x sub i comma x sub j equals the number of path instances p between x sub i and x sub j following script P">
+    $s(x_i, x_j) = |\{p : p \in \mathcal{P}\}|$</span>.
+    This is the <em>path count</em>. It has an obvious flaw: prolific, high-visibility authors will
+    have large path counts with almost everyone. An author who has published 500 papers will have
+    co-authors connecting to thousands of others. Path count is dominated by degree, not by
+    genuine semantic similarity.
+  </p>
+
+  <p data-cid="main-160">
+    <em>Random walk</em> and <em>pairwise random walk</em> (PRW) measures normalize differently
+    but still tend to favor either highly visible objects (random walk) or concentrated objects
+    with a small number of very strong connections (pairwise random walk). SimRank, which
+    measures structural context similarity, is biased toward concentrated objects. The common
+    failure mode is this: when you ask "who are the authors most similar to Mike?", you want
+    to find Mike's <em>peers</em> — researchers working on the same topics with similar
+    publication records. You do not want to find the most famous people in the field, nor the
+    most isolated niche researchers. Existing measures struggle to distinguish peer similarity
+    from prominence.
+  </p>
+
+  <div class="box intuition" data-cid="main-170">
+    <span class="box-label">The peer similarity intuition</span>
+    <p data-cid="main-180">
+      Think about what makes two people genuine peers. They should be connected to each other
+      through the network (connectivity), but they should also have <em>comparable exposure</em>
+      in the network. Two prolific professors who rarely co-author are still peers if they work
+      in the same area. A postdoc and a famous professor are probably not peers even if they
+      co-authored one paper, because their overall visibility in the network is very different.
+      PathSim captures this by requiring both strong connectivity <em>and</em> similar visibility.
+    </p>
+  </div>
+
+  <h2 data-cid="main-190" id="s4">4. PathSim: The Similarity Formula</h2>
+
+  <p data-cid="main-200">
+    PathSim confines attention to <em>symmetric</em> meta paths — round-trip paths of the form
+    <span class="tts-math" data-tts="script P equals script P sub l times script P sub l inverse">
+    $\mathcal{P} = (\mathcal{P}_l \mathcal{P}_l^{-1})$</span>,
+    where
+    <span class="tts-math" data-tts="script P sub l inverse">$\mathcal{P}_l^{-1}$</span>
+    is the reverse of
+    <span class="tts-math" data-tts="script P sub l">$\mathcal{P}_l$</span>.
+    On such a path, the similarity between two objects of the same type is:
+  </p>
+
+  <p data-cid="main-210">
+    <span class="tts-math" data-tts="s of x sub i comma x sub j equals 2 times the number of paths from x sub i to x sub j following script P, divided by the number of paths from x sub i to itself plus the number of paths from x sub j to itself">
+    $$s(x_i, x_j) = \frac{2 \times |\{p_{x_i \to x_j} : p_{x_i \to x_j} \in \mathcal{P}\}|}{|\{p_{x_i \to x_i} : p_{x_i \to x_i} \in \mathcal{P}\}| + |\{p_{x_j \to x_j} : p_{x_j \to x_j} \in \mathcal{P}\}|}$$
+    </span>
+  </p>
+
+  <p data-cid="main-220">
+    Let's read this formula slowly. The numerator counts the path instances from
+    <span class="tts-math" data-tts="x sub i">$x_i$</span>
+    to
+    <span class="tts-math" data-tts="x sub j">$x_j$</span>
+    following the meta path
+    <span class="tts-math" data-tts="script P">$\mathcal{P}$</span>,
+    multiplied by 2. The denominator adds the number of paths from
+    <span class="tts-math" data-tts="x sub i">$x_i$</span>
+    back to itself (its self-connectivity, measuring its own visibility) to the number of paths
+    from
+    <span class="tts-math" data-tts="x sub j">$x_j$</span>
+    back to itself (its own visibility).
+  </p>
+
+  <p data-cid="main-230">
+    This is structurally identical to <em>Dice's coefficient</em> from ecology — a measure of
+    overlap between two sets that normalizes by the sum of the set sizes. Here, the "sets" are
+    the path neighborhoods of the two objects. The self-loop count
+    <span class="tts-math" data-tts="M sub i i">$M_{ii}$</span>
+    for object
+    <span class="tts-math" data-tts="x sub i">$x_i$</span>
+    is the number of ways to walk from
+    <span class="tts-math" data-tts="x sub i">$x_i$</span>
+    through the meta path and return to
+    <span class="tts-math" data-tts="x sub i">$x_i$</span>.
+    For APA (author–paper–author), this is simply the number of papers
+    <span class="tts-math" data-tts="x sub i">$x_i$</span>
+    has authored (each paper contributes one round trip). It directly measures the author's
+    output — their "visibility" on this meta path.
+  </p>
+
+  <div class="box definition" data-cid="main-240">
+    <span class="box-label">Properties of PathSim (Theorem 1 in the paper)</span>
+    <p data-cid="main-250">
+      PathSim satisfies three important properties:
+      <ol>
+        <li><strong>Symmetric:</strong>
+          <span class="tts-math" data-tts="s of x sub i comma x sub j equals s of x sub j comma x sub i">$s(x_i, x_j) = s(x_j, x_i)$</span>.
+        </li>
+        <li><strong>Self-maximum:</strong>
+          <span class="tts-math" data-tts="s of x sub i comma x sub j is between 0 and 1, and s of x sub i comma x sub i equals 1">$s(x_i, x_j) \in [0, 1]$</span>
+          and
+          <span class="tts-math" data-tts="s of x sub i comma x sub i equals 1">$s(x_i, x_i) = 1$</span>.
+        </li>
+        <li><strong>Balance of Visibility:</strong>
+          <span class="tts-math" data-tts="s of x sub i comma x sub j is at most 2 over the square root of M sub i i over M sub j j plus the square root of M sub j j over M sub i i">
+          $s(x_i, x_j) \leq \dfrac{2}{\sqrt{M_{ii}/M_{jj}} + \sqrt{M_{jj}/M_{ii}}}$</span>.
+          This upper bound is 1 only when
+          <span class="tts-math" data-tts="M sub i i equals M sub j j">$M_{ii} = M_{jj}$</span>,
+          i.e., when both objects have the same visibility. The more their visibilities differ,
+          the lower the ceiling on their PathSim score, regardless of how many paths connect them.
+        </li>
+      </ol>
+    </p>
+  </div>
+
+  <p data-cid="main-260">
+    The Balance of Visibility property is what distinguishes PathSim from path count and random
+    walk measures. A very prolific author cannot score a high PathSim with a junior researcher,
+    even if they co-authored a paper, because their self-path counts —
+    <span class="tts-math" data-tts="M sub i i">$M_{ii}$</span>
+    and
+    <span class="tts-math" data-tts="M sub j j">$M_{jj}$</span>
+    — are very different. The formula automatically penalizes pairs with unequal visibility.
+  </p>
+
+  <h2 data-cid="main-270" id="s5">5. The Commuting Matrix</h2>
+
+  <p data-cid="main-280">
+    Computing PathSim efficiently requires a matrix formulation. For a meta path
+    <span class="tts-math" data-tts="script P equals A sub 1 via R sub 1 to A sub 2 continuing to A sub l plus 1">
+    $\mathcal{P} = (A_1 \xrightarrow{R_1} A_2 \cdots A_{l+1})$</span>,
+    define the <em>commuting matrix</em>
+    <span class="tts-math" data-tts="M equals W sub A sub 1 A sub 2 times W sub A sub 2 A sub 3 times dot dot dot times W sub A sub l A sub l plus 1">
+    $M = W_{A_1 A_2} W_{A_2 A_3} \cdots W_{A_l A_{l+1}}$</span>,
+    where
+    <span class="tts-math" data-tts="W sub A sub i A sub j">$W_{A_i A_j}$</span>
+    is the adjacency matrix between objects of type
+    <span class="tts-math" data-tts="A sub i">$A_i$</span>
+    and type
+    <span class="tts-math" data-tts="A sub j">$A_j$</span>.
+    The entry
+    <span class="tts-math" data-tts="M of i comma j">$M(i, j)$</span>
+    counts the number of path instances between object
+    <span class="tts-math" data-tts="x sub i">$x_i$</span>
+    of type
+    <span class="tts-math" data-tts="A sub 1">$A_1$</span>
+    and object
+    <span class="tts-math" data-tts="y sub j">$y_j$</span>
+    of type
+    <span class="tts-math" data-tts="A sub l plus 1">$A_{l+1}$</span>
+    under meta path
+    <span class="tts-math" data-tts="script P">$\mathcal{P}$</span>.
+  </p>
+
+  <p data-cid="main-290">
+    For a symmetric meta path
+    <span class="tts-math" data-tts="script P equals script P sub l times script P sub l inverse">
+    $\mathcal{P} = \mathcal{P}_l \mathcal{P}_l^{-1}$</span>,
+    the commuting matrix factors as
+    <span class="tts-math" data-tts="M equals M sub script P sub l times M sub script P sub l transpose">
+    $M = M_{\mathcal{P}_l} M_{\mathcal{P}_l}^T$</span>
+    (since the commuting matrix for the reverse path is the transpose). Given this, PathSim
+    can be written as:
+    <span class="tts-math" data-tts="s of x sub i comma x sub j equals 2 M of i comma j divided by M of i comma i plus M of j comma j">
+    $$s(x_i, x_j) = \frac{2M(i,j)}{M_{ii} + M_{jj}}$$
+    </span>
+    where
+    <span class="tts-math" data-tts="M sub i i">$M_{ii}$</span>
+    is the diagonal entry (path count from
+    <span class="tts-math" data-tts="x sub i">$x_i$</span>
+    back to itself).
+  </p>
+
+  <p data-cid="main-300">
+    The key challenge is that for long meta paths, the full commuting matrix
+    <span class="tts-math" data-tts="M">$M$</span>
+    is huge and dense. For the ACA (author–conference–author) path in DBLP,
+    <span class="tts-math" data-tts="M">$M$</span>
+    would be a
+    <span class="tts-math" data-tts="710 thousand by 710 thousand">$710K \times 710K$</span>
+    matrix with up to
+    <span class="tts-math" data-tts="5 gigabytes">$5G$</span>
+    non-zero entries. Materializing this is impractical. The paper's solution is to partially
+    materialize a shorter intermediate matrix
+    <span class="tts-math" data-tts="M sub script P sub l">$M_{\mathcal{P}_l}$</span>
+    and concatenate online at query time.
+  </p>
+
+  <h2 data-cid="main-310" id="s6">6. Efficient Top-K Search</h2>
+
+  <p data-cid="main-320">
+    Two algorithms are proposed for computing top-k PathSim results efficiently.
+  </p>
+
+  <p data-cid="main-330">
+    <strong>PathSim-baseline</strong> pre-stores the commuting matrix for the partial meta path
+    <span class="tts-math" data-tts="script P sub l inverse">$\mathcal{P}_l^{-1}$</span>
+    (the second half of the symmetric meta path) and computes the full matrix row for the query
+    object online by vector-matrix multiplication. To avoid a full comparison with all
+    <span class="tts-math" data-tts="n">$n$</span>
+    candidates, it first identifies a <em>candidate set</em> by following the neighbor links of
+    <span class="tts-math" data-tts="x sub i">$x_i$</span>
+    in the partial commuting matrix and taking their neighbors. This is much faster than
+    pairwise comparison.
+  </p>
+
+  <p data-cid="main-340">
+    <strong>PathSim-pruning</strong> uses a co-clustering approach to generate upper bounds on
+    PathSim scores and prune candidates that cannot make the top-k list. The objects of each
+    type are grouped into clusters using a greedy KL-divergence-based co-clustering algorithm.
+    For a query object, the algorithm first sorts <em>target clusters</em> (clusters of candidate
+    objects) by an upper bound on their similarity to the query cluster. If the upper bound for
+    an entire target cluster falls below the current k-th highest similarity score, the whole
+    cluster can be pruned without computing individual similarities. This significantly reduces
+    computation, especially for dense networks where the candidate set from the baseline algorithm
+    is large.
+  </p>
+
+  <div class="box pause" data-cid="main-350">
+    <span class="box-label">Pause: connecting PathSim to familiar ideas</span>
+    <p data-cid="main-360">
+      PathSim at path length 2 (a single intermediate type) is equivalent to Dice's similarity
+      coefficient applied to the neighborhood sets of the two objects under that relation.
+      For APA (author–paper–author), each author's "neighborhood" is their set of papers,
+      weighted by paper co-authorship. PathSim measures the overlap normalized by the sizes
+      of both neighborhoods. This is exactly Dice's coefficient from the ecology literature,
+      where it was used to compare species distributions across habitats. PathSim generalizes
+      Dice to arbitrary-length meta paths through the matrix multiplication formulation.
+    </p>
+  </div>
+
+  <h2 data-cid="main-370" id="s7">7. Experiments</h2>
+
+  <p data-cid="main-380">
+    The paper evaluates PathSim on the DBLP bibliographic network (710K+ authors, 1.2M papers,
+    5K venues) and on a Flickr photo network. Experiments compare PathSim against P-PageRank,
+    SimRank, Random Walk (RW), and Pairwise Random Walk (PRW).
+  </p>
+
+  <p data-cid="main-390">
+    A key case study searches for the top-5 authors similar to "AnHai Doan" in the database and
+    information systems (DBIS) area using the meta path APCPA (authors connected through the
+    conferences they publish in). P-PageRank returns the most prominent (highly-ranked) authors
+    in the area — big names — rather than peers of Doan. SimRank returns concentrated authors
+    (those publishing at a small set of venues). PathSim returns Patel, Deshpande, Yang, and
+    Miller — rising researchers in the database field who share very similar publication records
+    with Doan. Human judges confirm that PathSim's results best capture the notion of "peer
+    similarity."
+  </p>
+
+  <p data-cid="main-400">
+    Quantitative evaluation using labeled data (top-15 query results for 15 venue types in the
+    DBIS dataset, evaluated by human annotators using a 0–2 relevance scale) and nDCG
+    (Normalized Discounted Cumulative Gain, where higher is better) shows PathSim achieving
+    an nDCG of 0.7446 compared to 0.5532 for P-PageRank, 0.6289 for SimRank, 0.7061 for RW,
+    and 0.5284 for PRW. PathSim wins by a significant margin.
+  </p>
+
+  <p data-cid="main-410">
+    Clustering experiments on a "4-area dataset" (4 research areas, 20 venues, 1713 authors)
+    using NMI (Normalized Mutual Information) confirm that PathSim similarity matrices produce
+    better-quality clusters than any competing measure, for both venue type (NMI 0.8116) and
+    author type (NMI 0.6501).
+  </p>
+
+  <h2 data-cid="main-420" id="s8">8. Lasting Impact</h2>
+
+  <p data-cid="main-430">
+    PathSim established the <em>meta path</em> as a first-class concept in heterogeneous
+    information network analysis. Before this paper, most graph similarity work either ignored
+    link types altogether (treating everything as a homogeneous network) or handled heterogeneity
+    in ad-hoc, application-specific ways.
+  </p>
+
+  <p data-cid="main-440">
+    The paper launched a substantial research program. Subsequent work asked: what if the user
+    does not know which meta path to use? This led to research on meta-path learning from
+    examples. What if multiple meta paths should be combined? The paper already discusses linear
+    combination of PathSim scores across multiple paths with user-specified weights. This was
+    generalized by later work on graph neural networks over heterogeneous graphs, where meta
+    paths serve as the structural skeleton for attention mechanisms (e.g., the HAN and HeCo models).
+    Many recommendation systems, knowledge graph embedding models, and drug-discovery networks
+    use meta-path-based similarity as a building block today.
+  </p>
+
+  <p data-cid="main-450">
+    The meta-path framework also influenced how heterogeneous graphs are used as benchmarks
+    in the graph machine learning community (e.g., the DBLP and ACM datasets that appear in
+    hundreds of graph neural network papers owe their organization to the taxonomic structure
+    established by this line of work). PathSim's clean mathematical definition, the intuitive
+    balance-of-visibility property, and the efficient algorithmic framework made it a lasting
+    reference point.
+  </p>
+
+  <h2 data-cid="main-460" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-470">G. Jeh and J. Widom. SimRank: a measure of structural-context similarity. In <em>KDD'02</em>, 538–543, 2002.</li>
+    <li data-cid="main-480">G. Jeh and J. Widom. Scaling personalized web search. In <em>WWW'03</em>, 271–279, 2003.</li>
+    <li data-cid="main-490">L. R. Dice. Measures of the amount of ecologic association between species. <em>Ecology</em>, 26(3):297–302, 1945.</li>
+    <li data-cid="main-500">D. Fogaras, B. Rácz, K. Csalogány, and T. Sarlós. Towards scaling fully personalized pageRank: algorithms, lower bounds, and experiments. <em>Int. Math.</em>, 2(3):333–358, 2005.</li>
+    <li data-cid="main-510">Y. Sun, J. Han, P. Zhao, Z. Yin, H. Cheng, and T. Wu. Rankclus: integrating clustering with ranking for heterogeneous information network analysis. In <em>EDBT'09</em>, 565–576, 2009.</li>
+    <li data-cid="main-520">X. Xu, N. Yuruk, Z. Feng, and T. A. J. Schweiger. Scan: a structural clustering algorithm for networks. In <em>KDD'07</em>, 824–833, 2007.</li>
+    <li data-cid="main-530">I. S. Dhillon, S. Mallela, and D. S. Modha. Information-theoretic co-clustering. In <em>KDD'03</em>, 89–98, 2003.</li>
+    <li data-cid="main-540">R. Kumar, P. Raghavan, S. Rajagopalan, D. Sivakumar, A. Tomkins, and E. Upfal. Stochastic models for the web graph. In <em>FOCS</em>, 101–112, 2000.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script>
+</body>
+</html>

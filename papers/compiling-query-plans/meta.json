@@ -1,0 +1,6 @@
+{
+  "title": "Efficiently Compiling Efficient Query Plans for Modern Hardware",
+  "authors": "Thomas Neumann",
+  "venue": "PVLDB 2011",
+  "description": "Proposes a data-centric query compilation strategy that translates SQL into native machine code via LLVM, exploiting pipeline-breaker boundaries to keep data in CPU registers and rival hand-written C++ execution plans."
+}

@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PrivBayes: Private Data Release via Bayesian Networks · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="privbayes" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/privbayes/">PrivBayes</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. The Privacy Problem</a></li>
+    <li><a href="#s2">2. Differential Privacy</a></li>
+    <li><a href="#s3">3. Bayesian Networks as a Tool</a></li>
+    <li><a href="#s4">4. The PrivBayes Algorithm</a></li>
+    <li><a href="#s5">5. Learning the Network Privately</a></li>
+    <li><a href="#s6">6. Noisy Conditional Distributions</a></li>
+    <li><a href="#s7">7. Generating Synthetic Data</a></li>
+    <li><a href="#s8">8. Results and Impact</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">Scientific Paper · SIGMOD 2014</div>
+    <h1>PrivBayes: Private Data Release via Bayesian Networks</h1>
+    <div class="paper-meta">
+      <span class="authors">Jun Zhang, Graham Cormode, Cecilia M. Procopiuc, Divesh Srivastava, Xiaokui Xiao</span>
+      <span class="venue">ACM SIGMOD 2014 · Snowbird, UT, USA</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    Privacy-preserving data publishing is increasingly important as data owners wish to share datasets
+    for social analysis, medical research, and public transparency without exposing individual private
+    information. The gold standard of protection is <em>differential privacy</em>, but existing
+    differentially private methods collapse on high-dimensional data: the noise required to hide any
+    individual swamps the actual signal in the data. PrivBayes sidesteps this by learning a
+    low-degree Bayesian network over the sensitive database — a compact graphical model of attribute
+    correlations — and then releasing noisy estimates of only the low-dimensional conditional
+    distributions implied by that network. The network plus its noisy conditionals are then used to
+    sample an arbitrarily large synthetic dataset. Because all noise is injected into low-dimensional
+    marginals rather than the full high-dimensional space, the signal-to-noise ratio remains healthy
+    even for tables with dozens of columns. Experiments on four real-world datasets show PrivBayes
+    consistently outperforming prior methods for both marginal query answering and SVM classification
+    tasks.
+  </div>
+
+  <!-- ═══════════════════════════ SECTION 1 -->
+  <h2 data-cid="main-020" id="s1">1. The Privacy Problem</h2>
+
+  <p data-cid="main-030">
+    Imagine a hospital wants to release a dataset of patient records for public health research. Each
+    row represents one patient; each column is an attribute — age, diagnosis, postcode, employment
+    status, income bracket. The hospital wants researchers to be able to study correlations — for
+    instance, that diabetic patients in a certain age group tend to have lower incomes. But it cannot
+    release the raw table: anyone could look up a specific individual and infer private facts about
+    them.
+  </p>
+
+  <p data-cid="main-040">
+    The naive fix — add random noise to every cell — produces a table that is useless for analysis
+    because the noise swamps every interesting pattern. A smarter fix releases aggregate statistics
+    (counts and averages) rather than individual rows. But as soon as you have many attributes,
+    even releasing all pairwise counts requires an exponentially growing number of queries, and the
+    noise on each one compounds.
+  </p>
+
+  <div class="box intuition" data-cid="main-050">
+    <span class="box-label">Intuition — The curse of dimensionality in private release</span>
+    <p data-cid="main-060">
+      A table with <span class="tts-math" data-tts="d">$d$</span> binary attributes has a domain of
+      size <span class="tts-math" data-tts="2 to the power d">$2^d$</span>. Directly releasing the
+      full distribution over all attribute combinations requires noising
+      <span class="tts-math" data-tts="2 to the power d">$2^d$</span> cells. With
+      <span class="tts-math" data-tts="d equals 30">$d = 30$</span> attributes, that is over a
+      billion cells. With <span class="tts-math" data-tts="n">$n$</span> rows in the database,
+      the average count per cell is <span class="tts-math" data-tts="n over 2 to the power d">$n / 2^d$</span>,
+      which for <span class="tts-math" data-tts="n equals 1 million">$n = 1{,}000{,}000$</span>
+      is roughly <span class="tts-math" data-tts="10 to the power negative 3">$10^{-3}$</span>.
+      Any Laplace noise large enough to provide privacy completely obliterates a signal that small.
+      The published table is essentially random — useless.
+    </p>
+  </div>
+
+  <p data-cid="main-070">
+    PrivBayes offers an escape: rather than trying to characterize the full joint distribution over
+    all <span class="tts-math" data-tts="d">$d$</span> attributes simultaneously, it identifies a
+    small set of <em>low-dimensional marginal distributions</em> whose product closely approximates
+    the full joint. Noise is added only to these low-dimensional distributions, where the
+    signal-to-noise ratio is manageable.
+  </p>
+
+  <!-- ═══════════════════════════ SECTION 2 -->
+  <h2 data-cid="main-080" id="s2">2. Differential Privacy</h2>
+
+  <p data-cid="main-090">
+    Before seeing how PrivBayes works, we need to understand the privacy guarantee it aims to
+    provide. <em>Differential privacy</em> (DP) is a mathematical definition introduced by Dwork
+    et al. that has become the accepted gold standard. Its appeal is that it makes no assumptions
+    about what an attacker knows — even an adversary who already knows all but one record in the
+    database gains almost no information about that remaining record from the published output.
+  </p>
+
+  <div class="box definition" data-cid="main-100">
+    <span class="box-label">Definition — epsilon-Differential Privacy</span>
+    <p data-cid="main-110">
+      A randomized algorithm <span class="tts-math" data-tts="G">$G$</span> satisfies
+      <span class="tts-math" data-tts="epsilon">$\varepsilon$</span>-differential privacy if,
+      for every pair of datasets
+      <span class="tts-math" data-tts="D sub 1 and D sub 2">$D_1$</span> and
+      <span class="tts-math" data-tts="D sub 2">$D_2$</span> that differ in exactly one tuple,
+      and for every possible output <span class="tts-math" data-tts="O">$O$</span>:
+    </p>
+    <p data-cid="main-120">
+      <span class="tts-math" data-tts="the probability that G of D sub 1 equals O is at most e to the power epsilon times the probability that G of D sub 2 equals O">
+      $$\Pr[G(D_1) = O] \leq e^{\varepsilon} \cdot \Pr[G(D_2) = O]$$
+      </span>
+    </p>
+    <p data-cid="main-130">
+      The parameter <span class="tts-math" data-tts="epsilon">$\varepsilon$</span> (the <em>privacy
+      budget</em>) controls the trade-off: smaller
+      <span class="tts-math" data-tts="epsilon">$\varepsilon$</span> means stronger privacy and
+      more noise; larger <span class="tts-math" data-tts="epsilon">$\varepsilon$</span> means weaker
+      privacy but higher accuracy. Typical published values range from
+      <span class="tts-math" data-tts="epsilon equals 0.1">$\varepsilon = 0.1$</span> (strong) to
+      <span class="tts-math" data-tts="epsilon equals 1 or 2">$\varepsilon = 1{-}2$</span>
+      (moderate).
+    </p>
+  </div>
+
+  <p data-cid="main-140">
+    Two mechanisms implement DP in practice. The <strong>Laplace mechanism</strong> works for numeric
+    functions: it adds i.i.d. noise drawn from a Laplace distribution
+    <span class="tts-math" data-tts="Laplace of lambda">$\text{Lap}(\lambda)$</span> with scale
+    <span class="tts-math" data-tts="lambda equals the sensitivity of F over epsilon">$\lambda = S(F)/\varepsilon$</span>,
+    where the <em>sensitivity</em>
+    <span class="tts-math" data-tts="S of F">$S(F)$</span> is the maximum change in
+    <span class="tts-math" data-tts="F">$F$</span>'s output when one tuple is altered. The
+    <strong>exponential mechanism</strong> works for categorical choices: it samples an output
+    proportional to <span class="tts-math" data-tts="exp of f sub s times D comma omega over 2 delta">$\exp(f_s(D, \omega)/2\Delta)$</span>
+    where <span class="tts-math" data-tts="f sub s">$f_s$</span> is a quality score and
+    <span class="tts-math" data-tts="delta">$\Delta$</span> is a scale factor tied to its sensitivity.
+  </p>
+
+  <div class="box intuition" data-cid="main-150">
+    <span class="box-label">Intuition — Why the Laplace mechanism works</span>
+    <p data-cid="main-160">
+      Think of sensitivity as asking: "If I change one person's record, how much can the answer
+      change?" For a count query ("how many people are diabetic?"), one person can shift the answer
+      by at most 1, so sensitivity is 1. Adding Laplace noise with scale
+      <span class="tts-math" data-tts="1 over epsilon">$1/\varepsilon$</span> is enough. For a
+      query over all <span class="tts-math" data-tts="2 to the power d">$2^d$</span> cells of a
+      high-dimensional histogram, the sensitivity is still 1 per cell, but you need that noise in
+      every cell — a crippling amount of total noise.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════ SECTION 3 -->
+  <h2 data-cid="main-170" id="s3">3. Bayesian Networks as a Tool</h2>
+
+  <p data-cid="main-180">
+    A <em>Bayesian network</em> over a set of attributes
+    <span class="tts-math" data-tts="script A">$\mathcal{A}$</span> is a directed acyclic graph
+    (DAG) where each node represents one attribute and each directed edge encodes a conditional
+    dependence. The key property is the <em>Markov condition</em>: given its parents, each attribute
+    is conditionally independent of all its non-descendants. This lets the full joint distribution
+    factor into a product of low-dimensional conditionals.
+  </p>
+
+  <p data-cid="main-190">
+    Formally, if each attribute <span class="tts-math" data-tts="X sub i">$X_i$</span> has parent
+    set <span class="tts-math" data-tts="Pi sub i">$\Pi_i$</span> in the network, then:
+  </p>
+
+  <p data-cid="main-200">
+    <span class="tts-math" data-tts="the probability of script A equals the product from i equals 1 to d of the probability of X sub i given Pi sub i">
+    $$\Pr[\mathcal{A}] = \prod_{i=1}^{d} \Pr[X_i \mid \Pi_i]$$
+    </span>
+  </p>
+
+  <div class="box example" data-cid="main-210">
+    <span class="box-label">Example — A five-attribute Bayesian network</span>
+    <p data-cid="main-220">
+      The paper uses an example with attributes: <em>age</em>, <em>education</em>,
+      <em>workclass</em>, <em>title</em>, and <em>income</em>. In the learned network, the
+      factorization reads:
+    </p>
+    <p data-cid="main-230">
+      <span class="tts-math" data-tts="probability of A B C D E equals probability of age, times probability of education given age, times probability of workclass given age, times probability of title given age education workclass, times probability of income given workclass title">
+      $$\Pr[A,B,C,D,E] = \Pr[\text{age}] \cdot \Pr[\text{edu} \mid \text{age}] \cdot \Pr[\text{wc} \mid \text{age}] \cdot \Pr[\text{title} \mid \text{age, edu, wc}] \cdot \Pr[\text{income} \mid \text{wc, title}]$$
+      </span>
+    </p>
+    <p data-cid="main-240">
+      Instead of one 5-dimensional table (perhaps millions of cells), we have five small conditional
+      tables, the largest being 3-dimensional. This is what makes noise addition tractable.
+    </p>
+  </div>
+
+  <p data-cid="main-250">
+    The <em>degree</em> of a Bayesian network is the maximum number of parents any attribute has.
+    A degree-<span class="tts-math" data-tts="k">$k$</span> network involves only
+    <span class="tts-math" data-tts="d">$d$</span> marginal distributions, each at most
+    <span class="tts-math" data-tts="k plus 1">$k+1$</span> dimensional. PrivBayes uses small
+    <span class="tts-math" data-tts="k">$k$</span> (often 1–3) to keep the dimensionality of each
+    conditional low, which keeps the Laplace noise manageable.
+  </p>
+
+  <!-- ═══════════════════════════ SECTION 4 -->
+  <h2 data-cid="main-260" id="s4">4. The PrivBayes Algorithm</h2>
+
+  <p data-cid="main-270">
+    PrivBayes runs in three phases, each with a clear role. The privacy budget
+    <span class="tts-math" data-tts="epsilon">$\varepsilon$</span> is split evenly: half goes to
+    learning the network structure, half to noising the conditional distributions.
+  </p>
+
+  <div class="box definition" data-cid="main-280">
+    <span class="box-label">Phase 1 — Network Learning (uses epsilon over 2)</span>
+    <p data-cid="main-290">
+      Build a degree-<span class="tts-math" data-tts="k">$k$</span> Bayesian network
+      <span class="tts-math" data-tts="script N">$\mathcal{N}$</span> that best captures the
+      correlations in the sensitive database
+      <span class="tts-math" data-tts="D">$D$</span>, without exceeding
+      <span class="tts-math" data-tts="epsilon over 2">$\varepsilon/2$</span> privacy cost. The
+      output is a set of attribute-parent pairs
+      <span class="tts-math" data-tts="open paren X sub 1 comma Pi sub 1 close paren through open paren X sub d comma Pi sub d close paren">$(X_1, \Pi_1), \ldots, (X_d, \Pi_d)$</span>.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-300">
+    <span class="box-label">Phase 2 — Noisy Conditionals (uses epsilon over 2)</span>
+    <p data-cid="main-310">
+      For each attribute-parent pair
+      <span class="tts-math" data-tts="open paren X sub i comma Pi sub i close paren">$(X_i, \Pi_i)$</span>,
+      materialize the joint distribution
+      <span class="tts-math" data-tts="Pr of X sub i comma Pi sub i">$\Pr[X_i, \Pi_i]$</span>
+      from the data, inject Laplace noise with scale
+      <span class="tts-math" data-tts="4 times open paren d minus k close paren over n epsilon">$\frac{4(d-k)}{n\varepsilon}$</span>,
+      clip negatives to zero, renormalize, and derive the noisy conditional
+      <span class="tts-math" data-tts="Pr star of X sub i given Pi sub i">$\Pr^*[X_i \mid \Pi_i]$</span>.
+      These <span class="tts-math" data-tts="d">$d$</span> noisy conditionals form the set
+      <span class="tts-math" data-tts="script P star">$\mathcal{P}^*$</span>.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-320">
+    <span class="box-label">Phase 3 — Data Synthesis (no privacy cost)</span>
+    <p data-cid="main-330">
+      Use <span class="tts-math" data-tts="script N">$\mathcal{N}$</span> and
+      <span class="tts-math" data-tts="script P star">$\mathcal{P}^*$</span> to sample
+      synthetic tuples one attribute at a time, in topological order. Because no new database
+      access is required, this phase incurs zero additional privacy cost. Generate as many synthetic
+      tuples as desired — typically <span class="tts-math" data-tts="n">$n$</span>, the same as
+      the original.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════ SECTION 5 -->
+  <h2 data-cid="main-340" id="s5">5. Learning the Network Privately</h2>
+
+  <p data-cid="main-350">
+    The key algorithmic challenge is Phase 1: how do you choose which edges to include in the
+    Bayesian network without spending too much privacy budget? The natural quality criterion is
+    <em>mutual information</em> — an edge from
+    <span class="tts-math" data-tts="Pi">$\Pi$</span> to
+    <span class="tts-math" data-tts="X">$X$</span> is valuable if knowing
+    <span class="tts-math" data-tts="Pi">$\Pi$</span> tells you a lot about
+    <span class="tts-math" data-tts="X">$X$</span>. Mutual information between
+    <span class="tts-math" data-tts="X and Pi">$X$</span> and
+    <span class="tts-math" data-tts="Pi">$\Pi$</span> is:
+  </p>
+
+  <p data-cid="main-360">
+    <span class="tts-math" data-tts="I of X comma Pi equals the sum over x in the domain of X and pi in the domain of Pi of the joint probability times log of the joint over the product of marginals">
+    $$I(X, \Pi) = \sum_{x \in \text{dom}(X)} \sum_{\pi \in \text{dom}(\Pi)} \Pr[X{=}x, \Pi{=}\pi] \log \frac{\Pr[X{=}x, \Pi{=}\pi]}{\Pr[X{=}x]\,\Pr[\Pi{=}\pi]}$$
+    </span>
+  </p>
+
+  <p data-cid="main-370">
+    The GreedyBayes algorithm (Algorithm 2 in the paper) builds the network iteratively: at each
+    step it selects the attribute-parent pair
+    <span class="tts-math" data-tts="open paren X sub i comma Pi sub i close paren">$(X_i, \Pi_i)$</span>
+    that maximizes mutual information, subject to the constraint that
+    <span class="tts-math" data-tts="the size of Pi sub i is at most k">$|\Pi_i| \leq k$</span>.
+    Each such selection is made using the <em>exponential mechanism</em> so it satisfies
+    <span class="tts-math" data-tts="epsilon over 2 d minus 1">$\varepsilon/2(d-1)$</span>-DP.
+    Over all <span class="tts-math" data-tts="d minus 1">$d-1$</span> iterations, composability
+    of DP gives total cost <span class="tts-math" data-tts="epsilon over 2">$\varepsilon/2$</span>.
+  </p>
+
+  <div class="box warn" data-cid="main-380">
+    <span class="box-label">Subtlety — Why not use mutual information directly as the score?</span>
+    <p data-cid="main-390">
+      The exponential mechanism's effectiveness depends on the <em>sensitivity-to-range ratio</em>
+      of the score function. Mutual information
+      <span class="tts-math" data-tts="I of X comma Pi">$I(X, \Pi)$</span> has sensitivity
+      <span class="tts-math" data-tts="S of I">$S(I)$</span> that can be as large as
+      <span class="tts-math" data-tts="log n over n">$\log n / n$</span> while its range is
+      <span class="tts-math" data-tts="up to log n">$\log n$</span> — making the scaling factor
+      <span class="tts-math" data-tts="delta equals 2 d minus 1 times S of I over epsilon">$\Delta = 2(d-1)S(I)/\varepsilon$</span>
+      very large and causing the mechanism to sample near-random pairs. PrivBayes instead defines a
+      novel score function <span class="tts-math" data-tts="F of X comma Pi">$F(X, \Pi)$</span>
+      with sensitivity only <span class="tts-math" data-tts="1 over n">$1/n$</span>, independent
+      of domain size, while still being positively correlated with mutual information. This is the
+      paper's central technical innovation.
+    </p>
+  </div>
+
+  <p data-cid="main-400">
+    The score function <span class="tts-math" data-tts="F of X comma Pi">$F(X, \Pi)$</span> is
+    defined as the negative <span class="tts-math" data-tts="L sub 1">$L_1$</span> distance from
+    the observed joint distribution to its nearest <em>maximum joint distribution</em> — a
+    distribution that maximizes mutual information between
+    <span class="tts-math" data-tts="X">$X$</span> and
+    <span class="tts-math" data-tts="Pi">$\Pi$</span>. By Theorem 2 in the paper, its sensitivity
+    is exactly <span class="tts-math" data-tts="1 over n">$1/n$</span>, which makes the scaling
+    factor small and the exponential mechanism sharply focused on high-information pairs.
+  </p>
+
+  <!-- ═══════════════════════════ SECTION 6 -->
+  <h2 data-cid="main-410" id="s6">6. Noisy Conditional Distributions</h2>
+
+  <p data-cid="main-420">
+    Once the network structure is fixed, Phase 2 constructs noisy conditional distributions for every
+    attribute. For each <span class="tts-math" data-tts="i from k plus 1 to d">$i \in [k{+}1, d]$</span>,
+    the algorithm (NoisyConditionals, Algorithm 1) materializes the joint
+    <span class="tts-math" data-tts="Pr of X sub i and Pi sub i">$\Pr[X_i, \Pi_i]$</span>
+    and injects Laplace noise with scale:
+  </p>
+
+  <p data-cid="main-430">
+    <span class="tts-math" data-tts="lambda equals 4 times open paren d minus k close paren over n times epsilon">
+    $$\lambda = \frac{4(d-k)}{n\varepsilon}$$
+    </span>
+  </p>
+
+  <p data-cid="main-440">
+    This scale is chosen so that each noisy conditional satisfies
+    <span class="tts-math" data-tts="epsilon over 2 times open paren d minus k close paren">$\varepsilon/2(d-k)$</span>-DP.
+    Summing over all <span class="tts-math" data-tts="d minus k">$d-k$</span> conditionals, the
+    total cost is <span class="tts-math" data-tts="epsilon over 2">$\varepsilon/2$</span> by the
+    composability property.
+  </p>
+
+  <div class="box intuition" data-cid="main-450">
+    <span class="box-label">Intuition — Why low-dimensional noise is the key insight</span>
+    <p data-cid="main-460">
+      Each conditional distribution
+      <span class="tts-math" data-tts="Pr of X sub i given Pi sub i">$\Pr[X_i \mid \Pi_i]$</span>
+      involves at most <span class="tts-math" data-tts="k plus 1">$k+1$</span> attributes. If
+      each attribute has domain size 10, a degree-2 network involves at most
+      <span class="tts-math" data-tts="10 cubed equals 1000">$10^3 = 1{,}000$</span> cells.
+      Average cell count is <span class="tts-math" data-tts="n over 1000">$n/1000$</span> —
+      enormous compared to <span class="tts-math" data-tts="n over 2 to the power d">$n/2^d$</span>
+      for the full joint. The noise needed is correspondingly smaller, and the signal survives.
+      This is the entire point: work in low-dimensional spaces where the curse of dimensionality
+      cannot reach you.
+    </p>
+  </div>
+
+  <p data-cid="main-470">
+    After noising, negative values are set to zero and each conditional is renormalized to sum to
+    one. The paper proves (Lemma 3) that the resulting distributions are
+    <span class="tts-math" data-tts="theta">$\theta$</span>-useful in the sense that the ratio of
+    information scale to noise scale is at least
+    <span class="tts-math" data-tts="n epsilon over open paren d minus k close paren times 2 to the power k plus 3">$n\varepsilon / [(d-k) \cdot 2^{k+3}]$</span>.
+    This quantity guides the automatic selection of
+    <span class="tts-math" data-tts="k">$k$</span>.
+  </p>
+
+  <!-- ═══════════════════════════ SECTION 7 -->
+  <h2 data-cid="main-480" id="s7">7. Generating Synthetic Data</h2>
+
+  <p data-cid="main-490">
+    With the network <span class="tts-math" data-tts="script N">$\mathcal{N}$</span> and the noisy
+    conditionals <span class="tts-math" data-tts="script P star">$\mathcal{P}^*$</span> in hand,
+    generating a synthetic tuple is simple: sample attributes in topological order. Attribute
+    <span class="tts-math" data-tts="X sub 1">$X_1$</span> (which has no parents) is sampled from
+    its noisy marginal. Each subsequent
+    <span class="tts-math" data-tts="X sub i">$X_i$</span> is sampled from
+    <span class="tts-math" data-tts="Pr star of X sub i given the already sampled parent values">$\Pr^*[X_i \mid \Pi_i]$</span>,
+    conditioned on the already-sampled values of its parents.
+  </p>
+
+  <p data-cid="main-500">
+    Because the network is a DAG and parents are always sampled before children, this is always
+    well-defined. Crucially, this sampling phase never touches the original database
+    <span class="tts-math" data-tts="D">$D$</span> — it uses only the already-published
+    <span class="tts-math" data-tts="script N">$\mathcal{N}$</span> and
+    <span class="tts-math" data-tts="script P star">$\mathcal{P}^*$</span>. So the third phase
+    adds zero to the privacy cost, and you can generate as many synthetic rows as you want.
+  </p>
+
+  <div class="box pause" data-cid="main-510">
+    <span class="box-label">Pause and check — What exactly is being released?</span>
+    <p data-cid="main-520">
+      The paper releases two things: (1) the network structure
+      <span class="tts-math" data-tts="script N">$\mathcal{N}$</span> — just a list of which
+      attributes are parents of which — and (2) the noisy conditionals
+      <span class="tts-math" data-tts="script P star">$\mathcal{P}^*$</span> — small probability
+      tables, each covering only a few attributes. From these, anyone can sample synthetic rows
+      without ever seeing the original data. The synthetic dataset looks like real records but is
+      purely artificial. Downstream analysts can run any queries they like on it.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════ SECTION 8 -->
+  <h2 data-cid="main-530" id="s8">8. Results and Impact</h2>
+
+  <p data-cid="main-540">
+    The authors evaluate PrivBayes on four real-world datasets: <em>Adult</em> (45,222 individuals
+    from the 1994 US Census, 15 attributes), <em>NLTCS</em> (21,574 long-term care survey records,
+    16 attributes), <em>TPC-E</em> (40,000 synthetic transaction records, 24 attributes), and
+    <em>BR2000</em> (38,000 Brazilian census records, 14 attributes). They test two tasks: answering
+    marginal queries and training SVM classifiers.
+  </p>
+
+  <p data-cid="main-550">
+    For marginal query answering, PrivBayes is compared against three baselines: Laplace (noise
+    on raw marginals), Fourier (noise on Fourier coefficients), and Contingency (contingency table
+    approach). Across all datasets and privacy budgets from
+    <span class="tts-math" data-tts="epsilon equals 0.05 to epsilon equals 1.6">$\varepsilon = 0.05$ to $1.6$</span>,
+    PrivBayes has dramatically lower average variation distance from the true marginals — often
+    by a factor of 2–5. The advantage is largest at small
+    <span class="tts-math" data-tts="epsilon">$\varepsilon$</span> (strong privacy) and large
+    <span class="tts-math" data-tts="alpha">$\alpha$</span> (high-order marginals).
+  </p>
+
+  <p data-cid="main-560">
+    For SVM classification, PrivBayes generates one synthetic dataset that is used to train
+    multiple classifiers simultaneously — spending the privacy budget only once. Competing methods
+    (PrivateERM, PrivGene, Majority) must retrain independently for each classifier, dividing the
+    budget. PrivBayes's misclassification rate is generally lower than all competitors except
+    PrivateERM-Single (which uses the full
+    <span class="tts-math" data-tts="epsilon">$\varepsilon$</span> budget for one classifier at
+    a time), and it degrades gracefully as privacy tightens.
+  </p>
+
+  <div class="box intuition" data-cid="main-570">
+    <span class="box-label">Lasting impact</span>
+    <p data-cid="main-580">
+      PrivBayes established a template that subsequent work — including NIST's differential privacy
+      challenge winners — would follow: learn a graphical structure privately, then release only
+      low-dimensional sufficient statistics. The paper's novel score function
+      <span class="tts-math" data-tts="F">$F$</span> with sensitivity
+      <span class="tts-math" data-tts="1 over n">$1/n$</span> is a clean theoretical contribution
+      that other researchers built on directly. By 2020, variants of PrivBayes were powering
+      private data release at scale in government and industry.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════ REFERENCES -->
+  <h2 data-cid="main-590" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-600">C. Dwork. Differential privacy. In <em>ICALP</em>, pages 1–12, 2006.</li>
+    <li data-cid="main-610">C. Dwork, F. McSherry, K. Nissim, A. Smith. Calibrating noise to sensitivity in private data analysis. In <em>TCC</em>, pages 265–284, 2006.</li>
+    <li data-cid="main-620">F. McSherry and K. Talwar. Mechanism design via differential privacy. In <em>FOCS</em>, pages 94–103, 2007.</li>
+    <li data-cid="main-630">C. K. Chow and C. N. Liu. Approximating discrete probability distributions with dependence trees. <em>IEEE Transactions on Information Theory</em>, 14:462–467, 1968.</li>
+    <li data-cid="main-640">B. Barak, K. Chaudhuri, C. Dwork, S. Kale, F. McSherry, K. Talwar. Privacy, accuracy, and consistency too: a holistic solution to contingency table release. In <em>PODS</em>, pages 273–282, 2007.</li>
+    <li data-cid="main-650">B. Hay, V. Rastogi, G. Miklau, D. Suciu. Boosting the accuracy of differentially private histograms through consistency. <em>PVLDB</em>, 3(1):1021–1032, 2010.</li>
+    <li data-cid="main-660">N. Li, W. Qardaji, D. Su, J. Cao. Privbasis: Frequent itemset mining with differential privacy. <em>PVLDB</em>, 5(11):1340–1351, 2012.</li>
+    <li data-cid="main-670">J. Zhang, X. Xiao, Y. Yang, Z. Zhang, M. Winslett. PrivGene: differentially private model fitting using genetic algorithms. In <em>SIGMOD</em>, pages 665–676, 2013.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script>
+</body>
+</html>

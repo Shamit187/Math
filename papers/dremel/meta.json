@@ -1,0 +1,6 @@
+{
+  "title": "Dremel: Interactive Analysis of Web-Scale Datasets",
+  "authors": "Sergey Melnik, Andrey Gubarev, Jing Jing Long, Geoffrey Romer, Shiva Shivakumar, Matt Tolton, Theo Vassilakis",
+  "venue": "PVLDB 2010",
+  "description": "Presents Dremel, Google's scalable interactive query system for read-only nested data, combining a novel columnar storage format with repetition and definition levels with a multi-level serving tree to execute aggregation queries over trillion-row tables in seconds."
+}

@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Accelerating Approximate Analytical Join Queries over Unstructured Data · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="joinml-bas" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/joinml-bas/">JoinML / BaS</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. The Problem</a></li>
+    <li><a href="#s2">2. Query Syntax &amp; Semantics</a></li>
+    <li><a href="#s3">3. Use Cases</a></li>
+    <li><a href="#s4">4. The Two Baselines</a></li>
+    <li><a href="#s5">5. Weighted Wander Join</a></li>
+    <li><a href="#s6">6. Blocking-augmented Sampling</a></li>
+    <li><a href="#s7">7. Adaptive Allocation</a></li>
+    <li><a href="#s8">8. Confidence Intervals</a></li>
+    <li><a href="#s9">9. Beyond SUM</a></li>
+    <li><a href="#s10">10. Theory</a></li>
+    <li><a href="#s11">11. Evaluation</a></li>
+    <li><a href="#s12">12. Related Work &amp; Conclusion</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <!-- ═══════════════════════════════════════════ HERO -->
+  <section class="hero">
+    <div class="kicker">SIGMOD 2026 · Proc. ACM Manag. Data, Vol. 4, No. 3, Article 127</div>
+    <h1>Accelerating Approximate Analytical Join Queries over Unstructured Data with Statistical Guarantees</h1>
+    <div class="paper-meta">
+      <span class="authors">Yuxuan Zhu, Tengjun Jin, Chenghao Mo, Daniel Kang
+        — University of Illinois Urbana-Champaign</span>
+      <span class="venue">Proceedings of the ACM on Management of Data, Vol. 4, No. 3 (SIGMOD) · June 2026 · doi:10.1145/3802004</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════ ABSTRACT -->
+  <div class="paper-abstract" data-cid="main-0010" id="abstract">
+    <strong>Abstract</strong>
+    Analysts increasingly want to run SQL-style aggregate queries — COUNT, SUM, AVG — over
+    <em>joins whose condition is semantic</em>: "these two company descriptions refer to firms that
+    build similar products," "these two video frames show the same car." Deciding whether a pair
+    satisfies such a condition requires an expensive machine-learning model or LLM, called here the
+    <em>Oracle</em>. Running the Oracle on every pair (the exact answer) is prohibitively costly —
+    quadratic in table size, exponential in the number of tables. Two cheaper approximations exist,
+    and each fails in its own way: <strong>embedding-based blocking</strong> keeps only high-similarity
+    pairs but silently discards true matches, biasing the answer and producing invalid confidence
+    intervals (errors up to 79% larger than reported); <strong>sampling</strong> stays unbiased but is
+    crippled when positive pairs are rare. This paper proposes <strong>Blocking-augmented Sampling
+    (BaS)</strong>, which orchestrates the two by splitting the search space along the embedding's own
+    failure modes — using the Oracle directly where false positives dominate, and importance sampling
+    where false negatives dominate — and adaptively allocating a fixed Oracle budget between them. BaS
+    delivers valid confidence intervals and reduces root-mean-squared error by up to <strong>19×</strong>
+    over state-of-the-art baselines across text, image, and bimodal datasets.
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 1 -->
+  <h2 data-cid="main-0020" id="s1">1. The Problem: Aggregates over Semantic Joins</h2>
+
+  <p data-cid="main-0030">
+    A join in classical SQL matches rows on an exact key: <code>orders.customer_id = customers.id</code>.
+    The match is cheap, deterministic, and indexable. Now consider an investor who wants the average
+    stock-price gap between pairs of companies that <em>build similar products</em>. There is no key for
+    "builds similar products." The only reliable way to decide whether two company descriptions match is
+    to ask a capable model — a fine-tuned classifier, a vision-language model, or an LLM. The query reads:
+  </p>
+
+  <div class="box example" data-cid="main-0040">
+    <span class="box-label">Motivating query — average price gap among similar companies</span>
+    <pre><code>SELECT AVG(c1.price - c2.price)
+FROM   companies AS c1 JOIN companies AS c2
+ON     NL('Company: {c1.description} and Company: {c2.description}
+          build similar products');</code></pre>
+    <p data-cid="main-0050">
+      <code>NL(&middot;)</code> is a natural-language join predicate. Its truth value for any given pair
+      is decided by the Oracle. The aggregate is ordinary SQL; the cost is anything but.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-0060">
+    <span class="box-label">Definition — the Oracle</span>
+    <p data-cid="main-0070">
+      The <strong>Oracle</strong> is a method that takes a pair of records and returns the ground-truth
+      label for whether they satisfy the join condition. It is assumed to be the state-of-the-art
+      decision procedure — an LLM judging whether two sentences name the same entity, a fine-tuned
+      model judging whether two images show the same car, or even a human annotator. Crucially, the
+      Oracle is <em>treated as ground truth</em>: it defines what "true" means for the join, so anything
+      that disagrees with it — such as the embedding — is by definition the thing that is wrong. (This is
+      what lets us speak of a "false positive" or "false negative" later.) The Oracle is accurate but
+      expensive, so the whole game is to <em>invoke it as few times as possible</em> while still
+      answering the aggregate accurately.
+    </p>
+  </div>
+
+  <p data-cid="main-0080">
+    How expensive? Labelling every pair in the Magellan <em>Company</em> dataset with the Oracle method
+    means
+    <span class="tts-math" data-tts="5 hundred 67 million">$567$ million</span>
+    tokens — about
+    <span class="tts-math" data-tts="7 hundred 9 thousand dollars">\$709\text{K}$</span>
+    with GPT-4o, or
+    <span class="tts-math" data-tts="43 thousand dollars">\$43\text{K}$</span>
+    with GPT-4o&nbsp;mini. The number of Oracle calls grows at least quadratically with the number of
+    records and exponentially with the number of tables joined. Exact pairwise evaluation is simply off
+    the table for analytics.
+  </p>
+
+  <div class="box intuition" data-cid="main-0090">
+    <span class="box-label">The one-sentence problem</span>
+    <p data-cid="main-0100">
+      We want an aggregate over a join, the join predicate can only be checked by an expensive model,
+      and we have a fixed budget of how many times we may call that model. Spend the budget to return
+      both a good estimate <em>and</em> an honest confidence interval around it.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 2 -->
+  <h2 data-cid="main-0110" id="s2">2. Query Syntax and Semantics</h2>
+
+  <p data-cid="main-0120">
+    JoinML — the prototype system in this paper — extends SQL with a budget and a confidence level.
+    The user writes a linear aggregate (COUNT, SUM, or AVG) over one or more joins with natural-language
+    conditions, and adds a clause stating how much Oracle work is permitted and how confident the
+    interval should be.
+  </p>
+
+  <div class="box example" data-cid="main-0130">
+    <span class="box-label">JoinML query syntax</span>
+    <pre><code>SELECT {AVG | SUM | COUNT} {field | EXPR(field)}
+FROM   table_1 JOIN table_2 JOIN ...
+ON     NL(join_condition) AND ...
+ORACLE BUDGET b WITH PROBABILITY p</code></pre>
+  </div>
+
+  <p data-cid="main-0140">
+    Two ingredients define the semantics. The <strong>Oracle</strong> (above) gives ground truth on a
+    pair. The <strong>embedding similarity</strong> is a cheap proxy: embed each record individually with
+    a pre-trained model, then take the cosine similarity of the two vectors,
+  </p>
+
+  <div class="box" data-cid="main-0150">
+    <span class="tts-math" data-tts="the similarity of records r 1 and r 2 equals the embedding of r 1 dotted with the embedding of r 2, divided by the product of their magnitudes">
+      $$\operatorname{sim}\big(e(r_1), e(r_2)\big) = \frac{e(r_1) \cdot e(r_2)}{\lVert e(r_1)\rVert \, \lVert e(r_2)\rVert}.$$
+    </span>
+  </div>
+
+  <p data-cid="main-0160">
+    Because the embedding is computed per record rather than per pair, it is orders of magnitude cheaper
+    than the Oracle — but it does not see the <em>joint</em> semantics of a pair, so it is only an
+    approximation of the truth. The entire method is built around exploiting this cheap signal while
+    being honest about where it lies.
+  </p>
+
+  <div class="box definition" data-cid="main-0170">
+    <span class="box-label">Query semantics &amp; the guarantee</span>
+    <p data-cid="main-0180">
+      A JoinML query returns a point estimate
+      <span class="tts-math" data-tts="theta hat">$\hat{\theta}$</span>
+      and a confidence interval
+      <span class="tts-math" data-tts="the interval from L to U">$[L, U]$</span>.
+      Let <span class="tts-math" data-tts="theta">$\theta$</span> be the answer that exhaustive Oracle
+      evaluation would give. With budget <span class="tts-math" data-tts="b">$b$</span> and probability
+      <span class="tts-math" data-tts="p">$p$</span>, JoinML guarantees: (1) the Oracle is called on no
+      more than <span class="tts-math" data-tts="b">$b$</span> pairs; and (2)
+      <span class="tts-math" data-tts="the probability that theta lies between L and U is at least p">
+        $P[L \le \theta \le U] \ge p$</span>.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 3 -->
+  <h2 data-cid="main-0190" id="s3">3. Use Cases</h2>
+
+  <p data-cid="main-0200">
+    Semantic joins show up wherever the matching rule is fuzzy. The paper highlights three, each with a
+    natural aggregate.
+  </p>
+
+  <ul data-cid="main-0210">
+    <li><strong>Business analysis</strong> — the motivating AVG query above: compare related companies'
+        prices by joining on "build similar products."</li>
+    <li><strong>Plagiarism analysis</strong> — join an article's sentences against a reference corpus on
+        "is paraphrased from," then <code>COUNT</code> the matches to get a paraphrase rate.</li>
+    <li><strong>Traffic analysis</strong> — join two roadside videos on "shows the same car," then
+        <code>AVG</code> the timestamp difference to estimate travel time across a segment.</li>
+  </ul>
+
+  <div class="box example" data-cid="main-0220">
+    <span class="box-label">Plagiarism: a COUNT over a paraphrase join</span>
+    <pre><code>SELECT COUNT(*)
+FROM   article JOIN db
+ON     NL('{article.sentence} is paraphrased from {db.sentence}');</code></pre>
+  </div>
+
+  <p data-cid="main-0230">
+    A fourth, more subtle use case is <strong>join-order optimization</strong>. Planning a multi-way
+    semantic join well requires cardinality estimates for its sub-joins, but those estimates are exactly
+    the expensive COUNTs above. Because BaS can produce a tight COUNT confidence interval from a small
+    budget, a query optimizer can use it to pick a good join order without ever materializing the full
+    pairwise evaluation.
+  </p>
+
+  <!-- ═══════════════════════════════════════════ SECTION 4 -->
+  <h2 data-cid="main-0240" id="s4">4. The Two Baselines and How Each Fails</h2>
+
+  <p data-cid="main-0250">
+    Before the new method, it helps to see precisely why the two standard tools break. They fail for
+    <em>opposite</em> reasons, and that opposition is what BaS later exploits.
+  </p>
+
+  <h3 data-cid="main-0260">4.1 Embedding-based Blocking — fast but biased</h3>
+
+  <div class="box comment-response" data-resolves="c_41c3e49db8b7" data-cid="main-0265">
+    <span class="box-label">A concrete example of both tools</span>
+    <p data-cid="main-0266">
+      Picture matching products across two catalogs. Table A holds
+      <em>"Apple iPhone 13, 128 GB, Blue"</em> and Table B holds
+      <em>"iPhone 13 — 128GB, colour: blue, unlocked"</em>. To a human these are obviously the same
+      phone, so the Oracle would label this pair a <strong>match</strong>. Watch how each baseline
+      treats it.
+    </p>
+    <p data-cid="main-0267">
+      <strong>Blocking</strong> turns each record into an embedding vector and keeps a pair only if their
+      cosine similarity clears a threshold, say
+      <span class="tts-math" data-tts="tau equals 0 point 75">$\tau = 0.75$</span>. The wording differs
+      enough — "Apple" vs. no brand, "Blue" vs. "blue, unlocked" — that the embedding scores this true
+      match at only
+      <span class="tts-math" data-tts="cosine similarity equals 0 point 62">$\cos = 0.62$</span>.
+      Because <span class="tts-math" data-tts="0 point 62 is less than 0 point 75">$0.62 &lt; 0.75$</span>,
+      blocking discards the pair and the real match is never counted — a textbook
+      <strong>false negative</strong>. Meanwhile an <em>un</em>related pair,
+      <em>"Apple iPhone 13"</em> vs. <em>"Apple iPhone 13 screen protector"</em>, shares more surface words
+      and scores
+      <span class="tts-math" data-tts="cosine similarity equals 0 point 81">$\cos = 0.81$</span>,
+      so blocking keeps it even though it is not a match. Fast, but the mistakes are baked in.
+    </p>
+    <p data-cid="main-0268">
+      <strong>Sampling</strong> ignores the embedding and draws pairs uniformly at random from the full
+      cross product. With
+      <span class="tts-math" data-tts="100 thousand">$100{,}000$</span> records on each side there are
+      <span class="tts-math" data-tts="10 to the 10, that is ten billion, candidate pairs">$10^{10}$</span>
+      candidate pairs but perhaps only
+      <span class="tts-math" data-tts="50 thousand">$50{,}000$</span> genuine matches — a selectivity of
+      <span class="tts-math" data-tts="5 times 10 to the minus 6">$5 \times 10^{-6}$</span>. A random draw
+      lands on a true match roughly once in every two hundred thousand pairs, so you must call the Oracle
+      an enormous number of times before you have seen enough matches to trust the estimate. Honest, but
+      expensive — exactly the tension Section 4.2 quantifies.
+    </p>
+  </div>
+
+  <div class="box comment-response" data-resolves="c_95eaae38f84e" data-cid="main-0269">
+    <span class="box-label">Yes — and what "sampled enough" really means</span>
+    <p>
+      Your picture is exactly right: uniform sampling keeps drawing random pairs, asks the Oracle whether
+      each one matches, and the number it returns is an <em>approximation</em> of the true aggregate, never
+      the exact value. Two refinements sharpen the "after a while, this is probably the result" intuition.
+    </p>
+    <p>
+      First, it does not stop on a hunch. The budget
+      <span class="tts-math" data-tts="b">$b$</span> — the maximum number of Oracle calls allowed — is
+      fixed <em>before</em> sampling begins, so "enough" simply means "the budget is spent," not a feeling
+      that we have seen plenty. Second, "probably the result" is made precise. The confirmed matches feed a
+      running average, and the central limit theorem turns that average into a point estimate
+      <span class="tts-math" data-tts="theta hat">$\hat{\theta}$</span> together with a confidence interval
+      <span class="tts-math" data-tts="the interval from L to U">$[L, U]$</span> that says how far the
+      approximation might sit from the truth — so the method reports not just a guess but an honest margin
+      around it.
+    </p>
+    <p>
+      The catch is the very thing this section is about: when matches are rare — a selectivity of
+      <span class="tts-math" data-tts="5 times 10 to the minus 6">$5 \times 10^{-6}$</span> in the example
+      above — a random draw almost never lands on one, so the budget runs out long before the interval
+      <span class="tts-math" data-tts="the interval from L to U">$[L, U]$</span> is narrow enough to be
+      useful. The estimate stays honest, but it can be too loose to act on. Closing that gap is exactly
+      what Blocking-augmented Sampling does later in the paper.
+    </p>
+  </div>
+
+  <p data-cid="main-0270">
+    Blocking, the workhorse of entity-matching systems, keeps only pairs whose embedding similarity
+    exceeds a threshold <span class="tts-math" data-tts="tau">$\tau$</span> and runs the Oracle on just
+    those. The threshold can even be calibrated on a validation set. The trouble is the
+    <strong>false negative</strong>: a genuinely matching pair whose embedding similarity happens to be
+    low gets filtered out and never counted.
+  </p>
+
+  <div class="box warn" data-cid="main-0280">
+    <span class="box-label">Why blocking has no statistical guarantee</span>
+    <p data-cid="main-0290">
+      Discarding low-similarity matches skews every aggregate toward the high-similarity region.
+      As the Oracle budget grows, blocking's point estimate converges — but to the <em>wrong limit</em>:
+      a fixed bias that does not vanish no matter how large the budget gets. Meanwhile its confidence
+      interval shrinks toward zero width. An interval can be narrow yet wrong — shrinking it around a
+      biased center just makes blocking confidently wrong. Eventually the true error sits
+      <em>outside</em> the reported interval: the paper measures errors up to 79% larger than the
+      confidence interval claims, even with a calibrated threshold. Blocking is fast but cannot tell you
+      when it is wrong.
+    </p>
+  </div>
+
+  <h3 data-cid="main-0300">4.2 Sampling — honest but inefficient</h3>
+
+  <p data-cid="main-0310">
+    Uniform sampling draws pairs at random, runs the Oracle on the sample, and uses the central limit
+    theorem to build a valid confidence interval. It is unbiased and honest. But <em>positive pairs</em>
+    (the pairs the Oracle labels as matching) in a <em>cross product</em> (the set of all candidate pairs,
+    one per combination of records across the tables) are extremely sparse. The <em>selectivity</em> —
+    the fraction of all candidate pairs that actually match — in the paper goes as low as
+    <span class="tts-math" data-tts="5 times 10 to the minus 10">$5 \times 10^{-10}$</span>.
+    Hitting enough positives to pin down the answer takes an enormous sample: reaching just 5% error on
+    the Company dataset needs about
+    <span class="tts-math" data-tts="1 point 4 times 10 to the 7">$1.4 \times 10^{7}$</span>
+    Oracle calls — roughly
+    <span class="tts-math" data-tts="20 billion">$20$ billion</span>
+    tokens, or
+    <span class="tts-math" data-tts="26 thousand dollars">\$26\text{K}$</span>
+    with GPT-4o.
+  </p>
+
+  <div class="box pause" data-cid="main-0320">
+    <span class="box-label">The tension, stated plainly</span>
+    <p data-cid="main-0330">
+      Blocking <em>trusts</em> the embedding too much (and inherits its false negatives as bias).
+      Sampling <em>ignores</em> the embedding entirely (and pays for it in variance). Neither uses the
+      embedding for exactly what it is good at. The contribution of this paper is a method that uses the
+      embedding where it is reliable and falls back to honest sampling where it is not.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 5 -->
+  <h2 data-cid="main-0340" id="s5">5. Weighted Wander Join: Embeddings as an Approximate Index</h2>
+
+  <p data-cid="main-0350">
+    The first building block sharpens sampling. <strong>Wander Join</strong> is an efficient join-sampling
+    algorithm for structured data: it performs random walks across tables, at each step jumping only to
+    records that satisfy the join condition. That requires an index over the join key — which semantic
+    joins do not have. Without an index, Wander Join degenerates into uniform sampling.
+  </p>
+
+  <p data-cid="main-0360">
+    <strong>Weighted Wander Join (WWJ)</strong> replaces the missing exact index with an
+    <em>approximate</em> one built from embeddings. At each step of the walk it samples the next record
+    with probability proportional to its embedding similarity to the current one, rather than uniformly.
+    High-similarity (likely-matching) records get visited more often.
+  </p>
+
+  <div class="box intuition" data-cid="main-0370">
+    <span class="box-label">WWJ is importance sampling in disguise</span>
+    <p data-cid="main-0380">
+      The idea is <em>importance sampling</em>: sample promising items more often, then divide each
+      observation by the probability of having sampled it, so the average stays unbiased. Each complete
+      walk from table <span class="tts-math" data-tts="T 1">$T_1$</span> to
+      <span class="tts-math" data-tts="T n">$T_n$</span> corresponds to one tuple in the cross product. At
+      every step the per-step similarities to the candidate next records are <em>normalized into a
+      probability distribution</em>, and the walk draws from it; the resulting sampling weight of a tuple
+      is the product of those per-step similarities:
+    </p>
+    <span class="tts-math" data-tts="the weight of the tuple t 1 through t n equals 1 over the size of T 1, times the product from i equals 2 to n of the similarity between the embedding of t i minus 1 and the embedding of t i">
+      $$w(t_1, \dots, t_n) = \frac{1}{|T_1|} \prod_{i=2}^{n} \operatorname{sim}\big(e(t_{i-1}), e(t_i)\big).$$
+    </span>
+    <p data-cid="main-0390">
+      The probability that the walk selects a given tuple is proportional to this weight. Dividing each
+      Oracle observation by that selection probability gives an <em>unbiased</em> estimate and a valid
+      confidence interval by the standard recipe — upweighting promising pairs reduces variance without
+      introducing bias. (One knob here is the <em>weight exponent</em>: the similarity score is raised to
+      a power before being normalized into the per-step probability, sharpening or flattening the walk's
+      preference for high-similarity records. The paper finds the best results at exponent
+      <span class="tts-math" data-tts="1">$1$</span> — i.e. the raw similarity.)
+    </p>
+  </div>
+
+  <div class="box pause" data-cid="main-0400">
+    <span class="box-label">Why WWJ is cheap</span>
+    <p data-cid="main-0410">
+      Enumerating the cross product to do importance sampling naively would cost
+      <span class="tts-math" data-tts="big O of the product of the table sizes">$O\!\left(\prod_{i} |T_i|\right)$</span>
+      — exponential in the number of tables. WWJ instead decomposes the walk into sequential steps,
+      comparing the current tuple only against the next table's records. For a budget
+      <span class="tts-math" data-tts="b">$b$</span> the cost scales as
+      <span class="tts-math" data-tts="big O of b times the sum of the table sizes">$O\!\left(b \cdot \sum_i |T_i|\right)$</span>
+      — linear in table size, sidestepping the combinatorial blowup.
+    </p>
+  </div>
+
+  <div class="box warn" data-cid="main-0420">
+    <span class="box-label">WWJ's failure mode: false positives</span>
+    <p data-cid="main-0430">
+      WWJ is only as good as the embedding's <em>precision</em>. When high-similarity pairs really are
+      matches, WWJ converges to indexed Wander Join — the best case. But when there are many
+      <strong>false positives</strong> — pairs that look similar yet violate the join condition — WWJ
+      keeps spending budget sampling them, and its efficiency collapses back to that of uniform sampling
+      or worse. State-of-the-art embeddings still produce these false positives (e.g. a 99% false-positive
+      rate for OpenAI embeddings on the Company dataset).
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 6 -->
+  <h2 data-cid="main-0440" id="s6">6. Blocking-augmented Sampling: Using Each Tool Where It Wins</h2>
+
+  <p data-cid="main-0450">
+    Here is the central idea. The two baselines fail on opposite halves of the similarity spectrum.
+    Blocking is wrecked by <em>false negatives</em>, which live among low-similarity pairs. WWJ is wrecked
+    by <em>false positives</em>, which live among high-similarity pairs. So <strong>split the space at the
+    threshold and apply each method where it actually wins.</strong>
+  </p>
+
+  <div class="box definition" data-cid="main-0460">
+    <span class="box-label">The two regimes of BaS</span>
+    <p data-cid="main-0470">
+      BaS treats the blocking threshold not as a static filter but as a dynamic decision boundary that
+      partitions the cross product
+      <span class="tts-math" data-tts="S equals S sub b union S sub s">$S = S_b \cup S_s$</span>:
+    </p>
+    <ul data-cid="main-0480">
+      <li><strong>Blocking regime <span class="tts-math" data-tts="S sub b">$S_b$</span></strong> —
+          high similarity, high false-positive risk. Here BaS runs the <em>Oracle directly</em> on every
+          pair, eliminating the variance WWJ would suffer from repeatedly sampling false positives.</li>
+      <li><strong>Sampling regime <span class="tts-math" data-tts="S sub s">$S_s$</span></strong> —
+          low similarity, high false-negative risk. Here BaS runs <em>WWJ</em> (the importance-sampling
+          estimator of Section 5), which (unlike blocking) does not ignore the true matches that blocking
+          would have discarded — restoring the statistical guarantee.</li>
+    </ul>
+  </div>
+
+  <p data-cid="main-0490">
+    For a linear aggregate the two regimes simply add. With the Oracle giving the exact value over
+    <span class="tts-math" data-tts="S sub b">$S_b$</span> and WWJ estimating the rest:
+  </p>
+
+  <div class="box" data-cid="main-0500">
+    <span class="tts-math" data-tts="estimated COUNT equals COUNT over S sub s plus COUNT over S sub b; and estimated SUM equals SUM over S sub s plus SUM over S sub b">
+      $$\widehat{\mathrm{COUNT}} = \mathrm{COUNT}_{S_s} + \mathrm{COUNT}_{S_b}, \qquad
+        \widehat{\mathrm{SUM}} = \mathrm{SUM}_{S_s} + \mathrm{SUM}_{S_b}.$$
+    </span>
+  </div>
+
+  <p data-cid="main-0510">
+    Because the WWJ estimator over <span class="tts-math" data-tts="S sub s">$S_s$</span> is unbiased and
+    the blocking-regime contribution is exact, the combined COUNT and SUM estimators are unbiased. AVG is
+    a ratio of two such estimators, and the expectation of a ratio is <em>not</em> the ratio of the
+    expectations — so even with unbiased numerator and denominator the ratio carries a finite-sample bias
+    (of order <span class="tts-math" data-tts="1 over b">$O(1/b)$</span>), which is why it is only
+    <em>asymptotically</em> unbiased. The paper adds a Taylor-expansion bias correction that removes the
+    leading term, dropping the bias to order
+    <span class="tts-math" data-tts="1 over b squared">$O(1/b^2)$</span>.
+  </p>
+
+  <div class="box intuition" data-cid="main-0520">
+    <span class="box-label">Why this is more than stratified sampling</span>
+    <p data-cid="main-0530">
+      In ordinary stratified sampling the strata are fixed in advance. In BaS the boundary between
+      "compute exactly" and "sample" is itself the decision variable, chosen to minimize error. Two
+      questions remain, and they are the heart of the method: <em>where</em> exactly should the boundary
+      go, and <em>how</em> do we get a valid confidence interval after stitching two regimes together?
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 7 -->
+  <h2 data-cid="main-0540" id="s7">7. Adaptive Allocation via Two-Stage Stratified Sampling</h2>
+
+  <p data-cid="main-0550">
+    Choosing the boundary tuple-by-tuple over a trillion-pair cross product is hopeless, so BaS lifts the
+    problem to <em>strata</em>. It sorts the top-similarity pairs and cuts them into
+    <span class="tts-math" data-tts="m">$m$</span> equal-size strata; the goal is to decide which strata
+    go into the blocking regime so as to minimize the mean-squared error of the estimate under the budget.
+  </p>
+
+  <div class="box definition" data-cid="main-0560">
+    <span class="box-label">The allocation problem</span>
+    <p data-cid="main-0570">
+      Given strata <span class="tts-math" data-tts="S 0 through S m">$S_0, \dots, S_m$</span>, an aggregate,
+      similarity scores, and budget <span class="tts-math" data-tts="b">$b$</span>, find the allocation
+      <span class="tts-math" data-tts="A star">$A^\ast$</span> — a subset of strata sent to blocking,
+      the choice that minimizes the estimator's mean-squared error (MSE) — the average squared gap between
+      estimate and truth, which we want small:
+    </p>
+    <span class="tts-math" data-tts="A star equals the arg min over subsets A of the strata S 1 through S m, of the mean squared error of the aggregate given A, b, and so on">
+      $$A^\ast = \arg\min_{A \subseteq \{S_1, \dots, S_m\}} \operatorname{MSE}_{\mathrm{AGG}}(A, b, \dots).$$
+    </span>
+  </div>
+
+  <p data-cid="main-0580">
+    Recall a <em>stratum</em> is just one equal-size group of pairs, and a <em>regime</em> is the method
+    (blocking or sampling) applied to a group. For the unbiased SUM and COUNT estimators the MSE is simply
+    the sum of the per-stratum sampling variances over the strata left in the sampling regime — a stratum
+    sent to blocking contributes zero variance because the Oracle gives its exact value. (For AVG and
+    MEDIAN the objective also carries a bias term, so it is not a pure sum of variances.) The catch: that
+    variance depends on the Oracle labels, which we have not yet paid for. The solution is a
+    <strong>two-stage</strong> scheme.
+  </p>
+
+  <div class="box definition" data-cid="main-0590">
+    <span class="box-label">The two stages</span>
+    <p data-cid="main-0600">
+      <strong>Stage 1 — pilot sampling.</strong> Spend a small slice
+      <span class="tts-math" data-tts="b 1">$b_1$</span> of the budget to draw pilot samples and
+      <em>estimate</em> each stratum's variance. From these estimates, solve the allocation problem to get
+      the boundary <span class="tts-math" data-tts="A hat">$\hat{A}$</span>.
+      <br/>
+      <strong>Stage 2 — execute.</strong> Spend the remaining budget
+      <span class="tts-math" data-tts="b 2">$b_2$</span> running the Oracle on the chosen blocking strata
+      and WWJ on the rest, assigning each sampling stratum a budget proportional to its summed similarity
+      scores. This is the <em>WWJ proposal rule</em> — it matches importance sampling's own weighting, and
+      is distinct from classical variance-optimal (Neyman) allocation. Concretely, a stratum holding, say,
+      30% of the sampling regime's total similarity mass receives about 30% of the sampling budget, drawn
+      via WWJ walks. Oracle results from the pilot stage are cached so no pair is labelled twice.
+    </p>
+  </div>
+
+  <p data-cid="main-0610">
+    The paper proves the estimated allocation converges to the true optimum at rate
+    <span class="tts-math" data-tts="big O of 1 over the square root of b 1">$O\!\left(1/\sqrt{b_1}\right)$</span>,
+    since the sample mean and variance used to choose the boundary converge at that rate and the
+    arithmetic that turns them into an MSE does not change it. Two distinct knobs are in play here. The
+    <em>pilot slice</em> <span class="tts-math" data-tts="b 1">$b_1$</span> is a few percent of the budget
+    spent on Stage 1 to estimate variances; the paper found values from 0.1% to 10% all preserve validity,
+    so there is no single magic default. Separately, the <em>blocking reserve</em> is the slice held back
+    for the "maximum blocking regime" BaS stratifies over — the cold-start recommendation is 15–30% of the
+    budget. BaS also auto-tunes <span class="tts-math" data-tts="m">$m$</span>, the number of strata, so
+    each stratum gets at least 1,000 Oracle calls (enforcing a minimum of
+    <span class="tts-math" data-tts="m equals 5">$m = 5$</span> for small budgets).
+  </p>
+
+  <!-- ═══════════════════════════════════════════ SECTION 8 -->
+  <h2 data-cid="main-0620" id="s8">8. Confidence Intervals via Bootstrap-t</h2>
+
+  <p data-cid="main-0630">
+    Stitching two dependent stages together breaks the usual recipe for intervals. The combined sample is
+    <em>not</em> independent and identically distributed — the pilot stage chose where the second stage
+    sampled — so applying the central limit theorem naively would yield intervals that cover the truth
+    less often than advertised.
+  </p>
+
+  <div class="box definition" data-cid="main-0640">
+    <span class="box-label">Bootstrap-t resampling for valid coverage</span>
+    <p data-cid="main-0650">
+      BaS instead constructs intervals by resampling the observed data. The bootstrap fakes many fresh
+      datasets by re-drawing, with replacement, from the one sample we already have, to see how much the
+      estimate wobbles. Given the sample <span class="tts-math" data-tts="X">$X$</span> and confidence
+      <span class="tts-math" data-tts="p">$p$</span>:
+    </p>
+    <ol data-cid="main-0660">
+      <li>Compute the estimate <span class="tts-math" data-tts="theta hat">$\hat{\theta}$</span> and its
+          variance <span class="tts-math" data-tts="sigma hat squared">$\hat{\sigma}^2$</span>.</li>
+      <li>Draw a resample <span class="tts-math" data-tts="X star">$X^\ast$</span> of size
+          <span class="tts-math" data-tts="the size of X">$|X|$</span> from
+          <span class="tts-math" data-tts="X">$X$</span> with replacement; recompute
+          <span class="tts-math" data-tts="theta hat star and sigma hat star squared">$\hat{\theta}^\ast, \hat{\sigma}^{\ast 2}$</span>.</li>
+      <li>Form the studentized statistic — the deviation scaled by its own estimated standard error —
+          <span class="tts-math" data-tts="z star equals theta hat star minus theta hat, divided by sigma hat star">$z^\ast = (\hat{\theta}^\ast - \hat{\theta}) / \hat{\sigma}^\ast$</span>.</li>
+      <li>Repeat 1,000 times and take percentiles of
+          <span class="tts-math" data-tts="z star">$z^\ast$</span>. Note the crossover: the <em>lower</em>
+          percentile <span class="tts-math" data-tts="z sub lower">$z_{\ell}$</span> forms the
+          <em>upper</em> endpoint and the <em>upper</em> percentile
+          <span class="tts-math" data-tts="z sub upper">$z_{u}$</span> the <em>lower</em> endpoint, as the
+          displayed formula does by subtracting each from
+          <span class="tts-math" data-tts="theta hat">$\hat{\theta}$</span>:
+          <span class="tts-math" data-tts="the interval from theta hat minus z sub upper times sigma hat, to theta hat minus z sub lower times sigma hat">$[\hat{\theta} - z_{u}\hat{\sigma},\; \hat{\theta} - z_{\ell}\hat{\sigma}]$</span>.</li>
+    </ol>
+  </div>
+
+  <p data-cid="main-0670">
+    Two separate guarantees are at work. First, the estimator is smooth enough that the bootstrap is
+    <em>consistent</em> — the resampled intervals are asymptotically valid (this is the first-order
+    guarantee, proved via Hadamard differentiability of the estimator; Theorem 23.9 of van der Vaart,
+    where SUM and COUNT are linear functionals and AVG a ratio of differentiable ones). Second, and under
+    extra smoothness, the studentization buys a refinement: it corrects for skew and tightens coverage
+    accuracy to order <span class="tts-math" data-tts="1 over b squared">$O(1/b^2)$</span>. Notably, the
+    interval computation is independent of the allocation — skipping it saves time but does not change
+    accuracy, so latency-bound users can spend that time on a larger Oracle budget instead.
+  </p>
+
+  <!-- ═══════════════════════════════════════════ SECTION 9 -->
+  <h2 data-cid="main-0680" id="s9">9. Beyond SUM: Other Aggregates and Queries</h2>
+
+  <p data-cid="main-0690">
+    The SUM machinery extends to the rest of the analytic vocabulary, each requiring a twist:
+  </p>
+
+  <ul data-cid="main-0700">
+    <li><strong>AVG</strong> — a ratio estimator with the Taylor bias correction of Section 6; its MSE is
+        estimated from the variances of SUM and COUNT. Because SUM and COUNT are computed on the
+        <em>same</em> sample they are in fact correlated, so treating the SUM and COUNT estimators as
+        independent is an approximation — the bootstrap-t step corrects the resulting coverage.</li>
+    <li><strong>MIN / MAX</strong> — here the goal is not minimizing global variance but
+        <em>maximizing the probability the true extremum lands in the blocking regime</em>. The largest
+        value in a sample does not follow the usual bell curve, so the standard normal-based interval does
+        not apply; BaS models each stratum's value distribution with Extreme Value Theory and allocates
+        accordingly. Since the sample maximum is non-normal in this sense, the interval uses the observed
+        max as a lower bound and the global (join-ignoring) max as an upper bound.</li>
+    <li><strong>MEDIAN</strong> — BaS estimates the CDF by combining the exact distribution from blocking
+        with the weighted empirical distribution from sampling, then inverts at
+        <span class="tts-math" data-tts="0 point 5">$0.5$</span>; allocation focuses variance reduction on
+        strata near the estimated median.</li>
+    <li><strong>GroupBy</strong> — instead of total variance, BaS minimizes the <em>maximum</em> relative
+        error across groups, prioritizing strata dense in hard-to-estimate "tail" groups, with
+        simultaneous intervals across groups.</li>
+  </ul>
+
+  <p data-cid="main-0710">
+    BaS also handles <strong>selection queries</strong> with a recall target. <em>Recall</em> here is the
+    fraction of the true matches the query actually returns; a query is approximately correct if it
+    returns at least a fraction <span class="tts-math" data-tts="gamma">$\gamma$</span> of the true matches
+    with probability <span class="tts-math" data-tts="p">$p$</span>. BaS maximizes the output threshold by
+    allocating data to minimize the recall burden left to the sampling regime, using an upper bound on the
+    count — with <span class="tts-math" data-tts="v">$v$</span> the estimated count and
+    <span class="tts-math" data-tts="s squared">$s^2$</span> its variance:
+  </p>
+
+  <div class="box" data-cid="main-0720">
+    <span class="tts-math" data-tts="the upper bound of v, given its variance s squared, confidence p, and budget b, equals v plus the square root of the quantity, 2 s squared times the log of, 1 over the quantity 1 minus p">
+      $$\mathrm{UB}(v, s^2, p, b) = v + \sqrt{2\, s^2 \log\tfrac{1}{1-p}}.$$
+    </span>
+  </div>
+
+  <p data-cid="main-0730">
+    A <strong>TopK heavy-hitter</strong> query — the <span class="tts-math" data-tts="k">$k$</span>
+    entities appearing most often — is handled by estimating each entity's COUNT and minimizing the
+    swapping probability between the <span class="tts-math" data-tts="k-th">$k$</span>-th and
+    <span class="tts-math" data-tts="k plus 1-th">$(k{+}1)$</span>-th ranked entities, using simultaneous
+    bootstrap-t intervals so the lower bound of rank <span class="tts-math" data-tts="k">$k$</span> exceeds
+    the upper bound of rank <span class="tts-math" data-tts="k plus 1">$k{+}1$</span>.
+  </p>
+
+  <!-- ═══════════════════════════════════════════ SECTION 10 -->
+  <h2 data-cid="main-0740" id="s10">10. Theoretical Guarantees</h2>
+
+  <p data-cid="main-0750">
+    The theory answers two questions: does adaptive allocation reach the optimum, and is BaS ever
+    <em>worse</em> than plain WWJ?
+  </p>
+
+  <div class="box definition" data-cid="main-0760">
+    <span class="box-label">Theorem 6.1 — convergence to the optimal allocation</span>
+    <p data-cid="main-0770">
+      The MSE under the estimated minimizer <span class="tts-math" data-tts="A hat">$\hat{A}$</span>
+      approaches the MSE under the true minimizer <span class="tts-math" data-tts="A star">$A^\ast$</span>
+      at rate
+    </p>
+    <span class="tts-math" data-tts="the MSE at A hat minus the MSE at A star, divided by the MSE at A star, is big O of 1 over the square root of b 1">
+      $$\frac{\operatorname{MSE}(\hat{A}) - \operatorname{MSE}(A^\ast)}{\operatorname{MSE}(A^\ast)} = O\!\left(\frac{1}{\sqrt{b_1}}\right).$$
+    </span>
+    <p data-cid="main-0780">
+      More pilot budget <span class="tts-math" data-tts="b 1">$b_1$</span> buys a sharper boundary, and the
+      gap to optimal shrinks at the canonical square-root rate.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-0790">
+    <span class="box-label">Theorem 6.2 — BaS outperforms or matches WWJ</span>
+    <p data-cid="main-0800">
+      If a separating allocation exists for which the sampling-regime distribution is closer to the
+      <em>ideal</em> — the optimal importance-sampling distribution — and the sampling regime's matching
+      tuples are sparser, then BaS strictly improves on WWJ by a shrinkage coefficient
+      <span class="tts-math" data-tts="alpha">$\alpha$</span> (less than 1):
+    </p>
+    <span class="tts-math" data-tts="the MSE of BaS for SUM equals alpha times the MSE of WWJ for SUM, plus big O of, b 1 to the minus 1 times b to the minus one half">
+      $$\operatorname{MSE}^{\mathrm{BaS}}_{\mathrm{SUM}} = \alpha \cdot \operatorname{MSE}^{\mathrm{WWJ}}_{\mathrm{SUM}} + O\!\left(b_1^{-1} b^{-1/2}\right),$$
+    </span>
+    <p data-cid="main-0810">
+      with coefficient <span class="tts-math" data-tts="alpha less than 1">$\alpha < 1$</span>. When those
+      conditions do not hold, the two methods are equal up to a term that vanishes faster than the MSE
+      itself — so BaS is <em>never asymptotically worse</em> than WWJ.
+    </p>
+  </div>
+
+  <div class="box intuition" data-cid="main-0820">
+    <span class="box-label">Reading the two conditions</span>
+    <p data-cid="main-0830">
+      The first condition says: pruning false positives via blocking makes the sampling distribution look
+      more like the ideal one. The second says: when the embedding has high recall, the blocking regime
+      already swallows most true matches, leaving the sampling regime genuinely sparse. Both are exactly
+      the situations real embeddings create — which is why BaS wins in practice, not just in theory.
+    </p>
+  </div>
+
+  <p data-cid="main-0840">
+    On cost: BaS's CPU-side bookkeeping (sorting the top records, stratifying) is more expensive than
+    uniform sampling but trivially cheap next to the Oracle. The paper measures up to 90 seconds of CPU
+    time costing about <span class="tts-math" data-tts="3 cents">\$0.03$</span> on AWS <em>per query</em> —
+    set that against the millions of Oracle calls (and the thousands of dollars) an exhaustive or uniform
+    approach would spend on the same query, and the bookkeeping is roughly
+    <span class="tts-math" data-tts="10 to the 6 times">$10^6\times$</span> cheaper than the Oracle calls
+    it saves. For cross products too large to materialize, BaS swaps exact thresholding for
+    nearest-neighbor blocking and keeps the same favorable scaling.
+  </p>
+
+  <!-- ═══════════════════════════════════════════ SECTION 11 -->
+  <h2 data-cid="main-0850" id="s11">11. Evaluation</h2>
+
+  <p data-cid="main-0860">
+    BaS is implemented in a prototype, <strong>JoinML</strong>, and evaluated on 16 datasets spanning
+    text, image, and bimodal data — six real-world (Company, Quora, Webmasters, Roxford, Flickr30K, VeRi),
+    seven from the SemBench benchmark, and three synthetic stress tests. Join selectivities range across
+    ten orders of magnitude, and cross products reach 1.3 <em>trillion</em> pairs. Baselines are Uniform
+    sampling; Blocking (a proxy for Ditto — deep entity matching); Abae (stratified-sampling approximate
+    query processing, AQP) and BlazeIt (video-aggregation AQP with control variates) for state-of-the-art
+    AQP with ML predicates; and, for selection queries, SUPG (recall-guaranteed selection) and LOTUS
+    (LLM semantic queries).
+  </p>
+
+  <h3 data-cid="main-0870">11.1 Statistical guarantees hold; blocking's do not</h3>
+
+  <p data-cid="main-0880">
+    The validity metric is the <em>error ratio</em>: the true error divided by the half-width of the
+    reported interval. A valid 95% interval needs its 95th-percentile error ratio to stay at or below 1.
+  </p>
+
+  <div class="box" data-cid="main-0890">
+    <span class="tts-math" data-tts="the error ratio equals the absolute value of theta hat minus theta, divided by, the quantity U minus L, all over 2">
+      $$\text{Error ratio} = \frac{|\hat{\theta} - \theta|}{(U - L)/2}.$$
+    </span>
+  </div>
+
+  <p data-cid="main-0900">
+    Across COUNT, SUM, AVG and MEDIAN and over 500 repetitions per budget, BaS keeps its 95th-percentile
+    error ratio below 1 everywhere — valid intervals. Blocking fails on every query, with true error up to
+    79% beyond its interval, and it gets <em>worse</em> as the budget grows, because its interval shrinks
+    around a biased estimate. BaS stays valid even at a tiny budget of 1,000 Oracle calls and across pilot
+    fractions from 0.1% to 10%.
+  </p>
+
+  <h3 data-cid="main-0910">11.2 End-to-end accuracy</h3>
+
+  <div class="box definition" data-cid="main-0920">
+    <span class="box-label">Headline numbers</span>
+    <ul data-cid="main-0930">
+      <li>BaS reduces relative RMSE by <strong>1.04×–19.5×</strong> versus the best of Uniform, Abae and
+          BlazeIt, and by up to <strong>17.2×</strong> versus WWJ.</li>
+      <li>Overall, up to <strong>21×</strong> lower error and up to <strong>188×</strong> cost savings on
+          real datasets.</li>
+      <li>On the 6-way Company-Scale join (selectivity
+          <span class="tts-math" data-tts="5 times 10 to the minus 10">$5 \times 10^{-10}$</span>),
+          Uniform sampling failed to find enough positives to estimate at all; BaS stayed low-error.</li>
+      <li>Non-linear aggregates: up to 1.4× lower error for MEDIAN, 2.0× for MAX, 3.0× for MIN, and 2.1×
+          across groups for GroupBy.</li>
+    </ul>
+  </div>
+
+  <p data-cid="main-0940">
+    BaS adapts to selectivity. In <em>low-selectivity</em> (rare-match) regimes it wins big — up to 19.5×
+    — because blocking concentrates the budget where matches actually are. In <em>high-selectivity</em>
+    regimes, where blocking offers little, BaS adaptively shifts budget toward sampling and simply matches
+    WWJ rather than regressing like Blocking does. It also extends cleanly to multi-way joins (3-, 4-, and
+    6-way), where Abae and BlazeIt do not natively apply.
+  </p>
+
+  <h3 data-cid="main-0950">11.3 Selection, join ordering, and ablations</h3>
+
+  <p data-cid="main-0960">
+    For selection queries at matched 95% recall, BaS improves precision by 2.6–43.8% over LOTUS and
+    3.0–68.6% over Uniform; on a TopK heavy-hitter query (where LOTUS has no guaranteed support) BaS gains
+    9.6–10.7% precision. Plugged into a DPccp join-order optimizer, BaS's accurate COUNT estimates cut the
+    execution cost of a multi-way semantic join by up to 12.7% versus Uniform- or WWJ-based estimates.
+  </p>
+
+  <div class="box intuition" data-cid="main-0970">
+    <span class="box-label">Does the adaptive allocation actually find the optimum?</span>
+    <p data-cid="main-0980">
+      The ablation compares adaptive allocation against brute-forced optimal and worst fixed allocations.
+      Adaptive lands within 1.61–18.9% of optimal (7.04% on average), while the worst fixed allocation can
+      be up to 99.9% worse — confirming both that allocation matters enormously and that BaS's pilot-based
+      choice is close to ideal. A sensitivity study shows BaS stays ahead of baselines across nine
+      embedding models, blocking ratios from 10–30%, and weight exponents, with the best results at
+      exponent 1.
+    </p>
+  </div>
+
+  <div class="box warn" data-cid="main-0990">
+    <span class="box-label">A counter-intuitive finding</span>
+    <p data-cid="main-1000">
+      On the Company dataset, old-fashioned TF-IDF sometimes beats modern dense embeddings (e.g. OpenAI):
+      the join needs sharp lexical precision — a radio company is not a television company — and dense
+      embeddings cluster same-industry firms together, manufacturing false positives (99% FPR for OpenAI
+      vs. 27% for TF-IDF). The lesson is not "use TF-IDF" but that BaS provides valid guarantees
+      <em>regardless</em> of embedding quality, and improves further as embeddings improve.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 12 -->
+  <h2 data-cid="main-1010" id="s12">12. Related Work and Conclusion</h2>
+
+  <p data-cid="main-1020">
+    BaS sits at the intersection of three lines of work. <strong>Approximate query processing</strong>
+    contributes join-sampling algorithms — correlated sampling, universe sampling, ripple join, and
+    Wander Join — all of which assume structured keys that semantic joins lack. <strong>Entity
+    matching</strong> contributes blocking, from rule-based suffix arrays and sorted neighborhoods to
+    learning-based blockers like Ditto. <strong>AQP for unstructured data</strong> contributes systems
+    like BlazeIt, SUPG and Abae that give guarantees for selection or aggregation over ML predicates, but
+    not for <em>joins</em>. BaS's contribution is to bring statistical guarantees to the semantic-join
+    case by combining sampling and blocking rather than choosing one. Work that optimizes the
+    <em>physical</em> cost of the join operator (e.g. batching many pairs into one LLM prompt) is
+    complementary: BaS decides <em>which</em> pairs to check; the complementary line of work reduces the
+    cost of checking each one.
+  </p>
+
+  <div class="box intuition" data-cid="main-1030">
+    <span class="box-label">The takeaway</span>
+    <p data-cid="main-1040">
+      Embeddings are an unreliable narrator: cheap, informative, but prone to both false positives and
+      false negatives. Blocking believes the narrator; sampling ignores it. BaS does neither — it reads
+      the narrator's two failure modes off the similarity axis, runs the Oracle where the narrator
+      over-claims and samples where it under-claims, and adaptively tunes the boundary from a cheap pilot.
+      The result is the first method to give <em>both</em> honest confidence intervals and high efficiency
+      for analytical joins over unstructured data — up to 19× lower error and 188× cheaper than the
+      state of the art.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ REFERENCES -->
+  <h2 data-cid="main-1050" id="references">References (Selected)</h2>
+
+  <ol class="paper-references">
+    <li data-cid="main-1060">
+      Yuxuan Zhu, Tengjun Jin, Chenghao Mo, Daniel Kang (2026). Accelerating Approximate Analytical Join
+      Queries over Unstructured Data with Statistical Guarantees. <em>Proc. ACM Manag. Data</em> 4(3)
+      (SIGMOD), Article 127. doi:10.1145/3802004.
+    </li>
+    <li data-cid="main-1070">
+      Feifei Li, Bin Wu, Ke Yi, Zhuoyue Zhao (2016). Wander Join: Online Aggregation via Random Walks.
+      <em>SIGMOD</em>. (The structured-data join-sampling algorithm WWJ extends.)
+    </li>
+    <li data-cid="main-1080">
+      Yongjoo Park et al. (2019). BlazeIt: Optimizing Declarative Aggregation and Limit Queries for
+      Neural Network-Based Video Analytics. <em>PVLDB</em>. (Control-variate AQP baseline.)
+    </li>
+    <li data-cid="main-1090">
+      Daniel Kang et al. (2020). Approximate Selection with Guarantees using Proxy Models (SUPG).
+      <em>PVLDB</em> 13(11). (Recall-guaranteed selection baseline.)
+    </li>
+    <li data-cid="main-1100">
+      Daniel Kang et al. (2022). Accelerating Approximate Aggregation Queries with Expensive Predicates
+      (Abae). <em>PVLDB</em> 15(11). (Stratified-sampling AQP baseline.)
+    </li>
+    <li data-cid="main-1110">
+      Yuliang Li et al. (2020). Deep Entity Matching with Pre-Trained Language Models (Ditto).
+      <em>PVLDB</em> 14(1). (Proxy for the Blocking baseline.)
+    </li>
+    <li data-cid="main-1120">
+      Liana Patel et al. (2024). LOTUS: Enabling Semantic Queries with LLMs Over Tables of Unstructured
+      and Structured Data. <em>CoRR</em> abs/2407.11418. (Selection-query baseline.)
+    </li>
+    <li data-cid="main-1130">
+      William G. Cochran (1977). <em>Sampling Techniques.</em> Wiley. (Ratio-estimator bias and variance
+      results used for AVG.)
+    </li>
+    <li data-cid="main-1140">
+      A. W. van der Vaart (1998). <em>Asymptotic Statistics.</em> Cambridge University Press.
+      (Theorem 23.9 — bootstrap validity via Hadamard differentiability.)
+    </li>
+    <li data-cid="main-1150">
+      Bradley Efron, Robert Tibshirani (1993). <em>An Introduction to the Bootstrap.</em> Chapman &amp;
+      Hall. (Bootstrap-t resampling for confidence intervals.)
+    </li>
+  </ol>
+
+</article>
+</main>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    renderMathInElement(document.body, {
+      delimiters: [
+        {left: "$$", right: "$$", display: true},
+        {left: "$", right: "$", display: false}
+      ]
+    });
+  });
+</script>
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script>
+</body>
+</html>

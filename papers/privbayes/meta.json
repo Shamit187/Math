@@ -1,0 +1,6 @@
+{
+  "title": "PrivBayes: Private Data Release via Bayesian Networks",
+  "authors": "Jun Zhang, Graham Cormode, Cecilia M. Procopiuc, Divesh Srivastava, Xiaokui Xiao",
+  "venue": "SIGMOD 2014",
+  "description": "PrivBayes releases differentially private synthetic datasets by learning a low-degree Bayesian network over a sensitive database and sampling tuples from noisy conditional distributions, circumventing the curse of dimensionality that defeats earlier approaches."
+}

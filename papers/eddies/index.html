@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Eddies: Continuously Adaptive Query Processing · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/>
+<link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="eddies" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/eddies/">Eddies</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. The Problem with Static Plans</a></li>
+    <li><a href="#s2">2. Moments of Symmetry</a></li>
+    <li><a href="#s3">3. The Eddy Architecture</a></li>
+    <li><a href="#s4">4. Routing Tuples: Fluid Dynamics and Lottery Scheduling</a></li>
+    <li><a href="#s5">5. Experimental Results</a></li>
+    <li><a href="#s6">6. Dynamic Fluctuations and Adaptation</a></li>
+    <li><a href="#s7">7. Impact and Legacy</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">Scientific Paper · SIGMOD 2000</div>
+    <h1>Eddies: Continuously Adaptive Query Processing</h1>
+    <div class="paper-meta">
+      <span class="authors">Ron Avnur, Joseph M. Hellerstein</span>
+      <span class="venue">ACM SIGMOD International Conference on Management of Data, 2000</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    In large federated and shared-nothing databases, resources exhibit widely fluctuating characteristics. Assumptions made at query submission time will rarely hold throughout the duration of processing. Traditional static query optimization — pick a plan, execute it — is therefore ineffective in these environments. This paper introduces the <em>eddy</em>, a query processing operator that sits between data sources and join operators, continuously reordering those operators on a tuple-by-tuple basis as it runs. The key ideas are: identifying <em>moments of symmetry</em> when reordering is cheaply possible, using the back-pressure of a fluid-dynamics model to favor cheaper operators, and overlaying a lottery scheduling algorithm so the eddy learns operator selectivities over time. Initial experiments show eddies performing nearly as well as a static optimizer in static environments, and dramatically better when conditions change mid-query.
+  </div>
+
+  <h2 data-cid="main-020" id="s1">1. The Problem with Static Plans</h2>
+
+  <p data-cid="main-030">
+    When you submit a SQL query to a traditional database, the query optimizer chooses a join order and access method before a single tuple has been fetched. It might decide, say, to join <em>Employees</em> with <em>Departments</em> first, then filter by salary. That decision is frozen into a <em>query plan</em> — a tree of operators — and the execution engine follows it faithfully until the last tuple is produced.
+  </p>
+
+  <p data-cid="main-040">
+    This works well when the optimizer's assumptions are accurate. But in wide-area and federated systems — the paper's context is the Telegraph system at UC Berkeley, which runs queries across networked data sources — three things commonly go wrong mid-query:
+  </p>
+
+  <div class="box intuition" data-cid="main-050">
+    <span class="box-label">Intuition — Why Static Plans Break</span>
+    <p data-cid="main-060">
+      <strong>Hardware and workload fluctuation.</strong> A remote server that was fast at query start may become slow. A disk whose outer tracks have high bandwidth may rotate to inner tracks. Network congestion spikes unpredictably.
+    </p>
+    <p data-cid="main-070">
+      <strong>Selectivity change.</strong> A selection predicate <code>salary &gt; 100000</code> applied to an employee table clustered by age will become more and more selective over time as older (higher-paid) employees exhaust. What began as a highly selective filter may become a pass-through filter halfway through execution.
+    </p>
+    <p data-cid="main-080">
+      <strong>Delayed data sources.</strong> In federated queries over the internet, one data source might not begin delivering data for 30 seconds after execution starts. A static plan that depends on that source early wastes time and resources.
+    </p>
+  </div>
+
+  <p data-cid="main-090">
+    The authors' solution is not to run the optimizer again mid-query — that is expensive and complex. Instead, they merge the optimization and execution phases entirely. The eddy is a single operator that <em>is</em> the optimizer, running continuously as tuples flow.
+  </p>
+
+  <h2 data-cid="main-100" id="s2">2. Moments of Symmetry</h2>
+
+  <p data-cid="main-110">
+    Before describing the eddy, the paper asks a precise question: <em>when</em> can a join order be changed without corrupting the results? Changing the order of operators mid-execution is dangerous. An operator like merge join maintains state — it remembers how far it has advanced through a sorted input. Swapping inputs mid-stream could yield duplicates or miss tuples.
+  </p>
+
+  <div class="box definition" data-cid="main-120">
+    <span class="box-label">Definition — Moment of Symmetry</span>
+    <p data-cid="main-130">
+      A <em>moment of symmetry</em> for a join algorithm is a point during execution at which the join's two inputs are in an equivalent position — specifically, a point where either input could be designated as the "outer" (driving) relation without repeating already-performed work or producing incorrect results. At such a moment, you can reorder the inputs to the join without any state modification.
+    </p>
+  </div>
+
+  <p data-cid="main-140">
+    Different join algorithms have very different moment-of-symmetry profiles. Understanding these is central to knowing how often eddies can reoptimize.
+  </p>
+
+  <div class="box example" data-cid="main-150">
+    <span class="box-label">Example — Join Algorithms and Their Symmetry</span>
+    <p data-cid="main-160">
+      <strong>Pipelined hash join</strong> (specifically the <em>ripple join</em> family developed by Haas and Hellerstein): after every tuple from either input is joined with all tuples so far from the other input, both inputs are in an equivalent position. These joins have moments of symmetry at <em>every corner</em> of the ripple — extremely frequent, making them ideal for eddies.
+    </p>
+    <p data-cid="main-170">
+      <strong>Nested-loops join</strong>: the outer relation drives the inner scan. There is a barrier — the outer relation's cursor — after which reordering would require re-scanning the inner. Moments of symmetry occur only at the end of each full inner scan: infrequent.
+    </p>
+    <p data-cid="main-180">
+      <strong>Merge join</strong>: both inputs are treated symmetrically by definition. Moments of symmetry are very frequent, but merge join requires sorted inputs, creating ordering constraints that limit how freely operators can be reordered.
+    </p>
+  </div>
+
+  <p data-cid="main-190">
+    The Ripple Join family is therefore the preferred join algorithm for use with eddies: it has frequent moments of symmetry, adaptive or non-existent synchronization barriers, and minimal ordering constraints. The paper focuses on block, index, and hash ripple joins.
+  </p>
+
+  <div class="box pause" data-cid="main-200">
+    <span class="box-label">Pause and Reflect</span>
+    <p data-cid="main-210">
+      Think of a moment of symmetry as the join algorithm "surfacing for air" — at that instant, it does not care which input it processes next. The eddy exploits these moments: it is allowed to route the next tuple to whichever operator is currently most efficient. Between moments of symmetry, the tuple must stay with its current operator. The more frequent the moments of symmetry, the finer-grained the eddy's control.
+    </p>
+  </div>
+
+  <h2 data-cid="main-220" id="s3">3. The Eddy Architecture</h2>
+
+  <p data-cid="main-230">
+    Architecturally, an eddy is an <em>n</em>-ary tuple router. It sits between <em>n</em> input relations and a set of query operators (selections, joins). Every tuple that enters the system passes through the eddy's buffer; the eddy decides which operator to send each tuple to next.
+  </p>
+
+  <div class="box definition" data-cid="main-240">
+    <span class="box-label">Definition — Ready Bits and Done Bits</span>
+    <p data-cid="main-250">
+      Each tuple carries a <em>tuple descriptor</em> — a vector of two bit arrays. The <em>Ready bits</em> indicate which operators are currently eligible to process this tuple (i.e., all their input dependencies are satisfied). The <em>Done bits</em> indicate which operators have already processed this tuple. The eddy sends a tuple only to an operator whose Ready bit is on. After an operator processes a tuple and returns it, the corresponding Done bit is turned on. When all Done bits are on, the tuple has passed through the full query plan and is sent to the output.
+    </p>
+  </div>
+
+  <p data-cid="main-260">
+    The eddy's buffer is implemented as a <em>priority queue</em>. Tuples enter with low priority (they are new, unprocessed). When an operator returns a tuple to the eddy, the tuple is given high priority — it has already had work done on it and should be driven to completion before new tuples are consumed from the inputs. This ensures tuples flow completely through the eddy before new ones are admitted, preventing the buffer from becoming clogged.
+  </p>
+
+  <p data-cid="main-270">
+    The eddy explicitly merges the concept of a multi-way join plan into a single operator. In a conventional system, a 3-table query <code>R JOIN S JOIN T</code> is represented as a tree of two binary join nodes. The eddy collapses this into a single n-ary router, which can generate any order of the join operators as tuples flow through. This is equivalent to being able to represent any spanning tree of the join graph — any bushy or left-deep or right-deep plan — without modifying code.
+  </p>
+
+  <h2 data-cid="main-280" id="s4">4. Routing Tuples: Fluid Dynamics and Lottery Scheduling</h2>
+
+  <p data-cid="main-290">
+    Having established the architecture, the paper studies <em>how</em> the eddy should choose which operator to route each tuple to. The routing policy determines the system's efficiency.
+  </p>
+
+  <h3 data-cid="main-300">4.1 Naive Eddy: Fluid Dynamics</h3>
+
+  <p data-cid="main-310">
+    The simplest policy gives no explicit information about operator costs or selectivities to the eddy. Instead, the eddy exploits the natural <em>back-pressure</em> that arises in a River-style dataflow system, where each operator runs as an independent thread connected by fixed-size message queues.
+  </p>
+
+  <p data-cid="main-320">
+    Here is the key insight: a low-cost selection operator consumes tuples quickly, so the queue feeding it tends to stay empty — it can always accept more work. A high-cost operator consumes tuples slowly, so its input queue fills up and creates back-pressure. Since the eddy routes tuples to whatever eligible operator has queue space, it naturally sends most tuples to the cheaper operator first. No explicit cost model is needed.
+  </p>
+
+  <div class="box example" data-cid="main-330">
+    <span class="box-label">Example — Naive Eddy with Two Selections</span>
+    <p data-cid="main-340">
+      Consider <code>SELECT * FROM U WHERE s1() AND s2()</code>, with two selection predicates of equal selectivity (50%) but different costs: <em>s2</em> costs 5 delay units and <em>s1</em> costs between 1 and 9 across runs. The naive eddy, with no explicit cost information, nearly matches the best static ordering in all cases. When <em>s1</em> costs 1, the fluid dynamics routes most tuples to <em>s1</em> first (it drains the queue faster). When <em>s1</em> costs 9, the dynamics flip and route most tuples to <em>s2</em> first. This happens automatically, without any statistics.
+    </p>
+  </div>
+
+  <p data-cid="main-350">
+    However, fluid dynamics alone does not capture <em>selectivity</em> differences. If two operators have the same cost but one filters out 90% of tuples and the other filters only 10%, the fluid-dynamics eddy performs mid-way between the two static orderings — not as good as the best ordering.
+  </p>
+
+  <h3 data-cid="main-360">4.2 Lottery Scheduling: Learning Selectivities</h3>
+
+  <p data-cid="main-370">
+    To handle selectivity differences, the authors add a lightweight learning algorithm: <em>Lottery Scheduling</em>, adapted from operating systems work by Waldspurger and Weihl (1994).
+  </p>
+
+  <div class="box definition" data-cid="main-380">
+    <span class="box-label">Definition — Lottery Scheduling in an Eddy</span>
+    <p data-cid="main-390">
+      Each operator maintains a count of <em>lottery tickets</em>. When the eddy is ready to send a tuple to an eligible operator, it holds a lottery among the eligible operators — each operator's chance of winning is proportional to its ticket count. When the eddy gives a tuple to an operator, that operator is credited one ticket. When an operator returns a tuple to the eddy, one ticket is debited from that operator's running count. An operator's ticket count therefore tracks its net throughput — how efficiently it drains tuples from the system. Operators that process tuples quickly and return many output tuples accumulate more tickets; operators that process slowly or filter many tuples accumulate fewer.
+    </p>
+  </div>
+
+  <p data-cid="main-400">
+    The lottery scheme elegantly captures both cost and selectivity simultaneously. An operator's ticket count reflects both how fast it runs (cost) and how many tuples it produces (selectivity). Low selectivity means many tuples are filtered: fewer tuples returned, fewer tickets accumulated, lower probability of winning the lottery. High cost means slow processing: back-pressure accumulates, fewer tuples processed, fewer tickets. Both effects push the operator toward a lower lottery share.
+  </p>
+
+  <p data-cid="main-410">
+    The lottery-based eddy handles both the changing-cost and changing-selectivity scenarios effectively, slightly outperforming the naive back-pressure scheme in cost experiments and significantly outperforming it in selectivity experiments. Importantly, the lottery continuously re-learns: as conditions change, ticket counts shift to reflect the new reality.
+  </p>
+
+  <div class="box warn" data-cid="main-420">
+    <span class="box-label">Important Caveat — Forgetting the Past</span>
+    <p data-cid="main-430">
+      A naive lottery accumulates all past experience equally. If an operator was very efficient early in the query and accumulates many tickets, those historical tickets will make it hard for a newly fast operator to win the lottery later. The authors address this with a <em>windowed</em> lottery: the query execution is divided into time windows. Each window maintains two ticket counts — <em>banked tickets</em> (earned in prior windows) and <em>escrow tickets</em> (earned in the current window, acting as a measure of recent efficiency). At the start of each new window, banked tickets are reset to the escrow value. This way, recent performance dominates, and the eddy can adaptively re-learn as conditions change.
+    </p>
+  </div>
+
+  <h2 data-cid="main-440" id="s5">5. Experimental Results</h2>
+
+  <p data-cid="main-450">
+    The experiments were conducted on a Sun Ultra-1 workstation running Solaris 2.6 with 160 MB RAM, using the Euphrates implementation of the River dataflow framework. Relations had 100-byte tuples and cardinalities as shown in the paper's Table 1 (R: 10,000 tuples; S: 80,000; T: 10,000; U: 50,000).
+  </p>
+
+  <p data-cid="main-460">
+    The key experiment compares four policies against two 50%-selectivity selections of varying relative cost: the best static ordering (cheaper operator first), the worst static ordering (more expensive first), a naive back-pressure eddy, and a lottery-based eddy.
+  </p>
+
+  <div class="box intuition" data-cid="main-470">
+    <span class="box-label">Intuition — Reading the Graphs</span>
+    <p data-cid="main-480">
+      In the static-cost experiment (Figure 4 of the paper), when <em>s2</em> costs 5 and <em>s1</em> varies from 1 to 9, the naive eddy nearly matches the best static ordering throughout — this is the fluid dynamics at work. In the variable-selectivity experiment (Figure 5), where both operators cost 5 but selectivity of <em>s1</em> varies from 0 to 100%, the naive eddy performs mid-way (as expected), while the lottery eddy tracks close to optimal, demonstrating that the ticket scheme has learned the selectivity difference.
+    </p>
+  </div>
+
+  <p data-cid="main-490">
+    For joins (Section 4.4 of the paper), the authors tested a 3-table query over R, S, and T with a selective index join between S and T, and a hash join between R and S. The lottery-based eddy performs nearly optimally in all cases, correctly routing most tuples through the hash join first when it is cheaper, and switching to favor the index join when its selectivity advantage dominates.
+  </p>
+
+  <h2 data-cid="main-500" id="s6">6. Dynamic Fluctuations and Adaptation</h2>
+
+  <p data-cid="main-510">
+    The most dramatic demonstration of eddies is in dynamic environments — exactly the federated, wide-area scenarios that motivated the paper. Two key experiments:
+  </p>
+
+  <p data-cid="main-520">
+    <strong>Changing join costs (Section 4.5).</strong> A 3-table equijoin over two external index servers. Initially one server (<em>I_fs</em>) is fast (no delay) and the other (<em>I_sf</em>) is slow (5 seconds per lookup). After 30 seconds, the speeds swap. Both static plans therefore pay a large penalty: the plan optimized for the initial assignment has the wrong order for the second half. The eddy using a windowed lottery runs for the duration of the query faster than either static plan, adapting its ordering shortly after the swap occurs.
+  </p>
+
+  <p data-cid="main-530">
+    <strong>Delayed data source (Section 4.5.1).</strong> In a federated query, relation R is delayed by 10 seconds (its data source is slow to respond). A static plan that relies on R early wastes time. The eddy initially routes most tuples to the RS join, but quickly adjusts when it observes that R produces no output — it throttles the RS join and routes more tuples to the ST join, processing data that is actually available. The eddy outperforms both static plans significantly.
+  </p>
+
+  <div class="box warn" data-cid="main-540">
+    <span class="box-label">Limitation Noted by the Authors</span>
+    <p data-cid="main-550">
+      In the delayed-delivery experiment, the eddy does not adapt as well as theoretically possible. The windowed lottery scheme weighs all past observations equally within a window: early observations where the RS join appeared fast (because S was producing output before R arrived) inflate the ticket count of the RS join. The authors note this as an open problem: how to best discount stale observations and adapt more aggressively to initial delays.
+    </p>
+  </div>
+
+  <h2 data-cid="main-560" id="s7">7. Impact and Legacy</h2>
+
+  <p data-cid="main-570">
+    The eddies paper established a research agenda that influenced a generation of adaptive query processing work. Its most lasting contributions are conceptual:
+  </p>
+
+  <p data-cid="main-580">
+    <strong>Merging optimization and execution.</strong> Before eddies, optimization and execution were considered separate phases. The paper demonstrated that they could be merged into a single continuous process — an idea that has become central to streaming systems and adaptive databases.
+  </p>
+
+  <p data-cid="main-590">
+    <strong>Moments of symmetry as a formal concept.</strong> The characterization of when joins can be reordered gave researchers a precise vocabulary for reasoning about adaptive reoptimization. This concept was extended and formalized in subsequent work.
+  </p>
+
+  <p data-cid="main-600">
+    <strong>The Telegraph and STREAM lineages.</strong> The eddy mechanism became central to the Telegraph distributed query processing system and influenced the design of stream processing systems including STREAM (also at Stanford/Berkeley). The idea that a query processor should treat data as a flow to be routed — not a tree to be traversed — became a foundational paradigm for data stream management.
+  </p>
+
+  <p data-cid="main-610">
+    <strong>The routing-as-scheduling analogy.</strong> The use of lottery scheduling from operating systems to control tuple routing was an early example of importing scheduling theory into database query processing — a connection that researchers continue to exploit in modern systems that handle mixed workloads and uncertain arrival patterns.
+  </p>
+
+  <h2 data-cid="main-620" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-630">Avnur, R. and Hellerstein, J.M. (1999). Continuous query optimization. Technical Report CSD-99-1078, University of California, Berkeley.</li>
+    <li data-cid="main-640">Haas, P.J. and Hellerstein, J.M. (1999). Ripple Joins for Online Aggregation. In Proc. ACM-SIGMOD, pp. 287–298, Philadelphia.</li>
+    <li data-cid="main-650">Urhan, T. and Franklin, M. (1999). XJoin: Getting Fast Answers From Slow and Bursty Networks. Technical Report CS-TR-3994, University of Maryland.</li>
+    <li data-cid="main-660">Arpaci-Dusseau, R.H., Anderson, E., Treuhaft, N., Culler, D.E., Hellerstein, J.M., Patterson, D.A., and Yelick, K. (1999). Cluster I/O with River. 6th Workshop on I/O in Parallel and Distributed Systems.</li>
+    <li data-cid="main-670">Waldspurger, C.A. and Weihl, W.E. (1994). Lottery Scheduling: Flexible Proportional-Share Resource Management. OSDI '94, pp. 1–11, Monterey, CA.</li>
+    <li data-cid="main-680">Hellerstein, J.M. (1998). Optimization Techniques for Queries with Expensive Methods. ACM Transactions on Database Systems, 23(2):113–157.</li>
+    <li data-cid="main-690">Amsaleg, L., Franklin, M., Tomasic, A., and Urhan, T. (1996). Scrambling Query Plans to Cope With Unexpected Delays. PDIS 1996.</li>
+    <li data-cid="main-700">Urhan, T., Franklin, M., and Amsaleg, L. (1998). Cost-Based Query Scrambling for Initial Delays. ACM-SIGMOD 1998.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script>
+<script src="/js/highlights.js"></script>
+</body>
+</html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Approximate Frequency Counts over Data Streams · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/>
+<link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="approx-frequency-counts" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/approx-frequency-counts/">Approx Frequency Counts</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. The Streaming Frequency Problem</a></li>
+    <li><a href="#s2">2. Problem Definition and Error Guarantees</a></li>
+    <li><a href="#s3">3. Sticky Sampling Algorithm</a></li>
+    <li><a href="#s4">4. Lossy Counting Algorithm</a></li>
+    <li><a href="#s5">5. Correctness of Lossy Counting</a></li>
+    <li><a href="#s6">6. Comparing the Two Algorithms</a></li>
+    <li><a href="#s7">7. Frequent Itemsets over Streams</a></li>
+    <li><a href="#s8">8. Experimental Results</a></li>
+    <li><a href="#s9">9. Impact and Legacy</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">Scientific Paper · VLDB 2002</div>
+    <h1>Approximate Frequency Counts over Data Streams</h1>
+    <div class="paper-meta">
+      <span class="authors">Gurmeet Singh Manku, Rajeev Motwani</span>
+      <span class="venue">Proceedings of the 28th VLDB Conference, Hong Kong, China, 2002</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    Data streams — stock tickers, network traffic logs, sensor feeds, web server logs — can be enormous and must be processed in a single pass with limited memory. A fundamental query over any stream is: which elements occur frequently? This paper presents two algorithms for answering this question approximately. Both accept two user-specified parameters: a support threshold <span class="tts-math" data-tts="s">$s$</span> and an error parameter <span class="tts-math" data-tts="epsilon">$\epsilon$</span> (with <span class="tts-math" data-tts="epsilon much less than s">$\epsilon \ll s$</span>). Both guarantee: (1) all items whose true frequency exceeds <span class="tts-math" data-tts="s times N">$sN$</span> are reported — no false negatives; (2) no item whose true frequency is below <span class="tts-math" data-tts="the quantity s minus epsilon, times N">$(s - \epsilon)N$</span> is reported; (3) all reported frequencies are underestimates by at most <span class="tts-math" data-tts="epsilon times N">$\epsilon N$</span>. The first algorithm, Sticky Sampling, is probabilistic. The second, Lossy Counting, is deterministic and uses at most <span class="tts-math" data-tts="1 over epsilon, times the log of epsilon times N">$\frac{1}{\epsilon}\log(\epsilon N)$</span> space. The paper also extends Lossy Counting to the problem of finding frequent itemsets over a stream of transactions in a single pass.
+  </div>
+
+  <h2 data-cid="main-020" id="s1">1. The Streaming Frequency Problem</h2>
+
+  <p data-cid="main-030">
+    Consider a router on an internet backbone that sees millions of packets per second. Each packet belongs to a network flow identified by its source-destination pair. The router's operator wants to know: which flows account for more than 1% of total traffic? This is a <em>heavy hitter</em> or <em>frequent item</em> query.
+  </p>
+
+  <p data-cid="main-040">
+    The naïve approach — maintain an exact count for every flow seen so far — is impossible at internet scale. With millions of distinct flows, the count table would consume gigabytes of memory. Moreover, the router must process each packet in nanoseconds; there is no time to consult secondary storage. The stream cannot be stored and re-scanned.
+  </p>
+
+  <div class="box intuition" data-cid="main-050">
+    <span class="box-label">Intuition — The Core Difficulty</span>
+    <p data-cid="main-060">
+      Streams have two properties that make exact counting hard. First, the data volume over the lifetime of the stream may be enormous — far too large to store. Second, there is no second chance: each element must be processed as it arrives, and then it is gone. Any algorithm must make irrevocable decisions about what to remember and what to forget, all while the stream is still flowing.
+    </p>
+  </div>
+
+  <p data-cid="main-070">
+    The same problem structure appears in many domains: finding popular web pages in a web server log, identifying common market-basket items in a retail transaction stream, detecting dominant query types in a database workload, and finding frequent words in a document feed. The paper targets all of these with a single, generic framework.
+  </p>
+
+  <p data-cid="main-080">
+    Existing algorithms for exact frequent-item counting over finite stored datasets require at least two passes. In the streaming setting, only one pass is allowed and results must be available at any time. Prior streaming approaches either had no provable error guarantees or required very large samples to work. Manku and Motwani present the first single-pass algorithms with small, provably bounded memory and provable approximation guarantees.
+  </p>
+
+  <h2 data-cid="main-090" id="s2">2. Problem Definition and Error Guarantees</h2>
+
+  <p data-cid="main-100">
+    Let <span class="tts-math" data-tts="N">$N$</span> denote the current length of the stream — the number of items seen so far. The user specifies two parameters:
+  </p>
+
+  <p data-cid="main-110">
+    A <em>support threshold</em> <span class="tts-math" data-tts="s, which is between 0 and 1">$s \in (0,1)$</span>: items whose true frequency exceeds <span class="tts-math" data-tts="s times N">$sN$</span> are the ones we want to find.
+  </p>
+
+  <p data-cid="main-120">
+    An <em>error parameter</em> <span class="tts-math" data-tts="epsilon, which is between 0 and 1, and much less than s">$\epsilon \in (0,1)$</span> with <span class="tts-math" data-tts="epsilon much less than s">$\epsilon \ll s$</span>: the tolerable approximation error, expressed as a fraction of <span class="tts-math" data-tts="N">$N$</span>.
+  </p>
+
+  <div class="box definition" data-cid="main-130">
+    <span class="box-label">Definition — epsilon-Deficient Synopsis</span>
+    <p data-cid="main-140">
+      An algorithm maintains an <em>epsilon-deficient synopsis</em> if its output at any point in the stream satisfies three guarantees simultaneously:
+      <br><br>
+      (1) <strong>No false negatives:</strong> every item whose true frequency <span class="tts-math" data-tts="f sub e">$f_e$</span> exceeds <span class="tts-math" data-tts="s times N">$sN$</span> is included in the output.
+      <br><br>
+      (2) <strong>Controlled false positives:</strong> no item whose true frequency is less than <span class="tts-math" data-tts="the quantity s minus epsilon, times N">$(s - \epsilon)N$</span> appears in the output.
+      <br><br>
+      (3) <strong>Bounded underestimate:</strong> every estimated frequency <span class="tts-math" data-tts="f">$f$</span> reported for an item satisfies <span class="tts-math" data-tts="f sub e is between f and f plus epsilon times N">$f_e \in [f,\; f + \epsilon N]$</span> — the true frequency is at most <span class="tts-math" data-tts="epsilon times N">$\epsilon N$</span> above the reported estimate.
+    </p>
+  </div>
+
+  <div class="box pause" data-cid="main-150">
+    <span class="box-label">Pause — Understanding the Guarantee</span>
+    <p data-cid="main-160">
+      Suppose a user wants all items occurring in at least 0.1% of the stream (support <span class="tts-math" data-tts="s equals 0.001">$s = 0.001$</span>), and sets error <span class="tts-math" data-tts="epsilon equals 0.0001">$\epsilon = 0.0001$</span> (one-tenth of <span class="tts-math" data-tts="s">$s$</span>). Guarantee 1 says: every item appearing at least 0.1% of the time will be in the output — no item is missed. Guarantee 2 says: no item appearing less than 0.09% of the time will be in the output. Items appearing between 0.09% and 0.1% might or might not appear — this is the grey zone. Guarantee 3 says: the reported frequency of any item is at most <span class="tts-math" data-tts="epsilon times N">$\epsilon N$</span> below its true frequency — reported counts are close to the truth, not wildly underestimated.
+    </p>
+  </div>
+
+  <h2 data-cid="main-170" id="s3">3. Sticky Sampling Algorithm</h2>
+
+  <p data-cid="main-180">
+    Sticky Sampling is a probabilistic algorithm. It maintains a set <span class="tts-math" data-tts="script S">$\mathcal{S}$</span> of entries of the form <span class="tts-math" data-tts="the pair e comma f">$(e, f)$</span>, where <span class="tts-math" data-tts="e">$e$</span> is an item and <span class="tts-math" data-tts="f">$f$</span> is its estimated frequency count. The algorithm uses a <em>sampling rate</em> <span class="tts-math" data-tts="r">$r$</span> that starts at 1 (every item is sampled) and increases over time.
+  </p>
+
+  <p data-cid="main-190">
+    <strong>How it works.</strong> Initially <span class="tts-math" data-tts="script S">$\mathcal{S}$</span> is empty and <span class="tts-math" data-tts="r equals 1">$r = 1$</span>. For each incoming item <span class="tts-math" data-tts="e">$e$</span>: if <span class="tts-math" data-tts="e">$e$</span> already has an entry in <span class="tts-math" data-tts="script S">$\mathcal{S}$</span>, increment <span class="tts-math" data-tts="f">$f$</span> by 1. Otherwise, sample <span class="tts-math" data-tts="e">$e$</span> with probability <span class="tts-math" data-tts="1 over r">$\tfrac{1}{r}$</span> — if selected, add entry <span class="tts-math" data-tts="the pair e comma 1">$(e, 1)$</span> to <span class="tts-math" data-tts="script S">$\mathcal{S}$</span>.
+  </p>
+
+  <p data-cid="main-200">
+    As time progresses, the sampling rate <span class="tts-math" data-tts="r">$r$</span> doubles at intervals. Let <span class="tts-math" data-tts="t">$t$</span> denote <span class="tts-math" data-tts="1 over epsilon, times the log of s inverse times delta inverse">$\tfrac{1}{\epsilon}\log(s^{-1}\delta^{-1})$</span>. The first <span class="tts-math" data-tts="2t">$2t$</span> elements are sampled at rate <span class="tts-math" data-tts="r equals 1">$r = 1$</span>, the next <span class="tts-math" data-tts="2t">$2t$</span> at rate <span class="tts-math" data-tts="r equals 2">$r = 2$</span>, the next <span class="tts-math" data-tts="4t">$4t$</span> at rate <span class="tts-math" data-tts="r equals 4">$r = 4$</span>, and so on. When the rate changes, existing entries in <span class="tts-math" data-tts="script S">$\mathcal{S}$</span> are thinned: for each entry <span class="tts-math" data-tts="the pair e comma f">$(e, f)$</span>, repeatedly toss an unbiased coin and reduce <span class="tts-math" data-tts="f">$f$</span> by 1 for each tail, deleting the entry if <span class="tts-math" data-tts="f">$f$</span> reaches 0. This simulates what the count would have been had we been sampling at the new rate from the very beginning.
+  </p>
+
+  <div class="box intuition" data-cid="main-210">
+    <span class="box-label">Intuition — Why "Sticky"?</span>
+    <p data-cid="main-220">
+      The name comes from the algorithm's behavior: once an item enters <span class="tts-math" data-tts="script S">$\mathcal{S}$</span>, it is <em>sticky</em> — every future occurrence of that item is counted (with probability 1), regardless of the current sampling rate. Only the first encounter is subject to the sampling coin toss. This ensures that items that are truly frequent will almost certainly get into <span class="tts-math" data-tts="script S">$\mathcal{S}$</span> early (when the sampling rate is high) and will then have their counts maintained accurately thereafter.
+    </p>
+  </div>
+
+  <p data-cid="main-230">
+    When a user requests a list of frequent items with threshold <span class="tts-math" data-tts="s">$s$</span>, Sticky Sampling outputs all entries <span class="tts-math" data-tts="the pair e comma f">$(e, f)$</span> where <span class="tts-math" data-tts="f is at least the quantity s minus epsilon, times N">$f \geq (s - \epsilon)N$</span>.
+  </p>
+
+  <p data-cid="main-240">
+    The paper proves (Theorem 4.1) that Sticky Sampling produces an epsilon-deficient synopsis with probability at least <span class="tts-math" data-tts="1 minus delta">$1 - \delta$</span> using at most <span class="tts-math" data-tts="2 over epsilon, times the log of s inverse times delta inverse">$\tfrac{2}{\epsilon}\log(s^{-1}\delta^{-1})$</span> expected entries — a modest, logarithmic bound that does not grow with <span class="tts-math" data-tts="N">$N$</span>.
+  </p>
+
+  <h2 data-cid="main-250" id="s4">4. Lossy Counting Algorithm</h2>
+
+  <p data-cid="main-260">
+    Lossy Counting is the paper's deterministic algorithm — it makes no probabilistic choices and is guaranteed to produce an epsilon-deficient synopsis every time, with no failure probability. It uses at most <span class="tts-math" data-tts="1 over epsilon, times the log of epsilon times N">$\tfrac{1}{\epsilon}\log(\epsilon N)$</span> space.
+  </p>
+
+  <p data-cid="main-270">
+    <strong>The key idea: buckets.</strong> Conceptually divide the stream into <em>buckets</em> of width <span class="tts-math" data-tts="w equals the ceiling of 1 over epsilon">$w = \lceil \tfrac{1}{\epsilon} \rceil$</span> items each. Buckets are numbered starting at 1. The current bucket id is <span class="tts-math" data-tts="b sub current, which equals the ceiling of N over w">$b_{\text{current}} = \lceil \tfrac{N}{w} \rceil$</span>.
+  </p>
+
+  <p data-cid="main-280">
+    The algorithm maintains a data structure <span class="tts-math" data-tts="script D">$\mathcal{D}$</span> of entries of the form <span class="tts-math" data-tts="the triple e comma f comma Delta">$(e, f, \Delta)$</span>, where <span class="tts-math" data-tts="e">$e$</span> is an item, <span class="tts-math" data-tts="f">$f$</span> is an integer representing the estimated frequency, and <span class="tts-math" data-tts="Delta">$\Delta$</span> is the maximum possible error in <span class="tts-math" data-tts="f">$f$</span>.
+  </p>
+
+  <div class="box definition" data-cid="main-290">
+    <span class="box-label">Definition — Lossy Counting Update Rules</span>
+    <p data-cid="main-300">
+      When a new item <span class="tts-math" data-tts="e">$e$</span> arrives, Lossy Counting checks whether an entry for <span class="tts-math" data-tts="e">$e$</span> already exists in <span class="tts-math" data-tts="script D">$\mathcal{D}$</span>:
+      <br><br>
+      <strong>If yes:</strong> increment <span class="tts-math" data-tts="f">$f$</span> by 1. The entry now reflects one more observed occurrence.
+      <br><br>
+      <strong>If no:</strong> create a new entry <span class="tts-math" data-tts="the triple e comma 1 comma b sub current minus 1">$(e, 1, b_{\text{current}} - 1)$</span>. The <span class="tts-math" data-tts="Delta">$\Delta$</span> value is set to <span class="tts-math" data-tts="b sub current minus 1">$b_{\text{current}} - 1$</span>, which is the maximum number of times <span class="tts-math" data-tts="e">$e$</span> could have appeared in previous buckets without being tracked.
+      <br><br>
+      <strong>At bucket boundaries</strong> (whenever <span class="tts-math" data-tts="N is divisible by w">$N \equiv 0 \pmod{w}$</span>): delete any entry <span class="tts-math" data-tts="the triple e comma f comma Delta">$(e, f, \Delta)$</span> where <span class="tts-math" data-tts="f plus Delta is at most b sub current">$f + \Delta \leq b_{\text{current}}$</span>. These are items whose estimated count is so low that, even accounting for maximum error, they cannot be frequent.
+    </p>
+  </div>
+
+  <p data-cid="main-310">
+    The intuition behind <span class="tts-math" data-tts="Delta">$\Delta$</span>: when a new item first appears in bucket <span class="tts-math" data-tts="b sub current">$b_{\text{current}}$</span>, it might have appeared many times in earlier buckets that have already been processed and deleted. The maximum it could have appeared without being in <span class="tts-math" data-tts="script D">$\mathcal{D}$</span> is one occurrence per earlier bucket — at most <span class="tts-math" data-tts="b sub current minus 1">$b_{\text{current}} - 1$</span> times. So <span class="tts-math" data-tts="Delta">$\Delta$</span> encodes this maximum accumulated error from the item's first appearance to now.
+  </p>
+
+  <p data-cid="main-320">
+    When a user queries for items with support threshold <span class="tts-math" data-tts="s">$s$</span>, Lossy Counting outputs all entries <span class="tts-math" data-tts="the triple e comma f comma Delta">$(e, f, \Delta)$</span> where <span class="tts-math" data-tts="f is at least the quantity s minus epsilon, times N">$f \geq (s - \epsilon)N$</span>.
+  </p>
+
+  <div class="box example" data-cid="main-330">
+    <span class="box-label">Example — Lossy Counting Step by Step</span>
+    <p data-cid="main-340">
+      Suppose <span class="tts-math" data-tts="epsilon equals 0.01">$\epsilon = 0.01$</span>, so bucket width <span class="tts-math" data-tts="w equals 100">$w = 100$</span>. We are currently in bucket 3 (items 201–300). Item "HTTP" has been seen 50 times in the current window and was added to <span class="tts-math" data-tts="script D">$\mathcal{D}$</span> when it first appeared in bucket 2, so its entry is <span class="tts-math" data-tts="the triple HTTP comma 50 comma 1">$(\text{HTTP}, 50, 1)$</span>. At the bucket 3 boundary, the deletion rule checks: <span class="tts-math" data-tts="50 plus 1 equals 51">$50 + 1 = 51$</span> which is greater than <span class="tts-math" data-tts="b sub current equals 3">$b_{\text{current}} = 3$</span>, so "HTTP" is kept. An item "FTP" that appeared only once and has entry <span class="tts-math" data-tts="the triple FTP comma 1 comma 2">$(\text{FTP}, 1, 2)$</span> satisfies <span class="tts-math" data-tts="1 plus 2 equals 3">$1 + 2 = 3$</span>, which equals <span class="tts-math" data-tts="b sub current">$b_{\text{current}}$</span>, so FTP is deleted — it cannot be frequent.
+    </p>
+  </div>
+
+  <h2 data-cid="main-350" id="s5">5. Correctness of Lossy Counting</h2>
+
+  <p data-cid="main-360">
+    The paper proves four key lemmas that together establish correctness. Let's trace the argument at a high level.
+  </p>
+
+  <p data-cid="main-370">
+    <strong>Lemma 4.1</strong> (Timing of deletions): Deletions only occur at bucket boundaries — so <span class="tts-math" data-tts="b sub current is at most epsilon times N">$b_{\text{current}} \leq \epsilon N$</span> always holds. This follows directly from the definition of bucket width <span class="tts-math" data-tts="w equals the ceiling of 1 over epsilon">$w = \lceil \tfrac{1}{\epsilon} \rceil$</span>.
+  </p>
+
+  <p data-cid="main-380">
+    <strong>Lemma 4.2</strong> (Deletion condition): Whenever an entry <span class="tts-math" data-tts="the triple e comma f comma Delta">$(e, f, \Delta)$</span> gets deleted, its true frequency <span class="tts-math" data-tts="f sub e">$f_e$</span> satisfies <span class="tts-math" data-tts="f sub e is at most b sub current">$f_e \leq b_{\text{current}}$</span>. The proof uses induction: at deletion, <span class="tts-math" data-tts="f plus Delta is at most b sub current">$f + \Delta \leq b_{\text{current}}$</span>, and <span class="tts-math" data-tts="f">$f$</span> is the exact count of <span class="tts-math" data-tts="e">$e$</span> since its last deletion. So the total true frequency from buckets 1 through current is at most <span class="tts-math" data-tts="f plus Delta">$f + \Delta$</span>.
+  </p>
+
+  <p data-cid="main-390">
+    <strong>Lemma 4.3</strong> (No false negatives): If item <span class="tts-math" data-tts="e">$e$</span> does not appear in <span class="tts-math" data-tts="script D">$\mathcal{D}$</span>, then its true frequency <span class="tts-math" data-tts="f sub e">$f_e$</span> satisfies <span class="tts-math" data-tts="f sub e is at most epsilon times N">$f_e \leq \epsilon N$</span>. By Lemma 4.2, whenever <span class="tts-math" data-tts="e">$e$</span> is deleted, <span class="tts-math" data-tts="f sub e is at most b sub current">$f_e \leq b_{\text{current}}$</span>. Combined with Lemma 4.1, this gives <span class="tts-math" data-tts="f sub e is at most epsilon times N">$f_e \leq \epsilon N$</span>. So truly frequent items (with <span class="tts-math" data-tts="f sub e greater than s times N">$f_e > sN$</span>, and since <span class="tts-math" data-tts="s is greater than epsilon">$s > \epsilon$</span>) are never deleted — they are always in <span class="tts-math" data-tts="script D">$\mathcal{D}$</span>.
+  </p>
+
+  <p data-cid="main-400">
+    <strong>Lemma 4.4</strong> (Bounded error): For any entry <span class="tts-math" data-tts="the triple e comma f comma Delta">$(e, f, \Delta)$</span> currently in <span class="tts-math" data-tts="script D">$\mathcal{D}$</span>, the true frequency satisfies <span class="tts-math" data-tts="f sub e is between f and f plus epsilon times N">$f \leq f_e \leq f + \epsilon N$</span>. The lower bound holds because <span class="tts-math" data-tts="f">$f$</span> counts only observed occurrences. The upper bound: if <span class="tts-math" data-tts="Delta equals 0">$\Delta = 0$</span>, then <span class="tts-math" data-tts="f equals f sub e">$f = f_e$</span> exactly. Otherwise, <span class="tts-math" data-tts="e">$e$</span> was deleted at some point, and from Lemma 4.2, at the last deletion <span class="tts-math" data-tts="f sub e was at most b sub current, which is at most epsilon times N">$f_e \leq b_{\text{current}} \leq \epsilon N$</span>. Since <span class="tts-math" data-tts="Delta">$\Delta$</span> is at most <span class="tts-math" data-tts="b sub current minus 1">$b_{\text{current}} - 1$</span>, and <span class="tts-math" data-tts="b sub current is at most epsilon N">$b_{\text{current}} \leq \epsilon N$</span>, we get <span class="tts-math" data-tts="Delta is at most epsilon times N">$\Delta \leq \epsilon N$</span>, so <span class="tts-math" data-tts="f sub e is at most f plus epsilon times N">$f_e \leq f + \epsilon N$</span>.
+  </p>
+
+  <div class="box definition" data-cid="main-410">
+    <span class="box-label">Theorem 4.2 — Space Bound for Lossy Counting</span>
+    <p data-cid="main-420">
+      Lossy Counting computes an epsilon-deficient synopsis using at most <span class="tts-math" data-tts="1 over epsilon, times the log of epsilon times N">$\tfrac{1}{\epsilon}\log(\epsilon N)$</span> entries. The proof uses an amortized argument: the sum <span class="tts-math" data-tts="the sum from i equals 1 to B of d sub i, where d sub i is the number of entries with bucket id B minus i plus 1">$\sum_{i=1}^{B} d_i$</span> (where <span class="tts-math" data-tts="d sub i">$d_i$</span> counts entries whose bucket id equals <span class="tts-math" data-tts="B minus i plus 1">$B - i + 1$</span>) satisfies <span class="tts-math" data-tts="the sum from i equals 1 to j of d sub i is at most the sum from i equals 1 to j of w over i">$\sum_{i=1}^{j} d_i \leq \sum_{i=1}^{j} \tfrac{w}{i}$</span>, giving the harmonic series bound <span class="tts-math" data-tts="the size of script D is at most 1 over epsilon, times the log of epsilon times N">$|\mathcal{D}| \leq \tfrac{1}{\epsilon}\log(\epsilon N)$</span>.
+    </p>
+  </div>
+
+  <h2 data-cid="main-430" id="s6">6. Comparing the Two Algorithms</h2>
+
+  <p data-cid="main-440">
+    Sticky Sampling and Lossy Counting offer different tradeoffs. Sticky Sampling is probabilistic: it can fail (with probability at most <span class="tts-math" data-tts="delta">$\delta$</span>). Its expected space is <span class="tts-math" data-tts="2 over epsilon, times the log of s inverse times delta inverse">$\tfrac{2}{\epsilon}\log(s^{-1}\delta^{-1})$</span> — importantly, this does not depend on <span class="tts-math" data-tts="N">$N$</span>, making it good for very long streams. Lossy Counting is deterministic and always correct, but its space <span class="tts-math" data-tts="1 over epsilon, times the log of epsilon times N">$\tfrac{1}{\epsilon}\log(\epsilon N)$</span> grows logarithmically with the stream length <span class="tts-math" data-tts="N">$N$</span>.
+  </p>
+
+  <div class="box warn" data-cid="main-450">
+    <span class="box-label">Worst Case vs. Practice</span>
+    <p data-cid="main-460">
+      The theoretical space bounds are worst cases. In practice, Lossy Counting performs dramatically better. On a Zipfian-distributed stream (where a few items are very common and most are rare — exactly the distribution of real web traffic, market baskets, etc.), the algorithm prunes low-frequency items aggressively at every bucket boundary. For <span class="tts-math" data-tts="epsilon equals 0.01">$\epsilon = 0.01$</span>, the worst-case bound suggests roughly 2000 entries, but in Zipfian streams the actual number is hundreds of times smaller. The paper's experiments confirm that Lossy Counting needs only a small fraction of the <span class="tts-math" data-tts="1 over epsilon">$\tfrac{1}{\epsilon}$</span> worst-case space.
+    </p>
+  </div>
+
+  <p data-cid="main-470">
+    The paper also proves an optimality result: the constant <span class="tts-math" data-tts="1 over epsilon">$\tfrac{1}{\epsilon}$</span> in Lossy Counting's space bound is essentially tight. No deterministic algorithm can do better by more than a constant factor.
+  </p>
+
+  <h2 data-cid="main-480" id="s7">7. Frequent Itemsets over Streams</h2>
+
+  <p data-cid="main-490">
+    Section 5 extends Lossy Counting to the much harder problem of finding frequent <em>itemsets</em>. Instead of a stream of individual items, now each element of the stream is a <em>transaction</em> — a set of items (think: a shopping basket with many products). An itemset <span class="tts-math" data-tts="X, a subset of the universe of items">$X \subseteq \mathcal{I}$</span> has <em>support</em> <span class="tts-math" data-tts="s">$s$</span> if it appears as a subset in at least a fraction <span class="tts-math" data-tts="s">$s$</span> of all transactions.
+  </p>
+
+  <p data-cid="main-500">
+    Enumerating all subsets of every transaction is infeasible. The key insight is to apply the Apriori principle: any subset of a frequent itemset must itself be frequent. This means we only need to maintain candidates that have survived a frequency threshold.
+  </p>
+
+  <p data-cid="main-510">
+    The extended algorithm processes transactions in batches (determined by available memory). For each batch, a specialized data structure called TRIE maintains the set <span class="tts-math" data-tts="script D">$\mathcal{D}$</span> of entries <span class="tts-math" data-tts="the triple set comma f comma Delta">$(\text{set}, f, \Delta)$</span> for candidate itemsets. A module called SetGen generates candidate itemsets for the current batch in lexicographic order. At batch boundaries, entries where <span class="tts-math" data-tts="f plus Delta is at most b sub current">$f + \Delta \leq b_{\text{current}}$</span> are deleted using the same Lossy Counting rule.
+  </p>
+
+  <p data-cid="main-520">
+    The design is carefully engineered to use disk-based TRIE storage (so memory size is not the bottleneck) and a SetGen module that exploits the Apriori pruning rule to avoid generating supersets of already-deleted itemsets. This enables single-pass computation of frequent itemsets over transaction streams with limited RAM.
+  </p>
+
+  <h2 data-cid="main-530" id="s8">8. Experimental Results</h2>
+
+  <p data-cid="main-540">
+    Experiments were run on a 933 MHz Pentium III processor running Linux 2.2.16. Two kinds of data were tested: IBM benchmark transaction streams (1 million transactions each, over 10,000 unique items) and text document sequences (word-pair frequencies in 100K web pages and 800K Reuters documents).
+  </p>
+
+  <p data-cid="main-550">
+    For the IBM benchmark, the paper compares Lossy Counting against Apriori (the classic batch frequent-itemset algorithm) with varying support thresholds <span class="tts-math" data-tts="s">$s$</span> from 0.1% to 1%, and buffer sizes from 4 MB to 44 MB. The key finding: Lossy Counting with a 44 MB buffer outperforms Apriori across all support levels — typically 3x to 8x faster, while using similar or less memory. The accuracy is remarkable: over 99% of itemsets reported in the output have 0% error (exact frequency counts).
+  </p>
+
+  <div class="box intuition" data-cid="main-560">
+    <span class="box-label">Intuition — Why the Error Is So Small in Practice</span>
+    <p data-cid="main-570">
+      The theory guarantees error at most <span class="tts-math" data-tts="epsilon times N">$\epsilon N$</span>, but in practice the error is nearly zero for a simple reason. A truly frequent itemset — one appearing in, say, 1% of a million transactions — will be encountered roughly 10,000 times. It will enter the data structure <span class="tts-math" data-tts="script D">$\mathcal{D}$</span> very early (in the first batch) and will never be deleted thereafter, since its count rapidly exceeds the deletion threshold. Its estimated frequency will track the true frequency almost exactly. Only genuinely rare itemsets (which we don't care about) suffer significant relative error.
+    </p>
+  </div>
+
+  <p data-cid="main-580">
+    For text streams, the algorithm successfully identifies frequently co-occurring word pairs in very large document corpora — a task that is important for information retrieval, phrase detection, and language modeling — with low memory and in a single pass.
+  </p>
+
+  <h2 data-cid="main-590" id="s9">9. Impact and Legacy</h2>
+
+  <p data-cid="main-600">
+    The Manku-Motwani paper became a canonical reference for stream mining and approximation algorithms. Its impact was broad and lasting.
+  </p>
+
+  <p data-cid="main-610">
+    <strong>The epsilon-deficient synopsis framework</strong> gave the community a clean, precise specification for what it means to solve the frequent-item problem approximately. Subsequent papers on streaming algorithms routinely cite this framework and use the same three guarantees as a baseline.
+  </p>
+
+  <p data-cid="main-620">
+    <strong>Lossy Counting</strong> specifically became a building block for subsequent work. It was extended to handle sliding windows (where old data expires), to track quantiles and histograms, and to handle distributed streams where data arrives at multiple nodes simultaneously.
+  </p>
+
+  <p data-cid="main-630">
+    <strong>The space-accuracy tradeoff</strong> that Lossy Counting embodies — accept a small, bounded error in exchange for logarithmic memory — is now a standard paradigm in streaming algorithm design. It influenced the design of sketches (like Count-Min Sketch by Cormode and Muthukrishnan, 2005), which generalize the idea to arbitrary frequency queries.
+  </p>
+
+  <p data-cid="main-640">
+    <strong>Practical deployment.</strong> The Lossy Counting idea (or variants of it) appears in monitoring systems at major internet companies: Apache Flink, Spark Streaming, and other stream processing frameworks include approximate heavy-hitter detection modules that follow this paper's core principles.
+  </p>
+
+  <h2 data-cid="main-650" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-660">Fang, M., Shivakumar, N., Garcia-Molina, H., Motwani, R., and Ullman, J.D. (1998). Computing Iceberg Queries Efficiently. VLDB 1998. [FSGM+98]</li>
+    <li data-cid="main-670">Agrawal, R. and Srikant, R. (1994). Fast Algorithms for Mining Association Rules. VLDB 1994. [AS94]</li>
+    <li data-cid="main-680">Babcock, B., Babu, S., Datar, M., Motwani, R., and Widom, J. (2002). Models and Issues in Data Stream Systems. PODS 2002. [BR99, HPDW01 referenced in paper]</li>
+    <li data-cid="main-690">Estan, C. and Varghese, G. (2001). New Directions in Traffic Measurement and Accounting. ACM SIGCOMM. [EV01]</li>
+    <li data-cid="main-700">Gibbons, P.B. and Matias, Y. (1998). New Sampling-Based Summary Statistics for Improving Approximate Query Answers. SIGMOD 1998. [GM98]</li>
+    <li data-cid="main-710">Han, J., Pei, J., and Yin, Y. (2000). Mining Frequent Patterns without Candidate Generation. SIGMOD 2000. [HPY00]</li>
+    <li data-cid="main-720">Toivonen, H. (1996). Sampling Large Databases for Association Rules. VLDB 1996. [Toi96]</li>
+    <li data-cid="main-730">Vitter, J.S. (1985). Random Sampling with a Reservoir. ACM Transactions on Mathematical Software. [Vit85]</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script>
+<script src="/js/highlights.js"></script>
+</body>
+</html>

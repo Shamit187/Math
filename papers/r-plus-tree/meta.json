@@ -1,0 +1,6 @@
+{
+  "title": "The R+-Tree: A Dynamic Index for Multi-Dimensional Objects",
+  "authors": ["Timos Sellis", "Nick Roussopoulos", "Christos Faloutsos"],
+  "venue": "VLDB 1987",
+  "description": "Introduces the R+-tree, a spatial index that eliminates overlapping bounding rectangles at intermediate nodes—gaining up to 50% fewer disk accesses than Guttman's original R-tree for point and region queries."
+}

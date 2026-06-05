@@ -1,0 +1,6 @@
+{
+  "title": "Fault-Tolerance in the Borealis Distributed Stream Processing System",
+  "authors": "Magdalena Balazinska, Hari Balakrishnan, Samuel Madden, Michael Stonebraker",
+  "venue": "SIGMOD 2005",
+  "description": "Presents a replication-based protocol for fault-tolerant distributed stream processing that trades availability against consistency using tentative tuples, a serializing SUnion operator, and checkpoint/undo-redo reconciliation."
+}

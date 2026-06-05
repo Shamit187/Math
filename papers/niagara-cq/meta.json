@@ -1,0 +1,6 @@
+{
+  "title": "NiagaraCQ: A Scalable Continuous Query System for Internet Databases",
+  "authors": "Jianjun Chen, David J. DeWitt, Feng Tian, Yuan Wang",
+  "venue": "SIGMOD 2000",
+  "description": "Presents NiagaraCQ, a system that scales continuous queries over Internet XML data sources to millions of queries by grouping structurally similar queries together to share computation and avoid redundant evaluation."
+}

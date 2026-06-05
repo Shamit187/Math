@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mining Association Rules between Sets of Items in Large Databases · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="mining-association-rules" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/mining-association-rules/">Mining Association Rules</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. Introduction</a></li>
+    <li><a href="#s2">2. Formal Model</a></li>
+    <li><a href="#s3">3. Discovering Large Itemsets</a></li>
+    <li><a href="#s4">4. The Algorithm in Detail</a></li>
+    <li><a href="#s5">5. Experiments</a></li>
+    <li><a href="#s6">6. Why This Paper Matters</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">Scientific Paper · SIGMOD 1993</div>
+    <h1>Mining Association Rules between Sets of Items in Large Databases</h1>
+    <div class="paper-meta">
+      <span class="authors">Rakesh Agrawal, Tomasz Imielinski, Arun Swami</span>
+      <span class="venue">ACM SIGMOD International Conference on Management of Data, Washington DC, 1993</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    We are given a large database of customer transactions. Each transaction consists of items purchased
+    by a customer in a single visit. This paper presents an efficient algorithm that generates all significant
+    association rules between items in the database — for example, "90% of customers who buy bread and
+    butter also buy milk." The algorithm uses buffer management and novel estimation and pruning
+    techniques to balance the number of passes over the database against the cost of measuring candidate
+    itemsets. Experiments on real sales data from a large retail company demonstrate the effectiveness of
+    the approach.
+  </div>
+
+  <h2 data-cid="main-020" id="s1">1. Introduction</h2>
+  <p data-cid="main-030">
+    Supermarkets and large retailers accumulate enormous records of customer purchases at the transaction
+    level. A <em>transaction</em> records the set of items bought by one customer on one visit. For decades,
+    only aggregate summaries — total sales over a week, month, or year — were tractable for analysis.
+    Bar-code technology changed that, making it feasible to store individual basket data for every
+    transaction. The business question then becomes: what hidden regularities exist across these millions of
+    baskets, and how do we find them automatically?
+  </p>
+  <p data-cid="main-040">
+    This paper introduces <em>association rule mining</em> as a precise computational problem. An
+    association rule captures a co-purchase pattern of the form "customers who buy items in set
+    <em>X</em> tend also to buy item <em>Y</em>." The classic motivating example: 90% of transactions
+    that contain bread and butter also contain milk. Such rules can drive shelf layout, coupon design,
+    catalog placement, and cross-marketing strategy. The authors frame this as a database problem —
+    specifically, as a query over a very large table of binary vectors — and design an algorithm that
+    scales to real retail data with tens of thousands of transactions and dozens of item categories.
+  </p>
+
+  <div class="box intuition" data-cid="main-050">
+    <span class="box-label">Intuition — Why basket data is special</span>
+    <p data-cid="main-060">
+      Each transaction is a binary vector: position <em>k</em> is 1 if the customer bought item
+      <em>k</em>, 0 otherwise. With <em>m</em> items in the store, there are
+      <span class="tts-math" data-tts="2 to the power m">$2^m$</span> possible subsets. In a supermarket,
+      <em>m</em> might exceed 1000, making brute-force enumeration completely infeasible. The challenge
+      is to find, among this exponential space, only those subsets that appear in enough transactions
+      to be statistically meaningful — and to do it without reading the entire database more times than
+      necessary.
+    </p>
+  </div>
+
+  <h2 data-cid="main-070" id="s2">2. Formal Model</h2>
+  <p data-cid="main-080">
+    Let <span class="tts-math" data-tts="script I equals I sub 1, I sub 2, through I sub m">$\mathcal{I} = I_1, I_2, \ldots, I_m$</span>
+    be the set of all items. A database <em>T</em> is a collection of transactions; each transaction
+    <em>t</em> is a binary vector where
+    <span class="tts-math" data-tts="t of k equals 1">$t[k] = 1$</span>
+    if the customer bought item
+    <span class="tts-math" data-tts="I sub k">$I_k$</span>
+    and
+    <span class="tts-math" data-tts="t of k equals 0">$t[k] = 0$</span>
+    otherwise. A transaction <em>t</em> <em>satisfies</em> an itemset <em>X</em> if
+    <span class="tts-math" data-tts="t of k equals 1 for all I sub k in X">$t[k]=1$ for all $I_k \in X$</span>.
+  </p>
+
+  <div class="box definition" data-cid="main-090">
+    <span class="box-label">Definition — Association Rule</span>
+    <p data-cid="main-100">
+      An <strong>association rule</strong> is an implication of the form
+      <span class="tts-math" data-tts="X implies I sub j">$X \Rightarrow I_j$</span>,
+      where <em>X</em> is a set of items and
+      <span class="tts-math" data-tts="I sub j">$I_j$</span>
+      is a single item not in <em>X</em>. The rule has <strong>confidence</strong>
+      <span class="tts-math" data-tts="c">$c$</span>
+      if at least
+      <span class="tts-math" data-tts="c percent">$c\%$</span>
+      of transactions that satisfy <em>X</em> also contain
+      <span class="tts-math" data-tts="I sub j">$I_j$</span>.
+      The rule has <strong>support</strong>
+      <span class="tts-math" data-tts="s">$s$</span>
+      if at least
+      <span class="tts-math" data-tts="s percent">$s\%$</span>
+      of all transactions satisfy
+      <span class="tts-math" data-tts="X union I sub j">$X \cup \{I_j\}$</span>.
+    </p>
+  </div>
+
+  <p data-cid="main-110">
+    <strong>Support</strong> measures statistical significance: a rule with very low support is seen
+    so rarely in the data that it might be a coincidence or simply not worth acting on commercially.
+    <strong>Confidence</strong> measures the strength of the implication: given that a customer bought
+    bread and butter, how reliably does that predict milk? The two thresholds, <em>minsupport</em>
+    and <em>minconfidence</em>, are set by the user and reflect business priorities.
+  </p>
+
+  <p data-cid="main-120">
+    The authors decompose the rule-mining problem cleanly into two subproblems:
+  </p>
+
+  <div class="box definition" data-cid="main-130">
+    <span class="box-label">Problem Decomposition</span>
+    <p data-cid="main-140">
+      <strong>Subproblem 1 — Large itemsets:</strong> Find all itemsets whose fractional transaction
+      support exceeds <em>minsupport</em>. These are called <em>large</em> itemsets; all others are
+      <em>small</em>.
+    </p>
+    <p data-cid="main-150">
+      <strong>Subproblem 2 — Rule generation:</strong> For each large itemset
+      <span class="tts-math" data-tts="Y equals I sub 1 through I sub k">$Y = I_1 I_2 \ldots I_k$</span>
+      with <span class="tts-math" data-tts="k greater than or equal to 2">$k \geq 2$</span>,
+      generate all rules of the form
+      <span class="tts-math" data-tts="X implies Y minus X">$X \Rightarrow Y - X$</span>
+      where <em>X</em> is a non-empty subset of <em>Y</em> with
+      <span class="tts-math" data-tts="k minus 1">$k-1$</span>
+      items, and the ratio of the support of <em>Y</em> to the support of <em>X</em> exceeds
+      <em>minconfidence</em>.
+    </p>
+  </div>
+
+  <p data-cid="main-160">
+    Subproblem 2 is essentially free once you have the large itemsets and their support counts — it
+    is a simple ratio check. The hard computational work is entirely in Subproblem 1, and that is
+    where this paper focuses.
+  </p>
+
+  <h2 data-cid="main-170" id="s3">3. Discovering Large Itemsets</h2>
+  <p data-cid="main-180">
+    The algorithm makes multiple passes over the database. The key insight is a <em>frontier set</em>:
+    at any point, the frontier is the collection of itemsets that are being extended during the current
+    pass. In each pass, the algorithm generates <em>candidate itemsets</em> — extensions of frontier
+    itemsets — and counts their support by scanning the database. After the pass, itemsets that exceed
+    <em>minsupport</em> are declared large, and a new frontier is chosen for the next pass.
+  </p>
+  <p data-cid="main-190">
+    The trivial approach — measure every possible itemset in one pass — would require maintaining
+    <span class="tts-math" data-tts="2 to the power m">$2^m$</span>
+    counters simultaneously, which is infeasible. The other extreme — measure only one new item per
+    pass, advancing by one at a time — requires too many passes over the data. The algorithm seeks a
+    middle ground, and three innovations make it practical: <em>estimation</em>, <em>pruning based on
+    remaining tuples</em>, and <em>pruning via synthesized functions</em>.
+  </p>
+
+  <div class="box intuition" data-cid="main-200">
+    <span class="box-label">Intuition — The estimation idea</span>
+    <p data-cid="main-210">
+      Before the algorithm decides whether to measure a candidate itemset
+      <span class="tts-math" data-tts="X plus Y">$X + Y$</span>
+      in the current pass, it <em>predicts</em> whether it will turn out to be large. The prediction
+      uses the statistical independence assumption: the expected support of
+      <span class="tts-math" data-tts="X plus Y">$X + Y$</span>
+      is approximately the support of <em>X</em> (measured in a previous pass) times the individual
+      frequencies of each item in <em>Y</em>. Formally, if <em>X</em> was seen in
+      <span class="tts-math" data-tts="x">$x$</span>
+      tuples and we have processed
+      <span class="tts-math" data-tts="c">$c$</span>
+      tuples in the current pass, the estimated support
+      <span class="tts-math" data-tts="s bar">$\bar{s}$</span>
+      for
+      <span class="tts-math" data-tts="X plus Y">$X + Y$</span>
+      is:
+    </p>
+    <p data-cid="main-220">
+      <span class="tts-math" data-tts="s bar equals f of I sub 1 times f of I sub 2 times through f of I sub k times the quantity x minus c over dbsize">
+      $$\bar{s} = f(I_1) \times f(I_2) \times \ldots \times f(I_k) \times \frac{x - c}{\text{dbsize}}$$
+      </span>
+    </p>
+    <p data-cid="main-230">
+      where
+      <span class="tts-math" data-tts="f of I sub j">$f(I_j)$</span>
+      is the relative frequency of item
+      <span class="tts-math" data-tts="I sub j">$I_j$</span>
+      in the database, and
+      <span class="tts-math" data-tts="x minus c over dbsize">$\frac{x-c}{\text{dbsize}}$</span>
+      is the actual support of <em>X</em> in the remainder of the database yet to be scanned. If
+      <span class="tts-math" data-tts="s bar">$\bar{s}$</span>
+      is below <em>minsupport</em>, the algorithm predicts the candidate will be small and skips
+      extending it further — a potentially large saving.
+    </p>
+  </div>
+
+  <h2 data-cid="main-240" id="s4">4. The Algorithm in Detail</h2>
+  <p data-cid="main-250">
+    The template algorithm is called <strong>LargeItemsets</strong>. It maintains two sets:
+    <em>L</em> (confirmed large itemsets) and <em>F</em> (the frontier, starting with the empty
+    itemset). Each iteration of the main loop performs one pass over the database:
+  </p>
+
+  <div class="box example" data-cid="main-260">
+    <span class="box-label">Algorithm Sketch — LargeItemsets</span>
+    <p data-cid="main-270">
+      <strong>Initialization:</strong> <em>L</em> = empty; <em>F</em> = {empty set}.<br/>
+      <strong>While</strong> the frontier <em>F</em> is non-empty:<br/>
+      &nbsp;&nbsp;Scan every database tuple <em>t</em>. For each frontier itemset <em>f</em>
+      contained in <em>t</em>, generate candidate itemsets
+      <span class="tts-math" data-tts="C sub f">$C_f$</span>
+      as extensions of <em>f</em> that are also contained in <em>t</em>. Increment counters for
+      each candidate.<br/>
+      &nbsp;&nbsp;After the pass: for each candidate <em>c</em>, if
+      <span class="tts-math" data-tts="count of c over dbsize is greater than or equal to minsupport">$\text{count}(c)/\text{dbsize} \geq \text{minsupport}$</span>,
+      add <em>c</em> to <em>L</em>. Decide whether <em>c</em> should be a frontier itemset for
+      the next pass (see Section 3.3 of the paper). Update <em>F</em> accordingly.
+    </p>
+  </div>
+
+  <p data-cid="main-280">
+    The candidate itemset generation procedure (the <em>Extend</em> function) avoids generating
+    duplicates by ordering items and only extending with items that come later in the ordering than
+    any item already in the itemset. The paper's worked example with
+    <span class="tts-math" data-tts="script I equals A B C D E F">$\mathcal{I} = \{A,B,C,D,E,F\}$</span>
+    and frontier {<em>AB</em>} shows how a database tuple <em>ABCDF</em> yields candidates
+    <em>ABC</em> (expected large), <em>ABCF</em> (expected large but cannot extend), and
+    <em>ABF</em> (expected large but cannot extend), while <em>ABD</em> is expected small and
+    not extended further.
+  </p>
+
+  <h3 data-cid="main-290">Determining the frontier set</h3>
+  <p data-cid="main-300">
+    A subtle but important correctness issue: which itemsets should be placed in the frontier for the
+    next pass? It is tempting to say "only the maximal large itemsets" — but this is wrong. Suppose
+    frontier itemset <em>AB</em> was extended and both <em>ABD</em> and <em>ABCD</em> turned out
+    large. Since <em>ABD</em> is non-maximal, it would be excluded from the next frontier. But then
+    <em>ABDF</em> — a potentially large superset of <em>ABD</em> — would never be considered. The
+    paper proves a lemma ensuring that only itemsets that were <em>expected small but turned out
+    large</em> need to enter the frontier (since all extensions of expected-large itemsets have
+    already been considered in the current pass).
+  </p>
+
+  <h3 data-cid="main-310">Two pruning techniques</h3>
+  <p data-cid="main-320">
+    <strong>Remaining-tuples pruning:</strong> During a pass, after processing
+    <span class="tts-math" data-tts="c">$c$</span>
+    tuples, the algorithm knows that a candidate
+    <span class="tts-math" data-tts="X plus Y">$X + Y$</span>
+    has been seen in
+    <span class="tts-math" data-tts="s">$s$</span>
+    of those tuples. The maximum it could ever achieve, even if every remaining tuple contained it,
+    is
+    <span class="tts-math" data-tts="maxcount equals x minus c plus s">$\text{maxcount} = (x - c) + s$</span>.
+    If this maxcount is below
+    <span class="tts-math" data-tts="minsupport times dbsize">$\text{minsupport} \times \text{dbsize}$</span>,
+    the candidate is pruned immediately, saving both memory and counting effort.
+  </p>
+  <p data-cid="main-330">
+    <strong>Pruning function optimization:</strong> The algorithm synthesizes linear functions of item
+    indicators that serve as upper bounds on the support of an itemset family. For frontier itemset
+    <em>X</em>, a pruning function has the form
+    <span class="tts-math" data-tts="w sub 1 times I sub j sub 1 plus w sub 2 times I sub j sub 2 plus dot dot dot plus w sub m times I sub j sub m is less than or equal to tau">
+    $w_1 I_{j_1} + w_2 I_{j_2} + \ldots + w_m I_{j_m} \leq \tau$</span>,
+    where item weights are set as
+    <span class="tts-math" data-tts="w sub i equals 2 to the power i minus 1 times epsilon">$w_i = 2^{i-1}\epsilon$</span>
+    for a small
+    <span class="tts-math" data-tts="epsilon">$\epsilon$</span>.
+    This allows the algorithm to discard candidates as soon as they are generated, before any counting.
+  </p>
+
+  <h3 data-cid="main-340">Memory management</h3>
+  <p data-cid="main-350">
+    Because main memory may not hold all frontier and candidate itemsets simultaneously, the paper
+    introduces a memory reclamation algorithm. When memory fills up, the algorithm first tries to
+    move to disk those frontier itemsets whose extensions have not yet been generated. If that fails,
+    it discards the candidate itemset with the most items (and all its siblings), promotes their
+    parent into the frontier for the next pass, and disables further extensions of that parent in the
+    current pass. The paper proves that even under these memory pressures, the algorithm maintains
+    completeness (no large itemset is missed), no redundancy (no itemset is measured twice), and
+    guaranteed progress (the algorithm always terminates).
+  </p>
+
+  <h2 data-cid="main-360" id="s5">5. Experiments</h2>
+  <p data-cid="main-370">
+    The algorithm was evaluated on real sales data from a large retail company: 46,873 customer
+    transactions across 63 item departments. Running with a minimum support of 1% and minimum
+    confidence of 50%, the algorithm discovered rules such as:
+  </p>
+
+  <div class="box example" data-cid="main-380">
+    <span class="box-label">Example — Discovered Rules (confidence%, support%)</span>
+    <p data-cid="main-390">
+      [Tires] &#8658; [Automotive Services] (98.80%, 5.79%)<br/>
+      [Auto Accessories], [Tires] &#8658; [Automotive Services] (98.29%, 1.47%)<br/>
+      [Auto Accessories] &#8658; [Automotive Services] (79.51%, 11.81%)<br/>
+      [Home Laundry Appliances] &#8658; [Maintenance Agreement Sales] (66.55%, 1.25%)<br/>
+      [Children's Hardlines] &#8658; [Infants and Children's Wear] (66.15%, 4.24%)
+    </p>
+  </div>
+
+  <p data-cid="main-400">
+    These rules are intuitive and commercially actionable. The timing on an IBM RS-6000/530H
+    workstation was approximately 2 minutes 53 seconds of real time for this dataset. The experiments
+    confirmed that the estimation procedure was highly accurate: most itemsets predicted to be large
+    did turn out large, and vice versa. The pruning techniques eliminated a large fraction of
+    candidate itemsets without measuring them, dramatically reducing wasted effort.
+  </p>
+
+  <div class="box pause" data-cid="main-410">
+    <span class="box-label">Pause and reflect</span>
+    <p data-cid="main-420">
+      Notice the asymmetry between the two error modes. If the estimation procedure predicts an
+      itemset is large but it turns out to be small, we wasted time counting it. If it predicts small
+      but it turns out large, we might need an extra pass. The paper shows that on "boring" data
+      (where statistical independence approximately holds), the algorithm terminates in very few
+      passes. On "surprising" data it takes more passes — but those extra passes are revealing
+      genuine structure that deviates from independence, which is arguably the most interesting output.
+    </p>
+  </div>
+
+  <h2 data-cid="main-430" id="s6">6. Why This Paper Matters</h2>
+  <p data-cid="main-440">
+    This 1993 paper is one of the foundational texts of the data mining field. It did several things
+    simultaneously: it formalized the association rule problem in a clean mathematical framework; it
+    showed that the problem could be decomposed into a tractable subproblem (finding large itemsets)
+    and a trivial one (generating rules); it designed an algorithm with principled estimation and
+    pruning; and it demonstrated real-world utility on actual retail data.
+  </p>
+  <p data-cid="main-450">
+    The concept of <em>support</em> as a threshold is particularly important. Without it, the space
+    of possible rules is combinatorially explosive. With a minimum support threshold, the set of
+    large itemsets is typically manageable, and the anti-monotone property — if an itemset is small,
+    all its supersets must also be small — provides the key pruning principle that all subsequent work
+    in this area would exploit. The follow-up paper by Agrawal and Srikant at VLDB 1994 (Apriori)
+    made this principle the centerpiece of a dramatically cleaner algorithm. But the problem
+    formulation and many of the key ideas — support, confidence, candidate generation, pruning —
+    originate here.
+  </p>
+
+  <div class="box warn" data-cid="main-460">
+    <span class="box-label">Limitation to keep in mind</span>
+    <p data-cid="main-470">
+      The paper's estimation procedure assumes statistical independence between items. In practice,
+      retail data is highly correlated (people who buy diapers tend to buy baby food). When the
+      independence assumption fails badly, the estimation accuracy drops and more passes are needed.
+      The paper acknowledges this gracefully — more surprising data means more passes, but also more
+      genuinely interesting rules — though later algorithms (Apriori in particular) would sidestep
+      the estimation approach entirely in favor of a cleaner level-by-level strategy.
+    </p>
+  </div>
+
+  <h2 data-cid="main-480" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-490">Rakesh Agrawal, Tomasz Imielinski, and Arun Swami. "Database Mining: A Performance Perspective." <em>IEEE Transactions on Knowledge and Data Engineering</em>, Special Issue on Learning and Discovery in Knowledge-Based Databases, to appear.</li>
+    <li data-cid="main-500">Rakesh Agrawal, Sakti Ghosh, Tomasz Imielinski, Bala Iyer, and Arun Swami. "An Interval Classifier for Database Mining Applications." <em>VLDB-92</em>, Vancouver, British Columbia, 1992, pp. 560–573.</li>
+    <li data-cid="main-510">L. Breiman, J. H. Friedman, R. A. Olshen, and C. J. Stone. <em>Classification and Regression Trees.</em> Wadsworth, Belmont, 1984.</li>
+    <li data-cid="main-520">B. Falkenhainer and R. Michalski. "Integrating Quantitative and Qualitative Discovery: The ABACUS System." <em>Machine Learning</em>, 1(4): 367–401.</li>
+    <li data-cid="main-530">G. Piatetsky-Shapiro. "Discovery, Analysis, and Presentation of Strong Rules." In <em>Knowledge Discovery in Databases</em>, AAAI/MIT Press, 1991, pp. 229–248.</li>
+    <li data-cid="main-540">G. Piatetsky-Shapiro (Editor). <em>Knowledge Discovery in Databases.</em> AAAI/MIT Press, 1991.</li>
+    <li data-cid="main-550">Ross Quinlan. "Induction of Decision Trees." <em>Machine Learning</em>, 1, 1986, pp. 81–106.</li>
+    <li data-cid="main-560">Heikki Mannila and Kari-Jouku Raiha. "Dependency Inference." <em>VLDB-87</em>, Brighton, England, 1987, pp. 155–158.</li>
+    <li data-cid="main-570">L. G. Valiant. "A Theory of Learnable." <em>CACM</em>, 27, 1134–1142, 1984.</li>
+    <li data-cid="main-580">Yi-Hua Wu and Shulin Wang. "Discovering Functional Relationships from Observational Data." In <em>Knowledge Discovery in Databases</em>, 1991, pp. 55–70.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script>
+</body>
+</html>

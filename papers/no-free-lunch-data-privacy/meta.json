@@ -1,0 +1,6 @@
+{
+  "title": "No Free Lunch in Data Privacy",
+  "authors": "Daniel Kifer, Ashwin Machanavajjhala",
+  "venue": "SIGMOD 2011",
+  "description": "Proves a no-free-lunch theorem showing it is impossible to guarantee both privacy and utility without assumptions about the data-generating mechanism, and shows where differential privacy succeeds or fails depending on data independence assumptions."
+}

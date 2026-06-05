@@ -49,6 +49,26 @@
       "block_excerpt": "MLE intrinsic dimension estimator (Levina–Bickel) For each data point xix_ixi​, look at its KKK nearest neighbours and estimate the local intrinsic dimension as: 💬0🔊 d^ = [1N(K−1)∑i=1N∑j=1K−1log⁡TK(…",
       "created_at": "2026-05-27T15:40:27Z",
       "updated_at": "2026-05-27T15:40:27Z"
+    },
+    {
+      "id": "c_c016ff23c30a",
+      "book": "joinml-bas",
+      "page": "main",
+      "cid": "main-0350",
+      "text": "This has a lot of concept. Random walks across tables... jumping to records that satisfies join condition. Indexing over join key... This all seem very difficult concepts. So it feels a bit rushed. I have no idea what any of these ideas mean.",
+      "block_excerpt": "The first building block sharpens sampling. Wander Join is an efficient join-sampling algorithm for structured data: it performs random walks across tables, at each step jumping only to records that s…",
+      "created_at": "2026-06-03T10:50:58Z",
+      "updated_at": "2026-06-03T10:50:58Z"
+    },
+    {
+      "id": "c_3db066ca3815",
+      "book": "joinml-bas",
+      "page": "main",
+      "cid": "main-0360",
+      "text": "approximate index, built from embeddings, how?",
+      "block_excerpt": "Weighted Wander Join (WWJ) replaces the missing exact index with an approximate one built from embeddings. At each step of the walk it samples the next record with probability proportional to its embe…",
+      "created_at": "2026-06-03T10:51:50Z",
+      "updated_at": "2026-06-03T10:51:50Z"
     }
   ]
 }

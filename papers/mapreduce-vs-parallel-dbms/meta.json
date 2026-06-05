@@ -1,0 +1,6 @@
+{
+  "title": "A Comparison of Approaches to Large-Scale Data Analysis",
+  "authors": "Andrew Pavlo, Erik Paulson, Alexander Rasin, Daniel J. Abadi, David J. DeWitt, Samuel Madden, Michael Stonebraker",
+  "venue": "SIGMOD 2009",
+  "description": "Benchmarks Hadoop MapReduce against two parallel SQL DBMSs (Vertica and DBMS-X) on a 100-node cluster across five analytical tasks, finding that the parallel databases were consistently 3–6x faster while Hadoop was substantially easier to install and load data into."
+}

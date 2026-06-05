@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>k-Shape: Efficient and Accurate Clustering of Time Series · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="k-shape" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/k-shape/">k-Shape</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. Clustering Time Series by Shape</a></li>
+    <li><a href="#s2">2. Distortions and Invariances</a></li>
+    <li><a href="#s3">3. Cross-Correlation and SBD</a></li>
+    <li><a href="#s4">4. Efficient Computation via FFT</a></li>
+    <li><a href="#s5">5. Shape Extraction: Finding the Centroid</a></li>
+    <li><a href="#s6">6. The k-Shape Algorithm</a></li>
+    <li><a href="#s7">7. Experimental Results</a></li>
+    <li><a href="#s8">8. Impact</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">Scientific Paper · SIGMOD 2015</div>
+    <h1>k-Shape: Efficient and Accurate Clustering of Time Series</h1>
+    <div class="paper-meta">
+      <span class="authors">John Paparrizos, Luis Gravano</span>
+      <span class="venue">ACM SIGMOD 2015 · Melbourne, Victoria, Australia</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    Time-series data is everywhere — ECG readings, stock prices, sensor streams, audio waveforms —
+    and clustering is among the most important tools for making sense of it. But most clustering
+    methods for time series suffer a painful trade-off: methods based on Dynamic Time Warping (DTW)
+    are accurate but extremely slow, while methods using Euclidean distance are fast but miss
+    sequences that are similar in <em>shape</em> yet differ in phase or amplitude. k-Shape proposes
+    a different approach rooted in cross-correlation: it defines a shape-based distance (SBD) that
+    is scale- and shift-invariant without requiring any parameter tuning, and it derives a novel
+    centroid computation method (shape extraction) consistent with that distance. The resulting
+    algorithm runs in time linear in the number of sequences, outperforms all scalable clustering
+    algorithms in accuracy across 48 benchmark datasets, and achieves accuracy comparable to
+    PAM+cDTW while being two orders of magnitude faster.
+  </div>
+
+  <!-- ═══════════════════════════ SECTION 1 -->
+  <h2 data-cid="main-020" id="s1">1. Clustering Time Series by Shape</h2>
+
+  <p data-cid="main-030">
+    What does it mean for two time series to be "similar"? Consider two ECG recordings of the same
+    patient's heartbeat taken on different days. The overall shape — a sharp spike, then a drop,
+    then a gentle rise — is nearly identical. But one recording might start its measurement window
+    a few milliseconds earlier (a phase shift), and the two recordings might use different voltage
+    scales (an amplitude difference). A human cardiologist would immediately recognize them as the
+    same heartbeat pattern. A simple Euclidean distance — measuring point-by-point differences —
+    would declare them very different.
+  </p>
+
+  <p data-cid="main-040">
+    The clustering problem for time series is: given
+    <span class="tts-math" data-tts="n">$n$</span> sequences and a target number of clusters
+    <span class="tts-math" data-tts="k">$k$</span>, partition the sequences so that sequences with
+    similar shapes land in the same cluster, regardless of phase, amplitude, or baseline offset.
+    The standard objective (minimizing within-cluster sum of squared distances) is:
+  </p>
+
+  <p data-cid="main-050">
+    <span class="tts-math" data-tts="P star equals arg min over P of the sum from j equals 1 to k of the sum over x sub i in p sub j of the distance between x sub i and c sub j squared">
+    $$P^* = \arg\min_P \sum_{j=1}^{k} \sum_{\vec{x}_i \in p_j} \text{dist}(\vec{x}_i, \vec{c}_j)^2$$
+    </span>
+  </p>
+
+  <p data-cid="main-060">
+    where <span class="tts-math" data-tts="c sub j">$\vec{c}_j$</span> is the centroid of cluster
+    <span class="tts-math" data-tts="p sub j">$p_j$</span>. This is NP-hard for
+    <span class="tts-math" data-tts="k at least 2">$k \geq 2$</span> in general, so heuristics
+    (like k-means' iterative refinement) are used to find a local optimum.
+  </p>
+
+  <div class="box intuition" data-cid="main-070">
+    <span class="box-label">Intuition — Why k-means fails on raw time series</span>
+    <p data-cid="main-080">
+      Standard k-means uses Euclidean distance (ED) and computes centroids as arithmetic means.
+      Neither is appropriate for shape-based time-series clustering. ED compares sequences
+      point-by-point, so even a tiny phase shift (a sequence shifted one step to the right) can
+      produce a huge distance. And the arithmetic mean of shifted sequences produces a blurry,
+      averaged-out waveform that does not look like any of the actual shapes — a phenomenon well
+      known in signal processing. The paper's key challenge is replacing both distance and centroid
+      computation simultaneously, in a consistent way.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════ SECTION 2 -->
+  <h2 data-cid="main-090" id="s2">2. Distortions and Invariances</h2>
+
+  <p data-cid="main-100">
+    Before designing a distance measure, the paper catalogues the distortions that time-series
+    sequences commonly exhibit:
+  </p>
+
+  <p data-cid="main-110">
+    <strong>Scaling and translation.</strong> Two sequences may have the same shape but different
+    amplitudes (scaling: multiply by <span class="tts-math" data-tts="a">$a$</span>) and different
+    baselines (translation: add <span class="tts-math" data-tts="b">$b$</span>). For example,
+    temperature sensors in Celsius and Fahrenheit record the same physical signal. A distance
+    measure invariant to these transforms can identify the underlying pattern regardless of units.
+  </p>
+
+  <p data-cid="main-120">
+    <strong>Shift invariance.</strong> Two sequences may record the same event but start their
+    measurement window at different times. Heartbeats start at different points in the cardiac
+    cycle. Speech sounds may be time-aligned differently across recordings. A shift-invariant
+    distance should treat these as similar.
+  </p>
+
+  <p data-cid="main-130">
+    The standard approach to removing scaling and translation is <em>z-normalization</em>: subtract
+    the mean and divide by the standard deviation so that every sequence has mean
+    <span class="tts-math" data-tts="0">$0$</span> and standard deviation
+    <span class="tts-math" data-tts="1">$1$</span>. After z-normalization, a sequence
+    <span class="tts-math" data-tts="x vec">$\vec{x}$</span> becomes:
+  </p>
+
+  <p data-cid="main-140">
+    <span class="tts-math" data-tts="x prime equals x minus mu over sigma">
+    $$\vec{x}' = \frac{\vec{x} - \mu}{\sigma}$$
+    </span>
+  </p>
+
+  <p data-cid="main-150">
+    where <span class="tts-math" data-tts="mu">$\mu$</span> is the mean and
+    <span class="tts-math" data-tts="sigma">$\sigma$</span> is the standard deviation. The
+    remaining distortion to handle is phase shift, which k-Shape addresses through
+    cross-correlation.
+  </p>
+
+  <!-- ═══════════════════════════ SECTION 3 -->
+  <h2 data-cid="main-160" id="s3">3. Cross-Correlation and SBD</h2>
+
+  <p data-cid="main-170">
+    Cross-correlation is a classical signal-processing tool that measures the similarity between two
+    signals as one is slid over the other. Given two sequences
+    <span class="tts-math" data-tts="x vec equals x sub 1 through x sub m">$\vec{x} = (x_1, \ldots, x_m)$</span>
+    and <span class="tts-math" data-tts="y vec equals y sub 1 through y sub m">$\vec{y} = (y_1, \ldots, y_m)$</span>,
+    a shift of <span class="tts-math" data-tts="s">$s$</span> applied to
+    <span class="tts-math" data-tts="x vec">$\vec{x}$</span> produces:
+  </p>
+
+  <p data-cid="main-180">
+    <span class="tts-math" data-tts="x vec subscript s equals 0 dots 0 x sub 1 through x sub m minus s for s at least 0, and x sub 1 minus s through x sub m 0 dots 0 for s less than 0">
+    $$\vec{x}_{(s)} = \begin{cases} (0,\ldots,0,x_1,\ldots,x_{m-s}), &amp; s \geq 0 \\ (x_{1-s},\ldots,x_m, 0,\ldots,0), &amp; s &lt; 0 \end{cases}$$
+    </span>
+  </p>
+
+  <p data-cid="main-190">
+    The cross-correlation sequence
+    <span class="tts-math" data-tts="CC sub w of x and y">$CC_w(\vec{x}, \vec{y})$</span>
+    is the length-<span class="tts-math" data-tts="2m minus 1">$(2m-1)$</span> sequence of inner
+    products between <span class="tts-math" data-tts="y vec">$\vec{y}$</span> (fixed) and each
+    shift of <span class="tts-math" data-tts="x vec">$\vec{x}$</span>:
+  </p>
+
+  <p data-cid="main-200">
+    <span class="tts-math" data-tts="R sub k of x and y equals the sum from l equals 1 to m minus k of x sub l plus k times y sub l for k at least 0, and R sub negative k of y and x for k less than 0">
+    $$R_k(\vec{x},\vec{y}) = \begin{cases} \sum_{l=1}^{m-k} x_{l+k} \cdot y_l, &amp; k \geq 0 \\ R_{-k}(\vec{y},\vec{x}), &amp; k &lt; 0 \end{cases}$$
+    </span>
+  </p>
+
+  <p data-cid="main-210">
+    The value of <span class="tts-math" data-tts="CC sub w at position w">$CC_w$</span> at
+    position <span class="tts-math" data-tts="w">$w$</span> answers: "how similar is
+    <span class="tts-math" data-tts="x vec">$\vec{x}$</span> to
+    <span class="tts-math" data-tts="y vec">$\vec{y}$</span> when
+    <span class="tts-math" data-tts="x vec">$\vec{x}$</span> is shifted by
+    <span class="tts-math" data-tts="s equals w minus m">$s = w - m$</span> steps?" The optimal
+    shift is the <span class="tts-math" data-tts="w">$w$</span> that maximizes this.
+  </p>
+
+  <div class="box definition" data-cid="main-220">
+    <span class="box-label">Definition — Shape-Based Distance (SBD)</span>
+    <p data-cid="main-230">
+      To make the cross-correlation invariant to scaling, the paper uses the <em>coefficient
+      normalization</em>
+      <span class="tts-math" data-tts="NCC sub c">$NCC_c$</span>, which divides the cross-correlation
+      by the geometric mean of the autocorrelations at lag 0:
+    </p>
+    <p data-cid="main-240">
+      <span class="tts-math" data-tts="NCC sub c of x and y at w equals CC sub w of x and y over the square root of R sub 0 of x comma x times R sub 0 of y comma y">
+      $$NCC_c(\vec{x}, \vec{y}) = \frac{CC_w(\vec{x},\vec{y})}{\sqrt{R_0(\vec{x},\vec{x}) \cdot R_0(\vec{y},\vec{y})}}$$
+      </span>
+    </p>
+    <p data-cid="main-250">
+      This normalization produces values in <span class="tts-math" data-tts="the interval from negative 1 to 1">$[-1, 1]$</span>.
+      The shape-based distance is then:
+    </p>
+    <p data-cid="main-260">
+      <span class="tts-math" data-tts="SBD of x and y equals 1 minus the maximum over w of NCC sub c of x and y at w">
+      $$SBD(\vec{x}, \vec{y}) = 1 - \max_w \left( NCC_c(\vec{x}, \vec{y}) \right)$$
+      </span>
+    </p>
+    <p data-cid="main-270">
+      SBD takes values in <span class="tts-math" data-tts="the interval from 0 to 2">$[0, 2]$</span>,
+      with 0 indicating perfect shape similarity. It is shift-invariant because we maximize over
+      all shifts, and scale/translation-invariant because we z-normalize before computing.
+    </p>
+  </div>
+
+  <div class="box intuition" data-cid="main-280">
+    <span class="box-label">Intuition — What SBD is really asking</span>
+    <p data-cid="main-290">
+      SBD asks: "Among all ways to slide one sequence over the other, what is the best alignment?"
+      Then it converts that best alignment score into a distance. If two sequences have exactly the
+      same shape but are shifted by 5 time steps, SBD will shift one sequence by 5 and find
+      perfect overlap, returning distance 0. Euclidean distance would find a large distance
+      because it compares the wrong pairs of points.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════ SECTION 4 -->
+  <h2 data-cid="main-300" id="s4">4. Efficient Computation via FFT</h2>
+
+  <p data-cid="main-310">
+    The naive computation of
+    <span class="tts-math" data-tts="CC sub w of x and y">$CC_w(\vec{x}, \vec{y})$</span>
+    for all values of <span class="tts-math" data-tts="w">$w$</span> requires
+    <span class="tts-math" data-tts="order m squared">$O(m^2)$</span> time, where
+    <span class="tts-math" data-tts="m">$m$</span> is the sequence length. For long sequences
+    (thousands of time steps), this is prohibitively slow.
+  </p>
+
+  <p data-cid="main-320">
+    The key insight is that cross-correlation is equivalent to convolution, and the
+    <em>convolution theorem</em> states that convolution in the time domain equals pointwise
+    multiplication in the frequency domain. So the full cross-correlation sequence can be computed
+    as:
+  </p>
+
+  <p data-cid="main-330">
+    <span class="tts-math" data-tts="CC of x and y equals the inverse DFT of the DFT of x times the complex conjugate of the DFT of y">
+    $$CC(\vec{x}, \vec{y}) = \mathcal{F}^{-1}\!\left\{\mathcal{F}(\vec{x}) \cdot \overline{\mathcal{F}(\vec{y})}\right\}$$
+    </span>
+  </p>
+
+  <p data-cid="main-340">
+    where <span class="tts-math" data-tts="script F">$\mathcal{F}$</span> denotes the Discrete
+    Fourier Transform (DFT) and the bar denotes complex conjugate. Using the Fast Fourier Transform
+    (FFT), both the forward and inverse DFTs cost only
+    <span class="tts-math" data-tts="order m log m">$O(m \log m)$</span>, so the overall SBD
+    computation reduces from <span class="tts-math" data-tts="order m squared">$O(m^2)$</span>
+    to <span class="tts-math" data-tts="order m log m">$O(m \log m)$</span>. For
+    <span class="tts-math" data-tts="m equals 1000">$m = 1{,}000$</span>, that is roughly a
+    <span class="tts-math" data-tts="100 times">$100\times$</span> speedup.
+  </p>
+
+  <div class="box warn" data-cid="main-350">
+    <span class="box-label">Implementation detail — Padding to power-of-two length</span>
+    <p data-cid="main-360">
+      FFT is fastest when the input length is a power of two. When computing
+      <span class="tts-math" data-tts="CC of x and y">$CC(\vec{x}, \vec{y})$</span>, the output
+      has length <span class="tts-math" data-tts="2m minus 1">$2m - 1$</span>. The paper pads both
+      sequences with zeros to reach the next power of two above
+      <span class="tts-math" data-tts="2m minus 1">$2m - 1$</span> before applying the FFT.
+      This does not change the mathematical result (zero-padding does not alter correlation values)
+      but can dramatically speed up the FFT computation in practice.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════ SECTION 5 -->
+  <h2 data-cid="main-370" id="s5">5. Shape Extraction: Finding the Centroid</h2>
+
+  <p data-cid="main-380">
+    A clustering algorithm needs not just a distance measure but also a way to compute a centroid
+    — a representative sequence for a cluster. For standard Euclidean distance, the arithmetic mean
+    works perfectly: it minimizes the sum of squared Euclidean distances. But for SBD, the
+    arithmetic mean is wrong: averaging sequences that have been aligned to different phases
+    produces a blurry mixture that does not represent any real shape.
+  </p>
+
+  <p data-cid="main-390">
+    The <em>shape extraction</em> algorithm solves this correctly. It casts centroid computation as
+    an optimization problem: find the sequence
+    <span class="tts-math" data-tts="mu sub k star">$\vec{\mu}_k^*$</span> that maximizes the
+    sum of squared <span class="tts-math" data-tts="NCC sub c">$NCC_c$</span> values to all
+    sequences in the cluster:
+  </p>
+
+  <p data-cid="main-400">
+    <span class="tts-math" data-tts="mu sub k star equals arg max over mu sub k of the sum over x sub i in P sub k of the max over w of CC sub w of x sub i and mu sub k, over the square root of R sub 0 of x sub i x sub i times R sub 0 of mu sub k mu sub k, squared">
+    $$\vec{\mu}_k^* = \mathop{\arg\max}_{\vec{\mu}_k} \sum_{\vec{x}_i \in P_k} \left(\frac{\max_w CC_w(\vec{x}_i, \vec{\mu}_k)}{\sqrt{R_0(\vec{x}_i,\vec{x}_i)\cdot R_0(\vec{\mu}_k,\vec{\mu}_k)}}\right)^2$$
+    </span>
+  </p>
+
+  <p data-cid="main-410">
+    After z-normalizing the sequences, the paper shows this simplifies to maximizing a
+    <em>Rayleigh Quotient</em>:
+  </p>
+
+  <p data-cid="main-420">
+    <span class="tts-math" data-tts="mu sub k star equals arg max over mu sub k of mu sub k transpose times M times mu sub k, over mu sub k transpose times mu sub k">
+    $$\vec{\mu}_k^* = \mathop{\arg\max}_{\vec{\mu}_k} \frac{\vec{\mu}_k^T \cdot M \cdot \vec{\mu}_k}{\vec{\mu}_k^T \cdot \vec{\mu}_k}$$
+    </span>
+  </p>
+
+  <p data-cid="main-430">
+    where <span class="tts-math" data-tts="M equals Q transpose times S times Q">$M = Q^T \cdot S \cdot Q$</span>
+    is a real symmetric matrix constructed from the aligned sequences (with
+    <span class="tts-math" data-tts="S equals the sum of x sub i times x sub i transpose">$S = \sum_{\vec{x}_i \in P_k} \vec{x}_i \cdot \vec{x}_i^T$</span>
+    and <span class="tts-math" data-tts="Q equals I minus 1 over m times O">$Q = I - \frac{1}{m}O$</span>
+    a centering matrix). The maximizer of the Rayleigh Quotient is the eigenvector of
+    <span class="tts-math" data-tts="M">$M$</span> corresponding to its largest eigenvalue.
+  </p>
+
+  <div class="box intuition" data-cid="main-440">
+    <span class="box-label">Intuition — Why eigenvectors give the best centroid</span>
+    <p data-cid="main-450">
+      The Rayleigh Quotient
+      <span class="tts-math" data-tts="mu transpose M mu over mu transpose mu">$\vec{\mu}^T M \vec{\mu} / \vec{\mu}^T \vec{\mu}$</span>
+      is maximized by the principal eigenvector of
+      <span class="tts-math" data-tts="M">$M$</span> — this is a classical result in linear
+      algebra. Intuitively, the principal eigenvector of the "scatter matrix" of aligned sequences
+      captures the direction of maximum variance, which corresponds to the shared shape. The paper's
+      Algorithm 2 computes this by extracting the first eigenvector of
+      <span class="tts-math" data-tts="M">$M$</span> after aligning all sequences to the current
+      centroid estimate. This is far more principled than taking the arithmetic mean.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════ SECTION 6 -->
+  <h2 data-cid="main-460" id="s6">6. The k-Shape Algorithm</h2>
+
+  <p data-cid="main-470">
+    With SBD and shape extraction in hand, k-Shape is simply an iterative refinement algorithm
+    in the spirit of k-means, but using these two components instead of Euclidean distance and
+    arithmetic mean. The algorithm repeats until cluster assignments stabilize or the iteration
+    limit (100) is reached:
+  </p>
+
+  <div class="box definition" data-cid="main-480">
+    <span class="box-label">Algorithm — k-Shape (one iteration)</span>
+    <p data-cid="main-490">
+      <strong>Refinement step:</strong> For each cluster
+      <span class="tts-math" data-tts="j from 1 to k">$j \in [1,k]$</span>, collect all sequences
+      currently assigned to cluster <span class="tts-math" data-tts="j">$j$</span> and run
+      ShapeExtraction (Algorithm 2) to compute the new centroid
+      <span class="tts-math" data-tts="C sub j">$C(j)$</span>.
+    </p>
+    <p data-cid="main-500">
+      <strong>Assignment step:</strong> For each sequence
+      <span class="tts-math" data-tts="x sub i">$\vec{x}_i$</span>, compute
+      <span class="tts-math" data-tts="SBD of C sub j and x sub i">$SBD(C(j), \vec{x}_i)$</span>
+      for all <span class="tts-math" data-tts="k">$k$</span> centroids and assign
+      <span class="tts-math" data-tts="x sub i">$\vec{x}_i$</span> to the cluster with the
+      smallest SBD.
+    </p>
+  </div>
+
+  <p data-cid="main-510">
+    The complexity of one iteration is dominated by two costs. The assignment step computes
+    <span class="tts-math" data-tts="n times k">$n \cdot k$</span> SBD values, each costing
+    <span class="tts-math" data-tts="order m log m">$O(m \log m)$</span>, for total
+    <span class="tts-math" data-tts="order n times k times m log m">$O(n \cdot k \cdot m \log m)$</span>.
+    The refinement step computes one eigendecomposition of an
+    <span class="tts-math" data-tts="m by m">$m \times m$</span> matrix per cluster, costing
+    <span class="tts-math" data-tts="order k times m cubed">$O(k \cdot m^3)$</span>. In practice
+    <span class="tts-math" data-tts="m is much less than n">$m \ll n$</span>, so the assignment
+    step dominates, giving overall complexity
+    <span class="tts-math" data-tts="order n times k times m log m">$O(n \cdot k \cdot m \log m)$</span>
+    per iteration — <em>linear in the number of sequences</em>.
+  </p>
+
+  <div class="box pause" data-cid="main-520">
+    <span class="box-label">Pause and check — What makes k-Shape special?</span>
+    <p data-cid="main-530">
+      Many previous approaches modified either the distance measure (replacing ED with DTW or cDTW)
+      or the centroid computation (replacing arithmetic mean with DBA) — but not both consistently.
+      k-Shape is the first algorithm that derives both the distance (SBD) and the centroid
+      computation (shape extraction via Rayleigh Quotient) from the same underlying mathematical
+      object — the cross-correlation — and that does so efficiently using the FFT. The consistency
+      of distance and centroid is what produces well-separated, homogeneous clusters.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════ SECTION 7 -->
+  <h2 data-cid="main-540" id="s7">7. Experimental Results</h2>
+
+  <p data-cid="main-550">
+    The authors evaluate k-Shape on all 48 publicly available class-labeled time-series datasets
+    from the UCR repository, spanning domains from astronomy to biology to finance. Sequence lengths
+    range from 24 to 1,882 time steps; dataset sizes from 56 to 9,236 sequences. All methods are
+    evaluated on a cluster of 10 servers running for two months continuously.
+  </p>
+
+  <p data-cid="main-560">
+    The evaluation metric is the Rand Index — the fraction of sequence pairs that are either in
+    the same cluster and the same class, or in different clusters and different classes. Higher is
+    better. The 1-nearest-neighbor classification accuracy is used for evaluating the distance
+    measure SBD alone.
+  </p>
+
+  <p data-cid="main-570">
+    Key findings for the SBD distance measure: SBD is statistically equivalent to cDTW (the
+    best-performing DTW variant) in accuracy, while being 73× to 3533× faster depending on the
+    DTW variant. For k-Shape as a complete clustering algorithm: it outperforms all scalable methods
+    (k-means variants) with statistical significance and achieves a mean Rand Index of 0.772 versus
+    0.745 for k-AVG+SBD (the next best scalable method). Among non-scalable methods (which compute
+    full dissimilarity matrices and cannot scale to large datasets), only PAM+cDTW achieves similar
+    accuracy, but it requires tuning cDTW's warping window and is 313× to 4175× slower than k-Shape.
+  </p>
+
+  <div class="box example" data-cid="main-580">
+    <span class="box-label">Example — ECG dataset result</span>
+    <p data-cid="main-590">
+      On the ECGFiveDays dataset (ECG recordings on different days), k-Shape achieves a 1-NN
+      classification accuracy of 98.9% — dramatically higher than cDTW's 79.7%. This dataset
+      exemplifies the case where k-Shape excels: sequences that are nearly identical in shape but
+      recorded with different phase alignments, where cross-correlation-based alignment
+      vastly outperforms point-by-point comparison.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════ SECTION 8 -->
+  <h2 data-cid="main-600" id="s8">8. Impact</h2>
+
+  <p data-cid="main-610">
+    k-Shape established cross-correlation as a first-class citizen in time-series data mining.
+    Before this paper, the field had largely polarized into two camps: researchers who used DTW
+    (accurate but slow, requiring tuning) and practitioners who used ED (fast but inaccurate on
+    shifted sequences). k-Shape showed that a third path was available — one grounded in classical
+    signal processing, free of parameters, and computationally efficient via the FFT.
+  </p>
+
+  <p data-cid="main-620">
+    The SBD distance and shape extraction centroid have been incorporated into several time-series
+    analysis toolkits and are frequently cited as the baseline for domain-independent time-series
+    clustering. The paper's experimental methodology — rigorous evaluation over all 48 UCR
+    datasets with statistical testing using Friedman and Nemenyi tests — set a new standard for
+    empirical rigor in the time-series community. A key lesson: it is not enough to show your
+    method works on a few cherry-picked datasets; you need to demonstrate systematic superiority
+    and quantify statistical significance.
+  </p>
+
+  <!-- ═══════════════════════════ REFERENCES -->
+  <h2 data-cid="main-630" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-640">UCR time series classification archive. http://www.cs.ucr.edu/~eamonn/time_series_data/.</li>
+    <li data-cid="main-650">E. Keogh and S. Kasetty. On the need for time series data mining benchmarks. <em>Data Mining and Knowledge Discovery</em>, 7(4):349–371, 2003.</li>
+    <li data-cid="main-660">H. Sakoe and S. Chiba. Dynamic programming algorithm optimization for spoken word recognition. <em>IEEE Transactions on Acoustics, Speech, and Signal Processing</em>, 26(1):43–49, 1978.</li>
+    <li data-cid="main-670">T. Rakthanmanon et al. Searching and mining trillions of time series subsequences under dynamic time warping. In <em>KDD</em>, 2012.</li>
+    <li data-cid="main-680">F. Petitjean, A. Ketterlin, P. Gancarski. A global averaging method for dynamic time warping. <em>Pattern Recognition</em>, 44(3):678–693, 2011.</li>
+    <li data-cid="main-690">L. Kaufman and P. Rousseeuw. Finding Groups in Data: An Introduction to Cluster Analysis. Wiley, 1990.</li>
+    <li data-cid="main-700">J. Yang and J. Leskovec. Patterns of temporal variation in online media. In <em>WSDM</em>, 2011.</li>
+    <li data-cid="main-710">H. Yang and S. Lonardi. Representation, Indexing, and Retrieval of Time Series under Piecewise Linear Approximation. <em>ICDM</em>, 2004.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script>
+</body>
+</html>

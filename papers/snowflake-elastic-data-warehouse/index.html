@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Snowflake Elastic Data Warehouse · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="snowflake-elastic-data-warehouse" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/snowflake-elastic-data-warehouse/">Snowflake</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. Why Existing Warehouses Failed the Cloud</a></li>
+    <li><a href="#s2">2. The Core Architectural Decision</a></li>
+    <li><a href="#s3">3. Three-Layer Architecture</a></li>
+    <li><a href="#s4">4. Data Storage on S3</a></li>
+    <li><a href="#s5">5. Virtual Warehouses</a></li>
+    <li><a href="#s6">6. Cloud Services</a></li>
+    <li><a href="#s7">7. Feature Highlights</a></li>
+    <li><a href="#s8">8. Semi-Structured Data</a></li>
+    <li><a href="#s9">9. Lessons Learned</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">Scientific Paper · SIGMOD 2016</div>
+    <h1>The Snowflake Elastic Data Warehouse</h1>
+    <div class="paper-meta">
+      <span class="authors">Benoit Dageville, Thierry Cruanes, Marcin Zukowski, Vadim Antonov, Artin Avanes, Jon Bock, Jonathan Claybaugh, Daniel Engovatov, Martin Hentschel, Jiansheng Huang, Allison W. Lee, Ashish Motivala, Abdul Q. Munir, Steven Pelley, Peter Povinec, Greg Rahn, Spyridon Triantafyllis, Philipp Unterbrunner</span>
+      <span class="venue">ACM SIGMOD/PODS 2016 · San Francisco, CA, USA</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    Traditional data warehouses were designed for fixed clusters of homogeneous machines with local
+    storage, deep ETL pipelines, and manually tuned physical designs. The cloud changes everything:
+    storage is virtually infinite, compute nodes appear and disappear in minutes, workloads are
+    heterogeneous, and data arrives in semi-structured, schema-less formats. Snowflake is a
+    completely new data warehouse built from scratch for this environment. Its defining architectural
+    decision is the radical separation of storage and compute: data lives in Amazon S3 (shared,
+    durable, infinite), and query execution runs in stateless elastic clusters called
+    <em>virtual warehouses</em> that can be created, resized, or destroyed without moving any data.
+    A third layer of shared Cloud Services handles metadata, transactions, and optimization. The
+    system supports full ANSI SQL with ACID transactions, native semi-structured data types
+    (VARIANT, ARRAY, OBJECT), time travel, cloning, and end-to-end encryption — all with zero
+    tuning knobs for the user.
+  </div>
+
+  <!-- ═══════════════════════════ SECTION 1 -->
+  <h2 data-cid="main-020" id="s1">1. Why Existing Warehouses Failed the Cloud</h2>
+
+  <p data-cid="main-030">
+    For decades, data warehousing meant buying a cluster of expensive, identically configured
+    machines, running complex ETL pipelines to load and transform data into a carefully designed
+    star or snowflake schema, and then tuning the physical layout (sort keys, distribution keys,
+    indices) to match the expected query workload. Systems like Teradata, Netezza, and later Redshift
+    were optimized for this world. They were designed as <em>shared-nothing</em> architectures:
+    each node owns its local disks, and data is partitioned across nodes so that most queries touch
+    only the local storage of the nodes that own the relevant data.
+  </p>
+
+  <p data-cid="main-040">
+    Shared-nothing architectures scale well for homogeneous workloads on static clusters. But they
+    have a fundamental problem on the cloud: storage and compute are <em>tightly coupled</em>. If
+    you want to add more compute power, you must also add more storage nodes (even if your storage
+    is fine) and shuffle large amounts of data to re-balance the partitions. If you want to resize
+    the cluster, you trigger an expensive data redistribution. If nodes fail during a resize, the
+    operation can corrupt the cluster state.
+  </p>
+
+  <div class="box warn" data-cid="main-050">
+    <span class="box-label">The three failure modes of shared-nothing on the cloud</span>
+    <p data-cid="main-060">
+      <strong>Heterogeneous workload:</strong> Cloud instances vary widely in their I/O and CPU
+      characteristics, so a configuration optimized for bulk loading (high I/O, light compute)
+      performs poorly for complex analytical queries (low I/O, heavy compute). You cannot win
+      with one hardware configuration when the workload changes constantly.
+    </p>
+    <p data-cid="main-070">
+      <strong>Membership changes:</strong> Node failures on the cloud are the norm, not the
+      exception. Because shared-nothing nodes own their local data, any failure requires
+      replication and recovery that can involve massive data movement.
+    </p>
+    <p data-cid="main-080">
+      <strong>Online upgrades:</strong> In a tightly coupled system, upgrading software requires
+      coordinating every node simultaneously — there is no way to run two versions of the software
+      side-by-side when every node participates in every query.
+    </p>
+  </div>
+
+  <p data-cid="main-090">
+    Snowflake's founding premise: the coupling of storage and compute is the root cause of all
+    three problems. Separate them completely, and all three go away.
+  </p>
+
+  <!-- ═══════════════════════════ SECTION 2 -->
+  <h2 data-cid="main-100" id="s2">2. The Core Architectural Decision</h2>
+
+  <p data-cid="main-110">
+    The central design choice in Snowflake is to use <strong>Amazon S3</strong> as the storage
+    layer and handle all query execution in a separate <strong>compute layer</strong> of stateless
+    virtual machines. S3 is a blob store — you PUT objects, GET objects, and DELETE objects. It
+    has no concept of a filesystem, no local reads, and relatively high access latency compared to
+    local disk. At first glance this seems like a disaster for a high-performance analytical system.
+  </p>
+
+  <p data-cid="main-120">
+    The Snowflake engineers made a crucial observation: for analytical workloads, the bandwidth of
+    sequential reads from S3 is entirely adequate. Analytical queries read large, contiguous chunks
+    of data (entire columns of a table file), not random small records. S3 supports range GET
+    requests — you can download just the bytes you need from a specific offset in an object —
+    which is exactly what columnar storage requires. The high latency of S3 is amortized over
+    large sequential reads.
+  </p>
+
+  <div class="box intuition" data-cid="main-130">
+    <span class="box-label">Intuition — Why decoupling storage and compute is so powerful</span>
+    <p data-cid="main-140">
+      Consider two users of the same data warehouse. User A is running complex analytical queries
+      in the morning: she needs lots of CPU and can tolerate higher latency. User B is bulk-loading
+      a terabyte of new data in the afternoon: he needs high I/O throughput and almost no compute.
+      In a coupled system, both users share the same cluster configuration, which is a bad fit for
+      both. In Snowflake, each user can spin up a virtual warehouse of exactly the right size for
+      their workload — independently, simultaneously, against the same shared data — and pay only
+      for the time they actually use.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════ SECTION 3 -->
+  <h2 data-cid="main-150" id="s3">3. Three-Layer Architecture</h2>
+
+  <p data-cid="main-160">
+    Snowflake is structured as three independently scalable, loosely coupled layers that communicate
+    via RESTful interfaces. Each layer can be scaled and upgraded independently without affecting
+    the others.
+  </p>
+
+  <div class="box definition" data-cid="main-170">
+    <span class="box-label">Layer 1 — Data Storage (Amazon S3)</span>
+    <p data-cid="main-180">
+      All table data and query results are stored in S3. Tables are horizontally partitioned into
+      large, immutable files (conceptually equivalent to blocks in a traditional DBMS). Within each
+      file, columns are stored together in a compressed, hybrid columnar format called PAX
+      (Partition Attributes Across). Each file header contains the offsets of each column within
+      the file, so queries can use S3 range GET requests to fetch only the columns they need without
+      reading the entire file. S3 handles replication, durability, and geographic distribution.
+      Snowflake does not manage any of this — it gets 99.999999999% durability for free.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-190">
+    <span class="box-label">Layer 2 — Virtual Warehouses (Compute)</span>
+    <p data-cid="main-200">
+      Virtual warehouses (VWs) are clusters of EC2 instances that execute queries. Each VW is
+      completely isolated — worker nodes are never shared across VWs. VWs can be created,
+      resized, or destroyed at any time without touching the data in S3. Users interact with VWs
+      through abstract "T-shirt sizes" (X-Small through XX-Large) rather than specifying node
+      counts. Each query runs on exactly one VW. Creating or destroying a VW has no effect on
+      the database state — only on query throughput.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-210">
+    <span class="box-label">Layer 3 — Cloud Services (The Brain)</span>
+    <p data-cid="main-220">
+      Cloud Services is a collection of long-lived, multi-tenant services that manage everything
+      that is not query execution: authentication, access control, query parsing, query
+      optimization, transaction management, schema storage, statistics collection, and encryption
+      key management. These services are stateless from the user's perspective (all state lives in
+      a distributed metadata store) and are replicated for high availability. Because they are
+      shared across all users, multi-tenancy amortizes their cost dramatically.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════ SECTION 4 -->
+  <h2 data-cid="main-230" id="s4">4. Data Storage on S3</h2>
+
+  <p data-cid="main-240">
+    Understanding Snowflake's storage design requires understanding what S3 is and is not. S3 is
+    a PUT/GET/DELETE blob store — objects can be written only in full (no in-place updates, no
+    appends), and GET requests can specify a byte range. These constraints had a profound influence
+    on Snowflake's table format and concurrency model.
+  </p>
+
+  <p data-cid="main-250">
+    Because you cannot update a file in place, every write operation (INSERT, UPDATE, DELETE) on
+    a table produces a <em>newer version</em> of the table by adding new files and removing old
+    ones. Old files are not immediately deleted — they are retained for a configurable duration
+    (currently up to 90 days). This file-retention mechanism is the foundation of Snowflake's
+    time travel feature: you can query the state of any table at any point in the retention window.
+  </p>
+
+  <p data-cid="main-260">
+    Snowflake implements ACID transactions via <em>Snapshot Isolation</em> (SI), built on
+    Multi-Version Concurrency Control (MVCC). Every transaction sees a consistent snapshot of
+    the database as of the transaction's start time. Read-only transactions never block writers,
+    and writers never block readers — a critical property for analytical workloads that run long
+    queries concurrently with data loads.
+  </p>
+
+  <div class="box intuition" data-cid="main-270">
+    <span class="box-label">Intuition — How immutable files make MVCC natural</span>
+    <p data-cid="main-280">
+      Traditional MVCC systems store old row versions alongside new ones in complex on-disk
+      structures. In Snowflake, the "versions" are entire files. A transaction that started before
+      a file was replaced can still read the old file — it has not been deleted yet. The metadata
+      layer (in Cloud Services) tracks which set of files corresponds to each table version, and
+      the transaction manager knows which version each transaction should see. Implementing MVCC
+      on top of immutable S3 files is not a compromise — it is elegant.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════ SECTION 5 -->
+  <h2 data-cid="main-290" id="s5">5. Virtual Warehouses</h2>
+
+  <p data-cid="main-300">
+    Virtual warehouses are the "muscle" of Snowflake — they execute all queries. Each worker node
+    in a VW maintains a local disk cache of recently accessed table files (S3 objects). The cache
+    is shared across all queries running on that worker node and uses a simple LRU replacement
+    policy. When the cache is warm, performance approaches or even exceeds a pure shared-nothing
+    system because the local cache is much faster than S3.
+  </p>
+
+  <p data-cid="main-310">
+    Cache consistency uses <em>consistent hashing</em>: the query optimizer assigns input file sets
+    to specific worker nodes using a hash of the file name. This means subsequent queries that
+    access the same files will tend to run on the same workers and find those files already in
+    cache. When the set of workers changes (due to failure or VW resize), consistent hashing is
+    lazy — files are not immediately reshuffled. Instead, the LRU cache gradually adapts over
+    subsequent queries. This eliminates the expensive immediate data-shuffle required by eager
+    cache invalidation.
+  </p>
+
+  <div class="box example" data-cid="main-320">
+    <span class="box-label">Example — Elasticity in practice</span>
+    <p data-cid="main-330">
+      A data load that takes 15 hours on a 4-node VW might take only 2 hours on a 32-node VW.
+      Since Snowflake charges per compute-hour (not per wall-clock hour), the total cost is
+      similar. But the user experience is radically different: analysts can spin up large VWs for
+      time-sensitive queries and shut them down when done, matching resource usage to momentary
+      demand. Multiple teams can run separate VWs simultaneously, querying the same shared data
+      in S3, without interfering with each other.
+    </p>
+  </div>
+
+  <p data-cid="main-340">
+    The execution engine inside each VW is columnar, vectorized, and push-based. <em>Columnar</em>
+    means data is stored and processed one column at a time (better cache utilization, SIMD
+    opportunities). <em>Vectorized</em> means operators process data in batches of a few thousand
+    rows rather than row-by-row or materializing the full result (inspired by MonetDB/X100).
+    <em>Push-based</em> means operators push their output downstream rather than waiting to be
+    pulled (eliminates the overhead of the Volcano-style pull model and improves pipelining).
+  </p>
+
+  <!-- ═══════════════════════════ SECTION 6 -->
+  <h2 data-cid="main-350" id="s6">6. Cloud Services</h2>
+
+  <p data-cid="main-360">
+    Cloud Services is the brain of the system. Unlike Virtual Warehouses (which are ephemeral and
+    user-specific), Cloud Services is long-lived and multi-tenant — all users share the same
+    Cloud Services infrastructure, though data isolation is enforced at every level.
+  </p>
+
+  <p data-cid="main-370">
+    The query optimizer in Cloud Services follows a Cascades-style approach with top-down
+    cost-based optimization. All statistics needed for optimization are automatically maintained
+    as data is loaded and updated — no user-invoked ANALYZE or VACUUM commands. Because Snowflake
+    does not use indexes, the plan search space is smaller than in systems that consider index
+    usage, which makes the optimizer more robust (fewer bad plans due to stale index statistics).
+  </p>
+
+  <p data-cid="main-380">
+    An important optimization technique is <em>pruning</em>: instead of indexes, Snowflake
+    maintains small materialized aggregates (min and max values, also called zone maps) for each
+    column in every table file. Before scanning a file, the optimizer checks these aggregates
+    against the query predicates. If the predicate can never match any value in the file (e.g., the
+    query asks for <code>WHERE x >= 6</code> and the file's max value for <code>x</code> is 5),
+    the file is skipped entirely. This is called <em>micro-partition pruning</em> and can
+    eliminate the vast majority of I/O for selective queries.
+  </p>
+
+  <div class="box definition" data-cid="main-390">
+    <span class="box-label">Definition — Static and Dynamic Pruning</span>
+    <p data-cid="main-400">
+      <strong>Static pruning</strong> happens during query optimization: the optimizer checks
+      zone maps against the query predicates before generating the execution plan and marks files
+      as irrelevant. <strong>Dynamic pruning</strong> happens during execution: as Snowflake
+      processes a hash join's build side, it collects statistics on the join keys and uses them
+      to skip files on the probe side that cannot possibly match. This is especially powerful for
+      star-schema queries where a small dimension filter should eliminate most of the large fact
+      table.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════ SECTION 7 -->
+  <h2 data-cid="main-410" id="s7">7. Feature Highlights</h2>
+
+  <p data-cid="main-420">
+    <strong>Continuous availability and online upgrades.</strong> Because all hard state lives in
+    the distributed metadata store (not in VW worker nodes), Snowflake can run two versions of the
+    software side-by-side simultaneously. When a new version is deployed, user accounts are
+    progressively switched to the new version. All in-flight queries complete on the old version.
+    Once all users and queries have migrated, the old version is shut down. There is no maintenance
+    window, no downtime. The paper reports weekly production deployments managed this way.
+  </p>
+
+  <p data-cid="main-430">
+    <strong>Time travel and cloning.</strong> Because old file versions are retained, any table can
+    be queried at any past timestamp within the retention window:
+  </p>
+  <pre><code>SELECT * FROM my_table AT(TIMESTAMP => '2015-05-01 16:20:00');</code></pre>
+  <p data-cid="main-440">
+    Cloning a table is instantaneous — it copies only the metadata (the list of files that make up
+    the table), not the actual data files. Both the original and the clone point to the same S3
+    files. Either can be modified independently thereafter; Snowflake uses copy-on-write semantics
+    (new files are added for modifications, original files remain). This makes it trivially cheap
+    to take snapshots before risky operations.
+  </p>
+
+  <p data-cid="main-450">
+    <strong>End-to-end encryption.</strong> Snowflake uses AES-256 encryption with a hierarchical
+    key model anchored in AWS CloudHSM. There are four layers: root keys, account keys, table keys,
+    and file keys. Each layer encrypts the layer below. Table keys rotate monthly; after one year,
+    data is rekeyed using new keys. This ensures that even if a key is compromised, only a bounded
+    amount of data is at risk. Critically, the cloud provider (Amazon) never sees any data in the
+    clear — all encryption and decryption happens client-side before data is written to or after
+    it is read from S3.
+  </p>
+
+  <!-- ═══════════════════════════ SECTION 8 -->
+  <h2 data-cid="main-460" id="s8">8. Semi-Structured Data</h2>
+
+  <p data-cid="main-470">
+    One of Snowflake's most distinctive features is its native support for semi-structured,
+    schema-less data. Traditional data warehouses required data to be transformed into a fixed
+    relational schema before loading — a process that can take months to design and days to execute.
+    Snowflake introduces the VARIANT type, which can store any JSON, Avro, or XML value.
+  </p>
+
+  <p data-cid="main-480">
+    A column of type VARIANT is stored in a <em>serialized binary representation</em> that supports
+    fast key-value lookup, type tests, and comparison. But Snowflake goes further: when a VARIANT
+    column is stored, the system performs statistical analysis of the documents to identify paths
+    that are frequently present and have consistent types. These paths are automatically extracted
+    and stored as separate typed columns in the same compressed columnar format as regular
+    relational data. This is called <em>optimistic conversion</em>.
+  </p>
+
+  <div class="box intuition" data-cid="main-490">
+    <span class="box-label">Intuition — Schema-on-read without sacrificing performance</span>
+    <p data-cid="main-500">
+      Imagine a table of JSON records where 95% of records have a numeric field <code>user_id</code>.
+      Snowflake detects this pattern and stores <code>user_id</code> as a native integer column
+      alongside the original VARIANT column. A query that filters on <code>user_id</code> can use
+      the extracted integer column (enabling pruning, efficient comparison, and columnar
+      compression) rather than deserializing every JSON document. The original VARIANT column is
+      still available for documents that do not have the field, or for schema-exploration queries.
+      The user sees schema flexibility; the optimizer sees typed columns.
+    </p>
+  </div>
+
+  <p data-cid="main-510">
+    Snowflake also supports SQL extensions for navigating semi-structured data: dot notation and
+    bracket notation for field extraction, FLATTEN for converting arrays into rows, and ARRAY_AGG
+    for the reverse. These SQL extensions make it possible to write complex JSON transformation
+    queries without writing any application code.
+  </p>
+
+  <!-- ═══════════════════════════ SECTION 9 -->
+  <h2 data-cid="main-520" id="s9">9. Lessons Learned</h2>
+
+  <p data-cid="main-530">
+    The paper closes with a candid lessons-learned section that is unusually honest for an academic
+    paper about a commercial system. Among the key points:
+  </p>
+
+  <p data-cid="main-540">
+    <strong>The SaaS model transformed development.</strong> With a single production version
+    deployed continuously, the team could release features and fix bugs weekly rather than
+    annually. Users got improvements immediately. The team discovered problems faster and fixed
+    them faster. The development model itself became a competitive advantage.
+  </p>
+
+  <p data-cid="main-550">
+    <strong>Hadoop did not replace RDBMSs — it complemented them.</strong> Many early Snowflake
+    customers used Hadoop for storing JSON and Snowflake as the SQL interface for analysis. Rather
+    than displacing Hadoop, Snowflake found itself being used alongside it.
+  </p>
+
+  <p data-cid="main-560">
+    <strong>Core query performance was not the bottleneck.</strong> Because elastic virtual
+    warehouses could always provide more compute, the team's greatest challenges were in the SaaS
+    and multi-tenancy aspects — handling hundreds of users with varying workloads, managing
+    node failures at scale, and maintaining security across a shared infrastructure. Interestingly,
+    the paper notes that a zero-knob approach (no tuning parameters) turned out to be both a
+    design goal and a genuine differentiator: most users simply did not have the database
+    administration expertise to tune traditional systems, and removing that requirement opened
+    Snowflake to an entirely new class of customers.
+  </p>
+
+  <div class="box intuition" data-cid="main-570">
+    <span class="box-label">Lasting impact</span>
+    <p data-cid="main-580">
+      Snowflake's multi-cluster shared-data architecture became the blueprint for cloud-native
+      data warehousing. Amazon Redshift Serverless, Google BigQuery, Microsoft Azure Synapse
+      Analytics, and Databricks' Photon engine all adopt variations of the storage/compute
+      separation Snowflake pioneered. The paper is frequently cited as the first rigorous
+      description of a production cloud-native OLAP system built around commodity blob storage,
+      and its lessons shaped the design of virtually every major data warehouse introduced after
+      2016.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════ REFERENCES -->
+  <h2 data-cid="main-590" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-600">D. J. Abadi, S. R. Madden, N. Hachem. Column-stores vs. row-stores: How different are they really? In <em>Proc. SIGMOD</em>, 2008.</li>
+    <li data-cid="main-610">A. Ailamaki, D. J. DeWitt, M. D. Hill, D. A. Skounakis. Weaving relations for cache performance. In <em>VLDB</em>, 2001.</li>
+    <li data-cid="main-620">M. J. Cahill, U. Röhm, A. D. Fekete. Serializable isolation for snapshot databases. In <em>Proc. SIGMOD</em>, 2008.</li>
+    <li data-cid="main-630">G. Graefe. The Cascades framework for query optimization. <em>Data Engineering Bulletin</em>, 18, 1995.</li>
+    <li data-cid="main-640">P. Boncz, M. Zukowski, N. Nes. MonetDB/X100: Hyper-pipelining query execution. In <em>CIDR</em>, 2005.</li>
+    <li data-cid="main-650">D. J. DeWitt, J. Gray. Parallel database systems: The future of high performance database systems. <em>Communications of the ACM</em>, 35(6):85–98, 1992.</li>
+    <li data-cid="main-660">A. Gupta et al. Amazon Redshift and the case for simpler data warehouses. In <em>Proc. SIGMOD</em>, 2015.</li>
+    <li data-cid="main-670">K. Sato. An inside look at Google BigQuery. Technical Report, Google Cloud Platform, 2012.</li>
+    <li data-cid="main-680">L. Sun, M. J. Franklin, S. Krishnan, R. S. Xin. Fine-grained partitioning for aggressive data skipping. In <em>Proc. SIGMOD</em>, 2014.</li>
+    <li data-cid="main-690">M. Zaharia et al. Resilient distributed datasets: A fault-tolerant abstraction for in-memory cluster computing. In <em>NSDI</em>, 2012.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script>
+</body>
+</html>

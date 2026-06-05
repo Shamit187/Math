@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Serializable Isolation for Snapshot Databases · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="serializable-snapshot-isolation" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/serializable-snapshot-isolation/">Serializable SI</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. The Problem with Snapshot Isolation</a></li>
+    <li><a href="#s2">2. Snapshot Isolation Refresher</a></li>
+    <li><a href="#s3">3. Write Skew and the MVSG</a></li>
+    <li><a href="#s4">4. Dangerous Structures: Two Consecutive rw-Edges</a></li>
+    <li><a href="#s5">5. The SSI Algorithm</a></li>
+    <li><a href="#s6">6. The SIREAD Lock and Conflict Flags</a></li>
+    <li><a href="#s7">7. Implementation in Berkeley DB</a></li>
+    <li><a href="#s8">8. Correctness and False Positives</a></li>
+    <li><a href="#s9">9. Experimental Evaluation</a></li>
+    <li><a href="#s10">10. Impact and Legacy</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">SIGMOD 2008 · Concurrency Control</div>
+    <h1>Serializable Isolation for Snapshot Databases</h1>
+    <div class="paper-meta">
+      <span class="authors">Michael J. Cahill, Uwe Röhm, Alan D. Fekete</span>
+      <span class="venue">ACM SIGMOD International Conference on Management of Data · SIGMOD 2008</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    Many popular database management systems offer snapshot isolation (SI) rather than full serializability. SI is attractive because readers never block writers and vice versa, and it eliminates many common anomalies. But SI is not fully serializable: carefully-crafted interleaving of transactions that individually maintain consistency can violate integrity constraints globally. Until now, preventing such anomalies required application developers to introduce artificial locking or update conflicts through careful static analysis. This paper presents a new concurrency control algorithm — Serializable Snapshot Isolation (SSI) — that automatically detects and aborts transactions involved in dangerous SI-specific conflict patterns at runtime, for arbitrary applications, without requiring any application modification. SSI preserves SI's attractive property that reads never block writes. A prototype in Oracle Berkeley DB shows throughput approaching that of plain SI in most cases, and significantly better than strict two-phase locking (S2PL).
+  </div>
+
+  <h2 data-cid="main-020" id="s1">1. The Problem with Snapshot Isolation</h2>
+
+  <p data-cid="main-030">
+    Snapshot isolation has become one of the most widely deployed concurrency control mechanisms in production databases. Oracle RDBMS, PostgreSQL, SQL Server 2005, and Oracle Berkeley DB all offer it. Its appeal is obvious: reads are served from a snapshot of the database taken at transaction start time, so concurrent writes by other transactions never delay a read, and reads never delay writes. This gives much higher throughput than strict two-phase locking (S2PL), especially on read-heavy workloads.
+  </p>
+
+  <p data-cid="main-040">
+    The trouble is that snapshot isolation is not serializable. It is possible, under SI, for a set of transactions — each of which maintains all declared integrity constraints when run alone — to collectively corrupt the database when run concurrently. The classic example is <em>write skew</em>, first identified in Berenson et al. 1995.
+  </p>
+
+  <div class="box example" data-cid="main-050">
+    <span class="box-label">Example 1 — Write Skew (The Doctor On-Call Problem)</span>
+    <p data-cid="main-060">
+      A hospital database has a table <code>Duties(DoctorId, Shift, Status)</code> representing which doctors are on duty. An invariant requires that at least one doctor be on duty in every shift. A transaction that changes a doctor's status from "on duty" to "reserve" checks that at least one other doctor is still on duty before committing. Under SI, two such transactions — one for Doctor D1 and one for Doctor D2 — can both start at the same snapshot showing both doctors on duty, each see the other as on duty and proceed, and both commit — leaving no doctor on duty. The invariant is violated even though each transaction was individually correct.
+    </p>
+  </div>
+
+  <p data-cid="main-070">
+    The traditional remedy is to force the application to introduce artificial locking: for example, issuing a SELECT FOR UPDATE on the entire Duties table before checking the constraint, so that only one transaction can proceed at a time. This works, but it requires developers to be aware of every possible SI anomaly in their application — a daunting requirement for large, evolving codebases.
+  </p>
+
+  <h2 data-cid="main-080" id="s2">2. Snapshot Isolation Refresher</h2>
+
+  <p data-cid="main-090">
+    Under snapshot isolation, when a transaction <span class="tts-math" data-tts="T">$T$</span> begins, it is conceptually assigned a <em>start timestamp</em> <span class="tts-math" data-tts="start-time of T">$\text{start-time}(T)$</span>. When <span class="tts-math" data-tts="T">$T$</span> reads a data item <span class="tts-math" data-tts="x">$x$</span>, it sees the version of <span class="tts-math" data-tts="x">$x$</span> written by the most recent transaction that committed strictly before <span class="tts-math" data-tts="start-time of T">$\text{start-time}(T)$</span> and that also modified <span class="tts-math" data-tts="x">$x$</span>. It never sees writes from transactions that are concurrent with <span class="tts-math" data-tts="T">$T$</span> (i.e., transactions that were still running when <span class="tts-math" data-tts="T">$T$</span> started).
+  </p>
+
+  <p data-cid="main-100">
+    SI enforces one additional rule: the <em>First-Committer-Wins</em> rule. If transaction <span class="tts-math" data-tts="T sub 1">$T_1$</span> and <span class="tts-math" data-tts="T sub 2">$T_2$</span> are concurrent and both wish to write the same data item, the one that commits first succeeds; the other is aborted with an update conflict. This prevents Lost Update anomalies.
+  </p>
+
+  <div class="box definition" data-cid="main-110">
+    <span class="box-label">Definition — rw-Dependency (Anti-Dependency)</span>
+    <p data-cid="main-120">
+      A transaction <span class="tts-math" data-tts="T sub 1">$T_1$</span> has an <em>rw-dependency</em> (also called an anti-dependency) to <span class="tts-math" data-tts="T sub 2">$T_2$</span> if <span class="tts-math" data-tts="T sub 1">$T_1$</span> reads some version of item <span class="tts-math" data-tts="x">$x$</span>, and <span class="tts-math" data-tts="T sub 2">$T_2$</span> later writes a newer version of <span class="tts-math" data-tts="x">$x$</span> — a version that is later in the version order than the version that <span class="tts-math" data-tts="T sub 1">$T_1$</span> read. Intuitively: <span class="tts-math" data-tts="T sub 2">$T_2$</span> "overwrites" what <span class="tts-math" data-tts="T sub 1">$T_1$</span> saw, so <span class="tts-math" data-tts="T sub 1">$T_1$</span> was working with stale data relative to <span class="tts-math" data-tts="T sub 2">$T_2$</span>'s write.
+    </p>
+  </div>
+
+  <h2 data-cid="main-130" id="s3">3. Write Skew and the Multiversion Serialization Graph</h2>
+
+  <p data-cid="main-140">
+    Transaction histories can be analyzed using a <em>multiversion serialization graph</em> (MVSG). Each committed transaction is a node. Edges represent dependencies: a <em>wr-dependency</em> from <span class="tts-math" data-tts="T sub 1">$T_1$</span> to <span class="tts-math" data-tts="T sub 2">$T_2$</span> means <span class="tts-math" data-tts="T sub 1">$T_1$</span> wrote a version of <span class="tts-math" data-tts="x">$x$</span> that <span class="tts-math" data-tts="T sub 2">$T_2$</span> read. A <em>ww-dependency</em> means <span class="tts-math" data-tts="T sub 1">$T_1$</span> wrote a version of <span class="tts-math" data-tts="x">$x$</span> that was immediately superseded by <span class="tts-math" data-tts="T sub 2">$T_2$</span>'s write. A <em>rw-dependency</em> (dashed edge in the paper's diagrams) means <span class="tts-math" data-tts="T sub 1">$T_1$</span> read a version of <span class="tts-math" data-tts="x">$x$</span> that was later overwritten by <span class="tts-math" data-tts="T sub 2">$T_2$</span>.
+  </p>
+
+  <p data-cid="main-150">
+    A history is serializable if and only if its MVSG is acyclic. Adya (1999) showed that any cycle produced by SI must contain at least two rw-dependency edges. Fekete et al. (2005) extended this to show that any cycle under SI must contain two <em>consecutive</em> rw-dependency edges — that is, there must exist a "pivot" transaction <span class="tts-math" data-tts="T sub 0">$T_0$</span> with rw-dependencies both incoming (from some <span class="tts-math" data-tts="T sub N">$T_N$</span>) and outgoing (to some <span class="tts-math" data-tts="T sub 1">$T_1$</span>), and both <span class="tts-math" data-tts="T sub N">$T_N$</span> and <span class="tts-math" data-tts="T sub 1">$T_1$</span> are concurrent with <span class="tts-math" data-tts="T sub 0">$T_0$</span>.
+  </p>
+
+  <div class="box definition" data-cid="main-160">
+    <span class="box-label">Definition — Dangerous Structure</span>
+    <p data-cid="main-170">
+      A <em>dangerous structure</em> in the MVSG is a configuration of three transactions <span class="tts-math" data-tts="T sub N, T sub 0, T sub 1">$T_N, T_0, T_1$</span> such that:
+      (1) there is an rw-dependency from <span class="tts-math" data-tts="T sub N">$T_N$</span> to <span class="tts-math" data-tts="T sub 0">$T_0$</span>,
+      (2) there is an rw-dependency from <span class="tts-math" data-tts="T sub 0">$T_0$</span> to <span class="tts-math" data-tts="T sub 1">$T_1$</span>,
+      (3) <span class="tts-math" data-tts="T sub N">$T_N$</span> and <span class="tts-math" data-tts="T sub 0">$T_0$</span> are concurrent, and
+      (4) <span class="tts-math" data-tts="T sub 0">$T_0$</span> and <span class="tts-math" data-tts="T sub 1">$T_1$</span> are concurrent.
+      Fekete et al. proved that every non-serializable execution under SI contains at least one dangerous structure. Therefore, aborting one transaction from every dangerous structure is sufficient to ensure serializability.
+    </p>
+  </div>
+
+  <div class="box intuition" data-cid="main-180">
+    <span class="box-label">Intuition — Why Two Consecutive rw-Edges?</span>
+    <p data-cid="main-190">
+      Think of an rw-dependency from <span class="tts-math" data-tts="T sub 1">$T_1$</span> to <span class="tts-math" data-tts="T sub 2">$T_2$</span> as saying: "<span class="tts-math" data-tts="T sub 2">$T_2$</span> wrote something after <span class="tts-math" data-tts="T sub 1">$T_1$</span> read it." SI's snapshot mechanism means that <span class="tts-math" data-tts="T sub 1">$T_1$</span> could not have seen <span class="tts-math" data-tts="T sub 2">$T_2$</span>'s write. A single such edge is safe: it just means <span class="tts-math" data-tts="T sub 1">$T_1$</span> operated on slightly stale data, which is exactly what SI allows. But two consecutive rw-edges create a situation where the stale reads of two transactions mutually enable each other's writes to violate a global constraint — the essence of write skew. Detecting and breaking this pattern is precisely what SSI does.
+    </p>
+  </div>
+
+  <h2 data-cid="main-200" id="s4">4. The Write Skew Pattern: Two Consecutive rw-Edges at Runtime</h2>
+
+  <p data-cid="main-210">
+    The write skew example with doctors D1 and D2 corresponds exactly to the dangerous structure in the MVSG. Let <span class="tts-math" data-tts="T sub 0">$T_0$</span> be the initial state (conceptually a committed transaction that wrote the initial data). Let <span class="tts-math" data-tts="T sub 1">$T_1$</span> be D1's transaction and <span class="tts-math" data-tts="T sub 2">$T_2$</span> be D2's transaction.
+  </p>
+
+  <p data-cid="main-220">
+    <span class="tts-math" data-tts="T sub 1">$T_1$</span> reads D2's status (rw-dep: <span class="tts-math" data-tts="T sub 1">$T_1$</span> reads, <span class="tts-math" data-tts="T sub 2">$T_2$</span> later writes — so there is an rw-edge from <span class="tts-math" data-tts="T sub 1">$T_1$</span> to <span class="tts-math" data-tts="T sub 2">$T_2$</span>). <span class="tts-math" data-tts="T sub 2">$T_2$</span> reads D1's status (rw-dep from <span class="tts-math" data-tts="T sub 2">$T_2$</span> to <span class="tts-math" data-tts="T sub 1">$T_1$</span>). These two edges form the consecutive rw-pair with <span class="tts-math" data-tts="T sub 1">$T_1$</span> as pivot: incoming rw from <span class="tts-math" data-tts="T sub 2">$T_2$</span>, outgoing rw to <span class="tts-math" data-tts="T sub 2">$T_2$</span> — and both <span class="tts-math" data-tts="T sub 1">$T_1$</span> and <span class="tts-math" data-tts="T sub 2">$T_2$</span> are concurrent. Similarly <span class="tts-math" data-tts="T sub 2">$T_2$</span> is also a pivot. SSI detects this pattern and aborts one of the transactions.
+  </p>
+
+  <h2 data-cid="main-230" id="s5">5. The SSI Algorithm</h2>
+
+  <p data-cid="main-240">
+    The core algorithm is simple to state: maintain two boolean flags per transaction, and abort when both are set. Each transaction record carries:
+  </p>
+
+  <div class="box definition" data-cid="main-250">
+    <span class="box-label">Definition — SSI Conflict Flags</span>
+    <p data-cid="main-260">
+      <strong>T.inConflict</strong> is set to true if there is an rw-dependency from some concurrent transaction <span class="tts-math" data-tts="U">$U$</span> to <span class="tts-math" data-tts="T">$T$</span> — meaning <span class="tts-math" data-tts="U">$U$</span> read something that <span class="tts-math" data-tts="T">$T$</span> later wrote.
+    </p>
+    <p data-cid="main-270">
+      <strong>T.outConflict</strong> is set to true if there is an rw-dependency from <span class="tts-math" data-tts="T">$T$</span> to some concurrent transaction <span class="tts-math" data-tts="U">$U$</span> — meaning <span class="tts-math" data-tts="T">$T$</span> read something that <span class="tts-math" data-tts="U">$U$</span> later wrote.
+    </p>
+    <p data-cid="main-280">
+      A potential non-serializable execution is detected whenever both <strong>T.inConflict</strong> and <strong>T.outConflict</strong> are true simultaneously for some transaction <span class="tts-math" data-tts="T">$T$</span> — meaning <span class="tts-math" data-tts="T">$T$</span> is a pivot in a dangerous structure.
+    </p>
+  </div>
+
+  <p data-cid="main-290">
+    When a dangerous structure is detected, one of the transactions involved is aborted. The prototype aborts the pivot (the transaction with both flags set) unless the pivot has already committed, in which case one of the transactions that set its flags is aborted instead. This is a conservative policy: it may abort some transactions that would not have caused a non-serializable execution (false positives), but it never allows a truly non-serializable execution to commit.
+  </p>
+
+  <p data-cid="main-300">
+    The check at commit time is simple:
+  </p>
+
+  <div class="box example" data-cid="main-310">
+    <span class="box-label">Algorithm — Modified commit(T)</span>
+    <p data-cid="main-320">
+      At the start of a transaction, set <code>T.inConflict = T.outConflict = false</code>. At commit time: if <code>T.inConflict</code> and <code>T.outConflict</code> are both true, abort T and return <code>UNSAFE_ERROR</code>. Otherwise, proceed with the normal SI commit path and release WRITE locks (but not SIREAD locks).
+    </p>
+  </div>
+
+  <h2 data-cid="main-330" id="s6">6. The SIREAD Lock and Detecting rw-Dependencies</h2>
+
+  <p data-cid="main-340">
+    The crucial challenge in implementing SSI is detecting rw-dependencies at runtime. An rw-dependency from <span class="tts-math" data-tts="T sub 1">$T_1$</span> to <span class="tts-math" data-tts="T sub 2">$T_2$</span> arises when <span class="tts-math" data-tts="T sub 1">$T_1$</span> reads version <span class="tts-math" data-tts="v">$v$</span> of item <span class="tts-math" data-tts="x">$x$</span>, and <span class="tts-math" data-tts="T sub 2">$T_2$</span> creates a later version <span class="tts-math" data-tts="v prime">$v'$</span> of <span class="tts-math" data-tts="x">$x$</span> while <span class="tts-math" data-tts="T sub 1">$T_1$</span> is still active.
+  </p>
+
+  <p data-cid="main-350">
+    The algorithm uses a new type of lock called <strong>SIREAD</strong>. Unlike a standard read lock, a SIREAD lock does not conflict with WRITE locks — so acquiring a SIREAD lock never blocks a writer, and an existing WRITE lock never blocks a SIREAD acquirer. SIREAD locks are purely informational: their presence on item <span class="tts-math" data-tts="x">$x$</span> tells any future writer "a transaction has read this item."
+  </p>
+
+  <p data-cid="main-360">
+    When transaction <span class="tts-math" data-tts="T">$T$</span> reads item <span class="tts-math" data-tts="x">$x$</span>, the modified read procedure:
+    (1) acquires a SIREAD lock on <span class="tts-math" data-tts="x">$x$</span> for <span class="tts-math" data-tts="T">$T$</span>,
+    (2) checks whether any WRITE lock exists on <span class="tts-math" data-tts="x">$x$</span> held by a concurrent committed transaction <span class="tts-math" data-tts="U">$U$</span> with <code>U.inConflict</code> set — if so, abort <span class="tts-math" data-tts="T">$T$</span> (it would be part of a dangerous structure),
+    (3) for each version of <span class="tts-math" data-tts="x">$x$</span> newer than what <span class="tts-math" data-tts="T">$T$</span> read, if the creating transaction <span class="tts-math" data-tts="U">$U$</span> is committed and has <code>U.outConflict</code> set, abort <span class="tts-math" data-tts="T">$T$</span>; otherwise set <code>U.inConflict = T.outConflict = true</code>.
+  </p>
+
+  <p data-cid="main-370">
+    When transaction <span class="tts-math" data-tts="T">$T$</span> writes item <span class="tts-math" data-tts="x">$x$</span>, the modified write procedure checks for existing SIREAD locks on <span class="tts-math" data-tts="x">$x$</span>. If a SIREAD lock exists for a concurrent transaction <span class="tts-math" data-tts="U">$U$</span> (meaning <span class="tts-math" data-tts="U">$U$</span> read the version of <span class="tts-math" data-tts="x">$x$</span> that <span class="tts-math" data-tts="T">$T$</span> is about to overwrite), this is an rw-dependency: set <code>U.outConflict = T.inConflict = true</code>. If both flags on either transaction are now true, abort it.
+  </p>
+
+  <div class="box warn" data-cid="main-380">
+    <span class="box-label">Caution — SIREAD Locks Must Outlive Their Transaction</span>
+    <p data-cid="main-390">
+      A critical subtlety: SIREAD locks must be retained even after their owning transaction <span class="tts-math" data-tts="T">$T$</span> has committed, until all transactions that were concurrent with <span class="tts-math" data-tts="T">$T$</span> have also completed. This is because a write by a later transaction <span class="tts-math" data-tts="U">$U$</span> may create a rw-dependency from <span class="tts-math" data-tts="T">$T$</span> to <span class="tts-math" data-tts="U">$U$</span> even after <span class="tts-math" data-tts="T">$T$</span> commits — and we still need to detect it to protect <span class="tts-math" data-tts="U">$U$</span>'s concurrent partners.
+    </p>
+  </div>
+
+  <h2 data-cid="main-400" id="s7">7. Implementation in Oracle Berkeley DB</h2>
+
+  <p data-cid="main-410">
+    The authors implemented SSI in Oracle Berkeley DB version 4.6.21, an open-source embedded database used as a reference platform. Berkeley DB performs locking and multi-version concurrency control at the granularity of database pages, not individual rows. This is coarser than ideal for SSI (it introduces false positive rw-dependencies between transactions that access different rows on the same page), but it simplified implementation significantly.
+  </p>
+
+  <p data-cid="main-420">
+    The total implementation required modifying only 692 lines of code out of approximately 200,000 lines in Berkeley DB — about 0.3% of the codebase. The changes comprised:
+    (1) new error return codes <code>DB_SNAPSHOT_CONFLICT</code> and <code>DB_SNAPSHOT_UNSAFE</code>,
+    (2) the new SIREAD lock mode (which does not conflict with any other lock mode),
+    (3) modified read/write/commit procedures as described above, and
+    (4) a cleanup procedure to remove SIREAD locks whose owning transactions can no longer participate in dangerous structures (i.e., all concurrent transactions have committed).
+  </p>
+
+  <p data-cid="main-430">
+    The lock cleanup procedure runs periodically and whenever the lock table is full. It finds the earliest read timestamp among all active transactions and removes any SIREAD lock whose owning transaction committed before that timestamp — at that point, no active transaction could be concurrent with the lock's owner.
+  </p>
+
+  <h2 data-cid="main-440" id="s8">8. Correctness and False Positives</h2>
+
+  <p data-cid="main-450">
+    The correctness argument for SSI rests on three facts:
+    (1) Every non-serializable execution under SI contains a cycle with two consecutive rw-dependencies (Fekete et al., Theorem 2.1).
+    (2) The SSI algorithm detects every rw-dependency between concurrent transactions (by SIREAD lock tracking).
+    (3) When two consecutive rw-dependencies are detected, at least one of the transactions involved is aborted, breaking the cycle.
+  </p>
+
+  <p data-cid="main-460">
+    The algorithm is conservative: the two boolean flags per transaction cannot distinguish whether the two rw-dependencies to and from a pivot transaction form an actual cycle in the MVSG. They may have no path between them — in which case no non-serializable execution is possible, but SSI aborts anyway. This is a <em>false positive</em>.
+  </p>
+
+  <div class="box example" data-cid="main-470">
+    <span class="box-label">Example — False Positive</span>
+    <p data-cid="main-480">
+      Consider transactions T0, T1, TN. TN reads <span class="tts-math" data-tts="x">$x$</span> and <span class="tts-math" data-tts="z">$z$</span>; T0 writes <span class="tts-math" data-tts="x">$x$</span> and reads <span class="tts-math" data-tts="y">$y$</span>; T1 writes <span class="tts-math" data-tts="y">$y$</span> and <span class="tts-math" data-tts="z">$z$</span>. There is an rw-edge from TN to T0 (TN read <span class="tts-math" data-tts="x">$x$</span>, T0 wrote <span class="tts-math" data-tts="x">$x$</span>) and an rw-edge from T0 to T1 (T0 read <span class="tts-math" data-tts="y">$y$</span>, T1 wrote <span class="tts-math" data-tts="y">$y$</span>). Both flags on T0 are set, so SSI aborts T0. But if there is no path in the MVSG from T1 back to TN (i.e., T1 and TN are unrelated), then this execution was actually serializable. SSI aborted T0 unnecessarily.
+    </p>
+  </div>
+
+  <p data-cid="main-490">
+    In practice, false positives are rare on real workloads. They are more common at high contention with page-level locking, because different-row accesses on the same page create spurious rw-dependencies. The authors argue that the false-positive rate is acceptable in exchange for the simplicity and low overhead of the two-flag approach.
+  </p>
+
+  <h2 data-cid="main-500" id="s9">9. Experimental Evaluation</h2>
+
+  <p data-cid="main-510">
+    The evaluation uses the SmallBank benchmark, a model of a simple banking application with five transaction types: Balance (Bal), Deposit-Checking (DC), Transfer-to-Savings (TS), Write-Check (WC), and Amalgamate (Amg). The static dependency graph of SmallBank contains the dangerous structure: Balance → WriteCheck → TransactSavings → Balance, with WriteCheck as the pivot. Without SSI, SmallBank transactions can exhibit write skew under ordinary SI.
+  </p>
+
+  <p data-cid="main-520">
+    <strong>Short transactions (without log flushes):</strong> At multi-programming level (MPL) 20 with no disk I/O on commit, SI achieves roughly 15,000 transactions per second (TPS), S2PL achieves only about 2,500 TPS, and SSI achieves approximately 13,000 TPS — about 85% of SI's throughput and more than 5x better than S2PL. The performance gap between SSI and SI is due to the overhead of SIREAD lock management and false-positive aborts.
+  </p>
+
+  <p data-cid="main-530">
+    <strong>Long transactions (with log flushes):</strong> When commit requires a disk write, transaction duration increases by an order of magnitude. In this regime, SSI's throughput tracks SI closely at low MPL, and both significantly outperform S2PL at high MPL because S2PL deadlocks consume substantial CPU time for detection. SSI's error rate is slightly higher than SI's (due to false positives) but much lower than S2PL's deadlock rate.
+  </p>
+
+  <p data-cid="main-540">
+    <strong>Low contention (large dataset):</strong> With a dataset ten times larger (fewer conflicts), the overhead of SSI over SI is 10–15%. This overhead comes primarily from managing the larger lock and transaction tables and from false-positive aborts. The authors note this is an artifact of Berkeley DB's page-level granularity; a row-level implementation would have far fewer false positives and thus lower overhead.
+  </p>
+
+  <h2 data-cid="main-550" id="s10">10. Impact and Legacy</h2>
+
+  <p data-cid="main-560">
+    The Cahill-Röhm-Fekete SSI paper had immediate and lasting impact. Its most prominent adoption was in PostgreSQL 9.1, released in 2011, which implemented SSI as its "Serializable" isolation level. The PostgreSQL implementation extended the algorithm to handle predicate reads (phantoms) using predicate locking, and reduced false positives through more careful tracking of conflict edges. Today, PostgreSQL's default serializable isolation is SSI, not S2PL.
+  </p>
+
+  <p data-cid="main-570">
+    The paper elegantly resolved a long-standing puzzle in database research: everyone knew SI was not serializable, but making it serializable had seemed to require either expensive static analysis or full two-phase locking. SSI showed that a small amount of runtime bookkeeping — two bits per transaction and a non-blocking lock type — suffices. The insight that dangerous structures, not arbitrary cycles, are both necessary and sufficient for SI anomalies is the key theoretical contribution.
+  </p>
+
+  <p data-cid="main-580">
+    SSI also influenced the design of distributed transaction systems. Google Spanner uses a variant of SSI for its externally-consistent transactions, and CockroachDB, TiDB, and YugabyteDB all implement serializable isolation via SSI-based algorithms. The paper's influence on production systems is thus substantial and ongoing.
+  </p>
+
+  <h2 data-cid="main-590" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-600">A. Adya. <em>Weak Consistency: A Generalized Theory and Optimistic Implementations for Distributed Transactions.</em> PhD thesis, MIT, 1999.</li>
+    <li data-cid="main-610">M. Alomari, M. Cahill, A. Fekete, and U. Röhm. The cost of serializability on platforms that use snapshot isolation. In <em>ICDE '08</em>, 2008.</li>
+    <li data-cid="main-620">H. Berenson, P. Bernstein, J. Gray, J. Melton, E. O'Neil, and P. O'Neil. A critique of ANSI SQL isolation levels. In <em>ACM SIGMOD</em>, 1995.</li>
+    <li data-cid="main-630">P. A. Bernstein and N. Goodman. Multiversion concurrency control — theory and algorithms. <em>ACM Trans. Database Syst.</em>, 8(4):465–483, 1983.</li>
+    <li data-cid="main-640">A. Fekete, D. Liarokapis, E. O'Neil, P. O'Neil, and D. Shasha. Making snapshot isolation serializable. <em>ACM Transactions on Database Systems</em>, to appear (2005).</li>
+    <li data-cid="main-650">A. Fekete, E. O'Neil, and P. O'Neil. A read-only transaction anomaly under snapshot isolation. <em>SIGMOD Rec.</em>, 33(3):12–14, 2004.</li>
+    <li data-cid="main-660">J. Gray and A. Reuter. <em>Transaction Processing: Concepts and Techniques.</em> Morgan Kaufmann, 1993.</li>
+    <li data-cid="main-670">S. Jorwekar, A. Fekete, K. Ramamritham, and S. Sudarshan. Automating the detection of snapshot isolation anomalies. In <em>VLDB</em>, 2007.</li>
+    <li data-cid="main-680">M. A. Olson, K. Bostic, and M. I. Seltzer. Berkeley DB. In <em>USENIX Annual Technical Conference, FREENIX Track</em>, 1999.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script>
+</body>
+</html>

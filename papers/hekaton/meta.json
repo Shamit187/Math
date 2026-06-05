@@ -1,0 +1,6 @@
+{
+  "title": "Hekaton: SQL Server's Memory-Optimized OLTP Engine",
+  "authors": "Cristian Diaconu, Craig Freedman, Erik Ismert, Per-Ake Larson, Pravin Mittal, Ryan Stonecipher, Nitin Verma, Mike Zwilling",
+  "venue": "SIGMOD 2013",
+  "description": "Hekaton is Microsoft's memory-optimized OLTP engine integrated into SQL Server, achieving 10-100x throughput improvements via latch-free data structures, optimistic multiversion concurrency control, and compilation of stored procedures to native machine code."
+}

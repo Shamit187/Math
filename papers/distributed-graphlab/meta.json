@@ -1,0 +1,6 @@
+{
+  "title": "Distributed GraphLab: A Framework for Machine Learning and Data Mining in the Cloud",
+  "authors": "Yucheng Low, Joseph Gonzalez, Aapo Kyrola, Danny Bickson, Carlos Guestrin, Joseph M. Hellerstein",
+  "venue": "PVLDB 2012",
+  "description": "Extends the GraphLab shared-memory abstraction to distributed clusters using graph-based data partitioning, pipelined locking, and asynchronous fault-tolerant snapshotting, outperforming Hadoop by 20–60x on large-scale machine learning tasks."
+}

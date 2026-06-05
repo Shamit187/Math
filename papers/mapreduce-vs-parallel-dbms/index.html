@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>A Comparison of Approaches to Large-Scale Data Analysis · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="mapreduce-vs-parallel-dbms" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/mapreduce-vs-parallel-dbms/">MapReduce vs. Parallel DBMSs</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. Introduction</a></li>
+    <li><a href="#s2">2. The Two Systems</a></li>
+    <li><a href="#s3">3. Architectural Differences</a></li>
+    <li><a href="#s4">4. The Benchmark</a></li>
+    <li><a href="#s5">5. Performance Results</a></li>
+    <li><a href="#s6">6. Lessons Learned</a></li>
+    <li><a href="#s7">7. Impact and Legacy</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">Scientific Paper · SIGMOD 2009</div>
+    <h1>A Comparison of Approaches to Large-Scale Data Analysis</h1>
+    <div class="paper-meta">
+      <span class="authors">Andrew Pavlo, Erik Paulson, Alexander Rasin, Daniel J. Abadi, David J. DeWitt, Samuel Madden, Michael Stonebraker</span>
+      <span class="venue">ACM SIGMOD 2009, Providence, Rhode Island</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    The MapReduce (MR) paradigm, epitomised by Hadoop, was causing significant excitement in
+    2009 as a supposedly new way to process large datasets on commodity clusters. This paper
+    asks a pointed question: how does MapReduce compare to parallel SQL database management
+    systems that have existed — and done similar things — for over twenty years? The authors
+    define a benchmark of five analytical tasks, run it on open-source Hadoop and two parallel
+    DBMSs (Vertica and an anonymous commercial system called DBMS-X) on a 100-node cluster,
+    and measure performance. The parallel DBMSs are consistently 3–6× faster than Hadoop across
+    all tasks. Hadoop is much easier to load data into and install. Both classes of systems have
+    important lessons to teach each other.
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 1 -->
+  <h2 data-cid="main-020" id="s1">1. Introduction</h2>
+
+  <p data-cid="main-030">
+    Around 2008–2009, MapReduce and its open-source implementation Hadoop were hailed in the
+    trade press as a revolutionary new computing paradigm — the solution to "big data". Some
+    enthusiasts called MapReduce a "dramatically new computing model". Database researchers
+    pushed back: parallel shared-nothing SQL databases had been doing the same kinds of
+    analytical queries for two decades. The disagreement was more than academic; companies
+    were choosing between the two architectures for real workloads, often without good empirical
+    data to guide them.
+  </p>
+
+  <p data-cid="main-040">
+    This paper is the definitive empirical response. The authors — a who's-who of database
+    systems research including Michael Stonebraker, Samuel Madden, and David DeWitt — built a
+    benchmark, ran it carefully, and reported the results honestly. The findings confirmed that
+    parallel DBMSs were substantially faster, while also documenting real usability advantages
+    of MapReduce that any fair comparison must acknowledge.
+  </p>
+
+  <div class="box intuition" data-cid="main-050">
+    <span class="box-label">The Central Question</span>
+    <p data-cid="main-060">
+      Is MapReduce a fundamentally better approach to large-scale data analysis, or is it simply
+      a lower-friction on-ramp to distributed computing that gives up performance for
+      accessibility? The paper's answer: the latter — and both communities should learn from
+      each other rather than treating the debate as a binary choice.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 2 -->
+  <h2 data-cid="main-070" id="s2">2. The Two Systems</h2>
+
+  <p data-cid="main-080">
+    Both MapReduce and parallel DBMSs run on "shared-nothing" clusters: a collection of
+    independent machines, each with its own local disk and RAM, connected by a network. Neither
+    system relies on shared storage or shared memory. Parallelism is achieved by partitioning
+    data across nodes and processing each partition independently.
+  </p>
+
+  <p data-cid="main-090">
+    <strong>MapReduce.</strong> An MR program consists of two user-supplied functions: Map and
+    Reduce. The Map function reads records from the input, applies filtering and transformations,
+    and emits key-value pairs. The framework groups all values by key (a "shuffle" step) and
+    sends each key's values to one Reduce instance, which combines them into a final output.
+    The data model is deliberately schema-free: input files are arbitrary byte sequences.
+    If records have structure, the programmer must parse them manually.
+  </p>
+
+  <p data-cid="main-100">
+    <strong>Parallel DBMSs.</strong> A parallel DBMS stores data in structured tables, partitioned
+    across nodes on one or more columns. A query optimizer translates SQL into a distributed
+    execution plan that may involve parallel scans, hash joins, aggregations, and a final
+    merge-reduce step at a coordinator node. Indexes, compressed column stores, and predicate
+    pushdown are available to accelerate common query patterns. Schema must be defined upfront,
+    but this enables optimizations that MR cannot perform.
+  </p>
+
+  <p data-cid="main-110">
+    The paper tests three specific systems. <strong>Hadoop 0.19.0</strong> is the open-source MR
+    implementation maintained by Yahoo! and the Apache Foundation. <strong>Vertica</strong> is a
+    commercial column-store DBMS from the same team that built C-Store; it stores data by column
+    rather than by row, enabling aggressive compression and fast scans of narrow column subsets.
+    <strong>DBMS-X</strong> is a leading commercial parallel RDBMS (unnamed to avoid commercial
+    sensitivity) that stores data by row.
+  </p>
+
+  <!-- ═══════════════════════════════════════════ SECTION 3 -->
+  <h2 data-cid="main-120" id="s3">3. Architectural Differences</h2>
+
+  <p data-cid="main-130">
+    The paper identifies six architectural dimensions where the two approaches differ
+    fundamentally. Understanding these is essential to interpreting the benchmark results.
+  </p>
+
+  <div class="box definition" data-cid="main-140">
+    <span class="box-label">Dimension 1 — Schema</span>
+    <p data-cid="main-150">
+      Parallel DBMSs require a schema defined upfront. This is often criticised as a burden,
+      but it is also a source of power: the optimizer knows column types, cardinalities, and
+      partitioning attributes, enabling index creation, statistics collection, and type-safe
+      compression. MR has no schema: every record must be parsed at runtime, consuming CPU
+      cycles and preventing load-time optimizations.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-160">
+    <span class="box-label">Dimension 2 — Indexing</span>
+    <p data-cid="main-170">
+      Parallel DBMSs automatically maintain B-tree and hash indexes. Selective queries (returning
+      a small fraction of records) benefit enormously from indexes — instead of scanning
+      terabytes, the system looks up a few million records directly. MR frameworks provide no
+      built-in indexing; programmers must implement their own or scan everything.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-180">
+    <span class="box-label">Dimension 3 — Data Distribution</span>
+    <p data-cid="main-190">
+      In a parallel DBMS, data is partitioned at load time onto nodes based on a chosen
+      attribute. When a query involves a join on that attribute, no reshuffling is needed —
+      matching rows are already co-located. In MR, data resides in a distributed filesystem
+      as flat files; each Map task reads its local files and emits key-value pairs that the
+      framework must redistribute before Reduce can run. This shuffle generates enormous
+      amounts of network traffic.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-200">
+    <span class="box-label">Dimension 4 — Fault Tolerance</span>
+    <p data-cid="main-210">
+      MR materializes intermediate results to disk between Map and Reduce phases. If a node
+      fails, only that node's work needs to be re-executed. Parallel DBMSs do not materialize
+      intermediate results; if a node fails mid-query, the entire query must restart. MR's
+      fault tolerance comes at a cost: writing to disk between phases slows execution even
+      when no failures occur. For long-running jobs on very large clusters where node failure
+      is likely, this is an excellent trade-off. For shorter analytical queries on smaller
+      clusters, it is pure overhead.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-220">
+    <span class="box-label">Dimension 5 — Compression and Data Layout</span>
+    <p data-cid="main-230">
+      Column-store DBMSs like Vertica store each column contiguously and compress it using
+      type-aware schemes (run-length encoding, dictionary encoding, delta coding). For a query
+      that reads only two columns out of two hundred, only those two columns are ever read from
+      disk — a factor of 100 reduction in I/O. MR reads the entire record for every row.
+      Vertica's compression typically reduces storage by a factor of 6–10×.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-240">
+    <span class="box-label">Dimension 6 — Start-up Overhead</span>
+    <p data-cid="main-250">
+      Parallel DBMSs start at boot time and are always ready to accept queries. On a 100-node
+      cluster, starting an MR job takes 10–25 seconds before the first Map task runs. This
+      "cold start" problem means that for short queries (under a minute), MR's start-up cost
+      dominates and makes it look much slower than it really is for bulk-data tasks.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 4 -->
+  <h2 data-cid="main-260" id="s4">4. The Benchmark</h2>
+
+  <p data-cid="main-270">
+    The benchmark consists of five tasks of increasing complexity. The first is taken directly
+    from the original MapReduce paper to provide a baseline. The remaining four are designed to
+    stress-test the architectural differences described above.
+  </p>
+
+  <p data-cid="main-280">
+    <strong>Task 1 — Grep.</strong> Scan 100-byte records to find those matching a 3-character
+    pattern in the first 10 bytes. This is a simple sequential scan — the canonical MR workload,
+    exactly what the original paper measured. Input: up to 1TB, distributed across all nodes.
+  </p>
+
+  <p data-cid="main-290">
+    <strong>Task 2 — Selection.</strong> Filter a 1GB-per-node Rankings table to find rows with
+    pageRank above a threshold. A selective query: only about 36,000 records match. This tests
+    index access vs. full table scan.
+  </p>
+
+  <p data-cid="main-300">
+    <strong>Task 3 — Aggregation.</strong> Compute total ad revenue per source IP from a
+    20GB-per-node UserVisits table. A standard GROUP BY query. This tests whether data is
+    already sorted or partitioned in a way that enables local aggregation.
+  </p>
+
+  <p data-cid="main-310">
+    <strong>Task 4 — Join.</strong> A complex multi-table query: find the source IP with the
+    highest total revenue within a date range, then look up the average PageRank of all pages
+    visited by that IP. This requires joining UserVisits with Rankings, filtering on date,
+    aggregating, and sorting — exactly the kind of query that SQL optimizers specialize in
+    and that MR must implement as a three-phase pipeline.
+  </p>
+
+  <p data-cid="main-320">
+    <strong>Task 5 — UDF Aggregation.</strong> Compute the inlink count for each URL in a large
+    HTML document collection, using a user-defined function to parse HTML and extract links.
+    This tests the systems' ability to handle non-relational, compute-intensive processing
+    within a query.
+  </p>
+
+  <p data-cid="main-330">
+    The cluster has 100 nodes, each with dual-core 2.4 GHz processors, 4GB RAM, and two 250GB
+    SATA disks. Nodes are connected by gigabit Ethernet arranged in a Cisco 3750E-48TD switch
+    stack providing 128Gbps internal switching fabric. All three systems are deployed with
+    default settings, tuned as recommended by vendor documentation.
+  </p>
+
+  <!-- ═══════════════════════════════════════════ SECTION 5 -->
+  <h2 data-cid="main-340" id="s5">5. Performance Results</h2>
+
+  <p data-cid="main-350">
+    The loading phase reveals the first surprise. Hadoop loads data dramatically faster than
+    the DBMSs. On the 535MB-per-node Grep dataset, Hadoop loads data 5–7× faster than
+    DBMS-X and Vertica combined. This is because Hadoop simply copies files into HDFS with
+    no parsing, indexing, or reorganization. The DBMSs spend substantial time at load time
+    building indexes, sorting data, and compressing columns — all of which pays off at query
+    time, but makes initial ingestion slow.
+  </p>
+
+  <div class="box example" data-cid="main-360">
+    <span class="box-label">Grep Task — The Surprising Result</span>
+    <p data-cid="main-370">
+      The Grep task is the simplest possible workload — sequential scan, no joins, no
+      aggregation. On the 535MB-per-node dataset (Figure 4 in the paper), both DBMSs perform
+      about 2× faster than Hadoop. On the 1TB-cluster fixed-size dataset (Figure 5), DBMS-X
+      and Hadoop perform similarly, while Vertica is 2× faster. The reason: MR's non-trivial
+      start-up cost (10–25 seconds) dominates when the actual computation is brief. Hadoop's
+      performance looks bad not because it is slow per byte, but because its fixed overhead
+      is large relative to the work done.
+    </p>
+  </div>
+
+  <p data-cid="main-380">
+    <strong>Selection task.</strong> Both DBMSs outperform Hadoop by a wide factor at all
+    cluster sizes. Vertica and DBMS-X have indexes on the pageRank column; they retrieve the
+    ~36,000 matching records in milliseconds. Hadoop must scan the entire Rankings table on
+    every node to find the matching rows. This is the starkest illustration of why schemas
+    and indexes matter.
+  </p>
+
+  <p data-cid="main-390">
+    <strong>Aggregation task.</strong> Again the DBMSs win, by a factor of approximately 2–3×
+    at 100 nodes. The column-store advantage is clear: Vertica needs to read only the
+    sourceIP and adRevenue columns (20 bytes per row out of 200+ bytes), while DBMS-X and
+    Hadoop must read full rows. Vertica's total data read is approximately
+    <span class="tts-math" data-tts="20 over 200, one tenth">$20/200 = 1/10$</span>
+    of what Hadoop reads.
+  </p>
+
+  <p data-cid="main-400">
+    <strong>Join task.</strong> This is where the performance gap is most dramatic. At 100 nodes
+    the parallel DBMSs execute the join task in roughly 15–25 seconds; Hadoop requires over
+    1,400 seconds (nearly 25 minutes). The MR join requires three separate MR jobs executed
+    sequentially, each with its own shuffle phase. The SQL optimizers partition UserVisits and
+    Rankings on the same join key (destURL), making the join a local operation on each node
+    requiring no cross-node data transfer. The difference reflects two decades of join
+    optimization research embedded in the DBMS query planners.
+  </p>
+
+  <p data-cid="main-410">
+    <strong>UDF Aggregation task.</strong> Here the results are more nuanced. Both DBMS-X and
+    Hadoop show approximately constant performance as nodes are added — not the linear speedup
+    one would hope for. The bottleneck is the UDF itself: parsing HTML is CPU-intensive, and
+    as more nodes are added, the bottleneck shifts from disk I/O to CPU. Vertica does not support
+    UDFs in the standard manner and required workarounds. The MR model's flexibility for
+    user-defined processing is a genuine architectural advantage for this class of task.
+  </p>
+
+  <!-- ═══════════════════════════════════════════ SECTION 6 -->
+  <h2 data-cid="main-420" id="s6">6. Lessons Learned</h2>
+
+  <p data-cid="main-430">
+    Averaged across all five tasks at 100 nodes, DBMS-X is 3.2× faster than Hadoop and Vertica
+    is 2.3× faster. But raw performance numbers do not tell the whole story. The paper documents
+    several system-level lessons that shaped how the community thought about the trade-offs.
+  </p>
+
+  <div class="box intuition" data-cid="main-440">
+    <span class="box-label">Lesson 1 — Start-Up Cost is Real and Matters</span>
+    <p data-cid="main-450">
+      Hadoop's 10–25 second job initialization is not a minor implementation detail — it
+      fundamentally limits its usefulness for interactive or short-running queries. Any query
+      that takes less than a minute to execute will have its running time dominated by
+      start-up overhead. Parallel DBMSs are warm at all times.
+    </p>
+  </div>
+
+  <div class="box intuition" data-cid="main-460">
+    <span class="box-label">Lesson 2 — Schema-at-Load-Time Pays Off at Query Time</span>
+    <p data-cid="main-470">
+      The time DBMSs spend parsing, indexing, and reorganizing data at load time is recovered
+      many times over at query time, especially for selective queries that touch only a fraction
+      of records. For data that is loaded once and queried many times, this trade-off is clearly
+      favorable. For data that is loaded once and queried once, Hadoop's faster loading may
+      win overall.
+    </p>
+  </div>
+
+  <div class="box intuition" data-cid="main-480">
+    <span class="box-label">Lesson 3 — Column Stores Are a Major Win for Analytical Queries</span>
+    <p data-cid="main-490">
+      Vertica's column-store design — compressing and storing each column separately — provides
+      dramatic I/O savings for analytical queries that touch only a few of many columns. This
+      advantage applies whether the competition is Hadoop or a row-store DBMS like DBMS-X.
+      The paper essentially validates the column-store thesis for analytical workloads.
+    </p>
+  </div>
+
+  <div class="box intuition" data-cid="main-500">
+    <span class="box-label">Lesson 4 — Hadoop Is Genuinely Easier to Use</span>
+    <p data-cid="main-510">
+      Installing Hadoop took the authors relatively little effort — deploy the binary, set a
+      few configuration files, and it runs. Installing DBMS-X was a protracted ordeal involving
+      vendor support, incorrect default memory settings, virtual address space limits, and
+      repeated failures. Vertica was easier to install but still required more effort than Hadoop.
+      This usability gap is real and explains much of Hadoop's adoption. For organizations with
+      scarce database expertise, Hadoop's simpler operational model has genuine value.
+    </p>
+  </div>
+
+  <div class="box intuition" data-cid="main-520">
+    <span class="box-label">Lesson 5 — Fault Tolerance Has a Real Cost</span>
+    <p data-cid="main-530">
+      MR's practice of materializing intermediate results between Map and Reduce phases provides
+      excellent fault tolerance but hurts performance even in the absence of failures. For
+      long-running jobs on large clusters where node failure probability is substantial, this
+      is a worthwhile trade-off. For shorter queries on smaller clusters, it is overhead.
+      The paper notes that as parallel DBMSs scale to larger clusters, they will need to
+      incorporate fault-tolerance mechanisms.
+    </p>
+  </div>
+
+  <div class="box warn" data-cid="main-540">
+    <span class="box-label">The Paper Was Controversial</span>
+    <p data-cid="main-550">
+      The MR community responded critically to this paper. Critics argued: (1) the benchmark
+      is biased toward the strengths of DBMSs; (2) Hadoop's performance has improved since the
+      experiments were run; (3) the "real" MR use case is not OLAP-style SQL queries but
+      large-scale ETL, log processing, and machine learning pipelines that do not map cleanly
+      to SQL. These are fair objections. The paper acknowledges them and never claims to be
+      the final word — it is a benchmark comparison on a specific set of tasks, not a universal
+      verdict.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 7 -->
+  <h2 data-cid="main-560" id="s7">7. Impact and Legacy</h2>
+
+  <p data-cid="main-570">
+    This paper had an outsized impact on the trajectory of both MapReduce systems and the
+    database community. Its most important contribution may not be the benchmark results
+    themselves but the framing: it established that MapReduce and parallel DBMSs are
+    not fundamentally different paradigms but occupy different points in a design space
+    governed by well-understood trade-offs.
+  </p>
+
+  <p data-cid="main-580">
+    The lesson that the community absorbed, slowly but durably, is that the two approaches
+    should converge. Hadoop evolved: Hive added SQL-on-Hadoop, YARN improved scheduling,
+    and systems like Spark replaced MapReduce's disk-materializing execution model with
+    in-memory pipelines, dramatically closing the performance gap. Parallel DBMSs evolved:
+    they adopted better fault-tolerance mechanisms, improved their UDF support, and borrowed
+    ideas from distributed file systems for data loading. Today, systems like Google BigQuery,
+    Amazon Redshift, and Databricks Lakehouse are recognizable hybrids that learned from both
+    sides of this debate.
+  </p>
+
+  <p data-cid="main-590">
+    The paper is also a model of how empirical systems research should be done: transparent
+    about methodology, honest about limitations, and willing to credit the competing system
+    for genuine advantages. The headline result — DBMSs are faster — is only part of the
+    story the paper tells.
+  </p>
+
+  <!-- ═══════════════════════════════════════════ REFERENCES -->
+  <h2 data-cid="main-600" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-610">Hadoop. <a href="http://hadoop.apache.org/">http://hadoop.apache.org/</a>.</li>
+    <li data-cid="main-620">Hive. <a href="http://hadoop.apache.org/hive/">http://hadoop.apache.org/hive/</a>.</li>
+    <li data-cid="main-630">Vertica. <a href="http://www.vertica.com/">http://www.vertica.com/</a>.</li>
+    <li data-cid="main-640">R. Chaiken, B. Jenkins, P.-A. Larson, B. Ramsey, D. Shakib, S. Weaver, and J. Zhou. Scope: Easy and efficient parallel processing of massive data sets. <em>Proc. VLDB Endow.</em>, 1(2):1265–1276, 2008.</li>
+    <li data-cid="main-650">J. Dean and S. Ghemawat. MapReduce: Simplified Data Processing on Large Clusters. In <em>OSDI '04</em>, pages 10–10, 2004.</li>
+    <li data-cid="main-660">S. Ghemawat, H. Gobioff, and S.-T. Leung. The Google File System. <em>SIGOPS Oper. Syst. Rev.</em>, 37(5):29–43, 2003.</li>
+    <li data-cid="main-670">D. J. Abadi, P. A. Boncz, and S. Harizopoulos. Column-Oriented Database Systems. <em>VLDB</em>, 2(2), 2009.</li>
+    <li data-cid="main-680">C. Olston, B. Reed, U. Srivastava, R. Kumar, and A. Tomkins. Pig Latin: A Not-So-Foreign Language for Data Processing. In <em>SIGMOD '08</em>, pages 1099–1110, 2008.</li>
+    <li data-cid="main-690">M. Stonebraker. The Case for Shared Nothing. <em>Database Engineering</em>, 9:4–9, 1986.</li>
+    <li data-cid="main-700">J. Dean and S. Ghemawat. MapReduce: A Flexible Data Processing Tool. <em>Commun. ACM</em>, 53(1), 2010.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script>
+</body>
+</html>

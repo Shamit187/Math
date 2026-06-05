@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Spark SQL: Relational Data Processing in Spark · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="spark-sql" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/spark-sql/">Spark SQL</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. The Two-World Problem</a></li>
+    <li><a href="#s2">2. Spark Background</a></li>
+    <li><a href="#s3">3. The DataFrame API</a></li>
+    <li><a href="#s4">4. The Catalyst Optimizer</a></li>
+    <li><a href="#s5">5. Four Phases of Query Planning</a></li>
+    <li><a href="#s6">6. Advanced Features</a></li>
+    <li><a href="#s7">7. Performance</a></li>
+    <li><a href="#s8">8. Impact and Legacy</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">Scientific Paper · SIGMOD 2015</div>
+    <h1>Spark SQL: Relational Data Processing in Spark</h1>
+    <div class="paper-meta">
+      <span class="authors">Michael Armbrust, Reynold S. Xin, Cheng Lian, Yin Huai, Davies Liu, Joseph K. Bradley, Xiangrui Meng, Tomer Kaftan, Michael J. Franklin, Ali Ghodsi, Matei Zaharia</span>
+      <span class="venue">ACM SIGMOD 2015 · Melbourne, Victoria, Australia</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    Big data pipelines rarely fit neatly into either the relational world (SQL, declarative, optimized)
+    or the procedural world (MapReduce, Spark RDDs, arbitrary code). In practice, practitioners must
+    chain the two together awkwardly, losing optimizations at every boundary. Spark SQL bridges this
+    gap with two contributions. First, a <em>DataFrame API</em> — a distributed collection of
+    structured records that looks like a relational table but can be constructed from and manipulated
+    within Spark programs. Second, the <em>Catalyst optimizer</em> — an extensible query optimizer
+    built in Scala that uses functional programming and pattern matching to make adding new rules,
+    data sources, and types genuinely easy. Together they make it possible to write a single Spark
+    program that mixes SQL queries, machine learning transformations, and custom procedural logic,
+    with the optimizer reasoning across all of it.
+  </div>
+
+  <!-- ═══════════════════════════ SECTION 1 -->
+  <h2 data-cid="main-020" id="s1">1. The Two-World Problem</h2>
+
+  <p data-cid="main-030">
+    By 2015, Apache Spark had become the dominant platform for large-scale data processing. Its core
+    abstraction — the Resilient Distributed Dataset (RDD) — gave programmers a fault-tolerant,
+    distributed collection they could manipulate with familiar functional operations like
+    <code>map</code>, <code>filter</code>, and <code>reduce</code>. This was a massive improvement
+    over MapReduce, and Spark attracted an enormous user base.
+  </p>
+
+  <p data-cid="main-040">
+    But RDDs had a fundamental limitation: the Spark engine was largely opaque to them. When you
+    wrote <code>rdd.map(f).filter(g)</code>, Spark had no idea what <code>f</code> and
+    <code>g</code> actually computed — they were arbitrary Scala or Python functions. So it could
+    not reorder operations, push filters closer to data sources, or use columnar encoding. You got
+    fault tolerance but not a smart optimizer.
+  </p>
+
+  <div class="box intuition" data-cid="main-050">
+    <span class="box-label">Intuition — Why opacity hurts</span>
+    <p data-cid="main-060">
+      Consider a pipeline that reads a 100-column table, applies a filter, and selects 3 columns.
+      A smart optimizer would push the filter into the data source (so you never read irrelevant
+      rows) and prune columns (so you never deserialize 97 unnecessary fields). An RDD pipeline
+      cannot do either — it reads everything, deserializes everything, then discards most of it.
+      For terabyte-scale datasets on a 100-node cluster, this translates directly to dollars
+      and minutes wasted.
+    </p>
+  </div>
+
+  <p data-cid="main-070">
+    At the same time, pure SQL systems could not easily incorporate the procedural logic that
+    practitioners needed: machine learning algorithms, custom parsing, graph traversals. Systems like
+    Hive and Shark tried to bring SQL to Hadoop/Spark, but they had a critical limitation: you could
+    not easily mix SQL with native Spark operations in a single logical plan. Every hand-off between
+    SQL and Spark code broke the optimization chain.
+  </p>
+
+  <p data-cid="main-080">
+    Spark SQL's insight: give structured data a first-class, <em>lazy</em> representation inside
+    Spark — the DataFrame — so that the optimizer can see across the entire computation before
+    executing anything.
+  </p>
+
+  <!-- ═══════════════════════════ SECTION 2 -->
+  <h2 data-cid="main-090" id="s2">2. Spark Background</h2>
+
+  <p data-cid="main-100">
+    To appreciate Spark SQL's contribution, a brief review of its substrate is helpful. Spark
+    programs manipulate RDDs — immutable, partitioned collections of objects distributed across a
+    cluster. Operations on RDDs are <em>lazy</em>: they build a lineage graph (a DAG of
+    transformations) and do not execute until an "action" (like <code>count()</code> or
+    <code>save()</code>) is called. This lazy evaluation is what enables some pipelining
+    optimizations, but it cannot help with algebraic rewrites because the operations are opaque
+    functions.
+  </p>
+
+  <p data-cid="main-110">
+    Spark's predecessor for relational queries was Shark, which modified Hive to run on Spark's
+    engine. Shark was limited to data in the Hive catalog, required constructing query strings
+    (error-prone in modular programs), and used an optimizer designed for Hadoop-style batch
+    processing. It had no way to query data that lived inside a Spark program as an RDD. Spark SQL
+    replaces Shark entirely.
+  </p>
+
+  <!-- ═══════════════════════════ SECTION 3 -->
+  <h2 data-cid="main-120" id="s3">3. The DataFrame API</h2>
+
+  <p data-cid="main-130">
+    The central user-facing concept in Spark SQL is the <strong>DataFrame</strong>: a distributed
+    collection of rows with a known schema. This is conceptually equivalent to a table in a
+    relational database, or a data frame in R or Python's Pandas library. The crucial difference
+    from an RDD is that a DataFrame carries its schema explicitly, and all operations on it are
+    expressed through a small domain-specific language (DSL) of relational operations — not
+    arbitrary functions.
+  </p>
+
+  <div class="box example" data-cid="main-140">
+    <span class="box-label">Example — DataFrame operations in Scala</span>
+    <p data-cid="main-150">
+      The following code counts female employees per department. The DataFrame API allows writing
+      this as a chain of relational operations that Catalyst can fully inspect and optimize:
+    </p>
+    <pre><code>employees
+  .join(dept, employees("deptId") === dept("id"))
+  .where(employees("gender") === "female")
+  .groupBy(dept("id"), dept("name"))
+  .agg(count("name"))</code></pre>
+    <p data-cid="main-160">
+      Each method call — <code>join</code>, <code>where</code>, <code>groupBy</code>,
+      <code>agg</code> — does not immediately execute anything. It appends a node to an abstract
+      syntax tree (AST) that Catalyst will later optimize. At no point does Spark execute any code
+      until an output operation is triggered.
+    </p>
+  </div>
+
+  <p data-cid="main-170">
+    DataFrames can be created from many sources: Hive tables, JSON files, Parquet files, JDBC
+    connections to relational databases, and — crucially — from existing Spark RDDs of Java or
+    Python objects. For RDDs of typed objects (e.g., a Scala case class <code>User(name: String,
+    age: Int)</code>), Spark SQL uses reflection to automatically infer the schema. For Python RDDs,
+    it samples the data at runtime.
+  </p>
+
+  <p data-cid="main-180">
+    DataFrames can also be registered as temporary tables and queried with SQL strings. This allows
+    business intelligence tools (which connect via JDBC/ODBC and speak only SQL) to benefit from
+    the same optimizer as the programmatic API. The two entry points are completely unified: a SQL
+    query and the equivalent DataFrame chain compile to the same Catalyst tree.
+  </p>
+
+  <div class="box definition" data-cid="main-190">
+    <span class="box-label">Key property — Laziness enables cross-boundary optimization</span>
+    <p data-cid="main-200">
+      Because every DataFrame operation returns another DataFrame (a logical plan, not a result),
+      Catalyst can see the entire computation before deciding how to execute any of it. A filter
+      applied after a join can be pushed before the join. Projection pruning can eliminate columns
+      before they are ever deserialized. Column statistics gathered from a Parquet file can inform
+      join ordering. None of this is possible when the computation is expressed as opaque functions
+      on RDDs.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════ SECTION 4 -->
+  <h2 data-cid="main-210" id="s4">4. The Catalyst Optimizer</h2>
+
+  <p data-cid="main-220">
+    Catalyst is the optimizer underlying Spark SQL. Its design philosophy is different from
+    traditional query optimizers, which typically require a domain-specific language (DSL) for
+    writing rules and a separate "optimizer compiler" to translate those rules into executable code.
+    This imposes a steep learning curve and makes the optimizer hard to extend.
+  </p>
+
+  <p data-cid="main-230">
+    Catalyst instead uses standard features of the <em>Scala</em> programming language — specifically
+    algebraic data types and pattern matching — to represent query plans as immutable trees and
+    transformations as ordinary Scala functions. Any developer who knows Scala can add a new
+    optimization rule without understanding the internals of the optimizer. This openness was key
+    to Spark SQL's rapid adoption.
+  </p>
+
+  <div class="box definition" data-cid="main-240">
+    <span class="box-label">Definition — Trees and Rules in Catalyst</span>
+    <p data-cid="main-250">
+      A <strong>tree</strong> in Catalyst is a recursive data structure where each node has a type
+      (e.g., <code>Add</code>, <code>Filter</code>, <code>Join</code>) and zero or more child nodes.
+      Trees are immutable: transformations produce new trees. A <strong>rule</strong> is a function
+      from one tree to another, typically expressed as a Scala pattern-match. For example, a rule
+      that constant-folds additions is simply:
+    </p>
+    <pre><code>tree.transform {
+  case Add(Literal(c1), Literal(c2)) => Literal(c1 + c2)
+}</code></pre>
+    <p data-cid="main-260">
+      Catalyst applies rules repeatedly (in batches) until the tree reaches a <em>fixed point</em>
+      — no more rules apply. This functional style makes rules easy to write, test, and compose.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════ SECTION 5 -->
+  <h2 data-cid="main-270" id="s5">5. Four Phases of Query Planning</h2>
+
+  <p data-cid="main-280">
+    Catalyst processes every query through four sequential phases, each operating on a different
+    kind of tree. Understanding these phases is the key to understanding what Spark SQL can
+    optimize and why.
+  </p>
+
+  <div class="box definition" data-cid="main-290">
+    <span class="box-label">Phase 1 — Analysis</span>
+    <p data-cid="main-300">
+      Input: an <em>unresolved</em> logical plan — a tree that may contain references to columns
+      or tables whose types are unknown. The analyzer consults a Catalog (the registry of data
+      sources and schemas) to resolve attribute names, assign data types, detect errors (wrong
+      column names, type mismatches), and produce a fully <em>resolved</em> logical plan. This is
+      like a type-checking pass in a compiler.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-310">
+    <span class="box-label">Phase 2 — Logical Optimization</span>
+    <p data-cid="main-320">
+      Input: the resolved logical plan. This phase applies standard algebraic rewrites using
+      Catalyst rules: predicate pushdown (move filters as early as possible), projection pruning
+      (drop unused columns), constant folding, Boolean simplification, null propagation. The rules
+      are written in ~800 lines of Scala code. No cost model is consulted here — these rewrites
+      are algebraically equivalent transformations that are always beneficial.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-330">
+    <span class="box-label">Phase 3 — Physical Planning</span>
+    <p data-cid="main-340">
+      Input: the optimized logical plan. The physical planner maps logical operators to physical
+      implementations (e.g., <code>Join</code> can become broadcast join, sort-merge join, or
+      hash join). For small tables, a <em>broadcast join</em> sends the smaller table to every
+      node, avoiding a shuffle entirely. The physical planner uses a cost model for join selection
+      (based on estimated table sizes) and also applies additional rule-based physical
+      optimizations, such as pipelining projections and filters into a single Spark map operation.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-350">
+    <span class="box-label">Phase 4 — Code Generation</span>
+    <p data-cid="main-360">
+      Input: the selected physical plan. Rather than interpreting the tree at runtime (which
+      involves large numbers of virtual function calls), Catalyst generates Java bytecode for the
+      expression evaluation. It does this using Scala <em>quasiquotes</em> — a metaprogramming
+      feature that lets you construct ASTs for Scala code at compile time and feed them to the
+      Scala compiler at runtime. The generated code is equivalent to hand-written Java and avoids
+      the overhead of boxing, virtual dispatch, and generic collections.
+    </p>
+  </div>
+
+  <div class="box intuition" data-cid="main-370">
+    <span class="box-label">Intuition — Why code generation matters for numeric loops</span>
+    <p data-cid="main-380">
+      Consider evaluating the expression <span class="tts-math" data-tts="x plus x plus x">$x + x + x$</span>
+      for <span class="tts-math" data-tts="10 to the power 9">$10^9$</span> integer values. The
+      interpreted approach walks the expression tree for every value, calling virtual functions at
+      each node — an enormous constant factor. Code generation produces a tight inner loop in
+      bytecode that runs at JIT-compiled speed. In the paper's benchmark (Figure 4), interpreted
+      evaluation takes ~38 seconds, hand-written Scala takes ~12 seconds, and Catalyst-generated
+      code takes ~5 seconds — faster than hand-written because the compiler can apply
+      optimizations that a human would not bother with.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════ SECTION 6 -->
+  <h2 data-cid="main-390" id="s6">6. Advanced Features</h2>
+
+  <p data-cid="main-400">
+    Beyond the core optimizer, Spark SQL introduces three features that address practical challenges
+    in large-scale analytics.
+  </p>
+
+  <p data-cid="main-410">
+    <strong>Schema inference for semistructured data.</strong> JSON is ubiquitous in big data, but
+    JSON has no fixed schema. Spark SQL's JSON data source performs a single-pass reduction over
+    the records to infer a schema: it generalizes types (if a field appears as an integer in some
+    records and a float in others, it becomes FLOAT), handles nested objects and arrays, and
+    produces a <code>STRUCT</code> schema that can be used for column pruning and predicate
+    pushdown. Users can then query JSON directly with SQL, including accessing nested fields using
+    dot notation.
+  </p>
+
+  <p data-cid="main-420">
+    <strong>Integration with the MLlib machine learning library.</strong> Machine learning pipelines
+    in Spark had used RDDs of domain-specific types (e.g., <code>LabeledPoint</code>). By
+    introducing DataFrames as the universal data representation, Spark SQL enabled a new
+    high-level ML API (MLlib Pipelines) where each algorithm is a <em>transformer</em> or
+    <em>estimator</em> that takes a DataFrame and produces a DataFrame. This makes it trivial to
+    compose preprocessing, feature extraction, dimensionality reduction, and model training into a
+    single optimizable plan.
+  </p>
+
+  <p data-cid="main-430">
+    <strong>Query federation to external databases.</strong> The Catalyst extension point for
+    data sources allows pushing predicates into remote systems. A JDBC data source can translate
+    a Spark SQL filter into a SQL WHERE clause and send it to MySQL, fetching only the matching
+    rows over the network. This is dramatically more efficient than fetching all rows and filtering
+    in Spark.
+  </p>
+
+  <!-- ═══════════════════════════ SECTION 7 -->
+  <h2 data-cid="main-440" id="s7">7. Performance</h2>
+
+  <p data-cid="main-450">
+    The paper evaluates Spark SQL on three dimensions. For SQL query performance, it uses the
+    AMPLab big data benchmark (web analytics workload), comparing against Shark and Impala on a
+    110 GB Parquet dataset. Spark SQL is substantially faster than Shark on all query types, and
+    competitive with Impala (a C++-based, Hadoop-native SQL engine often considered the
+    state-of-the-art). The key gap versus Impala comes on join-heavy queries where Impala's
+    cost-based optimizer makes better decisions; otherwise Spark SQL matches or beats it.
+  </p>
+
+  <p data-cid="main-460">
+    For DataFrame versus native Spark code, the comparison is striking. A distributed aggregation
+    of 1 billion integer pairs using the Python RDD API took ~170 seconds. The same computation
+    using the DataFrame API took ~12 seconds — a <span class="tts-math" data-tts="14 times">$14\times$</span>
+    speedup — because the DataFrame plan is compiled to efficient JVM bytecode rather than being
+    interpreted by the Python runtime.
+  </p>
+
+  <p data-cid="main-470">
+    For pipeline performance, the paper compares a two-stage pipeline (SQL query + separate Spark
+    job) against an equivalent integrated DataFrame job. The integrated version is
+    <span class="tts-math" data-tts="approximately 2 times">$\approx 2\times$</span> faster
+    because Spark SQL eliminates the need to write intermediate results to HDFS between stages
+    and can pipeline the filter operation into the word count operation in a single pass.
+  </p>
+
+  <!-- ═══════════════════════════ SECTION 8 -->
+  <h2 data-cid="main-480" id="s8">8. Impact and Legacy</h2>
+
+  <p data-cid="main-490">
+    Spark SQL was released in May 2014 and became one of the most actively developed components
+    in Apache Spark almost immediately. By the time this paper was published in 2015, it had over
+    400 contributors. The DataFrame API became the standard data representation across all of
+    Spark's libraries — replacing RDDs in MLlib, Graph processing, and streaming.
+  </p>
+
+  <p data-cid="main-500">
+    More broadly, Spark SQL demonstrated two things to the systems community. First, that functional
+    programming — immutable trees, pattern matching, composable rules — is a genuinely effective
+    way to build extensible query optimizers, not just an academic curiosity. Second, that the
+    boundary between "relational" and "procedural" processing is artificial and unnecessary: a
+    single unified API with a smart optimizer can serve both communities better than either
+    approach alone.
+  </p>
+
+  <div class="box intuition" data-cid="main-510">
+    <span class="box-label">Lasting influence</span>
+    <p data-cid="main-520">
+      Catalyst's architecture directly influenced the design of query optimizers in subsequent
+      systems. The idea of expressing optimizer rules as pattern-matched functions on immutable
+      trees appears in Databricks' Photon engine, in several academic systems, and in the design
+      of Apache Calcite — which has become the standard query optimizer framework for the Java
+      ecosystem (used in Flink, Hive, Druid, and others). The DataFrame abstraction is now so
+      universal that most practitioners do not remember a time when Spark's native API was
+      anything else.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════ REFERENCES -->
+  <h2 data-cid="main-530" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-540">M. Zaharia et al. Resilient distributed datasets: a fault-tolerant abstraction for in-memory cluster computing. In <em>NSDI</em>, 2012.</li>
+    <li data-cid="main-550">R. S. Xin, J. Rosen, M. Zaharia, M. J. Franklin, S. Shenker, I. Stoica. Shark: SQL and rich analytics at scale. In <em>SIGMOD</em>, 2013.</li>
+    <li data-cid="main-560">M. Kornacker et al. Impala: A modern, open-source SQL engine for Hadoop. In <em>CIDR</em>, 2015.</li>
+    <li data-cid="main-570">AMPLab big data benchmark. https://amplab.cs.berkeley.edu/benchmark.</li>
+    <li data-cid="main-580">G. Graefe. The Cascades framework for query optimization. <em>IEEE Data Engineering Bulletin</em>, 18(3), 1995.</li>
+    <li data-cid="main-590">G. Graefe and D. DeWitt. The EXODUS optimizer generator. In <em>SIGMOD</em>, 1987.</li>
+    <li data-cid="main-600">D. Shabalin, E. Burmako, M. Odersky. Quasiquotes for Scala. Technical Report 185242, École Polytechnique Fédérale de Lausanne, 2013.</li>
+    <li data-cid="main-610">C. Olston, B. Reed, U. Srivastava, R. Kumar, A. Tomkins. Pig Latin: a not-so-foreign language for data processing. In <em>SIGMOD</em>, 2008.</li>
+    <li data-cid="main-620">A. Thusoo et al. Hive — a petabyte scale data warehouse using Hadoop. In <em>ICDE</em>, 2010.</li>
+    <li data-cid="main-630">X. Meng, J. Bradley, B. Sparks, E. Venkataraman. ML pipelines: a new high-level API for MLlib. Databricks blog, 2015.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script>
+</body>
+</html>

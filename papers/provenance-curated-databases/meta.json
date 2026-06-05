@@ -1,0 +1,6 @@
+{
+  "title": "Provenance Management in Curated Databases",
+  "authors": "Peter Buneman, Adriane P. Chapman, James Cheney",
+  "venue": "SIGMOD 2006",
+  "description": "Proposes and experimentally evaluates an automatic provenance-tracking system for curated scientific databases, recording fine-grained copy-paste lineage in a queryable auxiliary table using naïve, transactional, hierarchical, and combined storage strategies."
+}

@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BIRCH: An Efficient Data Clustering Method for Very Large Databases · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="birch-clustering" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/birch-clustering/">BIRCH Clustering</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. Introduction</a></li>
+    <li><a href="#s2">2. The Clustering Problem</a></li>
+    <li><a href="#s3">3. Clustering Feature (CF)</a></li>
+    <li><a href="#s4">4. The CF Tree</a></li>
+    <li><a href="#s5">5. The BIRCH Algorithm</a></li>
+    <li><a href="#s6">6. Phase 1 in Depth</a></li>
+    <li><a href="#s7">7. Experiments</a></li>
+    <li><a href="#s8">8. Why BIRCH Matters</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">Scientific Paper · SIGMOD 1996</div>
+    <h1>BIRCH: An Efficient Data Clustering Method for Very Large Databases</h1>
+    <div class="paper-meta">
+      <span class="authors">Tian Zhang, Raghu Ramakrishnan, Miron Livny</span>
+      <span class="venue">ACM SIGMOD International Conference on Management of Data, Montreal, Canada, 1996</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    Finding useful patterns in large datasets has attracted considerable interest, and one of the most
+    widely studied problems is the identification of clusters — densely populated regions in a
+    multi-dimensional dataset. Prior work does not adequately address the problem of large datasets and
+    minimization of I/O costs. This paper presents a data clustering method named BIRCH (Balanced
+    Iterative Reducing and Clustering using Hierarchies), and demonstrates that it is especially suitable
+    for very large databases. BIRCH incrementally and dynamically clusters incoming multi-dimensional
+    metric data points to produce the best quality clustering with available resources (memory and time).
+    BIRCH can typically find a good clustering with a single scan of the data. It is also the first
+    clustering algorithm proposed in the database area to handle "noise" (outliers). BIRCH is evaluated
+    for time/space efficiency, data input order sensitivity, and clustering quality, and is shown to be
+    consistently superior to CLARANS.
+  </div>
+
+  <h2 data-cid="main-020" id="s1">1. Introduction</h2>
+  <p data-cid="main-030">
+    Clustering is the problem of partitioning a dataset into groups such that points within a group
+    are similar to each other and dissimilar to points in other groups. It is unsupervised — unlike
+    classification, you do not know the groups in advance. Clustering discovers structure directly
+    from the data. Applications range from customer segmentation (finding groups of shoppers with
+    similar buying habits) to image processing (segmenting pixels into foreground and background)
+    to scientific data analysis (grouping astronomical objects by spectral properties).
+  </p>
+  <p data-cid="main-040">
+    The challenge with databases is scale. Traditional clustering algorithms — hierarchical
+    clustering, iterative optimization like k-means — either require
+    <span class="tts-math" data-tts="O of N squared">$O(N^2)$</span>
+    time or
+    <span class="tts-math" data-tts="O of N">$O(N)$</span>
+    memory to hold all
+    <span class="tts-math" data-tts="N">$N$</span>
+    points simultaneously. When
+    <span class="tts-math" data-tts="N">$N$</span>
+    is in the millions, neither is feasible. BIRCH solves this with a single central insight: you
+    do not need to keep all individual data points in memory. You only need a compact
+    <em>summary</em> of each emerging cluster, and that summary can be updated incrementally as new
+    points arrive.
+  </p>
+
+  <div class="box intuition" data-cid="main-050">
+    <span class="box-label">Intuition — The core BIRCH idea</span>
+    <p data-cid="main-060">
+      Imagine clustering a million grocery receipts by purchase pattern. You cannot hold all million
+      receipts in memory at once. But you can maintain, say, 10,000 "micro-clusters" — small
+      summaries of nearby points. Each new receipt is routed to its closest micro-cluster and
+      absorbed into it. At the end, you apply a conventional clustering algorithm to the 10,000
+      micro-clusters rather than the million raw points. The micro-clusters are so compact that they
+      fit in memory, and applying a standard algorithm to 10,000 objects is fast. BIRCH makes this
+      precise and provides the data structure — the CF tree — that enables efficient routing.
+    </p>
+  </div>
+
+  <h2 data-cid="main-070" id="s2">2. The Clustering Problem</h2>
+  <p data-cid="main-080">
+    The paper formalizes clustering in the metric / distance-based tradition used in Statistics.
+    Given
+    <span class="tts-math" data-tts="N">$N$</span>
+    data points in a
+    <span class="tts-math" data-tts="d">$d$</span>-dimensional
+    space, we seek
+    <span class="tts-math" data-tts="K">$K$</span>
+    clusters that minimize some measure of intra-cluster spread. The paper defines the
+    <strong>centroid</strong>, <strong>radius</strong>, and <strong>diameter</strong> of a cluster
+    of
+    <span class="tts-math" data-tts="N">$N$</span>
+    points
+    <span class="tts-math" data-tts="X sub i">$\{X_i\}$</span>:
+  </p>
+
+  <div class="box definition" data-cid="main-090">
+    <span class="box-label">Cluster Geometry</span>
+    <p data-cid="main-100">
+      <strong>Centroid:</strong>
+      <span class="tts-math" data-tts="X bar sub 0 equals the sum of X sub i, over N">
+      $$X_0 = \frac{\sum_{i=1}^N X_i}{N}$$
+      </span>
+    </p>
+    <p data-cid="main-110">
+      <strong>Radius</strong> (average distance to centroid):
+      <span class="tts-math" data-tts="R equals the square root of the sum of the squared distances from each point to the centroid, over N">
+      $$R = \left(\frac{\sum_{i=1}^N (X_i - X_0)^2}{N}\right)^{1/2}$$
+      </span>
+    </p>
+    <p data-cid="main-120">
+      <strong>Diameter</strong> (average pairwise distance):
+      <span class="tts-math" data-tts="D equals the square root of the sum over all pairs of squared distances between points, over N times N minus 1">
+      $$D = \left(\frac{\sum_{i=1}^N \sum_{j=1}^N (X_i - X_j)^2}{N(N-1)}\right)^{1/2}$$
+      </span>
+    </p>
+    <p data-cid="main-130">
+      The paper also defines five inter-cluster distance metrics (D0 through D4), including
+      centroid Euclidean distance
+      <span class="tts-math" data-tts="D 0 equals the distance between the two centroids">$D0 = \lVert X_{0_1} - X_{0_2} \rVert$</span>,
+      average inter-cluster distance
+      <span class="tts-math" data-tts="D 2">$D2$</span>,
+      and variance increase distance
+      <span class="tts-math" data-tts="D 4">$D4$</span>.
+      BIRCH defaults to
+      <span class="tts-math" data-tts="D 2">$D2$</span>
+      (average inter-cluster distance), consistent with Statistics tradition.
+    </p>
+  </div>
+
+  <p data-cid="main-140">
+    A critical constraint distinguished from the Statistics literature: <em>the amount of memory
+    available is limited, typically much smaller than the data set size</em>. The algorithm must
+    work within this memory budget and minimize I/O. This is the database-oriented framing that
+    makes BIRCH a departure from prior work.
+  </p>
+
+  <h2 data-cid="main-150" id="s3">3. Clustering Feature (CF)</h2>
+  <p data-cid="main-160">
+    The heart of BIRCH is the <strong>Clustering Feature (CF)</strong>, a compact triple that
+    summarizes all the information needed to represent a cluster for clustering decisions.
+  </p>
+
+  <div class="box definition" data-cid="main-170">
+    <span class="box-label">Definition — Clustering Feature</span>
+    <p data-cid="main-180">
+      Given
+      <span class="tts-math" data-tts="N">$N$</span>
+      points
+      <span class="tts-math" data-tts="X sub i">$\{X_i\}$</span>
+      in a cluster, the <strong>Clustering Feature</strong> is the triple:
+      <span class="tts-math" data-tts="CF equals the triple N comma L S comma S S">
+      $$\mathbf{CF} = (N,\, \vec{LS},\, SS)$$
+      </span>
+      where
+      <span class="tts-math" data-tts="N">$N$</span>
+      is the number of points,
+      <span class="tts-math" data-tts="L S equals the sum of X sub i">$\vec{LS} = \sum_{i=1}^N X_i$</span>
+      is the linear sum (a vector), and
+      <span class="tts-math" data-tts="S S equals the sum of the squared norms of X sub i">$SS = \sum_{i=1}^N \lVert X_i \rVert^2$</span>
+      is the sum of squared norms (a scalar).
+    </p>
+  </div>
+
+  <p data-cid="main-190">
+    Why is this triple sufficient? Because every geometric quantity needed for clustering decisions —
+    centroid, radius, diameter, all five inter-cluster distances — can be computed from the CF alone.
+    The centroid is
+    <span class="tts-math" data-tts="L S over N">$\vec{LS}/N$</span>.
+    The radius satisfies
+    <span class="tts-math" data-tts="R squared equals S S over N minus the squared norm of L S over N">
+    $R^2 = SS/N - \lVert \vec{LS}/N \rVert^2$</span>.
+    All five distance metrics can similarly be computed from the CF components. This means:
+    once you summarize a cluster by its CF, you never need the individual points again.
+  </p>
+
+  <div class="box definition" data-cid="main-200">
+    <span class="box-label">Theorem — CF Additivity</span>
+    <p data-cid="main-210">
+      If two disjoint clusters have CFs
+      <span class="tts-math" data-tts="CF sub 1 equals N sub 1 comma L S sub 1 comma S S sub 1">
+      $\mathbf{CF}_1 = (N_1, \vec{LS}_1, SS_1)$</span>
+      and
+      <span class="tts-math" data-tts="CF sub 2 equals N sub 2 comma L S sub 2 comma S S sub 2">
+      $\mathbf{CF}_2 = (N_2, \vec{LS}_2, SS_2)$</span>,
+      then the CF of their union is simply:
+      <span class="tts-math" data-tts="CF sub 1 plus CF sub 2 equals N sub 1 plus N sub 2 comma L S sub 1 plus L S sub 2 comma S S sub 1 plus S S sub 2">
+      $$\mathbf{CF}_1 + \mathbf{CF}_2 = (N_1+N_2,\; \vec{LS}_1+\vec{LS}_2,\; SS_1+SS_2)$$
+      </span>
+      This is the CF Additivity Theorem. It means clusters can be merged — and their CFs
+      updated — by simple vector addition. No re-scanning of original data is needed.
+    </p>
+  </div>
+
+  <div class="box intuition" data-cid="main-220">
+    <span class="box-label">Intuition — why three numbers?</span>
+    <p data-cid="main-230">
+      A single cluster of 1 million points in 20 dimensions normally requires storing 20 million
+      floating-point numbers. A CF reduces this to just 42 numbers: the count (1 number), the linear
+      sum (20 numbers), and the sum of squares (1 number computed from a 20-dimensional vector, or
+      equivalently 21 numbers). The compression ratio is roughly
+      <span class="tts-math" data-tts="N times d over 2 d plus 1">$\frac{N \cdot d}{2d+1}$</span>
+      — for large clusters, this is enormous. And crucially, no information needed for clustering
+      decisions is lost.
+    </p>
+  </div>
+
+  <h2 data-cid="main-240" id="s4">4. The CF Tree</h2>
+  <p data-cid="main-250">
+    BIRCH organizes CFs into a height-balanced tree called a <strong>CF tree</strong>. The tree
+    has two parameters: the <strong>branching factor</strong>
+    <span class="tts-math" data-tts="B">$B$</span>
+    (maximum entries per non-leaf node) and the <strong>threshold</strong>
+    <span class="tts-math" data-tts="T">$T$</span>
+    (the maximum diameter or radius of any subcluster in a leaf entry).
+  </p>
+
+  <div class="box definition" data-cid="main-260">
+    <span class="box-label">CF Tree Structure</span>
+    <p data-cid="main-270">
+      Each <strong>non-leaf node</strong> contains at most
+      <span class="tts-math" data-tts="B">$B$</span>
+      entries of the form
+      <span class="tts-math" data-tts="CF sub i comma child sub i">[CF<sub>i</sub>, child<sub>i</sub>]</span>,
+      where
+      <span class="tts-math" data-tts="CF sub i">$CF_i$</span>
+      is the CF of the subcluster represented by child
+      <span class="tts-math" data-tts="i">$i$</span>.
+      Each <strong>leaf node</strong> contains at most
+      <span class="tts-math" data-tts="L">$L$</span>
+      entries, each of the form
+      <span class="tts-math" data-tts="CF sub i">[CF<sub>i</sub>]</span>,
+      and every leaf entry must satisfy the threshold condition: the diameter (or radius) of the
+      subcluster it represents must be less than
+      <span class="tts-math" data-tts="T">$T$</span>.
+      Leaf nodes are also linked in a doubly-linked list for efficient sequential scans.
+    </p>
+  </div>
+
+  <p data-cid="main-280">
+    The CF tree is essentially a B+-tree for clustering rather than sorting. Just as a B+-tree
+    efficiently routes a lookup key to the right leaf by comparing values at interior nodes, the
+    CF tree routes a new data point to the closest existing subcluster by comparing distances
+    (using the CF vectors at interior nodes) to find the closest child at each level. This routing
+    is local: no global scan of all existing clusters is needed, only a path from root to leaf.
+  </p>
+
+  <h3 data-cid="main-290">Insertion into the CF tree</h3>
+  <p data-cid="main-300">
+    Given a new data point "Ent," the insertion algorithm proceeds in four steps:
+  </p>
+
+  <div class="box example" data-cid="main-310">
+    <span class="box-label">CF Tree Insertion Algorithm</span>
+    <p data-cid="main-320">
+      <strong>Step 1 — Identify the appropriate leaf:</strong> Starting from the root, recursively
+      descend the CF tree by choosing the <em>closest</em> child node according to the chosen
+      distance metric (D0, D1, D2, D3, or D4).
+    </p>
+    <p data-cid="main-330">
+      <strong>Step 2 — Modify the leaf:</strong> At the leaf, find the closest entry
+      <span class="tts-math" data-tts="L sub i">$L_i$</span>.
+      Check whether absorbing "Ent" into
+      <span class="tts-math" data-tts="L sub i">$L_i$</span>
+      would violate the threshold
+      <span class="tts-math" data-tts="T">$T$</span>
+      (i.e., whether the new subcluster's diameter would exceed
+      <span class="tts-math" data-tts="T">$T$</span>).
+      If not, update the CF vector of
+      <span class="tts-math" data-tts="L sub i">$L_i$</span>
+      (by CF additivity, just add the new point's contribution). If so, add a new entry for "Ent"
+      to the leaf. If the leaf is full, split it by choosing the farthest pair of entries as seeds
+      and redistributing the remaining entries to the closest seed.
+    </p>
+    <p data-cid="main-340">
+      <strong>Step 3 — Modify the path:</strong> After updating or splitting, propagate CF updates
+      upward along the path from leaf to root. If a split propagates to the root, the tree height
+      increases by one.
+    </p>
+    <p data-cid="main-350">
+      <strong>Step 4 — Merging refinement (optional):</strong> After a leaf split, scan the
+      sibling nodes to find the two closest entries and try to merge them and their children. This
+      ameliorates split artifacts caused by data insertion order.
+    </p>
+  </div>
+
+  <p data-cid="main-360">
+    The tree is very compact because each leaf entry represents a subcluster — not a single data
+    point but many points whose diameter is less than
+    <span class="tts-math" data-tts="T">$T$</span>.
+    By tuning
+    <span class="tts-math" data-tts="T">$T$</span>
+    larger, you get a smaller tree (coarser subclusters) that fits in less memory; tuning
+    <span class="tts-math" data-tts="T">$T$</span>
+    smaller gives a larger tree with finer subclusters and better clustering quality.
+  </p>
+
+  <h2 data-cid="main-370" id="s5">5. The BIRCH Algorithm</h2>
+  <p data-cid="main-380">
+    BIRCH is a four-phase algorithm. The first two phases build and compress the CF tree; phases
+    three and four perform global clustering and optional refinement.
+  </p>
+
+  <div class="box definition" data-cid="main-390">
+    <span class="box-label">BIRCH — Four Phases</span>
+    <p data-cid="main-400">
+      <strong>Phase 1 (required):</strong> Scan the entire dataset and build an in-memory CF tree.
+      As each point arrives, route it to the appropriate leaf subcluster and absorb it (or create
+      a new leaf entry). If memory fills up, increase the threshold
+      <span class="tts-math" data-tts="T">$T$</span>
+      and rebuild a smaller tree by re-inserting the leaf entries of the old tree. After Phase 1,
+      the CF tree is a compact summary of the entire dataset.
+    </p>
+    <p data-cid="main-410">
+      <strong>Phase 2 (optional):</strong> Condense the CF tree further to bring the number of
+      leaf entries into a range suitable for Phase 3. This is done by rebuilding with a higher
+      <span class="tts-math" data-tts="T">$T$</span>
+      and also outlier-handling: leaf entries with very few points (below a threshold fraction of
+      the average) are written to disk as potential outliers rather than kept in the tree.
+    </p>
+    <p data-cid="main-420">
+      <strong>Phase 3 (required):</strong> Apply an existing global clustering algorithm — the
+      paper uses an agglomerative hierarchical algorithm — to the leaf entries of the CF tree.
+      Since the leaf entries (subclusters) are represented by their CF vectors, the distance
+      metrics
+      <span class="tts-math" data-tts="D 2 and D 4">$D2$ and $D4$</span>
+      between subclusters can be computed directly from the CFs. This produces
+      <span class="tts-math" data-tts="K">$K$</span>
+      final clusters.
+    </p>
+    <p data-cid="main-430">
+      <strong>Phase 4 (optional):</strong> Rescan the original data, assigning each point to its
+      nearest cluster centroid (from Phase 3). This corrects any misassignments caused by the
+      order-dependent splitting in the CF tree, allows outliers to be re-absorbed or permanently
+      discarded, and labels individual data points with their cluster membership.
+    </p>
+  </div>
+
+  <h2 data-cid="main-440" id="s6">6. Phase 1 in Depth — Memory Management and Rebuilding</h2>
+  <p data-cid="main-450">
+    Phase 1 is the most complex part of BIRCH. The algorithm starts with threshold
+    <span class="tts-math" data-tts="T sub 0 equals 0">$T_0 = 0$</span>
+    (each leaf entry holds a single point), scans data, and inserts points into the CF tree. If
+    the tree runs out of memory before the scan completes, it must be rebuilt with a larger
+    threshold.
+  </p>
+  <p data-cid="main-460">
+    The rebuild algorithm is elegant. BIRCH uses the path structure of the old CF tree to
+    rebuild a new tree path-by-path, freeing old nodes as their entries are transferred. The
+    key theorem governing this process:
+  </p>
+
+  <div class="box definition" data-cid="main-470">
+    <span class="box-label">Theorem 5.1 — Reducibility</span>
+    <p data-cid="main-480">
+      Assume we rebuild CF tree
+      <span class="tts-math" data-tts="t sub 2">$t_2$</span>
+      of threshold
+      <span class="tts-math" data-tts="T sub 2">$T_2$</span>
+      from CF tree
+      <span class="tts-math" data-tts="t sub 1">$t_1$</span>
+      of threshold
+      <span class="tts-math" data-tts="T sub 1">$T_1$</span>,
+      where
+      <span class="tts-math" data-tts="T sub 2 is at least T sub 1">$T_2 \geq T_1$</span>.
+      Let
+      <span class="tts-math" data-tts="S sub 1">$S_1$</span>
+      and
+      <span class="tts-math" data-tts="S sub 2">$S_2$</span>
+      be the sizes (numbers of nodes) of
+      <span class="tts-math" data-tts="t sub 1 and t sub 2">$t_1$ and $t_2$</span>
+      respectively. Then
+      <span class="tts-math" data-tts="S sub 2 is at most S sub 1">$S_2 \leq S_1$</span>,
+      and the transformation needs at most
+      <span class="tts-math" data-tts="h">$h$</span>
+      extra pages of memory, where
+      <span class="tts-math" data-tts="h">$h$</span>
+      is the height of
+      <span class="tts-math" data-tts="t sub 1">$t_1$</span>.
+    </p>
+  </div>
+
+  <p data-cid="main-490">
+    This is a strong guarantee: the rebuild can be done with only a constant amount of extra
+    memory proportional to the tree height, not proportional to the tree size. Since the height
+    is
+    <span class="tts-math" data-tts="O of log base B of M over P">$O(\log_B M/P)$</span>
+    (where
+    <span class="tts-math" data-tts="M">$M$</span>
+    is memory size and
+    <span class="tts-math" data-tts="P">$P$</span>
+    is page size), this is very small in practice.
+  </p>
+
+  <h3 data-cid="main-500">Choosing the threshold</h3>
+  <p data-cid="main-510">
+    When memory runs out and a rebuild is needed, BIRCH must choose the new threshold
+    <span class="tts-math" data-tts="T sub i plus 1">$T_{i+1}$</span>.
+    The heuristic the paper describes has four components: try to choose
+    <span class="tts-math" data-tts="T sub i plus 1">$T_{i+1}$</span>
+    so that the new tree holds
+    <span class="tts-math" data-tts="N sub i plus 1 equals min of 2 N sub i and N">$N_{i+1} = \min(2N_i, N)$</span>
+    points; estimate the appropriate threshold using the "average volume"
+    <span class="tts-math" data-tts="V sub a equals r to the power d">$V_a = r^d$</span>
+    (where
+    <span class="tts-math" data-tts="r">$r$</span>
+    is the average radius of root clusters and
+    <span class="tts-math" data-tts="d">$d$</span>
+    is the dimensionality) and "packed volume"
+    <span class="tts-math" data-tts="V sub p equals C prime sub i times T sub i to the power d">
+    $V_p = C'_i \cdot T_i^d$</span>;
+    traverse the tree to the most crowded leaf to estimate
+    <span class="tts-math" data-tts="D sub min">$D_\text{min}$</span>
+    (the closest pair of entries in that leaf); and finally set
+    <span class="tts-math" data-tts="T sub i plus 1 equals max of D sub min and f times T sub i plus 1">
+    $T_{i+1} = \max(D_\text{min},\; f \cdot T_{i+1})$</span>
+    where
+    <span class="tts-math" data-tts="f">$f$</span>
+    is an expansion factor estimated by linear regression on the growth of the data footprint.
+  </p>
+
+  <div class="box pause" data-cid="main-520">
+    <span class="box-label">Pause — the beauty of the CF approach under rebuilds</span>
+    <p data-cid="main-530">
+      When BIRCH rebuilds the tree with a higher threshold, it re-inserts the leaf <em>entries</em>
+      of the old tree into the new tree — not the original data points. This is possible because
+      each leaf entry is already a CF vector summarizing potentially many data points. Two leaf
+      entries from the old tree that are close enough can be merged into a single leaf entry in the
+      new tree, simply by adding their CF vectors. The original data is never re-read. This is what
+      makes BIRCH's I/O complexity essentially linear: the original data is scanned exactly once
+      (in Phase 1), and all subsequent processing operates on the much smaller CF tree.
+    </p>
+  </div>
+
+  <h2 data-cid="main-540" id="s7">7. Experiments</h2>
+  <p data-cid="main-550">
+    The paper evaluates BIRCH on synthetic datasets and on a real image segmentation task. Synthetic
+    datasets have
+    <span class="tts-math" data-tts="K">$K$</span>
+    clusters of 2-D points generated by three spatial patterns (grid, sine, random), with noise
+    rates from 0 to 10%, and with data input in randomized or ordered order.
+  </p>
+
+  <div class="box example" data-cid="main-560">
+    <span class="box-label">Base workload performance</span>
+    <p data-cid="main-570">
+      Three base datasets (DS1, DS2, DS3) with
+      <span class="tts-math" data-tts="K equals 100">$K = 100$</span>
+      clusters and
+      <span class="tts-math" data-tts="N equals 100,000">$N = 100{,}000$</span>
+      points each. BIRCH clustered each in under 50 seconds on an HP 9000/720 workstation using
+      only 80 kbytes of memory (about 5% of the dataset size). The weighted average diameter
+      <span class="tts-math" data-tts="D bar">$\bar{D}$</span>
+      of BIRCH clusters was within a few percent of the actual cluster diameters. Changing the
+      input order from randomized to ordered had essentially no impact on either time or quality —
+      demonstrating BIRCH's low input-order sensitivity.
+    </p>
+  </div>
+
+  <h3 data-cid="main-580">Comparison with CLARANS</h3>
+  <p data-cid="main-590">
+    CLARANS was the leading prior algorithm for large-scale spatial clustering. On the same base
+    workload, CLARANS was at least 15 times slower than BIRCH (839 seconds vs. 47 seconds for DS1).
+    More importantly, the quality of CLARANS clusters was much worse: the weighted average diameter
+    <span class="tts-math" data-tts="D bar">$\bar{D}$</span>
+    for CLARANS was 2.11 for DS1 versus 1.87 for BIRCH (smaller is better). When data was input in
+    ordered order, CLARANS degraded dramatically (DS1o took 1526 seconds with
+    <span class="tts-math" data-tts="D bar equals 10.75">$\bar{D} = 10.75$</span>)
+    while BIRCH was nearly unaffected (DS1o: 47.4 seconds,
+    <span class="tts-math" data-tts="D bar equals 1.87">$\bar{D} = 1.87$</span>).
+  </p>
+
+  <h3 data-cid="main-600">Scalability</h3>
+  <p data-cid="main-610">
+    Running time for BIRCH's Phases 1–3 scales linearly with
+    <span class="tts-math" data-tts="N">$N$</span>
+    for all three spatial patterns, across the full range tested (up to 200,000 points). This linear
+    scaling holds both when increasing the number of points per cluster (fixing
+    <span class="tts-math" data-tts="K">$K$</span>)
+    and when increasing the number of clusters (fixing points per cluster). The linear time
+    complexity matches the theoretical analysis: Phase 1 requires one scan of the data; Phase 2 is
+    bounded by the leaf entries of the CF tree (which is bounded by memory); and Phase 3's input
+    is bounded by a constant (the capacity of the CF tree).
+  </p>
+
+  <h3 data-cid="main-620">Real-data application: image segmentation</h3>
+  <p data-cid="main-630">
+    The paper applies BIRCH to segment two images of trees (one near-infrared, one visible-spectrum)
+    with 512×1024 pixels each — 146,707 data points in 2-D (NIR intensity, VIS intensity).
+    BIRCH found 5 clusters (bright sky, ordinary sky, clouds, sunlit leaves, tree branches and
+    shadows) in 284 seconds. After a further refinement run to separate branches from shadows
+    (71 seconds), the segmentation result was visually satisfactory, correctly separating the
+    biologically meaningful regions. The paper presents the cluster visualizations as Figures 9
+    and 10.
+  </p>
+
+  <h2 data-cid="main-640" id="s8">8. Why BIRCH Matters</h2>
+  <p data-cid="main-650">
+    BIRCH introduced several concepts that became standard in scalable machine learning:
+  </p>
+  <p data-cid="main-660">
+    <strong>The CF summary:</strong> The idea of summarizing a cluster by a fixed-size vector
+    (count, linear sum, sum of squares) became influential far beyond clustering. It is the prototype
+    of the "sufficient statistic" approach to streaming algorithms: maintain enough information to
+    answer the questions you care about, and discard the rest. Modern streaming algorithms for
+    k-means (STREAM, 2000; CluStream, 2003) directly follow this pattern.
+  </p>
+  <p data-cid="main-670">
+    <strong>The two-phase approach:</strong> Build a compact summary in one pass, then apply a
+    better algorithm to the summary — this architecture appears in many subsequent systems. The
+    summary plays the role of a "sketch" in the modern sense.
+  </p>
+  <p data-cid="main-680">
+    <strong>Noise handling:</strong> BIRCH was the first database-oriented clustering algorithm to
+    explicitly handle outliers. Points in sparse regions are identified as potential outliers and
+    written to disk during Phase 1 rebuilds. This explicit outlier model was absent from earlier
+    database clustering algorithms, which treated all points equally.
+  </p>
+  <p data-cid="main-690">
+    <strong>Linear I/O cost:</strong> The proof that BIRCH's I/O complexity is linear in the
+    dataset size (essentially one scan) was a significant theoretical contribution, showing that
+    good clustering does not require multiple expensive passes over large datasets.
+  </p>
+
+  <div class="box warn" data-cid="main-700">
+    <span class="box-label">Known limitations</span>
+    <p data-cid="main-710">
+      BIRCH assumes metric attributes (it needs a Euclidean-like distance). It does not naturally
+      handle categorical variables. The quality of Phase 1 depends on the input order when the
+      data is skewed and many rebuilds are triggered. The threshold
+      <span class="tts-math" data-tts="T">$T$</span>
+      is a global parameter: it cannot easily represent clusters of very different densities or
+      shapes. For datasets with clusters of highly varying sizes or elongated shapes,
+      BIRCH's spherical subcluster model may produce poor results — a limitation that motivated
+      later density-based methods like DBSCAN (1996, also SIGMOD 1996) which appeared the same year.
+    </p>
+  </div>
+
+  <h2 data-cid="main-720" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-730">Peter Cheeseman, James Kelly, Matthew Self, et al. "AutoClass: A Bayesian Classification System." <em>Proc. 5th Int'l Conf. on Machine Learning</em>, Morgan Kaufman, June 1988.</li>
+    <li data-cid="main-740">Richard Duda and Peter E. Hart. <em>Pattern Classification and Scene Analysis.</em> Wiley, 1973.</li>
+    <li data-cid="main-750">Martin Ester, Hans-Peter Kriegel, and Xiaowei Xu. "A Database Interface for Clustering in Large Spatial Databases." <em>Proc. 1st Int'l Conf. on Knowledge Discovery and Data Mining</em>, 1995.</li>
+    <li data-cid="main-760">Douglas H. Fisher. "Knowledge Acquisition via Incremental Conceptual Clustering." <em>Machine Learning</em>, 2(2), 1987.</li>
+    <li data-cid="main-770">A. Gersho and R. Gray. <em>Vector Quantization and Signal Compression.</em> Kluwer Academic Publishers, Boston, 1992.</li>
+    <li data-cid="main-780">Leonard Kaufman and Peter J. Rousseeuw. <em>Finding Groups in Data: An Introduction to Cluster Analysis.</em> Wiley, 1990.</li>
+    <li data-cid="main-790">Raymond T. Ng and Jiawei Han. "Efficient and Effective Clustering Methods for Spatial Data Mining." <em>Proc. VLDB</em>, 1994.</li>
+    <li data-cid="main-800">Clark F. Olson. "Parallel Algorithms for Hierarchical Clustering." Technical Report, University of California at Berkeley, December 1993.</li>
+    <li data-cid="main-810">Tian Zhang, Raghu Ramakrishnan, and Miron Livny. "BIRCH: An Efficient Data Clustering Method for Very Large Databases." Technical Report, Computer Sciences Dept., University of Wisconsin-Madison, 1995.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script>
+</body>
+</html>

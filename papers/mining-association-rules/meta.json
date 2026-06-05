@@ -1,0 +1,6 @@
+{
+  "title": "Mining Association Rules between Sets of Items in Large Databases",
+  "authors": "Rakesh Agrawal, Tomasz Imielinski, Arun Swami",
+  "venue": "SIGMOD 1993",
+  "description": "Introduces the problem of mining association rules from basket transaction data and presents an efficient algorithm using support and confidence thresholds, buffer management, and novel estimation and pruning techniques."
+}

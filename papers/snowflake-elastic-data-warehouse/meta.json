@@ -1,0 +1,6 @@
+{
+  "title": "The Snowflake Elastic Data Warehouse",
+  "authors": "Benoit Dageville, Thierry Cruanes, Marcin Zukowski, Vadim Antonov, Artin Avanes, Jon Bock, Jonathan Claybaugh, Daniel Engovatov, Martin Hentschel, Jiansheng Huang, Allison W. Lee, Ashish Motivala, Abdul Q. Munir, Steven Pelley, Peter Povinec, Greg Rahn, Spyridon Triantafyllis, Philipp Unterbrunner",
+  "venue": "SIGMOD 2016",
+  "description": "Snowflake is a multi-tenant, cloud-native data warehouse that radically separates storage (Amazon S3) from compute (elastic virtual warehouses), enabling independent scaling, continuous availability, and first-class support for semi-structured data without any user tuning."
+}

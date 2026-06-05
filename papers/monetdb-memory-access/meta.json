@@ -1,0 +1,6 @@
+{
+  "title": "Database Architecture Optimized for the new Bottleneck: Memory Access",
+  "authors": "Peter Boncz, Stefan Manegold, Martin L. Kersten",
+  "venue": "VLDB 1999",
+  "description": "Demonstrates that memory access latency has overtaken I/O as the primary database performance bottleneck, and shows how MonetDB's vertical (columnar) data layout and cache-conscious radix-cluster join algorithms achieve order-of-magnitude speedups by respecting the memory hierarchy."
+}

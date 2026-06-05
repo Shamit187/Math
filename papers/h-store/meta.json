@@ -1,0 +1,6 @@
+{
+  "title": "The End of an Architectural Era (It's Time for a Complete Rewrite)",
+  "authors": "Michael Stonebraker, Samuel Madden, Daniel J. Abadi, Stavros Harizopoulos, Nabil Hachem, Pat Helland",
+  "venue": "VLDB 2007",
+  "description": "Argues that 25-year-old RDBMS architectures are fundamentally obsolete for OLTP and presents H-Store, a main-memory, single-threaded, shared-nothing prototype that runs TPC-C 82 times faster than a commercial RDBMS by eliminating logging, locking, and buffer management overhead."
+}

@@ -1,0 +1,6 @@
+{
+  "title": "HadoopDB: An Architectural Hybrid of MapReduce and DBMS Technologies for Analytical Workloads",
+  "authors": "Azza Abouzeid, Kamil Bajda-Pawlikowski, Daniel Abadi, Avi Silberschatz, Alexander Rasin",
+  "venue": "PVLDB 2009",
+  "description": "Introduces HadoopDB, a hybrid analytical system that uses Hadoop as a fault-tolerant scheduler and network communication layer while pushing SQL query execution into per-node PostgreSQL instances, approaching the performance of parallel databases while retaining the scalability and fault tolerance of MapReduce."
+}

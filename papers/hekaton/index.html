@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Hekaton: SQL Server's Memory-Optimized OLTP Engine · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="hekaton" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/hekaton/">Hekaton: SQL Server's Memory-Optimized OLTP Engine</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. Introduction</a></li>
+    <li><a href="#s2">2. Why 10–100x? The Instruction Count Argument</a></li>
+    <li><a href="#s3">3. Three Architectural Principles</a></li>
+    <li><a href="#s4">4. High-Level Architecture and SQL Server Integration</a></li>
+    <li><a href="#s5">5. Storage and Indexing: Bw-Trees and Latch-Free Hashing</a></li>
+    <li><a href="#s6">6. Compiling T-SQL to Native Machine Code</a></li>
+    <li><a href="#s7">7. Optimistic Multiversion Concurrency Control</a></li>
+    <li><a href="#s8">8. Transaction Durability: Logging and Checkpoints</a></li>
+    <li><a href="#s9">9. Garbage Collection</a></li>
+    <li><a href="#s10">10. Experimental Results</a></li>
+    <li><a href="#s11">11. Impact and Legacy</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">SIGMOD 2013 · Systems</div>
+    <h1>Hekaton: SQL Server's Memory-Optimized OLTP Engine</h1>
+    <div class="paper-meta">
+      <span class="authors">Cristian Diaconu, Craig Freedman, Erik Ismert, Per-Åke Larson, Pravin Mittal, Ryan Stonecipher, Nitin Verma, Mike Zwilling</span>
+      <span class="venue">ACM SIGMOD 2013, New York, NY, USA</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    Hekaton is a new database engine optimized for memory resident data and OLTP workloads. Hekaton is fully integrated into SQL Server; it is not a separate system. To take advantage of Hekaton, a user simply declares a table memory optimized. Hekaton tables are fully transactional and durable and accessed using T-SQL in the same way as regular SQL Server tables. A query can reference both Hekaton tables and regular tables and a transaction can update data in both types of tables. T-SQL stored procedures that reference only Hekaton tables can be compiled into native machine code for further performance improvements. To achieve this, the engine is designed for high concurrency using only latch-free data structures and a new optimistic multiversion concurrency control technique. The paper gives an overview of the design of the Hekaton engine and reports some experimental results.
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 1 -->
+  <h2 data-cid="main-020" id="s1">1. Introduction</h2>
+
+  <p data-cid="main-030">
+    The premise of Hekaton begins with a hardware observation that most software engineers have not fully internalized. For the past three decades, database systems were designed around the assumption that main memory is expensive and data primarily lives on disk. This assumption drove every fundamental design decision: buffer pools to cache pages from disk, B-trees optimized to minimize page reads, latches to protect pages being swapped in or out, write-ahead logging to avoid committing to disk until necessary.
+  </p>
+
+  <p data-cid="main-040">
+    In 2013, you could buy a server with 32 cores and 1 TB of memory for approximately $50,000. Even the largest OLTP databases fit entirely in main memory. The disk-oriented architecture inherited from the 1970s and 1980s was now running on hardware it was never designed for — and paying a massive performance tax for it. A simple B-tree lookup that needs only a few memory comparisons requires thousands of CPU instructions in a traditional database engine, because almost every step involves latching, page pinning, buffer pool coordination, or other mechanisms that were engineered for disk but are now pure overhead.
+  </p>
+
+  <p data-cid="main-050">
+    Hekaton is Microsoft's answer: a new OLTP engine designed from scratch for the assumption that all data fits in main memory, all cores are available, and the bottleneck is CPU instructions, not disk I/O. It is not a separate product — it is an additional engine integrated directly into SQL Server. Users opt in one table at a time simply by declaring a table as <code>MEMORY_OPTIMIZED = ON</code>. Mixed workloads (queries touching both Hekaton and regular SQL Server tables) work correctly, and full ACID semantics are preserved.
+  </p>
+
+  <div class="box intuition" data-cid="main-060">
+    <span class="box-label">Intuition — The Name</span>
+    <p data-cid="main-070">
+      "Hekaton" is Greek for one hundred. The project's internal goal was to deliver 100x throughput improvement over the existing SQL Server OLTP engine. Spoiler: the paper reports 15–20x improvement for individual lookups and up to 30x for updates, with a 15.7x improvement in an end-to-end scalability benchmark. Not quite 100x — but the analysis shows why that would require eliminating essentially every instruction that does not directly perform the requested work, and the paper includes a rigorous analytical appendix proving that 10–100x is achievable only by drastically reducing the instruction count, not by improving CPU efficiency or scalability alone.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 2 -->
+  <h2 data-cid="main-080" id="s2">2. Why 10–100x? The Instruction Count Argument</h2>
+
+  <p data-cid="main-090">
+    The paper opens with a rigorous analytical argument for why achieving 10–100x throughput improvement requires attacking the instruction count directly, rather than optimizing existing mechanisms. The argument rests on a simple performance model. Let <span class="tts-math" data-tts="SP">$SP$</span> denote system performance (business transactions per second), <span class="tts-math" data-tts="BP">$BP$</span> denote the performance of a single core in business transactions per second, <span class="tts-math" data-tts="SF">$SF$</span> denote the scalability factor (how throughput scales with cores), and <span class="tts-math" data-tts="N">$N$</span> denote the number of cores. Then:
+  </p>
+
+  <p data-cid="main-100">
+    <span class="tts-math" data-tts="SP equals BP times SF times log base 2 of N">
+    $$SP = BP \cdot SF \cdot \lg(N)$$
+    </span>
+  </p>
+
+  <p data-cid="main-110">
+    And since <span class="tts-math" data-tts="BP">$BP$</span> is itself the reciprocal of CPI (cycles per instruction) times instructions per transaction (IR):
+  </p>
+
+  <p data-cid="main-120">
+    <span class="tts-math" data-tts="SP equals IR times CPI times SF times log base 2 of N">
+    $$SP = IR \cdot CPI \cdot SF \cdot \lg(N)$$
+    </span>
+  </p>
+
+  <p data-cid="main-130">
+    SQL Server's current CPI is close to optimal for a commercial system. Even if you could halve the CPI to 0.8 (approaching theoretical machine limits), you would barely double throughput. SQL Server's scalability factor <span class="tts-math" data-tts="SF">$SF$</span> is approximately 1.89 — for every doubling of cores, throughput increases by 1.89x. At 256 cores, <span class="tts-math" data-tts="1.89 to the power 8">$1.89^8 = 162.8$</span>. Combining best-case CPI and scalability improvements gives at most a factor of <span class="tts-math" data-tts="2 times 1.57">$2 \times 1.57 = 3.14$</span>. Even under the most optimistic assumptions, you cannot get 10–100x by tuning existing code. The only path to 10–100x is to reduce <span class="tts-math" data-tts="IR">$IR$</span> — the number of instructions executed per transaction — by 90–99%.
+  </p>
+
+  <div class="box pause" data-cid="main-140">
+    <span class="box-label">Pause and Reflect</span>
+    <p data-cid="main-150">
+      This analysis is genuinely important. It rules out an entire class of optimization strategies — tuning the buffer pool, improving the lock manager, optimizing disk I/O — not because those improvements are worthless, but because they cannot possibly deliver the goal. The only way to achieve 10–100x is to redesign the architecture so that each transaction executes far fewer instructions. Everything else in Hekaton's design follows from this conclusion.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 3 -->
+  <h2 data-cid="main-160" id="s3">3. Three Architectural Principles</h2>
+
+  <p data-cid="main-170">
+    Three architectural principles guide every design decision in Hekaton, all derived from the instruction-count goal.
+  </p>
+
+  <div class="box definition" data-cid="main-180">
+    <span class="box-label">Principle 1 — Optimize Indexes for Main Memory</span>
+    <p data-cid="main-190">
+      Traditional B-tree indexes are organized around minimizing the number of disk pages accessed. Each node is one page (typically 8 KB). Navigating a B-tree with all pages in memory still requires processing one full page per level, executing latching code to protect against concurrent modification, and traversing a structure designed for sequential disk reads. Hekaton's indexes are designed specifically for memory-resident data. Hash indexes use lock-free hash tables for O(1) lookup with minimal overhead. Range indexes use the Bw-tree, a novel lock-free B-tree variant designed for modern hardware. The durability of indexes is ensured by logging and checkpointing the base data; index operations themselves are not logged, and all indexes are rebuilt entirely from the latest checkpoint and log on recovery. This eliminates log writes for index operations — a significant source of instruction overhead.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-200">
+    <span class="box-label">Principle 2 — Eliminate Latches and Locks on Critical Paths</span>
+    <p data-cid="main-210">
+      In a traditional database, almost every data access requires acquiring a latch to protect the buffer pool page being read, and potentially a lock to enforce transaction isolation. Latches and locks are implemented using atomic instructions (compare-and-swap, test-and-set) which are much slower than ordinary memory reads when contested. Under high concurrency, lock and latch contention becomes the dominant bottleneck — threads stall waiting for other threads to release their claim. Hekaton eliminates all latches and locks from its critical data paths. All internal data structures — memory allocators, hash indexes, range indexes, the transaction map — are entirely latch-free. No thread ever stalls waiting for another thread to release a latch. Transaction isolation is achieved instead through optimistic multiversion concurrency control (MVCC), which avoids locks altogether.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-220">
+    <span class="box-label">Principle 3 — Compile Requests to Native Code</span>
+    <p data-cid="main-230">
+      Traditional query engines use interpreter-based execution: each query plan operator calls a generic "get next row" function that interprets the operator's parameters at runtime. Every function call, type check, null check, and predicate evaluation involves runtime overhead that would not exist if the specific query were expressed as a straight C function. Hekaton compiles T-SQL stored procedures into customized native machine code via C code generation and Microsoft's Visual C++ compiler. The compiled procedure contains exactly the code needed for that specific stored procedure — all data types are known at compile time, all null handling is specialized, all operator composition is expressed as direct goto statements with no indirection. The result is code that is between 5% and 20% of the CPU cycles required by the interpreted engine.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 4 -->
+  <h2 data-cid="main-240" id="s4">4. High-Level Architecture and SQL Server Integration</h2>
+
+  <p data-cid="main-250">
+    Hekaton consists of three major components. The <em>Hekaton storage engine</em> manages user data and indexes. It provides transactional operations on tables of records, hash and range indexes, and base mechanisms for storage, checkpointing, recovery, and high availability. The <em>Hekaton compiler</em> takes an abstract tree representation of a T-SQL stored procedure — including queries, table and index metadata — and compiles the procedure into native C code, which is then compiled into a DLL loaded into SQL Server's address space. The <em>Hekaton runtime</em> is a small library that provides integration with SQL Server resources and serves as a common library of additional functionality needed by compiled stored procedures.
+  </p>
+
+  <p data-cid="main-260">
+    Integration with SQL Server is deep. Metadata about Hekaton tables and indexes is stored in the regular SQL Server catalog — DBAs use the same tools they already know. Query optimization for queries embedded in compiled stored procedures uses the regular SQL Server query optimizer. Regular SQL Server transactions can access and update data in both regular tables and Hekaton tables in a single transaction, with commits and aborts fully coordinated across both engines. Hekaton is integrated with SQL Server's AlwaysOn high availability feature, so Hekaton tables fail over in the same way as regular tables.
+  </p>
+
+  <div class="box intuition" data-cid="main-270">
+    <span class="box-label">Intuition — Why Integration Matters</span>
+    <p data-cid="main-280">
+      Several previous in-memory database systems (VoltDB, Oracle TimesTen, HyPer, H-Store) required migrating your entire application to a new standalone system. This is a high bar — you must rewrite applications, retrain operations teams, set up new monitoring, and accept that your existing SQL Server knowledge and tooling is obsolete. Hekaton's integration strategy means that a DBA can convert a single hot table to memory-optimized without changing anything else. The performance-critical 5% of tables can be Hekaton tables; the remaining 95% stay as regular SQL Server tables. This incremental adoption path was a deliberate product decision and has proven to be one of the reasons for Hekaton's commercial success.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 5 -->
+  <h2 data-cid="main-290" id="s5">5. Storage and Indexing: Bw-Trees and Latch-Free Hashing</h2>
+
+  <p data-cid="main-300">
+    Hekaton stores data using <em>multiversioning</em>: every update creates a new version of the record rather than overwriting the old version. Each version record has a header containing a Begin timestamp (the commit time of the transaction that created this version) and an End timestamp (the commit time of the transaction that deleted or superseded this version, or infinity if the version is still current). Versions are not stored in a centralized location; they are linked through the indexes that refer to them.
+  </p>
+
+  <div class="box example" data-cid="main-310">
+    <span class="box-label">Example — Reading a Version at Logical Read Time RT</span>
+    <p data-cid="main-320">
+      Suppose a transaction reads a record with logical read time <span class="tts-math" data-tts="RT equals 15">$RT = 15$</span>. The hash bucket for the record's key contains a chain of versions: John (London, 100) with Begin=10, End=20; John (London, 110) with Begin=20, End=Tx75; John (London, 130) with Begin=Tx75, End=infinity. A version is visible to this read if its Begin timestamp is less than <span class="tts-math" data-tts="RT">$RT$</span> and its End timestamp is greater than <span class="tts-math" data-tts="RT">$RT$</span>. The first version (Begin=10, End=20) satisfies both conditions: 10 &lt; 15 and 20 &gt; 15. So the read returns John (London, 100). The third version (with End=infinity) is not yet committed at read time 15, so it is correctly invisible.
+    </p>
+  </div>
+
+  <p data-cid="main-330">
+    Hekaton supports two types of indexes. <strong>Hash indexes</strong> use lock-free hash tables based on an open-addressing scheme with chaining. A hash index on column Name, for example, maps each name to a chain of version records with that name. Lookup is O(1) expected time and never acquires a latch. Updates atomically link new version records into the chain using compare-and-swap operations.
+  </p>
+
+  <p data-cid="main-340">
+    <strong>Range indexes</strong> use the <em>Bw-tree</em>, a novel lock-free variant of the B-tree introduced by Levandoski, Lomet, and Sengupta. The Bw-tree never modifies nodes in place. Instead, all modifications are expressed as delta records that are prepended to a node's modification chain using atomic compare-and-swap operations. This means no thread ever holds a latch on a node while modifying it. Concurrent readers continue accessing the old state of the node while the update is in progress. Periodically, delta chains are compacted (consolidated) into a single base page, again using lock-free atomic operations.
+  </p>
+
+  <div class="box intuition" data-cid="main-350">
+    <span class="box-label">Intuition — Why Latch-Free Structures Matter Under Contention</span>
+    <p data-cid="main-360">
+      Imagine 32 cores simultaneously trying to insert into the last page of a B-tree index. In a traditional B-tree, 31 of those 32 threads will be blocked waiting for a latch on that page. They burn CPU cycles doing nothing. In the Bw-tree, all 32 threads proceed simultaneously: each atomically prepends its delta record to the page's modification chain. If two threads try to prepend simultaneously, one's compare-and-swap succeeds and the other retries — a retry takes microseconds, not milliseconds. The result is that thread throughput scales nearly linearly with the number of cores, instead of being bottlenecked by a single latch.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 6 -->
+  <h2 data-cid="main-370" id="s6">6. Compiling T-SQL to Native Machine Code</h2>
+
+  <p data-cid="main-380">
+    The Hekaton compiler takes a T-SQL stored procedure through a multi-stage translation pipeline. The SQL Engine's existing parser, name resolver, type checker, and query optimizer process the procedure as usual, producing a query plan. This plan is converted into a <em>Mixed Abstract Tree</em> (MAT) — a rich abstract syntax tree capable of representing metadata, imperative logic, expressions, and query plans.
+  </p>
+
+  <p data-cid="main-390">
+    The MAT is then transformed into a <em>Pure Imperative Tree</em> (PIT). The PIT is a simpler, lower-level data structure directly convertible to C code. The reason for this intermediate step is that T-SQL and C have incompatible semantics in several ways: T-SQL has fixed-precision numeric types, date/time types, and NULL semantics that have no direct C equivalents; T-SQL raises exceptions for arithmetic overflows while C silently returns wrong values. The PIT transformation handles all of these semantic mismatches explicitly, generating appropriate C equivalents. Finally, a C code generator emits C source, the Visual C++ compiler produces a DLL, and the OS loader brings the DLL into SQL Server's address space.
+  </p>
+
+  <p data-cid="main-400">
+    The key performance insight in the compiled code is how query plan operators are connected. In a traditional interpreted query engine, operators form a tree and execute via repeated function calls: the root operator calls GetNext on its child, which calls GetNext on its child, and so on. This incurs one function call per row per operator level — O(rows × depth) function calls. In Hekaton's compiled code, the entire query plan is collapsed into a <em>single function</em>. Operator boundaries are implemented as labels and goto statements rather than function calls. The compiler's control flow graph directly encodes the operator interconnection topology: the scan operator's GetNext label jumps to the filter operator's entry label when a row passes the filter, or back to the scan's GetFirst label when it does not.
+  </p>
+
+  <div class="box example" data-cid="main-410">
+    <span class="box-label">Example — A Compiled Lookup Procedure</span>
+    <p data-cid="main-420">
+      The paper shows a sample T-SQL procedure that retrieves a customer's name, address, and phone number by ID:
+      <br><br>
+      <code>CREATE PROCEDURE SP_Example @id INT<br>
+      WITH NATIVE_COMPILATION, SCHEMABINDING, EXECUTE AS OWNER<br>
+      AS BEGIN ATOMIC WITH (TRANSACTION ISOLATION LEVEL = SNAPSHOT, LANGUAGE = 'English')<br>
+      SELECT Name, Address, Phone FROM dbo.Customers WHERE Id = @id<br>
+      END</code>
+      <br><br>
+      The compiled code for this procedure contains exactly: a scan operator that scans the hash bucket for the given ID; a filter operator that checks whether each version's valid time overlaps the transaction's logical read time; and an output operator that returns matching rows. There are no runtime type checks, no null checks for non-nullable columns, no buffer pool coordination, no latch acquisitions. The entire procedure is perhaps 50–100 machine instructions for the common case.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 7 -->
+  <h2 data-cid="main-430" id="s7">7. Optimistic Multiversion Concurrency Control</h2>
+
+  <p data-cid="main-440">
+    Hekaton uses optimistic MVCC to provide transaction isolation without locks. The key idea is that reading never conflicts with writing (because reads see old versions while new versions are being created), and writing conflicts are detected and resolved at commit time rather than during execution.
+  </p>
+
+  <p data-cid="main-450">
+    Every Hekaton transaction is assigned a monotonically increasing <em>logical read time</em> (LRT) at its start. All reads in the transaction see exactly the database state as of the LRT: they are invisible to new transactions and see only versions with Begin <span class="tts-math" data-tts="less than RT">$< RT$</span> and End <span class="tts-math" data-tts="greater than RT">$> RT$</span>. Since reading does not acquire locks, any number of concurrent readers can access the same data without interference.
+  </p>
+
+  <p data-cid="main-460">
+    When a transaction commits, it enters a two-step commit protocol. In the <em>validation phase</em>, the transaction checks two properties. First, <em>read stability</em>: every version it read must still be the visible version as of the transaction's end time. This is checked by verifying that no version read has been superseded by a committed write since the LRT. Second, <em>phantom avoidance</em>: the transaction repeats all its index scans to check whether any new versions have become visible in the scanned ranges since the LRT. If either check fails, the transaction aborts and must retry. If validation passes, the transaction is assigned a commit end timestamp and its updates are made visible.
+  </p>
+
+  <div class="box definition" data-cid="main-470">
+    <span class="box-label">Definition — Commit Dependencies</span>
+    <p data-cid="main-480">
+      A subtle complication arises when transaction <span class="tts-math" data-tts="T sub 1">$T_1$</span> reads a version created by transaction <span class="tts-math" data-tts="T sub 2">$T_2$</span> that is still in its validation phase. If <span class="tts-math" data-tts="T sub 2">$T_2$</span> subsequently aborts, the version <span class="tts-math" data-tts="T sub 1">$T_1$</span> read never existed — so <span class="tts-math" data-tts="T sub 1">$T_1$</span> must also abort. Hekaton handles this with <em>commit dependencies</em>: <span class="tts-math" data-tts="T sub 1">$T_1$</span> records a dependency on <span class="tts-math" data-tts="T sub 2">$T_2$</span> and cannot finalize its commit until <span class="tts-math" data-tts="T sub 2">$T_2$</span> commits. Results are held back from the client while commit dependencies are outstanding. To preserve the latch-free design, <span class="tts-math" data-tts="T sub 2">$T_2$</span> is notified of the dependency via an atomic increment of a dependency counter in <span class="tts-math" data-tts="T sub 1">$T_1$</span>, and uses that counter to notify <span class="tts-math" data-tts="T sub 1">$T_1$</span> when it commits or aborts.
+    </p>
+  </div>
+
+  <p data-cid="main-490">
+    To support lower isolation levels (repeatable read, snapshot isolation, read committed), the validation requirements are relaxed correspondingly. For snapshot isolation, no validation at commit time is required at all — reads are unconditionally stable at the LRT. Hekaton supports snapshot isolation, repeatable read, and serializable isolation, all without locking.
+  </p>
+
+  <!-- ═══════════════════════════════════════════ SECTION 8 -->
+  <h2 data-cid="main-500" id="s8">8. Transaction Durability: Logging and Checkpoints</h2>
+
+  <p data-cid="main-510">
+    Despite being a memory-resident system, Hekaton is fully durable: it survives crashes without data loss. Durability is achieved through transaction log streams and checkpoint streams, both written to durable storage.
+  </p>
+
+  <p data-cid="main-520">
+    The <em>transaction log</em> records the logical effects of committed transactions: the insertion and deletion of specific row versions. Hekaton does not use write-ahead logging (WAL) in the traditional sense — dirty data is never written to persistent storage before commit. Instead, log records are written only at transaction commit time and contain all new versions created and all versions deleted by the transaction. Because Hekaton generates far less log data than the regular SQL Server engine (one log record per transaction rather than one per write), and because it combines multiple log records into large I/Os, logging is not typically a bottleneck. The paper reports 57% less log data compared to equivalent SQL Server operations.
+  </p>
+
+  <p data-cid="main-530">
+    <em>Checkpoints</em> allow the transaction log to be truncated and speed up recovery. Hekaton's checkpoint design uses two complementary file types. <em>Data files</em> contain all inserted row versions (those created and not yet deleted) within a specific timestamp range. <em>Delta files</em> contain the IDs of versions that were subsequently deleted from the corresponding data file. Together, a data file and its delta file describe exactly which versions are still "live" at the end of the checkpoint period. During recovery, each data file is loaded into memory and its delta file is applied as a filter, efficiently reconstructing the live in-memory state without loading deleted versions.
+  </p>
+
+  <p data-cid="main-540">
+    Recovery parallelizes the load at the checkpoint file pair granularity: each data/delta file pair can be loaded independently by a separate I/O stream with insert threads on each core. Hekaton creates one thread per CPU core to handle parallel insertion of the data produced by the I/O streams, ensuring that checkpoint load is as fast as the storage subsystem allows. After the checkpoint is loaded, the tail of the transaction log is replayed from the checkpoint timestamp to bring the database to its exact state at crash time.
+  </p>
+
+  <!-- ═══════════════════════════════════════════ SECTION 9 -->
+  <h2 data-cid="main-550" id="s9">9. Garbage Collection</h2>
+
+  <p data-cid="main-560">
+    Multiversioning creates a problem: old versions of records accumulate in memory. A version becomes garbage when it is no longer visible to any active transaction — that is, when its End timestamp is older than the oldest active transaction's LRT. At this point, the version occupies memory but can never be seen by any future reader. Garbage collection (GC) reclaims this memory.
+  </p>
+
+  <p data-cid="main-570">
+    Hekaton's GC is designed around four properties: non-blocking (GC never stalls any transaction), cooperative (worker threads participate in GC opportunistically during normal transaction execution), incremental (GC can be throttled), and parallelizable (GC work is distributed across all worker threads).
+  </p>
+
+  <div class="box definition" data-cid="main-580">
+    <span class="box-label">Definition — Cooperative Garbage Collection</span>
+    <p data-cid="main-590">
+      When a Hekaton worker thread scans an index during normal query execution, it may encounter garbage versions — versions whose End timestamp is older than the oldest active transaction's LRT. The cooperative mechanism empowers the scanner to immediately unlink these versions from the index chain, rather than leaving them for a dedicated GC thread. This is efficient because the scanner already has the index location of the garbage version; it can remove it in one additional atomic operation. This natural parallelism distributes GC work across all active threads proportional to their data access patterns, ensuring that hot regions of the index (those accessed frequently by transactions) are promptly freed of garbage.
+    </p>
+  </div>
+
+  <p data-cid="main-600">
+    The cooperative mechanism alone is insufficient for "dusty corners" — cold regions of the index that are rarely accessed by transactions. These regions may accumulate garbage versions that are never encountered by scanners. A dedicated background GC process handles these regions by periodically scanning all index regions and removing garbage versions not yet handled by cooperative collection. This background process can be throttled to avoid consuming excessive CPU during peak transaction periods.
+  </p>
+
+  <!-- ═══════════════════════════════════════════ SECTION 10 -->
+  <h2 data-cid="main-610" id="s10">10. Experimental Results</h2>
+
+  <p data-cid="main-620">
+    The paper reports two sets of experiments on a 2.67 GHz Intel Xeon W3520 workstation with 6 GB of RAM and an 8 MB L2 cache. Both experiments compare Hekaton tables with regular SQL Server tables containing 1 million rows.
+  </p>
+
+  <p data-cid="main-630">
+    <strong>CPU efficiency for lookups.</strong> A T-SQL procedure performs N random primary key lookups per call. For N = 10 or more lookups per call, the compiled Hekaton procedure uses approximately 5% of the CPU cycles of the equivalent interpreted SQL Server procedure — a speedup of roughly 18–20x. The speedup is lower for N = 1 (10.8x) because the fixed overhead of calling and returning from a stored procedure dilutes the per-lookup gain. The absolute performance figure is 2.7 million lookups per second per core — exceptional for a general-purpose database engine.
+  </p>
+
+  <p data-cid="main-640">
+    <strong>CPU efficiency for updates.</strong> A T-SQL procedure performs N random row updates per call. The speedup is even higher than for lookups: approximately 20x for N = 1, rising to over 30x for N = 100 or more updates. Hekaton's update efficiency is so high because it does not log individual row-level changes — it logs the entire transaction as one log record — and because it never acquires latches during the update itself. The paper reports that Hekaton reduced log output by 57% compared to equivalent SQL Server operations.
+  </p>
+
+  <p data-cid="main-650">
+    <strong>Scalability under contention.</strong> The most striking result is the scalability experiment. A SalesOrderDetails-style workload simulates 60 concurrent input streams with mixed reads and writes on a 12-core server (2 sockets, 6 cores each, Xeon X5650). The regular SQL Server engine scales from 984 transactions per second at 2 cores to 2,312 at 12 cores — a 2.3x improvement. Latch contention limits CPU utilization to just 40% beyond 6 cores; adding more cores does not help. With the contention removed (by partitioning so transactions do not interfere), SQL Server reaches 5,834 transactions per second at 12 cores, showing the bottleneck is latch contention, not workload inherent parallelism. Using Hekaton via SQL Server interop (the regular query engine accessing Hekaton tables): 7,709 transactions per second at 12 cores, a 3.3x improvement over plain SQL Server. Using fully compiled stored procedures on Hekaton: 36,375 transactions per second at 12 cores — a 15.7x improvement over plain SQL Server and near-linear scaling with cores.
+  </p>
+
+  <!-- ═══════════════════════════════════════════ SECTION 11 -->
+  <h2 data-cid="main-660" id="s11">11. Impact and Legacy</h2>
+
+  <p data-cid="main-670">
+    Hekaton shipped as In-Memory OLTP in SQL Server 2014, making it the first in-memory OLTP engine integrated into a mainstream commercial relational database system. Its incremental adoption model — convert one table at a time, keep everything else unchanged — proved to be the right commercial strategy. By the time of SQL Server 2014's release, major customers including bwin (online gaming), Nielsens (retail analytics), and Nasdaq (trading systems) were already running production workloads on Hekaton, achieving throughput improvements that made previously impossible latency targets achievable.
+  </p>
+
+  <p data-cid="main-680">
+    The Bw-tree, one of Hekaton's core data structure innovations, was published separately and has had significant academic influence. Its core insight — that lock-free B-tree operations can be expressed as delta records prepended atomically using compare-and-swap — has influenced subsequent work on persistent memory data structures, where the same non-destructive update pattern interacts beneficially with non-volatile memory's failure semantics.
+  </p>
+
+  <p data-cid="main-690">
+    The paper's analytical argument about instruction counts — that you cannot achieve 10–100x improvement by optimizing existing code, only by redesigning to execute far fewer instructions — has proven prophetic. The same argument appears in subsequent in-memory database papers and in the design of columnar execution engines like Apache Arrow's compute kernels and DuckDB's vectorized execution model. The instruction-count framing provides a rigorous way to evaluate whether a proposed optimization can plausibly deliver its promised speedup.
+  </p>
+
+  <p data-cid="main-700">
+    Finally, Hekaton's tight SQL Server integration model has proven to be its most commercially durable characteristic. Systems that require wholesale application migration have historically struggled for adoption, even when technically superior. Hekaton's "one table at a time" model allowed customers to prove value incrementally, and its continued investment through SQL Server 2016, 2017, and later versions demonstrates that the integration architecture was sound.
+  </p>
+
+  <!-- ═══════════════════════════════════════════ REFERENCES -->
+  <h2 data-cid="main-710" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-720">Per-Åke Larson, Spyros Blanas, Cristian Diaconu, Craig Freedman, Jignesh M. Patel, Mike Zwilling. High-Performance Concurrency Control Mechanisms for Main-Memory Databases. <em>PVLDB</em> 5(4): 298–309, 2011.</li>
+    <li data-cid="main-730">Justin J. Levandoski, David B. Lomet, Sudipta Sengupta. The Bw-Tree: A B-tree for New Hardware Platforms. <em>ICDE</em> 2013.</li>
+    <li data-cid="main-740">Maged M. Michael. High performance dynamic lock-free hash tables and list-based sets. <em>Proc. of the fourteenth annual ACM symposium on Parallel algorithms and architectures (SPAA '02)</em>: 73–82.</li>
+    <li data-cid="main-750">Florian Funke, Alfons Kemper, Thomas Neumann. HyPer-sonic Combined Transaction AND Query Processing. <em>PVLDB</em> 4(12): 1367–1370, 2011.</li>
+    <li data-cid="main-760">Stavros Harizopoulos, Daniel J. Abadi, Samuel Madden, Michael Stonebraker. OLTP through the looking glass, and what we found there. <em>SIGMOD 2008</em>: 981–992.</li>
+    <li data-cid="main-770">Thomas Neumann. Efficiently Compiling Efficient Query Plans for Modern Hardware. <em>PVLDB</em> 4(9): 539–550, 2011.</li>
+    <li data-cid="main-780">Robert Kallman et al. H-Store: a high-performance, distributed main memory transaction processing system. <em>PVLDB</em> 1(2): 1496–1499, 2008.</li>
+    <li data-cid="main-790">Hakan Sundell, Philippas Tsiga. Lock-free deques and doubly linked lists. <em>Journal of Parallel and Distributed Computing</em>, 68(7): 1008–1020, 2008.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script>
+</body>
+</html>

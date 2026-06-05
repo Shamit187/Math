@@ -1,0 +1,6 @@
+{
+  "title": "PathSim: Meta Path-Based Top-K Similarity Search in Heterogeneous Information Networks",
+  "authors": "Yizhou Sun, Jiawei Han, Xifeng Yan, Philip S. Yu, Tianyi Wu",
+  "venue": "PVLDB 2011",
+  "description": "Introduces PathSim, a meta path-based similarity measure for heterogeneous information networks that captures peer similarity by balancing connectivity and visibility along user-specified semantic path patterns."
+}

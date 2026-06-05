@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Efficiently Compiling Efficient Query Plans for Modern Hardware · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="compiling-query-plans" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/compiling-query-plans/">Compiling Query Plans</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. The Iterator Model and Its Costs</a></li>
+    <li><a href="#s2">2. The Data-Centric Insight</a></li>
+    <li><a href="#s3">3. Pipeline Breakers</a></li>
+    <li><a href="#s4">4. The Produce / Consume Interface</a></li>
+    <li><a href="#s5">5. Generating Machine Code with LLVM</a></li>
+    <li><a href="#s6">6. Advanced Techniques</a></li>
+    <li><a href="#s7">7. Evaluation</a></li>
+    <li><a href="#s8">8. Lasting Impact</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">Scientific Paper · PVLDB 2011</div>
+    <h1>Efficiently Compiling Efficient Query Plans for Modern Hardware</h1>
+    <div class="paper-meta">
+      <span class="authors">Thomas Neumann</span>
+      <span class="venue">Proceedings of the VLDB Endowment, Vol. 4, No. 9 · 2011</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    As main memory grows, query performance is increasingly determined by raw CPU costs rather than I/O.
+    The classical iterator (Volcano) model of query evaluation is simple and flexible but performs poorly
+    on modern CPUs because of frequent virtual function calls, poor data locality, and unpredictable
+    branch behavior. Vectorized and block-oriented approaches reduce call overhead but sacrifice the
+    ability to pipeline data through operators without materialization. This paper presents a novel
+    <em>data-centric compilation</em> strategy that translates SQL queries into compact, tight-loop native
+    machine code using the LLVM compiler framework. By keeping data in CPU registers across entire
+    pipeline segments and materializing only at well-defined <em>pipeline-breaker</em> boundaries, the
+    resulting code frequently rivals or surpasses hand-written C++ execution plans, while requiring only
+    modest compilation time. The technique is demonstrated in the HyPer main-memory database system.
+  </div>
+
+  <h2 data-cid="main-020" id="s1">1. The Iterator Model and Its Costs</h2>
+
+  <p data-cid="main-030">
+    Almost every database system you have ever used evaluates queries using what is called the
+    <em>iterator model</em>, also known as Volcano-style processing. The idea is elegant: every
+    physical operator — scan, selection, join, aggregation — exposes a single function called
+    <code>next()</code>. The top of the operator tree calls <code>next()</code> on its child,
+    which in turn calls <code>next()</code> on its child, and so on. Each call returns one tuple.
+    Repeat until there are no more tuples.
+  </p>
+
+  <p data-cid="main-040">
+    This model is wonderful for composability. You can snap together any combination of operators
+    without each operator knowing anything about its neighbors. It was proposed by Lorie in 1974
+    and popularized by the Volcano optimizer of Graefe and McKenna in 1993. For decades it worked
+    well because queries were I/O-bound: the bottleneck was fetching data from disk, and the overhead
+    of function calls was negligible compared to disk latency.
+  </p>
+
+  <div class="box warn" data-cid="main-050">
+    <span class="box-label">Why the iterator model hurts on modern CPUs</span>
+    <p data-cid="main-060">
+      Modern main-memory databases eliminated the disk bottleneck. Now CPU efficiency matters.
+      The iterator model has three serious problems on a contemporary processor.
+      First, every <code>next()</code> call is typically a <em>virtual function call</em> — a call
+      through a function pointer. Virtual calls defeat the CPU's branch predictor, causing pipeline
+      stalls that can cost tens of cycles per call. When you are processing millions of tuples,
+      even one wasted call per tuple adds up to seconds of lost time.
+      Second, calling <code>next()</code> millions of times for individual tuples means there is
+      almost no <em>data locality</em>: the code jumps between many different operator functions,
+      and the instruction cache thrashes.
+      Third, the model forces each operator to remember where it is in the input stream (its state),
+      which adds bookkeeping overhead and makes it hard for the compiler to reason about the hot path.
+    </p>
+  </div>
+
+  <p data-cid="main-070">
+    Several alternatives have been proposed. <em>Block-oriented processing</em> passes vectors of
+    tuples between operators, amortizing the call overhead, and is used by MonetDB/X100 (later
+    VectorWise). This improves CPU cache use and allows SIMD vectorization. But there is a price:
+    block processing breaks the ability to pipeline data continuously through operators that do not
+    need to materialize anything. A selection operator, for example, can in principle hand a tuple
+    directly to a join without ever writing it to memory — but if you are working in blocks, you
+    must write the filtered block somewhere before passing it on. This extra materialization
+    consumes memory bandwidth.
+  </p>
+
+  <p data-cid="main-080">
+    The key empirical observation motivating the paper is shown in its Figure 1: a hand-written
+    C program that evaluates TPC-H Query 1 (a simple scan plus aggregation) is several times
+    faster than the best-tuned database engines, including MonetDB and VectorWise. A hand-written
+    program can keep all relevant data in CPU registers, lay out branches optimally, and avoid
+    every unnecessary memory access. The paper asks: can a query compiler produce code that is
+    nearly as good?
+  </p>
+
+  <h2 data-cid="main-090" id="s2">2. The Data-Centric Insight</h2>
+
+  <p data-cid="main-100">
+    Neumann's core insight is a shift in perspective. In the iterator model, computation is
+    <em>operator-centric</em>: each operator is the unit of modularity, and data flows passively
+    between operators via function calls. The proposal is to make computation
+    <em>data-centric</em>: data is the primary actor, and operators are merely annotations on
+    the data's journey through the query plan.
+  </p>
+
+  <div class="box intuition" data-cid="main-110">
+    <span class="box-label">The central intuition</span>
+    <p data-cid="main-120">
+      Instead of asking "what does this operator do when asked for a tuple?", ask "where does
+      this tuple go, and what happens to it along the way?". Push tuples towards the consumer
+      operators rather than pulling them from producer operators. Keep each tuple in CPU registers
+      for as long as possible. Only write to memory when you absolutely have to — at a point in
+      the plan where you must wait for data from a different source (a <em>pipeline breaker</em>).
+      Between pipeline breakers, all operators in the pipeline are compiled into a single tight
+      loop with no function call overhead and no intermediate materialization.
+    </p>
+  </div>
+
+  <p data-cid="main-130">
+    The resulting code is data-centric because each generated code fragment performs all actions
+    that can be done within one part of the execution pipeline, operating on data that stays in
+    registers the whole time. Instead of one function per operator, you get one code fragment per
+    pipeline segment. The individual operator logic is spread across code fragments rather than
+    encapsulated in operator objects, which makes the code harder to structure manually — but the
+    compiler generates it automatically.
+  </p>
+
+  <h2 data-cid="main-140" id="s3">3. Pipeline Breakers</h2>
+
+  <p data-cid="main-150">
+    The key concept enabling this approach is the <em>pipeline breaker</em>. In a query plan,
+    some operators can receive a tuple and immediately pass it (possibly transformed) to the next
+    operator — these are <em>pipelining operators</em>. A selection is the purest example: it
+    tests a predicate and either passes the tuple along or drops it. No materialization is needed.
+    Similarly, a projection that computes new column values and passes the row on is pipelining.
+  </p>
+
+  <div class="box definition" data-cid="main-160">
+    <span class="box-label">Definition — Pipeline Breaker</span>
+    <p data-cid="main-170">
+      An algebraic operator is a <em>pipeline breaker</em> on a given input side if it takes an
+      incoming tuple out of the CPU registers before it can continue producing output. It is a
+      <em>full pipeline breaker</em> if it must materialize <em>all</em> incoming tuples from that
+      side before producing any output tuples.
+    </p>
+  </div>
+
+  <p data-cid="main-180">
+    The classic examples of pipeline breakers are hash joins (on the build side) and aggregations.
+    A hash join on the build side must read all tuples from the build relation, hash them into a
+    hash table, and only then can it begin probing with tuples from the probe side. A
+    sort-based aggregation must read all input tuples before emitting any grouped result.
+    These operators are pipeline breakers because they "collect" data before producing results.
+  </p>
+
+  <p data-cid="main-190">
+    The key observation is that <em>between</em> consecutive pipeline breakers, everything can
+    be pipelined. This defines a natural segmentation of the query plan into <em>pipeline
+    fragments</em>: maximal sequences of operators with no pipeline breaker inside them.
+    Each pipeline fragment becomes one compiled code unit — a tight loop that processes tuples
+    from one materialization point to the next, keeping all intermediate values in registers.
+  </p>
+
+  <div class="box example" data-cid="main-200">
+    <span class="box-label">Example — The running query</span>
+    <p data-cid="main-210">
+      The paper's running example queries three relations
+      <span class="tts-math" data-tts="R 1, R 2, R 3">$R_1, R_2, R_3$</span>.
+      The query selects some tuples from
+      <span class="tts-math" data-tts="R 2">$R_2$</span> where
+      <span class="tts-math" data-tts="R 2 dot y equals 3">$R_2.y = 3$</span>,
+      groups them by <span class="tts-math" data-tts="R 2 dot z">$R_2.z$</span>,
+      joins with <span class="tts-math" data-tts="R 1">$R_1$</span> on
+      <span class="tts-math" data-tts="R 1 dot x equals 7">$R_1.x = 7$</span>,
+      and finally joins with <span class="tts-math" data-tts="R 3">$R_3$</span>.
+      The plan has two hash join operators (both are pipeline breakers on their build sides)
+      and one aggregation (also a pipeline breaker). These create four pipeline fragments:
+      the first filters <span class="tts-math" data-tts="R 1">$R_1$</span> and builds a hash table;
+      the second filters <span class="tts-math" data-tts="R 2">$R_2$</span> and aggregates into another hash table;
+      the third moves aggregation results into the third hash table;
+      and the fourth scans <span class="tts-math" data-tts="R 3">$R_3$</span> and probes
+      both join hash tables, emitting final results. Each fragment becomes a single compiled loop.
+    </p>
+  </div>
+
+  <h2 data-cid="main-220" id="s4">4. The Produce / Consume Interface</h2>
+
+  <p data-cid="main-230">
+    To generate code automatically for any combination of operators, the compiler uses a simple
+    two-function mental model for each operator. Each operator has a <em>produce</em> function
+    and a <em>consume</em> function:
+  </p>
+
+  <p data-cid="main-240">
+    <strong>produce()</strong> asks the operator to start producing its result tuples. For a leaf
+    scan operator, this means emitting a loop over the relation. For a join, it means calling
+    <em>produce</em> on its left child (the build side) first, then on its right child (the probe side).
+    <strong>consume(attributes, source)</strong> is called by a child operator whenever it has
+    produced a tuple. The parent operator receives the tuple's attributes (in registers) and
+    decides what to do next — test a predicate, hash the tuple, or pass it to its own parent.
+  </p>
+
+  <div class="box intuition" data-cid="main-250">
+    <span class="box-label">Why this interface enables compilation</span>
+    <p data-cid="main-260">
+      The produce/consume interface exists only at compile time, not at runtime. There are no
+      virtual function calls in the generated code. When the query compiler walks the operator tree
+      calling <em>produce</em> and <em>consume</em>, it emits code fragments (in LLVM IR or as
+      C++ template instantiations). The emitted code is flat: one operator's body is literally
+      inlined into the body of another, producing a single function that processes an entire
+      pipeline from one materialization boundary to the next. The abstractions exist only during
+      code generation; they completely disappear in the generated machine code.
+    </p>
+  </div>
+
+  <p data-cid="main-270">
+    For a scan operator, <em>produce</em> emits a loop over the relation and calls the parent's
+    <em>consume</em> for each tuple. For a selection, <em>consume</em> emits a conditional branch:
+    if the predicate holds, it calls the grandparent's <em>consume</em>. For a hash join's build
+    side, <em>consume</em> emits "materialize this tuple into the hash table". For the hash join's
+    probe side, <em>consume</em> emits "look up this tuple in the hash table; for each match, call
+    the parent's <em>consume</em> with the combined attributes." The result, for the running example,
+    is four code fragments that look very close to what a skilled programmer would write by hand.
+  </p>
+
+  <h2 data-cid="main-280" id="s5">5. Generating Machine Code with LLVM</h2>
+
+  <p data-cid="main-290">
+    The produce/consume translation produces code in the intermediate representation of the
+    LLVM compiler framework. LLVM is a mature, production-quality compiler infrastructure
+    that can optimize and translate its intermediate representation (IR) into efficient native
+    machine code for multiple hardware architectures. Using LLVM gives the query compiler
+    several major advantages over generating C++ source code:
+  </p>
+
+  <p data-cid="main-300">
+    <strong>Compilation speed.</strong> Compiling generated C++ source code with a full C++
+    compiler is slow — it can take multiple seconds for a complex query, which is unacceptable
+    for ad-hoc query processing. LLVM's IR compilation is far faster: the paper reports total
+    compilation times under one second for full TPC-H queries, versus over 16 seconds for the
+    C++ backend.
+  </p>
+
+  <p data-cid="main-310">
+    <strong>Register allocation and optimization.</strong> LLVM uses an SSA (Static Single
+    Assignment) form that allows it to manage register allocation automatically. The query
+    compiler can pretend that there is one CPU register per tuple attribute — no manual tracking
+    of spills. LLVM handles the reality. Furthermore, LLVM's optimization passes can improve
+    the generated code in ways that would be extremely tedious to implement manually, such as
+    instruction combining, constant folding, and control-flow simplification.
+  </p>
+
+  <p data-cid="main-320">
+    <strong>Mixed LLVM and C++ execution.</strong> Not everything is easy to generate in LLVM IR.
+    Complex data structures (hash table implementations, memory allocators) are easier to write
+    in C++. The architecture uses a hybrid model: complex operator logic (such as hash table
+    management, spill-to-disk I/O) is written in pre-compiled C++ code, while the hot path —
+    the tight loops that process tuples — is generated in LLVM IR. LLVM code calls into C++
+    functions when needed (for example, to allocate a new hash table bucket), but these calls
+    are off the critical path. The LLVM-generated code drives the overall execution, with C++
+    acting as a library of helper routines.
+  </p>
+
+  <div class="box example" data-cid="main-330">
+    <span class="box-label">What LLVM IR looks like for a real fragment</span>
+    <p data-cid="main-340">
+      The paper shows a fragment of the LLVM IR generated for the aggregation part of the running
+      query. The code loads column pointers once at the top of the fragment, then enters a tight
+      loop: load the
+      <span class="tts-math" data-tts="y">$y$</span> attribute into a register,
+      compare it to 3, branch to the next iteration if the predicate fails. Otherwise, load
+      <span class="tts-math" data-tts="z">$z$</span>, compute a hash value, look up the hash table
+      entry (using C++ data structures, accessed via LLVM's ability to call C++ methods by name),
+      aggregate. No virtual function calls. No intermediate materialization. The entire filtering,
+      hashing, and aggregation for all tuples in
+      <span class="tts-math" data-tts="R 2">$R_2$</span>
+      happens in one pass through one function.
+    </p>
+  </div>
+
+  <h2 data-cid="main-350" id="s6">6. Advanced Techniques</h2>
+
+  <p data-cid="main-360">
+    The basic produce/consume framework handles simple pipelines elegantly, but several practical
+    issues require additional thought.
+  </p>
+
+  <p data-cid="main-370">
+    <strong>Correlated subqueries and complex operators.</strong> When a query has a correlated
+    subquery, the inner query must be re-evaluated for each outer tuple. This adds a dependency
+    that the simple produce/consume model must track. The compiler threads correlation parameters
+    through the context object, allowing inner query fragments to be re-executed with new outer
+    values without breaking the pipeline structure.
+  </p>
+
+  <p data-cid="main-380">
+    <strong>Performance tuning: branch layout.</strong> Modern CPUs are branch-prediction engines.
+    An unpredictable branch (one taken roughly 50% of the time) can cost 15–20 cycles of pipeline
+    flush penalty. The paper discusses how to lay out the generated code so that the most common
+    case (e.g., "the hash table entry exists") is the straight-line fall-through path and the
+    rare case (e.g., "need to allocate a new bucket") is the taken branch. This alone improved
+    hash table lookup performance by over 20% in experiments.
+  </p>
+
+  <p data-cid="main-390">
+    <strong>Block-wise processing.</strong> While the fundamental model is tuple-at-a-time within
+    a pipeline, the framework can also process multiple tuples per iteration using SIMD (Single
+    Instruction Multiple Data) vector instructions. LLVM directly models SIMD registers as vector
+    types, and the operator code generation can be adapted to produce vectorized loops. This is
+    particularly effective for simple scan-and-filter pipelines where the same predicate is applied
+    to many values independently.
+  </p>
+
+  <p data-cid="main-400">
+    <strong>Multi-core parallelism.</strong> The paper notes that the data-centric compilation
+    approach fits naturally with intra-query parallelism. Because all data always flows between
+    well-defined materialization boundaries (pipeline breakers), the query can be partitioned at
+    those boundaries: each partition is processed independently by a separate thread, and results
+    are merged afterward. The code generator does not need to change; only the parallelization
+    decision (how many partitions and which breakers to parallelize) is added on top.
+  </p>
+
+  <h2 data-cid="main-410" id="s7">7. Evaluation</h2>
+
+  <p data-cid="main-420">
+    Neumann implemented the compilation framework in HyPer, a hybrid OLTP/OLAP main-memory
+    database system. Experiments used the TPC-CH benchmark (combining TPC-C and TPC-H schemas)
+    on a dual Intel X5570 quad-core machine with 64 GB RAM.
+  </p>
+
+  <p data-cid="main-430">
+    For OLTP workloads (TPC-C), HyPer with LLVM code generation achieved 169,491 transactions
+    per second, slightly better than the C++ backend (161,794 tps), with compilation time of
+    only 0.81 seconds versus 16.53 seconds for C++. The LLVM version is not just faster at
+    runtime — it compiles vastly faster, making it practical for ad-hoc queries.
+  </p>
+
+  <p data-cid="main-440">
+    For OLAP workloads (TPC-H queries 1–5), the comparison is more striking. HyPer with LLVM
+    beat HyPer with C++ on most queries because the LLVM code keeps all tuple attributes in
+    virtual registers across the entire pipeline, whereas even optimized C++ cannot always achieve
+    this. Against external systems, HyPer with LLVM was typically 2–4x faster than VectorWise
+    and orders of magnitude faster than MonetDB on aggregation-heavy queries like Q1, which is
+    essentially just one scan and one group-by.
+  </p>
+
+  <p data-cid="main-450">
+    The branching and cache analysis is particularly illuminating. For Q1, the LLVM-generated
+    code executed approximately 188,260 branch mispredictions — compared to 456,078 for MonetDB.
+    L1 data cache misses were 1,764,937 for LLVM versus 7,545,432 for MonetDB. These numbers
+    confirm the theoretical argument: data-centric compilation produces code with excellent
+    data locality and predictable control flow.
+  </p>
+
+  <div class="box pause" data-cid="main-460">
+    <span class="box-label">Pause and reflect</span>
+    <p data-cid="main-470">
+      The performance gap between LLVM and C++ backends on queries like Q1 is counterintuitive at
+      first glance — both produce native machine code. The difference is that LLVM's SSA form
+      gives the register allocator a global view of which values are "live" at any point in the
+      compiled function. The C++ compiler, working on separately-compiled operator functions, cannot
+      always see across operator boundaries and must conservatively spill and reload values at every
+      function call boundary. The LLVM approach fuses all operators in a pipeline into one function,
+      giving the register allocator the full picture, and the resulting code can keep all relevant
+      values in registers throughout the entire pipeline fragment.
+    </p>
+  </div>
+
+  <h2 data-cid="main-480" id="s8">8. Lasting Impact</h2>
+
+  <p data-cid="main-490">
+    This paper is now considered one of the most influential systems papers of the 2010s in
+    databases. Its ideas spread rapidly into both research and industry. The HyPer system,
+    developed at TU Munich, was later acquired by Tableau (and subsequently Salesforce), and
+    its query compilation approach influenced Tableau's Hyper analytical engine used by millions
+    of people today.
+  </p>
+
+  <p data-cid="main-500">
+    The paper's approach inspired a wave of follow-on work on query compilation. Systems like
+    Spark SQL's Tungsten engine (later Whole-Stage Code Generation), Impala, and several
+    commercial databases adopted variants of the produce/consume compilation model. The insight
+    that pipeline breakers define the natural compilation boundaries — not individual operators —
+    became standard wisdom in the field.
+  </p>
+
+  <p data-cid="main-510">
+    Perhaps the deepest conceptual contribution is the reframing of "what is the right unit of
+    modularity for a query engine?" The iterator model says the operator is the unit. Neumann's
+    answer is the <em>pipeline fragment</em> — the stretch of computation between two
+    materialization points. Operators are implementation details of the compiler, not runtime
+    objects. This inversion of perspective is simple once you see it, but it required rethinking
+    decades of database engine design.
+  </p>
+
+  <h2 data-cid="main-520" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-530">G. Graefe and W. J. McKenna. The Volcano optimizer generator: Extensibility and efficient search. In <em>ICDE</em>, pages 209–218. IEEE Computer Society, 1993.</li>
+    <li data-cid="main-540">P. A. Boncz, M. Zukowski, and N. Nes. MonetDB/X100: Hyper-pipelining query execution. In <em>CIDR</em>, pages 225–237, 2005.</li>
+    <li data-cid="main-550">C. Lattner and V. S. Adve. LLVM: A compilation framework for lifelong program analysis and transformation. In <em>ACM International Symposium on Code Generation and Optimization (CGO)</em>, pages 75–88, 2004.</li>
+    <li data-cid="main-560">A. Kemper and T. Neumann. HyPer: A hybrid OLTP&amp;OLAP main memory database system based on virtual memory snapshots. In <em>ICDE</em>, pages 195–206, 2011.</li>
+    <li data-cid="main-570">K. Krikellas, S. Viglas, and M. Cintra. Generating code for holistic query evaluation. In <em>ICDE</em>, pages 613–624, 2010.</li>
+    <li data-cid="main-580">S. Padmanabhan, T. Malkemus, R. C. Agarwal, and A. Jhingran. Block oriented processing of relational database operations in modern computer architectures. In <em>ICDE</em>, pages 567–574, 2001.</li>
+    <li data-cid="main-590">J. Rao, H. Pirahesh, C. Mohan, and G. M. Lohman. Compiled query execution engine using JVM. In <em>ICDE</em>, page 23, 2006.</li>
+    <li data-cid="main-600">P. A. Boncz, S. Manegold, and M. L. Kersten. Database architecture evolution: Mammals flourished long before dinosaurs became extinct. <em>PVLDB</em>, 2(2):1648–1653, 2009.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script>
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Querying Heterogeneous Information Sources Using Source Descriptions · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="querying-heterogeneous-sources" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/querying-heterogeneous-sources/">Querying Heterogeneous Sources</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. Introduction</a></li>
+    <li><a href="#s2">2. The Core Problem</a></li>
+    <li><a href="#s3">3. Describing Sources</a></li>
+    <li><a href="#s4">4. The World View</a></li>
+    <li><a href="#s5">5. Query Plans</a></li>
+    <li><a href="#s6">6. Planning Algorithms</a></li>
+    <li><a href="#s7">7. Implementation and Experiments</a></li>
+    <li><a href="#s8">8. Legacy and Impact</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">Scientific Paper · VLDB 1996</div>
+    <h1>Querying Heterogeneous Information Sources Using Source Descriptions</h1>
+    <div class="paper-meta">
+      <span class="authors">Alon Y. Levy, Anand Rajaraman, Joann J. Ordille</span>
+      <span class="venue">Proceedings of the 22nd VLDB Conference, Mumbai, India, 1996</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    By 1996, hundreds of structured information sources had appeared on the World Wide Web — databases of used cars, stock prices, bibliographies, phone directories — yet querying them was painful and manual. Each source had its own interface, its own schema, and no source could see any other. This paper introduces the <em>Information Manifold</em> (IM), a system that provides a single, uniform query interface over more than 100 such sources simultaneously. The key idea is twofold: first, each source is described declaratively — both its <em>contents</em> (what data it holds) and its <em>capabilities</em> (what queries it can accept) — using a concise formal language. Second, a planning algorithm reads these descriptions to automatically construct executable query plans, pruning irrelevant sources and combining results from multiple sources in a provably correct way. Experiments with queries over 100 sources show that plan generation takes under one second per plan, and the algorithm scales sub-exponentially thanks to an effective source-pruning step called bucket creation.
+  </div>
+
+  <h2 data-cid="main-020" id="s1">1. Introduction</h2>
+  <p data-cid="main-030">
+    Imagine you want to find sportscars for sale that were manufactured no earlier than 1992, together with reviews for each model you find. The data you need is scattered. One website covers used cars generally; another is limited to luxury cars priced above $20,000; a third tracks vintage cars from before 1950; a fourth has product reviews for cars made after 1990. To answer your question manually you must figure out which sites are even relevant, separately query each relevant site according to its own interface, and then join the results yourself. The Information Manifold is an attempt to automate every step of that process.
+  </p>
+  <p data-cid="main-040">
+    The challenge is not just that the sources are numerous. It is that they are <em>heterogeneous</em> in two orthogonal senses. Their <em>contents</em> differ: no two databases cover exactly the same slice of reality. And their <em>capabilities</em> differ: some sources accept a category filter but not a year filter; others require a model as input; still others return results only in a particular format. A query planner that ignores either dimension will either miss relevant sources or try to use sources in ways they cannot support.
+  </p>
+
+  <h2 data-cid="main-050" id="s2">2. The Core Problem</h2>
+  <p data-cid="main-060">
+    Most earlier work on federated databases assumed that every source is a full relational database — one that can accept arbitrary SQL queries and return arbitrary results. That assumption is almost never true on the open Web. A web form for used cars might accept a model name and a price range, but refuse to answer queries that ask only for a year range. The IM paper is one of the first to take source capabilities seriously as a first-class constraint.
+  </p>
+  <div class="box intuition" data-cid="main-070">
+    <span class="box-label">Intuition — Why capability matters</span>
+    <p data-cid="main-080">
+      Think of each source as a black box with a specific set of input slots and output slots. You can only pull data out of the box by filling in the required input slots first. Before you can use a source in a query plan, you must ensure that earlier steps in the plan have already produced values to fill those slots. Ignoring this constraint produces plans that look correct on paper but cannot actually be executed.
+    </p>
+  </div>
+  <p data-cid="main-090">
+    A second challenge is incompleteness. No source claims to contain <em>all</em> cars for sale. The IM system therefore adopts an open-world assumption: the answer to a query is the union of all tuples that <em>any</em> executable, semantically correct plan can produce. This is a deliberate choice — it means answers can be partial, but they are never wrong.
+  </p>
+
+  <h2 data-cid="main-100" id="s3">3. Describing Sources</h2>
+  <p data-cid="main-110">
+    The heart of the Information Manifold is its source description language. Each source is described by two complementary components: a <em>content description</em> and a <em>capability record</em>.
+  </p>
+
+  <div class="box definition" data-cid="main-120">
+    <span class="box-label">Definition — Content Description</span>
+    <p data-cid="main-130">
+      The content of a source is described as a conjunctive query over the <em>world-view</em> relations. For example, Source 1 (used cars) is described as:
+      <br><br>
+      <code>V&#8321;(c) ⊆ CarForSale(c), UsedCar(c)</code>
+      <br><br>
+      This says: every car <em>c</em> that Source 1 knows about is a car for sale and is a used car. The source need not contain <em>all</em> such cars — it contains a subset. This is captured by the subset symbol rather than the equality sign.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-140">
+    <span class="box-label">Definition — Capability Record</span>
+    <p data-cid="main-150">
+      A capability record for a source relation <em>R</em> is a 5-tuple
+      <span class="tts-math" data-tts="the tuple S sub in, S sub out, S sub sel, min, max">$(S_{in}, S_{out}, S_{sel}, \text{min}, \text{max})$</span>
+      where <span class="tts-math" data-tts="S sub in">$S_{in}$</span> is the set of parameters that must be given as inputs, <span class="tts-math" data-tts="S sub out">$S_{out}$</span> is the set of attributes returned as outputs, <span class="tts-math" data-tts="S sub sel">$S_{sel}$</span> is the set of attributes on which the source can apply selections, and <em>min</em> and <em>max</em> are the minimum and maximum number of input bindings the source will accept. A query plan step must respect all of these constraints.
+    </p>
+  </div>
+
+  <p data-cid="main-160">
+    To illustrate: Source 1's capability record indicates that it requires at least one of {Model, Category} as an input, can return {Model, Year, Price, SellerContact}, and can apply a selection on Year or Price. Source 2 (luxury cars, all priced above $20,000) has its price constraint baked into the content description — its content query includes the built-in atom <span class="tts-math" data-tts="p greater than or equal to 20000">$p \geq 20000$</span>, so the planner can immediately prune it from any query that asks for cheap cars.
+  </p>
+
+  <div class="box example" data-cid="main-170">
+    <span class="box-label">Example — Source pruning in action</span>
+    <p data-cid="main-180">
+      Our running query asks for sportscars manufactured no earlier than 1992. Source 3 covers only cars manufactured before 1950. Its content description includes the built-in predicate <span class="tts-math" data-tts="year of c, y, where y is less than or equal to 1950">$\text{Year}(c, y),\; y \leq 1950$</span>. Since this contradicts the query's requirement <span class="tts-math" data-tts="y greater than or equal to 1992">$y \geq 1992$</span>, Source 3 can be eliminated without even contacting it. Similarly, Source 4 covers only motorcycles — the class <em>Motorcycle</em> is declared disjoint from <em>CarForSale</em>, so it is also pruned immediately.
+    </p>
+  </div>
+
+  <h2 data-cid="main-190" id="s4">4. The World View</h2>
+  <p data-cid="main-200">
+    Users pose queries against a <em>world view</em>: a virtual schema of relations and classes that acts like a global database schema, even though no data is actually stored there. The world view for the car example includes a class hierarchy — <em>CarForSale</em> is a subclass of <em>Car</em>, which is a subclass of <em>Automobile</em>, and so on — plus relations like <em>ProductReview(Model, Year, Review)</em>. Users write queries against these virtual relations. The system's job is to decompose such queries into concrete accesses to real sources.
+  </p>
+  <p data-cid="main-210">
+    Formally, a query in the Information Manifold is a conjunctive query of the form:
+  </p>
+  <p data-cid="main-220">
+    <span class="tts-math" data-tts="Q of X-bar, is defined as R sub 1 of Z-bar sub 1, and so on up to R sub n of Z-bar sub n, and C sub Q">
+    $$Q(\bar{X}) \leftarrow R_1(\bar{Z}_1),\; \ldots,\; R_n(\bar{Z}_n),\; C_Q$$
+    </span>
+  </p>
+  <p data-cid="main-230">
+    where <span class="tts-math" data-tts="R sub 1 through R sub n">$R_1, \ldots, R_n$</span> are world-view relations and <span class="tts-math" data-tts="C sub Q">$C_Q$</span> is a conjunction of comparison constraints (order subgoals) of the form <span class="tts-math" data-tts="u theta v, where theta is one of less-than, greater-than, not-equal, or equals">$u\,\theta\,v$</span> with <span class="tts-math" data-tts="theta in the set of less-than, greater-than, less-than-or-equal, not-equal, equals">$\theta \in \{<, >, \leq, \neq, =\}$</span>. Queries must be <em>range-restricted</em>, meaning every answer variable appears in at least one relational subgoal.
+  </p>
+
+  <div class="box pause" data-cid="main-240">
+    <span class="box-label">Pause and reflect</span>
+    <p data-cid="main-250">
+      Notice the elegant separation of concerns. The world view is a logical schema that has nothing to do with any specific source. The source descriptions relate each source's contents to world-view relations. The query is expressed purely against the world view. This three-layer architecture means you can add or remove sources without touching either the user queries or the world-view schema. It is the same idea that underlies modern data virtualization platforms thirty years later.
+    </p>
+  </div>
+
+  <h2 data-cid="main-260" id="s5">5. Query Plans</h2>
+  <p data-cid="main-270">
+    A <em>query plan</em> is a sequence of accesses to information sources, interleaved with local processing (selection, join, projection). A plan must be both <em>semantically correct</em> and <em>executable</em>.
+  </p>
+  <p data-cid="main-280">
+    Semantic correctness is defined through <em>expansion</em>. If you unfold every source access in a plan by substituting the source's content description, the resulting query must be <em>contained in</em> (not necessarily equivalent to) the original user query. Containment rather than equivalence is the right notion because sources are incomplete — they may hold only a subset of the tuples matching a given condition.
+  </p>
+  <p data-cid="main-290">
+    Executability is about respecting capability records. The steps of the plan must be ordered so that whenever a source requires certain inputs, those inputs have already been produced by earlier steps. More precisely, at each step there must be a set of bound variables that satisfies the minimum input cardinality requirement of the source being accessed.
+  </p>
+
+  <div class="box example" data-cid="main-300">
+    <span class="box-label">Example — A complete executable plan</span>
+    <p data-cid="main-310">
+      For the sportscar query, one semantically correct and executable plan is:
+      <ol>
+        <li>Access Source 1 with input {Category = sportscar}, receiving back {Model, Year, Price}. Apply the local filter <span class="tts-math" data-tts="year of c greater than or equal to 1992">$\text{Year} \geq 1992$</span>.</li>
+        <li>For each (Model, Year) pair returned, access Source 5 (car reviews) with inputs {Model, Year}, receiving a review text.</li>
+      </ol>
+      Note that Source 1 is placed first because it can accept a category as input and return year — satisfying Source 5's input requirement. The ordering is enforced, not guessed.
+    </p>
+  </div>
+
+  <h2 data-cid="main-320" id="s6">6. Planning Algorithms</h2>
+  <p data-cid="main-330">
+    The algorithm for generating query plans has two stages: (1) finding all semantically correct conjunctive plans, and (2) ordering each plan's subgoals to make it executable.
+  </p>
+  <p data-cid="main-340">
+    The first stage works by computing a <em>bucket</em> for each subgoal in the query. A bucket for subgoal <span class="tts-math" data-tts="R sub i">$R_i$</span> is the set of sources whose content descriptions are consistent with — and can contribute tuples to — that subgoal. The algorithm <strong>CreateBuckets</strong> tests each source against each subgoal by checking whether adding the source's content description to the query creates an unsatisfiable set of constraints (e.g., a class membership and its disjointness partner both appear). Sources that pass the test are added to the bucket; those that fail are pruned.
+  </p>
+  <p data-cid="main-350">
+    Once all buckets are computed, the second stage generates semantically correct plans by taking one source from each bucket (the Cartesian product of the buckets), and checking whether a valid executable ordering exists. This check is done by the polynomial-time procedure <strong>create-executable-plan</strong>, which greedily orders subgoals by availability of bound variables and pushes as many selections as possible to the sources.
+  </p>
+
+  <div class="box definition" data-cid="main-360">
+    <span class="box-label">Theorem 4.1 — Completeness of the ordering algorithm</span>
+    <p data-cid="main-370">
+      Let <span class="tts-math" data-tts="Q prime">$Q'$</span> be a semantically correct conjunctive plan. If there exists any ordering of the subgoals of <span class="tts-math" data-tts="Q prime">$Q'$</span> that yields an executable plan, then <strong>create-executable-plan</strong> will find it. Furthermore, the running time of the procedure is polynomial in the size of <span class="tts-math" data-tts="Q prime">$Q'$</span>.
+    </p>
+  </div>
+
+  <p data-cid="main-380">
+    A key complexity result complements this theorem: if sources were allowed to have <em>multiple</em> capability records (different sets of acceptable inputs for the same relation), then determining whether any executable ordering exists becomes NP-complete. The IM design choice of one canonical capability record per source is therefore not just a simplification — it is what keeps planning tractable.
+  </p>
+
+  <div class="box warn" data-cid="main-390">
+    <span class="box-label">Complexity warning</span>
+    <p data-cid="main-400">
+      Without the bucket-pruning step, the number of candidate plans to check would be <span class="tts-math" data-tts="O of n to the power Q">$O(n^{|Q|})$</span> where <span class="tts-math" data-tts="n">$n$</span> is the number of sources and <span class="tts-math" data-tts="the quantity Q">$|Q|$</span> is the number of subgoals. With 100 sources and a 3-subgoal query, that is one million candidates. Bucket creation reduces this to the product of the bucket sizes, which in practice is tiny — often in the single digits.
+    </p>
+  </div>
+
+  <h2 data-cid="main-410" id="s7">7. Implementation and Experiments</h2>
+  <p data-cid="main-420">
+    The Information Manifold was deployed against over 100 structured information sources on the WWW, including entertainment databases, stock market feeds, bibliographic services, airline information, and product catalogs. Source descriptions were written by hand — one of the acknowledged open problems at the time.
+  </p>
+  <p data-cid="main-430">
+    The system architecture separates the planner from the execution engine via interface programs — one per source. Each interface program accepts the bound parameters dictated by the plan, queries the real source (often via form submission and HTML scraping), and returns structured tuples to the execution engine. The execution engine then applies local joins, projections, and selections.
+  </p>
+  <p data-cid="main-440">
+    Experiments measured three representative queries as the number of available sources was scaled from 20 to 100. Key findings:
+  </p>
+  <ul data-cid="main-450">
+    <li>Total query planning time grows sub-exponentially with the number of sources, even though the theoretical worst case is exponential. This is because bucket pruning keeps the bucket sizes small regardless of the total number of sources.</li>
+    <li>The average time per plan stays below one second for all tested queries, even with 100 sources. Network round-trip time to execute a plan typically dwarfs planning time.</li>
+    <li>For Query 1 (titles and years of movies featuring Tom Hanks), only 2 of 100 sources are ever placed in any bucket — the rest are pruned immediately by content mismatch. The number of plans enumerated is therefore 7 rather than the naive estimate of over a million.</li>
+  </ul>
+
+  <h2 data-cid="main-460" id="s8">8. Legacy and Impact</h2>
+  <p data-cid="main-470">
+    The Information Manifold paper arrived at the beginning of a decade-long wave of research on information integration. Its central contribution — the formal separation of <em>what a source contains</em> from <em>what queries a source can answer</em>, combined with automatic query planning over source descriptions — became the template for nearly all subsequent mediator-based integration systems.
+  </p>
+  <p data-cid="main-480">
+    The paper's "local-as-view" (LAV) framing — describing each source's content as a view over a global schema — proved especially influential. It was contrasted with the "global-as-view" (GAV) approach, and the comparison drove a large body of follow-on theoretical work. The problem of query rewriting using views was shown to be NP-complete in general and spurred decades of research on tractable special cases.
+  </p>
+  <p data-cid="main-490">
+    In the commercial world, the direct descendants of this work include data virtualization layers, federated query engines, and the concept of a data catalog. Modern systems like Apache Arrow Flight, Trino (PrestoSQL), and numerous enterprise data fabric products implement variants of the same basic idea: a virtual global schema, declarative source registrations, and automatic query decomposition and routing. The language has changed, but the architecture first sketched in the Information Manifold remains recognizable.
+  </p>
+
+  <h2 data-cid="main-500" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-510">Levy, A. Y., Mendelzon, A. O., Sagiv, Y., and Srivastava, D. (1995). Answering queries using views. <em>Proceedings of ACM PODS</em>, 1995.</li>
+    <li data-cid="main-520">Levy, A. Y., Rajaraman, A., and Ordille, J. J. (1996). Query answering algorithms for information agents. <em>Proceedings of AAAI-96</em>, 1996.</li>
+    <li data-cid="main-530">Arens, Y., Chee, C. Y., Hsu, C.-N., and Knoblock, C. A. (1994). Retrieving and integrating data from multiple information sources. <em>International Journal on Intelligent and Cooperative Information Systems</em>, 1994.</li>
+    <li data-cid="main-540">Rajaraman, A., Sagiv, Y., and Ullman, J. (1995). Answering queries using templates with binding patterns. <em>Proceedings of ACM PODS</em>, 1995.</li>
+    <li data-cid="main-550">Florescu, D., Raschid, L., and Valduriez, P. (1995). Using heterogeneous equivalences for query rewriting in multidatabase systems. <em>Proceedings of COOPIS '95</em>, 1995.</li>
+    <li data-cid="main-560">Srivastava, D., Dar, S., Jagadish, H. V., and Levy, A. Y. (1996). Answering queries with aggregation using views. <em>Proceedings of VLDB</em>, 1996.</li>
+    <li data-cid="main-570">Papakonstantinou, Y., Gupta, A., Garcia-Molina, H., and Ullman, J. (1995). A query translation scheme for rapid implementation of wrappers. <em>Proceedings of DOOD-95</em>, 1995.</li>
+    <li data-cid="main-580">Levy, A. Y., Srivastava, D., and Kirk, T. (1995). Data model and query evaluation in global information systems. <em>Journal of Intelligent Information Systems</em>, 5(2), 1995.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script>
+</body>
+</html>

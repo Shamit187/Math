@@ -1,0 +1,6 @@
+{
+  "title": "Encapsulation of Parallelism in the Volcano Query Processing System",
+  "authors": ["Goetz Graefe"],
+  "venue": "SIGMOD 1990",
+  "description": "Describes Volcano's exchange operator, a single iterator-interface module that encapsulates all forms of intra-query parallelism—vertical pipelining, bushy, and intra-operator—so that query operators can be written for a single process and parallelized without modification."
+}

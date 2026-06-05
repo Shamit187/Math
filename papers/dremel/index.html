@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dremel: Interactive Analysis of Web-Scale Datasets · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="dremel" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/dremel/">Dremel</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. Introduction</a></li>
+    <li><a href="#s2">2. The Nested Data Model</a></li>
+    <li><a href="#s3">3. Repetition and Definition Levels</a></li>
+    <li><a href="#s4">4. Record Assembly from Columns</a></li>
+    <li><a href="#s5">5. Query Language and Execution</a></li>
+    <li><a href="#s6">6. The Multi-Level Serving Tree</a></li>
+    <li><a href="#s7">7. Experimental Results</a></li>
+    <li><a href="#s8">8. Impact and Legacy</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">Scientific Paper · PVLDB 2010</div>
+    <h1>Dremel: Interactive Analysis of Web-Scale Datasets</h1>
+    <div class="paper-meta">
+      <span class="authors">Sergey Melnik, Andrey Gubarev, Jing Jing Long, Geoffrey Romer, Shiva Shivakumar, Matt Tolton, Theo Vassilakis</span>
+      <span class="venue">Proceedings of the VLDB Endowment, Vol. 3, No. 1, 2010</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    Dremel is a scalable, interactive ad-hoc query system for analysis of read-only nested data,
+    developed and used in production at Google. By combining a multi-level execution tree
+    borrowed from distributed search engines with a novel columnar storage format designed
+    specifically for nested records, Dremel can execute aggregation queries over trillion-row
+    tables in seconds. It has thousands of users at Google and runs on clusters of thousands
+    of CPUs processing petabytes of data. The paper introduces two core technical contributions:
+    a lossless columnar encoding for nested data using <em>repetition levels</em> and
+    <em>definition levels</em>, and a multi-level serving tree that aggregates partial results
+    in a parallel fan-out. Dremel complements MapReduce rather than replacing it, and is often
+    used to rapidly prototype or validate results from MR pipelines.
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 1 -->
+  <h2 data-cid="main-020" id="s1">1. Introduction</h2>
+
+  <p data-cid="main-030">
+    Google's data is fundamentally nested. A web document has a URL (a string), a list of
+    Links (each Link having a Forward list and a Backward list of DocIds), and a list of Names
+    (each Name having a URL and a list of Languages, each Language having a Code and optional
+    Country). This is not an academic example — it is the actual structure of the document
+    schema that appears throughout the Dremel paper, and it typifies how web-scale data looks
+    in practice. Relational tables, with their flat rows of typed columns, cannot naturally
+    represent this kind of hierarchically nested, multiply-repeated structure.
+  </p>
+
+  <p data-cid="main-040">
+    Google's answer to nested data representation is Protocol Buffers — a language-neutral,
+    binary serialization format that encodes records as nested trees of fields. A Dremel table
+    is a collection of Protocol Buffer records. The challenge Dremel addresses is: how do you
+    run analytical SQL-like queries over trillions of such nested records interactively —
+    in seconds rather than hours?
+  </p>
+
+  <p data-cid="main-050">
+    The naive approach would be to scan all records top-to-bottom for every query. At Google's
+    scale, reading one terabyte of compressed data in one second requires tens of thousands of
+    disk spindles working in parallel. This is the hardware reality Dremel operates in, and it
+    explains why every design decision — storage format, query execution, serving tree topology —
+    is oriented around minimizing the amount of data that must be read from disk for any given
+    query.
+  </p>
+
+  <div class="box intuition" data-cid="main-060">
+    <span class="box-label">The Core Idea in One Sentence</span>
+    <p data-cid="main-070">
+      Store each field of a nested record in its own contiguous column on disk, tagged with
+      enough metadata to reconstruct the original nesting structure, and let a search-engine-style
+      serving tree fan queries out to thousands of leaf servers that each scan their local column
+      stripes in parallel.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 2 -->
+  <h2 data-cid="main-080" id="s2">2. The Nested Data Model</h2>
+
+  <p data-cid="main-090">
+    Dremel's data model is based on strongly-typed nested records. A schema is a tree of fields,
+    where each field is either atomic (integer, string, etc.) or a record (a named group of
+    sub-fields). Fields are annotated with a <em>multiplicity label</em>: a field is either
+    <strong>required</strong> (must appear exactly once), <strong>optional</strong> (may appear
+    zero or one times), or <strong>repeated</strong> (may appear zero or more times). This is
+    the same type system as Protocol Buffers.
+  </p>
+
+  <div class="box example" data-cid="main-100">
+    <span class="box-label">Example — Document Schema</span>
+    <pre><code>message Document {
+  required int64 DocId;
+  optional group Links {
+    repeated int64 Backward;
+    repeated int64 Forward;
+  }
+  repeated group Name {
+    repeated group Language {
+      required string Code;
+      optional string Country;
+    }
+    optional string Url;
+  }
+}</code></pre>
+    <p data-cid="main-110">
+      A <code>Document</code> has one required <code>DocId</code>, an optional
+      <code>Links</code> group (which itself contains repeated Forward and Backward link lists),
+      and a repeated <code>Name</code> group (each Name having a repeated Language subgroup
+      and optional Url). A single document record can have multiple Names, and each Name can
+      have multiple Languages. This creates a tree structure that a flat CSV cannot represent.
+    </p>
+  </div>
+
+  <p data-cid="main-120">
+    The paper works through two concrete sample records,
+    <span class="tts-math" data-tts="r sub 1">$r_1$</span> and
+    <span class="tts-math" data-tts="r sub 2">$r_2$</span>,
+    that instantiate this schema with different values. Record
+    <span class="tts-math" data-tts="r sub 1">$r_1$</span> has DocId 10, two Forward Links
+    (20 and 40) and one Backward Link (60), two Names (the first with two Languages —
+    "en-us" and "en" — and Url "http://A"; the second with one Language "en-gb" and Url
+    "http://B"). Record
+    <span class="tts-math" data-tts="r sub 2">$r_2$</span> is simpler: DocId 20, one Backward
+    Link (10), one Forward Link (80), one Name with no Language and Url "http://C".
+    These two records are the running example for all the encoding algorithms.
+  </p>
+
+  <!-- ═══════════════════════════════════════════ SECTION 3 -->
+  <h2 data-cid="main-130" id="s3">3. Repetition and Definition Levels</h2>
+
+  <p data-cid="main-140">
+    Storing a nested record in a columnar format is the central algorithmic challenge of the
+    paper. The naive approach — store each leaf field's values contiguously — immediately runs
+    into a problem: how do you know, when you encounter a value in the
+    <code>Name.Language.Code</code> column, whether it belongs to the first Language of the
+    first Name of record
+    <span class="tts-math" data-tts="r sub 1">$r_1$</span>, or the second Language of the
+    same Name, or a Language of the second Name? You have lost the nesting structure.
+  </p>
+
+  <p data-cid="main-150">
+    Dremel's solution is to store two small integers alongside every value: a
+    <em>repetition level</em> and a <em>definition level</em>.
+  </p>
+
+  <div class="box definition" data-cid="main-160">
+    <span class="box-label">Definition — Repetition Level</span>
+    <p data-cid="main-170">
+      The repetition level of a value tells you <em>at what level in the field's path the most
+      recent repeated field has repeated</em>. More precisely: starting from the root of the
+      schema tree, follow the path to the current field. The repetition level is the index of
+      the last field in that path that actually repeated (started a new occurrence) to produce
+      this value.
+    </p>
+    <p data-cid="main-180">
+      A repetition level of 0 means this value starts a brand new top-level record. A higher
+      level means we are seeing a repeated occurrence of some nested field — and the level tells
+      you which field repeated. In the
+      <code>Name.Language.Code</code> column of
+      <span class="tts-math" data-tts="r sub 1">$r_1$</span>, the values "en-us", "en",
+      and "en-gb" have repetition levels 0, 2, and 1 respectively: level 0 starts a new record,
+      level 2 means Language repeated (within the same Name), and level 1 means Name repeated.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-190">
+    <span class="box-label">Definition — Definition Level</span>
+    <p data-cid="main-200">
+      The definition level of a value tells you <em>how many fields in the path to the current
+      field are actually defined</em> (present in the record), counting only optional and
+      repeated fields. A NULL value (absent optional or repeated field) gets a definition level
+      equal to how far down the path the structure exists before becoming absent. This encodes
+      precisely <em>which ancestor</em> is responsible for the value being missing.
+    </p>
+    <p data-cid="main-210">
+      For example, in the <code>Name.Language.Country</code> column: Country is optional, and
+      Language is repeated, and Name is repeated. When a Name exists but has no Language, the
+      NULL Country gets definition level 1 (Name is defined, but Language is absent). When a
+      Language exists but has no Country, the NULL gets definition level 2 (Name and Language
+      are defined, but Country is absent). This distinction matters for record reconstruction.
+    </p>
+  </div>
+
+  <div class="box pause" data-cid="main-220">
+    <span class="box-label">Pause — Why Two Numbers?</span>
+    <p data-cid="main-230">
+      Repetition levels alone would tell you which repeated field started over, but they do not
+      tell you which optional fields are absent. Definition levels alone would tell you which
+      fields are present, but not where repeated structures begin. Together, the two integers
+      provide a lossless encoding of the complete record structure: every original record can be
+      reconstructed exactly from the columnar encoding, with no information lost.
+    </p>
+  </div>
+
+  <p data-cid="main-240">
+    In practice, these integers require very few bits. If the maximum definition level of a
+    field is 3, then 2 bits suffice per definition level. If the maximum repetition level is 2,
+    then 2 bits suffice. For fields that are required and never repeated, definition level is
+    always the full depth and repetition level is always 0 — so these can be omitted entirely.
+    The overhead of the level encoding is minimal compared to the actual field values.
+  </p>
+
+  <div class="box example" data-cid="main-250">
+    <span class="box-label">Example — Column Stripe for Name.Language.Code</span>
+    <p data-cid="main-260">
+      Scanning the two sample records and writing out the <code>Name.Language.Code</code> column
+      with (repetition level r, definition level d) pairs:
+    </p>
+    <pre><code>value      r  d
+'en-us'    0  2    ← new record; Name[0], Language[0] both present
+'en'       2  2    ← Language repeated within same Name
+NULL       1  1    ← Name repeated; but this Name has no Language
+'en-gb'    1  2    ← Name repeated; Language[0] present
+NULL       0  1    ← new record r₂; Name exists but no Language</code></pre>
+    <p data-cid="main-270">
+      Reading these five values back with their levels, a finite-state machine can reconstruct
+      the exact nesting structure of both original records. The NULL with
+      <code>r=1, d=1</code> tells us: Name has repeated (repetition level 1), and only one
+      level of the path is defined (Name is present, but Language is absent within it).
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 4 -->
+  <h2 data-cid="main-280" id="s4">4. Record Assembly from Columns</h2>
+
+  <p data-cid="main-290">
+    Reading a subset of fields from columnar storage and reconstructing the output records
+    efficiently is the inverse problem. Dremel solves this with a finite-state machine (FSM)
+    per selected field. Each FSM state corresponds to a FieldReader for one of the selected
+    fields. State transitions are labeled with repetition levels: after reading a value from
+    one field, the next repetition level determines which field-reader to visit next.
+  </p>
+
+  <p data-cid="main-300">
+    The construction of this FSM is non-trivial but follows from the schema tree structure.
+    For any two fields whose paths share a common repeated ancestor, the FSM will transition
+    between their readers at the repetition level of that ancestor. The algorithm (shown in
+    the paper's Appendix C) produces a compact FSM that traverses all selected fields exactly
+    once per record, in schema order, with no backtracking. Crucially, it never reads fields
+    that are not selected — this is what makes columnar storage fast.
+  </p>
+
+  <div class="box intuition" data-cid="main-310">
+    <span class="box-label">Skipping Unneeded Fields is the Point</span>
+    <p data-cid="main-320">
+      A Google schema may have thousands of fields. A typical analytical query touches perhaps
+      five. Columnar storage means only those five columns are ever read from disk. With record-
+      oriented storage, reading any field requires reading the entire record. At trillion-record
+      scale, this difference in I/O dominates all other costs. Dremel's FSM-based assembly
+      makes it possible to select a small subset of fields, read only their column stripes, and
+      produce correct output records — never materializing complete records.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 5 -->
+  <h2 data-cid="main-330" id="s5">5. Query Language and Execution</h2>
+
+  <p data-cid="main-340">
+    Dremel's query language is SQL-like, extended to handle nested structure. The key extension
+    is the <code>WITHIN</code> keyword for within-record aggregation. For example:
+  </p>
+
+  <div class="box example" data-cid="main-350">
+    <span class="box-label">Example — Within-Record Aggregation</span>
+    <pre><code>SELECT DocId AS Id,
+       COUNT(Name.Language.Code) WITHIN Name AS Cnt,
+       Name.Url + ',' + Name.Language.Code AS Str
+FROM t
+WHERE REGEXP(Name.Url, '^http') AND DocId &lt; 20;</code></pre>
+    <p data-cid="main-360">
+      The <code>WITHIN Name</code> clause tells the query to count Language codes within each
+      Name subrecord, producing a separate count per Name rather than a global count per document.
+      The output is a nested table where each document has a list of Name groups, each group
+      containing the Url, the per-Name language count, and a list of concatenated strings.
+      This kind of within-record aggregation is impossible to express in standard flat SQL.
+    </p>
+  </div>
+
+  <p data-cid="main-370">
+    The execution engine avoids materializing full records during query processing. Instead, it
+    uses a select-project-aggregate evaluation algorithm that operates directly on column stripes
+    with their repetition and definition levels, producing aggregated output at the correct
+    nesting level without ever assembling complete Protocol Buffer records. This is what makes
+    Dremel fast: the query answers emerge from a single coordinated pass over the selected columns.
+  </p>
+
+  <!-- ═══════════════════════════════════════════ SECTION 6 -->
+  <h2 data-cid="main-380" id="s6">6. The Multi-Level Serving Tree</h2>
+
+  <p data-cid="main-390">
+    The second major contribution of Dremel is its execution architecture. Dremel borrows a
+    pattern from distributed search engines: a multi-level serving tree in which a single query
+    is rewritten at each level and fanned out to thousands of servers working in parallel.
+  </p>
+
+  <div class="box definition" data-cid="main-400">
+    <span class="box-label">Serving Tree Architecture</span>
+    <p data-cid="main-410">
+      A Dremel cluster has three tiers. The <strong>root server</strong> receives queries from
+      clients, determines which <em>tablets</em> (horizontal partitions of a table) must be
+      scanned, and rewrites the query as a union of partial-results queries to be sent to the
+      next level. <strong>Intermediate servers</strong> receive their assigned query fragment,
+      further decompose it to the servers below, collect partial aggregations on the way up,
+      and return partially-aggregated results to the root. <strong>Leaf servers</strong> read
+      column stripe data from the storage layer (Google File System) or local disk, execute
+      the query against their tablets, and return partial aggregate values up the tree.
+    </p>
+  </div>
+
+  <p data-cid="main-420">
+    A simple aggregation query like
+    <code>SELECT A, COUNT(B) FROM T GROUP BY A</code> gets rewritten at the root as a union
+    of partial sub-queries. At level 1, each server receives a query of the form:
+  </p>
+
+  <div class="box example" data-cid="main-430">
+    <span class="box-label">Query Rewriting in the Serving Tree</span>
+    <pre><code>-- root broadcasts to level-1 servers:
+SELECT A, SUM(c) FROM (R₁¹ UNION ALL ... R₁ⁿ) GROUP BY A
+
+-- each level-1 server rewrites for its leaf servers:
+Rᵢ¹ = SELECT A, COUNT(B) AS c FROM Tᵢ¹ GROUP BY A</code></pre>
+    <p data-cid="main-440">
+      Where <span class="tts-math" data-tts="T sub i superscript 1">$T_i^1$</span> is the
+      disjoint set of tablets assigned to leaf server <em>i</em>. The leaf servers compute local
+      counts; the intermediate servers sum them; the root sums the intermediate totals. This
+      aggregation "up the tree" is what enables the system to produce a global GROUP BY result
+      from thousands of independent partial scans.
+    </p>
+  </div>
+
+  <p data-cid="main-450">
+    A critical feature is the query dispatcher's handling of <em>stragglers</em> — leaf servers
+    that take disproportionately long due to hardware variability, other workloads, or network
+    delays. The dispatcher sets a parameter specifying the minimum fraction of tablets that must
+    be processed before returning a result. Setting this to 98% rather than 100% can dramatically
+    speed up queries: the system returns an approximate answer (missing 2% of tablets) without
+    waiting for the slowest machines. For many analytical queries, this small approximation is
+    acceptable.
+  </p>
+
+  <p data-cid="main-460">
+    The execution capacity is measured in <em>slots</em>, where one slot is one execution thread
+    on one leaf server. A system with 3,000 leaf servers running 8 threads each has 24,000 slots.
+    A table spanning 100,000 tablets can be scanned by assigning roughly 5 tablets per slot at
+    once, cycling through all tablets in batches. The tablet histogram experiments show that 99%
+    of tablets are processed in under one second per slot, meaning most queries complete well
+    within interactive response times.
+  </p>
+
+  <!-- ═══════════════════════════════════════════ SECTION 7 -->
+  <h2 data-cid="main-470" id="s7">7. Experimental Results</h2>
+
+  <p data-cid="main-480">
+    The paper tests Dremel on five large production datasets at Google, the largest of which
+    (T4 and T5) have over one trillion rows, spanning 20–105TB of compressed columnar data.
+    These are datasets used for real Google production analytics — crawled web documents,
+    Android app install tracking, crash reports, spam analysis.
+  </p>
+
+  <p data-cid="main-490">
+    <strong>Columnar vs. record-oriented storage (local disk).</strong> On a 300K-row fragment
+    of T1 stored on a single disk, reading a single field from columnar storage takes
+    approximately 0.5 seconds (read + decompress). Reading the same field from record-oriented
+    storage takes about 3 seconds (read + decompress + parse entire record). The advantage of
+    columnar storage grows linearly with the number of fields in the schema but is already
+    roughly 6× for a single field. Record assembly — reconstructing complete records from
+    columns — adds roughly 50% overhead but is still faster than record-oriented storage for
+    queries touching fewer than a handful of fields.
+  </p>
+
+  <p data-cid="main-500">
+    <strong>MapReduce vs. Dremel.</strong> For a query counting the average number of terms
+    in a text field (Query
+    <span class="tts-math" data-tts="Q sub 1">$Q_1$</span>), MapReduce on record-oriented
+    storage takes approximately 1,000 seconds (about 17 minutes) for 85 billion records.
+    MapReduce on columnar storage (reading only the one needed field) takes about 180 seconds.
+    Dremel on the same data takes about 7 seconds. The three-orders-of-magnitude improvement
+    from hours to seconds for the same logical query is what makes interactive analytics
+    at this scale possible.
+  </p>
+
+  <p data-cid="main-510">
+    <strong>Serving tree topology.</strong> For an aggregation returning a few hundred records
+    (Query
+    <span class="tts-math" data-tts="Q sub 2">$Q_2$</span>), the serving tree depth makes
+    little difference — 2, 3, or 4 levels all finish in about 3 seconds because the result
+    is small enough that aggregation cost is negligible. For an aggregation returning 1.1
+    million distinct domain names (Query
+    <span class="tts-math" data-tts="Q sub 3">$Q_3$</span>), adding a level halves the
+    execution time because partial aggregation at intermediate nodes dramatically reduces the
+    data flowing up the tree.
+  </p>
+
+  <p data-cid="main-520">
+    <strong>Scalability.</strong> Running a top-k query
+    (<span class="tts-math" data-tts="Q sub 5">$Q_5$</span>) on a trillion-row table (T4,
+    4.2TB compressed) with 1,000 to 4,000 leaf servers, the total CPU time is constant at
+    about 300,000 CPU-seconds in all configurations — the same amount of work is done regardless
+    of cluster size. But the wall-clock time decreases near-linearly: 4× as many servers gives
+    roughly 4× the speed. This near-linear scaling is the key result validating Dremel's
+    architecture.
+  </p>
+
+  <!-- ═══════════════════════════════════════════ SECTION 8 -->
+  <h2 data-cid="main-530" id="s8">8. Impact and Legacy</h2>
+
+  <p data-cid="main-540">
+    Dremel is the direct ancestor of Google BigQuery, which exposed Dremel's capabilities
+    as a public cloud service in 2010. BigQuery's SQL-over-petabytes model, columnar storage,
+    and serverless elastic scaling all trace directly to the ideas in this paper.
+    The columnar storage format described here (with repetition and definition levels) became
+    the basis of <strong>Apache Parquet</strong>, the dominant open-source columnar file format
+    for the Hadoop ecosystem. Parquet is today the default storage format for Spark, Hive,
+    Presto/Trino, and most data lakehouse architectures.
+  </p>
+
+  <p data-cid="main-550">
+    The serving-tree execution architecture influenced <strong>Apache Drill</strong> and
+    <strong>Presto</strong>, both of which adopted multi-level distributed execution with
+    partial aggregation at intermediate nodes. The insight that nested data can be stored
+    and queried in columnar format without flattening — and that doing so is essential for
+    performance at scale — has become a foundational principle of modern data engineering.
+  </p>
+
+  <p data-cid="main-560">
+    Academically, the paper's encoding scheme for nested columnar data is one of the most
+    carefully worked-out encoding algorithms in the systems literature. The repetition and
+    definition level scheme is elegant, minimal (requires only a few bits per value), lossless,
+    and directly supports both selective projection (read only needed fields) and correct
+    record reconstruction (reassemble full records when needed). Understanding this encoding
+    is prerequisite knowledge for anyone building or extending columnar storage systems.
+  </p>
+
+  <!-- ═══════════════════════════════════════════ REFERENCES -->
+  <h2 data-cid="main-570" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-580">D. J. Abadi, P. A. Boncz, and S. Harizopoulos. Column-Oriented Database Systems. <em>VLDB</em>, 2(2), 2009.</li>
+    <li data-cid="main-590">F. Chang, J. Dean, S. Ghemawat, W. C. Hsieh, D. A. Wallach, M. Burrows, T. Chandra, A. Fikes, and R. Gruber. Bigtable: A Distributed Storage System for Structured Data. In <em>OSDI</em>, 2006.</li>
+    <li data-cid="main-600">R. Chaiken, B. Jenkins, P.-A. Larson, B. Ramsey, D. Shakib, S. Weaver, and J. Zhou. SCOPE: Easy and Efficient Parallel Processing of Massive Data Sets. <em>VLDB</em>, 1(2), 2008.</li>
+    <li data-cid="main-610">C. Chambers, A. Raniwala, F. Perry, S. Adams, R. Henry, R. Bradshaw, and N. Weizenbaum. FlumeJava: Easy, Efficient Data-Parallel Pipelines. In <em>PLDI</em>, 2010.</li>
+    <li data-cid="main-620">J. Dean and S. Ghemawat. MapReduce: Simplified Data Processing on Large Clusters. In <em>OSDI</em>, 2004.</li>
+    <li data-cid="main-630">S. Ghemawat, H. Gobioff, and S.-T. Leung. The Google File System. In <em>SOSP</em>, 2003.</li>
+    <li data-cid="main-640">L. A. Barroso and U. Hölzle. <em>The Datacenter as a Computer: An Introduction to the Design of Warehouse-Scale Machines</em>. Morgan &amp; Claypool Publishers, 2009.</li>
+    <li data-cid="main-650">L. S. Colby. A Recursive Algebra and Query Optimization for Nested Relations. <em>SIGMOD Rec.</em>, 18(2), 1989.</li>
+    <li data-cid="main-660">C. Olston, B. Reed, U. Srivastava, R. Kumar, and A. Tomkins. Pig Latin: A Not-So-Foreign Language for Data Processing. In <em>SIGMOD</em>, 2008.</li>
+    <li data-cid="main-670">R. Pike, S. Dorward, R. Griesemer, and S. Quinlan. Interpreting the Data: Parallel Analysis with Sawzall. <em>Scientific Programming</em>, 13(4), 2005.</li>
+    <li data-cid="main-680">M. Stonebraker, D. Abadi, D. J. DeWitt, S. Madden, E. Paulson, A. Pavlo, and A. Rasin. MapReduce and Parallel DBMSs: Friends or Foes? <em>Commun. ACM</em>, 53(1), 2010.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script>
+</body>
+</html>

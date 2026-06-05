@@ -1,0 +1,6 @@
+{
+  "title": "Implementing Data Cubes Efficiently",
+  "authors": "Venky Harinarayan, Anand Rajaraman, Jeffrey D. Ullman",
+  "venue": "SIGMOD 1996",
+  "description": "Introduces a lattice framework for data cube materialization and presents greedy algorithms that select which views to precompute, achieving within a constant factor of optimal query performance under space constraints."
+}

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Encapsulation of Parallelism in the Volcano Query Processing System · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="volcano-parallelism" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/volcano-parallelism/">Volcano Parallelism</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. The Volcano System</a></li>
+    <li><a href="#s2">2. The Iterator Model: Open, Next, Close</a></li>
+    <li><a href="#s3">3. Two Models of Parallelization</a></li>
+    <li><a href="#s4">4. The Operator Model and the Exchange Iterator</a></li>
+    <li><a href="#s5">5. Vertical Parallelism: Pipelining Between Processes</a></li>
+    <li><a href="#s6">6. Horizontal Parallelism: Bushy and Intra-Operator</a></li>
+    <li><a href="#s7">7. A Worked Example</a></li>
+    <li><a href="#s8">8. Performance Overhead</a></li>
+    <li><a href="#s9">9. Why This Matters</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">Scientific Paper · SIGMOD 1990</div>
+    <h1>Encapsulation of Parallelism in the Volcano Query Processing System</h1>
+    <div class="paper-meta">
+      <span class="authors">Goetz Graefe</span>
+      <span class="venue">Proceedings of ACM SIGMOD 1990 · University of Colorado, Boulder</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    Volcano is a new dataflow query processing system designed for database systems research and education. The uniform interface between operators makes Volcano extensible by new operators. All operators are designed and coded as if they were meant for a single-process system only. When attempting to parallelize Volcano, the authors had to choose between two models of parallelization—the bracket model and the operator model. By rejecting the bracket model, they introduce the novel operator model and provide details of Volcano's exchange operator that parallelizes all other operators. The exchange operator encapsulates all parallelism issues and therefore makes implementation of parallel database algorithms significantly easier and more robust. Included in this encapsulation is the translation between demand-driven dataflow within processes and data-driven dataflow between processes.
+  </div>
+
+  <!-- ═══ SECTION 1 ═══ -->
+  <h2 data-cid="main-020" id="s1">1. The Volcano System</h2>
+
+  <p data-cid="main-030">
+    Volcano was built at the University of Colorado as a testbed for database systems research. Its design goals were extensibility—the ability to add new operators easily—and efficiency, without sacrificing either for the other. The system is small: fewer than two dozen core modules totaling about 15,000 lines of C. Those modules include a file system, buffer management, sorting, top-down B*-trees, and a pair of algorithms for natural join, semi-join, outer join, anti-join, aggregation, duplicate elimination, division, union, intersection, difference, anti-difference, and Cartesian product.
+  </p>
+
+  <p data-cid="main-040">
+    The most important module—and the focus of this paper—is the <em>exchange</em> operator. It was designed and implemented after all other modules, with a specific goal: to parallelize every existing query algorithm without modifying a single line of their implementations. This goal was almost entirely achieved.
+  </p>
+
+  <div class="box intuition" data-cid="main-050">
+    <span class="box-label">Intuition — The core promise</span>
+    <p data-cid="main-060">
+      Parallelism in query processing is normally implemented by modifying each algorithm to be aware of multiple processes, partitioned data, and inter-process communication. This is expensive and error-prone: every time a new algorithm is added, its parallel version must be written separately. Volcano's insight is to factor all of this complexity into one module—the exchange operator—so that algorithm developers never think about parallelism at all. Write once for a single process, parallelize automatically.
+    </p>
+  </div>
+
+  <!-- ═══ SECTION 2 ═══ -->
+  <h2 data-cid="main-070" id="s2">2. The Iterator Model: Open, Next, Close</h2>
+
+  <p data-cid="main-080">
+    Before understanding the exchange operator, you need to understand how Volcano structures query execution. All query processing operators in Volcano are implemented as <strong>iterators</strong> that support a simple three-procedure interface: <code>open</code>, <code>next</code>, and <code>close</code>. This model, sometimes called the Volcano iterator model or the pull model, works as follows:
+  </p>
+
+  <div class="box definition" data-cid="main-090">
+    <span class="box-label">Definition — The Iterator Interface</span>
+    <ul data-cid="main-100">
+      <li><code>open()</code>: Initialize the operator's state record. For a hash join, this might allocate the hash table. For a file scan, it opens the file. After open, the operator is ready to produce its first tuple. Critically, open calls open on all input operators recursively—the entire query tree initializes in one top-down open traversal.</li>
+      <li><code>next()</code>: Return the next output tuple, or an end-of-stream indicator if no more tuples are available. The return value is a NEXT_RECORD structure: a record identifier and a record address in the buffer pool. To get the next tuple, an operator typically calls next on its inputs, processes the result, and returns an output tuple.</li>
+      <li><code>close()</code>: Shut down the operator and release all resources. Close calls close on all inputs recursively—a single top-level close shuts down the entire query tree.</li>
+    </ul>
+  </div>
+
+  <p data-cid="main-110">
+    This interface is the same for every operator in the system. A file scan implements open/next/close. A join implements open/next/close—it calls open on its two inputs during its own open, calls next on them during its own next, and calls close on them during its own close. Because operators do not need to know where their input comes from—only that it implements open/next/close—the system supports what the paper calls <strong>anonymous inputs</strong> or <em>streams</em>.
+  </p>
+
+  <p data-cid="main-120">
+    Query execution is <strong>demand-driven</strong> (also called lazy or pull evaluation). The top-level operator in a query plan is called repeatedly with next until it returns end-of-stream. Each next call propagates down the operator tree, pulling tuples from below only as needed. No operator produces output until its consumer asks for it. This is efficient in memory because only one tuple (or a small buffer of tuples) needs to be live in memory at any time for each operator.
+  </p>
+
+  <div class="box example" data-cid="main-130">
+    <span class="box-label">Example — A Simple Query Tree</span>
+    <p data-cid="main-140">
+      Consider the query tree: PRINT → JOIN → (FILE_SCAN_EMP, FILE_SCAN_DEPT). When the user calls open on PRINT, PRINT calls open on JOIN, which calls open on both FILE_SCANs, which open their respective files. When the user calls next on PRINT, PRINT calls next on JOIN. JOIN calls next on FILE_SCAN_EMP to get the first employee tuple, then calls next on FILE_SCAN_DEPT repeatedly to find matching department tuples, and returns one join result to PRINT. PRINT formats it. This continues until JOIN returns end-of-stream to PRINT.
+    </p>
+  </div>
+
+  <!-- ═══ SECTION 3 ═══ -->
+  <h2 data-cid="main-150" id="s3">3. Two Models of Parallelization</h2>
+
+  <p data-cid="main-160">
+    When Graefe attempted to parallelize Volcano on a multiprocessor machine, he faced a fundamental design choice. There are two paradigms for parallelizing an iterator-based query engine:
+  </p>
+
+  <div class="box definition" data-cid="main-170">
+    <span class="box-label">The Bracket Model</span>
+    <p data-cid="main-180">
+      In the <strong>bracket model</strong> (used by GAMMA, Bubba, and others), each operator is wrapped in a generic process template that handles all inter-process communication. The template receives data from upstream processes and sends data to downstream processes via network I/O. The operator itself is "bracketed" between receiving and sending code. The operator code handles only the algorithm; the template handles only parallelism.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-190">
+    <span class="box-label">The Operator Model</span>
+    <p data-cid="main-200">
+      In the <strong>operator model</strong> (Volcano's approach), parallelism is encapsulated in a single, special operator called the <em>exchange</em> iterator. The exchange operator uses and provides the standard open/next/close interface—it looks like any other operator to those above and below it in the query tree. Internally, it manages all inter-process communication, process forking, flow control, and synchronization. All other operators are coded for a single-process system and need no modification.
+    </p>
+  </div>
+
+  <p data-cid="main-210">
+    The bracket model has a fundamental problem: each locus of control is a separate process, requiring a scheduler process for each operator. When the system is extended with a new operator type, two implementations must be written—the algorithm and its parallel wrapper. The operator model requires only the algorithm; the exchange operator handles the rest.
+  </p>
+
+  <div class="box warn" data-cid="main-220">
+    <span class="box-label">Why the bracket model fails for extensibility</span>
+    <p data-cid="main-230">
+      In the bracket model, operators use network I/O (inter-process communication) as their only means of obtaining input and delivering output. This means every operator in a parallel plan crosses process boundaries on every tuple—even when the entire query could run on a single machine without any IPC. In contrast, in Volcano's operator model, only exchange operators cause process switches. Operators that happen to be in the same process communicate by ordinary procedure calls, which are orders of magnitude cheaper than IPC.
+    </p>
+  </div>
+
+  <!-- ═══ SECTION 4 ═══ -->
+  <h2 data-cid="main-240" id="s4">4. The Operator Model and the Exchange Iterator</h2>
+
+  <p data-cid="main-250">
+    The exchange iterator is a full iterator: it implements open, next, and close. It can be inserted at any point in a query execution plan. Figure 2 in the paper shows a query plan with multiple XCHG (exchange) nodes interspersed among regular operators like JOIN and FS (file scan):
+  </p>
+
+  <div class="box example" data-cid="main-260">
+    <span class="box-label">Example — A Parallel Query Tree</span>
+    <p data-cid="main-270">
+      PRINT → XCHG → JOIN → (JOIN → (XCHG → FS, XCHG → FS), XCHG → FS). Each XCHG node is a process boundary. Operators above XCHG run in the consumer process; operators below XCHG run in one or more producer processes. The XCHG nodes handle all data transfer between processes via shared-memory ports and semaphores.
+    </p>
+  </div>
+
+  <p data-cid="main-280">
+    When an exchange operator is opened by the consumer process, it creates a shared-memory data structure called a <strong>port</strong> and forks a new child process using the UNIX <code>fork</code> system call. The child process is an exact duplicate of the parent. The parent (consumer) proceeds to act as a normal iterator consumer—it calls next on the exchange iterator, which retrieves records from the port. The child (producer) runs the subtree below the exchange operator, pushing output records into the port.
+  </p>
+
+  <p data-cid="main-290">
+    Records are transferred in <strong>packets</strong>: arrays of NEXT_RECORD structures. The packet size is a tunable parameter. Large packets amortize the overhead of inter-process coordination; small packets enable fine-grained pipelining. The paper demonstrates that for packet sizes above about 50 records, the overhead per record becomes negligible.
+  </p>
+
+  <p data-cid="main-300">
+    An optional <strong>flow control</strong> semaphore prevents the producer from racing too far ahead of the consumer. If flow control is enabled, after inserting a packet into the port, the producer must acquire a semaphore before inserting the next one. The initial value of this semaphore (say, 4) limits how many packets can be in flight at once. This prevents memory exhaustion in the buffer pool when producers are significantly faster than consumers.
+  </p>
+
+  <!-- ═══ SECTION 5 ═══ -->
+  <h2 data-cid="main-310" id="s5">5. Vertical Parallelism: Pipelining Between Processes</h2>
+
+  <p data-cid="main-320">
+    <strong>Vertical parallelism</strong>, also called pipelining, means that multiple operators in a pipeline run simultaneously in different processes. In a single-process system, the sequence SCAN → FILTER → JOIN executes strictly sequentially: the scan produces a tuple, then the filter processes it, then the join uses it. Only one stage is active at any instant.
+  </p>
+
+  <p data-cid="main-330">
+    With one exchange operator in the pipeline—say, between FILTER and JOIN—the scan and filter run in a producer process while the join runs in the consumer process. Both processes run simultaneously. While the consumer is processing the current batch of filtered tuples, the producer is already scanning and filtering the next batch. This overlap is vertical parallelism: the pipeline stages run in parallel, each working on a different portion of the data stream.
+  </p>
+
+  <p data-cid="main-340">
+    Note a subtlety: inside a single process, Volcano uses demand-driven (pull) dataflow—the consumer requests tuples from the producer via procedure calls. But the exchange operator switches the paradigm: between processes, Volcano uses <strong>data-driven</strong> (push) dataflow—the producer pushes packets into the port as fast as it can (subject to flow control), without waiting for requests. The exchange operator mediates the transition between these two paradigms on both sides.
+  </p>
+
+  <div class="box intuition" data-cid="main-350">
+    <span class="box-label">Intuition — Pull inside, push between</span>
+    <p data-cid="main-360">
+      Within a process, pull (demand-driven) dataflow is efficient because it avoids unnecessary work: a filter that rejects 99% of tuples does not cause the scan to race ahead producing data that goes unused. Between processes, push (data-driven) dataflow is more efficient because it avoids request messages: the producer doesn't need to wait for a "give me a tuple" message from the consumer before producing. The exchange operator handles the translation so that neither the operators above nor those below need to know about this duality.
+    </p>
+  </div>
+
+  <!-- ═══ SECTION 6 ═══ -->
+  <h2 data-cid="main-370" id="s6">6. Horizontal Parallelism: Bushy and Intra-Operator</h2>
+
+  <p data-cid="main-380">
+    Volcano's exchange operator also supports two forms of <strong>horizontal parallelism</strong>: <em>bushy parallelism</em> and <em>intra-operator parallelism</em>.
+  </p>
+
+  <p data-cid="main-390">
+    <strong>Bushy parallelism</strong> (also called inter-operator horizontal parallelism) means that independent subtrees of a query plan execute simultaneously on different CPUs. In a three-way join <span class="tts-math" data-tts="A join B join C">$A \bowtie B \bowtie C$</span>, the computation of <span class="tts-math" data-tts="A join B">$A \bowtie B$</span> can proceed on some CPUs while <span class="tts-math" data-tts="C">$C$</span> is being scanned on others. Inserting an exchange operator between the two inputs to the top-level join achieves this: the first sort is the producer in one process, the second sort is the producer in another process, and they run in parallel.
+  </p>
+
+  <p data-cid="main-400">
+    <strong>Intra-operator parallelism</strong> means that a single operator runs simultaneously on multiple CPUs, each working on a different partition of the data. This is the form of parallelism exploited by parallel sort (multiple processes sort different partitions), parallel hash join (multiple processes hash different partitions into different hash tables), and parallel aggregation. Intra-operator parallelism requires <em>data partitioning</em>: the input data must be divided among multiple producer processes such that each process gets an independent, complete slice.
+  </p>
+
+  <p data-cid="main-410">
+    In Volcano, intra-operator parallelism is implemented by including multiple input queues in the port (one per producer process). The producer processes each build a partition, and the consumer selects which queue to read from using a support function. For hash partitioning, the support function hashes the current query key and returns the appropriate queue index. For round-robin partitioning, it rotates through queues in sequence. For key-range partitioning, it uses a lookup table of range boundaries.
+  </p>
+
+  <div class="box definition" data-cid="main-420">
+    <span class="box-label">Definition — Propagation Tree Forking</span>
+    <p data-cid="main-430">
+      When a master producer process needs to create <span class="tts-math" data-tts="k">$k$</span> parallel producer processes (slaves), rather than forking all <span class="tts-math" data-tts="k">$k$</span> processes itself (which is expensive and produces a star topology), Volcano uses a <strong>propagation tree</strong>: the master forks one slave, then both fork another, then all four fork another, etc. This binary fanout takes <span class="tts-math" data-tts="log k">$\log k$</span> rounds instead of <span class="tts-math" data-tts="k">$k$</span> rounds, significantly reducing startup latency for large degrees of parallelism.
+    </p>
+  </div>
+
+  <!-- ═══ SECTION 7 ═══ -->
+  <h2 data-cid="main-440" id="s7">7. A Worked Example: Three Process Groups</h2>
+
+  <p data-cid="main-450">
+    The paper provides a detailed worked example with operators <span class="tts-math" data-tts="A, B, C, D">$A, B, C, D$</span> where <span class="tts-math" data-tts="A">$A$</span> calls <span class="tts-math" data-tts="B">$B$</span>'s procedures, <span class="tts-math" data-tts="B">$B$</span> calls <span class="tts-math" data-tts="C">$C$</span>'s, and <span class="tts-math" data-tts="C">$C$</span> calls <span class="tts-math" data-tts="D">$D$</span>'s. Two exchange operators—X between <span class="tts-math" data-tts="A and B">$A$</span> and <span class="tts-math" data-tts="B">$B$</span>, and Y between <span class="tts-math" data-tts="C and D">$C$</span> and <span class="tts-math" data-tts="D">$D$</span>—partition the query into three process groups: <span class="tts-math" data-tts="A sub zero">$A_0$</span> (running operator <span class="tts-math" data-tts="A">$A$</span> alone), the BC group (running operators <span class="tts-math" data-tts="B">$B$</span> and <span class="tts-math" data-tts="C">$C$</span> together, in two parallel processes <span class="tts-math" data-tts="BC sub 0 through BC sub 2">$BC_0$ through $BC_2$</span>), and the D group (running operator <span class="tts-math" data-tts="D">$D$</span> in four parallel processes <span class="tts-math" data-tts="D sub 0 through D sub 3">$D_0$ through $D_3$</span>).
+  </p>
+
+  <p data-cid="main-460">
+    The startup sequence illustrates the elegance of the operator model: <span class="tts-math" data-tts="A">$A$</span> calls X's open, which creates the port and forks BC processes. The BC group calls Y's open, which creates another port and forks the D group. All processes are now running simultaneously—the D processes scanning and producing, the BC processes joining and filtering, and <span class="tts-math" data-tts="A">$A$</span> consuming and printing. The shutdown sequence is equally clean: when <span class="tts-math" data-tts="A">$A$</span> finishes, it calls X's close, which signals the BC group to shut down, which signals the D group to shut down—the query tree closes orderly from top to bottom.
+  </p>
+
+  <p data-cid="main-470">
+    Throughout this entire startup, execution, and shutdown sequence, operators <span class="tts-math" data-tts="A, B, C, D">$A, B, C, D$</span> are unchanged from their single-process implementations. They call open, next, and close on their inputs without knowing whether those inputs are local procedure calls or port-mediated inter-process transfers. The exchange operator is the only module that knows about processes.
+  </p>
+
+  <!-- ═══ SECTION 8 ═══ -->
+  <h2 data-cid="main-480" id="s8">8. Performance Overhead</h2>
+
+  <p data-cid="main-490">
+    Graefe measures the overhead of the exchange operator on a Sequent Symmetry with twelve Intel 80386 CPUs at 16 MHz. Three experiments are reported:
+  </p>
+
+  <ul data-cid="main-500">
+    <li><strong>Baseline (no exchange):</strong> Creating and releasing 100,000 records in the buffer takes 20.28 seconds.</li>
+    <li><strong>Exchange in no-fork mode</strong> (exchange operator present but no new process created): 28.00 seconds. The overhead per record per exchange operator is <span class="tts-math" data-tts="28 minus 20.28 divided by 3 divided by 100,000">$(28.00 - 20.28) / 3 / 100{,}000$</span> = 25.73 microseconds. Three exchange operators cross three procedure call boundaries.</li>
+    <li><strong>Exchange in fork mode</strong> (four-process pipeline): 16.21 seconds with flow control, 16.16 seconds without. This is <em>less</em> than the single-process baseline—pipeline parallelism actually speeds things up.</li>
+  </ul>
+
+  <p data-cid="main-510">
+    The exchange overhead as a function of packet size is striking. For 1-record packets, elapsed time is 176.4 seconds (dominated by per-packet synchronization). For 250-record packets, it is 12.73 seconds—better than even the sequential baseline. The paper estimates the per-record-per-process-boundary overhead at approximately 992 microseconds when using small packets, dropping to effectively zero with large packets.
+  </p>
+
+  <div class="box example" data-cid="main-520">
+    <span class="box-label">Packet Size vs. Elapsed Time (Table 1)</span>
+    <ul data-cid="main-530">
+      <li>1 record per packet: 176.4 seconds</li>
+      <li>5 records per packet: 45.27 seconds</li>
+      <li>20 records per packet: 20.15 seconds</li>
+      <li>50 records per packet: 15.71 seconds</li>
+      <li>100 records per packet: 13.76 seconds</li>
+      <li>250 records per packet: 12.73 seconds</li>
+    </ul>
+    <p data-cid="main-540">
+      The lesson is clear: packet size should be set to at least 50 records (ideally 100–250) to keep exchange overhead negligible. This is easily achievable for analytical query workloads where large numbers of tuples flow between operators.
+    </p>
+  </div>
+
+  <!-- ═══ SECTION 9 ═══ -->
+  <h2 data-cid="main-550" id="s9">9. Why This Matters</h2>
+
+  <p data-cid="main-560">
+    The Volcano paper's influence on database systems architecture has been profound and lasting. Its iterator model—open, next, close—is the foundation of query execution in virtually every major relational database system: PostgreSQL, MySQL, SQL Server, Oracle, DB2, and their descendants all use some variant of it. The model's elegance is that it composes naturally: any operator can be connected to any other operator, enabling modular, extensible query engine design.
+  </p>
+
+  <p data-cid="main-570">
+    The exchange operator specifically influenced the design of parallel database systems. Systems like Tandem's parallel operator (independently designed around the same time), and later commercial parallel databases, adopted the same insight: parallelism should be a separately encapsulated concern that wraps existing serial algorithms rather than pervading every algorithm's implementation. This dramatically reduces the cost of developing and maintaining parallel database systems.
+  </p>
+
+  <p data-cid="main-580">
+    The distinction between demand-driven dataflow (within a process) and data-driven dataflow (between processes) is also an enduring insight. Modern streaming database systems and distributed query engines (Apache Spark's DataFrame execution, Presto/Trino's split-based execution, Apache Flink's dataflow model) all grapple with this same tension and use similar solutions: lazy pull evaluation within a pipeline stage, eager push across network or process boundaries.
+  </p>
+
+  <p data-cid="main-590">
+    The paper also introduced the vocabulary of vertical parallelism (pipelining), bushy parallelism, and intra-operator parallelism—a taxonomy that remains standard in database systems courses and textbooks. Understanding these three forms of parallelism and how they can be combined is essential for designing and reasoning about any modern high-performance query engine.
+  </p>
+
+  <div class="box intuition" data-cid="main-600">
+    <span class="box-label">Intuition — The enduring lesson</span>
+    <p data-cid="main-610">
+      Volcano teaches that separation of concerns is not just a software engineering platitude—it is a performance-critical design principle. By isolating all parallelism concerns in a single module (the exchange iterator), the system becomes simultaneously easier to extend (write new operators once, for free parallelism), easier to reason about (the parallel behavior is in one place), and more robust (parallelism bugs are in one module, not scattered across every operator). The exchange operator is a rare case where good software engineering and good systems engineering align perfectly.
+    </p>
+  </div>
+
+  <!-- ═══ REFERENCES ═══ -->
+  <h2 data-cid="main-620" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-630">Astrahan, M. M. et al. (1976). System R: A Relational Approach to Database Management. <em>ACM Transactions on Database Systems</em>, 1(2), 97–137.</li>
+    <li data-cid="main-640">Alexander, W. and Copeland, G. (1988). Process and Dataflow Control in Distributed Data-Intensive Systems. <em>Proc. ACM SIGMOD</em>, Chicago, IL, pp. 90–98.</li>
+    <li data-cid="main-650">Batory, D. S. (1986). GENESIS: A Project to Develop an Extensible Database Management System. <em>Proc. Int'l Workshop on Object-Oriented Database Systems</em>, Pacific Grove, CA, pp. 207–208.</li>
+    <li data-cid="main-660">DeWitt, D. J. et al. (1990). The Gamma Database Machine Project. <em>IEEE Transactions on Knowledge and Data Engineering</em>, 2(1), March 1990.</li>
+    <li data-cid="main-670">Graefe, G. (1989). Volcano: An Extensible and Parallel Dataflow Query Processing System. Oregon Graduate Center Technical Report.</li>
+    <li data-cid="main-680">Graefe, G. and Ward, K. (1989). Dynamic Query Evaluation Plans. <em>Proc. ACM SIGMOD</em>, Portland, OR, p. 358.</li>
+    <li data-cid="main-690">Richardson, J. E. and Carey, M. J. (1987). Programming Constructs for Database System Implementation in EXODUS. <em>Proc. ACM SIGMOD</em>, San Francisco, CA, pp. 208–219.</li>
+    <li data-cid="main-700">Stonebraker, M., Ratz, D., Katz, R., Patterson, J., and Ousterhout, J. (1988). The Design of XPRS. <em>Proc. VLDB</em>, Los Angeles, CA, pp. 318–330.</li>
+    <li data-cid="main-710">Williams, P. et al. (1988). R*: An Overview of the Architecture. In <em>Readings in Database Systems</em>, M. Stonebraker (ed.), Morgan-Kaufman.</li>
+    <li data-cid="main-720">Chou, H. T. et al. (1985). Design and Implementation of the Wisconsin Storage System. <em>Software — Practice and Experience</em>, 15(10), pp. 943–962.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script>
+</body>
+</html>

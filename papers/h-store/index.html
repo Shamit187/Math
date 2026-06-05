@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The End of an Architectural Era (It's Time for a Complete Rewrite) · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="h-store" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/h-store/">H-Store</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. The Thesis: An Era Is Over</a></li>
+    <li><a href="#s2">2. Five Architectural Overheads to Eliminate</a></li>
+    <li><a href="#s3">3. Main Memory Changes Everything</a></li>
+    <li><a href="#s4">4. Single-Threaded Execution</a></li>
+    <li><a href="#s5">5. Transaction Classes and Commutativity</a></li>
+    <li><a href="#s6">6. H-Store Architecture Sketch</a></li>
+    <li><a href="#s7">7. TPC-C: 82x Faster</a></li>
+    <li><a href="#s8">8. One Size Does Not Fit All</a></li>
+    <li><a href="#s9">9. Legacy: VoltDB and Beyond</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">VLDB 2007 · Scientific Paper</div>
+    <h1>The End of an Architectural Era (It's Time for a Complete Rewrite)</h1>
+    <div class="paper-meta">
+      <span class="authors">Michael Stonebraker, Samuel Madden, Daniel J. Abadi, Stavros Harizopoulos, Nabil Hachem, Pat Helland</span>
+      <span class="venue">VLDB '07, September 23–28, 2007, Vienna, Austria</span>
+    </div>
+  </section>
+
+  <!-- ABSTRACT -->
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    This paper argues that the dominant relational DBMS architecture — inherited from System R, which was designed in the mid-1970s for disk-based storage, shared-memory multiprocessors, and dumb terminals — is fundamentally ill-suited for modern OLTP workloads. Specialized systems have already demonstrated 1–2 orders of magnitude performance superiority over general-purpose RDBMSs in data warehousing, text processing, and stream processing. This paper presents H-Store, an experimental OLTP engine designed from scratch for the modern hardware environment, and shows that H-Store runs TPC-C a factor of 82 faster than a commercial RDBMS. The key design choices: all data in main memory; single-threaded, run-to-completion execution per site; no redo logging; no locking; no buffer management; stored procedures in lieu of JDBC/ODBC; and a no-knobs self-managing architecture. The paper concludes that the RDBMS community should abandon incremental patching of legacy code and start over.
+  </div>
+
+  <!-- SECTION 1 -->
+  <h2 data-cid="main-020" id="s1">1. The Thesis: An Era Is Over</h2>
+
+  <p data-cid="main-030">
+    IBM's System R, the direct ancestor of DB2 and SQL Server, was designed in 1974–1977. Oracle implemented a similar architecture from the start. These systems share a common set of assumptions that made perfect sense in 1975: data lives on disk (RAM was enormously expensive), multiple queries run simultaneously on a shared-memory machine (CPUs were scarce), and users interact through dumb terminals issuing ad-hoc SQL. The core architectural features that follow from these assumptions are disk-oriented storage and B-tree indexing; multi-threading to hide disk I/O latency; locking-based concurrency control; and write-ahead logging (WAL) for crash recovery.
+  </p>
+
+  <p data-cid="main-040">
+    In 2007, when this paper is written, the world is radically different. A commodity server has 32 GB of RAM. Moore's Law means RAM prices continue to fall. Most OLTP databases fit entirely in main memory today, or will within a few years. CPUs have gotten thousands of times faster; disk bandwidth has not kept pace. And web applications — the dominant new OLTP workload — run transactions of roughly 200 records, completing in under one millisecond, with no user stalls during execution.
+  </p>
+
+  <div class="box intuition" data-cid="main-050">
+    <span class="box-label">Intuition — The Overhead Accounting Argument</span>
+    <p data-cid="main-060">
+      The authors profiled a popular commercial RDBMS running TPC-C and found that only about 12% of its execution time was spent doing <em>useful work</em> — actually executing the transaction logic. The other 88% was overhead: buffer pool management (reading and writing disk pages that, in a main-memory system, are always already in RAM), latching (acquiring and releasing short-term locks on data structures to protect them from concurrent threads), locking (acquiring and releasing long-term row locks for transaction isolation), logging (writing WAL records to a persistent log before every modification), and JDBC/ODBC interface overhead (marshalling data across process boundaries for each query call). Every single one of these overheads exists specifically to support the assumptions of 1975. Remove those assumptions, and you can remove the overhead.
+    </p>
+  </div>
+
+  <!-- SECTION 2 -->
+  <h2 data-cid="main-070" id="s2">2. Five Architectural Overheads to Eliminate</h2>
+
+  <p data-cid="main-080">
+    The authors identify five specific sources of overhead in traditional RDBMSs and argue that each can be eliminated in a clean-slate design for OLTP.
+  </p>
+
+  <div class="box definition" data-cid="main-090">
+    <span class="box-label">1. Disk-Oriented Storage and Buffer Management</span>
+    <p data-cid="main-100">
+      A traditional DBMS manages a buffer pool: a cache of disk pages in RAM. When a transaction accesses a record, the system checks whether the page is in the buffer pool, reads it from disk if not, and pins it for the duration of the access. This buffer management code is sophisticated and expensive. In a main-memory DBMS, every record is always in RAM. The entire buffer pool subsystem — page table management, LRU eviction, dirty-page tracking, double-write protection — can be eliminated. Data structures can be optimized for cache lines (typically 64 bytes) rather than disk pages (typically 8–64 KB), improving cache efficiency dramatically.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-110">
+    <span class="box-label">2. Multi-Threading to Hide Latency</span>
+    <p data-cid="main-120">
+      Traditional RDBMSs use multi-threading to allow other queries to run while one query waits for a disk I/O. In a main-memory system, there are no disk waits. Multi-threading becomes pure overhead: the OS scheduler must context-switch between threads, threads must acquire latches on shared data structures before modifying them, and B-tree code must be hardened against concurrent modification. In H-Store, every logical site is <em>single-threaded</em> and executes each transaction to completion without interruption. No latches are needed on any data structure. The code simplification is enormous.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-130">
+    <span class="box-label">3. Locking-Based Concurrency Control</span>
+    <p data-cid="main-140">
+      Row-level locking in traditional RDBMSs protects against lost updates and dirty reads when multiple transactions run concurrently. In H-Store, since each site is single-threaded and executes one transaction at a time, there can be no concurrent access to the same data at the same site. Locking is eliminated entirely for the common case. Transactions that span multiple sites use an optimistic scheme rather than two-phase locking, since OLTP transactions are very short-lived (sub-millisecond) and therefore almost never hold conflicting locks simultaneously.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-150">
+    <span class="box-label">4. Write-Ahead Logging (Redo Log)</span>
+    <p data-cid="main-160">
+      WAL requires writing a log record to persistent storage before any data modification takes effect. For TPC-C on the commercial system, the authors observe that logging is the primary bottleneck: the system spends two-thirds of its elapsed time inside the logging subsystem. Even with group commit, forced writes to the log add milliseconds to each transaction. In H-Store, which maintains multiple replicas (buddies) for high availability, recovery after a crash is accomplished by copying data from a live replica — no redo log is needed. An undo log (in main memory only, discarded at commit) handles transaction rollback.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-170">
+    <span class="box-label">5. JDBC/ODBC and Client/Server Overhead</span>
+    <p data-cid="main-180">
+      Every SQL call through JDBC or ODBC involves serializing the query string, sending it across a network socket or named pipe, parsing it, optimizing it, executing it, serializing results, and sending them back. For a transaction that executes 20 simple SQL statements, this round-trip overhead dominates useful work. H-Store eliminates this by requiring all transaction logic to be expressed as <em>stored procedures</em> written in C++ (later planned as Ruby-on-Rails), compiled and registered with H-Store at transaction-definition time. At runtime, a client sends only the procedure name and parameter values; all SQL executes as local function calls inside the DBMS process, with data returned in a shared array — no serialization overhead.
+    </p>
+  </div>
+
+  <!-- SECTION 3 -->
+  <h2 data-cid="main-190" id="s3">3. Main Memory Changes Everything</h2>
+
+  <p data-cid="main-200">
+    The authors present a Moore's Law argument that deserves to be read carefully. In the late 1970s, a large machine had about 1 MB of RAM. By 2007, large machines have 100 GB. The OLTP benchmark TPC-C requires about 100 MB per physical distribution center (warehouse). A very large retail enterprise with 1000 warehouses requires 100 GB — fitting in the RAM of a single high-end server, or distributed across a grid of commodity machines each with 32 GB. Within a few years of the paper, a terabyte of main memory will not be unusual for a shared-nothing grid of 20 nodes.
+  </p>
+
+  <p data-cid="main-210">
+    The implication: the time is coming — and for many workloads has already arrived — when the disk-oriented architecture of System R descendants is simply wrong for OLTP. The database must fit in RAM, and the entire system should be designed around that assumption. Any code that exists only to manage the disk abstraction (buffer pool, WAL, disk-oriented B-tree layouts) should be deleted.
+  </p>
+
+  <div class="box warn" data-cid="main-220">
+    <span class="box-label">What About Durability?</span>
+    <p data-cid="main-230">
+      If data lives only in RAM, a power failure destroys everything. H-Store addresses this with two mechanisms. First, <em>replication</em>: each table fragment has one or more buddies — exact copies held on different physical machines. If one machine loses power, its data survives on its buddy and the system continues normally. Second, for longer-term persistence, H-Store can periodically dump data to disk in columnar (no-overwrite) format, similar to a data warehouse checkpoint. This is dramatically simpler than WAL-based recovery and imposes zero overhead on the normal transaction path.
+    </p>
+  </div>
+
+  <!-- SECTION 4 -->
+  <h2 data-cid="main-240" id="s4">4. Single-Threaded Execution</h2>
+
+  <p data-cid="main-250">
+    The single-threaded design deserves more explanation, because it seems counter-intuitive: surely more threads means higher throughput on a multi-core machine? The H-Store answer is: not for OLTP transactions.
+  </p>
+
+  <p data-cid="main-260">
+    OLTP transactions are extremely short. TPC-C's heaviest transaction, new_order, touches about 200 records and completes in under one millisecond on H-Store. In that time, context-switching between threads, acquiring latches on B-tree nodes, and coordinating concurrent access to shared state all consume significant fractions of the available CPU budget. A single thread that runs each transaction to completion — without any interruption, no latches, no locking — finishes the transaction faster than a multi-threaded system that must coordinate at every shared data structure.
+  </p>
+
+  <p data-cid="main-270">
+    To exploit multiple cores, H-Store partitions the database across multiple <em>logical sites</em>, one per available CPU core. Each logical site is an independent, single-threaded processing unit with its own partition of the data, its own B-tree indexes, and its own transaction queue. Transactions that access only one partition (single-sited transactions) run entirely within one logical site with zero cross-site communication — the fast path. Transactions that span multiple partitions require coordination between sites, which H-Store handles with a lightweight protocol designed to minimize round trips.
+  </p>
+
+  <!-- SECTION 5 -->
+  <h2 data-cid="main-280" id="s5">5. Transaction Classes and Commutativity</h2>
+
+  <p data-cid="main-290">
+    H-Store requires the complete workload to be specified in advance as a collection of <em>transaction classes</em>. Each class has fixed SQL statements; only runtime constants (parameter values) vary. This is not as restrictive as it sounds: in practice, web-facing OLTP systems almost never allow users to issue arbitrary ad-hoc SQL — they call well-defined stored procedures with user-supplied parameters.
+  </p>
+
+  <p data-cid="main-300">
+    Given the full set of transaction classes upfront, H-Store can analyze which pairs of classes can conflict — that is, which pairs of transactions, if interleaved, could produce a different final state than if run in serial order. Two transaction classes <em>commute</em> if any interleaving of their single-site sub-plans produces the same database state. A class that commutes with all other classes (including itself) is called <em>sterile</em>.
+  </p>
+
+  <div class="box definition" data-cid="main-310">
+    <span class="box-label">Definition — Single-Sited, One-Shot, and Two-Phase Transactions</span>
+    <p data-cid="main-320">
+      A transaction is <strong>single-sited</strong> if all its SQL commands access data on exactly one partition. It is <strong>one-shot</strong> if all its commands can be decomposed into independent single-site sub-plans dispatched in parallel without requiring intermediate results. A transaction is <strong>two-phase</strong> if it has a read-only Phase 1 (whose results determine whether to proceed or abort) followed by a write Phase 2. TPC-C's five transaction classes are all two-phase and, with appropriate replication of read-only tables, can all be made single-sited and one-shot — allowing H-Store to run TPC-C with zero concurrency control overhead.
+    </p>
+  </div>
+
+  <!-- SECTION 6 -->
+  <h2 data-cid="main-330" id="s6">6. H-Store Architecture Sketch</h2>
+
+  <p data-cid="main-340">
+    H-Store runs on a grid of
+    <span class="tts-math" data-tts="G">$G$</span>
+    nodes. Each node has multiple cores; each core is mapped to one logical site. Sites hold rows of tables contiguously in main memory with conventional B-tree indexing, tuned to the L2 cache line width of the physical machine. The database administrator (or an automatic physical design tool) specifies how tables are horizontally partitioned: typically, a root table is range- or hash-partitioned on its primary key, and all other tables are co-partitioned with rows belonging to the same root record residing on the same site.
+  </p>
+
+  <p data-cid="main-350">
+    Each logical site is single-threaded and executes incoming SQL commands from transactions to completion without interruption. Transaction logic is compiled stored procedures that make local procedure calls rather than JDBC round-trips. Data is returned in a shared data array, avoiding serialization. Replicas (buddies) are kept transactionally consistent: all writes are directed to all replicas synchronously, with ordering guaranteed by a site-unique timestamp consisting of (site_id, local_counter) pairs synchronized using NTP.
+  </p>
+
+  <p data-cid="main-360">
+    The Database Designer is an automatic tool (similar in spirit to C-Store's schema designer) that accepts a schema and a workload and outputs the optimal horizontal partitioning, buddy locations, and indexed fields. For TPC-C, the designer's output is a straightforward Warehouse-partitioned schema that makes all transaction classes single-sited and one-shot.
+  </p>
+
+  <!-- SECTION 7 -->
+  <h2 data-cid="main-370" id="s7">7. TPC-C: 82 Times Faster</h2>
+
+  <p data-cid="main-380">
+    TPC-C is the industry-standard benchmark for OLTP systems. It simulates a wholesale supplier with warehouses, districts, customers, orders, and inventory, and defines five transaction classes: new_order, payment, order_status, delivery, and stock_level. The benchmark is measured in transactions per minute (tpmC).
+  </p>
+
+  <p data-cid="main-390">
+    The experimental setup uses a dual-core 2.8 GHz desktop machine with 4 GB of RAM and 250 GB SATA disks. Both H-Store and a popular commercial RDBMS run on the same hardware. All transaction logic is implemented as stored procedures in both systems. The same driver generates transactions at the maximum rate for both systems. High availability and user terminal simulation are excluded.
+  </p>
+
+  <p data-cid="main-400">
+    <strong>Results:</strong> H-Store processes <strong>70,416 TPC-C transactions per second</strong>. The commercial RDBMS processes <strong>850 transactions per second</strong>. The speedup is a factor of <strong>82.8</strong> — nearly two orders of magnitude. When logging is turned off on the commercial system, its throughput rises to about 2,500 transactions per second, confirming that logging is the primary bottleneck. Even without logging, H-Store is still about 28 times faster, attributable to eliminated buffer management, locking, latching, and JDBC overhead.
+  </p>
+
+  <div class="box pause" data-cid="main-410">
+    <span class="box-label">Pause — Is 82x Realistic?</span>
+    <p data-cid="main-420">
+      The benchmark excludes think time (users "stalling" between requests), which TPC-C requires in its official specification. With think time, the effective throughput advantage shrinks because the system is underloaded regardless. The authors acknowledge this explicitly. However, the relevant comparison for a research system is maximum throughput, not think-time-throttled throughput — the question being asked is "how fast can the engine go?" not "how does it perform at typical retail utilization?" Additionally, the TPC website lists the highest-performing official TPC-C results at about 133,000 transactions per second on a 128-core machine — about 1,000 transactions per second per core. H-Store achieves 35,000 transactions per second per core, which is a genuine 35x superiority even against the best-tuned commercial systems.
+    </p>
+  </div>
+
+  <!-- SECTION 8 -->
+  <h2 data-cid="main-430" id="s8">8. One Size Does Not Fit All</h2>
+
+  <p data-cid="main-440">
+    The paper's second major argument is that the relational model, SQL, and the general-purpose RDBMS paradigm are all inappropriate responses to the diversity of modern database markets. The authors identify five distinct markets:
+  </p>
+
+  <p data-cid="main-450">
+    <strong>OLTP</strong> (business data processing) — H-Store's target. Needs main-memory storage, single-threaded execution, stored procedures, no WAL. <strong>Data Warehouses</strong> — served by column stores like C-Store/Vertica. Needs columnar storage, vectorized execution, aggressive compression, minimal updates. <strong>Stream Processing</strong> — served by systems like Borealis/StreamBase. Needs continuous query evaluation over time windows, real-time output, fault tolerance for partial inputs. <strong>Text and Search</strong> — served by engines like Google, Yahoo search, Lucene. The relational model is wrong here; inverted indexes and ranking models are native primitives. <strong>Scientific Computing</strong> — served by array stores like MATLAB and SciDB. The table is not the right data model; arrays with named dimensions are.
+  </p>
+
+  <p data-cid="main-460">
+    The authors predict that these specialized engines will come to dominate each market, leaving RDBMSs competitive only in "hybrid" markets where no single engine excels. The appropriate response, they argue, is not to patch the monolithic RDBMS with yet another feature, but to retire it and build a collection of clean, purpose-built systems — each designed from scratch for its target market's workload and hardware environment.
+  </p>
+
+  <div class="box intuition" data-cid="main-470">
+    <span class="box-label">Intuition — Why SQL Is Not the Answer for OLTP Either</span>
+    <p data-cid="main-480">
+      In an OLTP system there are no ad-hoc queries — users never type SELECT * FROM Employees WHERE Salary > 50000 directly into the production system. Every interaction is a stored procedure call with typed parameters. SQL's generality (its ability to express arbitrary queries) adds parsing, planning, and optimization overhead that is pure waste for a fixed workload. A better interface is a strongly typed stored-procedure API in a high-level language (the authors advocate Ruby-on-Rails), compiled to native code, with SQL calls as internal subroutines rather than the primary interface. SQL remains useful as a design-time specification language, but as a runtime interface it is a costly abstraction.
+    </p>
+  </div>
+
+  <!-- SECTION 9 -->
+  <h2 data-cid="main-490" id="s9">9. Legacy: VoltDB and Beyond</h2>
+
+  <p data-cid="main-500">
+    H-Store was commercialized as VoltDB in 2010, co-founded by Stonebraker and Madden. VoltDB implements all of H-Store's core ideas — main-memory storage, single-threaded sites, stored procedures, no WAL, peer-to-peer HA via synchronous replication — and has been used in production for high-frequency trading systems, telecommunications billing, and real-time fraud detection. NuoDB, SingleStore (formerly MemSQL), and CockroachDB all incorporate significant design inspiration from H-Store.
+  </p>
+
+  <p data-cid="main-510">
+    The paper's broader prediction — that the "one size fits all" RDBMS paradigm would fragment into specialized engines — has proven remarkably accurate. By 2025, the database landscape includes dozens of purpose-built systems: Snowflake (warehouse), ClickHouse (OLAP), MongoDB (document), Redis (key-value), Apache Kafka (streams), Elasticsearch (text), InfluxDB (time series), and many more. No single system dominates all workloads. The paper's title has proved prophetic.
+  </p>
+
+  <div class="box warn" data-cid="main-520">
+    <span class="box-label">What H-Store Cannot Do</span>
+    <p data-cid="main-530">
+      H-Store assumes the entire workload is specified in advance as a fixed set of transaction classes. Ad-hoc analytical queries cannot be run efficiently against H-Store's main-memory row structures — for that you need a column store. Long-running OLAP joins that produce large intermediate results are not OLTP operations and are explicitly outside H-Store's scope. H-Store also assumes relatively stable schemas and transaction profiles; schema migrations require careful engineering in a system where the physical design is optimized for a specific workload. These constraints make H-Store/VoltDB most suitable for write-heavy, high-throughput OLTP with well-understood access patterns — not as a general-purpose database replacement.
+    </p>
+  </div>
+
+  <!-- REFERENCES -->
+  <h2 data-cid="main-540" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-550">Stonebraker, M., Abadi, D., Batkin, A., et al. (2005). C-Store: A column-oriented DBMS. In <em>Proc. VLDB</em>.</li>
+    <li data-cid="main-560">Stonebraker, M., Bear, C., Cetintemel, U., et al. (2007). One size fits all? — Part 2: Benchmarking results. In <em>Proc. CIDR</em>.</li>
+    <li data-cid="main-570">Mohan, C., Haderle, D., Lindsay, B., Pirahesh, H., and Schwarz, P. (1992). ARIES: A transaction recovery method. <em>ACM Trans. Database Syst.</em>, 17(1):94–162.</li>
+    <li data-cid="main-580">Dewitt, D. and Gray, J. (1992). Parallel database systems: The future of high performance database processing. <em>Comm. of the ACM</em>.</li>
+    <li data-cid="main-590">Lau, E. and Madden, S. (2006). An integrated approach to recovery and high availability in an updatable, distributed data warehouse. In <em>Proc. VLDB</em>.</li>
+    <li data-cid="main-600">Helland, P. (2007). Life beyond distributed transactions: An apostate's opinion. In <em>Proc. CIDR</em>.</li>
+    <li data-cid="main-610">Rao, J. and Ross, K. A. (1999). Cache conscious indexing for decision-support in main memory. In <em>Proc. VLDB</em>.</li>
+    <li data-cid="main-620">Agrawal, R., Carey, M. J., and Livny, M. (1987). Concurrency control performance modeling: Alternatives and implications. <em>ACM Trans. Database Syst.</em>, 12(4).</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script>
+</body>
+</html>

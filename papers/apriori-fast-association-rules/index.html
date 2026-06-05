@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Fast Algorithms for Mining Association Rules · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="apriori-fast-association-rules" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/apriori-fast-association-rules/">Apriori — Fast Association Rules</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. Introduction</a></li>
+    <li><a href="#s2">2. The Apriori Principle</a></li>
+    <li><a href="#s3">3. Algorithm Apriori</a></li>
+    <li><a href="#s4">4. Algorithm AprioriTid</a></li>
+    <li><a href="#s5">5. AprioriHybrid</a></li>
+    <li><a href="#s6">6. Performance Evaluation</a></li>
+    <li><a href="#s7">7. Why Apriori Became the Standard</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">Scientific Paper · VLDB 1994</div>
+    <h1>Fast Algorithms for Mining Association Rules</h1>
+    <div class="paper-meta">
+      <span class="authors">Rakesh Agrawal, Ramakrishnan Srikant</span>
+      <span class="venue">Proceedings of the 20th International Conference on Very Large Data Bases (VLDB), Santiago, Chile, 1994</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    We consider the problem of discovering association rules between items in a large database of sales
+    transactions. We present two new algorithms — Apriori and AprioriTid — that are fundamentally
+    different from the known algorithms AIS and SETM. Empirical evaluation shows that these algorithms
+    outperform the known algorithms by factors ranging from three for small problems to more than an order
+    of magnitude for large problems. We also show how the best features of the two proposed algorithms can
+    be combined into a hybrid algorithm, AprioriHybrid. Scale-up experiments show that AprioriHybrid
+    scales linearly with the number of transactions and has excellent scale-up properties on both the
+    transaction size and the number of items in the database.
+  </div>
+
+  <h2 data-cid="main-020" id="s1">1. Introduction</h2>
+  <p data-cid="main-030">
+    The 1993 Agrawal-Imielinski-Swami paper introduced the association rule problem and proposed a
+    first algorithm. That algorithm used a statistical estimation heuristic to predict whether a
+    candidate itemset would be large before counting it, balancing passes over the data against
+    wasted measurement. It worked, but it was complex: the estimation could be wrong, leading to
+    either extra passes (missed large itemsets) or wasted counting effort (measured small itemsets).
+  </p>
+  <p data-cid="main-040">
+    Agrawal and Srikant ask a different question in this paper: is there a cleaner structural property
+    of large itemsets that we can exploit — one that requires no statistical estimation at all? The
+    answer is yes, and it leads to the <strong>Apriori principle</strong>, one of the most elegant
+    ideas in data mining. The resulting algorithms are simpler, faster by orders of magnitude, and
+    guarantee completeness without any heuristic estimation.
+  </p>
+
+  <h2 data-cid="main-050" id="s2">2. The Apriori Principle</h2>
+
+  <div class="box definition" data-cid="main-060">
+    <span class="box-label">Definition — Support and Large Itemsets</span>
+    <p data-cid="main-070">
+      Let
+      <span class="tts-math" data-tts="script I">$\mathcal{I}$</span>
+      be the set of all items and
+      <span class="tts-math" data-tts="script D">$\mathcal{D}$</span>
+      the transaction database. An <strong>association rule</strong> is an implication
+      <span class="tts-math" data-tts="X implies Y">$X \Rightarrow Y$</span>,
+      where
+      <span class="tts-math" data-tts="X subset of script I">$X \subset \mathcal{I}$</span>,
+      <span class="tts-math" data-tts="Y subset of script I">$Y \subset \mathcal{I}$</span>,
+      and
+      <span class="tts-math" data-tts="X intersect Y equals the empty set">$X \cap Y = \emptyset$</span>.
+      The rule holds in
+      <span class="tts-math" data-tts="script D">$\mathcal{D}$</span>
+      with <strong>confidence</strong>
+      <span class="tts-math" data-tts="c">$c$</span>
+      if
+      <span class="tts-math" data-tts="c percent">$c\%$</span>
+      of transactions containing <em>X</em> also contain <em>Y</em>. It has <strong>support</strong>
+      <span class="tts-math" data-tts="s">$s$</span>
+      if
+      <span class="tts-math" data-tts="s percent">$s\%$</span>
+      of all transactions contain
+      <span class="tts-math" data-tts="X union Y">$X \cup Y$</span>.
+      An itemset with support at least <em>minsup</em> is called a <em>large</em> itemset; all others
+      are <em>small</em>. An itemset of size
+      <span class="tts-math" data-tts="k">$k$</span>
+      is called a <em>k-itemset</em>.
+    </p>
+  </div>
+
+  <div class="box intuition" data-cid="main-080">
+    <span class="box-label">The Apriori Principle — Anti-Monotonicity of Support</span>
+    <p data-cid="main-090">
+      <strong>Any subset of a large itemset must itself be large.</strong> Equivalently, if an itemset
+      is small (support below <em>minsup</em>), then every superset of it is also small. This
+      single observation transforms the search problem. In the 1993 algorithm, the algorithm had to
+      guess which extensions might be large. With the Apriori principle, the algorithm knows for
+      certain: if itemset <em>AB</em> is small, then <em>ABC</em>, <em>ABD</em>, <em>ABCE</em>, and
+      every other superset cannot possibly be large — they are pruned without any counting at all.
+    </p>
+  </div>
+
+  <p data-cid="main-100">
+    The proof is immediate: if
+    <span class="tts-math" data-tts="X union Y">$X \cup Y$</span>
+    appears in some transaction, then <em>X</em> also appears in that transaction (since
+    <span class="tts-math" data-tts="X is a subset of X union Y">$X \subseteq X \cup Y$</span>).
+    So every transaction containing the superset also contains the subset. The support of the subset
+    can only be greater than or equal to the support of the superset. If the superset's support is
+    at least <em>minsup</em>, the subset's must be too; if the subset's support is below <em>minsup</em>,
+    the superset's must be even lower.
+  </p>
+
+  <div class="box pause" data-cid="main-110">
+    <span class="box-label">Pause — how powerful is this?</span>
+    <p data-cid="main-120">
+      Suppose there are 1000 items. The total number of possible itemsets is
+      <span class="tts-math" data-tts="2 to the power 1000">$2^{1000}$</span>
+      — incomprehensibly large. But suppose only 50 individual items have support above <em>minsup</em>.
+      Then the only possible large itemsets can contain subsets of those 50 items — down to
+      <span class="tts-math" data-tts="2 to the power 50">$2^{50}$</span>
+      candidates. If the data is sparse (which real retail data usually is), even most of those
+      are pruned immediately. In practice, the total number of large itemsets is often in the
+      thousands, not the billions. Anti-monotonicity is the key that makes this feasible.
+    </p>
+  </div>
+
+  <h2 data-cid="main-130" id="s3">3. Algorithm Apriori</h2>
+  <p data-cid="main-140">
+    The Apriori algorithm proceeds in <em>passes</em> indexed by itemset size
+    <span class="tts-math" data-tts="k">$k$</span>.
+    In pass
+    <span class="tts-math" data-tts="k">$k$</span>,
+    it counts candidate
+    <span class="tts-math" data-tts="k">$k$</span>-itemsets
+    <span class="tts-math" data-tts="C sub k">$C_k$</span>
+    (candidates for being large), identifies which ones are large (forming the set
+    <span class="tts-math" data-tts="L sub k">$L_k$</span>),
+    and uses
+    <span class="tts-math" data-tts="L sub k">$L_k$</span>
+    to generate candidates
+    <span class="tts-math" data-tts="C sub k plus 1">$C_{k+1}$</span>
+    for the next pass. The algorithm terminates when no new large itemsets are found.
+  </p>
+
+  <div class="box example" data-cid="main-150">
+    <span class="box-label">Algorithm Apriori — Pseudocode</span>
+    <p data-cid="main-160">
+      1.&nbsp;
+      <span class="tts-math" data-tts="L sub 1 equals large 1-itemsets">$L_1 = \{\text{large 1-itemsets}\}$</span><br/>
+      2.&nbsp;<strong>for</strong>
+      <span class="tts-math" data-tts="k equals 2">$k = 2$</span>;
+      <span class="tts-math" data-tts="L sub k minus 1 is not empty">$L_{k-1} \neq \emptyset$</span>;
+      <span class="tts-math" data-tts="k plus plus">$k\!+\!+$</span>
+      <strong>do begin</strong><br/>
+      3.&nbsp;&nbsp;&nbsp;
+      <span class="tts-math" data-tts="C sub k">$C_k$</span>
+      = apriori-gen(<span class="tts-math" data-tts="L sub k minus 1">$L_{k-1}$</span>);&nbsp;&nbsp;// new candidates<br/>
+      4.&nbsp;&nbsp;&nbsp;<strong>forall</strong> transactions
+      <span class="tts-math" data-tts="t in script D">$t \in \mathcal{D}$</span>
+      <strong>do begin</strong><br/>
+      5.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <span class="tts-math" data-tts="C sub t">$C_t$</span>
+      = subset(<span class="tts-math" data-tts="C sub k comma t">$C_k, t$</span>);&nbsp;&nbsp;// candidates in <em>t</em><br/>
+      6.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>forall</strong> candidates
+      <span class="tts-math" data-tts="c in C sub t">$c \in C_t$</span>
+      <strong>do</strong>&nbsp;&nbsp;c.count++;<br/>
+      7.&nbsp;&nbsp;&nbsp;<strong>end</strong><br/>
+      8.&nbsp;&nbsp;&nbsp;
+      <span class="tts-math" data-tts="L sub k equals the set of c in C sub k such that c dot count is at least minsup">
+      $L_k = \{c \in C_k \mid c.\text{count} \geq \text{minsup}\}$</span><br/>
+      9.&nbsp;<strong>end</strong><br/>
+      Answer =
+      <span class="tts-math" data-tts="the union over k of L sub k">$\bigcup_k L_k$</span>
+    </p>
+  </div>
+
+  <h3 data-cid="main-170">The apriori-gen function: Join then Prune</h3>
+  <p data-cid="main-180">
+    The candidate generation step — <em>apriori-gen</em> — is the heart of the algorithm. Given
+    <span class="tts-math" data-tts="L sub k minus 1">$L_{k-1}$</span>,
+    it produces a superset of all large
+    <span class="tts-math" data-tts="k">$k$</span>-itemsets.
+    It works in two steps:
+  </p>
+  <p data-cid="main-190">
+    <strong>Join step:</strong> Self-join
+    <span class="tts-math" data-tts="L sub k minus 1">$L_{k-1}$</span>
+    with itself. Two itemsets
+    <span class="tts-math" data-tts="p and q">$p$ and $q$</span>
+    are joined if they share their first
+    <span class="tts-math" data-tts="k minus 2">$k-2$</span>
+    items (in sorted order) and differ only in the last item. The resulting candidate is the union
+    of the two itemsets. In SQL terms:
+  </p>
+
+  <div class="box example" data-cid="main-200">
+    <span class="box-label">Example — Join Step SQL</span>
+    <pre><code>insert into C_k
+select p.item_1, ..., p.item_{k-1}, q.item_{k-1}
+from L_{k-1} p, L_{k-1} q
+where p.item_1 = q.item_1, ..., p.item_{k-2} = q.item_{k-2},
+      p.item_{k-1} &lt; q.item_{k-1};</code></pre>
+    <p data-cid="main-210">
+      This generates exactly the minimal superset of all possible large
+      <span class="tts-math" data-tts="k">$k$</span>-itemsets,
+      because any large
+      <span class="tts-math" data-tts="k">$k$</span>-itemset
+      must have two large
+      <span class="tts-math" data-tts="k minus 1">$(k-1)$</span>-itemset
+      subsets that differ in exactly one item, and those two subsets will be joined.
+    </p>
+  </div>
+
+  <p data-cid="main-220">
+    <strong>Prune step:</strong> Delete from
+    <span class="tts-math" data-tts="C sub k">$C_k$</span>
+    any candidate
+    <span class="tts-math" data-tts="c">$c$</span>
+    that has some
+    <span class="tts-math" data-tts="k minus 1">$(k-1)$</span>-subset
+    not in
+    <span class="tts-math" data-tts="L sub k minus 1">$L_{k-1}$</span>.
+    By the Apriori principle, such a candidate cannot be large. This pruning step can eliminate a
+    substantial fraction of candidates before any database scanning.
+  </p>
+
+  <div class="box example" data-cid="main-230">
+    <span class="box-label">Example — apriori-gen in action</span>
+    <p data-cid="main-240">
+      Suppose
+      <span class="tts-math" data-tts="L sub 3 equals the sets 1 2 3, 1 2 4, 1 3 4, 1 3 5, 2 3 4">
+      $L_3 = \{\{1,2,3\}, \{1,2,4\}, \{1,3,4\}, \{1,3,5\}, \{2,3,4\}\}$</span>.
+      The join step produces
+      <span class="tts-math" data-tts="C sub 4 equals the sets 1 2 3 4, 1 3 4 5">
+      $C_4 = \{\{1,2,3,4\}, \{1,3,4,5\}\}$</span>
+      plus others. But the prune step removes
+      <span class="tts-math" data-tts="the set 1 3 4 5">$\{1,3,4,5\}$</span>
+      because
+      <span class="tts-math" data-tts="the set 1 4 5">$\{1,4,5\}$</span>
+      is not in
+      <span class="tts-math" data-tts="L sub 3">$L_3$</span>.
+      Only
+      <span class="tts-math" data-tts="the set 1 2 3 4">$\{1,2,3,4\}$</span>
+      survives as a candidate.
+    </p>
+  </div>
+
+  <h3 data-cid="main-250">Counting candidates efficiently: the hash-tree</h3>
+  <p data-cid="main-260">
+    For each transaction, the algorithm needs to find which candidates in
+    <span class="tts-math" data-tts="C sub k">$C_k$</span>
+    are subsets of the transaction. Doing this naively — checking every candidate against every
+    transaction — is too slow. Instead, candidates are stored in a <strong>hash-tree</strong>. Each
+    interior node at depth
+    <span class="tts-math" data-tts="d">$d$</span>
+    hashes on the
+    <span class="tts-math" data-tts="d">$d$</span>-th
+    item of a candidate. Leaves store actual itemsets. Given a transaction, the subset function
+    descends the tree, hashing on items in the transaction in order, and returns all matching
+    candidates in time proportional to the number of candidates found — much faster than linear
+    search through all of
+    <span class="tts-math" data-tts="C sub k">$C_k$</span>.
+  </p>
+
+  <h2 data-cid="main-270" id="s4">4. Algorithm AprioriTid</h2>
+  <p data-cid="main-280">
+    Apriori scans the original database in every pass. For large values of
+    <span class="tts-math" data-tts="k">$k$</span>,
+    however, the number of candidate itemsets shrinks dramatically, and most transactions contain
+    no candidate at all. Scanning the entire database is then wasteful. <strong>AprioriTid</strong>
+    addresses this by replacing later scans of the database with scans of a much smaller structure
+    called
+    <span class="tts-math" data-tts="C bar sub k">$\overline{C}_k$</span>.
+  </p>
+  <p data-cid="main-290">
+    Each entry in
+    <span class="tts-math" data-tts="C bar sub k">$\overline{C}_k$</span>
+    has the form
+    <span class="tts-math" data-tts="TID comma the set of candidate k-itemsets in that transaction">
+    $\langle TID, \{X_k\} \rangle$</span>,
+    where TID is a transaction identifier and
+    <span class="tts-math" data-tts="X sub k">$X_k$</span>
+    is the set of candidate
+    <span class="tts-math" data-tts="k">$k$</span>-itemsets
+    contained in that transaction. For
+    <span class="tts-math" data-tts="k equals 1">$k = 1$</span>,
+    <span class="tts-math" data-tts="C bar sub 1">$\overline{C}_1$</span>
+    is essentially the original database. For
+    <span class="tts-math" data-tts="k greater than 1">$k > 1$</span>,
+    <span class="tts-math" data-tts="C bar sub k">$\overline{C}_k$</span>
+    is generated from
+    <span class="tts-math" data-tts="C bar sub k minus 1">$\overline{C}_{k-1}$</span>:
+    for each transaction, the algorithm looks at all candidates it contained in pass
+    <span class="tts-math" data-tts="k minus 1">$k-1$</span>
+    and checks whether their extensions form candidates in
+    <span class="tts-math" data-tts="C sub k">$C_k$</span>.
+  </p>
+
+  <div class="box intuition" data-cid="main-300">
+    <span class="box-label">Intuition — when AprioriTid wins</span>
+    <p data-cid="main-310">
+      In early passes, most transactions contain many candidate itemsets and
+      <span class="tts-math" data-tts="C bar sub k">$\overline{C}_k$</span>
+      is actually larger than the database — using AprioriTid would slow things down. In later
+      passes, most transactions contain few or no candidate itemsets, so
+      <span class="tts-math" data-tts="C bar sub k">$\overline{C}_k$</span>
+      shrinks far below the database size. At this point, AprioriTid wins decisively because it
+      avoids reading the full database. The optimal strategy — which the authors call
+      <strong>AprioriHybrid</strong> — is to use Apriori for early passes and switch to
+      AprioriTid once the estimated size of
+      <span class="tts-math" data-tts="C bar sub k">$\overline{C}_k$</span>
+      fits in memory.
+    </p>
+  </div>
+
+  <h2 data-cid="main-320" id="s5">5. AprioriHybrid</h2>
+  <p data-cid="main-330">
+    AprioriHybrid uses a heuristic to estimate the size of
+    <span class="tts-math" data-tts="C bar sub k">$\overline{C}_k$</span>
+    at the end of each pass, based on the support counts of the current candidates:
+  </p>
+  <p data-cid="main-340">
+    <span class="tts-math" data-tts="the size of C bar sub k is approximately the sum over candidates c in C sub k of the support count of c plus the number of transactions">
+    $$|\overline{C}_k| \approx \sum_{\text{candidate } c \in C_k} \text{support-count}(c) + |\mathcal{D}|$$
+    </span>
+  </p>
+  <p data-cid="main-350">
+    If this estimate falls within available memory, the algorithm switches to AprioriTid in the
+    next pass. Switching back from AprioriTid to Apriori requires an extra cost of adding TIDs to
+    <span class="tts-math" data-tts="C bar sub k plus 1">$\overline{C}_{k+1}$</span>,
+    so the algorithm also adds a condition: the number of large
+    <span class="tts-math" data-tts="k plus 1">$(k+1)$</span>-itemsets
+    must be fewer than the number of large
+    <span class="tts-math" data-tts="k">$k$</span>-itemsets
+    (indicating the search space is converging). Once switched, the algorithm stays on AprioriTid.
+  </p>
+
+  <h2 data-cid="main-360" id="s6">6. Performance Evaluation</h2>
+  <p data-cid="main-370">
+    The authors generated synthetic datasets to mimic the retailing environment. Each dataset is
+    parameterized by:
+    <span class="tts-math" data-tts="absolute value of D">$|D|$</span>
+    (number of transactions),
+    <span class="tts-math" data-tts="absolute value of T">$|T|$</span>
+    (average transaction size),
+    <span class="tts-math" data-tts="absolute value of I">$|I|$</span>
+    (average size of maximal potentially large itemsets), and
+    <span class="tts-math" data-tts="N">$N$</span>
+    (number of items). Dataset names encode these parameters: T10.I4.D100K means average transaction
+    size 10, average large itemset size 4, and 100,000 transactions.
+  </p>
+
+  <div class="box example" data-cid="main-380">
+    <span class="box-label">Key experimental findings</span>
+    <p data-cid="main-390">
+      <strong>Apriori vs. AIS:</strong> Apriori was always faster than AIS, the algorithm from the
+      1993 paper. The advantage grew with problem size — from a factor of ~2 at high minimum support
+      to over an order of magnitude at low support thresholds.<br/><br/>
+      <strong>Apriori vs. SETM:</strong> SETM (another prior algorithm that used SQL joins) was
+      consistently slower than Apriori by a factor of 10 or more, and was simply too slow to run on
+      large datasets with transaction size 20.<br/><br/>
+      <strong>AprioriTid vs. Apriori:</strong> For small problems with short transactions, AprioriTid
+      did roughly as well as Apriori. For larger problems, AprioriTid degraded because its
+      <span class="tts-math" data-tts="C bar sub k">$\overline{C}_k$</span>
+      sets grew too large to fit in memory and needed external sorting.<br/><br/>
+      <strong>AprioriHybrid:</strong> Almost always better than either algorithm alone, and scales
+      linearly with the number of transactions, with execution time decreasing slightly as the number
+      of items grows (because average per-item support falls, yielding fewer large itemsets).
+    </p>
+  </div>
+
+  <p data-cid="main-400">
+    The fundamental explanation for why AIS and SETM are slower: both generate candidates
+    <em>on-the-fly</em> as the database is read. This means a candidate is generated each time a
+    large itemset appears in a transaction. Apriori generates candidates only once, using
+    <span class="tts-math" data-tts="L sub k minus 1">$L_{k-1}$</span>,
+    before any database scanning. As Figure 5 in the paper shows, the size of the candidate set
+    <span class="tts-math" data-tts="C sub k">$C_k$</span>
+    in Apriori collapses dramatically after the second pass, because the Apriori pruning step
+    eliminates candidates whose subsets are not all large. By pass 3, almost every candidate Apriori
+    counts turns out to be large — virtually no wasted effort.
+  </p>
+
+  <div class="box warn" data-cid="main-410">
+    <span class="box-label">Caveat — the second pass is expensive</span>
+    <p data-cid="main-420">
+      In pass 2, the candidate set
+      <span class="tts-math" data-tts="C sub 2">$C_2$</span>
+      is the cross-product of
+      <span class="tts-math" data-tts="L sub 1 with itself">$L_1$ with itself</span>
+      — potentially very large. The paper notes this is an unavoidable cost: you cannot know which
+      pairs of items are large without counting them. However, from pass 3 onward, the Apriori pruning
+      dramatically reduces the candidate set, and the algorithm becomes extremely efficient. Users
+      working with very large item sets and very low support thresholds should expect pass 2 to
+      dominate total runtime.
+    </p>
+  </div>
+
+  <h2 data-cid="main-430" id="s7">7. Why Apriori Became the Standard</h2>
+  <p data-cid="main-440">
+    The Apriori algorithm has been cited tens of thousands of times and is the basis of essentially
+    every textbook treatment of association rule mining. Its elegance comes from the complete
+    separation of the algorithm into distinct, clean phases: generate-all-candidates from the
+    previous level's large itemsets, scan the database to count them, discard those below
+    <em>minsup</em>. There are no heuristics, no estimation, no risk of missing a large itemset due
+    to a bad prediction. The anti-monotone pruning guarantee is mathematically clean and intuitively
+    obvious once stated.
+  </p>
+  <p data-cid="main-450">
+    Subsequent work extended Apriori in many directions: FP-growth (2000) avoided repeated database
+    scans by compressing the database into a trie; ECLAT (2000) used vertical data formats. But all
+    of these exploited the same anti-monotone principle. The concept of <em>support</em> as a measure
+    of interestingness also generalized beyond itemsets — to sequences (GSP, 1995), graphs
+    (gSpan, 2002), and labeled trees — always with the same pruning logic at the core.
+  </p>
+
+  <div class="box intuition" data-cid="main-460">
+    <span class="box-label">The deeper lesson</span>
+    <p data-cid="main-470">
+      The reason Apriori is so influential is not merely that it is fast. It is that it makes the
+      right <em>abstraction</em>: support as a measure that is monotone downward. Once you have
+      that abstraction, the level-by-level search strategy is forced on you. The same pattern —
+      find a monotone property, search level by level, prune aggressively — appears in constraint
+      satisfaction, SAT solving, and many other combinatorial search problems. Apriori is a beautiful
+      instance of a very general principle.
+    </p>
+  </div>
+
+  <h2 data-cid="main-480" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-490">Rakesh Agrawal, Tomasz Imielinski, and Arun Swami. "Mining Association Rules between Sets of Items in Large Databases." <em>Proc. ACM SIGMOD</em>, Washington DC, 1993, pp. 207–216.</li>
+    <li data-cid="main-500">Rakesh Agrawal and Ramakrishnan Srikant. "Fast Algorithms for Mining Association Rules." IBM Research Report RJ9839, June 1994.</li>
+    <li data-cid="main-510">Christos Faloutsos, Bernhard Schmitt, and Haim Avnur. "Buffer Management in Database Systems." <em>VLDB</em>, 1994.</li>
+    <li data-cid="main-520">David Heckerman, David Geiger, and David Chickering. "Learning Bayesian Networks: The Combination of Knowledge and Statistical Data." <em>Machine Learning</em>, 20(3): 197–243, 1995.</li>
+    <li data-cid="main-530">Heikki Mannila, Hannu Toivonen, and A. Inkeri Verkamo. "Efficient Algorithms for Discovering Association Rules." <em>AAAI Workshop on Knowledge Discovery in Databases</em>, 1994.</li>
+    <li data-cid="main-540">G. Piatetsky-Shapiro. "Discovery, Analysis, and Presentation of Strong Rules." In <em>Knowledge Discovery in Databases</em>, AAAI/MIT Press, 1991.</li>
+    <li data-cid="main-550">Raymond T. Ng and Jiawei Han. "Efficient and Effective Clustering Methods for Spatial Data Mining." <em>Proc. VLDB</em>, 1994.</li>
+    <li data-cid="main-560">Ramakrishnan Srikant and Rakesh Agrawal. "Mining Generalized Association Rules." <em>Proc. VLDB</em>, Zurich, Switzerland, 1995.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "title": "Serializable Isolation for Snapshot Databases",
+  "authors": "Michael J. Cahill, Uwe Rohm, Alan D. Fekete",
+  "venue": "SIGMOD 2008",
+  "description": "Proposes Serializable Snapshot Isolation (SSI), a concurrency control algorithm that detects and aborts dangerous pairs of consecutive rw-antidependency edges at runtime to prevent all snapshot isolation anomalies, achieving full serializability with throughput approaching that of ordinary snapshot isolation."
+}

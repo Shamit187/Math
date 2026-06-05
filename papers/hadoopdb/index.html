@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HadoopDB: An Architectural Hybrid of MapReduce and DBMS Technologies · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="hadoopdb" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/hadoopdb/">HadoopDB</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. The Analytical Data Management Problem</a></li>
+    <li><a href="#s2">2. Why Not Just Use Hadoop?</a></li>
+    <li><a href="#s3">3. Why Not Just Use a Parallel DBMS?</a></li>
+    <li><a href="#s4">4. The HadoopDB Architecture</a></li>
+    <li><a href="#s5">5. The Four Components</a></li>
+    <li><a href="#s6">6. The SMS Query Planner</a></li>
+    <li><a href="#s7">7. Data Loading</a></li>
+    <li><a href="#s8">8. Benchmark Results</a></li>
+    <li><a href="#s9">9. Fault Tolerance and Heterogeneity</a></li>
+    <li><a href="#s10">10. Impact and Legacy</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">PVLDB 2009 · Systems</div>
+    <h1>HadoopDB: An Architectural Hybrid of MapReduce and DBMS Technologies for Analytical Workloads</h1>
+    <div class="paper-meta">
+      <span class="authors">Azza Abouzeid, Kamil Bajda-Pawlikowski, Daniel Abadi, Avi Silberschatz, Alexander Rasin</span>
+      <span class="venue">Proceedings of the VLDB Endowment, Vol. 2, No. 1 · PVLDB 2009</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    The production environment for analytical data management is shifting: enterprises are moving from expensive proprietary high-end machines toward cheaper commodity hardware in shared-nothing clusters, often virtualized as private or public clouds. Two technologies compete for this space: MapReduce-based systems (especially Hadoop) and parallel database management systems. Parallel DBMSs are fast but do not scale gracefully to thousands of nodes, assume hardware homogeneity, and fail expensively. Hadoop is fault-tolerant and scales to thousands of nodes, but is orders of magnitude slower than parallel DBMSs on structured data workloads. HadoopDB proposes a hybrid: use Hadoop as the fault-tolerant task scheduler and network communication layer, while running single-node PostgreSQL instances inside each worker node to process data with full SQL optimization. Queries are expressed in standard SQL, translated into MapReduce jobs by an extended version of Hive, and as much processing as possible is pushed inside the per-node database engines. Benchmarks show HadoopDB approaches parallel DBMS performance while retaining Hadoop's scalability and fault tolerance.
+  </div>
+
+  <h2 data-cid="main-020" id="s1">1. The Analytical Data Management Problem</h2>
+
+  <p data-cid="main-030">
+    The market for analytical database software was worth $3.98 billion in 2008 and growing at over 10% annually. Enterprises increasingly make decisions from data — not instinct — and the volumes of data requiring analysis are exploding. Facebook's data warehouse was 2.5 petabytes at the time of writing. Google processes roughly 1.2 node failures per analysis job on average. It is no longer unusual for a company to load more than a terabyte of structured data per day into its analytical database system.
+  </p>
+
+  <p data-cid="main-040">
+    This scale creates a problem: the right tool for the job depends on which of three properties you care about most.
+  </p>
+
+  <div class="box definition" data-cid="main-050">
+    <span class="box-label">Definition — The Three Desired Properties</span>
+    <p data-cid="main-060">
+      <strong>Performance:</strong> Analytical queries (aggregations, joins, scans over hundreds of millions of rows) should complete quickly. A factor-of-ten performance difference directly affects the cost of operating the system and the volume of analysis that can be performed per day.
+    </p>
+    <p data-cid="main-070">
+      <strong>Fault Tolerance:</strong> At petabyte scale with hundreds of nodes, some node will fail during almost every long query. The system must recover without restarting the entire query from scratch.
+    </p>
+    <p data-cid="main-080">
+      <strong>Heterogeneous Environment Tolerance:</strong> In large commodity clusters (especially on cloud infrastructure like Amazon EC2), individual nodes perform differently due to hardware variation, OS scheduling, concurrent background processes, and disk fragmentation. A system that assumes all nodes are equally fast will be bottlenecked by the slowest node — the "straggler" problem.
+    </p>
+  </div>
+
+  <p data-cid="main-090">
+    Parallel DBMSs excel at performance but score poorly on fault tolerance and heterogeneity. Hadoop excels at fault tolerance and heterogeneity but is dramatically slower than parallel DBMSs for structured analytical workloads. HadoopDB asks: can we build a hybrid that scores well on all three?
+  </p>
+
+  <h2 data-cid="main-100" id="s2">2. Why Not Just Use Hadoop?</h2>
+
+  <p data-cid="main-110">
+    Hadoop is an open-source MapReduce implementation designed for processing unstructured data at massive scale. A MapReduce job consists of three phases: Map (each node processes its local data chunk independently), Shuffle (the framework redistributes key-value pairs across nodes by key), and Reduce (each node processes the key-value pairs assigned to it). The JobTracker schedules tasks and monitors heartbeats from TaskTrackers; if a TaskTracker fails or becomes slow, the JobTracker reassigns its tasks to other nodes.
+  </p>
+
+  <p data-cid="main-120">
+    This design is excellent for fault tolerance and heterogeneity. But it was designed for unstructured text processing, and it pays a large performance tax when applied to structured relational data:
+  </p>
+
+  <div class="box warn" data-cid="main-130">
+    <span class="box-label">Hadoop's Performance Weaknesses on Structured Data</span>
+    <p data-cid="main-140">
+      First, Hadoop requires data to be modeled and loaded before processing, but does not benefit from pre-loading optimizations like indexing, compression, or column-oriented storage. Second, MapReduce's one-time-query model is poorly suited to traditional business intelligence workloads with many repeated queries, since it cannot reuse partially computed results. Third, Hadoop's runtime does not use a cost-based query optimizer — each job's execution plan is fixed, and decisions like whether to use hash aggregation or sort-based aggregation must be made by hand. The net result is that on structured data benchmarks, Hadoop is typically one to two orders of magnitude slower than parallel DBMSs.
+    </p>
+  </div>
+
+  <h2 data-cid="main-150" id="s3">3. Why Not Just Use a Parallel DBMS?</h2>
+
+  <p data-cid="main-160">
+    Parallel database systems (Vertica, DBMS-X/Greenplum, Teradata) have been developed since the late 1980s and implement decades of performance research: compression, columnar storage, clustered indexes, cost-based query optimization, pipelining, and efficient join algorithms. On structured data workloads, they are dramatically faster than Hadoop.
+  </p>
+
+  <p data-cid="main-170">
+    But parallel DBMSs have three weaknesses at very large scale. First, <em>fault intolerance</em>: most parallel DBMSs abort and restart the entire query when a node fails, because they do not checkpoint intermediate results. At 1,000-node scale, with Google's observed failure rate of 1.2 failures per job, every long query will fail. Second, <em>homogeneity assumption</em>: parallel DBMSs assume all nodes run at the same speed and divide work equally. In heterogeneous environments (especially on cloud VMs), one slow node delays the entire query — Vertica saw a 170% increase in query time with a single slow node in the authors' experiments, versus less than 30% for HadoopDB and Hadoop. Third, <em>cost</em>: commercial parallel databases have seven-figure price tags for large installations. Hadoop and its ecosystem are open source.
+  </p>
+
+  <div class="box intuition" data-cid="main-180">
+    <span class="box-label">Intuition — The Central Idea of HadoopDB</span>
+    <p data-cid="main-190">
+      What if we kept Hadoop as the "outer layer" — responsible for scheduling, fault tolerance, load balancing, and inter-node data movement — but replaced Hadoop's brute-force file processing inside each node with a proper relational database engine? The database engine can use indexes, compression, and SQL optimization for the per-node work. Hadoop handles everything that crosses node boundaries. The result is a system where the fast part (intra-node SQL query processing) is done by a DBMS, and the resilient part (scheduling, recovery, data shuffling) is done by Hadoop.
+    </p>
+  </div>
+
+  <h2 data-cid="main-200" id="s4">4. The HadoopDB Architecture</h2>
+
+  <p data-cid="main-210">
+    HadoopDB sits on top of the standard Hadoop framework. Hadoop consists of two layers: the Hadoop Distributed File System (HDFS), a block-structured distributed filesystem managed by a central NameNode, and the MapReduce Framework, a master-slave architecture where the JobTracker assigns Map and Reduce tasks to TaskTrackers on worker nodes.
+  </p>
+
+  <p data-cid="main-220">
+    In a standard Hadoop deployment, each TaskTracker processes data by reading raw files from HDFS and parsing them with an InputFormat implementation. HadoopDB replaces this file-based InputFormat with a <em>Database Connector</em> that connects to a single-node PostgreSQL instance running on the same machine as the TaskTracker. Instead of parsing files, the TaskTracker issues a SQL query to its local PostgreSQL instance. PostgreSQL returns results as key-value pairs to the Map task, which then participates in the normal Hadoop shuffle and reduce pipeline.
+  </p>
+
+  <p data-cid="main-230">
+    The key insight is that the data — rather than being stored as raw HDFS files — is pre-loaded into PostgreSQL databases on each node. Each node holds a partition of the data. The Hadoop job still performs the inter-node coordination (shuffling keys, aggregating results), but the expensive per-node computation is done inside PostgreSQL with full access to indexes and the query optimizer.
+  </p>
+
+  <h2 data-cid="main-240" id="s5">5. The Four Components</h2>
+
+  <p data-cid="main-250">
+    HadoopDB extends Hadoop with four new components:
+  </p>
+
+  <div class="box definition" data-cid="main-260">
+    <span class="box-label">Component 1 — Database Connector</span>
+    <p data-cid="main-270">
+      The Database Connector is a Hadoop InputFormat implementation that connects to a single-node DBMS (PostgreSQL or MySQL in the prototype) via JDBC. The MapReduce job passes it an SQL query and connection parameters. The Connector executes the SQL query against the local database and returns results as key-value pairs to the Map task. Because it extends Hadoop's InputFormat, the database looks to Hadoop like just another data source — the same as an HDFS file. The Connector was implemented for both PostgreSQL and MySQL; PostgreSQL was preferred because MySQL's join algorithms and aggregation optimizers were inadequate for the benchmark queries.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-280">
+    <span class="box-label">Component 2 — Catalog</span>
+    <p data-cid="main-290">
+      The Catalog maintains metadata about the databases on each node: connection parameters (JDBC driver, host, credentials), data partitioning information (which partition of which table is on which node), replica locations, and partitioning properties. In the current implementation, the Catalog is an XML file stored in HDFS and accessed by the JobTracker and TaskTrackers. The authors plan to evolve it into a separate metadata service resembling Hadoop's NameNode.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-300">
+    <span class="box-label">Component 3 — Data Loader</span>
+    <p data-cid="main-310">
+      The Data Loader handles the non-trivial task of getting data from HDFS into the per-node PostgreSQL instances. It has two sub-components. The <em>Global Hasher</em> executes a MapReduce job that reads raw data from HDFS and repartitions it into as many parts as there are nodes, using a consistent hash function. This ensures that all records with the same partition key end up on the same node — enabling co-located joins. The <em>Local Hasher</em> then takes each global partition, breaks it into smaller chunks (up to the maximum chunk size, e.g., 1 GB), and bulk-loads each chunk into a separate PostgreSQL database on the node using the <code>COPY</code> command. Clustered indexes on join/partition keys are created for each chunk.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-320">
+    <span class="box-label">Component 4 — SQL-to-MapReduce-to-SQL (SMS) Planner</span>
+    <p data-cid="main-330">
+      The SMS Planner is the query translation layer. It extends Hive — Facebook's open-source SQL-to-MapReduce translator — to push as much SQL processing as possible inside the per-node databases. Standard Hive translates SQL into a DAG of relational operators, then wraps the entire DAG in a MapReduce job where data processing happens in the Map and Reduce phases by iterating over raw files. The SMS Planner modifies this process in two passes: it first identifies which operators can be executed inside the database (filters, projections, partial aggregations, co-located joins) and constructs SQL queries for them; then it wraps the remaining operators (final aggregations, cross-node joins) in the Hadoop Map and Reduce phases. The per-database SQL is regenerated from the relational operator tree and passed to the Database Connector.
+    </p>
+  </div>
+
+  <h2 data-cid="main-340" id="s6">6. The SMS Query Planner in Detail</h2>
+
+  <p data-cid="main-350">
+    Consider a simple analytical query:
+  </p>
+
+  <div class="box example" data-cid="main-360">
+    <span class="box-label">Example — GroupBy Query Translation</span>
+    <p data-cid="main-370">
+      The query <code>SELECT YEAR(saleDate), SUM(revenue) FROM sales GROUP BY YEAR(saleDate)</code> is processed as follows. Hive parses it into an Abstract Syntax Tree, constructs a logical query plan (a DAG of operators: TableScan → Select → GroupBy → ReduceSink → GroupBy → FileSink), and optimizes it. The SMS Planner then inspects this DAG.
+    </p>
+    <p data-cid="main-380">
+      If the <code>sales</code> table is partitioned by <code>YEAR(saleDate)</code>, then the entire GroupBy can be pushed inside each PostgreSQL instance: each node computes its local aggregate, and a single Reduce task merges the partial results. The Map phase just passes each local aggregate through. If the table is not partitioned by <code>saleDate</code>, the local database still computes partial aggregates (SELECT YEAR(saleDate), SUM(revenue) FROM sales GROUP BY YEAR(saleDate)), and the Reduce phase performs the final merge. In either case, PostgreSQL's optimizer handles the local computation efficiently, using indexes if available.
+    </p>
+  </div>
+
+  <p data-cid="main-390">
+    For join queries, if both tables are partitioned on the join key, the entire join can be pushed into each PostgreSQL instance — zero inter-node data movement is required. If they are not co-partitioned, the SMS Planner falls back to Hive's standard approach (a Reduce-side join with a full data shuffle). This co-location optimization is one of the most important performance advantages of HadoopDB over standard Hive: when data is partitioned appropriately, joins that would require shuffling gigabytes across the network are replaced by local index-join operations inside PostgreSQL.
+  </p>
+
+  <h2 data-cid="main-400" id="s7">7. Data Loading</h2>
+
+  <p data-cid="main-410">
+    Loading data into HadoopDB is more expensive than loading into Hadoop, because data must be partitioned, chunked, and indexed before analysis can begin. For the UserVisits dataset (20 GB per node, partitioned by <code>destinationURL</code>), the loading process broke down as follows: global repartitioning by the Global Hasher took about 14,000 seconds — by far the dominant step. Local partitioning into 1 GB chunks took 2,500 seconds. Bulk loading via COPY took 5,200 seconds. Creating clustered indexes took 7,100 seconds. Vacuuming (PostgreSQL maintenance) took 1,200 seconds. Total load time was approximately 30,000 seconds.
+  </p>
+
+  <p data-cid="main-420">
+    This upfront cost is amortized across all queries run against the dataset. Because HadoopDB's query performance is typically 5–10x better than Hadoop's on structured data, the load time is recovered after a relatively small number of queries. The authors calculated that for the Join task (where HadoopDB outperforms Hadoop by a factor of 10), just one query run recovers the load time cost.
+  </p>
+
+  <div class="box warn" data-cid="main-430">
+    <span class="box-label">Caution — Load Time Is a Real Cost</span>
+    <p data-cid="main-440">
+      HadoopDB's load time is approximately 10 times longer than Hadoop's (which loads data simply by storing files in HDFS). For workloads with many different datasets, each queried only once or twice, HadoopDB's load overhead may not be recoverable. HadoopDB is best suited for workloads where data is loaded once and queried many times — the traditional data warehouse scenario.
+    </p>
+  </div>
+
+  <h2 data-cid="main-450" id="s8">8. Benchmark Results</h2>
+
+  <p data-cid="main-460">
+    The authors evaluated HadoopDB against Hadoop (hand-coded and Hive-coded), Vertica (a column-store), and DBMS-X (a commercial row-store parallel database) using a five-task benchmark run on Amazon EC2 "large" instances (7.5 GB memory, 2 virtual CPUs, 850 GB disk) at cluster sizes of 10, 50, and 100 nodes.
+  </p>
+
+  <p data-cid="main-470">
+    <strong>Grep task:</strong> A full scan to find all records matching a three-character pattern. Since no system has an index on the pattern field, all systems are I/O-limited. HadoopDB slightly outperforms Hadoop because PostgreSQL handles I/O more efficiently than Hadoop's raw file parsing. Both are outperformed by Vertica and DBMS-X, which compress their data and thus have much less to scan.
+  </p>
+
+  <p data-cid="main-480">
+    <strong>Selection task:</strong> A simple predicate on an indexed column (pageRank > 10 from a Rankings table). HadoopDB outperforms Hadoop significantly because it can use PostgreSQL's clustered index on pageRank to avoid scanning the entire table. Vertica and DBMS-X also beat Hadoop for the same reason.
+  </p>
+
+  <p data-cid="main-490">
+    <strong>Aggregation tasks:</strong> Computing total ad revenue grouped by a prefix of the source IP address (many groups) or the full source IP (very many groups). For the small-group query, HadoopDB outperforms Hadoop by a factor of roughly 2–3x because PostgreSQL uses hash aggregation optimally (the hash table fits in memory). For the large-group query, HadoopDB outperforms Hadoop by a larger factor. Both lag behind Vertica, which benefits from column-oriented storage (only 2 of 20 UserVisits attributes need to be read for this query).
+  </p>
+
+  <p data-cid="main-500">
+    <strong>Join task:</strong> Finding the average pageRank of pages visited from the top-revenue source IPs, requiring a join between UserVisits (partitioned by destinationURL) and Rankings (partitioned by pageURL). Since both tables are co-partitioned on the join key, HadoopDB pushes the entire join into PostgreSQL on each node. The result is remarkable: HadoopDB's query time is comparable to DBMS-X and Vertica at all cluster sizes, and both dramatically outperform Hadoop (which must perform a full cross-network shuffle to join the tables). This is HadoopDB's strongest result and best illustrates the architectural advantage of co-located in-database joins.
+  </p>
+
+  <div class="box intuition" data-cid="main-510">
+    <span class="box-label">Intuition — Why Co-located Joins Are the Key Result</span>
+    <p data-cid="main-520">
+      Hadoop's join is slow because joining two tables at different nodes requires sending one table's data across the network to the other. At 20 GB per node and 100 nodes, this means shuffling up to 2 TB of data over the network — which takes thousands of seconds. HadoopDB, by pre-partitioning both tables on the join key, ensures that matching rows from both tables always reside on the same node. The join never touches the network. PostgreSQL's clustered index on the join key makes the local join fast. This is the architectural principle: push data movement costs into the load phase, where they are paid once, rather than into every query.
+    </p>
+  </div>
+
+  <p data-cid="main-530">
+    <strong>UDF Aggregation task:</strong> Counting inward links for each URL in an HTML document corpus, requiring arbitrary text parsing. Here Hadoop outperforms HadoopDB because the Documents table contains full HTML documents, which are naturally stored as merged files in HDFS — Hadoop processes them efficiently as blobs, while HadoopDB's TextDataType and external-call approach adds overhead. This result illustrates HadoopDB's one area of relative weakness: workloads that mix structured and unstructured data at the storage level favor pure Hadoop's flexible file processing.
+  </p>
+
+  <h2 data-cid="main-540" id="s9">9. Fault Tolerance and Heterogeneous Environments</h2>
+
+  <p data-cid="main-550">
+    The authors tested fault tolerance by terminating a TaskTracker at the 50% completion point of a 10-node aggregation query. Hadoop and HadoopDB both recovered gracefully: the JobTracker detected the failure, reassigned the failed node's tasks to other TaskTrackers, and completed the query with less than 40% slowdown. Vertica experienced a 135% increase in query time because it had to abort and restart the query from scratch.
+  </p>
+
+  <p data-cid="main-560">
+    For heterogeneity testing, a background I/O-intensive job was run on one node to simulate a consistently slow "straggler." Hadoop and HadoopDB again performed similarly: both handled the straggler by speculatively re-executing its tasks on other nodes, resulting in less than 30% slowdown. Vertica experienced a 170% increase in query time because it waited for the straggler to complete its assigned work.
+  </p>
+
+  <p data-cid="main-570">
+    One subtlety: HadoopDB's speculative re-execution is slightly less effective than Hadoop's in heterogeneous environments. When a TaskTracker is assigned a task previously assigned to a straggler, standard Hadoop can copy the data block from a replica. HadoopDB's TaskTracker must instead connect to the straggler's or replica's PostgreSQL database, which may involve an extra round-trip to process a straggler's unprocessed chunks. The authors plan to address this by modifying the task scheduler to prefer connecting to replica databases rather than straggler databases.
+  </p>
+
+  <h2 data-cid="main-580" id="s10">10. Impact and Legacy</h2>
+
+  <p data-cid="main-590">
+    HadoopDB appeared at a moment of intense debate in the database community. DeWitt and Stonebraker had published a provocative blog post arguing that MapReduce was "a major step backwards" from relational databases, and the MapReduce community had responded that parallel databases were too expensive and brittle. HadoopDB offered an empirical answer: both sides were partly right, and a hybrid could take the best of both.
+  </p>
+
+  <p data-cid="main-600">
+    The paper's direct descendants include Amazon Redshift (which uses a parallel DBMS architecture on cloud hardware), Google BigQuery (which separates storage from compute to get cloud elasticity with DBMS-style SQL optimization), Spark SQL (which adds SQL optimization layers on top of the Spark distributed computation framework, analogously to HadoopDB's SMS planner on Hadoop), and Apache Hive itself, which has been dramatically improved since 2009 to include cost-based optimization, vectorized execution, and better SQL support.
+  </p>
+
+  <p data-cid="main-610">
+    The architectural principle that HadoopDB articulated — <em>push as much processing as possible into the storage layer, use a resilient distributed framework only for inter-node coordination</em> — is now the standard design for analytical systems. The modern "lakehouse" architecture (Databricks Delta Lake, Apache Iceberg, AWS Lake Formation) is in many ways an evolution of this principle: SQL-optimized query engines running over distributed object storage, with columnar formats providing the index-like benefits that HadoopDB got from PostgreSQL.
+  </p>
+
+  <p data-cid="main-620">
+    HadoopDB also made a methodological contribution: it was one of the first papers to benchmark analytical systems on public cloud infrastructure (Amazon EC2), acknowledging that cloud elasticity and commodity hardware costs are first-class concerns for system designers — not just performance on dedicated server clusters.
+  </p>
+
+  <h2 data-cid="main-630" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-640">Hadoop. Apache Hadoop Project. hadoop.apache.org/core/.</li>
+    <li data-cid="main-650">D. Abadi. What is the right way to measure scale? DBMS Musings Blog, 2009.</li>
+    <li data-cid="main-660">Vertica. www.vertica.com/.</li>
+    <li data-cid="main-670">J. Dean and S. Ghemawat. MapReduce: Simplified data processing on large clusters. In <em>OSDI</em>, 2004.</li>
+    <li data-cid="main-680">D. J. DeWitt and M. Stonebraker. MapReduce: A major step backwards. DatabaseColumn Blog, 2008.</li>
+    <li data-cid="main-690">D. J. DeWitt, R. H. Gerber, G. Graefe, M. L. Heytens, K. B. Kumar, and M. Muralikrishna. GAMMA — A high performance dataflow database machine. In <em>VLDB '86</em>, 1986.</li>
+    <li data-cid="main-700">R. Chaiken, B. Jenkins, P.-A. Larson, B. Ramsey, D. Shakib, S. Weaver, and J. Zhou. Scope: Easy and efficient parallel processing of massive data sets. In <em>Proc. of VLDB</em>, 2008.</li>
+    <li data-cid="main-710">A. Pavlo, A. Rasin, S. Madden, M. Stonebraker, D. DeWitt, E. Paulson, L. Srinivas, and D. J. Abadi. A comparison of approaches to large scale data analysis. In <em>Proc. of SIGMOD</em>, 2009.</li>
+    <li data-cid="main-720">M. Stonebraker, D. J. Abadi, A. Batkin, X. Chen, M. Cherniack, M. Ferreira, E. Lau, A. Lin, S. Madden, E. J. O'Neil, P. E. O'Neil, A. Rasin, N. Tran, and S. B. Zdonik. C-Store: A column-oriented DBMS. In <em>VLDB</em>, 2005.</li>
+    <li data-cid="main-730">C. Olston, B. Reed, U. Srivastava, R. Kumar, and A. Tomkins. Pig Latin: A not-so-foreign language for data processing. In <em>Proc. of SIGMOD</em>, 2008.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script>
+</body>
+</html>

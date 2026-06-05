@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Implementing Data Cubes Efficiently · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="data-cubes" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/data-cubes/">Implementing Data Cubes Efficiently</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. Introduction</a></li>
+    <li><a href="#s2">2. The Data Cube and Its Views</a></li>
+    <li><a href="#s3">3. The Lattice Framework</a></li>
+    <li><a href="#s4">4. The Cost Model</a></li>
+    <li><a href="#s5">5. The Greedy Algorithm</a></li>
+    <li><a href="#s6">6. Performance Guarantees</a></li>
+    <li><a href="#s7">7. The Hypercube Lattice</a></li>
+    <li><a href="#s8">8. Why This Paper Matters</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">Scientific Paper · SIGMOD 1996</div>
+    <h1>Implementing Data Cubes Efficiently</h1>
+    <div class="paper-meta">
+      <span class="authors">Venky Harinarayan, Anand Rajaraman, Jeffrey D. Ullman</span>
+      <span class="venue">ACM SIGMOD International Conference on Management of Data, Montreal, Canada, 1996</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    Decision support applications involve complex queries on very large databases. Since response times
+    should be small, query optimization is critical. Users typically view the data as multidimensional
+    data cubes. Each cell of the data cube is a view consisting of an aggregation of interest, like total
+    sales. The values of many cells are dependent on the values of other cells. A powerful optimization
+    technique is to materialize some or all of these cells rather than compute them from raw data each
+    time. In this paper, we investigate the issue of which cells (views) to materialize when it is too
+    expensive to materialize all views. A lattice framework is used to express dependencies between views.
+    We present greedy algorithms that work off this lattice and determine a good set of views to
+    materialize. The greedy algorithm performs within a small constant factor of optimal. We then
+    consider the most common case of the hypercube lattice and examine the choice of materialized views
+    for hypercubes in detail.
+  </div>
+
+  <h2 data-cid="main-020" id="s1">1. Introduction</h2>
+  <p data-cid="main-030">
+    Decision support systems (DSS) power business intelligence: a retail chain wants to know total
+    sales by product, by region, by week, or by any combination of those dimensions. These aggregation
+    queries are conceptually simple — they are just GROUP-BY queries in SQL — but on a warehouse with
+    hundreds of millions of rows, even a single GROUP-BY can take minutes to hours to compute from
+    scratch. The standard solution is <em>precomputation</em>: materialize the results of the most
+    important queries in advance, so that user queries can be answered by reading a small precomputed
+    table rather than re-scanning billions of raw rows.
+  </p>
+  <p data-cid="main-040">
+    The problem is that you cannot precompute everything. With
+    <span class="tts-math" data-tts="n">$n$</span>
+    dimensions, there are
+    <span class="tts-math" data-tts="2 to the power n">$2^n$</span>
+    possible aggregations. For the TPC-D benchmark with 3 dimensions (part, supplier, customer),
+    that is 8 views — manageable. But commercial warehouses often have 10–20 dimensions, giving
+    <span class="tts-math" data-tts="2 to the power 20">$2^{20}$</span>
+    or more possible views, and each view may itself contain millions of rows. You must choose
+    wisely, and this paper tells you how.
+  </p>
+
+  <h2 data-cid="main-050" id="s2">2. The Data Cube and Its Views</h2>
+  <p data-cid="main-060">
+    Consider the TPC-D benchmark database. There are three dimensions: <strong>part</strong>,
+    <strong>supplier</strong>, and <strong>customer</strong>. The measure of interest is
+    <strong>sales</strong>: the total sales revenue
+    <span class="tts-math" data-tts="S P">$SP$</span>
+    for each transaction. For each cell
+    <span class="tts-math" data-tts="p comma s comma c">$(p, s, c)$</span>
+    in the 3-D data cube, we store the sales of part
+    <span class="tts-math" data-tts="p">$p$</span>
+    bought from supplier
+    <span class="tts-math" data-tts="s">$s$</span>
+    by customer
+    <span class="tts-math" data-tts="c">$c$</span>.
+  </p>
+  <p data-cid="main-070">
+    Users also want aggregations: what are the total sales of part
+    <span class="tts-math" data-tts="p">$p$</span>
+    across all suppliers? This query corresponds to the cell
+    <span class="tts-math" data-tts="p comma ALL comma ALL">$(p, ALL, ALL)$</span>,
+    where ALL is a special value meaning "summed over all values of this dimension." Any cell
+    containing an ALL in one or more of its components is a <em>dependent</em> cell: its value can
+    be derived by aggregating other cells of the cube. Cells with no ALL components require looking
+    at the raw data to compute.
+  </p>
+
+  <div class="box example" data-cid="main-080">
+    <span class="box-label">Example — The 8 TPC-D Views</span>
+    <p data-cid="main-090">
+      With dimensions part (<em>p</em>), supplier (<em>s</em>), customer (<em>c</em>), the 8
+      possible GROUP-BY views and their approximate sizes in the TPC-D 1 GB database are:<br/><br/>
+      1. GROUP BY part, supplier, customer — 6 million rows (the full cube)<br/>
+      2. GROUP BY part, customer — 6 million rows<br/>
+      3. GROUP BY part, supplier — 0.8 million rows<br/>
+      4. GROUP BY supplier, customer — 6 million rows<br/>
+      5. GROUP BY part — 0.2 million rows<br/>
+      6. GROUP BY supplier — 0.01 million rows<br/>
+      7. GROUP BY customer — 0.1 million rows<br/>
+      8. GROUP BY (none) — 1 row (grand total)<br/><br/>
+      View 1 (the full cube) is always materialized, since no other view can answer queries
+      about individual (part, supplier, customer) triples.
+    </p>
+  </div>
+
+  <p data-cid="main-100">
+    A key observation: view 5 (GROUP BY part) can be answered from view 2 (GROUP BY part, customer)
+    by further aggregating over customers. So if view 2 is materialized, answering a query for view 5
+    costs only 6 million rows (the size of view 2), not the full raw data scan. But answering view 5
+    directly from the materialized view 5 costs only 0.2 million rows. This trade-off — how much to
+    materialize to speed up how many queries — is precisely the optimization problem this paper solves.
+  </p>
+
+  <h2 data-cid="main-110" id="s3">3. The Lattice Framework</h2>
+  <p data-cid="main-120">
+    The dependence structure between views forms a mathematical <strong>lattice</strong>. Formally,
+    let
+    <span class="tts-math" data-tts="L comma the preceq relation">$(L, \preceq)$</span>
+    be the set of views (queries) with a dependence relation: say
+    <span class="tts-math" data-tts="Q sub 1 preceq Q sub 2">$Q_1 \preceq Q_2$</span>
+    if
+    <span class="tts-math" data-tts="Q sub 1">$Q_1$</span>
+    can be answered using the results of
+    <span class="tts-math" data-tts="Q sub 2">$Q_2$</span>.
+    We say
+    <span class="tts-math" data-tts="Q sub 1">$Q_1$</span>
+    is <em>dependent</em> on
+    <span class="tts-math" data-tts="Q sub 2">$Q_2$</span>.
+    A view with fewer grouping attributes is dependent on views with more grouping attributes: for
+    instance, (part) depends on (part, customer), because you can compute total sales per part by
+    summing the already-computed sales per (part, customer) pair.
+  </p>
+
+  <div class="box definition" data-cid="main-130">
+    <span class="box-label">Definition — Lattice of Views</span>
+    <p data-cid="main-140">
+      A collection of views forms a <strong>lattice</strong>
+      <span class="tts-math" data-tts="L comma the preceq relation">$(L, \preceq)$</span>
+      if any two elements have a least upper bound (join) and a greatest lower bound (meet) under the
+      <span class="tts-math" data-tts="preceq">$\preceq$</span>
+      ordering. The <em>top</em> element is the view that groups by all attributes — the full raw
+      data (or the full cube). Any query can be answered from the top element, possibly at great cost.
+      The <em>bottom</em> element is the view that groups by no attributes — the single grand total.
+    </p>
+  </div>
+
+  <p data-cid="main-150">
+    In a hypercube with
+    <span class="tts-math" data-tts="n">$n$</span>
+    attributes, the lattice diagram is literally an
+    <span class="tts-math" data-tts="n">$n$</span>-dimensional
+    hypercube: views at rank
+    <span class="tts-math" data-tts="i">$i$</span>
+    group by exactly
+    <span class="tts-math" data-tts="i">$i$</span>
+    attributes, and there are
+    <span class="tts-math" data-tts="n choose i">$\binom{n}{i}$</span>
+    such views. With hierarchical dimensions (e.g., a time dimension organized as day → week →
+    month → year), the lattice becomes the direct product of the individual dimension lattices,
+    capturing the drill-down and roll-up operations familiar to OLAP users.
+  </p>
+
+  <h2 data-cid="main-160" id="s4">4. The Cost Model</h2>
+  <p data-cid="main-170">
+    To answer a query
+    <span class="tts-math" data-tts="Q">$Q$</span>,
+    the system finds the cheapest materialized view
+    <span class="tts-math" data-tts="Q sub A">$Q_A$</span>
+    such that
+    <span class="tts-math" data-tts="Q preceq Q sub A">$Q \preceq Q_A$</span>
+    (i.e.,
+    <span class="tts-math" data-tts="Q sub A">$Q_A$</span>
+    is an ancestor of
+    <span class="tts-math" data-tts="Q">$Q$</span>
+    in the lattice). The paper adopts a <strong>linear cost model</strong>: the cost of answering
+    <span class="tts-math" data-tts="Q">$Q$</span>
+    from
+    <span class="tts-math" data-tts="Q sub A">$Q_A$</span>
+    is the number of rows in the table for
+    <span class="tts-math" data-tts="Q sub A">$Q_A$</span>.
+    This is motivated empirically: the paper shows (Figure 5) that on TPC-D data, the relationship
+    between view size and query time is nearly linear, with formula
+    <span class="tts-math" data-tts="T equals m times S plus c">$T = m \cdot S + c$</span>
+    where
+    <span class="tts-math" data-tts="T">$T$</span>
+    is running time,
+    <span class="tts-math" data-tts="S">$S$</span>
+    is the size of the view used to answer the query,
+    <span class="tts-math" data-tts="c">$c$</span>
+    is a negligible fixed overhead, and
+    <span class="tts-math" data-tts="m">$m$</span>
+    is a ratio roughly constant across different view sizes.
+  </p>
+
+  <p data-cid="main-180">
+    The goal is to choose a set
+    <span class="tts-math" data-tts="S">$S$</span>
+    of views to materialize (subject to constraints) that minimizes the average query cost —
+    equivalently, maximizes the total <em>benefit</em> of the chosen views.
+  </p>
+
+  <h2 data-cid="main-190" id="s5">5. The Greedy Algorithm</h2>
+  <p data-cid="main-200">
+    The optimization problem — choose the best
+    <span class="tts-math" data-tts="k">$k$</span>
+    views to materialize — is NP-complete in general (by reduction from Set Cover). The authors
+    therefore turn to a greedy heuristic. The algorithm is elegant:
+  </p>
+
+  <div class="box example" data-cid="main-210">
+    <span class="box-label">The Greedy Algorithm</span>
+    <p data-cid="main-220">
+      <strong>S = {top view};</strong><br/>
+      <strong>for i = 1 to k do begin</strong><br/>
+      &nbsp;&nbsp;&nbsp;select the view <em>v</em> not in <em>S</em> such that B(v, S) is maximized;<br/>
+      &nbsp;&nbsp;&nbsp;<em>S = S</em> ∪ {<em>v</em>};<br/>
+      <strong>end</strong><br/>
+      The resulting <em>S</em> is the greedy selection.
+    </p>
+  </div>
+
+  <p data-cid="main-230">
+    The key is the <strong>benefit</strong> function
+    <span class="tts-math" data-tts="B of v comma S">$B(v, S)$</span>,
+    which measures how much materializing view
+    <span class="tts-math" data-tts="v">$v$</span>
+    reduces the total query cost, given that the views in
+    <span class="tts-math" data-tts="S">$S$</span>
+    are already materialized. For each view
+    <span class="tts-math" data-tts="w">$w$</span>
+    that
+    <span class="tts-math" data-tts="v">$v$</span>
+    can help answer (i.e.,
+    <span class="tts-math" data-tts="w preceq v">$w \preceq v$</span>):
+    let
+    <span class="tts-math" data-tts="u">$u$</span>
+    be the lowest-cost view in
+    <span class="tts-math" data-tts="S">$S$</span>
+    that is an ancestor of
+    <span class="tts-math" data-tts="w">$w$</span>.
+    If
+    <span class="tts-math" data-tts="C of v">$C(v)$</span>
+    (the cost of view
+    <span class="tts-math" data-tts="v">$v$</span>)
+    is less than
+    <span class="tts-math" data-tts="C of u">$C(u)$</span>,
+    then materializing
+    <span class="tts-math" data-tts="v">$v$</span>
+    saves
+    <span class="tts-math" data-tts="C of u minus C of v">$C(u) - C(v)$</span>
+    for each query that asks for view
+    <span class="tts-math" data-tts="w">$w$</span>.
+    The total benefit is summed over all views
+    <span class="tts-math" data-tts="w">$w$</span>
+    that would benefit:
+    <span class="tts-math" data-tts="B of v comma S equals the sum over w preceq v of the quantity C of u minus C of v, where that quantity is positive">
+    $$B(v, S) = \sum_{w \preceq v,\; C(v) < C(u)} \bigl(C(u) - C(v)\bigr)$$
+    </span>
+  </p>
+
+  <div class="box example" data-cid="main-240">
+    <span class="box-label">Worked Example — Greedy on a Small Lattice</span>
+    <p data-cid="main-250">
+      Consider 8 views (a through h) with space costs as annotated in Figure 7 of the paper. The top
+      view <em>a</em> has cost 100 and is always materialized. We want to pick 3 more views.
+    </p>
+    <p data-cid="main-260">
+      <strong>Round 1:</strong> Compute benefit for each non-selected view. View <em>b</em> has benefit
+      250 (it reduces the cost of evaluating 5 views, each by 50, from 100 down to 50). <em>b</em>
+      wins. Select <em>b</em>.
+    </p>
+    <p data-cid="main-270">
+      <strong>Round 2:</strong> Recalculate benefits given
+      <span class="tts-math" data-tts="S equals a comma b">$S = \{a, b\}$</span>.
+      View <em>f</em> has the highest benefit (70). Select <em>f</em>.
+    </p>
+    <p data-cid="main-280">
+      <strong>Round 3:</strong> View <em>d</em> has the highest remaining benefit (60). Select
+      <em>d</em>.
+    </p>
+    <p data-cid="main-290">
+      Final selection: <em>a</em>, <em>b</em>, <em>d</em>, <em>f</em>. This reduces total evaluation
+      cost from 800 (if only <em>a</em> is materialized) to 420 — and this selection happens to be
+      globally optimal for this example.
+    </p>
+  </div>
+
+  <h3 data-cid="main-300">Applying the greedy algorithm to TPC-D</h3>
+  <p data-cid="main-310">
+    On the full TPC-D lattice (Figure 10 in the paper), the greedy algorithm selects views in the
+    following order (with total time and space after each selection): first the full cube
+    <span class="tts-math" data-tts="c p">$cp$</span>
+    (mandatory), then views <em>ns</em>, <em>nt</em>, <em>c</em>, <em>p</em> — each giving large
+    benefit reductions — then views with diminishing returns. After selecting the first 5 views
+    beyond the top, the total query time is nearly minimized while total space is barely larger than
+    the mandatory top view. This demonstrates vividly that a small number of well-chosen
+    materializations provides most of the possible benefit.
+  </p>
+
+  <h2 data-cid="main-320" id="s6">6. Performance Guarantees</h2>
+  <p data-cid="main-330">
+    The greedy algorithm is not just a heuristic that works well in practice — it comes with a
+    provable approximation guarantee. The authors prove:
+  </p>
+
+  <div class="box definition" data-cid="main-340">
+    <span class="box-label">Theorem 4.1 — Greedy Approximation Guarantee</span>
+    <p data-cid="main-350">
+      For any lattice, let
+      <span class="tts-math" data-tts="B sub greedy">$B_\text{greedy}$</span>
+      be the benefit of
+      <span class="tts-math" data-tts="k">$k$</span>
+      views chosen by the greedy algorithm, and let
+      <span class="tts-math" data-tts="B sub opt">$B_\text{opt}$</span>
+      be the benefit of an optimal set of
+      <span class="tts-math" data-tts="k">$k$</span>
+      views. Then:
+      <span class="tts-math" data-tts="B sub greedy over B sub opt is at least 1 minus the quantity k minus 1 over k, to the power k">
+      $$\frac{B_\text{greedy}}{B_\text{opt}} \geq 1 - \left(\frac{k-1}{k}\right)^k$$
+      </span>
+      As
+      <span class="tts-math" data-tts="k goes to infinity">$k \to \infty$</span>,
+      the ratio
+      <span class="tts-math" data-tts="the quantity k minus 1 over k to the power k">$\left(\frac{k-1}{k}\right)^k$</span>
+      approaches
+      <span class="tts-math" data-tts="1 over e">$1/e$</span>,
+      so
+      <span class="tts-math" data-tts="B sub greedy over B sub opt is at least 1 minus 1 over e">
+      $B_\text{greedy}/B_\text{opt} \geq 1 - 1/e$</span>
+      ≈ 63%. This bound is tight: the authors construct lattices showing the ratio can approach
+      <span class="tts-math" data-tts="1 minus 1 over e">$1 - 1/e$</span>
+      arbitrarily closely.
+    </p>
+  </div>
+
+  <p data-cid="main-360">
+    The proof mirrors the classical analysis of the greedy set cover algorithm. Interestingly,
+    Chekuri (citing Feige 1996) shows this is not merely a proof artifact: no deterministic
+    polynomial-time algorithm can achieve a better approximation ratio than greedy unless P = NP.
+    The greedy algorithm is therefore, in a strong sense, the best possible efficient algorithm
+    for this problem.
+  </p>
+
+  <div class="box intuition" data-cid="main-370">
+    <span class="box-label">Intuition — why 63% and not better?</span>
+    <p data-cid="main-380">
+      The bad case for greedy occurs when the lattice has a "star" structure: one expensive but
+      high-benefit view at the top, and many independent chains of views below. The greedy
+      algorithm picks the top view first (correct), then is forced to spread its remaining budget
+      across many chains, getting only one chain perfectly. An optimal algorithm might pick the
+      two best chains. With
+      <span class="tts-math" data-tts="k equals 2">$k = 2$</span>,
+      this gives a greedy/optimal ratio of
+      <span class="tts-math" data-tts="3 over 4">$3/4$</span>
+      in the worst case, and this can approach
+      <span class="tts-math" data-tts="1 minus 1 over e">$1-1/e$</span>
+      as the chains grow arbitrarily long. In practice, real data cube lattices tend not to be
+      star-shaped, and greedy performs much closer to optimal than the theoretical bound suggests.
+    </p>
+  </div>
+
+  <h2 data-cid="main-390" id="s7">7. The Hypercube Lattice</h2>
+  <p data-cid="main-400">
+    The most common lattice in practice is the <strong>hypercube</strong>: there are
+    <span class="tts-math" data-tts="n">$n$</span>
+    attributes, each of equal domain size
+    <span class="tts-math" data-tts="r">$r$</span>,
+    and views are identified by which subset of attributes they group by. The size of a view that
+    groups by
+    <span class="tts-math" data-tts="i">$i$</span>
+    attributes is approximately
+    <span class="tts-math" data-tts="r to the power i">$r^i$</span>
+    when
+    <span class="tts-math" data-tts="r to the power i is at least m">$r^i \geq m$</span>
+    (where
+    <span class="tts-math" data-tts="m">$m$</span>
+    is the number of raw data points), and approximately
+    <span class="tts-math" data-tts="m">$m$</span>
+    otherwise (since every cell has data).
+  </p>
+  <p data-cid="main-410">
+    The view size grows exponentially with the number of grouping attributes until it hits a "cliff"
+    at rank
+    <span class="tts-math" data-tts="log base r of m">$\lceil \log_r m \rceil$</span>,
+    after which it stabilizes at
+    <span class="tts-math" data-tts="m">$m$</span>.
+    This means: materializing views above the cliff gives no space saving over the top view. The
+    authors identify three key tradeoff points:
+  </p>
+
+  <div class="box definition" data-cid="main-420">
+    <span class="box-label">Time-Space Tradeoffs for the Hypercube</span>
+    <p data-cid="main-430">
+      Let
+      <span class="tts-math" data-tts="k equals log base r of m">$k = \lceil \log_r m \rceil$</span>
+      (the cliff rank) and
+      <span class="tts-math" data-tts="j">$j$</span>
+      be the rank that maximizes
+      <span class="tts-math" data-tts="n choose j times r to the power j">$\binom{n}{j} r^j$</span>.
+    </p>
+    <ul>
+      <li data-cid="main-440"><strong>If</strong>
+        <span class="tts-math" data-tts="k greater than j">$k > j$</span>:
+        Space =
+        <span class="tts-math" data-tts="the quantity 2 r to the power 7 over r plus 1 all to the power n">$(2r^{7/(r+1)})^n$</span>,
+        Time =
+        <span class="tts-math" data-tts="same expression">$(2r^{7/(r+1)})^n$</span>
+        — both are polynomial in
+        <span class="tts-math" data-tts="m">$m$</span>.
+      </li>
+      <li data-cid="main-450"><strong>If</strong>
+        <span class="tts-math" data-tts="k less than j and k is at most n over 2">$k < j$ and $k \leq n/2$</span>:
+        Space =
+        <span class="tts-math" data-tts="m">$m$</span>,
+        Time =
+        <span class="tts-math" data-tts="m times 2 to the power n">$m \cdot 2^n$</span>
+        — space minimal but time exponential in
+        <span class="tts-math" data-tts="n">$n$</span>.
+      </li>
+      <li data-cid="main-460"><strong>If</strong>
+        <span class="tts-math" data-tts="k less than j and k greater than n over 2">$k < j$ and $k > n/2$</span>:
+        Space =
+        <span class="tts-math" data-tts="m">$m$</span>,
+        Time =
+        <span class="tts-math" data-tts="n choose j times r to the power j">$\binom{n}{j} r^j$</span>
+        — the time-optimal solution under minimal space.
+      </li>
+    </ul>
+  </div>
+
+  <h2 data-cid="main-470" id="s8">8. Why This Paper Matters</h2>
+  <p data-cid="main-480">
+    This paper established the foundational theory for what we today call OLAP (Online Analytical
+    Processing) and materialized view selection. Its contributions are threefold.
+  </p>
+  <p data-cid="main-490">
+    First, the <strong>lattice framework</strong> is a clean mathematical vocabulary for describing
+    when one query can be answered using another's results. This framework handles not just flat
+    hypercubes but hierarchical dimensions (the time dimension with day/week/month/year) via direct
+    products of individual dimension lattices. Every subsequent paper on view selection uses some
+    variant of this framework.
+  </p>
+  <p data-cid="main-500">
+    Second, the <strong>greedy algorithm</strong> is both practical and theoretically justified. The
+    63% approximation guarantee means you can use greedy with confidence that you are not making a
+    catastrophic choice. Commercial OLAP systems — including Microsoft Analysis Services and IBM
+    DB2 OLAP Server — implemented variants of this greedy approach.
+  </p>
+  <p data-cid="main-510">
+    Third, the <strong>analysis of the hypercube</strong> gives concrete guidance for practitioners:
+    there is a natural "cliff" in view sizes, and materializing views above the cliff is wasteful.
+    The paper characterizes three natural operating points on the time-space tradeoff curve, giving
+    database administrators a principled way to reason about how much storage buys how much query
+    speed.
+  </p>
+
+  <div class="box warn" data-cid="main-520">
+    <span class="box-label">Limitation — the uniform query assumption</span>
+    <p data-cid="main-530">
+      The linear cost model and the benefit calculation both assume that all queries arrive with
+      equal probability — i.e., that users are equally likely to ask for any view in the lattice.
+      In practice, certain views (e.g., sales by product category by week) are queried far more
+      often than others (e.g., sales by individual raw product by exact second). The paper
+      acknowledges this and shows the fix is simple: weight each view by its query frequency when
+      computing the benefit. The greedy algorithm then achieves the same 63% approximation guarantee
+      on weighted benefit. The deeper issue — estimating query frequencies in advance — is a query
+      workload problem that the paper correctly leaves to future work.
+    </p>
+  </div>
+
+  <h2 data-cid="main-540" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-550">S. Chaudhuri and K. Shim. "Including Group-By in Query Optimization." <em>Proc. 20th VLDB</em>, Santiago, Chile, 1994, pp. 354–366.</li>
+    <li data-cid="main-560">U. Feige. "A threshold of ln n for approximating set cover." To appear in <em>Proc. 28th ACM STOC</em>, 1996.</li>
+    <li data-cid="main-570">J. Gray, A. Bosworth, A. Layman, H. Pirahesh. "Data Cube: A Relational Aggregation Operator Generalizing Group-By, Cross-Tab, and Sub-Totals." Microsoft Technical Report MSR-TR-95-22.</li>
+    <li data-cid="main-580">V. Harinarayan, A. Rajaraman, and J. D. Ullman. "Implementing Data Cubes Efficiently." Full version at http://db.stanford.edu/pub/harinarayan/1995/cube.ps.</li>
+    <li data-cid="main-590">H. Gupta, V. Harinarayan, A. Rajaraman, and J. D. Ullman. "Index Selection for OLAP." Submitted for publication, 1996.</li>
+    <li data-cid="main-600">G. Graefe. "Query Evaluation Techniques for Large Databases." <em>ACM Computing Surveys</em>, 25(2), June 1993.</li>
+    <li data-cid="main-610">P. J. Haas, J. F. Naughton, S. Seshadri, L. Stokes. "Sampling-Based Estimation of the Number of Distinct Values of an Attribute." <em>Proc. 21st VLDB</em>, 1995, pp. 311–320.</li>
+    <li data-cid="main-620">F. Raab, editor. TPC Benchmark(tm) D (Decision Support), Proposed Revision 1.0. Transaction Processing Performance Council, San Jose, CA, 1995.</li>
+    <li data-cid="main-630">P. O'Neill and G. Graefe. "Multi-Table Joins Through Bitmapped Join Indexes." <em>SIGMOD Record</em>, pp. 8–11, September 1995.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script>
+</body>
+</html>

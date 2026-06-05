@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The R+-Tree: A Dynamic Index for Multi-Dimensional Objects · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="r-plus-tree" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/r-plus-tree/">The R+-Tree</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. Why Index Multi-Dimensional Data?</a></li>
+    <li><a href="#s2">2. The R-Tree and Its Overlap Problem</a></li>
+    <li><a href="#s3">3. The R+-Tree: The Core Idea</a></li>
+    <li><a href="#s4">4. Structure and Formal Properties</a></li>
+    <li><a href="#s5">5. Searching an R+-Tree</a></li>
+    <li><a href="#s6">6. Insertion and Node Splitting</a></li>
+    <li><a href="#s7">7. The Packing Algorithm</a></li>
+    <li><a href="#s8">8. Analytical Results and Performance</a></li>
+    <li><a href="#s9">9. Significance and Limitations</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">Scientific Paper · VLDB 1987</div>
+    <h1>The R<sup>+</sup>-Tree: A Dynamic Index for Multi-Dimensional Objects</h1>
+    <div class="paper-meta">
+      <span class="authors">Timos Sellis, Nick Roussopoulos, Christos Faloutsos</span>
+      <span class="venue">Proceedings of the 13th VLDB Conference, Brighton, 1987</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    The problem of indexing multidimensional objects is considered. First, a classification of existing methods is given along with a discussion of the major issues involved in multidimensional data indexing. Second, a variation on Guttman's R-trees—called R+-trees—is introduced that avoids overlapping rectangles in the intermediate nodes of the tree. Algorithms for searching, updating, initial packing, and reorganization of the structure are discussed in detail. Finally, analytical results indicate that R+-trees achieve up to 50% savings in disk accesses compared to an R-tree when searching files of thousands of rectangles.
+  </div>
+
+  <!-- ═══ SECTION 1 ═══ -->
+  <h2 data-cid="main-020" id="s1">1. Why Index Multi-Dimensional Data?</h2>
+
+  <p data-cid="main-030">
+    Standard database indexes—B-trees and their variants—work beautifully for one-dimensional data like integers, strings, or dates. A B-tree organizes values on a total order, making range queries straightforward: given a query <code>WHERE SALARY BETWEEN 40000 AND 60000</code>, the tree finds the leftmost match and reads consecutive leaves. But what happens when data is inherently two-dimensional or higher?
+  </p>
+
+  <p data-cid="main-040">
+    Consider these applications, each of which the paper explicitly lists: cartographic databases (maps of roads, buildings, and boundaries), VLSI circuit design (thousands of rectangles representing electronic gates and wiring channels), computer vision (bounding boxes around detected objects), and rule indexing in expert systems (rules stored as geometric entities in an abstract space). All of these require <em>spatial queries</em>: given a query region, find all stored objects that overlap it, or given a point, find all objects that contain it.
+  </p>
+
+  <p data-cid="main-050">
+    A B-tree on latitude alone cannot answer "find all restaurants within this map rectangle." A spatial index must reason about two (or more) coordinates simultaneously. The challenge is to organize rectangles on disk pages—each page holding perhaps 50 entries—in a way that supports efficient search without reading most of the dataset.
+  </p>
+
+  <div class="box definition" data-cid="main-060">
+    <span class="box-label">Definition — Point Query and Region Query</span>
+    <p data-cid="main-070">
+      A <strong>point query</strong> asks: given a point <span class="tts-math" data-tts="P">$P$</span> in space, find all stored objects that contain it. A <strong>region query</strong> (also called a window query) asks: given a query rectangle <span class="tts-math" data-tts="W">$W$</span>, find all stored objects whose bounding rectangle overlaps <span class="tts-math" data-tts="W">$W$</span>. Both are fundamental operations in geographic information systems and spatial databases.
+    </p>
+  </div>
+
+  <p data-cid="main-080">
+    The paper surveys the landscape of existing approaches—fixed-grid methods, k-d trees, space-filling curves, and the R-tree—before introducing the R+-tree. Understanding why the R-tree falls short is necessary before appreciating what the R+-tree fixes.
+  </p>
+
+  <!-- ═══ SECTION 2 ═══ -->
+  <h2 data-cid="main-090" id="s2">2. The R-Tree and Its Overlap Problem</h2>
+
+  <p data-cid="main-100">
+    Guttman's R-tree (SIGMOD 1984) extends the B-tree to multiple dimensions. Like a B-tree, it is a height-balanced tree where all leaves appear at the same level. Each leaf node stores pairs of the form <span class="tts-math" data-tts="oid comma RECT">$(oid, RECT)$</span>, where <span class="tts-math" data-tts="oid">$oid$</span> is an object identifier and <span class="tts-math" data-tts="RECT">$RECT$</span> is the object's minimum bounding rectangle (MBR). Each internal (intermediate) node stores pairs <span class="tts-math" data-tts="p comma RECT">$(p, RECT)$</span> where <span class="tts-math" data-tts="p">$p$</span> is a pointer to a child node and <span class="tts-math" data-tts="RECT">$RECT$</span> is the MBR of all objects reachable through that child.
+  </p>
+
+  <p data-cid="main-110">
+    The structure is dynamic: insertions and deletions can be intermixed with queries. Whenever a node overflows (more than <span class="tts-math" data-tts="M">$M$</span> entries), it is split into two nodes. Guttman described several split algorithms (linear, quadratic, exponential) all aimed at minimizing the total area covered by the two resulting MBRs.
+  </p>
+
+  <p data-cid="main-120">
+    The fundamental problem with R-trees is <strong>overlap</strong> between sibling MBRs at intermediate nodes. Because data rectangles can be large and arbitrarily placed, the MBRs of two sibling nodes in the tree often overlap. When a query window <span class="tts-math" data-tts="W">$W$</span> falls in the overlapping region, the search algorithm must descend into <em>both</em> subtrees—even though only one of them may actually contain qualifying data.
+  </p>
+
+  <div class="box example" data-cid="main-130">
+    <span class="box-label">Example — The Cost of Overlap</span>
+    <p data-cid="main-140">
+      Suppose an R-tree has two child nodes <span class="tts-math" data-tts="A">$A$</span> and <span class="tts-math" data-tts="B">$B$</span> whose MBRs overlap in a large central region. A point query landing in that overlap must check both <span class="tts-math" data-tts="A">$A$</span> and <span class="tts-math" data-tts="B">$B$</span> and their descendants. In the worst case, if the tree has height <span class="tts-math" data-tts="h">$h$</span> and every level has <span class="tts-math" data-tts="k">$k$</span> overlapping nodes, the search fans out to <span class="tts-math" data-tts="k to the power h">$k^h$</span> leaf nodes—potentially degenerate into a linear scan of the entire tree.
+    </p>
+  </div>
+
+  <p data-cid="main-150">
+    Roussopoulos and Leifker (SIGMOD 1985) showed that for point data, the zero-overlap condition (no two sibling MBRs overlap) is only achievable with a packing algorithm applied to a static dataset. For region data (non-zero-area objects), zero overlap at intermediate nodes is generally unachievable without splitting data objects. It is this insight—that data rectangles can be split across multiple subtrees if necessary—that motivates the R+-tree.
+  </p>
+
+  <!-- ═══ SECTION 3 ═══ -->
+  <h2 data-cid="main-160" id="s3">3. The R+-Tree: The Core Idea</h2>
+
+  <p data-cid="main-170">
+    The R+-tree's central design decision is simple but consequential: <strong>intermediate node MBRs must not overlap</strong>. To enforce this when a data rectangle <span class="tts-math" data-tts="R">$R$</span> would otherwise span two sibling MBRs, the R+-tree <em>clips</em> <span class="tts-math" data-tts="R">$R$</span> into two or more sub-rectangles, each assigned to a different subtree. Each sub-rectangle is stored in the appropriate leaf node, tagged to indicate it belongs to the same original object.
+  </p>
+
+  <div class="box intuition" data-cid="main-180">
+    <span class="box-label">Intuition — Trading space for search efficiency</span>
+    <p data-cid="main-190">
+      Think of it like organizing a jigsaw puzzle by region. If a puzzle piece straddles the boundary between two boxes, the R-tree puts the piece in whichever box it fits best (keeping an overlapping MBR). The R+-tree cuts a copy of the piece and puts half in each box—so each box's region is perfectly disjoint. Searching a specific area of the puzzle only ever requires opening boxes whose regions contain that area, never boxes whose regions merely might overlap it.
+    </p>
+  </div>
+
+  <p data-cid="main-200">
+    The tradeoff is that a data rectangle that spans a partition boundary will appear in more than one leaf node. This increases the storage requirement and complicates insertion (since inserting a rectangle may require propagating splits downward through the tree). However, the paper argues—and demonstrates analytically—that this extra storage cost is more than recovered by the savings in search time, especially for workloads with many point queries and moderate data rectangle sizes.
+  </p>
+
+  <!-- ═══ SECTION 4 ═══ -->
+  <h2 data-cid="main-210" id="s4">4. Structure and Formal Properties</h2>
+
+  <p data-cid="main-220">
+    An R+-tree is formally defined as follows. A <strong>leaf node</strong> stores entries of the form <span class="tts-math" data-tts="oid comma RECT">$(oid, RECT)$</span>, where <span class="tts-math" data-tts="RECT">$RECT$</span> is the bounding rectangle of the data object (or a sub-rectangle of it, if the object was clipped). An <strong>intermediate node</strong> stores entries of the form <span class="tts-math" data-tts="p comma RECT">$(p, RECT)$</span> where <span class="tts-math" data-tts="RECT">$RECT$</span> is a rectangle enclosing all leaf entries reachable through pointer <span class="tts-math" data-tts="p">$p$</span>. In two dimensions, a RECT entry is:
+  </p>
+
+  <p data-cid="main-230">
+    <span class="tts-math" data-tts="the tuple x sub low comma x sub high comma y sub low comma y sub high">
+    $$(x_{low}, x_{high}, y_{low}, y_{high})$$
+    </span>
+  </p>
+
+  <p data-cid="main-240">
+    The R+-tree satisfies four properties:
+  </p>
+
+  <div class="box definition" data-cid="main-250">
+    <span class="box-label">R+-Tree Properties</span>
+    <ol data-cid="main-260">
+      <li><strong>Coverage:</strong> For each entry <span class="tts-math" data-tts="p comma RECT">$(p, RECT)$</span> in an intermediate node, every rectangle <span class="tts-math" data-tts="R">$R$</span> in the subtree rooted at <span class="tts-math" data-tts="p">$p$</span> is covered by <span class="tts-math" data-tts="RECT">$RECT$</span> (or overlaps with <span class="tts-math" data-tts="RECT">$RECT$</span> if <span class="tts-math" data-tts="R">$R$</span> is in a leaf).</li>
+      <li><strong>Disjointness:</strong> For any two entries <span class="tts-math" data-tts="p sub 1 comma RECT sub 1">$(p_1, RECT_1)$</span> and <span class="tts-math" data-tts="p sub 2 comma RECT sub 2">$(p_2, RECT_2)$</span> in an intermediate node, the overlap between <span class="tts-math" data-tts="RECT sub 1 and RECT sub 2">$RECT_1$</span> and <span class="tts-math" data-tts="RECT sub 2">$RECT_2$</span> is zero.</li>
+      <li><strong>Non-trivial root:</strong> The root has at least two children unless it is a leaf.</li>
+      <li><strong>Height balance:</strong> All leaves appear at the same level.</li>
+    </ol>
+  </div>
+
+  <p data-cid="main-270">
+    Property 2 (disjointness) is the key distinction from the R-tree. Note that the disjointness guarantee applies only to intermediate nodes. At the leaf level, two entries may correspond to overlapping data objects—that is fine, because the objects genuinely overlap in space. The prohibition on overlap is at the directory level, where it would cause unnecessary search fan-out.
+  </p>
+
+  <p data-cid="main-280">
+    One important difference from the R-tree: the R-tree guarantees that every leaf node contains between <span class="tts-math" data-tts="M over 2 and M">$M/2$</span> and <span class="tts-math" data-tts="M">$M$</span> entries (except the root). The R+-tree does <em>not</em> strictly guarantee this, because the clipping of rectangles can result in leaf nodes with fewer entries. However, in practice the fill factor remains acceptable.
+  </p>
+
+  <!-- ═══ SECTION 5 ═══ -->
+  <h2 data-cid="main-290" id="s5">5. Searching an R+-Tree</h2>
+
+  <p data-cid="main-300">
+    The search algorithm is elegant and benefits directly from the disjointness property. Given a query window <span class="tts-math" data-tts="W">$W$</span>:
+  </p>
+
+  <div class="box example" data-cid="main-310">
+    <span class="box-label">Algorithm Search (R, W)</span>
+    <p data-cid="main-320"><strong>Input:</strong> An R+-tree rooted at node <span class="tts-math" data-tts="R">$R$</span>, and a search window <span class="tts-math" data-tts="W">$W$</span>.<br/>
+    <strong>Output:</strong> All data objects overlapping <span class="tts-math" data-tts="W">$W$</span>.</p>
+    <p data-cid="main-330">
+      S1 (Intermediate nodes): If <span class="tts-math" data-tts="R">$R$</span> is not a leaf, for each entry <span class="tts-math" data-tts="p comma RECT">$(p, RECT)$</span> check if <span class="tts-math" data-tts="RECT">$RECT$</span> overlaps <span class="tts-math" data-tts="W">$W$</span>. If so, recursively search the child at <span class="tts-math" data-tts="p">$p$</span>, restricting the window to <span class="tts-math" data-tts="the intersection of S and RECT">$S \cap RECT$</span>.<br/>
+      S2 (Leaf nodes): If <span class="tts-math" data-tts="R">$R$</span> is a leaf, return all entries whose <span class="tts-math" data-tts="RECT">$RECT$</span> overlaps <span class="tts-math" data-tts="W">$W$</span>.
+    </p>
+  </div>
+
+  <p data-cid="main-340">
+    Because intermediate node MBRs are disjoint, a query window <span class="tts-math" data-tts="W">$W$</span> can overlap at most the nodes whose MBRs it intersects, and since those MBRs don't overlap each other, the search is much better focused than in an R-tree. For a point query, the query window is a single point, and it can lie in at most one intermediate MBR at each level—so the search follows exactly one path from root to leaf.
+  </p>
+
+  <div class="box intuition" data-cid="main-350">
+    <span class="box-label">Intuition — Why point queries are so much faster</span>
+    <p data-cid="main-360">
+      In an R-tree, a point can lie in the MBRs of multiple sibling nodes because those MBRs overlap. Each such node must be searched. In an R+-tree, since intermediate MBRs are disjoint, a single point can lie in at most one intermediate MBR at each level. The search is therefore a single root-to-leaf path—the same cost as a B-tree lookup. For a database of 100,000 rectangles with a branching factor of 50, that is roughly 3 disk reads versus potentially dozens in an R-tree.
+    </p>
+  </div>
+
+  <!-- ═══ SECTION 6 ═══ -->
+  <h2 data-cid="main-370" id="s6">6. Insertion and Node Splitting</h2>
+
+  <p data-cid="main-380">
+    Insertion into an R+-tree is more complex than in an R-tree because a single inserted rectangle may need to be placed in <em>multiple</em> leaf nodes. The insertion algorithm works as follows: to insert rectangle <span class="tts-math" data-tts="IR">$IR$</span> into the tree, find all leaf nodes whose covering MBR overlaps <span class="tts-math" data-tts="IR">$IR$</span>, and add <span class="tts-math" data-tts="IR">$IR$</span> (or the clipped portion of it) to each.
+  </p>
+
+  <p data-cid="main-390">
+    When a leaf node overflows (exceeds <span class="tts-math" data-tts="M">$M$</span> entries), the SplitNode procedure is invoked. Unlike an R-tree split, which simply divides the node's entries into two groups, the R+-tree SplitNode must find a partition—a vertical or horizontal line—that divides the covered space into two disjoint sub-regions. This partition then propagates downward: any rectangles in the leaf that straddle the partition line are clipped and placed in both new leaf nodes. The partition also propagates upward: the parent's entry for this node is updated, and if the parent overflows, it too must be split.
+  </p>
+
+  <div class="box warn" data-cid="main-400">
+    <span class="box-label">Complexity — Downward Split Propagation</span>
+    <p data-cid="main-410">
+      A critical difference from R-trees is that splits can propagate <em>downward</em> as well as upward. If a parent node <span class="tts-math" data-tts="A">$A$</span> must be split, and the split boundary cuts through the covering rectangle of a child node <span class="tts-math" data-tts="B">$B$</span> of <span class="tts-math" data-tts="A">$A$</span>, then <span class="tts-math" data-tts="B">$B$</span> must also be split along that boundary. This downward propagation makes the insertion algorithm more expensive than in an R-tree, but the authors argue that for search-heavy workloads, the improved search performance more than compensates.
+    </p>
+  </div>
+
+  <p data-cid="main-420">
+    The SplitNode algorithm uses a Partition procedure that searches for a "good" partition boundary using several criteria: nearest neighbors (minimize the number of rectangles that must be split by the partition), minimal total area covered by the two sub-regions, minimal total space coverage, and minimal number of rectangle splits. These criteria are evaluated using a Sweep algorithm that sweeps a line across the space along the x- or y-axis, selecting the split point that optimizes the chosen criterion.
+  </p>
+
+  <!-- ═══ SECTION 7 ═══ -->
+  <h2 data-cid="main-430" id="s7">7. The Packing Algorithm</h2>
+
+  <p data-cid="main-440">
+    The paper devotes significant attention to an initial packing algorithm for building an R+-tree from scratch over a given static set of rectangles. Packing is important because it produces a much better-organized tree than dynamic insertion: the nodes are more densely filled, coverage is smaller, and search performance is better.
+  </p>
+
+  <p data-cid="main-450">
+    The Pack algorithm works recursively. Given a set <span class="tts-math" data-tts="S">$S$</span> of rectangles and a fill factor <span class="tts-math" data-tts="ff">$ff$</span>:
+  </p>
+
+  <ol data-cid="main-460">
+    <li>If <span class="tts-math" data-tts="the size of S is at most ff">$|S| \leq ff$</span>, build a single leaf node and return it (no further partitioning needed).</li>
+    <li>Otherwise, call Partition to divide <span class="tts-math" data-tts="S">$S$</span> into a first sub-region of <span class="tts-math" data-tts="ff">$ff$</span> rectangles and a remainder <span class="tts-math" data-tts="S prime">$S'$</span>. The Partition is computed by the Sweep procedure, which slides a line along the x- or y-axis and stops when <span class="tts-math" data-tts="ff">$ff$</span> rectangles have been covered.</li>
+    <li>Rectangles that straddle the partition line are clipped; each sub-rectangle goes to its respective region.</li>
+    <li>Recursively Pack each sub-region to build intermediate nodes, then combine them into the final tree.</li>
+  </ol>
+
+  <p data-cid="main-470">
+    The fill factor determines how densely the nodes are packed. A higher fill factor means more entries per node, a shorter tree, and faster searches—at the cost of more rectangle splits during packing. For static or nearly-static datasets, packing to near capacity is highly desirable. The Sweep algorithm runs in <span class="tts-math" data-tts="N log N">$O(N \log N)$</span> time (due to the required sort along each axis).
+  </p>
+
+  <!-- ═══ SECTION 8 ═══ -->
+  <h2 data-cid="main-480" id="s8">8. Analytical Results and Performance</h2>
+
+  <p data-cid="main-490">
+    To analyze search performance, the authors use a mapping technique: rectangles in 2-d space are transformed to points in 4-d space (storing the four coordinates of each rectangle as a single 4-d point). Analysis for 1-d segments (simpler to handle) is used as a stepping stone.
+  </p>
+
+  <p data-cid="main-500">
+    The key analytical result is presented for two-size datasets: a mix of <span class="tts-math" data-tts="N sub 1">$N_1$</span> small segments of size <span class="tts-math" data-tts="sigma sub 1">$\sigma_1$</span> and <span class="tts-math" data-tts="N sub 2">$N_2$</span> large segments of size <span class="tts-math" data-tts="sigma sub 2">$\sigma_2$</span>. The analysis shows that when a small number of large segments coexist with many small ones, R-trees suffer disproportionate performance degradation. The large segments force large, highly overlapping MBRs at intermediate nodes, causing many false-positive subtree descents during queries. The R+-tree clips these large segments, keeping intermediate-node regions small and disjoint.
+  </p>
+
+  <p data-cid="main-510">
+    Experimental comparisons (Figures 5.1 and 5.2 in the paper) show that for point queries on files with thousands of rectangles, R+-trees can require up to 50% fewer disk accesses than R-trees. The advantage is most pronounced when a significant fraction of the indexed objects are large—segments whose size is comparable to the whole dataset extent. As large segments become a smaller fraction, the two structures converge in performance. For segment queries (region queries), savings of a similar magnitude are reported.
+  </p>
+
+  <div class="box pause" data-cid="main-520">
+    <span class="box-label">Pause — The storage overhead tradeoff</span>
+    <p data-cid="main-530">
+      The R+-tree is not free. By clipping large rectangles, each original object may have its identifier stored in multiple leaf pages. This increases storage and also means that a delete operation must find and remove all clipped copies—potentially touching multiple leaf pages. For write-heavy or delete-heavy workloads, the R+-tree may be less attractive than the R-tree. The paper focuses on read-heavy scenarios where this tradeoff is favorable.
+    </p>
+  </div>
+
+  <!-- ═══ SECTION 9 ═══ -->
+  <h2 data-cid="main-540" id="s9">9. Significance and Limitations</h2>
+
+  <p data-cid="main-550">
+    The R+-tree occupies an important position in the history of spatial indexing. It identified and clearly articulated the overlap problem in R-trees and proposed a principled solution: enforce disjointness at intermediate nodes, even at the cost of clipping data objects. This insight influenced subsequent work significantly, including the R*-tree (Beckmann et al., SIGMOD 1990), which took a different approach—trying to minimize overlap without clipping—and became the most widely adopted spatial index in practice.
+  </p>
+
+  <p data-cid="main-560">
+    The R+-tree is also notable for introducing the pack algorithm as a first-class concern. For spatial databases that are loaded once and queried frequently (cartographic databases, for example), packing produces a dramatically better structure than online insertion. This distinction between static-load and dynamic-update scenarios is now standard practice in spatial database system design.
+  </p>
+
+  <p data-cid="main-570">
+    The limitations are real. The downward propagation of splits during insertion is expensive and can cascade through many levels. Deletions must find all copies of a clipped rectangle. The structure's height can grow relative to an R-tree because splitting a node to enforce disjointness may produce nodes with fewer entries than <span class="tts-math" data-tts="M over 2">$M/2$</span>, leading to an underutilized tree. For insertion-intensive applications, the R*-tree's approach of minimizing overlap without clipping is generally preferred.
+  </p>
+
+  <!-- ═══ REFERENCES ═══ -->
+  <h2 data-cid="main-580" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-590">Guttman, A. (1984). R-Trees: A Dynamic Index Structure for Spatial Searching. <em>Proc. ACM SIGMOD</em>, pp. 47–57.</li>
+    <li data-cid="main-600">Roussopoulos, N. and Leifker, D. (1985). Direct Spatial Search on Pictorial Databases Using Packed R-Trees. <em>Proc. ACM SIGMOD</em>, pp. 17–31.</li>
+    <li data-cid="main-610">Bentley, J. L. (1975). Multidimensional Binary Search Trees Used for Associative Searching. <em>Communications of the ACM</em>, 18(9), pp. 509–517.</li>
+    <li data-cid="main-620">Hinrichs, K. and Nievergelt, J. (1983). The Grid File: A Data Structure to Support Proximity Queries on Spatial Objects. Tech. Report 54, Institut für Informatik, ETH, Zurich.</li>
+    <li data-cid="main-630">Robinson, J. T. (1981). The k-D-B-Tree: A Search Structure for Large Multidimensional Dynamic Indexes. <em>Proc. ACM SIGMOD</em>, pp. 10–18.</li>
+    <li data-cid="main-640">Faloutsos, C., Sellis, T., and Roussopoulos, N. (1987). Analysis of Object Oriented Spatial Access Methods. <em>Proc. ACM SIGMOD</em>.</li>
+    <li data-cid="main-650">Orenstein, J. (1986). Spatial Query Processing in an Object-Oriented Database System. <em>Proc. ACM SIGMOD</em>, pp. 326–336.</li>
+    <li data-cid="main-660">Nievergelt, J., Hinterberger, H., and Sevcik, K. C. (1984). The Grid File: An Adaptable, Symmetric Multikey File Structure. <em>ACM TODS</em>, 9(1), pp. 38–71.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script>
+</body>
+</html>

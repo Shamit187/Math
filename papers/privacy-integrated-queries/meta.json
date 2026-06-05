@@ -1,0 +1,6 @@
+{
+  "title": "Privacy Integrated Queries: An Extensible Platform for Privacy-Preserving Data Analysis",
+  "authors": "Frank McSherry",
+  "venue": "SIGMOD 2009",
+  "description": "Introduces PINQ, a platform built on top of LINQ that provides unconditional differential privacy guarantees for arbitrary data analyses without requiring trust in analysts or special expertise from data providers."
+}

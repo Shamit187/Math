@@ -1,0 +1,6 @@
+{
+  "title": "Approximate Frequency Counts over Data Streams",
+  "authors": "Gurmeet Singh Manku, Rajeev Motwani",
+  "venue": "VLDB 2002",
+  "description": "Presents two algorithms, Sticky Sampling and Lossy Counting, for computing approximate frequency counts over unbounded data streams with provable epsilon-error guarantees and small memory footprints."
+}

@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>C-Store: A Column-oriented DBMS · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="c-store" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/c-store/">C-Store</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. Why Columns?</a></li>
+    <li><a href="#s2">2. Projections: The Physical Unit</a></li>
+    <li><a href="#s3">3. The Read-Optimized Store (RS)</a></li>
+    <li><a href="#s4">4. Four Compression Schemes</a></li>
+    <li><a href="#s5">5. The Writeable Store (WS)</a></li>
+    <li><a href="#s6">6. Transactions and Snapshot Isolation</a></li>
+    <li><a href="#s7">7. The Tuple Mover</a></li>
+    <li><a href="#s8">8. Query Execution</a></li>
+    <li><a href="#s9">9. Performance Results</a></li>
+    <li><a href="#s10">10. Legacy and Influence</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">VLDB 2005 · Scientific Paper</div>
+    <h1>C-Store: A Column-oriented DBMS</h1>
+    <div class="paper-meta">
+      <span class="authors">Mike Stonebraker, Daniel J. Abadi, Adam Batkin, Xuedong Chen, Mitch Cherniack, Miguel Ferreira, Edmond Lau, Amerson Lin, Sam Madden, Elizabeth O'Neil, Pat O'Neil, Alex Rasin, Nga Tran, Stan Zdonik</span>
+      <span class="venue">Proceedings of the 31st VLDB Conference, Trondheim, Norway, 2005</span>
+    </div>
+  </section>
+
+  <!-- ABSTRACT -->
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    This paper presents the design of C-Store, a read-optimized relational DBMS that departs sharply from conventional write-optimized row stores. Its key ideas are: storing data by column rather than by row; maintaining overlapping collections of column-oriented <em>projections</em> sorted on different attributes; aggressively coding and compressing columns; separating a small write-optimized Writeable Store (WS) from a large Read-optimized Store (RS) and connecting them with a background Tuple Mover; providing snapshot isolation for read-only queries to avoid locking; and using bitmap indexes extensively to complement B-trees. Preliminary benchmarks on a TPC-H subset show C-Store is substantially faster than commercial row-store and column-store products on read-heavy analytical queries, while using 40% of the disk space of the leading row store.
+  </div>
+
+  <!-- SECTION 1 -->
+  <h2 data-cid="main-020" id="s1">1. Why Columns?</h2>
+
+  <p data-cid="main-030">
+    Every major relational database system you have heard of — Oracle, SQL Server, DB2, PostgreSQL, MySQL — stores data in rows. A row store places all of a record's attributes contiguously on disk: if the EMP table has columns Name, Age, Dept, and Salary, then one disk page might contain (Bob, 25, Math, 10K), (Bill, 27, EECS, 50K), (Jill, 24, Biology, 80K). This design made perfect sense in the 1970s, when the dominant application was OLTP: banking systems that update individual customer records, airline reservation systems that modify one booking at a time. A single-row write requires a single disk seek and a single disk write.
+  </p>
+
+  <p data-cid="main-040">
+    But the database world has evolved. A huge fraction of today's database workloads are <em>analytical</em>: the marketing department wants to know the total revenue by region for the past year; the risk team needs the average salary of every employee in Engineering across 47 countries. These queries touch one or two columns of a table that might have 200 columns. A row store must read all 200 columns from disk to answer a query that only needs 2. This is pure waste.
+  </p>
+
+  <div class="box intuition" data-cid="main-050">
+    <span class="box-label">Intuition — The CPU/Disk Asymmetry Argument</span>
+    <p data-cid="main-060">
+      CPUs have been getting faster at roughly Moore's Law pace — doubling every 18 months. Disk bandwidth has improved much more slowly. The bottleneck in analytical queries is therefore disk I/O, not computation. C-Store's core insight is: <em>trade CPU cycles for disk bandwidth</em>. By compressing columns heavily, the system reads fewer bytes from disk, even if decompression requires more CPU. In 2005, this trade-off strongly favored compression; today, with NVMe SSDs, the argument shifts somewhat, but column storage remains the dominant architecture for analytics precisely because of this principle.
+    </p>
+  </div>
+
+  <p data-cid="main-070">
+    A column store keeps all values of a single column contiguously: one file (or segment) for Name, another for Age, another for Salary, and so on. A query computing <code>SELECT AVG(Salary) FROM EMP WHERE Dept = 'Math'</code> reads only the Dept and Salary columns. Everything else stays on disk, untouched. Combined with compression — consecutive Salary values are likely to be numerically close, so delta-encoding compresses them dramatically — the I/O savings are enormous.
+  </p>
+
+  <!-- SECTION 2 -->
+  <h2 data-cid="main-080" id="s2">2. Projections: The Physical Unit of Storage</h2>
+
+  <p data-cid="main-090">
+    C-Store does not store base tables directly. Instead, it stores <em>projections</em>: sorted, potentially overlapping subsets of a table's columns. A projection over table
+    <span class="tts-math" data-tts="T">$T$</span>
+    retains a subset of
+    <span class="tts-math" data-tts="T">$T$</span>'s attributes, all sorted on a designated <em>sort key</em>. The same column may appear in multiple projections sorted on different keys.
+  </p>
+
+  <div class="box example" data-cid="main-100">
+    <span class="box-label">Example — EMP Projections</span>
+    <p data-cid="main-110">
+      Given a table EMP(Name, Age, Dept, Salary) and DEPT(DName, Floor), one possible set of projections is:
+      <br/><br/>
+      <code>EMP1(Name, Age | Age)</code> — sorted by Age<br/>
+      <code>EMP2(Dept, Age, DEPT.Floor | DEPT.Floor)</code> — sorted by Floor<br/>
+      <code>EMP3(Name, Salary | Salary)</code> — sorted by Salary<br/><br/>
+      Notice that Name appears in both EMP1 and EMP3. This redundancy is intentional: it allows a query that filters on Salary to use EMP3 (optimally sorted for that access) without touching EMP1. The query optimizer chooses which projection to use based on which one's sort order best matches the query's predicates and aggregations.
+    </p>
+  </div>
+
+  <p data-cid="main-120">
+    Because each projection stores only a subset of columns, C-Store needs a mechanism to reconstruct full rows when necessary. This is done via <em>join indexes</em>: for each pair of projections over the same table, a join index maps rows in one projection to corresponding rows in the other. Specifically, a join index from projection
+    <span class="tts-math" data-tts="T sub 1">$T_1$</span>
+    to
+    <span class="tts-math" data-tts="T sub 2">$T_2$</span>
+    is a table of (segment ID, storage key) pairs, one per row in
+    <span class="tts-math" data-tts="T sub 1">$T_1$</span>,
+    identifying the corresponding row in
+    <span class="tts-math" data-tts="T sub 2">$T_2$</span>.
+  </p>
+
+  <p data-cid="main-130">
+    The system guarantees that projections form a <em>covering set</em>: for every column of every table, at least one projection contains it. This means any query can always be answered using only the available projections and join indexes, without touching the original table layout. The system is also designed to be <em>K-safe</em>: even if
+    <span class="tts-math" data-tts="K">$K$</span>
+    storage nodes fail simultaneously, there remain enough overlapping projections to reconstruct every column of every table.
+  </p>
+
+  <!-- SECTION 3 -->
+  <h2 data-cid="main-140" id="s3">3. The Read-Optimized Store (RS)</h2>
+
+  <p data-cid="main-150">
+    The RS is the large, read-only, heavily compressed component of C-Store. Every projection is broken into its constituent columns, and each column is stored in the RS as a sorted, compressed sequence. The storage key for a tuple in the RS is its ordinal position within the sorted sequence — it is not physically stored but inferred on the fly, saving space.
+  </p>
+
+  <p data-cid="main-160">
+    The RS supports only one kind of write: the batch insertion of new data migrated from the WS by the Tuple Mover. This restriction allows the RS to be organized entirely around read performance — no update-in-place, no free-list management, no fragmentation. Every disk page is packed as tightly as compression allows.
+  </p>
+
+  <!-- SECTION 4 -->
+  <h2 data-cid="main-170" id="s4">4. Four Compression Schemes</h2>
+
+  <p data-cid="main-180">
+    The choice of compression scheme for a column depends on two factors: whether the column is <em>self-ordered</em> (sorted by its own values, so consecutive entries are close together) or <em>foreign-ordered</em> (sorted by some other column's values, giving potentially random order within this column), and how many distinct values the column contains.
+  </p>
+
+  <div class="box definition" data-cid="main-190">
+    <span class="box-label">Type 1 — Self-order, few distinct values (Run-Length Encoding)</span>
+    <p data-cid="main-200">
+      Represent each run of identical values as a triple
+      <span class="tts-math" data-tts="the triple v, f, n">(v, f, n)</span>
+      where
+      <span class="tts-math" data-tts="v">$v$</span>
+      is the value,
+      <span class="tts-math" data-tts="f">$f$</span>
+      is the starting position, and
+      <span class="tts-math" data-tts="n">$n$</span>
+      is the run length. A Dept column sorted by Dept that contains 10,000 consecutive "Engineering" entries is represented as a single triple. Clustered B-trees over value fields enable fast lookup.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-210">
+    <span class="box-label">Type 2 — Foreign-order, few distinct values (Bitmap Encoding)</span>
+    <p data-cid="main-220">
+      Represent the column as a collection of bitmaps: one bitmap per distinct value
+      <span class="tts-math" data-tts="v">$v$</span>,
+      where the
+      <span class="tts-math" data-tts="i-th">$i$</span>-th
+      bit is 1 if row
+      <span class="tts-math" data-tts="i">$i$</span>
+      contains value
+      <span class="tts-math" data-tts="v">$v$</span>.
+      Since bitmaps are sparse, they are run-length encoded. An "offset index" B-tree maps column positions to values to support fast random access.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-230">
+    <span class="box-label">Type 3 — Self-order, many distinct values (Delta Encoding)</span>
+    <p data-cid="main-240">
+      Represent every value as the difference (delta) from the previous value in the sorted sequence. For a salary column sorted by salary, the sequence 1, 4, 7, 7, 8, 12 becomes 1, 3, 3, 0, 1, 4 — small integers that compress far more efficiently than the originals. The first entry of each block stores the absolute value; subsequent entries store deltas.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-250">
+    <span class="box-label">Type 4 — Foreign-order, many distinct values (Unencoded)</span>
+    <p data-cid="main-260">
+      When a column has many distinct values and is not self-sorted, no obvious compact encoding exists. Values are stored uncompressed, but a densepack B-tree provides indexed access. C-Store continues investigating compression techniques for this case.
+    </p>
+  </div>
+
+  <p data-cid="main-270">
+    A critical design choice: C-Store's query executor operates directly on <em>compressed</em> representations wherever possible, without first decompressing. A predicate on a Type 1 column can be evaluated by scanning only the run-length triples, skipping vast swathes of data. This means fewer bytes read from disk, less memory needed in the buffer pool, and — crucially — the compression itself does useful indexing work.
+  </p>
+
+  <!-- SECTION 5 -->
+  <h2 data-cid="main-280" id="s5">5. The Writeable Store (WS)</h2>
+
+  <p data-cid="main-290">
+    The RS cannot support transactional writes: its structure is too rigid. C-Store therefore maintains a small, separate <em>Writeable Store</em> (WS) that absorbs all inserts, updates, and deletes in real time. The WS uses the same logical schema (projections and join indexes) as the RS, but implements them differently: as B-trees on explicit storage keys rather than as compressed column files.
+  </p>
+
+  <p data-cid="main-300">
+    Every logical insert creates a new record in each WS projection for the affected table. The record's storage key (SK) is assigned at insert time and is guaranteed to be larger than any key currently in RS, so WS and RS key ranges are disjoint. Deletes are implemented as an insert-plus-delete: a delete operation inserts the logical record into WS (to ensure the RS projection can be updated) and marks it in a per-projection <em>Deleted Record Vector</em> (DRV), a bitmap that tracks which RS rows have been logically deleted.
+  </p>
+
+  <div class="box intuition" data-cid="main-310">
+    <span class="box-label">Intuition — Why Separate Stores?</span>
+    <p data-cid="main-320">
+      If you tried to insert into the RS directly, you would have to re-sort the compressed column to maintain the projection's sort order — an expensive
+      <span class="tts-math" data-tts="O of N log N">$O(N \log N)$</span>
+      operation that would fragment the column files and negate the compression benefits. The WS sidesteps this by accepting inserts in arrival order, using traditional B-tree indexing (which supports update-in-place efficiently). Queries must consult both stores and merge the results, but since WS is kept small relative to RS, this merge overhead is modest.
+    </p>
+  </div>
+
+  <!-- SECTION 6 -->
+  <h2 data-cid="main-330" id="s6">6. Transactions and Snapshot Isolation</h2>
+
+  <p data-cid="main-340">
+    Read-only queries — the vast majority in a warehouse — run under <em>snapshot isolation</em>: they see the database as of a particular timestamp
+    <span class="tts-math" data-tts="T">$T$</span>
+    in the recent past, before which all committed transactions are guaranteed visible. This eliminates the need for read locks entirely: read-only transactions never block writers and writers never block readers.
+  </p>
+
+  <p data-cid="main-350">
+    The timestamp mechanism uses a <em>High Water Mark</em> (HWM): the most recent time at which all transactions that started before it have committed. A designated Timestamp Authority (TA) periodically advances the HWM by broadcasting an "end of epoch" message to all sites. Each site acknowledges once all its transactions from that epoch are complete. Once the TA receives all acknowledgments, it sets the new HWM and broadcasts it. Read-only queries set their effective time to the current HWM and can then run without acquiring any locks.
+  </p>
+
+  <p data-cid="main-360">
+    There is also a <em>Low Water Mark</em> (LWM): the earliest timestamp at which a read-only transaction can run. The LWM is needed because WS data structures must retain information for all timestamps between LWM and HWM. Below LWM, records in WS are either moved to RS by the Tuple Mover or discarded. This prevents the WS from growing without bound.
+  </p>
+
+  <p data-cid="main-370">
+    Write transactions use strict two-phase locking and a standard write-ahead log (WAL), but with important differences from traditional logging: C-Store uses NO-FORCE, STEAL policy, logs only UNDO records (no REDO, because recovery uses other projections), and avoids the two-phase commit PREPARE phase by using a simplified distributed COMMIT protocol.
+  </p>
+
+  <!-- SECTION 7 -->
+  <h2 data-cid="main-380" id="s7">7. The Tuple Mover</h2>
+
+  <p data-cid="main-390">
+    The Tuple Mover is a background process that continuously migrates data from WS to RS. It operates on (WS, RS) projection pairs: it finds all WS records with an insertion timestamp at or before the LWM, merges them into the corresponding RS segment to produce a new RS segment RS', updates join indexes, and atomically swaps RS' for the old RS.
+  </p>
+
+  <p data-cid="main-400">
+    Records in WS that were deleted at or before the LWM are simply discarded — they can never be visible to any future query. Records that were not deleted, or were deleted after the LWM, are written into RS' in sort-key order alongside the surviving RS records. The resulting RS' is a newly sorted, fully compressed column file, free of the fragmentation or deleted-record gaps that would accumulate in an update-in-place system.
+  </p>
+
+  <div class="box pause" data-cid="main-410">
+    <span class="box-label">Pause — The Elegance of the Tuple Mover</span>
+    <p data-cid="main-420">
+      This design means RS is <em>always</em> in a clean, fully sorted, fully compressed state. There is no background vacuum process needed to reclaim space from dead tuples (unlike PostgreSQL's VACUUM). There is no "hole" in the column file from an in-place delete. The Tuple Mover's merge operation is the same kind of operation that LSM-trees (Log-Structured Merge-Trees) use, and indeed the WS/RS split is structurally similar to the LSM-tree design independently developed by O'Neil et al. C-Store's insight was to apply this idea specifically to columnar projection storage.
+    </p>
+  </div>
+
+  <!-- SECTION 8 -->
+  <h2 data-cid="main-430" id="s8">8. Query Execution on Columns</h2>
+
+  <p data-cid="main-440">
+    The C-Store query executor defines 10 operators that work natively on columns and projections. The most important are: <strong>Decompress</strong> (converts a compressed column to uncompressed Type 4 representation), <strong>Select</strong> (applies a predicate and returns a bitstring of matching positions rather than a copy of matching values — this keeps intermediate results small), <strong>Mask</strong> (restricts a projection to rows where the corresponding bitstring bit is 1), <strong>Project</strong> (the relational projection), <strong>Sort</strong>, <strong>Aggregation Operators</strong>, <strong>Concat</strong> (combines projections with the same sort order), <strong>Permute</strong> (reorders a projection according to a join index), <strong>Join</strong>, and <strong>Bitstring Operators</strong> (BAnd, BOr, BNot — bitwise operations on selection bitstrings).
+  </p>
+
+  <p data-cid="main-450">
+    The key architectural choice is that operators communicate <em>blocks</em> of column data rather than individual tuples. Each call to the standard iterator interface returns 64 KB of values from a single column, matching modern CPU cache lines and dramatically reducing the per-tuple overhead of function-call dispatch that plagues row-store executors.
+  </p>
+
+  <p data-cid="main-460">
+    Query optimization in C-Store is novel in two respects: it must reason about compressed representations (should a predicate be evaluated on compressed or decompressed data?), and it must decide <em>when</em> to apply the Mask operator to a projection (early masking avoids decompressing unwanted rows; late masking allows bitstring operations to prune work in downstream operators).
+  </p>
+
+  <!-- SECTION 9 -->
+  <h2 data-cid="main-470" id="s9">9. Performance Results</h2>
+
+  <p data-cid="main-480">
+    The benchmark uses TPC-H at scale 10 (60 million line items, 1.8 GB of raw data). Three systems are compared: C-Store, a popular commercial row-store DBMS, and a popular commercial column-store DBMS, each given a 2.7 GB storage budget. C-Store uses only 1.987 GB — 40% less than the row store (4.48 GB) and 25% less than the commercial column store (2.65 GB), because C-Store's aggressive compression and absence of padding gives it a significant space advantage.
+  </p>
+
+  <p data-cid="main-490">
+    On the seven TPC-H-derived queries, C-Store is on average <strong>164 times faster</strong> than the commercial row store and <strong>21 times faster</strong> than the commercial column store within the same storage budget. Even in a space-unconstrained comparison (where the row store is given 4.5 GB and the column store 4.09 GB), C-Store is 6.4 times faster than the row store and 16.5 times faster than the column store. The authors attribute this to three factors: column-only I/O for queries touching few attributes; operation on compressed data; and the use of multiple overlapping projections sorted for each query's access pattern.
+  </p>
+
+  <div class="box warn" data-cid="main-500">
+    <span class="box-label">Caveat — Preliminary Results</span>
+    <p data-cid="main-510">
+      The WS and Tuple Mover are not fully integrated at the time of publication. All reported benchmarks are read-only queries on the RS. The authors acknowledge that WS overhead and tuple mover latency may significantly affect update performance in the full system. A comprehensive write-performance analysis is deferred to future work.
+    </p>
+  </div>
+
+  <!-- SECTION 10 -->
+  <h2 data-cid="main-520" id="s10">10. Legacy and Influence</h2>
+
+  <p data-cid="main-530">
+    C-Store is arguably the most influential database architecture paper of the 2000s. It spawned Vertica (the commercial product, co-founded by Stonebraker in 2005), which became one of the leading data warehouse systems of the next decade. It directly influenced MonetDB, Apache Parquet (the de-facto columnar storage format used by Spark, Hive, and virtually every modern analytics engine), and Apache Arrow (the in-memory columnar format). Google's Dremel, Amazon Redshift, Snowflake, and ClickHouse all implement variants of C-Store's core ideas: column-oriented storage, projection-like materialized views, aggressive compression, and vectorized execution.
+  </p>
+
+  <p data-cid="main-540">
+    The WS/RS split with a Tuple Mover also proved prescient. Modern columnar systems (Delta Lake, Apache Iceberg) use exactly this architecture — a fast write-optimized layer (often an LSM-tree or a write-ahead log) that gets periodically compacted into a read-optimized columnar store — under the name <em>lake house</em> architecture. C-Store described this idea in 2005.
+  </p>
+
+  <div class="box intuition" data-cid="main-550">
+    <span class="box-label">Why This Paper Matters for the Learner</span>
+    <p data-cid="main-560">
+      Before C-Store, column storage was known (Sybase IQ had been selling it since the mid-1990s) but considered a niche product. C-Store's contribution was not the column store idea itself, but the <em>complete system design</em> that showed column storage could support transactions, high availability, and competitive write performance alongside world-class read performance — all in a single coherent architecture. It transformed column storage from a special-purpose tool into a general-purpose alternative to the row store.
+    </p>
+  </div>
+
+  <!-- REFERENCES -->
+  <h2 data-cid="main-570" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-580">Copeland, G. and Khoshafian, S. (1985). A decomposition storage model. In <em>SIGMOD</em>.</li>
+    <li data-cid="main-590">French, C. D. (1995). One size fits all database architectures do not work for DSS. In <em>SIGMOD</em>.</li>
+    <li data-cid="main-600">Gray, J. and Reuter, A. (1992). <em>Transaction Processing: Concepts and Techniques</em>. Morgan Kaufmann.</li>
+    <li data-cid="main-610">Mohan, C. et al. (1992). ARIES: A transaction recovery method. <em>ACM TODS</em>, 17(1):94–162.</li>
+    <li data-cid="main-620">O'Neil, P., Cheng, E., Gawlick, D., and O'Neil, E. (1996). The log-structured merge-tree (LSM-tree). <em>Acta Informatica</em>, 33, June 1996.</li>
+    <li data-cid="main-630">Roth, M. A. and Van Horn, S. J. (1993). Database compression. <em>SIGMOD Record</em>, 22(3).</li>
+    <li data-cid="main-640">Selinger, P. G. et al. (1979). Access path selection in a relational database. In <em>SIGMOD</em>.</li>
+    <li data-cid="main-650">Stonebraker, M. (1986). The case for shared nothing. <em>Database Engineering</em>, 9(1).</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script>
+</body>
+</html>

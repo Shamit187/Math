@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The R*-tree: An Efficient and Robust Access Method for Points and Rectangles · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="r-star-tree" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/r-star-tree/">The R*-Tree</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. The Design Problem</a></li>
+    <li><a href="#s2">2. Four Optimization Criteria</a></li>
+    <li><a href="#s3">3. What Previous R-Trees Got Wrong</a></li>
+    <li><a href="#s4">4. The R*-Tree: ChooseSubtree</a></li>
+    <li><a href="#s5">5. The R*-Tree: Split Algorithm</a></li>
+    <li><a href="#s6">6. Forced Reinsert</a></li>
+    <li><a href="#s7">7. The Full Insertion Algorithm</a></li>
+    <li><a href="#s8">8. Performance Results</a></li>
+    <li><a href="#s9">9. Why the R*-Tree Won</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">Scientific Paper · SIGMOD 1990</div>
+    <h1>The R*-tree: An Efficient and Robust Access Method for Points and Rectangles</h1>
+    <div class="paper-meta">
+      <span class="authors">Norbert Beckmann, Hans-Peter Kriegel, Ralf Schneider, Bernhard Seeger</span>
+      <span class="venue">Proceedings of ACM SIGMOD 1990 · Universität Bremen, West Germany</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    The R-tree, one of the most popular access methods for rectangles, is based on the heuristic optimization of the area of the enclosing rectangle in each inner node. By running numerous experiments in a standardized testbed under highly varying data, queries, and operations, the authors were able to design the R*-tree, which incorporates a combined optimization of area, margin, and overlap of each enclosing rectangle in the directory. Using this standardized testbed in an exhaustive performance comparison, the R*-tree clearly outperforms the existing R-tree variants—Guttman's linear and quadratic R-tree and Greene's variant—for different types of queries and operations, such as map overlay, for both rectangles and multidimensional points in all experiments. From a practical point of view, the R*-tree is very attractive because it efficiently supports point and spatial data at the same time and its implementation cost is only slightly higher than that of other R-trees.
+  </div>
+
+  <!-- ═══ SECTION 1 ═══ -->
+  <h2 data-cid="main-020" id="s1">1. The Design Problem: What Makes a Good Spatial Index?</h2>
+
+  <p data-cid="main-030">
+    By 1990, Guttman's R-tree had become the standard spatial index, but practitioners knew it had weaknesses. Guttman's original design criterion was simple: when inserting a new rectangle, choose the subtree that requires the least area enlargement of its bounding box; when splitting a node, produce the split that minimizes total area covered by the two resulting bounding boxes. This single-criterion approach—minimize area—was intuitive but incomplete.
+  </p>
+
+  <p data-cid="main-040">
+    Beckmann et al. started from a different question: what geometric properties of a directory rectangle actually determine retrieval performance? Instead of guessing, they built a rigorous, standardized testbed with multiple data distributions, query types, and operation mixes, then ran systematic experiments. Their methodology is itself a contribution—the paper is as much about empirical evaluation as it is about the new structure.
+  </p>
+
+  <p data-cid="main-050">
+    The paper observes that the parameters governing retrieval performance interact in a complex way: optimizing one often worsens another. The only reliable way to find the best combination is through extensive experimentation within a consistent framework. This engineering discipline—testing many design decisions against a standardized benchmark—would become the model for spatial access method research.
+  </p>
+
+  <!-- ═══ SECTION 2 ═══ -->
+  <h2 data-cid="main-060" id="s2">2. Four Optimization Criteria for Directory Rectangles</h2>
+
+  <p data-cid="main-070">
+    Through their analysis, Beckmann et al. identify four properties of directory rectangles that matter for search performance:
+  </p>
+
+  <div class="box definition" data-cid="main-080">
+    <span class="box-label">The Four Criteria (O1–O4)</span>
+    <ol data-cid="main-090">
+      <li><strong>O1 — Minimize area:</strong> Smaller bounding boxes mean less dead space (empty area covered by a node's rectangle). Decisions about which subtree to traverse can be made more confidently, since smaller boxes are less likely to overlap the query region spuriously.</li>
+      <li><strong>O2 — Minimize overlap:</strong> Overlap between sibling directory rectangles is the primary cause of search fan-out—when a query window intersects multiple sibling rectangles, all must be searched. Minimizing overlap directly reduces the number of subtrees visited per query.</li>
+      <li><strong>O3 — Minimize margin:</strong> The margin of a rectangle is the sum of the lengths of its edges (the perimeter in 2-d). Minimizing margin tends to produce more square-shaped (compact) rectangles. Compact rectangles are easier to pack tightly, which reduces area and overlap at the next level up.</li>
+      <li><strong>O4 — Maximize storage utilization:</strong> Higher fill factor (more entries per node) means shorter trees and fewer disk accesses per query. However, maximizing utilization is in tension with the other three criteria, which favor more freedom in choosing where to place entries.</li>
+    </ol>
+  </div>
+
+  <p data-cid="main-100">
+    These criteria interact and sometimes conflict. Minimizing area (O1) and minimizing overlap (O2) give more freedom to choose rectangle shape, which tends to produce less square rectangles—violating O3. Minimizing margin (O3) tends to produce more square rectangles, which pack better and reduce O1 and O2. The R*-tree uses a careful combination of all four, applied at different steps of the insertion and split algorithms.
+  </p>
+
+  <!-- ═══ SECTION 3 ═══ -->
+  <h2 data-cid="main-110" id="s3">3. What Previous R-Trees Got Wrong</h2>
+
+  <p data-cid="main-120">
+    Guttman described the original R-tree with two algorithms: ChooseSubtree (decide which node to insert into) and Split (divide a full node into two). Both used area as the sole optimization criterion.
+  </p>
+
+  <p data-cid="main-130">
+    Guttman's ChooseSubtree descends the tree by always choosing the node whose covering rectangle requires the least area enlargement to include the new data rectangle. This minimizes area growth, but it completely ignores overlap. A subtree with a small current area may still create a large overlap with its siblings after the insertion—forcing future queries to search both subtrees.
+  </p>
+
+  <p data-cid="main-140">
+    Guttman's quadratic split algorithm picks two "seed" entries that would waste the most area if placed in the same node, then distributes remaining entries greedily by minimizing area enlargement. The paper's experiments show that this algorithm produces splits with high overlap between the two resulting groups, even when it minimizes area—precisely because overlap is never explicitly considered. Greene's variant improves on this by choosing the split axis more carefully, but still does not explicitly optimize overlap.
+  </p>
+
+  <div class="box example" data-cid="main-150">
+    <span class="box-label">The Needle Problem — A failure mode of quadratic split</span>
+    <p data-cid="main-160">
+      Suppose a node contains many small square rectangles plus one very elongated "needle" rectangle that spans most of the node's extent. Guttman's PickSeeds will choose the needle and one far-away rectangle as seeds. The needle is large, so any entry is cheap to add to it—the area enlargement is small. As a result, the needle's group tends to accumulate many entries, while the other group gets few. The split is highly uneven, and the needle's bounding box dominates a huge area, creating large overlap with its sibling. The R*-tree's margin-based split avoids this pathology.
+    </p>
+  </div>
+
+  <!-- ═══ SECTION 4 ═══ -->
+  <h2 data-cid="main-170" id="s4">4. The R*-Tree: ChooseSubtree</h2>
+
+  <p data-cid="main-180">
+    The R*-tree's ChooseSubtree algorithm makes a crucial distinction between what happens at different levels of the tree. When the algorithm reaches a node whose children are leaves (i.e., the parent of leaf nodes), it uses <strong>overlap minimization</strong> as the primary criterion. When the algorithm is at a higher level (children are non-leaf nodes), it uses <strong>area minimization</strong>.
+  </p>
+
+  <p data-cid="main-190">
+    The reason for this distinction is that overlap matters most at the leaf level. At higher levels, the rectangles being managed are themselves large and already overlapping; at the leaf level, data objects are often small and can be kept in compact, non-overlapping groups.
+  </p>
+
+  <div class="box example" data-cid="main-200">
+    <span class="box-label">Algorithm ChooseSubtree (R*-tree version)</span>
+    <p data-cid="main-210">
+      CS1: Set <span class="tts-math" data-tts="N">$N$</span> to be the root.<br/>
+      CS2: If <span class="tts-math" data-tts="N">$N$</span> is a leaf, return <span class="tts-math" data-tts="N">$N$</span>.<br/>
+      Otherwise:<br/>
+      — If the children of <span class="tts-math" data-tts="N">$N$</span> point to leaves, choose the entry whose rectangle needs the least <strong>overlap enlargement</strong> to include the new data rectangle; break ties by least area enlargement, then smallest area.<br/>
+      — If the children of <span class="tts-math" data-tts="N">$N$</span> do not point to leaves, choose the entry whose rectangle needs the least <strong>area enlargement</strong>; break ties by smallest area.<br/>
+      CS3: Set <span class="tts-math" data-tts="N">$N$</span> to the child chosen above and repeat from CS2.
+    </p>
+  </div>
+
+  <p data-cid="main-220">
+    The overlap enlargement of entry <span class="tts-math" data-tts="E sub k">$E_k$</span> caused by adding a new rectangle is defined as:
+  </p>
+
+  <p data-cid="main-230">
+    <span class="tts-math" data-tts="overlap of E sub k equals the sum over all i not equal to k of the area of the intersection of E sub k's rectangle enlarged to contain the new entry, intersected with E sub i's rectangle">
+    $$\text{overlap}(E_k) = \sum_{i=1,\, i \neq k}^{p} \text{area}(E_k.\text{Rect}^{\text{enlarged}} \cap E_i.\text{Rect})$$
+    </span>
+  </p>
+
+  <p data-cid="main-240">
+    This is more expensive to compute than simple area enlargement, but experiments show it is essential for good leaf-level clustering. For large node sizes (<span class="tts-math" data-tts="M">$M$</span> large), the quadratic cost of computing overlap for all entries can be reduced by pre-sorting entries by area enlargement and only evaluating overlap for the top candidates.
+  </p>
+
+  <!-- ═══ SECTION 5 ═══ -->
+  <h2 data-cid="main-250" id="s5">5. The R*-Tree: A Better Split Algorithm</h2>
+
+  <p data-cid="main-260">
+    When a node overflows and must be split, the R*-tree uses a three-step algorithm that optimizes along all axes and uses margin (perimeter) as the primary axis-selection criterion:
+  </p>
+
+  <div class="box example" data-cid="main-270">
+    <span class="box-label">Algorithm Split (R*-tree)</span>
+    <p data-cid="main-280">
+      S1: <strong>Choose split axis</strong> (ChooseSplitAxis). For each axis, sort all <span class="tts-math" data-tts="M plus 1">$M+1$</span> entries by their lower then upper coordinates, and consider all <span class="tts-math" data-tts="M minus 2m plus 2">$M - 2m + 2$</span> possible splits (first group gets the first <span class="tts-math" data-tts="m plus k">$m + k$</span> entries for <span class="tts-math" data-tts="k equals 1 through M minus 2m plus 2">$k = 1, \ldots, M - 2m + 2$</span>). Compute the sum of the margins (perimeters) of all resulting bounding boxes. Choose the axis with the minimum total margin sum as the split axis.
+    </p>
+    <p data-cid="main-290">
+      S2: <strong>Choose split index</strong> (ChooseSplitIndex). Along the chosen axis, among all <span class="tts-math" data-tts="M minus 2m plus 2">$M - 2m + 2$</span> distributions, choose the one with minimum overlap value; break ties by minimum area.
+    </p>
+    <p data-cid="main-300">
+      S3: Distribute the <span class="tts-math" data-tts="M plus 1">$M+1$</span> entries into two groups according to the chosen distribution.
+    </p>
+  </div>
+
+  <p data-cid="main-310">
+    The goodness values computed for each distribution are: (i) area-value = sum of areas of the two bounding boxes, (ii) margin-value = sum of margins of the two bounding boxes, (iii) overlap-value = area of intersection of the two bounding boxes. By minimizing margin first (to select the axis) and then overlap (to select the split index within that axis), the algorithm finds splits that produce compact, non-overlapping groups.
+  </p>
+
+  <div class="box intuition" data-cid="main-320">
+    <span class="box-label">Intuition — Why minimize margin to choose the axis?</span>
+    <p data-cid="main-330">
+      If you split a set of rectangles with a cut along the x-axis, the two groups will each have compact x-extents (because entries are sorted by x before splitting) but may have scattered y-extents. Minimizing the total margin of both bounding boxes tends to select the axis along which the data is most naturally clustered—the axis where the cut produces the most compact groups, which in turn reduces the area of the resulting directory rectangles at the level above.
+    </p>
+  </div>
+
+  <!-- ═══ SECTION 6 ═══ -->
+  <h2 data-cid="main-340" id="s6">6. Forced Reinsert: The R*-Tree's Most Novel Idea</h2>
+
+  <p data-cid="main-350">
+    The most original and counterintuitive idea in the R*-tree paper is <strong>Forced Reinsert</strong>. When a node overflows, rather than splitting it immediately, the R*-tree first attempts to re-insert some of the node's entries at the appropriate level of the tree.
+  </p>
+
+  <p data-cid="main-360">
+    The motivation is elegant: both R-trees and R*-trees are nondeterministic in the sense that different insertion sequences produce different tree structures. Rectangles inserted early in the process may end up in poorly suited positions as the tree grows. A split is a local operation—it only reorganizes one node—and cannot fix suboptimal placements that have accumulated over many insertions. Deletion followed by re-insertion gives entries a fresh chance to find a better home in the current structure.
+  </p>
+
+  <div class="box definition" data-cid="main-370">
+    <span class="box-label">Algorithm ReInsert</span>
+    <p data-cid="main-380">
+      RI1: For all <span class="tts-math" data-tts="M plus 1">$M+1$</span> entries of the overflowing node <span class="tts-math" data-tts="N">$N$</span>, compute the distance between the center of each entry's rectangle and the center of <span class="tts-math" data-tts="N">$N$</span>'s bounding rectangle.<br/>
+      RI2: Sort entries in decreasing order of this distance (farthest from center first).<br/>
+      RI3: Remove the first <span class="tts-math" data-tts="p">$p$</span> entries from <span class="tts-math" data-tts="N">$N$</span> and adjust <span class="tts-math" data-tts="N">$N$</span>'s bounding rectangle.<br/>
+      RI4: Re-insert those <span class="tts-math" data-tts="p">$p$</span> entries, starting from the farthest one, by calling Insert at the appropriate level.
+    </p>
+  </div>
+
+  <p data-cid="main-390">
+    The entries removed are the ones farthest from the node's center—the "outliers" of the current group that are least well-represented by the current node's bounding rectangle. By reinserting them, they may find a better home in a different part of the tree, reducing that node's bounding rectangle and decreasing overlap with siblings.
+  </p>
+
+  <p data-cid="main-400">
+    The paper tests both "close reinsert" (reinsert close-to-center entries) and "far reinsert" (reinsert far-from-center entries), finding that far reinsert consistently outperforms close reinsert. The optimal value of <span class="tts-math" data-tts="p">$p$</span> (number of entries to reinsert) is found experimentally to be 30% of <span class="tts-math" data-tts="M">$M$</span>.
+  </p>
+
+  <div class="box intuition" data-cid="main-410">
+    <span class="box-label">Intuition — Why Forced Reinsert improves the tree</span>
+    <p data-cid="main-420">
+      Think of it like this: when you pack a suitcase and run out of space, instead of forcing a zipper that tears the seam (a split), you take out the items that stick out the most (the farthest from center) and repack the suitcase before trying those items again in a different compartment. The suitcase ends up better organized overall. In the R*-tree, this reorganization reduces overlap, improves storage utilization, and produces directory rectangles that are more compact and square-shaped—all four desiderata at once.
+    </p>
+  </div>
+
+  <p data-cid="main-430">
+    The Forced Reinsert operation is only invoked on the first overflow at each level during an insertion. If reinsertion itself causes further overflow at the same level, the overflow is handled by splitting—not by another reinsert. This prevents infinite reinsert loops.
+  </p>
+
+  <!-- ═══ SECTION 7 ═══ -->
+  <h2 data-cid="main-440" id="s7">7. The Full Insertion Algorithm</h2>
+
+  <p data-cid="main-450">
+    Putting the pieces together, the R*-tree insertion is:
+  </p>
+
+  <ol data-cid="main-460">
+    <li>Call ChooseSubtree to find the appropriate leaf node <span class="tts-math" data-tts="N">$N$</span> for the new data rectangle.</li>
+    <li>Add the data rectangle to <span class="tts-math" data-tts="N">$N$</span>.</li>
+    <li>If <span class="tts-math" data-tts="N">$N$</span> now has more than <span class="tts-math" data-tts="M">$M$</span> entries, call OverflowTreatment at the leaf level.</li>
+    <li>Propagate upward, adjusting bounding rectangles. If a split occurred, propagate the new node upward, calling OverflowTreatment at each level if the parent overflows.</li>
+    <li>If the root was split, create a new root with two children.</li>
+    <li>Adjust all covering rectangles on the insertion path to be minimum bounding boxes of their children.</li>
+  </ol>
+
+  <p data-cid="main-470">
+    OverflowTreatment at a given level: if this is not the root level and this is the first call to OverflowTreatment at this level during the current insertion, invoke ReInsert. Otherwise, invoke Split.
+  </p>
+
+  <p data-cid="main-480">
+    One consequence of Forced Reinsert: since reinserting entries calls Insert again, it invokes ChooseSubtree again at the appropriate level. The reinserted entries therefore benefit from the full optimization in ChooseSubtree—overlap minimization at the leaf level, area minimization above. The structure self-organizes more aggressively than any previous R-tree variant.
+  </p>
+
+  <!-- ═══ SECTION 8 ═══ -->
+  <h2 data-cid="main-490" id="s8">8. Performance Results</h2>
+
+  <p data-cid="main-500">
+    The authors test six data distributions (uniform, clustered, parcel, real cartography data, Gaussian, mixed uniform) and seven query types (point query, intersection queries at four sizes, enclosure query at two sizes), generating 400 queries per data file per query type. They compare four structures: linear R-tree (lin Gut), quadratic R-tree (qua Gut), Greene's R-tree (Greene), and the R*-tree.
+  </p>
+
+  <p data-cid="main-510">
+    The key results (from Tables 1–3 in the paper), normalized to the R*-tree at 100:
+  </p>
+
+  <ul data-cid="main-520">
+    <li>Linear R-tree (lin Gut): 227.5 on query average (i.e., 2.3 times more disk accesses than the R*-tree).</li>
+    <li>Quadratic R-tree (qua Gut): 130.0 (30% more disk accesses).</li>
+    <li>Greene's R-tree: 142.3 (42% more disk accesses).</li>
+    <li>Spatial join: quadratic R-tree requires 147.3; linear R-tree requires 261.2, vs. 100 for R*-tree.</li>
+    <li>Average insertion cost: R*-tree's insertion cost is <em>lower</em> than all R-tree variants (Forced Reinsert prevents expensive splits).</li>
+    <li>Storage utilization: R*-tree achieves 73.8% utilization vs. 64.1% for linear and 67.8% for quadratic.</li>
+  </ul>
+
+  <p data-cid="main-530">
+    The R*-tree is the best method in every single experiment. There is no distribution, query type, or operation mix where any other variant outperforms it—a remarkably clean result for an empirical comparison in systems research.
+  </p>
+
+  <p data-cid="main-540">
+    For point data (using a PAM benchmark with 100,000 correlated 2-d points), the R*-tree also outperforms the popular 2-level grid file: query average 100 vs. 127.6 for the grid file, with slightly lower storage utilization (70.9% vs. 58.3%) but higher insertion cost (3.36 vs. 2.56). For purely insertion-intensive point workloads, the grid file is competitive; for search-dominated workloads, the R*-tree wins.
+  </p>
+
+  <!-- ═══ SECTION 9 ═══ -->
+  <h2 data-cid="main-550" id="s9">9. Why the R*-Tree Won</h2>
+
+  <p data-cid="main-560">
+    The R*-tree became the dominant spatial index in both research and practice for several reasons. First, it is empirically superior across all tested scenarios—no niche where it fails badly. Second, it is a drop-in replacement for any R-tree: the same interface, the same tree structure, only the insertion algorithm changes. Implementation cost is only slightly higher than the quadratic R-tree. Third, Forced Reinsert is an elegant and generalizable idea: the insight that sometimes the right response to a local overflow is to globally reorganize rather than locally split has influenced subsequent work in many areas of data structures.
+  </p>
+
+  <p data-cid="main-570">
+    The margin-based split axis selection also proved influential. By explicitly optimizing the shape of bounding rectangles (not just their area), the R*-tree produces structures that remain well-organized even when the data distribution changes over time—making it robust in a way that area-only optimization is not.
+  </p>
+
+  <p data-cid="main-580">
+    PostgreSQL's GiST (Generalized Search Tree) extension, the spatial indexes in Oracle Spatial, and the spatial indexes in many GIS systems use R*-tree algorithms internally. The paper is regularly cited in courses on database internals, spatial databases, and data structure design. More than three decades later, the R*-tree remains the starting point for any discussion of dynamic spatial indexing.
+  </p>
+
+  <div class="box intuition" data-cid="main-590">
+    <span class="box-label">Intuition — The unified lesson</span>
+    <p data-cid="main-600">
+      The R*-tree teaches a general lesson about index design: the right optimization criterion is not always the obvious one. Guttman minimized area because it is easy to compute and intuitively appealing. Beckmann et al. showed through exhaustive experimentation that area alone is insufficient—you also need to minimize margin (for good shape), minimize overlap (for focused search), and use dynamic reorganization (Forced Reinsert) rather than relying on the initial insertion to get everything right. The lesson: measure many metrics, optimize multiple objectives, and use reorganization to compensate for insertion-order accidents.
+    </p>
+  </div>
+
+  <!-- ═══ REFERENCES ═══ -->
+  <h2 data-cid="main-610" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-620">Guttman, A. (1984). R-Trees: A Dynamic Index Structure for Spatial Searching. <em>Proc. ACM SIGMOD</em>, pp. 47–57.</li>
+    <li data-cid="main-630">Greene, D. (1989). An Implementation and Performance Analysis of Spatial Data Access Methods. <em>Proc. 5th Int. Conf. on Data Engineering</em>, pp. 606–615.</li>
+    <li data-cid="main-640">Roussopoulos, N. and Leifker, D. (1985). Direct Spatial Search on Pictorial Databases Using Packed R-Trees. <em>Proc. ACM SIGMOD</em>, pp. 17–31.</li>
+    <li data-cid="main-650">Seeger, B. and Kriegel, H.-P. (1988). Design and Implementation of Spatial Access Methods. <em>Proc. 14th Int. Conf. on Very Large Databases</em>, pp. 360–371.</li>
+    <li data-cid="main-660">Kriegel, H.-P., Schiwietz, M., Schneider, R., and Seeger, B. (1989). Performance Comparison of Point and Spatial Access Methods. <em>Proc. Symp. on Design and Implementation of Large Spatial Databases</em>. Lecture Notes in Computer Science.</li>
+    <li data-cid="main-670">Knuth, D. E. (1973). <em>The Art of Computer Programming</em>, Vol. 3: Sorting and Searching. Addison-Wesley.</li>
+    <li data-cid="main-680">Nievergelt, J., Hinterberger, H., and Sevcik, K. C. (1984). The Grid File: An Adaptable, Symmetric Multikey File Structure. <em>ACM Transactions on Database Systems</em>, 9(1), pp. 38–71.</li>
+    <li data-cid="main-690">Hinrichs, K. (1985). The Grid File System Implementation and Case Studies for Applications. Dissertation No. 7734, ETH Zurich.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script>
+</body>
+</html>

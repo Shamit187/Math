@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>An Efficient, Cost-Driven Index Selection Tool for Microsoft SQL Server · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="cost-driven-index-selection" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/cost-driven-index-selection/">Cost-Driven Index Selection</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. Introduction</a></li>
+    <li><a href="#s2">2. The Index Selection Problem</a></li>
+    <li><a href="#s3">3. What-If Indexes</a></li>
+    <li><a href="#s4">4. Cost Evaluation and Atomic Configurations</a></li>
+    <li><a href="#s5">5. Candidate Index Selection</a></li>
+    <li><a href="#s6">6. Configuration Enumeration</a></li>
+    <li><a href="#s7">7. Multi-Column Indexes</a></li>
+    <li><a href="#s8">8. Experimental Results</a></li>
+    <li><a href="#s9">9. Legacy and Impact</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">Scientific Paper · VLDB 1997</div>
+    <h1>An Efficient, Cost-Driven Index Selection Tool for Microsoft SQL Server</h1>
+    <div class="paper-meta">
+      <span class="authors">Surajit Chaudhuri, Vivek Narasayya</span>
+      <span class="venue">Proceedings of the 23rd VLDB Conference, Athens, Greece, 1997</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    Choosing which indexes to build on a database is one of the most consequential decisions a database administrator can make — and one of the most tedious. Get it wrong, and queries that should take milliseconds take minutes. This paper describes AutoAdmin's index selection tool, built for Microsoft SQL Server 7.0, which automates that decision by using the query optimizer's own cost estimates as its guide. The key insight is that you can ask the optimizer to estimate the cost of running a workload with a hypothetical, not-yet-built index — a "what-if" index. By comparing costs across many configurations using what-if indexes, the tool can find a near-optimal set of indexes for a given SQL workload without ever building a single real index. Three novel techniques — a candidate index selection algorithm, an atomic-configuration cost evaluation scheme, and an iterative method for handling multi-column indexes — reduce the tool's running time by a factor of 4 to 10 compared to a naïve approach, with negligible loss in quality.
+  </div>
+
+  <h2 data-cid="main-020" id="s1">1. Introduction</h2>
+  <p data-cid="main-030">
+    Enterprise databases face a cruel trade-off. Indexes dramatically speed up reads by allowing the database to jump directly to relevant rows instead of scanning entire tables. But every index has a cost: it occupies storage space, and every INSERT, UPDATE, or DELETE must update all relevant indexes. A table with twenty indexes might serve SELECT queries twice as fast but suffer five times the write overhead. The question "which indexes should I build?" has no universal answer — it depends on the specific mix of queries and updates that the system actually receives.
+  </p>
+  <p data-cid="main-040">
+    Before AutoAdmin, the standard approach was either to follow textbook rules (index foreign keys, index highly selective columns, avoid more than five indexes per table) or to run an expert system that encoded those rules. Both approaches have the same weakness: they are disconnected from the query optimizer. A recommended index is only useful if the optimizer actually <em>chooses</em> to use it. An index the optimizer ignores wastes space and inflicts write overhead for no benefit. AutoAdmin's core philosophical shift is to let the optimizer drive the decision from start to finish.
+  </p>
+
+  <h2 data-cid="main-050" id="s2">2. The Index Selection Problem</h2>
+  <p data-cid="main-060">
+    The problem is formally stated as follows. Given a workload <span class="tts-math" data-tts="W, a set of SQL statements Q sub 1 through Q sub n">$W = \{Q_1, \ldots, Q_n\}$</span> and an upper bound <span class="tts-math" data-tts="k">$k$</span> on the number of indexes to select, find a <em>configuration</em> (a set of indexes) <span class="tts-math" data-tts="C of size at most k">$C$</span> with <span class="tts-math" data-tts="the size of C is at most k">$|C| \leq k$</span> that minimizes the <em>total cost</em>:
+  </p>
+  <p data-cid="main-070">
+    <span class="tts-math" data-tts="the total cost of configuration C on workload W, equals the sum over all queries Q in W of the optimizer's cost estimate for Q given C">
+    $$\text{Cost}(C, W) = \sum_{Q \in W} \text{Cost}(Q, C)$$
+    </span>
+  </p>
+  <p data-cid="main-080">
+    where <span class="tts-math" data-tts="the cost of Q given C">$\text{Cost}(Q, C)$</span> is the optimizer's estimated cost for executing query <span class="tts-math" data-tts="Q">$Q$</span> when configuration <span class="tts-math" data-tts="C">$C$</span> is present in the database. The configuration with the minimum total cost is the <em>optimal configuration</em>.
+  </p>
+
+  <div class="box intuition" data-cid="main-090">
+    <span class="box-label">Intuition — Why is this hard?</span>
+    <p data-cid="main-100">
+      If there are <span class="tts-math" data-tts="n">$n$</span> admissible indexes (columns that appear in WHERE, GROUP BY, or ORDER BY clauses), the number of subsets of size at most <span class="tts-math" data-tts="k">$k$</span> is <span class="tts-math" data-tts="n choose k">$\binom{n}{k}$</span>. For a realistic TPC-D workload with 100 admissible indexes and a limit of 10, that is over <span class="tts-math" data-tts="10 to the 13">$10^{13}$</span> configurations. Even if each optimizer call took one microsecond, exhaustive search would take years. The tool must be clever about which configurations to even consider.
+    </p>
+  </div>
+
+  <h2 data-cid="main-110" id="s3">3. What-If Indexes</h2>
+  <p data-cid="main-120">
+    The foundational enabler of the entire approach is the <em>what-if index</em> — a hypothetical index that the tool registers with SQL Server without actually building it. SQL Server was modified to support this: when a what-if index is created, the server makes the distribution statistics for the indexed column(s) available to the optimizer as if the index existed. The optimizer then produces a cost estimate for any query that mentions those columns, as if the index were there.
+  </p>
+  <p data-cid="main-130">
+    This is a crucial architectural choice. By keeping the optimizer "in the loop" — rather than building a separate cost model — AutoAdmin inherits the optimizer's knowledge of join algorithms, selectivity estimation, and plan shape. If the optimizer later changes its strategies, the index selection tool automatically adapts, with no maintenance required.
+  </p>
+
+  <div class="box warn" data-cid="main-140">
+    <span class="box-label">Synchrony, not asynchrony</span>
+    <p data-cid="main-150">
+      Earlier index selection tools maintained their own internal cost model, separate from the actual optimizer. This creates a synchronization problem: if the optimizer changes its behavior (e.g., adds a new join algorithm, updates its cost formulas), the tool's model becomes stale. AutoAdmin avoids this entirely by delegating all cost estimation to the live optimizer. The tool's only job is to intelligently choose <em>which configurations to ask the optimizer to evaluate</em>.
+    </p>
+  </div>
+
+  <h2 data-cid="main-160" id="s4">4. Cost Evaluation and Atomic Configurations</h2>
+  <p data-cid="main-170">
+    Calling the optimizer is expensive — each call requires inter-process communication and loading of distribution information. The paper introduces <em>atomic configurations</em> to minimize optimizer invocations.
+  </p>
+
+  <div class="box definition" data-cid="main-180">
+    <span class="box-label">Definition — Atomic Configuration</span>
+    <p data-cid="main-190">
+      A configuration <span class="tts-math" data-tts="C">$C$</span> is <em>atomic</em> for a workload if for some query <span class="tts-math" data-tts="Q">$Q$</span> in the workload, there exists an execution of <span class="tts-math" data-tts="Q">$Q$</span> by the query engine that uses <em>all</em> indexes in <span class="tts-math" data-tts="C">$C$</span>. Informally: an atomic configuration is one where all the indexes could plausibly be used together in a single plan.
+    </p>
+  </div>
+
+  <p data-cid="main-200">
+    The key insight is: if <span class="tts-math" data-tts="C">$C$</span> is not atomic, then the optimizer will always prefer some atomic subset of <span class="tts-math" data-tts="C">$C$</span> when optimizing any query. Therefore, we can derive the cost for non-atomic configurations from atomic ones <em>without additional optimizer calls</em>. Specifically, for a Select/Update query:
+  </p>
+  <p data-cid="main-210">
+    <span class="tts-math" data-tts="the cost of Q given C equals the minimum over all atomic configurations C sub i of Q that are subsets of C, of the cost of Q given C sub i">
+    $$\text{Cost}(Q, C) = \min_{C_i \subseteq C,\; C_i \text{ atomic}} \text{Cost}(Q, C_i)$$
+    </span>
+  </p>
+  <p data-cid="main-220">
+    This means we only need to evaluate optimizer costs for atomic configurations. The total cost for any configuration <span class="tts-math" data-tts="C">$C$</span> can be assembled from these without extra optimizer calls.
+  </p>
+  <p data-cid="main-230">
+    The paper further constrains atomic configurations using two observations about real query processors. First, no query uses more than <span class="tts-math" data-tts="j">$j$</span> indexes per table (the paper finds <span class="tts-math" data-tts="j equals 2">$j = 2$</span> works well). Second, for multi-table queries, only indexes on the first <span class="tts-math" data-tts="t">$t$</span> joined tables matter most (the paper finds <span class="tts-math" data-tts="t equals 2">$t = 2$</span>). These "single-join atomic configurations" dramatically cut the number of configurations that need optimizer evaluation — by 50% to 61% for workloads with complex joins.
+  </p>
+  <p data-cid="main-240">
+    A further trick is the <em>relevant index set optimization</em>. If two configurations <span class="tts-math" data-tts="C and C prime">$C$</span> and <span class="tts-math" data-tts="C prime">$C'$</span> have the same indexes on the columns that actually appear in a query, then <span class="tts-math" data-tts="the cost of Q given C equals the cost of Q given C prime">$\text{Cost}(Q, C) = \text{Cost}(Q, C')$</span>. So previously computed costs can be reused — yet another way to save optimizer invocations.
+  </p>
+
+  <h2 data-cid="main-250" id="s5">5. Candidate Index Selection</h2>
+  <p data-cid="main-260">
+    Rather than considering every admissible index for the whole workload at once, the algorithm first computes a smaller <em>candidate index set</em>. The idea: determine the best configuration for each individual query in the workload, and take the union of those best configurations as candidates. An index that is not part of the best configuration for any single query is unlikely to appear in the best configuration for the entire workload.
+  </p>
+  <p data-cid="main-270">
+    The best configuration for a single query is found by running the index selection tool itself on that one-query workload — a beautiful recursive self-application. This is called the <em>query-specific-best-configuration</em> (BEST-CONF) algorithm.
+  </p>
+
+  <div class="box example" data-cid="main-280">
+    <span class="box-label">Example — Candidate selection in practice</span>
+    <p data-cid="main-290">
+      For the TPC-D benchmark workload TPCD_2 (which involves 3, 4, and 5-join queries), BEST-CONF selects 33% fewer candidate indexes than the total number of admissible indexes, yet the final configuration chosen using only those candidates is identical in quality to the configuration chosen using all admissible indexes. The savings in optimizer calls and enumeration cost are substantial.
+    </p>
+  </div>
+
+  <h2 data-cid="main-300" id="s6">6. Configuration Enumeration</h2>
+  <p data-cid="main-310">
+    Once a candidate index set is established, the tool must search over subsets of candidates to find one of size at most <span class="tts-math" data-tts="k">$k$</span> with minimum total cost. Exhaustive enumeration is infeasible for realistic values of <span class="tts-math" data-tts="n">$n$</span> (number of candidates) and <span class="tts-math" data-tts="k">$k$</span>. The paper uses the <strong>Greedy(m, k)</strong> algorithm.
+  </p>
+  <p data-cid="main-320">
+    Greedy(<span class="tts-math" data-tts="m, k">$m, k$</span>) works as follows:
+  </p>
+  <ol data-cid="main-330">
+    <li>Start with the best <span class="tts-math" data-tts="m">$m$</span>-index configuration found by exhaustive search (the "seed").</li>
+    <li>Expand this seed greedily: at each step, add the one index that gives the largest cost reduction, until <span class="tts-math" data-tts="k">$k$</span> indexes have been chosen or no further reduction is possible.</li>
+  </ol>
+  <p data-cid="main-340">
+    The parameter <span class="tts-math" data-tts="m">$m$</span> controls the trade-off between quality and computation. When <span class="tts-math" data-tts="m equals 0">$m = 0$</span>, the algorithm is a pure greedy. When <span class="tts-math" data-tts="m equals k">$m = k$</span>, it is the naïve exhaustive search. The paper finds that <span class="tts-math" data-tts="m equals 2">$m = 2$</span> yields near-optimal results with dramatically lower cost.
+  </p>
+  <p data-cid="main-350">
+    The experiments show that Greedy(2, k) finds the same configuration as exhaustive optimal search in all but one of the tested workloads (TPCD_4, an update-heavy workload), and even there the cost difference is less than 1%.
+  </p>
+
+  <h2 data-cid="main-360" id="s7">7. Multi-Column Indexes</h2>
+  <p data-cid="main-370">
+    Multi-column (composite) indexes — such as an index on (OrderDate, ShipMode) — can be more powerful than single-column indexes for queries with multiple predicates. But they explode the search space: for <span class="tts-math" data-tts="k">$k$</span> columns on a table, <span class="tts-math" data-tts="k factorial">$k!$</span> orderings of a multi-column index are possible. The paper handles this with an iterative approach called <strong>MC-LEAD</strong>.
+  </p>
+  <p data-cid="main-380">
+    The strategy: in the first iteration, find the best single-column indexes. Then, for each single-column index on column <span class="tts-math" data-tts="a">$a$</span> that was selected, consider all two-column indexes of the form <span class="tts-math" data-tts="M of a, b">$M(a, b)$</span> for any column <span class="tts-math" data-tts="b">$b$</span>. The key constraint is that <span class="tts-math" data-tts="a">$a$</span> must be the leading column, but <span class="tts-math" data-tts="b">$b$</span> need not itself have a winning single-column index. This is based on the intuition that a two-column index is only useful if its leading column is independently valuable.
+  </p>
+  <p data-cid="main-390">
+    Experiments show MC-LEAD loses 0–6% quality compared to the brute-force MC-BASIC approach across five TPC-D workloads, while dramatically reducing the number of multi-column index candidates considered.
+  </p>
+
+  <h2 data-cid="main-400" id="s8">8. Experimental Results</h2>
+  <p data-cid="main-410">
+    The tool was tested on five representative TPC-D workloads (TPCD_1 through TPCD_4 and TPCD_O) covering a range of join complexities and update percentages (from 0% to 50% updates). Key results:
+  </p>
+  <ul data-cid="main-420">
+    <li><strong>Candidate index reduction:</strong> BEST-CONF selected 30–43% fewer candidate indexes than the total admissible indexes across all workloads, with 0–15% drop in final quality — and zero drop for three of the five workloads.</li>
+    <li><strong>Optimizer call reduction:</strong> The combination of atomic configuration restrictions and relevant-index-set optimization reduced the total number of optimizer invocations by 79–92% compared to naïve evaluation.</li>
+    <li><strong>Speed vs. baseline:</strong> The complete algorithm ran 4 to 10 times faster than a baseline that used no candidate selection and no atomic configuration tricks, with at most 7% quality drop (and usually 0–1%).</li>
+  </ul>
+
+  <div class="box pause" data-cid="main-430">
+    <span class="box-label">Pause and reflect</span>
+    <p data-cid="main-440">
+      Notice that the paper never claims to find the mathematically optimal configuration. It claims to find a configuration that is <em>close to</em> optimal in terms of the optimizer's cost metric. This is the right goal for a practical tool: the optimizer's cost estimates are themselves approximations, so sub-percent quality differences are well within the noise. Burning exponential time chasing the last fraction of a percent is a poor use of resources.
+    </p>
+  </div>
+
+  <h2 data-cid="main-450" id="s9">9. Legacy and Impact</h2>
+  <p data-cid="main-460">
+    This paper essentially defined the architecture of modern automated physical database design tools. The what-if index concept became a standard feature: Oracle's SQL Tuning Advisor, IBM's Design Advisor, and PostgreSQL's HypoPG extension all implement variants of what-if indexing. The three-stage pipeline — candidate selection, configuration enumeration, multi-column handling — is recognizable in every commercial database advisor available today.
+  </p>
+  <p data-cid="main-470">
+    The principle of keeping the optimizer "in the loop" turned out to be deeply right. As optimizers became more sophisticated (incorporating partition pruning, index-only scans, materialized views, adaptive query plans), the AutoAdmin architecture absorbed those improvements automatically — because it was never simulating the optimizer, only consulting it.
+  </p>
+  <p data-cid="main-480">
+    The paper also seeded the broader field of <em>self-tuning databases</em>. AutoAdmin grew into a full research agenda at Microsoft that eventually produced automatic statistics maintenance, adaptive query processing, and, decades later, learned index structures and AI-driven tuning advisors. The 1997 paper is the root of that tree.
+  </p>
+
+  <h2 data-cid="main-490" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-500">Finkelstein, S., Schkolnick, M., and Tiberio, P. (1988). Physical Database Design for Relational Databases. <em>ACM TODS</em>, March 1988.</li>
+    <li data-cid="main-510">Chaudhuri, S., and Narasayya, V. (1997). Physical Database Design Assistant and Wizard for SQL Server. Microsoft Research Technical Report, in preparation, 1997.</li>
+    <li data-cid="main-520">Rozen, S., and Shasha, D. (1991). A Framework for Automating Physical Database Design. <em>Proceedings of VLDB</em>, 1991.</li>
+    <li data-cid="main-530">Frank, M., Omiecinski, E., and Navathe, S. (1992). Adaptive and Automative Index Selection in RDBMS. <em>Proceedings of EDBT</em>, 1992.</li>
+    <li data-cid="main-540">Harinarayan, V., Rajaramana, A., and Ullman, J. D. (1996). Implementing Data Cubes Efficiently. <em>Proceedings of SIGMOD</em>, 1996.</li>
+    <li data-cid="main-550">Choenni, S., Blanken, H. M., and Chang, T. (1993). Index Selection in Relational Databases. <em>Proceedings of IEEE ICCI</em>, 1993.</li>
+    <li data-cid="main-560">Hammer, M., and Chan, A. (1976). Index Selection in a Self-Adaptive Data Base Management System. <em>Proceedings of ACM SIGMOD</em>, 1976.</li>
+    <li data-cid="main-570">Labio, W. J., Quass, D., and Adelberg, B. (1997). Physical Database Design for Data Warehouses. <em>Proceedings of ICDE</em>, 1997.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script>
+</body>
+</html>

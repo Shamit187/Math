@@ -1,0 +1,6 @@
+{
+  "title": "k-Shape: Efficient and Accurate Clustering of Time Series",
+  "authors": "John Paparrizos, Luis Gravano",
+  "venue": "SIGMOD 2015",
+  "description": "k-Shape is a scalable, domain-independent time-series clustering algorithm that uses a normalized cross-correlation distance (SBD) for shape-based similarity and a novel centroid extraction method, outperforming all scalable competitors in accuracy across 48 datasets."
+}

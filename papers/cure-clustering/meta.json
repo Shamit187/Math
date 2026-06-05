@@ -1,0 +1,6 @@
+{
+  "title": "CURE: An Efficient Clustering Algorithm for Large Databases",
+  "authors": "Sudipto Guha, Rajeev Rastogi, Kyuseok Shim",
+  "venue": "SIGMOD 1998",
+  "description": "Proposes CURE, a hierarchical clustering algorithm that represents each cluster by multiple well-scattered representative points shrunk toward the centroid, enabling it to handle non-spherical cluster shapes, wide size variances, and outliers in large databases via random sampling and partitioning."
+}

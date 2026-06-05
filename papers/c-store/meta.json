@@ -1,0 +1,6 @@
+{
+  "title": "C-Store: A Column-oriented DBMS",
+  "authors": "Mike Stonebraker, Daniel J. Abadi, Adam Batkin, Xuedong Chen, Mitch Cherniack, Miguel Ferreira, Edmond Lau, Amerson Lin, Sam Madden, Elizabeth O'Neil, Pat O'Neil, Alex Rasin, Nga Tran, Stan Zdonik",
+  "venue": "VLDB 2005",
+  "description": "Introduces C-Store, a read-optimized column-oriented DBMS that stores overlapping sorted projections, uses aggressive compression, and combines a write-optimized store with a read-optimized store to achieve order-of-magnitude speedups on warehouse-style queries."
+}

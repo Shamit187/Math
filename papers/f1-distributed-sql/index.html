@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>F1: A Distributed SQL Database That Scales · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/>
+</head>
+<body data-book="f1-distributed-sql" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/f1-distributed-sql/">F1: A Distributed SQL Database That Scales</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. Introduction</a></li>
+    <li><a href="#s2">2. The Problem with MySQL at Scale</a></li>
+    <li><a href="#s3">3. Basic Architecture</a></li>
+    <li><a href="#s4">4. Hierarchical Schema and Data Model</a></li>
+    <li><a href="#s5">5. Indexing Strategy</a></li>
+    <li><a href="#s6">6. Asynchronous Schema Changes</a></li>
+    <li><a href="#s7">7. Transactions: Three Flavors</a></li>
+    <li><a href="#s8">8. Change History</a></li>
+    <li><a href="#s9">9. Query Processing</a></li>
+    <li><a href="#s10">10. Latency, Throughput, and Lessons</a></li>
+    <li><a href="#s11">11. Impact and Legacy</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">PVLDB 2013 · Systems</div>
+    <h1>F1: A Distributed SQL Database That Scales</h1>
+    <div class="paper-meta">
+      <span class="authors">Jeff Shute, Radek Vingralek, Bart Samwel, Ben Handy, Chad Whipkey, Eric Rollins, Mircea Oancea, Kyle Littlefield, David Menestrina, Stephan Ellner, John Cieslewicz, Ian Rae, Traian Stancescu, Himani Apte</span>
+      <span class="venue">Proceedings of the VLDB Endowment, Vol. 6, No. 11 · PVLDB 2013</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    F1 is a distributed relational database system built at Google to support the AdWords business — Google's primary revenue engine. It is a hybrid database combining the high availability and scalability of NoSQL systems like Bigtable with the consistency and usability of traditional SQL databases. F1 is built on top of Spanner, which provides synchronous cross-datacenter replication and strong consistency. Synchronous replication implies higher commit latency (50–150 ms), but F1 mitigates that latency through a hierarchical schema model with structured data types, and through careful application design. F1 also includes a fully functional distributed SQL query engine and automatic change tracking and publishing.
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 1 -->
+  <h2 data-cid="main-020" id="s1">1. Introduction</h2>
+
+  <p data-cid="main-030">
+    The name F1 is a genetics term. A <em>Filial 1 hybrid</em> is the first generation offspring from a cross mating of two distinctly different parental types — and that metaphor captures the paper's central claim precisely. F1 the database is such a hybrid: it takes the relational power of traditional SQL databases and welds it onto the scalability backbone of Google's NoSQL infrastructure. The result should, in theory, be impossible. Prior work argued that strong consistency, high availability, and SQL-level usability are mutually exclusive at global scale. F1 is Google's demonstration that they are not.
+  </p>
+
+  <p data-cid="main-040">
+    Before F1, AdWords ran on a sharded MySQL deployment. MySQL is excellent for small-to-medium workloads, but sharding introduces a set of problems that compound as scale increases. Shards are rigid: resharding data without breaking applications is painful and time-consuming. Joins across shards require application-level logic. Availability suffers because each shard is a single point of failure. The engineering team found themselves spending enormous effort working around the limitations of sharded MySQL rather than building features. Google decided to replace it entirely.
+  </p>
+
+  <div class="box definition" data-cid="main-050">
+    <span class="box-label">The Four Design Goals of F1</span>
+    <p data-cid="main-060">
+      The paper enumerates four non-negotiable requirements that drove every design decision:
+      <br><strong>Scalability</strong> — trivially add capacity by adding machines, with no manual resharding.
+      <br><strong>Availability</strong> — five nines even during datacenter outages and planned maintenance.
+      <br><strong>Consistency</strong> — full ACID transactions; applications must always see correct, non-stale data.
+      <br><strong>Usability</strong> — full SQL, secondary indexes, ad hoc queries; things developers expect from a real database.
+    </p>
+  </div>
+
+  <p data-cid="main-070">
+    These goals had long been considered mutually exclusive. The NoSQL wave of the 2000s was premised on the idea that you give up consistency and SQL to get scalability. F1's thesis is that this trade-off is not fundamental — it is merely the result of engineering choices made when building disk-oriented, single-machine relational databases. Build fresh, with Spanner as the storage substrate, and you can have all four.
+  </p>
+
+  <!-- ═══════════════════════════════════════════ SECTION 2 -->
+  <h2 data-cid="main-080" id="s2">2. The Problem with MySQL at Scale</h2>
+
+  <p data-cid="main-090">
+    To understand F1's design, you have to understand what went wrong with sharded MySQL. The AdWords team had horizontally partitioned their data across many MySQL servers — each server owned a range of customer accounts. This approach works until it doesn't. Here is what breaks first.
+  </p>
+
+  <div class="box example" data-cid="main-100">
+    <span class="box-label">Example — The Resharding Nightmare</span>
+    <p data-cid="main-110">
+      Suppose a new large advertiser joins AdWords and their data lands on shard 3. As their campaigns grow, shard 3 becomes the hot shard. To rebalance, engineers must migrate rows from shard 3 to a new shard 7. During migration, applications need to know which shard to talk to, so every application needs to be updated or a routing layer needs to be modified. If anything goes wrong mid-migration — a server crash, a network partition — the data may be inconsistent across shards. This process took weeks and required application changes. F1 on Spanner makes this completely transparent: Spanner re-partitions data automatically, and F1 servers never hold data locally, so there is nothing to migrate.
+    </p>
+  </div>
+
+  <p data-cid="main-120">
+    Beyond resharding, sharded MySQL made joins expensive. AdWords queries routinely need to join a customer's campaigns with their ad groups with their keywords. In a sharded schema, those tables live on the same shard only if all rows happen to be co-located by customer ID. Cross-shard joins require application code to fetch from multiple servers and stitch results together. This logic is hard to write correctly and even harder to maintain.
+  </p>
+
+  <p data-cid="main-130">
+    Availability was the final nail. A sharded MySQL deployment with three replicas per shard can tolerate one server failure per shard, but a datacenter outage takes down an entire geographic region. Google's AdWords operations require five-nines availability — roughly 5 minutes of downtime per year. Sharded MySQL, even with heroic operational effort, could not guarantee that.
+  </p>
+
+  <!-- ═══════════════════════════════════════════ SECTION 3 -->
+  <h2 data-cid="main-140" id="s3">3. Basic Architecture</h2>
+
+  <p data-cid="main-150">
+    F1 is deliberately designed to be stateless at the server layer. Clients talk to one of many <em>F1 servers</em>, which are responsible for reading and writing data from remote data sources and coordinating query execution. The underlying storage is Spanner, which handles persistence, caching, replication, fault tolerance, data sharding, and transactions. F1 servers do not own data, so adding or removing them requires no data movement whatsoever.
+  </p>
+
+  <div class="box intuition" data-cid="main-160">
+    <span class="box-label">Intuition — Why Stateless Servers Are Powerful</span>
+    <p data-cid="main-170">
+      In a traditional database, the server and the storage are the same machine. This coupling means that every failure of the server is also a data availability event. In F1, the server is just a query execution engine — a piece of software that translates SQL into Spanner RPCs. If an F1 server dies, the client simply reconnects to another F1 server and retries. No data is lost. No recovery is needed. This separation of computation from storage is the same architectural insight behind cloud databases today — F1 was doing it at production scale in 2013.
+    </p>
+  </div>
+
+  <p data-cid="main-180">
+    The F1 cluster has several additional components. A <em>load balancer</em> distributes incoming requests across F1 servers. An <em>F1 master</em> monitors server health and maintains a list of available slave processes. A <em>slave pool</em> consists of F1 processes that exist to execute subplans of distributed queries — they are the workers that fan out across the data when a large OLAP query is run. F1 also integrates with Google's MapReduce framework for large-scale batch processing.
+  </p>
+
+  <p data-cid="main-190">
+    Below F1 servers sit the Spanner servers, co-located in the same datacenters. In the AdWords deployment, five datacenters are spread across the US, using 5-way Paxos replication. Every committed write is synchronously acknowledged by a majority of replicas before it is considered durable. This is the source of F1's strong consistency guarantee — and its latency cost.
+  </p>
+
+  <!-- ═══════════════════════════════════════════ SECTION 4 -->
+  <h2 data-cid="main-200" id="s4">4. Hierarchical Schema and Data Model</h2>
+
+  <p data-cid="main-210">
+    The most distinctive design choice in F1 is its <em>hierarchical schema</em>. This is the primary mechanism by which F1 hides the latency of a globally distributed storage layer from applications.
+  </p>
+
+  <p data-cid="main-220">
+    In a traditional relational schema, tables are flat and independent. You might have a <code>Customer</code> table keyed by <code>CustomerId</code>, a <code>Campaign</code> table keyed by <code>CampaignId</code> with a foreign key to <code>Customer</code>, and an <code>AdGroup</code> table keyed by <code>AdGroupId</code> with a foreign key to <code>Campaign</code>. In physical storage, these three tables are scattered independently across the storage system. To retrieve all campaigns and ad groups for a given customer, you need three separate reads — potentially three separate round trips to three separate storage nodes.
+  </p>
+
+  <div class="box definition" data-cid="main-230">
+    <span class="box-label">Definition — Hierarchical Clustering in F1</span>
+    <p data-cid="main-240">
+      In F1's hierarchical schema, child tables are physically <em>interleaved</em> within the rows of their parent tables. A child table's primary key must contain the parent's primary key as a prefix. For example, Campaign's primary key is <code>(CustomerId, CampaignId)</code>, and AdGroup's is <code>(CustomerId, CampaignId, AdGroupId)</code>. Physically, Spanner stores all Campaign and AdGroup rows for a given Customer together in a single <em>directory</em> — a contiguous range of the key space that is typically stored on one server. This means all the data for one customer can be read with a single Spanner request.
+    </p>
+  </div>
+
+  <p data-cid="main-250">
+    The performance implication is substantial. With traditional flat tables, reading a customer's complete advertising hierarchy requires sequential dependent RPCs — fetch campaigns, then for each campaign fetch ad groups, and so on. With hierarchical clustering, F1 issues one request to Spanner for the whole directory, and Spanner returns the data in an interleaved depth-first order. F1 then uses a <em>cluster join</em> algorithm that streams through this interleaved output in one pass, producing joined rows without buffering entire tables. The number of Spanner RPCs drops from O(depth) to O(1).
+  </p>
+
+  <div class="box intuition" data-cid="main-260">
+    <span class="box-label">Intuition — The Analogy to Nested Files</span>
+    <p data-cid="main-270">
+      Think of hierarchical clustering like a folder structure. In the traditional schema, Customer, Campaign, and AdGroup files are scattered across different directories on different drives. To assemble a complete customer record you have to open three different drawers. In F1's schema, everything for Customer 42 is in one folder: the Customer row is the folder itself, and Campaign rows and AdGroup rows are filed inside it in order. Fetching Customer 42's data means opening one drawer and reading everything inside, in sequence, with no random seeks.
+    </p>
+  </div>
+
+  <p data-cid="main-280">
+    The hierarchical schema also enables a key optimization for writes. In a transaction that updates data under a single root row — a single advertiser's hierarchy — all the modified data is in one Spanner directory. The transaction involves only one Spanner group, so it uses single-phase commit rather than two-phase commit (2PC). This saves one network round trip per transaction, which at the 50 ms inter-datacenter latency scale is not trivial. The paper recommends that application developers design their schemas to keep most transactions within a single root, and the AdWords team found this to be achievable for the vast majority of workloads.
+  </p>
+
+  <p data-cid="main-290">
+    F1 also supports <strong>Protocol Buffer columns</strong>. Protocol Buffers are Google's schema-and-binary-encoding library for structured data interchange. In F1's schema design, columns can hold entire protocol buffer messages, including nested messages and repeated fields. This allows a table to store a rich structured object in a single column without breaking it across multiple child rows. Protocol Buffer columns reduce impedance mismatch between the database and application code — the application already works with protocol buffers everywhere in Google's stack — and they can dramatically reduce the number of child tables required in a schema.
+  </p>
+
+  <!-- ═══════════════════════════════════════════ SECTION 5 -->
+  <h2 data-cid="main-300" id="s5">5. Indexing Strategy</h2>
+
+  <p data-cid="main-310">
+    All indexes in F1 are transactionally consistent and fully maintained — they never lag behind the data, unlike eventually-consistent secondary indexes in some NoSQL systems. Indexes are stored as separate tables in Spanner, keyed by the index key concatenated with the indexed table's primary key.
+  </p>
+
+  <p data-cid="main-320">
+    F1 distinguishes two types of indexes by their physical placement. A <em>local index</em> key must begin with the root row's primary key, so index entries live in the same Spanner directory as the rows they index. Updating a local index costs no additional Spanner participants — the transaction stays within its existing directory, and commit latency is unaffected.
+  </p>
+
+  <p data-cid="main-330">
+    A <em>global index</em>, by contrast, spans all root rows. An example is an index on <code>Keyword</code> across all customers — useful for finding which customers use a given keyword across the entire AdWords ecosystem. Because global index entries are not co-located with any particular root, updating them requires a 2PC transaction across multiple Spanner groups. This adds latency and can become a scalability bottleneck at high write rates. The paper advises using global indexes sparingly and designing applications to use small write transactions when tables have global indexes.
+  </p>
+
+  <div class="box warn" data-cid="main-340">
+    <span class="box-label">Watch Out — Global Indexes and 2PC</span>
+    <p data-cid="main-350">
+      Consider a transaction that inserts 1,000 rows, each requiring a global index update. Those 1,000 index entries may be spread across hundreds of Spanner index directories. The 2PC transaction now has hundreds of participants, multiplying both latency and abort probability. The paper explicitly warns against this pattern and recommends batching writes or using local indexes wherever business requirements permit.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 6 -->
+  <h2 data-cid="main-360" id="s6">6. Asynchronous Schema Changes</h2>
+
+  <p data-cid="main-370">
+    Schema changes in a massively distributed system are surprisingly hard. In a single-server database, adding a column or an index briefly locks the table. In F1, "briefly locking the table" means blocking all transactions across hundreds of F1 servers in five datacenters — a plainly unacceptable user experience for a 24/7 advertising platform.
+  </p>
+
+  <p data-cid="main-380">
+    F1's solution is to make all schema changes <em>non-blocking and asynchronous</em>. The schema change is applied at different times on different F1 servers, meaning that at any moment, some servers are using schema <span class="tts-math" data-tts="S sub 1">$S_1$</span> and others are using schema <span class="tts-math" data-tts="S sub 2">$S_2$</span>. This is fine as long as you can guarantee consistency. The danger is illustrated by a concrete example in the paper: if server <span class="tts-math" data-tts="M sub 1">$M_1$</span> uses the old schema (without index <span class="tts-math" data-tts="I">$I$</span>) and server <span class="tts-math" data-tts="M sub 2">$M_2$</span> uses the new schema (with index <span class="tts-math" data-tts="I">$I$</span>), then <span class="tts-math" data-tts="M sub 2">$M_2$</span> may insert a row and its index entry, but <span class="tts-math" data-tts="M sub 1">$M_1$</span> may later delete the row without deleting the index entry — leaving a spurious dangling index reference.
+  </p>
+
+  <p data-cid="main-390">
+    The F1 schema change algorithm prevents this by enforcing that at most two different schemas are active across all F1 servers at any time. It subdivides each schema change into multiple fine-grained phases, where consecutive phases are guaranteed to be mutually compatible. For example, when adding index <span class="tts-math" data-tts="I">$I$</span>, the algorithm first introduces a phase where <span class="tts-math" data-tts="I">$I$</span> exists in a <em>write-only</em> mode — all servers begin maintaining <span class="tts-math" data-tts="I">$I$</span> on new writes, but reads cannot yet use it. Only after a full backfill of all existing rows does the index transition to <em>read-write</em> mode and become visible to queries. This eliminates the category of anomalies described above.
+  </p>
+
+  <div class="box pause" data-cid="main-400">
+    <span class="box-label">Pause and Reflect</span>
+    <p data-cid="main-410">
+      The schema change problem is a microcosm of distributed systems design. The naive approach — broadcast the change to all servers simultaneously — fails because "simultaneously" is impossible across a wide-area network. The sophisticated approach — reason carefully about which pairs of schema states are safe to co-exist — allows a live system to evolve its structure without a maintenance window. This same challenge reappears in any system that stores state redundantly across replicas.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 7 -->
+  <h2 data-cid="main-420" id="s7">7. Transactions: Three Flavors</h2>
+
+  <p data-cid="main-430">
+    F1 provides three transaction types, each suited to different workloads and with different consistency and latency profiles. All are built on top of Spanner's native transaction support.
+  </p>
+
+  <div class="box definition" data-cid="main-440">
+    <span class="box-label">Definition — Snapshot Transactions</span>
+    <p data-cid="main-450">
+      Snapshot transactions are read-only transactions with snapshot semantics. Every snapshot transaction reads data as of a fixed Spanner <em>snapshot timestamp</em>. By default, this is Spanner's <em>global safe timestamp</em> — a timestamp guaranteed to be in the past by 5–10 seconds, such that no in-flight transaction can possibly commit at or before it. Reads at this timestamp can run on any replica, including read-only replicas, and they never take locks and never block. This is the default mode for SQL queries and MapReduce jobs in F1.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-460">
+    <span class="box-label">Definition — Pessimistic Transactions</span>
+    <p data-cid="main-470">
+      Pessimistic transactions map directly to Spanner's built-in pessimistic transactions, which use strict two-phase locking. All requests within a single pessimistic transaction must go to the same F1 server for the duration of the transaction. Reads can request shared or exclusive locks. This mode is appropriate when the application needs to hold locks to prevent concurrent modification — for example, enforcing uniqueness invariants or maintaining a counter.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-480">
+    <span class="box-label">Definition — Optimistic Transactions</span>
+    <p data-cid="main-490">
+      Optimistic transactions are the default for client-initiated read-write transactions. They proceed in two phases. During the <em>read phase</em> — which may take arbitrarily long and never acquires Spanner locks — the transaction reads data normally. Each row returned by F1 carries a hidden <em>lock column</em> containing the last-modification timestamp. During the short <em>write phase</em>, the client sends all reads' lock columns back to an F1 server, which creates a short-lived pessimistic Spanner transaction, re-reads every lock column, and checks whether any has been modified since the client read it. If yes, the transaction aborts (conflicting write detected). If no, the writes are sent to Spanner and committed.
+    </p>
+  </div>
+
+  <p data-cid="main-500">
+    Optimistic transactions have substantial advantages in a geo-distributed environment. Because the read phase holds no locks, long-running reads (including those involving user interaction or expensive computation) cannot cause lock contention. If the client crashes mid-transaction, there are no orphaned locks to time out. The commit is self-contained and can be retried on a different F1 server after a transient failure. These properties are critical in the AdWords ecosystem, which has thousands of applications and diverse transaction patterns.
+  </p>
+
+  <div class="box warn" data-cid="main-510">
+    <span class="box-label">Watch Out — Optimistic Transaction Pitfalls</span>
+    <p data-cid="main-520">
+      Optimistic transactions have two important limitations. First, they cannot detect <em>insertion phantoms</em> — if a transaction reads a set of rows and another transaction inserts a new row into that set before commit, the optimistic transaction will not detect this (since modification timestamps only exist on rows already present). The paper recommends using parent-table lock columns to guard against phantoms. Second, under high write contention — for example, a counter that many clients increment concurrently — most optimistic transactions will abort at commit time because their read timestamps are stale. In such cases, pessimistic transactions with exclusive locks are more appropriate.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 8 -->
+  <h2 data-cid="main-530" id="s8">8. Change History</h2>
+
+  <p data-cid="main-540">
+    Change History is a first-class feature of F1, not an afterthought. The motivation comes directly from AdWords business requirements: the approval system needs to know when new ads are inserted; billing needs an audit trail; caching layers need to know exactly what changed and when, so they can apply incremental updates rather than reloading entire datasets.
+  </p>
+
+  <p data-cid="main-550">
+    In the old MySQL system, change history was maintained by Java application libraries that inserted records before and after each write. This was never 100% reliable — Python scripts, manual SQL updates, and some classes of changes bypassed the library entirely. F1 moves change history into the database engine, where it can be guaranteed.
+  </p>
+
+  <p data-cid="main-560">
+    Every transaction in F1 creates one or more <em>ChangeBatch</em> protocol buffer messages containing the primary key and before/after values of every changed column. ChangeBatches are stored as child rows of the root row they describe, in normal F1 tables. Because they are stored close to the data they describe, they do not add extra participants to Spanner transactions, and their write cost is minimal.
+  </p>
+
+  <div class="box example" data-cid="main-570">
+    <span class="box-label">Example — Using Change History for Cache Invalidation</span>
+    <p data-cid="main-580">
+      The AdWords web UI maintains an in-memory cache of customer data. When a user commits an update, the next page they render must reflect that update — stale cache data would be a visible bug. The cache client stores the root row key and the commit timestamp of the last write it must see. When it reads from the cache, it checks whether the cache's watermark is newer than that timestamp. If the cache is behind, the client reads Change History records newer than its checkpoint and applies those delta changes to the in-memory state. This is far cheaper than reloading the entire customer record and far more reliable than a cache-invalidation message that might be lost.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 9 -->
+  <h2 data-cid="main-590" id="s9">9. Query Processing</h2>
+
+  <p data-cid="main-600">
+    F1 includes a fully functional distributed SQL query engine. It supports both <em>centralized execution</em> — the whole query runs on one F1 server, appropriate for short OLTP-style queries — and <em>distributed execution</em> — the query plan is fanned out across many F1 slave workers in the slave pool, appropriate for large OLAP queries.
+  </p>
+
+  <p data-cid="main-610">
+    A distributed query plan is organized as a directed acyclic graph (DAG) of <em>plan parts</em>. Each plan part represents a set of worker processes executing the same subplan. Data flows from leaves to a single root node — the <em>query coordinator</em> — which performs final aggregation and returns results to the client. Plan parts communicate by streaming data over the network in RPCs; there is no disk spilling in the normal case.
+  </p>
+
+  <div class="box intuition" data-cid="main-620">
+    <span class="box-label">Intuition — Why Batching Matters More Than Caching</span>
+    <p data-cid="main-630">
+      Traditional databases optimize to minimize disk seeks and cache as much data in memory as possible, because disk is slow and memory is fast. In F1, all data is remote — it lives in Spanner, across the network. The relevant dichotomy is not disk vs. memory but sequential vs. random network access. A single RPC to Spanner that fetches 50 MB of sequential data in one shot is cheap. Thousands of individual RPC round-trips to fetch the same data one row at a time is expensive. F1's query operators are designed around this insight: the <em>lookup join</em> operator, for example, accumulates up to 50 MB worth of outer-table keys before issuing a single simultaneous lookup into the inner table. Batching transforms what would be serial latency into parallel throughput.
+    </p>
+  </div>
+
+  <p data-cid="main-640">
+    For repartitioning — the operation of redistributing data among workers by a different key — F1 uses <em>hash repartitioning</em> exclusively. Range partitioning would require global statistics about key distributions, which are hard to maintain accurately. Hash repartitioning is stateless and deterministic: a hash function maps each row's key to one of <span class="tts-math" data-tts="N">$N$</span> worker buckets, and any worker can independently determine its bucket assignment. Modern network switch hardware allows all F1 workers to communicate at close to full line rate simultaneously, making hash repartitioning practical at the scale of a single cluster.
+  </p>
+
+  <p data-cid="main-650">
+    The <em>cluster join</em> algorithm is another query processing innovation specific to F1's hierarchical data model. When joining a parent table with a child table that are co-located in Spanner's hierarchical clustering, F1 can issue one request to Spanner that returns both tables' rows in interleaved depth-first order. The cluster join operator processes this stream one row at a time, maintaining only one buffered row per table, and emits joined rows as they arrive. This requires zero disk spilling and minimal memory, regardless of table size.
+  </p>
+
+  <!-- ═══════════════════════════════════════════ SECTION 10 -->
+  <h2 data-cid="main-660" id="s10">10. Latency, Throughput, and Lessons</h2>
+
+  <p data-cid="main-670">
+    The AdWords F1 deployment uses five datacenters spread across the continental US, with 5-way Paxos replication. With leaders on the east coast, a commit requires a round trip to the two nearest replicas. The 50 ms inter-datacenter latency means commit latency is typically 50–150 ms — significantly higher than local MySQL, which committed in under 5 ms.
+  </p>
+
+  <p data-cid="main-680">
+    The paper reports that despite this, observable user-facing latency on the main AdWords web application is approximately 200 ms — about the same as the old MySQL system. How? The engineering team restructured client code to avoid serial reads. With the new ORM, user requests typically require at most 10 reads, all of which can be issued in parallel. The reads are batched into a small number of Spanner RPCs. The minimum latency is slightly higher than MySQL (due to network round-trip cost), but the latency tail — the worst-case latency for large customers — is dramatically better, because F1 uses parallelism that MySQL could not.
+  </p>
+
+  <div class="box example" data-cid="main-690">
+    <span class="box-label">Example — Throughput for Bulk Applications</span>
+    <p data-cid="main-700">
+      For applications that need throughput rather than low latency — such as batch processing pipelines that update billions of rows per day — F1 achieves very high throughput for parallel writes. A pipeline designed to run 500 transactions per second with single-directory transactions (one Spanner group each, no 2PC) is practical. F1 and Spanner do not become a bottleneck; the rate limits are usually chosen to protect downstream Change History consumers.
+    </p>
+  </div>
+
+  <p data-cid="main-710">
+    The paper is candid about resource costs: F1 queries use an order of magnitude more CPU than equivalent MySQL queries. MySQL stored data uncompressed on local disk and was bottlenecked on I/O. F1 starts from compressed network data and passes it through decompression, processing, recompression, and network transmission — all CPU-intensive steps. The authors identify this as an area for future improvement.
+  </p>
+
+  <!-- ═══════════════════════════════════════════ SECTION 11 -->
+  <h2 data-cid="main-720" id="s11">11. Impact and Legacy</h2>
+
+  <p data-cid="main-730">
+    F1 went into production on AdWords in early 2012 and by the time of the paper managed over 100 TB of data, serving hundreds of thousands of requests per second and scanning tens of trillions of data rows per day. Availability reached five nines even in the presence of unplanned outages. The observable latency tail for AdWords web applications did not increase compared to the old MySQL system.
+  </p>
+
+  <p data-cid="main-740">
+    The paper's conclusion is significant: it refutes the conventional wisdom that scalable, available, and consistent databases are mutually exclusive. The trade-off is not fundamental — it is merely the artifact of building databases on local disk-based storage with single-machine transaction models. By building on Spanner's global consistent storage and choosing architectural patterns (hierarchical schema, stateless servers, optimistic transactions, async schema change) that are compatible with high latency, Google showed that a SQL database can scale horizontally without sacrificing ACID guarantees or SQL expressiveness.
+  </p>
+
+  <p data-cid="main-750">
+    F1's influence is visible in the generation of cloud-native relational databases that followed: Google Cloud Spanner (the externalized version of Spanner, with F1-like SQL on top), CockroachDB (which explicitly cites Spanner and F1), YugabyteDB, and others. The hierarchical data model reappears in document-oriented databases. The asynchronous online schema change algorithm has been replicated in open-source tools like gh-ost and pt-online-schema-change used widely in the MySQL ecosystem. The paper is one of the most influential systems papers of the 2010s.
+  </p>
+
+  <!-- ═══════════════════════════════════════════ REFERENCES -->
+  <h2 data-cid="main-760" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-770">J. C. Corbett et al. Spanner: Google's globally-distributed database. In <em>OSDI</em>, 2012.</li>
+    <li data-cid="main-780">F. Chang et al. Bigtable: A distributed storage system for structured data. In <em>OSDI</em>, 2006.</li>
+    <li data-cid="main-790">J. Baker et al. Megastore: Providing scalable, highly available storage for interactive services. In <em>CIDR</em>, pages 223–234, 2011.</li>
+    <li data-cid="main-800">D. Peng and F. Dabek. Large-scale incremental processing using distributed transactions and notifications. In <em>OSDI</em>, 2010.</li>
+    <li data-cid="main-810">I. Rae et al. Online, asynchronous schema change in F1. <em>PVLDB</em>, 6(11), 2013.</li>
+    <li data-cid="main-820">G. DeCandia et al. Dynamo: Amazon's highly available key-value store. In <em>SOSP</em>, 2007.</li>
+    <li data-cid="main-830">J. Dean and S. Ghemawat. MapReduce: Simplified data processing on large clusters. In <em>OSDI</em>, 2004.</li>
+    <li data-cid="main-840">M. Stonebraker. SQL databases v. NoSQL databases. <em>CACM</em>, 53(4), 2010.</li>
+    <li data-cid="main-850">L. Lamport. The part-time parliament. <em>ACM Trans. Comput. Syst.</em>, 16(2):133–169, May 1998.</li>
+    <li data-cid="main-860">D. J. Dewitt et al. The Gamma database machine. <em>TKDE</em>, 2(1):44–62, Mar. 1990.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script>
+</body>
+</html>

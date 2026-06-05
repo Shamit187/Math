@@ -1,0 +1,6 @@
+{
+  "title": "Querying Heterogeneous Information Sources Using Source Descriptions",
+  "authors": "Alon Y. Levy, Anand Rajaraman, Joann J. Ordille",
+  "venue": "VLDB 1996",
+  "description": "Presents the Information Manifold system, which uses declarative content and capability descriptions of over 100 heterogeneous Web information sources to automatically generate executable query plans for answering complex conjunctive queries."
+}
