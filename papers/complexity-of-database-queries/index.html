@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>On the Complexity of Database Queries · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/><link href="/css/reading.css" rel="stylesheet"/>
+</head>
+<body data-book="complexity-of-database-queries" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/complexity-of-database-queries/">On the Complexity of Database Queries</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. Data vs. Combined Complexity</a></li>
+    <li><a href="#s2">2. Why Neither Notion Satisfies</a></li>
+    <li><a href="#s3">3. Parametric Complexity Theory</a></li>
+    <li><a href="#s4">4. Queries as Parametric Problems</a></li>
+    <li><a href="#s5">5. The Classification</a></li>
+    <li><a href="#s6">6. How the Bounds Are Proved</a></li>
+    <li><a href="#s7">7. A Tractable Case</a></li>
+    <li><a href="#s8">8. The Boundary: Why "≠" but not "&lt;"</a></li>
+    <li><a href="#s9">9. Why It Mattered</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">Scientific Paper · PODS 1997</div>
+    <h1>On the Complexity of Database Queries</h1>
+    <div class="paper-meta">
+      <span class="authors">Christos H. Papadimitriou (UC Berkeley) · Mihalis Yannakakis (Bell Laboratories)</span>
+      <span class="venue">Proc. 16th ACM Symposium on Principles of Database Systems (PODS), 1997 · pp. 12–19</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    Classical database theory measures the cost of evaluating a query in two ways. <em>Data complexity</em> fixes the query and asks how cost grows with the size of the database; under it, the standard query languages—conjunctive queries, the full relational calculus, Datalog, and fixpoint logic—are all comfortably tractable. <em>Combined complexity</em> feeds both the query and the database as input, and treats them symmetrically; under it those same languages are <span class="tts-math" data-tts="N P">NP</span>- or <span class="tts-math" data-tts="P SPACE">PSPACE</span>-complete. This paper argues that neither notion tells the real story, because data complexity quietly hides an algorithm whose running time is <span class="tts-math" data-tts="n to the power f of q">$n^{f(q)}$</span>—the query size sits in the exponent. Using the <em>parametric</em> (fixed-parameter) complexity theory of Downey and Fellows, with the query size and the number of query variables as parameters, the authors place conjunctive queries, positive queries, and first-order queries at successively higher levels of the <em>W hierarchy</em>. The conclusion is sharp: the exponential dependence of evaluation cost on query size is essentially unavoidable, and it gets worse as the query language becomes more expressive. The paper closes with a positive result—acyclic conjunctive queries extended with inequalities (<span class="tts-math" data-tts="x is not equal to y">$x \neq y$</span>), though not with order comparisons (<span class="tts-math" data-tts="less than">$&lt;$</span>), remain fixed-parameter tractable.
+  </div>
+
+  <!-- ═══ SECTION 1 ═══ -->
+  <h2 data-cid="main-020" id="s1">1. Two Ways to Measure the Cost of a Query</h2>
+
+  <p data-cid="main-030">
+    Suppose you have a query <span class="tts-math" data-tts="Q">$Q$</span> and a database <span class="tts-math" data-tts="d">$d$</span>, and you want to compute the answer <span class="tts-math" data-tts="Q of d">$Q(d)$</span>. How long should that take? The answer depends on what you hold fixed and what you let grow. Database theory, following a distinction sharpened by Vardi in 1982, recognizes two standard yardsticks.
+  </p>
+
+  <p data-cid="main-040">
+    <strong>Data complexity</strong> regards the query as <em>fixed</em> and measures cost as a function of the size <span class="tts-math" data-tts="n">$n$</span> of the database alone. <strong>Combined complexity</strong> treats <em>both</em> the query and the database as input variables and measures cost as a function of their total size. (A rarely-used third notion, <em>expression complexity</em>, fixes the database and varies only the query.) Combined complexity is typically one exponential higher than data complexity, because a query with <span class="tts-math" data-tts="q">$q$</span> variables can, in the worst case, force the engine to consider all <span class="tts-math" data-tts="n to the power q">$n^q$</span> ways of binding those variables to database values.
+  </p>
+
+  <div class="box definition" data-cid="main-050">
+    <span class="box-label">Definition — the two complexities, precisely</span>
+    <p data-cid="main-060">
+      Fix a query language <span class="tts-math" data-tts="capital lambda">$\Lambda$</span>. The <em>combined complexity</em> of <span class="tts-math" data-tts="capital lambda">$\Lambda$</span> is the complexity of the decision problem <span class="tts-math" data-tts="the set of triples Q, d, t such that Q is in lambda and t is in Q of d">$\{(Q,d,t) \mid Q \in \Lambda,\ t \in Q(d)\}$</span>—given a query, a database, and a candidate tuple, decide whether the tuple is in the answer. The <em>data complexity</em> is the complexity of the family of problems <span class="tts-math" data-tts="the set of pairs d, t such that t is in Q of d">$\{(d,t) \mid t \in Q(d)\}$</span>, one problem per fixed query <span class="tts-math" data-tts="Q">$Q$</span>. We say <span class="tts-math" data-tts="capital lambda">$\Lambda$</span> has polynomial data complexity if there is a single function <span class="tts-math" data-tts="f from lambda to the natural numbers">$f : \Lambda \to \mathbb{N}$</span> such that every query <span class="tts-math" data-tts="Q in lambda">$Q \in \Lambda$</span> can be evaluated in time <span class="tts-math" data-tts="n to the power f of Q">$n^{f(Q)}$</span>.
+    </p>
+  </div>
+
+  <p data-cid="main-070">
+    For a wide range of important languages—conjunctive queries, first-order queries (equivalently, the full relational algebra and calculus), Datalog, fixpoint logic, and constraint languages with arithmetic or linear/polynomial inequalities—data complexity predicts that evaluation is <em>perfectly tractable</em>. The classes spanned range from <span class="tts-math" data-tts="A C zero">$\mathrm{AC}^0$</span> up to <span class="tts-math" data-tts="P">$\mathrm{P}$</span>, well within what complexity theory regards as efficient. This is the result most often quoted in textbooks, and it is the source of a comfortable belief: that the computational problems behind query evaluation are solved and under control.
+  </p>
+
+  <!-- ═══ SECTION 2 ═══ -->
+  <h2 data-cid="main-080" id="s2">2. Why Neither Notion Tells the Real Story</h2>
+
+  <p data-cid="main-090">
+    The authors argue that the comfortable belief is misleading, and that both classical notions are flawed—in opposite directions.
+  </p>
+
+  <p data-cid="main-100">
+    <strong>Combined complexity is too pessimistic.</strong> By treating the query and the database as part of the same input, it pretends they are the same kind of object and roughly the same size. In practice the query is tiny and the database is enormous: a join over a handful of tables, evaluated against billions of rows. Lumping them together is "rather restrictive," and it is precisely <em>because</em> queries are so much smaller than databases that the field concentrated on data complexity in the first place.
+  </p>
+
+  <p data-cid="main-110">
+    <strong>Data complexity is too optimistic.</strong> Saying a query language is in polynomial time "<span class="tts-math" data-tts="n to the power f of q">$n^{f(q)}$</span>" hides a crucial fact: the exponent depends on the query. For the standard languages the known algorithms run in time roughly <span class="tts-math" data-tts="n to the power q">$n^q$</span> where <span class="tts-math" data-tts="q">$q$</span> is the number of query variables, and this dependence is <em>provably</em> unavoidable for the recursive languages (Vardi, 1982). Even though <span class="tts-math" data-tts="q is much less than n">$q \ll n$</span>, treating <span class="tts-math" data-tts="q">$q$</span> as a constant is not reasonable: even for small <span class="tts-math" data-tts="q">$q$</span>, a running time like <span class="tts-math" data-tts="n to the power q">$n^q$</span> over a huge <span class="tts-math" data-tts="n">$n$</span> hardly qualifies as tractable.
+  </p>
+
+  <div class="box intuition" data-cid="main-120">
+    <span class="box-label">Intuition — what "polynomial" hides</span>
+    <p data-cid="main-130">
+      Consider a join of five tables, each with a million rows. A naïve "consider all variable bindings" evaluation runs in time about <span class="tts-math" data-tts="ten to the six, all raised to the fifth power, equals ten to the thirtieth">$(10^6)^5 = 10^{30}$</span>. That is a polynomial in <span class="tts-math" data-tts="n">$n$</span>—degree five—so data complexity files it under "tractable." But the degree of the polynomial <em>is</em> the query size, and <span class="tts-math" data-tts="ten to the thirtieth">$10^{30}$</span> operations is not tractable by any human standard. What we would really like is an algorithm whose running time is <span class="tts-math" data-tts="f of q, times n to the power c">$f(q)\cdot n^c$</span>—where the database exponent <span class="tts-math" data-tts="c">$c$</span> is a constant independent of the query, and all the query's badness is quarantined inside the factor <span class="tts-math" data-tts="f of q">$f(q)$</span>. Whether such an algorithm exists is exactly the question parametric complexity was built to answer.
+    </p>
+  </div>
+
+  <p data-cid="main-140">
+    There is a precedent for this hope. In automated verification, the model-checking problem—does a finite-state program <span class="tts-math" data-tts="capital P">$P$</span> satisfy a temporal-logic specification <span class="tts-math" data-tts="phi">$\phi$</span>?—is PSPACE-complete in combined input, yet for LTL it can be solved in time <em>exponential in the small specification</em> <span class="tts-math" data-tts="phi">$\phi$</span> and merely <em>linear in the large program</em> <span class="tts-math" data-tts="capital P">$P$</span>. The badness is confined to the small object. The authors ask: can query evaluation enjoy the same kind of algorithm, with the query playing the role of the small specification? Parametric complexity is the framework that decides when the answer is yes.
+  </p>
+
+  <!-- ═══ SECTION 3 ═══ -->
+  <h2 data-cid="main-150" id="s3">3. A Crash Course in Parametric Complexity</h2>
+
+  <p data-cid="main-160">
+    Parametric (also called <em>parameterized</em> or <em>fixed-parameter</em>) complexity is the theory of Downey and Fellows that refines NP-completeness by isolating a <em>parameter</em>—a quantity expected to be small—and asking whether the hardness of a problem can be pushed entirely into a function of that parameter.
+  </p>
+
+  <div class="box definition" data-cid="main-170">
+    <span class="box-label">Definition — parametric problem and fixed-parameter tractability</span>
+    <p data-cid="main-180">
+      A <em>parametric problem</em> is a set <span class="tts-math" data-tts="capital L">$L$</span> of pairs <span class="tts-math" data-tts="x comma k">$(x,k)$</span>, where <span class="tts-math" data-tts="x">$x$</span> is an input string and <span class="tts-math" data-tts="k">$k$</span> is an integer parameter. The problem is <em>fixed-parameter tractable</em> (f.p. tractable) if some algorithm decides whether <span class="tts-math" data-tts="x comma k is in L">$(x,k) \in L$</span> in time
+    </p>
+    <p data-cid="main-190">
+      <span class="tts-math" data-tts="f of k, times the absolute value of x to the power c">
+      $$f(k)\cdot |x|^c$$
+      </span>
+    </p>
+    <p data-cid="main-200">
+      for some constant <span class="tts-math" data-tts="c">$c$</span> and some (possibly explosive) function <span class="tts-math" data-tts="f">$f$</span>. The point is that the exponent <span class="tts-math" data-tts="c">$c$</span> of the input size does <em>not</em> grow with the parameter. Contrast this with running time <span class="tts-math" data-tts="the absolute value of x to the power f of k">$|x|^{f(k)}$</span>, where the parameter sits in the exponent—that is the bad regime we are trying to escape.
+    </p>
+  </div>
+
+  <p data-cid="main-210">
+    The canonical contrast is between two NP-complete problems. <strong>k-Clique</strong>—does a graph have a clique of size <span class="tts-math" data-tts="k">$k$</span>?—is solved by checking all <span class="tts-math" data-tts="n choose k">$\binom{n}{k}$</span> vertex subsets, time <span class="tts-math" data-tts="about n to the power k">$\approx n^k$</span>, and no algorithm is known that removes <span class="tts-math" data-tts="k">$k$</span> from the exponent. By contrast, <strong>k-Vertex-Cover</strong>—is there a set of <span class="tts-math" data-tts="k">$k$</span> vertices touching every edge?—can be solved in time <span class="tts-math" data-tts="two to the k, times n">$2^k\cdot n$</span> by bounded search-tree branching. Both have <span class="tts-math" data-tts="k">$k$</span> as a natural parameter; only the second is fixed-parameter tractable. Clique is the suspected-intractable archetype, and—crucially for this paper—<em>query evaluation looks just like clique</em>, with the query length playing the role of <span class="tts-math" data-tts="k">$k$</span>.
+  </p>
+
+  <div class="box definition" data-cid="main-220">
+    <span class="box-label">Definition — parametric reduction</span>
+    <p data-cid="main-230">
+      A <em>parametric reduction</em> from problem <span class="tts-math" data-tts="A">$A$</span> to problem <span class="tts-math" data-tts="B">$B$</span> maps an instance <span class="tts-math" data-tts="x comma k">$(x,k)$</span> of <span class="tts-math" data-tts="A">$A$</span> to an instance <span class="tts-math" data-tts="y comma l">$(y,\ell)$</span> of <span class="tts-math" data-tts="B">$B$</span> such that the new parameter is bounded by a function of the old one, <span class="tts-math" data-tts="l is at most g of k">$\ell \le g(k)$</span> (independent of <span class="tts-math" data-tts="x">$x$</span>), and the map runs in time <span class="tts-math" data-tts="h of k, times the absolute value of x to the power s">$h(k)\cdot|x|^s$</span>. The condition that <span class="tts-math" data-tts="l">$\ell$</span> stays bounded by the parameter alone is what makes the reduction <em>preserve fixed-parameter tractability</em>—an ordinary polynomial reduction that blew the parameter up to <span class="tts-math" data-tts="the size of x">$|x|$</span> would be useless here.
+    </p>
+  </div>
+
+  <h3 data-cid="main-240">The W hierarchy</h3>
+
+  <p data-cid="main-250">
+    Just as NP-completeness needs a complete problem (satisfiability), parametric intractability is organized around a tower of classes called the <strong>W hierarchy</strong>, defined through <em>weighted satisfiability</em>. Take a Boolean circuit with <span class="tts-math" data-tts="A N D">AND</span>, <span class="tts-math" data-tts="O R">OR</span>, and <span class="tts-math" data-tts="N O T">NOT</span> gates and one output. Its <em>depth</em> (more precisely its <em>weft</em>, the number of large-fan-in gates on a path) measures how complicated it is. The problem <em>weighted satisfiability</em> asks: is there a setting of exactly <span class="tts-math" data-tts="k">$k$</span> of the inputs to 1 that makes the circuit output 1? Parameterizing by <span class="tts-math" data-tts="k">$k$</span> and bounding the circuit depth by <span class="tts-math" data-tts="t">$t$</span> gives the class <span class="tts-math" data-tts="W of t">$W[t]$</span>.
+  </p>
+
+  <div class="box example" data-cid="main-260">
+    <span class="box-label">The rungs of the ladder</span>
+    <p data-cid="main-270">
+      The classes are indexed <span class="tts-math" data-tts="W of one, W of two, and so on">$W[1], W[2], \ldots$</span>, topped by two limiting classes <span class="tts-math" data-tts="W of S A T">$W[\mathrm{SAT}]$</span> (weighted satisfiability for Boolean <em>formulas</em> of unbounded depth) and <span class="tts-math" data-tts="W of P">$W[P]$</span> (weighted satisfiability for Boolean <em>circuits</em> of unbounded depth). They satisfy
+    </p>
+    <p data-cid="main-280">
+      <span class="tts-math" data-tts="f p t is contained in W of one, contained in W of two, and so on, contained in W of S A T, contained in W of P">
+      $$\mathrm{FPT} \subseteq W[1] \subseteq W[2] \subseteq \cdots \subseteq W[\mathrm{SAT}] \subseteq W[P].$$
+      </span>
+    </p>
+    <p data-cid="main-290">
+      Each class has natural complete problems: <strong>k-Clique</strong> and <strong>Independent Set</strong> are <span class="tts-math" data-tts="W of one">$W[1]$</span>-complete; <strong>Dominating Set</strong> is <span class="tts-math" data-tts="W of two">$W[2]$</span>-complete; <strong>Bandwidth</strong> is <span class="tts-math" data-tts="W of t">$W[t]$</span>-hard for every <span class="tts-math" data-tts="t">$t$</span>. The higher the <span class="tts-math" data-tts="t">$t$</span> for which a problem is shown <span class="tts-math" data-tts="W of t">$W[t]$</span>-hard, the more strongly we believe it is <em>not</em> fixed-parameter tractable—that the parameter is doomed to live in the exponent.
+    </p>
+  </div>
+
+  <div class="box pause" data-cid="main-300">
+    <span class="box-label">Why this is the right tool</span>
+    <p data-cid="main-310">
+      The whole apparatus exists to make one distinction precise: between "<span class="tts-math" data-tts="f of k, times n to the power c">$f(k)\cdot n^c$</span>" (the parameter is contained) and "<span class="tts-math" data-tts="n to the power f of k">$n^{f(k)}$</span>" (the parameter has leaked into the exponent). Showing a query-evaluation problem is <span class="tts-math" data-tts="W of one">$W[1]$</span>-hard or higher is therefore strong formal evidence that query size <em>must</em> appear in the exponent of any evaluation algorithm—exactly the worry that data complexity papered over.
+    </p>
+  </div>
+
+  <!-- ═══ SECTION 4 ═══ -->
+  <h2 data-cid="main-320" id="s4">4. Casting Query Evaluation as a Parametric Problem</h2>
+
+  <p data-cid="main-330">
+    A <em>database</em> <span class="tts-math" data-tts="d">$d$</span> is a domain <span class="tts-math" data-tts="capital D">$D$</span> together with relations <span class="tts-math" data-tts="R one through R m">$R_1, \ldots, R_m$</span> over <span class="tts-math" data-tts="capital D">$D$</span>. A <em>query</em> <span class="tts-math" data-tts="capital Q">$Q$</span> maps a database to a new relation <span class="tts-math" data-tts="Q of d">$Q(d)$</span>. The paper studies four query languages of increasing power:
+  </p>
+
+  <ul data-cid="main-340">
+    <li><strong>Conjunctive queries</strong> — selection, projection, join, and existential quantification; equivalently, the calculus with conjunction and <span class="tts-math" data-tts="there exists">$\exists$</span>. These are the workhorse SELECT–FROM–WHERE queries.</li>
+    <li><strong>Positive queries</strong> — conjunctive queries plus union (disjunction).</li>
+    <li><strong>First-order queries</strong> — positive queries plus set difference (negation); equivalently, full relational algebra/calculus.</li>
+    <li><strong>Datalog / fixpoint logic</strong> — first-order plus recursion.</li>
+  </ul>
+
+  <p data-cid="main-350">
+    To turn evaluation into a parametric problem we must choose the parameter. Two candidates present themselves, and the paper analyzes both:
+  </p>
+
+  <div class="box definition" data-cid="main-360">
+    <span class="box-label">The two parameters</span>
+    <p data-cid="main-370">
+      <strong>The query size <span class="tts-math" data-tts="q">$q$</span></strong> — the length of the string needed to express the query. <strong>The number of variables <span class="tts-math" data-tts="v">$v$</span></strong> — how many distinct variables appear in the query. The second parameter is motivated by Vardi's 1995 study of queries in which the number of variables may grow with the database while the query's overall size stays bounded; bounding <span class="tts-math" data-tts="v">$v$</span> instead of <span class="tts-math" data-tts="q">$q$</span> brings combined complexity closer to data complexity, with <span class="tts-math" data-tts="v">$v$</span> rather than <span class="tts-math" data-tts="q">$q$</span> in the exponent of <span class="tts-math" data-tts="n">$n$</span>.
+    </p>
+  </div>
+
+  <p data-cid="main-380">
+    A third design choice is whether the <em>schema</em>—the set of relations and their arities—is fixed or allowed to vary. Combining {parameter is <span class="tts-math" data-tts="q">$q$</span> or <span class="tts-math" data-tts="v">$v$</span>} with {schema fixed or variable} yields four parametric versions of each query problem, related by a diamond-shaped partial order.
+  </p>
+
+  <div class="box example" data-cid="main-390">
+    <span class="box-label">Figure 1 — the diamond of four parametric problems</span>
+    <pre data-cid="main-400" style="line-height:1.4">
+                 v, variable schema
+                 /              \
+   v, fixed schema            q, variable schema
+                 \              /
+                 q, fixed schema
+    </pre>
+    <p data-cid="main-410">
+      <strong>Proposition 1.</strong> If any one of the four problems is hard for a class in the W hierarchy, then every problem <em>above</em> it in this order is also hard; and if a problem is in some class, every problem <em>below</em> it is in the same class. (Proof: the identity map is a valid parametric reduction along each arc.) In most cases the schema assumption makes no difference—upper bounds hold for variable schema, lower bounds for fixed schema—so by default the authors take the schema to vary, noting the exceptions.
+    </p>
+  </div>
+
+  <!-- ═══ SECTION 5 ═══ -->
+  <h2 data-cid="main-420" id="s5">5. The Classification</h2>
+
+  <p data-cid="main-430">
+    The central result places the parametric query-evaluation problems precisely on the W ladder. All three of these languages have data complexity in <span class="tts-math" data-tts="A C zero">$\mathrm{AC}^0$</span> (hence inside LOGSPACE and P), so the classical view sees no difference among them. The parametric view sees a clear, increasing hierarchy.
+  </p>
+
+  <div class="box definition" data-cid="main-440">
+    <span class="box-label">Theorem 1 — the parametric complexity of query evaluation</span>
+    <table data-cid="main-450" style="width:100%;border-collapse:collapse;text-align:left">
+      <thead>
+        <tr>
+          <th style="border-bottom:2px solid;padding:.4em .6em">Query language</th>
+          <th style="border-bottom:2px solid;padding:.4em .6em">Parameter = query size <span class="tts-math" data-tts="q">$q$</span></th>
+          <th style="border-bottom:2px solid;padding:.4em .6em">Parameter = #variables <span class="tts-math" data-tts="v">$v$</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="border-bottom:1px solid;padding:.4em .6em">Conjunctive</td>
+          <td style="border-bottom:1px solid;padding:.4em .6em"><span class="tts-math" data-tts="W of one complete">$W[1]$</span>-complete</td>
+          <td style="border-bottom:1px solid;padding:.4em .6em"><span class="tts-math" data-tts="W of one hard, and in W of two">$W[1]$</span>-hard, in <span class="tts-math" data-tts="W of two">$W[2]$</span></td>
+        </tr>
+        <tr>
+          <td style="border-bottom:1px solid;padding:.4em .6em">Positive</td>
+          <td style="border-bottom:1px solid;padding:.4em .6em"><span class="tts-math" data-tts="W of one complete">$W[1]$</span>-complete</td>
+          <td style="border-bottom:1px solid;padding:.4em .6em"><span class="tts-math" data-tts="W of S A T hard">$W[\mathrm{SAT}]$</span>-hard</td>
+        </tr>
+        <tr>
+          <td style="padding:.4em .6em">First-order</td>
+          <td style="padding:.4em .6em"><span class="tts-math" data-tts="W of t hard for all t">$W[t]$</span>-hard, all <span class="tts-math" data-tts="t">$t$</span></td>
+          <td style="padding:.4em .6em"><span class="tts-math" data-tts="W of P hard">$W[P]$</span>-hard</td>
+        </tr>
+      </tbody>
+    </table>
+    <p data-cid="main-460">
+      (Under a fixed schema with fixed arities, the conjunctive/parameter-<span class="tts-math" data-tts="v">$v$</span> entry tightens to <span class="tts-math" data-tts="W of one complete">$W[1]$</span>-complete.)
+    </p>
+  </div>
+
+  <div class="box intuition" data-cid="main-470">
+    <span class="box-label">Reading the table</span>
+    <p data-cid="main-480">
+      Two trends jump out. <strong>Down each column,</strong> as the language gains expressive power (conjunctive → positive → first-order), the parametric hardness climbs the ladder—from <span class="tts-math" data-tts="W of one">$W[1]$</span> up to the very top, <span class="tts-math" data-tts="W of P">$W[P]$</span>. So the richer the language, the more confidently we can say its query size is stuck in the exponent. <strong>Across each row,</strong> bounding the number of variables (<span class="tts-math" data-tts="v">$v$</span>) is generally <em>at least as hard</em> as bounding the whole query size (<span class="tts-math" data-tts="q">$q$</span>), and often strictly harder—consistent with Vardi's finding that the variable count is the more fundamental quantity. The upshot: every one of these languages is parametrically intractable, and the exponential dependence on the query gets <em>worse</em>, not better, as expressiveness grows.
+    </p>
+  </div>
+
+  <div class="box warn" data-cid="main-490">
+    <span class="box-label">A "likelihood," not yet a proof, for the non-recursive languages</span>
+    <p data-cid="main-500">
+      For conjunctive, positive, and first-order queries these are <em>hardness</em> results: <span class="tts-math" data-tts="W of one">$W[1]$</span>-hardness and above. They strongly suggest, but do not unconditionally prove, that query size must appear in the exponent—because proving these languages parametrically tractable would collapse long-standing separations such as <span class="tts-math" data-tts="P not equal to N P">$P \neq NP$</span> or <span class="tts-math" data-tts="P not equal to P SPACE">$P \neq PSPACE$</span>. For the <em>recursive</em> languages the story is unconditional: Vardi (1982) showed there are fixpoint queries (and the argument adapts to Datalog) of size polynomial in <span class="tts-math" data-tts="k">$k$</span> computable in <span class="tts-math" data-tts="n to the power k">$n^k$</span> but <em>not</em> in <span class="tts-math" data-tts="n to the power k minus one">$n^{k-1}$</span>. There the query size <em>provably</em> appears in the exponent, no conjecture required. (Restricting all EDB and IDB relations to fixed arity drops Datalog back to <span class="tts-math" data-tts="W of one complete">$W[1]$</span>-complete.)
+    </p>
+  </div>
+
+  <!-- ═══ SECTION 6 ═══ -->
+  <h2 data-cid="main-510" id="s6">6. How the Bounds Are Proved</h2>
+
+  <h3 data-cid="main-520">6.1 Conjunctive queries — a reduction from Clique</h3>
+
+  <p data-cid="main-530">
+    The lower bound is a clean, memorable reduction from <span class="tts-math" data-tts="k">$k$</span>-Clique, which is <span class="tts-math" data-tts="W of one">$W[1]$</span>-complete. Given a graph <span class="tts-math" data-tts="capital G">$G$</span> as a single binary relation <span class="tts-math" data-tts="capital G of dot dot">$G(\cdot,\cdot)$</span>, build the Boolean (0-ary head) conjunctive query
+  </p>
+
+  <p data-cid="main-540">
+    <span class="tts-math" data-tts="capital P is the conjunction over all i less than j, at most k, of capital G of x sub i comma x sub j">
+    $$P \;\leftarrow\; \bigwedge_{1 \le i < j \le k} G(x_i, x_j).$$
+    </span>
+  </p>
+
+  <p data-cid="main-550">
+    The goal proposition <span class="tts-math" data-tts="capital P">$P$</span> is true exactly when <span class="tts-math" data-tts="capital G">$G$</span> contains a clique of size <span class="tts-math" data-tts="k">$k$</span>: the variables <span class="tts-math" data-tts="x one through x k">$x_1, \ldots, x_k$</span> must map to <span class="tts-math" data-tts="k">$k$</span> vertices that are pairwise adjacent. The query has size <span class="tts-math" data-tts="q equals order of k squared">$q = O(k^2)$</span> and uses <span class="tts-math" data-tts="v equals k">$v = k$</span> variables, so the same construction is a parametric reduction to both the <span class="tts-math" data-tts="q">$q$</span>- and <span class="tts-math" data-tts="v">$v$</span>-parameterized problems. In words: <em>evaluating a conjunctive query is at least as hard as asking whether a join of binary relations is non-empty</em>, and that is already as hard as Clique.
+  </p>
+
+  <p data-cid="main-560">
+    For the matching upper bound with parameter <span class="tts-math" data-tts="q">$q$</span>, any conjunctive query is rewritten as a 3-CNF weighted-satisfiability instance whose Boolean variables encode the mapping from query atoms to database tuples; with parameter <span class="tts-math" data-tts="v">$v$</span>, the Boolean variables instead encode the mapping from query variables to database constants. Either way the result lands in <span class="tts-math" data-tts="W of one">$W[1]$</span>.
+  </p>
+
+  <h3 data-cid="main-570">6.2 Positive queries — union pushes the variable case to the top</h3>
+
+  <p data-cid="main-580">
+    A positive query is a union of conjunctive queries. For parameter <span class="tts-math" data-tts="q">$q$</span>, one transforms it into a union of (exponentially many, but controlled) conjunctive queries and stays in <span class="tts-math" data-tts="W of one">$W[1]$</span>—here the full power of parametric reductions (not merely transformations) is needed. For parameter <span class="tts-math" data-tts="v">$v$</span>, disjunction lets the query encode a full Boolean <em>formula</em> on the variable-to-constant mapping, yielding a reduction from weighted <em>formula</em> satisfiability and hence <span class="tts-math" data-tts="W of S A T">$W[\mathrm{SAT}]$</span>-hardness.
+  </p>
+
+  <h3 data-cid="main-590">6.3 First-order queries — simulating a Boolean circuit</h3>
+
+  <p data-cid="main-600">
+    The strongest lower bound reduces from <strong>monotone weighted circuit satisfiability</strong>, which is <span class="tts-math" data-tts="W of P">$W[P]$</span>-complete. The given circuit alternates OR and AND gates, with the output an OR gate at level <span class="tts-math" data-tts="two t">$2t$</span>. The database holds a single binary relation <span class="tts-math" data-tts="capital C">$C$</span> describing the circuit's wiring diagram—a directed acyclic graph whose nodes are gates—so the query's variables range over gates. First-order queries are then defined level by level up the circuit:
+  </p>
+
+  <p data-cid="main-610">
+    <span class="tts-math" data-tts="theta zero of x equals the disjunction over the inputs of x, of C of x comma x sub one, or C of x comma x sub two, and so on up to C of x comma x sub k">
+    $$\theta_0(x) = \big[\,C(x,x_1)\vee C(x,x_2)\vee\cdots\vee C(x,x_k)\,\big],$$
+    </span>
+  </p>
+  <p data-cid="main-620">
+    <span class="tts-math" data-tts="theta sub two i of x equals there exists y, such that C of x comma y, and for all x, not C of y comma x, or theta sub two i minus two of x">
+    $$\theta_{2i}(x) = \exists y\,\big[\,C(x,y) \wedge \forall x(\neg C(y,x) \vee \theta_{2i-2}(x))\,\big].$$
+    </span>
+  </p>
+  <p data-cid="main-630">
+    Expanding this recurrence fully and quantifying over the <span class="tts-math" data-tts="k">$k$</span> chosen inputs gives the final query
+  </p>
+  <p data-cid="main-640">
+    <span class="tts-math" data-tts="capital Q equals there exists x one, there exists x two, and so on, there exists x k, theta sub two t of o">
+    $$Q = \exists x_1 \exists x_2 \cdots \exists x_k\; \theta_{2t}(o),$$
+    </span>
+  </p>
+  <p data-cid="main-650">
+    where <span class="tts-math" data-tts="o">$o$</span> is the constant for the output gate. Intuitively <span class="tts-math" data-tts="theta sub two i of x">$\theta_{2i}(x)$</span> says "gate <span class="tts-math" data-tts="x">$x$</span> at level <span class="tts-math" data-tts="two i">$2i$</span> evaluates to true when inputs <span class="tts-math" data-tts="x one through x k">$x_1,\ldots,x_k$</span> are set to 1," so <span class="tts-math" data-tts="capital Q">$Q$</span> holds iff the weighted circuit is satisfiable. The query has size <span class="tts-math" data-tts="order of t plus k">$O(t+k)$</span> with <span class="tts-math" data-tts="v equals k plus two">$v = k+2$</span> variables, and only a fixed schema (one binary relation) is needed. Because <span class="tts-math" data-tts="t">$t$</span> can be any constant, this proves first-order evaluation is <span class="tts-math" data-tts="W of t">$W[t]$</span>-hard for every <span class="tts-math" data-tts="t">$t$</span> (parameter <span class="tts-math" data-tts="q">$q$</span>) and <span class="tts-math" data-tts="W of P">$W[P]$</span>-hard (parameter <span class="tts-math" data-tts="v">$v$</span>).
+  </p>
+
+  <div class="box pause" data-cid="main-660">
+    <span class="box-label">Why the recursive languages are unconditional</span>
+    <p data-cid="main-670">
+      For non-recursive languages an unconditional theorem would resolve open conjectures—recall that conjunctive and positive queries have combined complexity NP-complete and first-order queries PSPACE-complete, so unconditional tractability would force <span class="tts-math" data-tts="P equals N P">$P = NP$</span> or <span class="tts-math" data-tts="P equals P SPACE">$P = PSPACE$</span>. But fixpoint logic and Datalog have combined complexity EXPTIME-complete, and the Time Hierarchy Theorem already gives <span class="tts-math" data-tts="P not equal to EXPTIME">$P \neq EXPTIME$</span> unconditionally. That is exactly why Vardi's result—query size provably in the exponent for recursive languages—needs no unproven assumption.
+    </p>
+  </div>
+
+  <!-- ═══ SECTION 7 ═══ -->
+  <h2 data-cid="main-680" id="s7">7. A Tractable Case: Acyclic Queries with Inequalities</h2>
+
+  <p data-cid="main-690">
+    After a wall of hardness, the paper finds an island of tractability. The classic positive result in this area is Yannakakis's theorem that <em>acyclic</em> conjunctive queries can be evaluated efficiently even in combined complexity. The contribution here is to extend that to acyclic queries enriched with <strong>inequalities</strong> of the form <span class="tts-math" data-tts="x is not equal to y">$x \neq y$</span>.
+  </p>
+
+  <div class="box definition" data-cid="main-700">
+    <span class="box-label">Acyclic conjunctive queries</span>
+    <p data-cid="main-710">
+      Given a conjunctive query <span class="tts-math" data-tts="capital G of t zero, comes from R sub i one of t one, and so on, R sub i s of t s">$G(t_0) \leftarrow R_{i_1}(t_1), \ldots, R_{i_s}(t_s)$</span>, form a hypergraph <span class="tts-math" data-tts="capital H">$H$</span> whose nodes are the query's variables and which has one hyperedge per atom (the set of variables in that atom). The query is <em>acyclic</em> if <span class="tts-math" data-tts="capital H">$H$</span> is an acyclic hypergraph—equivalently, it admits a <em>join forest</em>. Yannakakis's algorithm evaluates such a query by a bottom-up semijoin pass that strips dangling tuples, then a pass that materializes the answer, all in time polynomial in both the database and the output.
+    </p>
+  </div>
+
+  <div class="box warn" data-cid="main-720">
+    <span class="box-label">Why inequalities are dangerous</span>
+    <p data-cid="main-730">
+      The naïve way to handle an inequality <span class="tts-math" data-tts="x sub i is not equal to x sub j">$x_i \neq x_j$</span> is to add an edge <span class="tts-math" data-tts="x sub i comma x sub j">$(x_i,x_j)$</span> to the hypergraph. But those extra edges destroy acyclicity even in very simple queries, so the standard machinery no longer applies. Worse, if you allow inequality edges freely the problem becomes NP-complete: Hamiltonian Path reduces to it via the query
+    </p>
+    <p data-cid="main-740">
+      <span class="tts-math" data-tts="capital G comes from E of x one x two, E of x two x three, and so on, E of x n minus one x n, with x one not equal to x two, x one not equal to x three, and so on, x n minus one not equal to x n">
+      $$G \leftarrow E(x_1,x_2), E(x_2,x_3), \ldots, E(x_{n-1},x_n),\ x_1\neq x_2,\, x_1\neq x_3,\, \ldots,\, x_{n-1}\neq x_n,$$
+      </span>
+    </p>
+    <p data-cid="main-750">
+      whose answer is non-empty iff the graph has a Hamiltonian path. So inequalities must be handled <em>without</em> putting them in the hypergraph.
+    </p>
+  </div>
+
+  <div class="box definition" data-cid="main-760">
+    <span class="box-label">Theorem 2 — acyclic queries with inequalities are f.p. tractable</span>
+    <p data-cid="main-770">
+      The class of acyclic conjunctive queries with inequalities is fixed-parameter tractable, with respect to both the query size and the number of variables as the parameter. Such a query can be evaluated in f.p. polynomial time in both the input and the output. Concretely, evaluation runs in time <span class="tts-math" data-tts="order of g of k, times n, times m, times log squared n">$O\!\big(g(k)\,n\,m\,\log^2 n\big)$</span>, where <span class="tts-math" data-tts="k">$k$</span> is the number of variables, <span class="tts-math" data-tts="n">$n$</span> the database size, and <span class="tts-math" data-tts="m equals the size of Q of d">$m = |Q(d)|$</span> the output size.
+    </p>
+  </div>
+
+  <div class="box intuition" data-cid="main-780">
+    <span class="box-label">The trick — color-coding meets acyclic joins</span>
+    <p data-cid="main-790">
+      The algorithm marries two ideas. First, Alon–Yuster–Zwick <em>color-coding</em>: hash the database domain <span class="tts-math" data-tts="capital D">$D$</span> down into a small set of <span class="tts-math" data-tts="k">$k$</span> colors. A random hash makes any fixed set of <span class="tts-math" data-tts="k">$k$</span> values land on distinct colors with probability at least <span class="tts-math" data-tts="k factorial over k to the k, which exceeds e to the minus k">$k!/k^k > e^{-k}$</span>; trying <span class="tts-math" data-tts="order of e to the k">$O(e^k)$</span> hash functions (or a deterministic perfect hash family) ensures the right separation appears. With distinct colors, an inequality <span class="tts-math" data-tts="x sub i is not equal to x sub j">$x_i \neq x_j$</span> can be checked by comparing colors rather than original values, so it no longer needs an edge in the hypergraph. Second, on the color-reduced instance the query is genuinely acyclic, so Yannakakis's join-forest passes (bottom-up to remove dangling tuples, top-down and bottom-up to build the answer) apply unchanged. The <span class="tts-math" data-tts="log squared n">$\log^2 n$</span> overhead comes from sorting in the joins and from evaluating the perfect hash family.
+    </p>
+  </div>
+
+  <div class="box example" data-cid="main-800">
+    <span class="box-label">A familiar special case</span>
+    <p data-cid="main-810">
+      Finding a simple path of a specified length <span class="tts-math" data-tts="k">$k$</span> in a graph is exactly an acyclic query with inequalities (the path atoms are acyclic; the "simple" constraint is a set of <span class="tts-math" data-tts="x sub i not equal to x sub j">$x_i \neq x_j$</span> inequalities). Theorem 2 therefore recovers, as a special case, the fixed-parameter tractability of the long-standing <em>longest simple path</em> problem—first shown f.p. tractable by Monien and famously sped up by Alon–Yuster–Zwick's color-coding. The paper's result is the general database-query statement of that phenomenon.
+    </p>
+  </div>
+
+  <!-- ═══ SECTION 8 ═══ -->
+  <h2 data-cid="main-820" id="s8">8. The Boundary: Why "≠" Is Fine but "&lt;" Is Not</h2>
+
+  <p data-cid="main-830">
+    The natural next question is whether the positive result survives if we allow order <em>comparisons</em> (<span class="tts-math" data-tts="less than">$&lt;$</span> or <span class="tts-math" data-tts="less than or equal">$\le$</span>) between variables and constants, not just inequalities. The answer is a sharp no—this is the precise boundary the abstract advertises.
+  </p>
+
+  <div class="box definition" data-cid="main-840">
+    <span class="box-label">Theorem 3 — comparisons reintroduce hardness</span>
+    <p data-cid="main-850">
+      The class of acyclic conjunctive queries with comparisons (<span class="tts-math" data-tts="less than or less than or equal">$&lt;$ or $\le$</span>) is <span class="tts-math" data-tts="W of one">$W[1]$</span>-hard with respect to both parameters <span class="tts-math" data-tts="q">$q$</span> and <span class="tts-math" data-tts="v">$v$</span>—and remains so even when restricted to binary relations, path-shaped queries, and only <span class="tts-math" data-tts="less than">$&lt;$</span> constraints.
+    </p>
+  </div>
+
+  <p data-cid="main-860">
+    The proof is again a reduction from Clique, but a more intricate one. Number the vertices of <span class="tts-math" data-tts="capital G">$G$</span> from <span class="tts-math" data-tts="zero to n minus one">$0$</span> to <span class="tts-math" data-tts="n minus one">$n-1$</span> and encode each edge as a pair of integers built from the endpoint labels. A path-shaped query with two binary relations <span class="tts-math" data-tts="capital P and capital R">$P$</span> and <span class="tts-math" data-tts="capital R">$R$</span>, whose comparison atoms <span class="tts-math" data-tts="x sub i j is less than x sub j i, which is less than x sub i j prime">$x_{ij} &lt; x_{ji} &lt; x'_{ij}$</span> chain the encoded edges in increasing order, is satisfiable exactly when <span class="tts-math" data-tts="capital G">$G$</span> has a clique of size <span class="tts-math" data-tts="k">$k$</span>. So order comparisons let an acyclic query secretly enforce the all-pairs-adjacency structure that color-coding had neutralized for plain inequalities.
+  </p>
+
+  <div class="box pause" data-cid="main-870">
+    <span class="box-label">What separates "≠" from "&lt;"</span>
+    <p data-cid="main-880">
+      An inequality <span class="tts-math" data-tts="x not equal to y">$x \neq y$</span> is a <em>local, symmetric</em> constraint: it only cares whether two values collide, which is exactly what hashing to colors can preserve. An order comparison <span class="tts-math" data-tts="x less than y">$x &lt; y$</span> is <em>global and transitive</em>: it imposes a consistent linear arrangement across all the variables, and that global structure is rich enough to embed Clique. Color-coding cannot help, because hashing scrambles order. (For dense orders one can pre-process by collapsing the strongly-connected components of the comparison graph—two values forced equal by a cycle of <span class="tts-math" data-tts="less than or equal">$\le$</span> constraints—but the resulting acyclic query is still <span class="tts-math" data-tts="W of one">$W[1]$</span>-hard.) This dividing line—tractable inequalities, intractable comparisons—is the paper's most quotable practical takeaway.
+    </p>
+  </div>
+
+  <!-- ═══ SECTION 9 ═══ -->
+  <h2 data-cid="main-890" id="s9">9. Why It Mattered</h2>
+
+  <p data-cid="main-900">
+    This paper reframed a settled-looking question. For fifteen years the textbook line had been that the major query languages are tractable because their <em>data</em> complexity is polynomial. Papadimitriou and Yannakakis showed that this framing "puts the well-known tractability results under a different perspective, one that is perhaps more realistic, and less confusing and misleading." The query size is not an innocent constant hiding in the exponent; under the right lens it is the dominant source of difficulty, and parametric complexity is the lens that makes the difficulty visible and gradable.
+  </p>
+
+  <p data-cid="main-910">
+    The work is one of the earliest and most influential bridges between <em>database theory</em> and <em>parameterized complexity</em>. The identification of conjunctive-query evaluation with <span class="tts-math" data-tts="W of one">$W[1]$</span>-completeness became a cornerstone result, later refined by Grohe, Schwentick, Segoufin, and others, who tied tractability to structural measures such as bounded treewidth of the query. The paper's message—that expressiveness and parametric hardness rise together—reshaped how theorists think about the price of query languages.
+  </p>
+
+  <div class="box intuition" data-cid="main-920">
+    <span class="box-label">The takeaways in one breath</span>
+    <p data-cid="main-930">
+      (1) "Polynomial data complexity" is reassuring but deceptive—the query size sits in the exponent. (2) Parametric complexity quantifies exactly how badly: conjunctive queries are <span class="tts-math" data-tts="W of one">$W[1]$</span>-complete, and the hardness climbs to <span class="tts-math" data-tts="W of P">$W[P]$</span> as the language grows to full first-order logic; for recursive languages the exponent-dependence is unconditional. (3) There is a genuine tractable frontier: <em>acyclic</em> queries with <em>inequalities</em> stay fixed-parameter tractable via color-coding—but adding order <em>comparisons</em> pushes you straight back to <span class="tts-math" data-tts="W of one">$W[1]$</span>-hardness.
+    </p>
+  </div>
+
+  <h2 data-cid="main-940" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-950">S. Abiteboul, R. Hull, V. Vianu. <em>Foundations of Databases.</em> Addison-Wesley, 1995.</li>
+    <li data-cid="main-960">N. Alon, R. Yuster, U. Zwick. Color-Coding. <em>J. ACM</em>, pp. 844–856, 1995.</li>
+    <li data-cid="main-970">J. F. Buss, J. Goldsmith. Nondeterminism within P. <em>SIAM J. Comput.</em>, pp. 560–572, 1993.</li>
+    <li data-cid="main-980">A. K. Chandra, P. M. Merlin. Optimal Implementation of Conjunctive Queries in Relational Databases. <em>Proc. 9th ACM Symp. Theory of Comp.</em>, pp. 77–90, 1977.</li>
+    <li data-cid="main-990">R. G. Downey, M. R. Fellows. Fixed-Parameter Tractability and Completeness I: Basic Results. <em>SIAM J. Comput.</em>, pp. 873–921, 1995.</li>
+    <li data-cid="main-1000">P. C. Kanellakis. Elements of Relational Database Theory. In <em>Handbook of Theoretical Computer Science</em> (J. Van Leeuwen, ed.), pp. 1074–1156, Elsevier, 1991.</li>
+    <li data-cid="main-1010">P. C. Kanellakis. Constraint Programming and Database Languages: A Tutorial. <em>Proc. 14th ACM Symp. Principles of Database Sys.</em>, pp. 46–53, 1995.</li>
+    <li data-cid="main-1020">A. Klug. On Conjunctive Queries Containing Inequalities. <em>J. ACM</em>, pp. 146–160, 1988.</li>
+    <li data-cid="main-1030">O. Lichtenstein, A. Pnueli. Checking that Finite State Concurrent Programs Satisfy their Specifications. <em>Proc. 12th ACM Symp. Principles of Prog. Lang.</em>, pp. 97–107, 1985.</li>
+    <li data-cid="main-1040">B. Monien. How to Find Long Paths Efficiently. <em>Ann. Disc. Math.</em>, pp. 239–254, 1985.</li>
+    <li data-cid="main-1050">C. H. Papadimitriou, M. Yannakakis. On Limited Nondeterminism and the Complexity of the VC Dimension. <em>J. Comp. Sys. Sci.</em>, pp. 161–170, 1996.</li>
+    <li data-cid="main-1060">N. Robertson, P. D. Seymour. Graph Minors XIII: The Disjoint Paths Problem.</li>
+    <li data-cid="main-1070">J. D. Ullman. <em>Principles of Database and Knowledge Base Systems.</em> Computer Science Press, 1988.</li>
+    <li data-cid="main-1080">M. Y. Vardi. The Complexity of Relational Query Languages. <em>Proc. 14th ACM Symp. Theory of Computing</em>, pp. 137–146, 1982.</li>
+    <li data-cid="main-1090">M. Y. Vardi. On the Complexity of Bounded-Variable Queries. <em>Proc. 14th ACM Symp. Principles of Database Sys.</em>, pp. 266–276, 1995.</li>
+    <li data-cid="main-1100">M. Yannakakis. Algorithms for Acyclic Database Schemes. <em>Proc. 7th Intl. Conf. Very Large Data Bases</em>, pp. 82–94, 1981.</li>
+    <li data-cid="main-1110">M. Yannakakis. Perspectives on Database Theory. <em>Proc. 36th IEEE Symp. Foundations of Comp. Sci.</em>, pp. 224–246, 1995.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script><script src="/js/reading.js"></script>
+</body>
+</html>

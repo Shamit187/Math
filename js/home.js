@@ -16,7 +16,7 @@
   let lastTotal = 0;
 
   function defaultState() {
-    return { q: "", type: "", topic: "", tags: [], sort: "relevance", offset: 0 };
+    return { q: "", type: "", read: "", topic: "", tags: [], sort: "relevance", offset: 0 };
   }
 
   // ---------- helpers ----------
@@ -37,6 +37,7 @@
     const s = defaultState();
     s.q = p.get("q") || "";
     s.type = ["book", "paper"].includes(p.get("type")) ? p.get("type") : "";
+    s.read = ["read", "unread"].includes(p.get("read")) ? p.get("read") : "";
     s.topic = p.get("topic") || "";
     s.sort = p.get("sort") || "relevance";
     s.tags = (p.get("tags") || "").split(",").map((t) => t.trim()).filter(Boolean);
@@ -46,6 +47,7 @@
     const p = new URLSearchParams();
     if (state.q) p.set("q", state.q);
     if (state.type) p.set("type", state.type);
+    if (state.read) p.set("read", state.read);
     if (state.topic) p.set("topic", state.topic);
     if (state.tags.length) p.set("tags", state.tags.join(","));
     if (state.sort && state.sort !== "relevance") p.set("sort", state.sort);
@@ -63,6 +65,7 @@
     const p = new URLSearchParams();
     if (state.q) p.set("q", state.q);
     if (state.type) p.set("type", state.type);
+    if (state.read) p.set("read", state.read);
     if (state.topic) p.set("topic", state.topic);
     state.tags.forEach((t) => p.append("tag", t));
     if (state.sort) p.set("sort", state.sort);
@@ -115,9 +118,11 @@
     const year = it.year ? `<span>${it.year}</span>` : "";
     const tags = (it.tags || []).slice(0, 5).map((t) =>
       `<span class="ct" data-tag="${esc(t)}">${esc(t)}</span>`).join("");
+    const readBadge = it.read ? `<span class="card-badge read" title="Marked as read">✓ read</span>` : "";
     li.innerHTML = `
       <div class="card-head">
         <span class="card-badge ${it.type}">${it.type}</span>
+        ${readBadge}
         <h3 class="card-title"><a href="${esc(it.url)}">${esc(it.title)}</a></h3>
       </div>
       ${meta ? `<p class="card-sub">${meta}</p>` : ""}
@@ -146,6 +151,15 @@
       b.querySelector(".cnt").textContent = n;
       b.classList.toggle("active", state.type === t);
     });
+    // reading
+    if (els.readingFacet) {
+      els.readingFacet.querySelectorAll("button").forEach((b) => {
+        const r = b.dataset.read;
+        const n = r === "" ? facets.reading.all : facets.reading[r] || 0;
+        b.querySelector(".cnt").textContent = n;
+        b.classList.toggle("active", state.read === r);
+      });
+    }
     // topics
     els.topicTree.innerHTML = "";
     facets.topics.forEach((n) => els.topicTree.appendChild(topicNode(n)));
@@ -194,6 +208,7 @@
     const chips = [];
     if (state.q) chips.push(chip("search", `“${state.q}”`, () => { state.q = ""; els.search.value = ""; apply(); }));
     if (state.type) chips.push(chip("type", state.type, () => { state.type = ""; apply(); }));
+    if (state.read) chips.push(chip("read", state.read, () => { state.read = ""; apply(); }));
     if (state.topic) chips.push(chip("topic", state.topic.split("/").join(" › "), () => { state.topic = ""; apply(); }));
     state.tags.forEach((t) => chips.push(chip("tag", t, () => toggleTag(t))));
     els.active.innerHTML = "";
@@ -224,6 +239,7 @@
     apply();
   }
   function setType(t) { state.type = t; apply(); }
+  function setRead(r) { state.read = r; apply(); }
   function clearAll() {
     const sort = state.sort;
     state = defaultState();
@@ -241,6 +257,7 @@
     els.search = document.getElementById("search");
     els.sort = document.getElementById("sort");
     els.typeFacet = document.getElementById("type-facet");
+    els.readingFacet = document.getElementById("reading-facet");
     els.topicTree = document.getElementById("topic-tree");
     els.tagList = document.getElementById("tag-list");
     els.active = document.getElementById("active-filters");
@@ -258,6 +275,8 @@
     els.loadMore.addEventListener("click", () => load(true));
     els.typeFacet.querySelectorAll("button").forEach((b) =>
       b.addEventListener("click", () => setType(b.dataset.type)));
+    if (els.readingFacet) els.readingFacet.querySelectorAll("button").forEach((b) =>
+      b.addEventListener("click", () => setRead(b.dataset.read)));
 
     const ft = document.getElementById("filters-toggle");
     if (ft) ft.addEventListener("click", () => {

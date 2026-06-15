@@ -53,6 +53,7 @@ COMMENTS_DIR = ROOT / "comments"
 COMMENTS_FILE = COMMENTS_DIR / "comments.json"
 HIGHLIGHTS_FILE = COMMENTS_DIR / "highlights.json"
 NOTES_FILE = COMMENTS_DIR / "notes.json"
+READING_FILE = COMMENTS_DIR / "reading.json"
 TTS_DIR = ROOT / "tts"
 COMMENTS_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -176,6 +177,13 @@ def _topic_paths(meta) -> list:
     return out
 
 
+def _join_authors(authors) -> str:
+    """Normalize an authors field (str or list) to a single display string."""
+    if isinstance(authors, (list, tuple)):
+        return ", ".join(str(a).strip() for a in authors if str(a).strip())
+    return str(authors)
+
+
 def _item_from_dir(d: Path, kind: str) -> dict:
     meta = _read_meta(d)
     year = meta.get("year")
@@ -188,7 +196,7 @@ def _item_from_dir(d: Path, kind: str) -> dict:
         "type": kind,
         "title": meta.get("title", d.name),
         "subtitle": meta.get("subtitle", ""),
-        "authors": meta.get("authors", ""),
+        "authors": _join_authors(meta.get("authors", "")),
         "venue": meta.get("venue", ""),
         "year": year,
         "description": meta.get("description", ""),
@@ -317,12 +325,19 @@ def api_catalog():
     offset, limit. Returns the page of items plus facet counts (each facet is
     computed ignoring its own dimension, so selections narrow the others)."""
     items = get_catalog()
+    reading = _reading_map()
+
+    def is_read(it):
+        return reading.get(it["slug"], False)
 
     q = (request.args.get("q") or "").strip().lower()
     tokens = [t for t in re.split(r"\s+", q) if t]
     typ = (request.args.get("type") or "").strip().lower()
     if typ not in ("book", "paper"):
         typ = ""
+    read_filter = (request.args.get("read") or "").strip().lower()
+    if read_filter not in ("read", "unread"):
+        read_filter = ""
     topic_parts = [s.strip() for s in (request.args.get("topic") or "").split("/") if s.strip()]
     tags = [t.strip().lower() for t in request.args.getlist("tag") if t.strip()]
     sort = (request.args.get("sort") or "relevance").strip()
@@ -338,6 +353,9 @@ def api_catalog():
 
     def passes(it, ignore=()):
         if "type" not in ignore and typ and it["type"] != typ:
+            return False
+        if "read" not in ignore and read_filter and \
+                ((read_filter == "read") != is_read(it)):
             return False
         if "topic" not in ignore and topic_parts and not _topic_prefix_match(it, topic_parts):
             return False
@@ -372,11 +390,16 @@ def api_catalog():
         filtered.sort(key=lambda it: it["title"].lower())
 
     total = len(filtered)
-    page = [_public_item(it) for it in filtered[offset:offset + limit]]
+    page = []
+    for it in filtered[offset:offset + limit]:
+        pub = _public_item(it)
+        pub["read"] = is_read(it)
+        page.append(pub)
 
     topic_items = [it for it in items if passes(it, ignore=("topic",))]
     tag_items = [it for it in items if passes(it, ignore=("tag",))]
     type_items = [it for it in items if passes(it, ignore=("type",))]
+    read_items = [it for it in items if passes(it, ignore=("read",))]
     facets = {
         "topics": _build_topic_tree(topic_items),
         "tags": _tag_facets(tag_items),
@@ -384,6 +407,11 @@ def api_catalog():
             "all": len(type_items),
             "book": sum(1 for it in type_items if it["type"] == "book"),
             "paper": sum(1 for it in type_items if it["type"] == "paper"),
+        },
+        "reading": {
+            "all": len(read_items),
+            "read": sum(1 for it in read_items if is_read(it)),
+            "unread": sum(1 for it in read_items if not is_read(it)),
         },
     }
     return jsonify({"total": total, "offset": offset, "limit": limit, "items": page, "facets": facets})
@@ -700,6 +728,46 @@ def delete_note(nid):
         return jsonify({"error": "not found"}), 404
     _save_store(NOTES_FILE, data)
     return jsonify({"ok": True})
+
+
+# ---------- reading status API ----------
+# A flat per-item read/unread flag keyed by the content slug (the <body>'s
+# data-book). One record per item; POST upserts. Read by the catalog so the
+# homepage can badge and filter read vs. unread items.
+def _reading_map() -> dict:
+    """slug -> bool (read). Missing slug means unread."""
+    data = _load_store(READING_FILE, "reading")
+    return {r.get("book"): bool(r.get("read")) for r in data["reading"] if r.get("book")}
+
+
+@app.route("/api/reading-status", methods=["GET"])
+def list_reading():
+    book = request.args.get("book")
+    data = _load_store(READING_FILE, "reading")
+    out = data["reading"]
+    if book:
+        out = [r for r in out if r.get("book") == book]
+    return jsonify({"reading": out})
+
+
+@app.route("/api/reading-status", methods=["POST"])
+def set_reading():
+    body = request.get_json(silent=True) or {}
+    book = (body.get("book") or "").strip()
+    if not book:
+        return jsonify({"error": "book required"}), 400
+    read = bool(body.get("read"))
+    data = _load_store(READING_FILE, "reading")
+    rec = next((r for r in data["reading"] if r.get("book") == book), None)
+    if rec is None:
+        rec = {"book": book, "read": read,
+               "created_at": _now_iso(), "updated_at": _now_iso()}
+        data["reading"].append(rec)
+    else:
+        rec["read"] = read
+        rec["updated_at"] = _now_iso()
+    _save_store(READING_FILE, data)
+    return jsonify({"reading": rec})
 
 
 # ---------- static website ----------

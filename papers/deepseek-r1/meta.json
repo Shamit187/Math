@@ -1,0 +1,6 @@
+{
+  "title": "DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning",
+  "authors": "DeepSeek-AI",
+  "venue": "arXiv 2501.12948, 2025",
+  "description": "Shows that the reasoning abilities of large language models can be incentivized through pure reinforcement learning, without supervised fine-tuning. DeepSeek-R1-Zero is trained with Group Relative Policy Optimization and rule-based rewards, developing self-reflection and verification on its own; DeepSeek-R1 adds a multi-stage cold-start, RL, and rejection-sampling pipeline to fix readability and language mixing, reaching frontier performance on math, coding, and STEM, and distilling that capability into smaller models."
+}

@@ -211,6 +211,13 @@
 [data-theme="dark"] .card-badge.book { color: var(--intuition-edge); }
 .card-badge.paper { background: var(--pause); color: #3c5d8c; }
 [data-theme="dark"] .card-badge.paper { color: var(--pause-edge); }
+.card-badge.read {
+  background: var(--accent);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+}
 .card-title { font-family: var(--serif); font-size: 1.12rem; font-weight: 600; margin: 0; line-height: 1.25; }
 .card-title a { color: var(--ink); text-decoration: none; }
 .card-title a:hover { color: var(--accent); }

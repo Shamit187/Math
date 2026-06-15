@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning · Slow Books</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/comments.css" rel="stylesheet"/>
+<link href="/css/tts.css" rel="stylesheet"/><link href="/css/highlights.css" rel="stylesheet"/><link href="/css/reading.css" rel="stylesheet"/>
+</head>
+<body data-book="deepseek-r1" data-page="main">
+<header class="site-header">
+  <a class="home-btn" href="/">Home</a>
+  <a class="brand" href="/papers/deepseek-r1/">DeepSeek-R1</a>
+  <nav>
+    <button aria-label="toggle theme" class="theme-toggle">Dark</button>
+  </nav>
+</header>
+
+<main class="layout">
+<aside class="sidebar">
+  <h4>Sections</h4>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">1. Introduction</a></li>
+    <li><a href="#s2">2. DeepSeek-R1-Zero</a></li>
+    <li><a href="#s3">3. DeepSeek-R1</a></li>
+    <li><a href="#s4">4. Experiments</a></li>
+    <li><a href="#s5">5. Ethics and Safety</a></li>
+    <li><a href="#s6">6. Conclusion and Limitations</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</aside>
+
+<article class="content">
+
+  <section class="hero">
+    <div class="kicker">Scientific Paper · arXiv 2025</div>
+    <h1>DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning</h1>
+    <div class="paper-meta">
+      <span class="authors">DeepSeek-AI · research@deepseek.com</span>
+      <span class="venue">arXiv:2501.12948 (v2), 2025</span>
+    </div>
+  </section>
+
+  <div class="paper-abstract" data-cid="main-010" id="abstract">
+    <strong>Abstract</strong>
+    General reasoning represents a long-standing and formidable challenge in artificial
+    intelligence. Recent breakthroughs, exemplified by large language models (LLMs) and
+    chain-of-thought prompting, have achieved considerable success on foundational reasoning
+    tasks. However, this success is heavily contingent upon extensive human-annotated
+    demonstrations, and models' capabilities remain insufficient for more complex problems.
+    Here we show that the reasoning abilities of LLMs can be incentivized through pure
+    reinforcement learning (RL), obviating the need for human-labeled reasoning trajectories.
+    The proposed RL framework facilitates the emergent development of advanced reasoning
+    patterns, such as self-reflection, verification, and dynamic strategy adaptation.
+    Consequently, the trained model achieves superior performance on verifiable tasks such as
+    mathematics, coding competitions, and STEM fields, surpassing its counterparts trained via
+    conventional supervised learning on human demonstrations. Moreover, these emergent
+    reasoning patterns can be systematically harnessed to guide and enhance the reasoning
+    capabilities of smaller models.
+  </div>
+
+  <h2 data-cid="main-020" id="s1">1. Introduction</h2>
+  <p data-cid="main-030">
+    Reasoning capability, the cornerstone of human intelligence, enables complex cognitive tasks
+    ranging from mathematical problem-solving to logical deduction and programming. Large language
+    models can exhibit reasoning abilities when scaled to a sufficient size, but achieving such
+    capabilities in pre-training demands substantial computational resources. In parallel,
+    chain-of-thought (CoT) prompting — providing few-shot exemplars or a minimal cue such as
+    <em>"Let's think step by step"</em> — leads models to produce intermediate reasoning steps and
+    substantially improves performance on complex tasks.
+  </p>
+  <p data-cid="main-040">
+    These approaches, however, depend on human-annotated reasoning traces, which hinders scalability
+    and introduces cognitive bias. By constraining models to replicate human thought processes, their
+    performance is inherently capped by the provided exemplars, preventing the exploration of superior,
+    non-human-like reasoning pathways.
+  </p>
+  <p data-cid="main-050">
+    To tackle these issues, this work explores the potential of LLMs to develop reasoning abilities
+    through <strong>self-evolution</strong> in an RL framework with minimal reliance on human labeling.
+    Building on DeepSeek-V3-Base and employing Group Relative Policy Optimization (GRPO), the reward
+    signal is based solely on the correctness of final predictions against ground-truth answers,
+    without imposing constraints on the reasoning process itself. Notably, the conventional supervised
+    fine-tuning (SFT) phase is bypassed before RL. The resulting model, <strong>DeepSeek-R1-Zero</strong>,
+    naturally develops diverse and sophisticated reasoning behaviors — generating longer responses,
+    incorporating verification, reflection, and the exploration of alternative approaches.
+  </p>
+  <p data-cid="main-060">
+    Although DeepSeek-R1-Zero reasons well, it suffers from poor readability and language mixing. To
+    address this, the authors introduce <strong>DeepSeek-R1</strong>, trained through a multi-stage
+    pipeline that integrates cold-start data, reinforcement learning, and rejection sampling, aligning
+    model behavior with human preferences while preserving reasoning ability. Finally, several smaller
+    models are <strong>distilled</strong> from DeepSeek-R1, inheriting strong reasoning capabilities and
+    surpassing their original instruction-tuned counterparts. The models are released publicly.
+  </p>
+
+  <h2 data-cid="main-070" id="s2">2. DeepSeek-R1-Zero</h2>
+  <p data-cid="main-080">
+    DeepSeek-R1-Zero relies exclusively on reinforcement learning, without any supervised fine-tuning.
+    To enable large-scale RL efficiency, it adopts Group Relative Policy Optimization.
+  </p>
+
+  <h3 data-cid="main-090" id="s2-1">2.1 Group Relative Policy Optimization — built from scratch</h3>
+  <p data-cid="main-100">
+    This is the engine that trains the model, and it looks intimidating written down. We are going to
+    build it up one piece at a time, assuming you have never seen reinforcement learning before. By the
+    end you will be able to read the big equation out loud and know exactly what every symbol is doing.
+    Take it slowly — each idea below is small, and they stack.
+  </p>
+
+  <div class="box intuition" data-cid="main-110">
+    <span class="box-label">Step 1 — What is a "policy"?</span>
+    <p data-cid="main-120">
+      A language model answers a question by writing one word (technically one <em>token</em>) at a time.
+      Before writing each word it computes a probability for every possible next word, and picks from that
+      distribution. The entire collection of "given what I've seen, how likely is each next word" — across
+      the whole model — is its <strong>strategy</strong> for producing text. In reinforcement learning,
+      the strategy you are trying to improve is called a <strong>policy</strong>, and it is written with
+      the Greek letter <span class="tts-math" data-tts="pi">$\pi$</span> ("pi"). The little subscript
+      <span class="tts-math" data-tts="theta">$\theta$</span> ("theta") stands for <em>all the tunable
+      numbers inside the model</em> — its billions of weights. So
+      <span class="tts-math" data-tts="pi sub theta">$\pi_\theta$</span> simply means "our model, with its
+      weights currently set the way they are." Training the model = changing
+      <span class="tts-math" data-tts="theta">$\theta$</span>.
+    </p>
+  </div>
+
+  <p data-cid="main-130">
+    We will constantly talk about "how likely the model is to produce a particular answer." There is a
+    compact notation for exactly that. If <span class="tts-math" data-tts="q">$q$</span> is the question
+    and <span class="tts-math" data-tts="o">$o$</span> is one complete answer the model could give
+    (<span class="tts-math" data-tts="o">$o$</span> is for "output"), then we write:
+  </p>
+  <p data-cid="main-140">
+    <span class="tts-math" data-tts="pi sub theta of o given q">
+    $$\pi_\theta(o \mid q)$$
+    </span>
+  </p>
+  <p data-cid="main-150">
+    Read this as "pi-theta of o given q." It is a single number between 0 and 1: <em>the probability that
+    the model (with its current weights) produces the whole answer</em> <span class="tts-math" data-tts="o">$o$</span>
+    <em>when shown the question</em> <span class="tts-math" data-tts="q">$q$</span>. A high value means the
+    model strongly favors that answer; a low value means it would rarely write it. <strong>Training the
+    model means nudging</strong> <span class="tts-math" data-tts="theta">$\theta$</span> <strong>so that
+    good answers get a higher probability and bad answers get a lower one.</strong> That nudging is what
+    "optimizing the policy" means.
+  </p>
+
+  <div class="box intuition" data-cid="main-160">
+    <span class="box-label">Step 2 — The reinforcement-learning loop</span>
+    <p data-cid="main-170">
+      In ordinary supervised learning you would show the model the correct answer and tell it to copy it.
+      Reinforcement learning is different and looser: you let the model <em>try</em> on its own, then you
+      hand it a single score saying how good the attempt was, and you push it to make high-scoring attempts
+      more likely next time. That score is called the <strong>reward</strong>. Crucially, nobody tells the
+      model the right wording — it discovers good strategies by being rewarded for good outcomes. This is
+      why R1-Zero can invent reasoning styles a human never demonstrated.
+    </p>
+  </div>
+
+  <p data-cid="main-180">
+    For DeepSeek-R1-Zero the reward is computed by a simple rule, not a human. For a math problem the
+    reward is essentially 1 if the final boxed answer is correct (and the response is formatted properly)
+    and 0 otherwise; for code, the program is run against test cases. We call the reward for one answer
+    <span class="tts-math" data-tts="r">$r$</span>. (Section 2.2 spells out exactly how
+    <span class="tts-math" data-tts="r">$r$</span> is built.)
+  </p>
+
+  <p data-cid="main-190">
+    Here is the first real subtlety. A raw reward by itself is a weak teaching signal. Suppose a question
+    is easy and most of the model's attempts score 1 — then "1" tells you almost nothing about which
+    attempt was actually better, or whether the model is improving. What we really want to know is: <em>was
+    this attempt better or worse than what this model usually does on this question?</em> That requires a
+    point of comparison — a <strong>baseline</strong> to subtract off.
+  </p>
+
+  <div class="box intuition" data-cid="main-200">
+    <span class="box-label">Step 3 — "Group relative": grading on a curve</span>
+    <p data-cid="main-210">
+      The older method (PPO) builds a <em>second</em> neural network, almost as big as the model itself,
+      whose only job is to predict the expected reward so it can be used as the baseline. That is
+      expensive — twice the memory and compute. GRPO's central trick is to throw that second network away.
+      Instead, for each question it makes the model produce a whole <strong>group</strong> of answers — say
+      <span class="tts-math" data-tts="G">$G$</span> of them — and then judges each answer
+      <em>relative to the average of that very group</em>. The group grades itself on a curve. That is the
+      entire meaning of the name: <strong>Group</strong> (sample several answers) <strong>Relative</strong>
+      (score each against the group average) <strong>Policy Optimization</strong> (use that to improve the
+      policy). The group of answers is written
+      <span class="tts-math" data-tts="the set of o sub i, for i from 1 to G">$\{o_1, o_2, \cdots, o_G\}$</span>,
+      and DeepSeek samples <span class="tts-math" data-tts="G equals 16">$G = 16$</span> answers per question.
+    </p>
+  </div>
+
+  <p data-cid="main-220">
+    The "how much better than the group average" number has a name: the <strong>advantage</strong>, written
+    <span class="tts-math" data-tts="A sub i">$A_i$</span> for the <span class="tts-math" data-tts="i-th">$i$</span>-th
+    answer in the group. It is computed directly from the group's rewards
+    <span class="tts-math" data-tts="r sub 1, r sub 2, up to r sub G">$\{r_1, r_2, \ldots, r_G\}$</span>:
+  </p>
+  <p data-cid="main-230">
+    <span class="tts-math" data-tts="A sub i equals the quantity r sub i minus the mean of the rewards r sub 1 through r sub G, all divided by the standard deviation of the rewards r sub 1 through r sub G">
+    $$A_i = \frac{r_i - \mathrm{mean}(\{r_1, r_2, \cdots, r_G\})}{\mathrm{std}(\{r_1, r_2, \cdots, r_G\})}$$
+    </span>
+  </p>
+  <p data-cid="main-240">
+    Let's dissect it. The <strong>numerator</strong>,
+    <span class="tts-math" data-tts="r sub i minus the mean of the group rewards">$r_i - \mathrm{mean}(\cdots)$</span>,
+    is "this answer's reward minus the group's average reward." If the answer beat the average, this is
+    positive; if it lagged, it is negative. The <strong>denominator</strong>,
+    <span class="tts-math" data-tts="the standard deviation of the group rewards">$\mathrm{std}(\cdots)$</span>,
+    is the group's standard deviation — a measure of how spread out the rewards were. Dividing by it
+    rescales everything into units of "standard deviations above or below average," so the signal has a
+    consistent size whether the question was easy or hard. <strong>Bottom line: a positive advantage means
+    "this answer was better than typical — make it more likely"; a negative advantage means "worse than
+    typical — make it less likely."</strong>
+  </p>
+
+  <div class="box example" data-cid="main-250">
+    <span class="box-label">A concrete advantage calculation</span>
+    <p data-cid="main-260">
+      Say the model produces a group of 4 answers to one question and the rule-based scorer gives rewards
+      <span class="tts-math" data-tts="the set 1, 1, 0, 0">$\{1, 1, 0, 0\}$</span> (two correct, two wrong).
+      The mean is <span class="tts-math" data-tts="0.5">$0.5$</span> and the standard deviation is
+      <span class="tts-math" data-tts="0.5">$0.5$</span>. So each correct answer gets advantage
+      <span class="tts-math" data-tts="open paren 1 minus 0.5 close paren over 0.5 equals plus 1">$(1 - 0.5)/0.5 = +1$</span>
+      and each wrong answer gets <span class="tts-math" data-tts="open paren 0 minus 0.5 close paren over 0.5 equals minus 1">$(0 - 0.5)/0.5 = -1$</span>.
+      The correct answers will be pushed up, the wrong ones pushed down — and notice we never needed an
+      external "expected score" network. The group supplied its own baseline for free.
+    </p>
+  </div>
+
+  <p data-cid="main-270">
+    Now: how do we actually use the advantage to change the weights? The obvious idea is "increase the
+    probability of answers with positive advantage." That is right, but there is a practical wrinkle. To
+    be efficient, GRPO generates the whole group of answers <em>once</em> using a frozen snapshot of the
+    model, and then takes several small improvement steps from that one batch of answers. Between those
+    steps the model has already shifted a little, so the answers were generated by a slightly
+    <em>older</em> version of the model than the one being updated. We must account for that mismatch.
+  </p>
+
+  <div class="box definition" data-cid="main-280">
+    <span class="box-label">Step 4 — The probability ratio (old model vs. new model)</span>
+    <p data-cid="main-290">
+      Call <span class="tts-math" data-tts="pi sub theta-old">$\pi_{\theta_{old}}$</span> the <em>old</em>
+      policy — the frozen snapshot that generated the answers — and
+      <span class="tts-math" data-tts="pi sub theta">$\pi_\theta$</span> the <em>current</em> policy we are
+      updating right now. For a given answer we compare how likely each version is to produce it, by
+      dividing one probability by the other:
+    </p>
+    <p data-cid="main-300">
+      <span class="tts-math" data-tts="the ratio of pi sub theta of o sub i given q, to pi sub theta-old of o sub i given q">
+      $$\frac{\pi_\theta(o_i \mid q)}{\pi_{\theta_{old}}(o_i \mid q)}$$
+      </span>
+    </p>
+    <p data-cid="main-310">
+      This <strong>ratio</strong> reads "how much more (or less) likely is the new model to produce this
+      same answer, compared to the old model." A ratio of exactly 1 means the two agree. Bigger than 1
+      means the update has made this answer more likely; smaller than 1 means less likely. We will multiply
+      this ratio by the advantage: <span class="tts-math" data-tts="the ratio times A sub i">$\frac{\pi_\theta(o_i|q)}{\pi_{\theta_{old}}(o_i|q)} A_i$</span>.
+      If an answer was good (positive advantage) and we make it more likely (ratio above 1), this product
+      grows — and since the training maximizes the objective, the optimizer is pushed in exactly that
+      direction. Good answers up, bad answers down, just as we wanted.
+    </p>
+  </div>
+
+  <div class="box warn" data-cid="main-320">
+    <span class="box-label">Step 5 — Why we need a brake (clipping)</span>
+    <p data-cid="main-330">
+      If we let the optimizer maximize <span class="tts-math" data-tts="the ratio times A sub i">$\frac{\pi_\theta(o_i|q)}{\pi_{\theta_{old}}(o_i|q)} A_i$</span>
+      with no limit, it could try to make one good answer <em>enormously</em> more likely in a single
+      step — driving the ratio to something huge. That kind of giant leap, based on one small batch of
+      answers, tends to wreck the model: it overshoots and training becomes unstable. We need to cap how
+      far a single update is allowed to move.
+    </p>
+  </div>
+
+  <p data-cid="main-340">
+    The cap is called <strong>clipping</strong>. The operation
+    <span class="tts-math" data-tts="clip of the ratio, between 1 minus epsilon and 1 plus epsilon">$\mathrm{clip}\!\left(\tfrac{\pi_\theta(o_i|q)}{\pi_{\theta_{old}}(o_i|q)}, 1-\varepsilon, 1+\varepsilon\right)$</span>
+    means: take the ratio, but if it ever rises above
+    <span class="tts-math" data-tts="1 plus epsilon">$1+\varepsilon$</span> pin it there, and if it falls
+    below <span class="tts-math" data-tts="1 minus epsilon">$1-\varepsilon$</span> pin it there too. The
+    little <span class="tts-math" data-tts="epsilon">$\varepsilon$</span> ("epsilon") is just a small
+    number that sets how far the ratio is allowed to wander. We then take the <strong>smaller</strong> of
+    the unclipped term and the clipped term:
+  </p>
+  <p data-cid="main-350">
+    <span class="tts-math" data-tts="the minimum of two terms: the ratio times A sub i; and the clipped ratio, held between 1 minus epsilon and 1 plus epsilon, times A sub i">
+    $$\min\!\left( \frac{\pi_\theta(o_i|q)}{\pi_{\theta_{old}}(o_i|q)} A_i,\ \mathrm{clip}\!\left( \frac{\pi_\theta(o_i|q)}{\pi_{\theta_{old}}(o_i|q)}, 1-\varepsilon, 1+\varepsilon \right) A_i \right)$$
+    </span>
+  </p>
+  <p data-cid="main-360">
+    Taking the minimum is what makes the clip act as a true brake: once an answer has been pushed far
+    enough in the rewarded direction, the clipped term takes over and there is no further reward for
+    pushing it even harder — so the optimizer stops shoving. (In DeepSeek-R1's first RL stage this
+    allowance <span class="tts-math" data-tts="epsilon">$\varepsilon$</span> is set generously to 10,
+    because the authors found that a tight clip throws away too many useful gradients and slows learning.)
+  </p>
+
+  <p data-cid="main-370">
+    There is one last safeguard. Chasing reward alone, the model could slowly mutate into something that
+    games the scorer while forgetting how to write coherent, general language. To prevent that drift we
+    tether it to a fixed <strong>reference</strong> model and penalize wandering too far from it.
+  </p>
+  <div class="box definition" data-cid="main-380">
+    <span class="box-label">Step 6 — Staying near the reference (the KL penalty)</span>
+    <p data-cid="main-390">
+      The reference policy <span class="tts-math" data-tts="pi sub ref">$\pi_{ref}$</span> is an anchor —
+      essentially the model before this round of RL (refreshed periodically). The
+      <strong>KL divergence</strong> <span class="tts-math" data-tts="the K L divergence of pi sub theta from pi sub ref">$\mathbb{D}_{KL}(\pi_\theta \| \pi_{ref})$</span>
+      is a standard way to measure "how different are these two probability distributions." For each answer
+      DeepSeek estimates it as:
+    </p>
+    <p data-cid="main-400">
+      <span class="tts-math" data-tts="the K L divergence of pi sub theta from pi sub ref equals the ratio of pi sub ref of o sub i given q to pi sub theta of o sub i given q, minus the natural log of that same ratio, minus 1">
+      $$\mathbb{D}_{KL}\!\left( \pi_\theta \| \pi_{ref} \right) = \frac{\pi_{ref}(o_i|q)}{\pi_\theta(o_i|q)} - \log \frac{\pi_{ref}(o_i|q)}{\pi_\theta(o_i|q)} - 1$$
+      </span>
+    </p>
+    <p data-cid="main-410">
+      You do not need to memorize this formula; you only need its behavior. It is always greater than or
+      equal to zero, and it equals exactly zero when the two models agree (when that inner ratio is 1, the
+      expression becomes <span class="tts-math" data-tts="1 minus 0 minus 1, which is 0">$1 - 0 - 1 = 0$</span>).
+      The more the current model has drifted away from the reference, the larger this number grows. We
+      subtract it from the objective, scaled by a knob <span class="tts-math" data-tts="beta">$\beta$</span>
+      ("beta", the KL coefficient) that controls how hard we pull the model back toward the anchor. DeepSeek
+      uses a gentle <span class="tts-math" data-tts="beta equals 0.001">$\beta = 0.001$</span> and refreshes
+      the reference to the latest model every 400 steps.
+    </p>
+  </div>
+
+  <p data-cid="main-420">
+    That is every ingredient. Now we can finally assemble the full objective — the single quantity GRPO
+    adjusts the weights <span class="tts-math" data-tts="theta">$\theta$</span> to make as large as
+    possible. Don't be alarmed by its size; you already know every part of it.
+  </p>
+  <p data-cid="main-430">
+    <span class="tts-math" data-tts="script J sub G R P O of theta equals the expectation over q drawn from P of Q and the group of G outputs drawn from pi sub theta-old, of one over G times the sum from i equals 1 to G of the minimum of two terms — the ratio of pi sub theta of o sub i given q to pi sub theta-old of o sub i given q, times the advantage A sub i; and the clip of that same ratio between 1 minus epsilon and 1 plus epsilon, times A sub i — minus beta times the K L divergence of pi sub theta from pi sub ref">
+    $$\mathcal{J}_{GRPO}(\theta) = \mathbb{E}\!\left[q \sim P(Q),\, \{o_i\}_{i=1}^{G} \sim \pi_{\theta_{old}}(O|q)\right] \frac{1}{G}\sum_{i=1}^{G}\left( \min\!\left( \frac{\pi_\theta(o_i|q)}{\pi_{\theta_{old}}(o_i|q)} A_i,\ \mathrm{clip}\!\left( \frac{\pi_\theta(o_i|q)}{\pi_{\theta_{old}}(o_i|q)}, 1-\varepsilon, 1+\varepsilon \right) A_i \right) - \beta\, \mathbb{D}_{KL}\!\left( \pi_\theta \| \pi_{ref} \right) \right)$$
+    </span>
+  </p>
+  <p data-cid="main-440">
+    Reading it left to right, piece by piece:
+  </p>
+  <ul data-cid="main-450">
+    <li><span class="tts-math" data-tts="script J sub G R P O of theta">$\mathcal{J}_{GRPO}(\theta)$</span>
+    is the score we are trying to maximize by tuning the weights
+    <span class="tts-math" data-tts="theta">$\theta$</span>. The fancy
+    <span class="tts-math" data-tts="script J">$\mathcal{J}$</span> just means "objective."</li>
+    <li><span class="tts-math" data-tts="the expectation over q drawn from P of Q, and the group of outputs drawn from the old policy">$\mathbb{E}[q \sim P(Q),\, \{o_i\} \sim \pi_{\theta_{old}}]$</span>
+    — the <span class="tts-math" data-tts="E">$\mathbb{E}$</span> is an <em>average</em>: average over many
+    questions <span class="tts-math" data-tts="q">$q$</span> drawn from our dataset
+    <span class="tts-math" data-tts="P of Q">$P(Q)$</span>, and over the group of answers the old model
+    produced for each.</li>
+    <li><span class="tts-math" data-tts="one over G times the sum from i equals 1 to G">$\frac{1}{G}\sum_{i=1}^{G}$</span>
+    — average over the <span class="tts-math" data-tts="G">$G$</span> answers <em>inside</em> one group
+    (add them up, divide by <span class="tts-math" data-tts="G">$G$</span>).</li>
+    <li>The <span class="tts-math" data-tts="minimum term">$\min(\cdots)$</span> is the clipped push from
+    Steps 3–5: move each answer's probability in the direction of its advantage, with the brake on.</li>
+    <li><span class="tts-math" data-tts="minus beta times the K L divergence">$-\,\beta\, \mathbb{D}_{KL}(\pi_\theta \| \pi_{ref})$</span>
+    is the leash from Step 6: subtract a penalty for drifting away from the reference model.</li>
+  </ul>
+
+  <div class="box pause" data-cid="main-460">
+    <span class="box-label">The whole loop in plain words</span>
+    <p data-cid="main-470">
+      Strip away the notation and GRPO is just this, repeated over millions of questions:
+    </p>
+    <ol data-cid="main-480">
+      <li>Take a question.</li>
+      <li>Have the current model produce a group of <span class="tts-math" data-tts="G">$G$</span> answers.</li>
+      <li>Score each answer automatically with the rule-based reward.</li>
+      <li>Convert the scores into advantages — how far above or below the group's own average each answer landed.</li>
+      <li>Nudge the model to make above-average answers more likely and below-average ones less likely — but <em>clip</em> the size of each nudge, and subtract a <em>KL penalty</em> for drifting too far from the reference model.</li>
+      <li>Repeat.</li>
+    </ol>
+    <p data-cid="main-490">
+      Because the scoring is automatic and the baseline comes free from the group, the entire process runs
+      at massive scale with no human in the loop and no second critic network — which is exactly what makes
+      training a reasoning model this way affordable.
+    </p>
+  </div>
+
+  <p data-cid="main-500">
+    For the actual run, DeepSeek-R1-Zero uses a learning rate of 3e-6, the KL coefficient
+    <span class="tts-math" data-tts="beta">$\beta$</span> of 0.001, and a sampling temperature of 1 when
+    generating answers. For each question it samples 16 outputs with a maximum length of 32,768 tokens.
+    Training runs for 10,400 steps (about 1.6 passes over the data), and the reference model is replaced
+    with the latest policy every 400 steps.
+  </p>
+
+  <h3 data-cid="main-510" id="s2-2">2.2 Reward Design</h3>
+  <p data-cid="main-520">
+    The reward is the source of the training signal. DeepSeek-R1-Zero employs <strong>rule-based</strong>
+    rewards for mathematical, coding, and logical reasoning domains, consisting of two types:
+  </p>
+  <ul data-cid="main-530">
+    <li><strong>Accuracy rewards</strong> evaluate whether the response is correct. For math problems
+    with deterministic results, the model must provide the final answer in a specified format (e.g.,
+    within a box), enabling reliable rule-based verification; for code, a compiler checks the response
+    against predefined test cases.</li>
+    <li><strong>Format rewards</strong> require the model to enclose its reasoning between
+    <code>&lt;think&gt;</code> and <code>&lt;/think&gt;</code> tags, ensuring the thought process is
+    explicitly delineated.</li>
+  </ul>
+  <p data-cid="main-540">
+    The two are combined with equal weight:
+  </p>
+  <p data-cid="main-550">
+    <span class="tts-math" data-tts="Reward rule equals Reward accuracy plus Reward format">
+    $$\text{Reward}_{\text{rule}} = \text{Reward}_{\text{acc}} + \text{Reward}_{\text{format}}$$
+    </span>
+  </p>
+  <p data-cid="main-560">
+    Notably, the authors abstain from neural reward models — whether outcome-based or process-based —
+    because such models are susceptible to <em>reward hacking</em> during large-scale RL and add
+    substantial training complexity.
+  </p>
+
+  <h3 data-cid="main-570" id="s2-3">2.3 Incentivizing Reasoning and the "Aha Moment"</h3>
+  <p data-cid="main-580">
+    Applying RL with only a structural template — produce a reasoning process, then the final answer —
+    and no content-specific bias, the model's natural progression can be observed. On the AIME 2024
+    benchmark, the average pass@1 score rises from an initial <strong>15.6%</strong> to
+    <strong>77.9%</strong> over training; with self-consistency (majority voting) decoding it reaches
+    <strong>86.7%</strong>, surpassing the average human competitor.
+  </p>
+  <div class="box intuition" data-cid="main-590">
+    <span class="box-label">Self-evolution</span>
+    <p data-cid="main-600">
+      DeepSeek-R1-Zero exhibits a steady increase in <em>thinking time</em> throughout training, driven
+      by intrinsic adaptation rather than external modification. Leveraging long CoT, the model
+      progressively refines its reasoning, generating hundreds to thousands of tokens to explore and
+      improve its problem-solving strategies — autonomously developing reflective reasoning and the
+      systematic exploration of alternative solutions.
+    </p>
+  </div>
+  <div class="box example" data-cid="main-610">
+    <span class="box-label">The "aha moment"</span>
+    <p data-cid="main-620">
+      During training, an intermediate version of DeepSeek-R1-Zero learns to <em>rethink</em> a problem
+      mid-solution, marked by a sudden increase in the use of the word "wait." Solving
+      <span class="tts-math" data-tts="the square root of the quantity a minus the square root of a plus x, equals x">$\sqrt{a - \sqrt{a+x}} = x$</span>,
+      the model pauses — <em>"Wait, wait. Wait. That's an aha moment I can flag here"</em> — and
+      re-evaluates its approach step by step. This emergent behavior illustrates the power of RL: rather
+      than being taught how to solve the problem, the model is simply given the right incentives and
+      develops advanced strategies on its own.
+    </p>
+  </div>
+
+  <h2 data-cid="main-630" id="s3">3. DeepSeek-R1</h2>
+  <p data-cid="main-640">
+    DeepSeek-R1-Zero still struggles with poor readability and language mixing (English and Chinese
+    appearing in a single chain of thought). DeepSeek-R1 addresses this through a multi-stage pipeline:
+    collect thousands of cold-start examples exhibiting a conversational, human-aligned thinking process;
+    apply RL for reasoning and language consistency; then use rejection sampling and SFT once more,
+    incorporating both reasoning and non-reasoning data; and finally run a secondary RL stage tuned for
+    helpfulness and harmlessness while preserving reasoning. Intermediate checkpoints are referred to as
+    Dev1, Dev2, and Dev3.
+  </p>
+
+  <h3 data-cid="main-650" id="s3-1">3.1 Model-based Rewards</h3>
+  <p data-cid="main-660">
+    For general (non-reasoning) data where rules are insufficient, reward models capture human
+    preferences. A <strong>helpful reward model</strong> is trained on preference pairs — generated with
+    the arena-hard format and scored by averaging four independent DeepSeek-V3 judgments to mitigate
+    positional bias — retaining only pairs whose score difference exceeds 1:
+  </p>
+  <p data-cid="main-670">
+    <span class="tts-math" data-tts="Reward helpful equals R M helpful of Response A and Response B">
+    $$\text{Reward}_{\text{helpful}} = \text{RM}_{\text{helpful}}(\text{Response}_A, \text{Response}_B)$$
+    </span>
+  </p>
+  <p data-cid="main-680">
+    A <strong>safety reward model</strong> is trained point-wise on 106,000 prompts whose responses are
+    annotated "safe" or "unsafe" against predefined guidelines:
+  </p>
+  <p data-cid="main-690">
+    <span class="tts-math" data-tts="Reward safety equals R M safety of the Response">
+    $$\text{Reward}_{\text{safety}} = \text{RM}_{\text{safety}}(\text{Response})$$
+    </span>
+  </p>
+  <p data-cid="main-700">
+    Each general query is routed to either the safety or the helpfulness dataset, and the general reward
+    is the one defined for the associated dataset.
+  </p>
+
+  <h3 data-cid="main-710" id="s3-2">3.2 Training Details</h3>
+  <p data-cid="main-720">
+    <strong>First RL stage.</strong> The learning rate is 3e-6, the KL coefficient 0.001, the GRPO clip
+    ratio <span class="tts-math" data-tts="epsilon">$\varepsilon$</span> is 10, and the sampling
+    temperature 1. To mitigate language mixing, a <strong>language consistency reward</strong> is added,
+    computed as the proportion of target-language words in the chain of thought:
+  </p>
+  <p data-cid="main-730">
+    <span class="tts-math" data-tts="Reward language equals the number of target-language words divided by the total number of words">
+    $$\text{Reward}_{\text{language}} = \frac{\text{Num}(\text{Words}_{\text{target}})}{\text{Num}(\text{Words})}$$
+    </span>
+  </p>
+  <p data-cid="main-740">
+    Although this alignment causes a slight degradation in raw performance, it makes the model more
+    readable and human-preferred.
+  </p>
+  <p data-cid="main-750">
+    <strong>Second RL stage.</strong> Combining reward signals with diverse prompt distributions, the
+    overall reward is formulated as:
+  </p>
+  <p data-cid="main-760">
+    <span class="tts-math" data-tts="Reward equals Reward reasoning plus Reward general plus Reward language">
+    $$\text{Reward} = \text{Reward}_{\text{reasoning}} + \text{Reward}_{\text{general}} + \text{Reward}_{\text{language}}$$
+    </span>
+  </p>
+  <p data-cid="main-770">
+    <span class="tts-math" data-tts="where Reward reasoning equals Reward rule">
+    $$\text{where, }\ \text{Reward}_{\text{reasoning}} = \text{Reward}_{\text{rule}}$$
+    </span>
+  </p>
+  <p data-cid="main-780">
+    <span class="tts-math" data-tts="and Reward general equals Reward reward-model plus Reward format">
+    $$\text{Reward}_{\text{general}} = \text{Reward}_{\text{reward\_model}} + \text{Reward}_{\text{format}}$$
+    </span>
+  </p>
+  <p data-cid="main-790">
+    The second stage retains most parameters from the first, but uses a reduced temperature of 0.7
+    (higher temperatures yield incoherent generation) and runs 1,700 steps, with model-based preference
+    rewards introduced only in the final 400 steps to avoid reward hacking.
+  </p>
+
+  <h2 data-cid="main-800" id="s4">4. Experiments</h2>
+  <p data-cid="main-810">
+    The models are evaluated across English, code, math, and Chinese benchmarks (MMLU, MMLU-Pro, DROP,
+    IF-Eval, GPQA Diamond, SimpleQA, FRAMES, AlpacaEval 2.0, ArenaHard, LiveCodeBench, Codeforces,
+    SWE-Bench Verified, Aider-Polyglot, AIME 2024, MATH-500, CNMO 2024, C-Eval, and others). The table
+    below traces a subset of results across the developmental stages of the pipeline.
+  </p>
+  <div class="box example" data-cid="main-820">
+    <span class="box-label">Selected results across stages (pass@1 / accuracy, %)</span>
+    <table data-cid="main-830">
+      <thead>
+        <tr><th>Benchmark</th><th>R1-Zero</th><th>R1-Dev1</th><th>R1-Dev2</th><th>R1-Dev3</th><th>R1</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>MMLU (EM)</td><td>88.8</td><td>89.1</td><td>91.2</td><td>91.0</td><td>90.8</td></tr>
+        <tr><td>IF-Eval (Prompt Strict)</td><td>46.6</td><td>71.7</td><td>72.0</td><td>78.1</td><td>83.3</td></tr>
+        <tr><td>ArenaHard (GPT-4-1106)</td><td>53.6</td><td>77.0</td><td>73.2</td><td>75.6</td><td>92.3</td></tr>
+        <tr><td>LiveCodeBench (Pass@1-COT)</td><td>50.0</td><td>57.5</td><td>63.5</td><td>64.6</td><td>65.9</td></tr>
+        <tr><td>Codeforces (Rating)</td><td>1444</td><td>1534</td><td>1687</td><td>1746</td><td>2029</td></tr>
+        <tr><td>AIME 2024 (Pass@1)</td><td>77.9</td><td>59.0</td><td>74.0</td><td>78.1</td><td>79.8</td></tr>
+        <tr><td>MATH-500 (Pass@1)</td><td>95.9</td><td>94.2</td><td>95.9</td><td>95.4</td><td>97.3</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p data-cid="main-840">
+    Reasoning-oriented RL strongly enhances reasoning-heavy benchmarks while exerting limited influence
+    on user-preference benchmarks. The final DeepSeek-R1, produced by comprehensive RL over mixed
+    reasoning and general-purpose data, makes its primary gains in instruction-following and preference
+    benchmarks — AlpacaEval 2.0 improves by 25% and ArenaHard by 17%. The strong reasoning capability
+    also transfers effectively to smaller distilled models.
+  </p>
+
+  <h2 data-cid="main-850" id="s5">5. Ethics and Safety Statement</h2>
+  <p data-cid="main-860">
+    With advancing reasoning capability come ethical risks: R1 can be subject to jailbreak attacks, and
+    a public model is vulnerable to fine-tuning that compromises safety protections. A comprehensive
+    safety report across open-source and in-house benchmarks, multiple languages, and jailbreak attacks
+    concludes that the inherent safety of DeepSeek-R1 is at a moderate level (comparable to GPT-4o,
+    2024-05-13), and that coupling the model with an external risk-control system elevates its safety to
+    a superior standard.
+  </p>
+
+  <h2 data-cid="main-870" id="s6">6. Conclusion, Limitation, and Future Work</h2>
+  <p data-cid="main-880">
+    DeepSeek-R1-Zero and DeepSeek-R1 demonstrate that large-scale RL can incentivize reasoning behaviors,
+    and that pre-trained checkpoints inherently possess substantial latent potential for complex
+    reasoning. The key to unlocking it lies not in large-scale human annotation but in hard reasoning
+    questions, a reliable verifier, and sufficient compute — sophisticated behaviors such as
+    self-verification and reflection emerge organically.
+  </p>
+  <div class="box warn" data-cid="main-890">
+    <span class="box-label">Limitations</span>
+    <ul data-cid="main-900">
+      <li><strong>Structured output and tool use</strong> remain suboptimal; R1 cannot yet call tools
+      such as search engines or calculators.</li>
+      <li><strong>Token efficiency</strong> — the model sometimes <em>overthinks</em>, spending more
+      tokens than necessary on simple questions.</li>
+      <li><strong>Language mixing</strong> — optimized for Chinese and English, R1 may mix languages on
+      queries in other languages.</li>
+      <li><strong>Prompting sensitivity</strong> — few-shot prompting degrades performance; zero-shot,
+      direct problem statements are recommended.</li>
+      <li><strong>Software engineering</strong> — long evaluation times limited large-scale RL on SWE
+      tasks, so gains over DeepSeek-V3 are modest there.</li>
+      <li><strong>Reward hacking</strong> — pure RL depends on reliable reward signals, which are hard
+      to construct for open-ended tasks like writing; scaling pure RL to such tasks remains open.</li>
+    </ul>
+  </div>
+  <p data-cid="main-910">
+    With pure RL, the future holds immense potential for any task that can be effectively evaluated by a
+    verifier. Where reliable reward models are inherently difficult to construct, future research should
+    focus on innovative reward structures, and on leveraging external tools during reasoning to expand
+    the scope and accuracy of machine-driven solutions.
+  </p>
+
+  <h2 data-cid="main-920" id="references">References</h2>
+  <ol class="paper-references">
+    <li data-cid="main-930">Shao, Z., et al. (2024). DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models. <em>arXiv:2402.03300</em>. (Group Relative Policy Optimization.)</li>
+    <li data-cid="main-940">DeepSeek-AI. (2024). DeepSeek-V3 Technical Report. <em>arXiv:2412.19437</em>.</li>
+    <li data-cid="main-950">Schulman, J., Wolski, F., Dhariwal, P., Radford, A., &amp; Klimov, O. (2017). Proximal Policy Optimization Algorithms. <em>arXiv:1707.06347</em>.</li>
+    <li data-cid="main-960">Ouyang, L., et al. (2022). Training Language Models to Follow Instructions with Human Feedback. <em>NeurIPS</em>.</li>
+    <li data-cid="main-970">Wei, J., et al. (2022). Chain-of-Thought Prompting Elicits Reasoning in Large Language Models. <em>NeurIPS</em>.</li>
+    <li data-cid="main-980">Kojima, T., et al. (2022). Large Language Models are Zero-Shot Reasoners. <em>NeurIPS</em>.</li>
+    <li data-cid="main-990">Kaplan, J., et al. (2020). Scaling Laws for Neural Language Models. <em>arXiv:2001.08361</em>.</li>
+    <li data-cid="main-1000">Brown, T., et al. (2020). Language Models are Few-Shot Learners. <em>NeurIPS</em>.</li>
+    <li data-cid="main-1010">Wang, X., et al. (2023). Self-Consistency Improves Chain-of-Thought Reasoning in Language Models. <em>ICLR</em>.</li>
+    <li data-cid="main-1020">DeepSeek-AI. (2025). DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning. <em>arXiv:2501.12948</em>.</li>
+  </ol>
+
+</article>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/comments.js"></script>
+<script src="/js/tts.js"></script><script src="/js/highlights.js"></script><script src="/js/reading.js"></script>
+</body>
+</html>

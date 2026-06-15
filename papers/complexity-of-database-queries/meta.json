@@ -1,0 +1,20 @@
+{
+  "title": "On the Complexity of Database Queries",
+  "authors": "Christos H. Papadimitriou, Mihalis Yannakakis",
+  "venue": "PODS 1997",
+  "description": "Revisits the complexity of query evaluation through the lens of parametric (fixed-parameter) complexity, treating the query size and the number of query variables as parameters. Shows that conjunctive, positive, and first-order queries land at successively higher levels of the Downey–Fellows W hierarchy, formally explaining why query size is doomed to appear in the exponent of any evaluation algorithm—and that the dependence grows worse as the query language gets more expressive. On the positive side, it proves that acyclic conjunctive queries extended with inequalities (but not order comparisons) remain fixed-parameter tractable.",
+  "year": 1997,
+  "topics": [
+    "Computer Science/Databases/Query Processing",
+    "Computer Science/Theory/Computational Complexity"
+  ],
+  "tags": [
+    "query complexity",
+    "parameterized complexity",
+    "W hierarchy",
+    "conjunctive queries",
+    "fixed-parameter tractability",
+    "data complexity",
+    "acyclic queries"
+  ]
+}

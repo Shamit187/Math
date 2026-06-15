@@ -1,0 +1,42 @@
+/* ============================================================
+   reading.css — the "mark as read" control at the end of a paper.
+   ============================================================ */
+.reading-status {
+  margin: 3rem 0 1rem;
+  padding: 1.25rem 1.4rem;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  background: var(--bg-elev);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-family: var(--sans);
+}
+.reading-status.is-read {
+  border-color: var(--accent-soft);
+  background: var(--pause, var(--bg-elev));
+}
+.reading-status-btn {
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: 1px solid var(--accent-soft);
+  background: var(--accent);
+  color: #fff;
+  border-radius: 999px;
+  padding: 0.55rem 1.3rem;
+  cursor: pointer;
+  transition: opacity 0.12s ease, background 0.12s ease;
+}
+.reading-status-btn:hover { opacity: 0.9; }
+.reading-status-btn:disabled { opacity: 0.55; cursor: default; }
+.reading-status.is-read .reading-status-btn {
+  background: transparent;
+  color: var(--accent);
+}
+.reading-status-label {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+}
